@@ -1,5 +1,5 @@
 <!--
-   - verinice.veo web
+ - verinice.veo web
    - Copyright (C) 2024 Aziz Khalledi
    -
    - This program is free software: you can redistribute it and/or modify it
@@ -20,108 +20,121 @@
     :title="t('editRequirementImplementation')"
     :close-disabled="view.isLoading || view.formIsDirty"
     large
+    fixed-footer
     @keydown.enter="submitForm"
     @update:model-value="emit('update:show-dialog', $event)"
   >
     <BaseCard>
       <v-card-text v-if="item">
         <!-- Read only text fields -->
-        <v-text-field
-          :label="t('riskAffected')"
-          :model-value="form?.origin?.displayName"
-          readonly
-          variant="underlined"
-        />
 
-        <v-label>{{ t('requirement') }}</v-label>
-        <v-row>
-          <v-col>
-            <v-text-field
-              :label="t('abbreviation')"
-              :model-value="form?.control?.abbreviation"
-              readonly
-              variant="underlined"
-            />
-          </v-col>
+        <!-- Risk affected -->
+        <v-label class="mt-4">{{ t('riskAffectedLabel') }}</v-label>
+        <BaseCard border padding>
+          <v-text-field
+            :label="t('riskAffected')"
+            :model-value="form?.origin?.displayName"
+            readonly
+            variant="underlined"
+          />
+        </BaseCard>
 
-          <v-col>
-            <v-text-field
-              :label="t('protectionApproach')"
-              :model-value="additionalInfo?.protectionApproachTranslation"
-              readonly
-              variant="underlined"
-            />
-          </v-col>
-        </v-row>
+        <!-- Requirement -->
+        <v-label class="mt-4">{{ t('requirement') }}</v-label>
+        <BaseCard border padding>
+          <v-row>
+            <v-col>
+              <v-text-field
+                :label="t('abbreviation')"
+                :model-value="form?.control?.abbreviation"
+                readonly
+                variant="underlined"
+              />
+            </v-col>
 
-        <v-text-field :label="t('name')" :model-value="form?.control?.name" readonly variant="underlined" />
+            <v-col>
+              <v-text-field
+                :label="t('protectionApproach')"
+                :model-value="additionalInfo?.protectionApproachTranslation"
+                readonly
+                variant="underlined"
+              />
+            </v-col>
+          </v-row>
 
-        <!-- Responsible person -->
-        <v-autocomplete
-          v-model="form.responsible"
-          :label="t('responsible')"
-          :items="persons"
-          clearable
-          item-title="name"
-          item-value="name"
-          return-object
-          variant="underlined"
-          class="my-4"
-        />
+          <v-text-field :label="t('name')" :model-value="form?.control?.name" readonly variant="underlined" />
 
-        <!-- Status -->
-        <v-radio-group v-model="form.status" inline>
-          <template #label>
-            <div>{{ t('status') }}</div>
-          </template>
+          <!-- Foldable Requirement Description -->
+          <v-expansion-panels>
+            <v-expansion-panel>
+              <template #title>
+                {{ t('requirementDescription') }}
+              </template>
+              <template #text>
+                <div v-if="additionalInfo.requirementDescription" v-html="additionalInfo.requirementDescription"></div>
+                <div v-else>{{ t('noRequirementDescriptionAvailable') }}</div>
+              </template>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </BaseCard>
 
-          <template v-for="(key, value) in Status" :key="key">
-            <v-radio :label="t(`statusValues.${value}`)" :value="`${key}`" />
-          </template>
-        </v-radio-group>
+        <!-- Editable implementation details -->
+        <v-label class="mt-4">{{ t('implementation') }}</v-label>
 
-        <!-- Description -->
-        <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
+        <BaseCard border padding margin-bottom>
+          <!-- Responsible person -->
+          <v-autocomplete
+            v-model="form.responsible"
+            :label="t('responsible')"
+            :items="persons"
+            clearable
+            item-title="name"
+            item-value="name"
+            return-object
+            variant="underlined"
+            class="my-4"
+          />
 
-        <!-- Implementation date -->
-        <!-- @click:clear
+          <!-- Implementation date -->
+          <!-- @click:clear
             in vuetify 3.6.xx `clearable` doesn't reset the value when clearing the input,
             thus v-model is being reset manually
         -->
-        <v-date-input
-          v-model="form.implementationUntil"
-          :label="t('implementationUntil')"
-          :placeholder="globalT('inputPlaceholders.date')"
-          prepend-icon=""
-          prepend-inner-icon="$calendar"
-          clearable
-          @click:clear="form.implementationUntil = undefined"
-        >
-        </v-date-input>
+          <v-date-input
+            v-model="form.implementationUntil"
+            :label="t('implementationUntil')"
+            :placeholder="globalT('inputPlaceholders.date')"
+            prepend-icon=""
+            prepend-inner-icon="$calendar"
+            clearable
+            @click:clear="form.implementationUntil = undefined"
+          >
+          </v-date-input>
 
-        <!-- Originiation -->
-        <v-radio-group :model-value="form?.origination" inline>
-          <template #label>
-            <div>{{ t('origination') }}</div>
-          </template>
-
-          <template v-for="(key, value) in Origination" :key="key">
-            <v-radio :label="t(`originationValues.${value}`)" :value="`${key}`" />
-          </template>
-        </v-radio-group>
-
-        <!-- Foldable Requirement Description -->
-        <v-expansion-panels>
-          <v-expansion-panel>
-            <template #title>
-              {{ t('requirementDescription') }}
+          <!-- Status -->
+          <v-radio-group v-model="form.status" inline>
+            <template #label>
+              <div>{{ t('status') }}</div>
             </template>
-            <template #text>
-              <div v-if="additionalInfo.requirementDescription" v-html="additionalInfo.requirementDescription"></div>
-              <div v-else>{{ t('noRequirementDescriptionAvailable') }}</div>
+            <template v-for="(key, value) in Status" :key="key">
+              <v-radio :label="t(`statusValues.${value}`)" :value="`${key}`" />
             </template>
-          </v-expansion-panel>
-        </v-expansion-panels>
+          </v-radio-group>
+
+          <!-- Description -->
+          <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
+
+          <!-- Originiation -->
+          <v-radio-group :model-value="form?.origination" inline>
+            <template #label>
+              <div>{{ t('origination') }}</div>
+            </template>
+
+            <template v-for="(key, value) in Origination" :key="key">
+              <v-radio :label="t(`originationValues.${value}`)" :value="`${key}`" />
+            </template>
+          </v-radio-group>
+        </BaseCard>
       </v-card-text>
       <ObjectFormSkeletonLoader v-else />
     </BaseCard>
@@ -386,10 +399,10 @@ async function submitForm({
 <i18n>
 {
 "de": {
-  "requirement": "Anforderung:",
+  "requirement": "Anforderung",
   "requirementDescription": "Anforderungsbeschreibung",
   "noRequirementDescriptionAvailable": "Kein Inhalt verfügbar.",
-  "riskAffected": "Objekt:",
+  "riskAffected": "Zielobjekt",
   "description": "Umsetzungsbeschreibung",
   "origination": "Umsetzungsherkunft",
   "originationValues": {
@@ -397,13 +410,13 @@ async function submitForm({
     "Inherited": "Vererbung",
     "Organisation": "Organisation"
   },
-  "status": "Status der Umsetzung",
+  "status": "Status",
   "statusValues": {
     "Unknown": "Unbearbeitet",
     "Yes": "Ja",
     "Partial": "Teilweise",
     "No": "Nein",
-    "NA": "Nicht anwendbar"
+    "NA": "Entbehrlich"
   },
   "responsible": "Verantwortlich",
   "editRequirementImplementation": "Anforderung bearbeiten",
@@ -412,26 +425,29 @@ async function submitForm({
   "name": "Name",
   "protectionApproach": "Vorgehensweise",
   "implementationUntil": "Umsetzung bis",
+  "abbreviation": "Abkürzung",
+  "implementation": "Umsetzung",
+  "riskAffectedLabel": "Vom Risiko betroffen",
 },
 "en": {
-  "requirement": "Requirement Implementation:",
-  "requirementDescription": "Requirement Description",
+  "requirement": "Requirement",
+  "requirementDescription": "Description",
   "noRequirementDescriptionAvailable": "No content available.",
-  "riskAffected": "Target object:",
-  "description": "Umsetzungsbeschreibung",
-  "origination": "Umsetzungsherkunft",
+  "riskAffected": "Target object",
+  "description": "Beschreibung",
+  "origination": "Herkunft",
   "originationValues": {
     "SystemSpecific": "system specific",
     "Inherited": "Inheritance",
     "Organisation": "Organization"
   },
-  "status": "Implementation status",
+  "status": "Status",
   "statusValues": {
     "Unknown": "unedited",
     "Yes": "yes",
     "Partial": "partial",
     "No": "no",
-    "NA": "not applicable"
+    "NA": "dispensable"
   },
   "responsible": "responsible",
   "editRequirementImplementation": "edit Requirement Implementation",
@@ -440,6 +456,9 @@ async function submitForm({
   "name": "Name",
   "protectionApproach": "Protection approach",
   "implementationUntil": "Implementation by",
+  "abbreviation": "Abbreviation",
+  "implementation": "Implementation",
+  "riskAffectedLabel": "Risk affected",
 }
 }
 </i18n>
