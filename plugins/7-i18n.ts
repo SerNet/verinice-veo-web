@@ -23,8 +23,9 @@ const localeImports: Record<string, () => Promise<any>> = {
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const route = useRoute();
-  const { domains } = useDomains();
+  const { authenticated } = useVeoUser();
   const $i18n = nuxtApp.$i18n as any;
+
   const loadLocaleMessages = async (locale: string) => {
     if (localeImports[locale]) {
       try {
@@ -43,30 +44,35 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     const baseMessages = await loadLocaleMessages(locale);
     let domainMessages;
 
-    watch(
-      () => domains.value,
-      async (newVal) => {
-        if (newVal && newVal.length > 0) {
-          if (route.params.domain) {
-            const domain = newVal.find((domain) => domain.id === route.params.domain)?.abbreviation;
-            if (domain !== 'ITGS') {
-              $i18n.setLocaleMessage(locale, baseMessages);
-            } else {
-              domainMessages = await loadLocaleMessages(
-                `${newVal.find((domain) => domain.id === route.params.domain)?.abbreviation}/${locale}`
-              );
+    if (authenticated.value) {
+      const { domains } = useDomains();
+      watch(
+        () => domains.value,
+        async (newVal) => {
+          if (newVal && newVal.length > 0) {
+            if (route.params.domain) {
+              const domain = newVal.find((domain) => domain.id === route.params.domain)?.abbreviation;
+              if (domain !== 'ITGS') {
+                $i18n.setLocaleMessage(locale, baseMessages);
+              } else {
+                domainMessages = await loadLocaleMessages(
+                  `${newVal.find((domain) => domain.id === route.params.domain)?.abbreviation}/${locale}`
+                );
 
-              const messages = {
-                ...baseMessages,
-                itgs: domainMessages
-              };
-              $i18n.setLocaleMessage(locale, messages);
+                const messages = {
+                  ...baseMessages,
+                  itgs: domainMessages
+                };
+                $i18n.setLocaleMessage(locale, messages);
+              }
             }
           }
-        }
-      },
-      { immediate: true }
-    );
+        },
+        { immediate: true }
+      );
+    } else {
+      $i18n.setLocaleMessage(locale, baseMessages);
+    }
   };
 
   const initialLocale = $i18n.locale.value;
