@@ -172,7 +172,12 @@
   "formSchemaTranslations": {
     "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen."
   },
+
   "linkObject": "{0} auswählen",
   "controls": "Maßnahmen",
-  "addControls": "Maßnahmen hinzufügen"
+  "addControls": "Maßnahmen hinzufügen",
+
+  "inputPlaceholders": {
+    "date": "tt.mm.jjjj"
+  }
 }

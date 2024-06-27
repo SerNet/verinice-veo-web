@@ -23,9 +23,13 @@ import { de, en } from 'vuetify/locale';
 import 'vuetify/styles';
 import Cookies from 'js-cookie';
 
+// Vuetify Lab components
+import { VDateInput } from 'vuetify/labs/VDateInput';
+
 const vuetify = createVuetify({
   components: {
-    ...components
+    ...components,
+    VDateInput
   },
   directives,
   ssr: true,

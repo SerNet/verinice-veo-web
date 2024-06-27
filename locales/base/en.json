@@ -170,7 +170,12 @@
   "formSchemaTranslations": {
     "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations."
   },
+
   "linkObject": "select {0}",
   "controls": "Controls",
-  "addControls": "Add Controls"
+  "addControls": "Add Controls",
+
+  "inputPlaceholders": {
+    "date": "mm/dd/yyyy"
+  }
 }

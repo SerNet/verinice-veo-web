@@ -83,6 +83,22 @@
         <!-- Description -->
         <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
 
+        <!-- Implementation date -->
+        <!-- @click:clear
+            in vuetify 3.6.xx `clearable` doesn't reset the value when clearing the input,
+            thus v-model is being reset manually
+        -->
+        <v-date-input
+          v-model="form.implementationUntil"
+          :label="t('implementationUntil')"
+          :placeholder="globalT('inputPlaceholders.date')"
+          prepend-icon=""
+          prepend-inner-icon="$calendar"
+          clearable
+          @click:clear="form.implementationUntil = undefined"
+        >
+        </v-date-input>
+
         <!-- Originiation -->
         <v-radio-group :model-value="form?.origination" inline>
           <template #label>
@@ -153,11 +169,15 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 import { useRequest } from '@/composables/api/utils/request';
 import { IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
+import { format } from 'date-fns';
+import { useDate } from 'vuetify';
+
 const { request } = useRequest();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { getRequirementImplementationId, state } = useCompliance();
+const adapter = useDate();
 
 interface Props {
   item: RequirementImplementation | null;
@@ -221,7 +241,8 @@ const _item = computed(() => props.item);
 watch(_item, () => {
   if (!_item.value) return;
   form.value = {
-    ..._item.value
+    ..._item.value,
+    implementationUntil: _item.value.implementationUntil ? adapter.parseISO(_item.value.implementationUntil) : undefined
   };
 });
 
@@ -334,6 +355,12 @@ async function submitForm({
 
   // Filter out empty properties
   const _form = cloneDeep(form);
+
+  // Format implementation date
+  if (_form.implementationUntil) {
+    _form.implementationUntil = format(_form.implementationUntil, 'yyyy-MM-dd');
+  }
+
   const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
 
   const requirementImplementationId = getRequirementImplementationId(item._self);
@@ -383,7 +410,8 @@ async function submitForm({
   "requirementImplementationNotUpdated": "Anforderung konnte nicht aktualisiert werden.",
   "requirementImplementationUpdated": "Anforderung wurde erfolgreich aktualisiert.",
   "name": "Name",
-  "protectionApproach": "Vorgehensweise"
+  "protectionApproach": "Vorgehensweise",
+  "implementationUntil": "Umsetzung bis",
 },
 "en": {
   "requirement": "Requirement Implementation:",
@@ -410,7 +438,8 @@ async function submitForm({
   "requirementImplementationNotUpdated": "Requirement Implementation could not be updated.",
   "requirementImplementationUpdated": "Requirement Implementation successfully updated.",
   "name": "Name",
-  "protectionApproach": "Protection approach"
+  "protectionApproach": "Protection approach",
+  "implementationUntil": "Implementation by",
 }
 }
 </i18n>
