@@ -125,6 +125,12 @@
           <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
 
           <!-- Originiation -->
+
+          <!--
+            The backend currently only knows a single origination,
+            until users can actually work with this property (more than one possible origination)
+            this form field should not be rendered
+
           <v-radio-group :model-value="form?.origination" inline>
             <template #label>
               <div>{{ t('origination') }}</div>
@@ -134,6 +140,7 @@
               <v-radio :label="t(`originationValues.${value}`)" :value="`${key}`" />
             </template>
           </v-radio-group>
+          -->
         </BaseCard>
       </v-card-text>
       <ObjectFormSkeletonLoader v-else />
@@ -217,11 +224,14 @@ type ResponsiblePerson = {
   targetUri: string;
 };
 
+/** Cp. comment in template above */
+/*
 enum Origination {
   SystemSpecific = 'SYSTEM_SPECIFIC'
   // Inherited = 'INHERITED',
   // Organisation = 'ORGANISATION'
 }
+*/
 
 enum Status {
   Unknown = 'UNKNOWN',
