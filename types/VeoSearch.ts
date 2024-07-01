@@ -32,3 +32,9 @@ export type VeoSearchOperators = {
   default: string;
 };
 
+type VeoSearchQueryParameter = { operator: string; term: string };
+export type VeoSearchQueryParameters = {
+  name?: VeoSearchQueryParameter;
+  abbreviation?: VeoSearchQueryParameter;
+  displayName?: VeoSearchQueryParameter;
+};

@@ -26,6 +26,9 @@
         :required-fields="['objectType']"
         @update:filter="updateRoute"
       />
+
+      <SearchBar v-model:search="search" />
+
       <BaseCard v-if="filter.objectType || endpointsLoading">
         <ObjectTable
           v-model:page="page"
@@ -138,10 +141,12 @@ import { ObjectTableHeader } from '~/components/object/Table.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~/composables/api/utils/query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useFetchObjects } from '~/composables/api/objects';
+import type { VeoSearch, VeoSearchQueryParameters } from '~/types/VeoSearch';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -185,6 +190,23 @@ const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
 });
 
 const domainId = computed(() => route.params.domain as string);
+
+// SEARCH
+const search = ref<VeoSearch[]>([]); // v-model from `SearchBar`
+
+// Object used to update `combinedQueryParameters`, cp. below
+const _search = computed<VeoSearchQueryParameters | {}>(() => {
+  if (!search.value.length) return {};
+  return search.value.reduce(
+    (acc, query) => ({
+      ...acc,
+      ...(query.term && query.searchFilter ?
+        { [query.searchFilter]: { operator: query.operator, term: query.term } }
+      : {})
+    }),
+    {}
+  );
+});
 
 //
 // Filter stuff
@@ -291,13 +313,29 @@ const combinedQueryParameters = computed<any>(() => ({
   page: page.value,
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),
-  endpoint: endpoints.value?.[filter.value.objectType as string]
+  endpoint: endpoints.value?.[filter.value.objectType as string],
+  ...(_search.value.hasOwnProperty('name') ? { name: (_search?.value as VeoSearchQueryParameters)?.name?.term } : {}),
+  ...(_search.value.hasOwnProperty('abbreviation') ?
+    { abbreviation: (_search?.value as VeoSearchQueryParameters)?.abbreviation?.term }
+  : {}),
+  ...(_search.value.hasOwnProperty('displayName') ?
+    { displayName: (_search?.value as VeoSearchQueryParameters)?.displayName?.term }
+  : {})
 }));
 const queryEnabled = computed(() => !!endpoints.value?.[filter.value.objectType as string]);
 const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
   enabled: queryEnabled,
   keepPreviousData: true
 });
+
+// Fetch items again if query parameters changed (usually because of a user's search)
+watch(
+  combinedQueryParameters,
+  async () => {
+    items.value = await useQuerySync(objectQueryDefinitions.queries.fetchAll, combinedQueryParameters.value);
+  },
+  { deep: true }
+);
 
 const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
 const formsQueryEnabled = computed(() => !!domainId.value);
