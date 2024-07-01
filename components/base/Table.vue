@@ -52,7 +52,7 @@ export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K exte
 </script>
 
 <script setup lang="ts">
-import { VNode, VNodeArrayChildren } from 'vue';
+import { VNode, VNodeArrayChildren, Slot } from 'vue';
 import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 import type { SortItem } from 'vuetify/components/VDataTable/composables/sort.mjs';
@@ -102,6 +102,11 @@ const props = withDefaults(
      * Needed as we can't check whether @click is set in the attrs as soon as it is defiend as an emit.
      */
     enableClick?: boolean;
+    /**
+     * Text to display when there is no data to show in the table.
+     * This text will be shown in place of the table when `items` array is empty.
+     */
+    noDataText?: Slot;
   }>(),
   {
     items: () => [],
@@ -112,7 +117,8 @@ const props = withDefaults(
     defaultHeaders: () => [],
     additionalHeaders: () => [],
     showAllColumns: false,
-    enableClick: false
+    enableClick: false,
+    noDataText: undefined
   }
 );
 
@@ -496,28 +502,34 @@ const sharedProps = computed(() => ({
   'data-table-sort-order': localSortBy.value[0].order
 }));
 
-const render = () =>
-  isPaginatedResponse(props.items) ?
-    h(
-      VDataTableServer,
-      {
-        ...sharedProps.value,
-        loading: props.loading,
-        loadingText: t('loadingData'),
-        itemsLength: props.items.totalItemCount
-      },
-      {
-        ...slots,
-        ...renderers.value
-      }
-    )
-  : h('div', [
-      ...(props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : []),
-      h(VDataTable, sharedProps.value, {
-        ...slots,
-        ...renderers.value
-      })
-    ]);
+const render = () => {
+  const dataTableProps = {
+    ...sharedProps.value,
+    loading: props.loading,
+    loadingText: t('loadingData'),
+    itemsLength: props.items.totalItemCount
+  };
+
+  let dataTableSlots = {
+    ...slots,
+    ...renderers.value
+  };
+
+  if (props.noDataText) {
+    dataTableSlots = {
+      ...dataTableSlots,
+      'no-data': props.noDataText
+    };
+  }
+
+  if (isPaginatedResponse(props.items)) {
+    return h(VDataTableServer, dataTableProps, dataTableSlots);
+  } else {
+    const dataTableContent = props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : [];
+
+    return h('div', [...dataTableContent, h(VDataTable, dataTableProps, dataTableSlots)]);
+  }
+};
 </script>
 
 <i18n>

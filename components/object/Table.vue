@@ -82,6 +82,11 @@ const props = withDefaults(
      * Needed as we can't check whether @click is set in the attrs as soon as it is defiend as an emit.
      */
     enableClick?: boolean;
+    /**
+     * Text to display when there is no data to show in the table.
+     * This text will be shown in place of the table when `items` array is empty.
+     */
+    noDataText?: () => any;
   }>(),
   {
     items: () => [],
@@ -92,7 +97,8 @@ const props = withDefaults(
     defaultHeaders: () => [],
     additionalHeaders: () => [],
     showAllColumns: false,
-    enableClick: false
+    enableClick: false,
+    noDataText: () => ''
   }
 );
 

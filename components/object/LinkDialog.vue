@@ -59,6 +59,7 @@
           ]"
           :items="selectableObjects"
           :loading="objectsLoading || childrenLoading || parentsLoading"
+          :no-data-text="noDataTextWithLink"
         />
       </BaseCard>
     </template>
@@ -85,16 +86,17 @@
 <script lang="ts">
 import { PropType } from 'vue';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
-
 import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useNavigation } from '~/composables/navigation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import { getEntityDetailsFromLink } from '~/lib/utils';
+import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
 
 export default defineComponent({
   props: {
@@ -153,6 +155,7 @@ export default defineComponent({
   emits: ['update:preselected-items', 'update:model-value', 'success', 'error'],
   setup(props, { emit }) {
     const route = useRoute();
+    const { navigateToCatalog } = useNavigation();
     const { t } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const { tablePageSize } = useVeoUser();
@@ -392,7 +395,18 @@ export default defineComponent({
       }
     );
 
+    const noDataTextWithLink = computed(() => {
+      return () =>
+        h(HtmlRenderer, {
+          content: t('noDataText', {
+            catalogLink: `<a href="#" @click="navigateToCatalog">${t('catalog')}</a>`
+          }),
+          clickHandler: navigateToCatalog
+        });
+    });
+
     return {
+      navigateToCatalog,
       ability,
       availableObjectTypes,
       childrenLoading,
@@ -409,7 +423,7 @@ export default defineComponent({
       sortBy,
       title,
       updateFilter,
-
+      noDataTextWithLink,
       globalT,
       t,
       upperFirst
@@ -426,16 +440,20 @@ export default defineComponent({
     "editChildScopes": "Edit scopes of \"{0}\"",
     "editParentObjects": "Edit parent parts of \"{0}\"",
     "editParentScopes": "Edit parent scopes of \"{0}\"",
-    "object": "object"
-  },
+    "object": "object",
+    "noDataText": "No building blocks applied yet. Please apply building blocks from the {catalogLink}.",
+    "catalog": "catalog"
+        },
   "de": {
     "addControls": "Maßnahmen hinzufügen",
     "editChildObjects": "Teile von \"{0}\" bearbeiten",
     "editChildScopes": "Scopes von \"{0}\" bearbeiten",
     "editParentObjects": "Teile über \"{0}\" bearbeiten",
     "editParentScopes": "Scopes über \"{0}\" bearbeiten",
-    "object": "Objekt"
-  }
+    "object": "Objekt",
+    "noDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
+    "catalog": "Katalog"
+    }
 }
 </i18n>
 
