@@ -31,11 +31,11 @@ describe('Edit elements', () => {
         cy.get('.v-data-table__tr').first().as('originalRow');
         cy.get('@originalRow').click();
 
-        let abbTyped = getRandomString();
-        let nameTyped = getRandomString();
-        let descriptionTyped = getRandomString();
+        const abbTyped = getRandomString();
+        const nameTyped = getRandomString();
+        const descriptionTyped = getRandomString();
 
-        let statusSelected = selectRandom(['Archived', 'New', 'In progress', 'Released', 'For review']);
+        const statusSelected = selectRandom(['Archived', 'New', 'In progress', 'Released', 'For review']);
         cy.get('input[id="#/properties/abbreviation"]').clear().type(abbTyped);
         cy.get('input[id="#/properties/name"]').clear().type(nameTyped);
         cy.get('textarea[id="#/properties/description"]').clear().type(descriptionTyped);
@@ -57,14 +57,14 @@ describe('Edit elements', () => {
         cy.get('@rowWithElements').then(($row) => {
           const cells = $row.children('td');
 
-          let texts = [];
+          const texts = [];
           cells.each((index, cell) => {
             if (Cypress.$(cell).text()) texts.push(Cypress.$(cell).text());
           });
 
-          let abb = texts[0];
-          let name = texts[1];
-          let status = texts[2];
+          const abb = texts[0];
+          const name = texts[1];
+          const status = texts[2];
 
           expect(abb).to.equal(abbTyped);
           expect(name).to.equal(nameTyped);
