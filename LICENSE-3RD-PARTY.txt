@@ -13471,7 +13471,7 @@ SOFTWARE.
 The following npm packages may be included in this product:
 
  - pathe@1.1.2
- - pkg-types@1.1.1
+ - pkg-types@1.1.2
 
 These packages each contain the following license and notice below:
 
@@ -13568,7 +13568,7 @@ The following npm packages may be included in this product:
  - execa@8.0.1
  - get-stream@6.0.1
  - get-stream@8.0.1
- - globby@14.0.1
+ - globby@14.0.2
  - is-docker@2.2.1
  - is-port-reachable@4.0.0
  - is-stream@2.0.1
@@ -14917,8 +14917,8 @@ THE SOFTWARE.
 
 The following npm packages may be included in this product:
 
- - @nuxt/kit@3.12.2
- - @nuxt/schema@3.12.2
+ - @nuxt/kit@3.12.3
+ - @nuxt/schema@3.12.3
 
 These packages each contain the following license and notice below:
 
