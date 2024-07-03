@@ -436,7 +436,6 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "addControls": "Add Controls",
     "editChildObjects": "Edit parts of \"{0}\"",
     "editChildScopes": "Edit scopes of \"{0}\"",
     "editParentObjects": "Edit parent parts of \"{0}\"",
@@ -446,7 +445,6 @@ export default defineComponent({
     "catalog": "catalog"
         },
   "de": {
-    "addControls": "Maßnahmen hinzufügen",
     "editChildObjects": "Teile von \"{0}\" bearbeiten",
     "editChildScopes": "Scopes von \"{0}\" bearbeiten",
     "editParentObjects": "Teile über \"{0}\" bearbeiten",

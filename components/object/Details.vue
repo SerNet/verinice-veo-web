@@ -104,7 +104,6 @@ import { useQuery } from '~/composables/api/utils/query';
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useCurrentDomain } from '~/composables/domains/useDomains';
 
 export default defineComponent({
   props: {
@@ -134,7 +133,6 @@ export default defineComponent({
     const { t } = useI18n();
     const { formatDateTime } = useFormatters();
     const { ability } = useVeoPermissions();
-    const { currentDomain } = useCurrentDomain();
     // Hide tabs
 
     /**
@@ -201,7 +199,7 @@ export default defineComponent({
         hidden: !hasRiskTab.value
       },
       {
-        key: currentDomain.value?.abbreviation === 'ITGS' ? 'itgs.controls' : 'controls',
+        key: 'controls',
         hidden: isControlsTabHidden.value
       }
     ]);
@@ -258,7 +256,6 @@ export default defineComponent({
     "by": "by",
     "childObjects": "Parts",
     "childScopes": "Scopes",
-    "controls": "Controls",
     "createdAt": "created",
     "links": "links",
     "noDescription": "No description provided",
@@ -271,7 +268,6 @@ export default defineComponent({
     "by": "von",
     "childObjects": "Teile",
     "childScopes": "Scopes",
-    "controls": "Maßnahmen",
     "createdAt": "erstellt",
     "links": "links",
     "noDescription": "Keine Beschreibung vorhanden",

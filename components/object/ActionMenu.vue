@@ -88,7 +88,6 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
-import { useCurrentDomain } from '~/composables/domains/useDomains';
 
 export default defineComponent({
   props: {
@@ -113,7 +112,6 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { createLink } = useCreateLink();
     const queryClient = useQueryClient();
-    const { currentDomain } = useCurrentDomain();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const fetchTranslationsQueryParameters = computed(() => ({
@@ -138,16 +136,13 @@ export default defineComponent({
 
       const getLinkObjectTranslationParams = () => {
         if (props.type === 'controls') {
-          return locale.value === 'de' ? 'Maßnahmen' : 'Controls';
+          return t('controls');
         }
         return getCreateObjectTranslationParams();
       };
 
       const getLinkObjectTranslation = () => {
-        if (currentDomain.value?.abbreviation === 'ITGS') {
-          return t('itgs.linkObject');
-        }
-        return t('linkObject', getLinkObjectTranslationParams());
+        return t('linkObject', [getLinkObjectTranslationParams()]);
       };
 
       const createObjectAction = () =>
@@ -401,7 +396,6 @@ export default defineComponent({
   "en": {
     "createObject": "create {0}",
     "createRisk": "create risk",
-    "linkObject": "select {0}",
     "createScope": "create scope",
     "linkScope": "select scope",
     "object": "object",
@@ -411,7 +405,6 @@ export default defineComponent({
   "de": {
     "createObject": "{0} erstellen",
     "createRisk": "Risiko hinzufügen",
-    "linkObject": "{0} auswählen",
     "createScope": "Scope erstellen",
     "linkScope": "Scope auswählen",
     "object": "Objekt",
