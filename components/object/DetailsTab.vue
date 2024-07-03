@@ -81,6 +81,7 @@ import {
   mdiCheck,
   mdiContentCopy,
   mdiLinkOff,
+  mdiPencil,
   mdiTransitDetour,
   mdiTrashCanOutline
 } from '@mdi/js';
@@ -170,8 +171,8 @@ export default defineComponent({
       parentEndpoint: 'scopes',
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
-      sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value
     }));
     const parentScopesQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
@@ -185,8 +186,8 @@ export default defineComponent({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
-      sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value
     }));
     const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);
@@ -206,8 +207,8 @@ export default defineComponent({
         props.type === 'childObjects' ?
           ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
         : ['scope'],
-      sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,
       size: tableSize.value
     }));
@@ -229,8 +230,8 @@ export default defineComponent({
         props.type === 'childObjects' ?
           ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
         : ['scope'],
-      sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,
       size: tableSize.value
     }));
@@ -327,7 +328,6 @@ export default defineComponent({
 
     const additionalHeaders = computed<TableHeader[]>(() => {
       if (!riskDefinitionCategories.value || !riskDefinitionId.value) return [];
-
       return (
         props.type === 'risks' ?
           [
@@ -486,7 +486,8 @@ export default defineComponent({
               render: (data: any) =>
                 h(
                   'span',
-                  translations.value?.lang[locale.value][data.internalItem.raw.linkId] || data.internalItem.raw.linkId
+                  translations.value?.lang?.[locale.value]?.[data.internalItem.raw.linkId] ||
+                    data.internalItem.raw.linkId
                 )
             }
           ]
@@ -532,11 +533,11 @@ export default defineComponent({
               key: 'responsibility',
               text: t('controls.responsible'),
               width: 100,
-              truncate: true,
+              truncate: false,
               priority: 50,
               order: 50,
-              render: (data: any) =>
-                h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible?.name || '')
+              render: (data) =>
+                h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible || '')
             }
           ]
         : []
@@ -602,6 +603,15 @@ export default defineComponent({
           ];
         case 'controls':
           return [
+            {
+              id: 'edit',
+              label: t('controls.edit'),
+              icon: mdiPencil,
+
+              async action(_item: any) {
+                confirmationDialogVisible.value = true;
+              }
+            },
             {
               id: 'delete',
               label: upperFirst(t('deleteDialogTitle').toString()),
@@ -789,7 +799,7 @@ export default defineComponent({
     const riskDefinition: ComputedRef<IVeoRiskDefinition> = computed(
       () => Object.values((domain.value?.riskDefinitions as object) || {})[0]
     );
-    const riskDefinitionId = computed(() => Object.keys((domain.value?.riskDefinitions as object) || {})[0]);
+    const riskDefinitionId = computed(() => Object.keys((domain.value?.riskDefinitions as object) || {})[0] ?? '');
     const riskDefinitionCategories = computed(() => riskDefinition.value?.categories.map((cat) => cat.id));
 
     function getRiskValues(item: IVeoRisk): IVeoRiskValue[] {
@@ -852,6 +862,7 @@ export default defineComponent({
     "controlDeleted": "The control implementation has been removed",
     "controls": {
       "abbreviation": "Abbreviation",
+      "edit": "Edit control",
       "implementation": {
         "NO": "no",
         "PARTIAL": "partially",
@@ -900,6 +911,7 @@ export default defineComponent({
     "controlDeleted": "Die Bausteinmodellierung wurde entfernt",
     "controls": {
       "abbreviation": "Abkürzung",
+      "edit": "Baustein bearbeiten",
       "implementation": {
         "NO": "nein",
         "PARTIAL": "teilweise",
