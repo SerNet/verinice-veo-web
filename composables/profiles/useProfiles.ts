@@ -46,7 +46,7 @@ export interface TVeoProfile {
 }
 
 export function useProfiles() {
-  const { domains } = useDomains();
+  const { data: domains } = useDomains();
   const profiles = ref<TVeoProfile[]>([]);
   const isLoading = ref(true);
 

@@ -158,7 +158,7 @@ const { ability } = useVeoPermissions();
 const { applyProfile, isLoading: isApplyingProfile } = useApplyProfile();
 
 // Data
-const { domains } = useDomains();
+const { data: domains } = useDomains();
 const { profiles, isLoading: isLoadingProfiles } = useProfiles();
 
 // State

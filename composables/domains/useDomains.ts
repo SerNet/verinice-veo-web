@@ -38,9 +38,13 @@ export enum Colors {
 
 export function useCurrentDomain() {
   const data = ref<TVeoDomain | undefined>();
+  const isLoading = ref<boolean>(true);
+  const error = ref<Error | null>(null);
   const route = useRoute();
+
   async function getDomain() {
     try {
+      isLoading.value = true;
       const result = await useQuerySync(domainQueryDefinitions.queries.fetchDomain, {
         id: route.params.domain as string
       });
@@ -54,11 +58,16 @@ export function useCurrentDomain() {
           raw: result
         };
       }
-    } catch (error) {
-      console.error('Error fetching domain:', error);
+    } catch (e: any) {
+      console.error('Error fetching domain:', e);
+      error.value = e;
+    } finally {
+      isLoading.value = false;
     }
   }
+
   if (route.params.domain) getDomain();
+
   watch(
     () => route.params.domain,
     () => {
@@ -67,8 +76,9 @@ export function useCurrentDomain() {
   );
 
   return {
-    currentDomain: readonly(data),
-    currentDomainName: data.value?.name
+    data,
+    isLoading,
+    error
   };
 }
 
@@ -78,14 +88,21 @@ export function useDomains() {
   const error = ref<Error | null>(null);
 
   async function getDomains() {
-    const result = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
-    data.value = map(result);
+    try {
+      isLoading.value = true;
+      const result = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
+      data.value = map(result);
+    } catch (e: any) {
+      error.value = e;
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   getDomains();
 
   return {
-    domains: readonly(data),
+    data,
     isLoading,
     error
   };
