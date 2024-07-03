@@ -1,8 +1,6 @@
 {
   "clone": "Kopie",
-
   "unsavedChanges": "Es gibt ungespeicherte Änderungen. Wollen Sie die Seite wirklich verlassen?",
-
   "editor.basicproperties": "Standardattribute",
   "editor.customaspects": "Individuelle Aspekte",
   "editor.customaspects.add": "Aspekte hinzufügen",
@@ -173,5 +171,8 @@
 
   "formSchemaTranslations": {
     "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen."
-  }
+  },
+  "linkObject": "{0} auswählen",
+  "controls": "Maßnahmen",
+  "addControls": "Maßnahmen hinzufügen"
 }

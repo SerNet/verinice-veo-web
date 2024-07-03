@@ -1,8 +1,6 @@
 {
   "clone": "Clone",
-
   "unsavedChanges": "There are unsaved changes. Do you really want to leave this page?",
-
   "editor.basicproperties": "Basic properties",
   "editor.customaspects": "Custom aspects",
   "editor.customaspects.add": "Add aspect",
@@ -171,5 +169,8 @@
 
   "formSchemaTranslations": {
     "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations."
-  }
+  },
+  "linkObject": "select {0}",
+  "controls": "Controls",
+  "addControls": "Add Controls"
 }
