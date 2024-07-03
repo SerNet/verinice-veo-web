@@ -14,80 +14,43 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-const localeImports: Record<string, () => Promise<any>> = {
-  de: () => import('~/locales/de.json'),
-  en: () => import('~/locales/en.json'),
-  'ITGS/de': () => import('~/locales/ITGS/de.json'),
-  'ITGS/en': () => import('~/locales/ITGS/en.json')
-};
 
 export default defineNuxtPlugin(async (nuxtApp) => {
-  const route = useRoute();
   const { authenticated } = useVeoUser();
+  const { data: currentDomain } = useCurrentDomain();
   const $i18n = nuxtApp.$i18n as any;
-
-  const loadLocaleMessages = async (locale: string) => {
-    if (localeImports[locale]) {
-      try {
-        const messages = await localeImports[locale]!();
-        return messages.default || messages;
-      } catch (e) {
-        console.error(`Failed to load messages for locale: ${locale}`, e);
-      }
-    } else {
-      console.warn(`No import found for locale: ${locale}`);
+  async function importMessages(locale: string, domain: string = 'base') {
+    try {
+      return await import(`~/locales/${domain}/${locale}.json`);
+    } catch (e) {
       return {};
     }
-  };
+  }
+  async function setMessages(locale: string, isAuthenticated: boolean, domainName: string | undefined) {
+    try {
+      const baseMessages = await importMessages(locale);
+      if (!isAuthenticated || !domainName) {
+        $i18n.setLocaleMessage(locale, baseMessages);
+        return;
+      }
 
-  const setLocaleMessages = async (locale: string) => {
-    const baseMessages = await loadLocaleMessages(locale);
-    let domainMessages;
-
-    if (authenticated.value) {
-      const { domains } = useDomains();
-      watch(
-        () => domains.value,
-        async (newVal) => {
-          if (newVal && newVal.length > 0) {
-            if (route.params.domain) {
-              const domain = newVal.find((domain) => domain.id === route.params.domain)?.abbreviation;
-              if (domain !== 'ITGS') {
-                $i18n.setLocaleMessage(locale, baseMessages);
-              } else {
-                domainMessages = await loadLocaleMessages(
-                  `${newVal.find((domain) => domain.id === route.params.domain)?.abbreviation}/${locale}`
-                );
-
-                const messages = {
-                  ...baseMessages,
-                  itgs: domainMessages
-                };
-                $i18n.setLocaleMessage(locale, messages);
-              }
-            }
-          }
-        },
-        { immediate: true }
-      );
-    } else {
-      $i18n.setLocaleMessage(locale, baseMessages);
+      const domainMessages = await importMessages(locale, domainName);
+      const messages = {
+        ...baseMessages.default,
+        ...domainMessages.default
+      };
+      $i18n.setLocaleMessage(locale, messages);
+    } catch (error) {
+      console.log(error);
     }
-  };
-
-  const initialLocale = $i18n.locale.value;
-  await setLocaleMessages(initialLocale);
+  }
 
   watch(
-    () => route.params.domain,
+    () => [currentDomain.value, $i18n.locale.value, authenticated.value],
     async () => {
-      await setLocaleMessages($i18n.locale.value);
-    }
-  );
-  watch(
-    () => $i18n.locale.value,
-    async (newLocale) => {
-      await setLocaleMessages(newLocale);
-    }
+      console.log('ENTER WATCH');
+      await setMessages($i18n.locale?.value, authenticated.value, currentDomain.value?.abbreviation);
+    },
+    { immediate: true }
   );
 });

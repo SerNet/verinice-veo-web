@@ -132,7 +132,7 @@ export default defineNuxtConfig({
     locales: LOCALES,
     defaultLocale: 'de',
     lazy: true,
-    langDir: 'locales/'
+    langDir: 'locales/base/'
   },
 
   fontLoader: {
