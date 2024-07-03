@@ -50,26 +50,31 @@ export function useVeoReactiveFormActions() {
 
   function riskReactiveFormActions(riskAnalysisType: string, protectionGoals: string[]): IVeoFormsReactiveFormActions {
     return protectionGoals.reduce(
-      (previous, current) => {
-        previous[
-          `#/properties/riskValues/properties/${riskAnalysisType}/properties/potentialImpacts/properties/${current}/properties/potentialImpacts`
+      (newRiskValues, category) => {
+        newRiskValues[
+          `#/properties/riskValues/properties/${riskAnalysisType}/properties/potentialImpacts/properties/${category}/properties/potentialImpacts`
         ] = [
           (newValue, _oldValue, newObject, _oldObject) => {
-            newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactsEffective =
-              newValue ?? newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactsCalculated;
-            if (
-              newValue !== undefined &&
-              !newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactReasons
-            ) {
-              newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactReasons =
-                'impact_reason_manual';
-            } else if (newValue === undefined) {
-              newObject.riskValues[riskAnalysisType].potentialImpacts[current].potentialImpactReasons = undefined;
+            const impacts = newObject.riskValues[riskAnalysisType].potentialImpacts[category];
+            // if no user specification (newValue) is given ...
+            if (newValue === undefined) {
+              // ... unset the impact reason and the explanation
+              impacts.potentialImpactReasons = undefined;
+              impacts.potentialImpactExplanations = undefined;
+              // ... and provide a fallback for 'effective'
+              impacts.potentialImpactsEffective = impacts.potentialImpactsCalculated;
+            } else {
+              // 'effective' inherits the value from user specification
+              impacts.potentialImpactsEffective = newValue;
+              // set the default val for the reason to 'manual' if not set yet
+              if (impacts.potentialImpactReasons === undefined) {
+                impacts.potentialImpactReasons = 'impact_reason_manual';
+              }
             }
             return newObject;
           }
         ];
-        return previous;
+        return newRiskValues;
       },
       {} as Record<string, any>
     );
