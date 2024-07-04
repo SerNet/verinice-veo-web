@@ -24,7 +24,7 @@ export function useNavigation() {
   const validDomainRoute = computed(() => !!route.params.domain);
   const validUnitRoute = computed(() => !!route.params.unit);
 
-  const navigateToCatalog = () => {
+  const navigateToCatalog = (type: string, subType: string) => {
     if (validDomainRoute && validUnitRoute) {
       router.push({
         name: CATALOGS_CATALOG_ROUTE_NAME,
@@ -33,8 +33,8 @@ export function useNavigation() {
           unit: route.params.unit
         },
         query: {
-          type: 'all',
-          subType: 'all'
+          type: type ?? 'all',
+          subType: subType ?? 'all'
         }
       });
     }

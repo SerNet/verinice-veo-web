@@ -24,7 +24,8 @@ import DOMPurify from 'dompurify';
 
 const props = defineProps<{
   content: string;
-  clickHandler?: () => void;
+  clickHandler?: (...params: [...any[]]) => void;
+  clickHandlerParams?: [...any[]];
 }>();
 
 const sanitizedContent = ref('');
@@ -38,8 +39,6 @@ watch(
 );
 
 const handleClick = () => {
-  if (props.clickHandler) {
-    props.clickHandler();
-  }
+  props.clickHandler?.(...(props.clickHandlerParams || []));
 };
 </script>

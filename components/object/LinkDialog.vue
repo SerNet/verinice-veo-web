@@ -399,9 +399,10 @@ export default defineComponent({
       return () =>
         h(HtmlRenderer, {
           content: t('noDataText', {
-            catalogLink: `<a href="#" @click="navigateToCatalog">${t('catalog')}</a>`
+            catalogLink: `<a href="#">${t('catalog')}</a>`
           }),
-          clickHandler: navigateToCatalog
+          clickHandler: navigateToCatalog,
+          clickHandlerParams: ['control', 'CTL_Module']
         });
     });
 
@@ -441,7 +442,7 @@ export default defineComponent({
     "editParentObjects": "Edit parent parts of \"{0}\"",
     "editParentScopes": "Edit parent scopes of \"{0}\"",
     "object": "object",
-    "noDataText": "No building blocks applied yet. Please apply building blocks from the {catalogLink}.",
+    "noDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
     "catalog": "catalog"
         },
   "de": {
