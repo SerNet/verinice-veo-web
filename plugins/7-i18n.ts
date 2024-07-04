@@ -41,14 +41,13 @@ export default defineNuxtPlugin(async (nuxtApp) => {
       };
       $i18n.setLocaleMessage(locale, messages);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
   watch(
     () => [currentDomain.value, $i18n.locale.value, authenticated.value],
     async () => {
-      console.log('ENTER WATCH');
       await setMessages($i18n.locale?.value, authenticated.value, currentDomain.value?.abbreviation);
     },
     { immediate: true }
