@@ -13696,7 +13696,7 @@ The MIT license applies to all non-font and non-icon files.
 
 The following npm package may be included in this product:
 
- - glob@10.4.2
+ - glob@10.4.3
 
 This package contains the following license and notice below:
 
