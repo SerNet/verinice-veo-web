@@ -23,14 +23,14 @@ export default defineNuxtPlugin(async (nuxtApp) => {
     try {
       return await import(`~/locales/${domain}/${locale}.json`);
     } catch (e) {
-      return {};
+      return { default: {} };
     }
   }
   async function setMessages(locale: string, isAuthenticated: boolean, domainName: string | undefined) {
     try {
       const baseMessages = await importMessages(locale);
       if (!isAuthenticated || !domainName) {
-        $i18n.setLocaleMessage(locale, baseMessages);
+        $i18n.setLocaleMessage(locale, baseMessages.default);
         return;
       }
 
