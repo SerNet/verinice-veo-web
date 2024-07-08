@@ -69,6 +69,11 @@
       :object-type="object.type"
       :object-id="object.id"
     />
+    <ControlsEditDialog
+      :object="object"
+      :show-dialog="controlsEditDialogVisible"
+      @update:model-value="controlsEditDialogVisible = false"
+    />
   </div>
 </template>
 
@@ -570,6 +575,7 @@ export default defineComponent({
       }
     }
 
+    const controlsEditDialogVisible = ref<boolean>(false);
     const confirmationDialogVisible = ref(false);
     const confirmationDialogCallBack = ref<(...args: any[]) => any>(() => {});
 
@@ -608,8 +614,8 @@ export default defineComponent({
               label: t('controls.edit'),
               icon: mdiPencil,
 
-              async action(_item: any) {
-                confirmationDialogVisible.value = true;
+              async action() {
+                controlsEditDialogVisible.value = true;
               }
             },
             {
@@ -833,6 +839,7 @@ export default defineComponent({
       confirmationDialogCallBack,
       confirmationDialogVisible,
       controlNameToUnlink,
+      controlsEditDialogVisible,
       defaultHeaders,
       displayErrorMessage,
       displaySuccessMessage,
