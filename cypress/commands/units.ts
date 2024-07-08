@@ -32,7 +32,7 @@ export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { uni
     .contains(unitName)
     .click()
     .then(() => {
-      cy.wait(200);
+      cy.get('[data-component-name="domain-dashboard-page"]');
       cy.url().then((url) => {
         const segments = url.split('/');
 
