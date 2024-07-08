@@ -43,3 +43,6 @@ steps:
   - title: 'Create unit'
     element: '[data-component-name=create-unit-btn]'
     intro: You create new units in a wizard in which available profiles can be applied and the desired domains can be assigned.
+
+  - title: 'Done'
+    intro: Further information can also be found in the documentation.

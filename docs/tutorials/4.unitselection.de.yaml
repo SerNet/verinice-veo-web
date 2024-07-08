@@ -43,3 +43,6 @@ steps:
   - title: 'Unit erstellen'
     element: '[data-component-name=create-unit-btn]'
     intro: Neue Units erstellen Sie in einem Assistenten, in dem verfügbare Profile angewendet und die gewünschten Domänen zugeordnet werden können.
+
+  - title: 'Geschafft'
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.
