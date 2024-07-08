@@ -68,7 +68,7 @@ describe('Copy elements', () => {
     }
 
     const navigateToElementType = (elementType) => {
-      cy.navigateTo(['Objects', elementType]);
+      cy.navigateToDeprecated(['Objects', elementType]);
     };
 
     const verifyElementCopy = (abb, name, status) => {

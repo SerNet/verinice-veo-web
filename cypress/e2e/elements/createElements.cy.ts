@@ -22,7 +22,7 @@ describe('Create elements', () => {
     it('creates elements in ' + elementType, () => {
       cy.handleLanguageBug();
 
-      cy.navigateTo(['Objects', elementType]);
+      cy.navigateToDeprecated(['Objects', elementType]);
 
       cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
         .should('be.visible')

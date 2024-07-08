@@ -22,7 +22,7 @@ describe('Edit elements', () => {
   elementTypeList.forEach((elementType) => {
     it.skip('edit element in ' + elementType, () => {
       cy.handleLanguageBug();
-      cy.navigateTo(['Objects', elementType]);
+      cy.navigateToDeprecated(['Objects', elementType]);
 
       iterateSubTypes(elementType, ($subType) => {
         cy.wrap($subType).click();

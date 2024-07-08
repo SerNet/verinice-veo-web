@@ -21,7 +21,7 @@ describe('Delete elements', () => {
 
     it('deletes element in ' + elementType, () => {
       cy.handleLanguageBug();
-      cy.navigateTo(['Objects', elementType]);
+      cy.navigateToDeprecated(['Objects', elementType]);
 
       iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
