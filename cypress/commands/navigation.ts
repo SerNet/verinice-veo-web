@@ -5,18 +5,8 @@ declare global {
   namespace Cypress {
     interface Chainable {
       navigateTo: typeof navigateTo;
-      navigateToDeprecated: typeof navigateToDeprecated;
     }
   }
-}
-
-export function navigateToDeprecated(navigationList: string[]) {
-  navigationList.forEach((navigator) => {
-    cy.get('div[data-veo-test="objects-nav-item"]')
-      .contains(new RegExp(`^${navigator}$`, 'i'))
-      .scrollIntoView()
-      .click({ force: true });
-  });
 }
 
 export function navigateTo({ group, category, entry }: { group: string; category?: string; entry?: string }) {

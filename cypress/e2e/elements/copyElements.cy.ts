@@ -5,7 +5,6 @@ describe('Copy elements', () => {
   });
 
   beforeEach(() => {
-    cy.viewport(1000, 1000);
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
@@ -20,9 +19,7 @@ describe('Copy elements', () => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 
     it('copies element in ' + elementType, () => {
-      cy.handleLanguageBug();
-
-      navigateToElementType(elementType);
+      cy.navigateTo({ group: 'objects', category: elementType });
 
       iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
@@ -66,10 +63,6 @@ describe('Copy elements', () => {
           callback($subType);
         });
     }
-
-    const navigateToElementType = (elementType) => {
-      cy.navigateToDeprecated(['Objects', elementType]);
-    };
 
     const verifyElementCopy = (abb, name, status) => {
       cy.get('tr')

@@ -7,7 +7,6 @@ describe('Edit elements', () => {
   });
 
   beforeEach(() => {
-    cy.viewport(1000, 1000);
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
@@ -21,8 +20,7 @@ describe('Edit elements', () => {
 
   elementTypeList.forEach((elementType) => {
     it.skip('edit element in ' + elementType, () => {
-      cy.handleLanguageBug();
-      cy.navigateToDeprecated(['Objects', elementType]);
+      cy.navigateTo({ group: 'objects', category: elementType });
 
       iterateSubTypes(elementType, ($subType) => {
         cy.wrap($subType).click();

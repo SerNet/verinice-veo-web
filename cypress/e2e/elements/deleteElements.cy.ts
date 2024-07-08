@@ -5,7 +5,6 @@ describe('Delete elements', () => {
   });
 
   beforeEach(() => {
-    cy.viewport(1000, 1000);
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
@@ -20,8 +19,7 @@ describe('Delete elements', () => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 
     it('deletes element in ' + elementType, () => {
-      cy.handleLanguageBug();
-      cy.navigateToDeprecated(['Objects', elementType]);
+      cy.navigateTo({ group: 'objects', category: elementType });
 
       iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();

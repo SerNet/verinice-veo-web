@@ -5,7 +5,6 @@ describe('Create elements', () => {
   });
 
   beforeEach(() => {
-    cy.viewport(1000, 1000);
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
@@ -20,9 +19,7 @@ describe('Create elements', () => {
 
   for (const elementType of elementTypeList) {
     it('creates elements in ' + elementType, () => {
-      cy.handleLanguageBug();
-
-      cy.navigateToDeprecated(['Objects', elementType]);
+      cy.navigateTo({ group: 'objects', category: elementType });
 
       cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
         .should('be.visible')

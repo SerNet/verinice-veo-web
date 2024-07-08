@@ -1,6 +1,5 @@
 describe.skip('Add Elements to other Domain', () => {
   before(() => {
-    cy.viewport(1000, 1000);
     cy.login();
     cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
     cy.goToUnitSelection();
@@ -8,7 +7,6 @@ describe.skip('Add Elements to other Domain', () => {
   });
 
   beforeEach(() => {
-    cy.viewport(1000, 1000);
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
@@ -21,7 +19,6 @@ describe.skip('Add Elements to other Domain', () => {
 
   elementTypeList.forEach((elementType) => {
     it('Add Element of type ' + elementType + ' to other Domain', () => {
-      cy.handleLanguageBug();
       navigateToElementType(elementType);
       const targetDomain = 'IT-Grundschutz';
       let targetObjects = []; // Initialize array to store target objects and statuses
@@ -149,7 +146,7 @@ describe.skip('Add Elements to other Domain', () => {
     }
 
     const navigateToElementType = (elementType) => {
-      cy.navigateTo(['Objects', elementType]);
+      cy.navigateTo({ group: 'objects', category: elementType });
     };
 
     const veoAlertDismiss = () => {
