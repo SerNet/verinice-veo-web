@@ -50,4 +50,4 @@ steps:
     element: '[data-component-name=create-object-button]'
     intro: Über die Schältfläche "Objekt erstellen" können Sie ein neues Objekt zu den aktiven Filtereinstellungen erstellen.
   - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.

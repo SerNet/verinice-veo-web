@@ -35,4 +35,4 @@ steps:
     element: '[data-component-name=toggle-navigation]'
     intro: Über Menü verstecken können Sie die Navigation ein- bzw. ausklappen.
   - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.

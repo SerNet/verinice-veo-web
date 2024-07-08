@@ -22,4 +22,4 @@ steps:
     element: '[data-component-name=generate-report-button]'
     intro: Erzeugen Sie den Report zur Ausgabe als PDF.
   - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.

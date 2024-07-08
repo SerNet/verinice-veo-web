@@ -19,4 +19,4 @@ steps:
     element: '[data-component-name=risk-matrix-wrapper] .veo-card'
     intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.
   - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.

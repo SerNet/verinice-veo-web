@@ -10,4 +10,4 @@ steps:
     element: '[data-component-name=catalogs-nav-item]'
     intro: Wählen Sie die Objekte aus, die in Ihre aktuelle Unit kopiert und dort verwendet werden können.
   - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.

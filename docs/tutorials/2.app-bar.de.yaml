@@ -30,4 +30,4 @@ steps:
   - title: 'Geschafft'
     # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
     #    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.

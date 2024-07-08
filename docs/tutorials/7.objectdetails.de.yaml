@@ -76,4 +76,4 @@ steps:
     element: '[data-component-name=object-form-messages-tab]'
     intro: Im Abschnitt Validierung werden Ihnen Fehler oder Warnungen zu den im Formular eingegebenen Inhalten angezeigt.
   - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.

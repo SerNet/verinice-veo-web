@@ -35,4 +35,4 @@ steps:
     element: '[data-component-name=domain-dashboard-scenario-widget]'
     intro: Navigieren Sie vom Dashboard direkt zu den gelben Gefährdungen, die weiter betrachtet werden müssen.
   - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Online Dokumentation.
+    intro: Weitere Informationen finden Sie auch in der Dokumentation.
