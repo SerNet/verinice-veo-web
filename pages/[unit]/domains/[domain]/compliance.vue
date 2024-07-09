@@ -15,23 +15,22 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-
+‚
 <template>
   <BasePage style="height: 100vh">
     <template #header>
       <div class="mt-8 mb-4 text-body-1">
         <div v-if="currentName && currentModule">
           <!-- Link back to Control-Object: to be changed when the IT-SA is done -->
-          <nuxt-link :to="riskAffectedUrl('targetObject')">
+          <nuxt-link v-if="objectType && riskAffected" :to="riskAffectedUrl">
             <v-icon size="small" start :icon="mdiArrowLeft" />
             {{ t('targetObject', { currentName }) }}
+            <!-- Separator -->
+            <div class="separator" />
           </nuxt-link>
 
-          <!-- Separator -->
-          <div class="separator" />
-
           <!-- Second link -->
-          <nuxt-link :to="riskAffectedUrl('targetModule')">
+          <nuxt-link :to="moduleUrl">
             {{ t('targetModule', { currentModule }) }}
             <v-icon size="small" start :icon="mdiArrowRight" />
           </nuxt-link>
@@ -52,45 +51,50 @@ export const ROUTE_NAME = 'unit-domains-domain-compliance';
 <script setup lang="ts">
 import { mdiArrowLeft, mdiArrowRight } from '@mdi/js';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { ref } from 'vue';
+import { useCompliance } from '~/components/compliance/compliance';
 
 const route = useRoute();
 const { t } = useI18n();
 const currentName = ref('');
 const currentModule = ref('');
-const riskAffectedUrl = (targetType: string) =>
-  computed(() => {
-    const objectTypeKey = route.query.type as keyof typeof VeoElementTypePlurals;
-    const objectType = VeoElementTypePlurals[objectTypeKey];
-    const riskAffected = route.query.riskAffected;
+const { state } = useCompliance();
+const objectType = computed(() => state.type.value);
+const riskAffected = computed(() => state.riskAffected.value);
 
-    if (!objectType || !riskAffected) {
-      console.error('Invalid route parameters:', { objectType, riskAffected });
-      return { name: ROUTE_NAME };
-    }
-    return targetType === 'targetObject' ?
-        {
-          name: OBJECT_DETAIL_ROUTE,
-          params: {
-            ...route.params,
-            objectType,
-            object: riskAffected,
-            subType: '-'
-          }
-        }
-      : {
-          name: OBJECT_OVERVIEW_ROUTE,
-          params: {
-            ...route.params,
-            objectType: 'controls',
-            subType: 'CTL_Module'
-          }
-        };
-  });
+const riskAffectedUrl = computed(() => {
+  return {
+    name: OBJECT_DETAIL_ROUTE,
+    params: {
+      ...route.params,
+      objectType: objectType.value,
+      object: riskAffected.value,
+      subType: '-'
+    },
+    hash: '#controls'
+  };
+});
+
+const moduleUrl = computed(() => {
+  const controlValue = state.control.value;
+
+  const params: { objectType: string; subType: string; object?: string } = {
+    ...route.params,
+    objectType: 'controls',
+    subType: 'CTL_Module'
+  };
+
+  if (controlValue) {
+    params.object = controlValue;
+  }
+
+  return {
+    name: OBJECT_DETAIL_ROUTE,
+    params
+  };
+});
 </script>
 
 <i18n>
