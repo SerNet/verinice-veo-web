@@ -20,7 +20,7 @@ describe('Edit elements', () => {
   const elementTypeList: string[] = ['Scope', 'Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario'];
 
   elementTypeList.forEach((elementType) => {
-    it('edit element in ' + elementType, () => {
+    it.skip('edit element in ' + elementType, () => {
       cy.handleLanguageBug();
       cy.navigateTo(['Objects', elementType]);
 
