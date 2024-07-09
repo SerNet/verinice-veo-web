@@ -104,7 +104,11 @@ watch(locale, () => {
 });
 
 const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
-const currentModule = computed(() => requirementImplementations?.value?.items?.[0]?.control?.abbreviation);
+const currentModule = computed(
+  () =>
+    requirementImplementations?.value?.items?.find((item: any) => item.control.id === state.control.value)?.control
+      ?.displayName
+);
 watch([currentName, currentModule], ([newName, newModule]) => {
   emit('update:currentName', newName);
   emit('update:currentModule', newModule);
