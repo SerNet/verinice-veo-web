@@ -30,7 +30,7 @@ describe('Edit elements', () => {
         cy.get('@originalRow').click();
 
         const abbTyped = getRandomString();
-        const nameTyped = getRandomString();
+        const nameTyped = 'AAAAAAAA';
         const descriptionTyped = getRandomString();
 
         const statusSelected = selectRandom(['Archived', 'New', 'In progress', 'Released', 'For review']);
