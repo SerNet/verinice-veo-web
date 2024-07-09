@@ -49,7 +49,12 @@ describe('Unit details', { testIsolation: false }, () => {
     };
 
     // Go to details page of the test unit
-    cy.visit(`${Cypress.config('baseUrl')}/units/${Cypress.env('unitDetails').unitId}/details`);
+    // cy.visit(`${Cypress.config('baseUrl')}/units/${Cypress.env('unitDetails').unitId}/details`); => does not yet work in pipelines
+    cy.visit('/units');
+    cy.getVeoTestUnitCard().as('testUnitCard');
+    cy.get('@testUnitCard').within((_card) => {
+      cy.get('[data-veo-test="units-edit-unit-button"]').click();
+    });
 
     // Get details card
     cy.get('[data-veo-test="unit-details-card"]').as('detailsCard');
