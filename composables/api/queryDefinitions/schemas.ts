@@ -75,6 +75,8 @@ export default {
             // extract protection goals, e.g. C, I, A
             const protectionGoals = Object.keys(analysisTypeProps?.potentialImpactEffectiveReasons?.properties || {});
 
+            delete result.properties.riskValues.properties[analysisType].required;
+
             analysisTypeProps.potentialImpacts.properties = protectionGoals.reduce(
               (previous, protectionGoal) => {
                 previous[protectionGoal] = {
