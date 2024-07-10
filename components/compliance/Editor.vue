@@ -34,7 +34,7 @@
           <v-text-field
             :label="t('riskAffected')"
             :model-value="form?.origin?.displayName"
-            readonly
+            disabled
             variant="underlined"
           />
         </BaseCard>
@@ -47,7 +47,7 @@
               <v-text-field
                 :label="t('abbreviation')"
                 :model-value="form?.control?.abbreviation"
-                readonly
+                disabled
                 variant="underlined"
               />
             </v-col>
@@ -56,13 +56,13 @@
               <v-text-field
                 :label="t('protectionApproach')"
                 :model-value="additionalInfo?.protectionApproachTranslation"
-                readonly
+                disabled
                 variant="underlined"
               />
             </v-col>
           </v-row>
 
-          <v-text-field :label="t('name')" :model-value="form?.control?.name" readonly variant="underlined" />
+          <v-text-field :label="t('name')" :model-value="form?.control?.name" disabled variant="underlined" />
 
           <!-- Foldable Requirement Description -->
           <v-expansion-panels>
