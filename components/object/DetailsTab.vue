@@ -70,6 +70,7 @@
       :object-id="object.id"
     />
     <ControlsEditDialog
+      :control-index="index"
       :object="object"
       :show-dialog="controlsEditDialogVisible"
       @update:model-value="controlsEditDialogVisible = false"
@@ -519,6 +520,16 @@ export default defineComponent({
               render: (data: any) => h('span', data.internalItem.raw.control?.name || '')
             },
             {
+              value: 'description',
+              key: 'description',
+              text: t('controls.description'),
+              width: 200,
+              truncate: false,
+              priority: 20,
+              order: 35,
+              render: (data: any) => h('span', data.internalItem.raw.description || '')
+            },
+            {
               value: 'status',
               key: 'status',
               text: t('controls.status'),
@@ -542,7 +553,7 @@ export default defineComponent({
               priority: 50,
               order: 50,
               render: (data) =>
-                h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible || '')
+                h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible?.name || '')
             }
           ]
         : []
@@ -580,6 +591,7 @@ export default defineComponent({
     const confirmationDialogCallBack = ref<(...args: any[]) => any>(() => {});
 
     const controlNameToUnlink = ref<string>('');
+    const index = ref<number>();
     /**
      * actions for cloning or unlinking objects
      */
@@ -614,7 +626,10 @@ export default defineComponent({
               label: t('controls.edit'),
               icon: mdiPencil,
 
-              async action() {
+              async action(item: any) {
+                index.value = (props.object?.controlImplementations || []).findIndex((ci) =>
+                  ci.control.targetUri.endsWith(item.control.id)
+                );
                 controlsEditDialogVisible.value = true;
               }
             },
@@ -845,6 +860,7 @@ export default defineComponent({
       displaySuccessMessage,
       editRiskDialog,
       globalT,
+      index,
       onUnlinkEntitySuccess,
       onUnlinkEntityError,
       unlinkEntityDialog,
@@ -869,6 +885,7 @@ export default defineComponent({
     "controlDeleted": "The control implementation has been removed",
     "controls": {
       "abbreviation": "Abbreviation",
+      "description": "Description",
       "edit": "Edit control",
       "implementation": {
         "NO": "no",
@@ -918,6 +935,7 @@ export default defineComponent({
     "controlDeleted": "Die Bausteinmodellierung wurde entfernt",
     "controls": {
       "abbreviation": "Abkürzung",
+      "description": "Beschreibung",
       "edit": "Baustein bearbeiten",
       "implementation": {
         "NO": "nein",

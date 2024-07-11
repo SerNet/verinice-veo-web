@@ -23,18 +23,24 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <div class="mx-2">
-        <v-form>
+      <div class="mx-3">
+        <v-row class="my-2 ml-8">
+          <v-col
+            ><strong>{{ controlAbbreviation }} {{ controlName }}</strong></v-col
+          >
+        </v-row>
+
+        <v-form v-model="formIsValid">
           <v-row class="mt-2">
             <v-col>
-              <v-select clearable :items="personNames" :label="t('responsible')" variant="solo-filled">
+              <v-select v-model="person" :items="personNames" :label="t('responsible')" variant="solo-filled">
                 <template #prepend>
                   <v-icon :icon="mdiAccount"></v-icon>
                 </template>
               </v-select>
             </v-col>
             <v-col>
-              <v-select :v-model="status" clearable :items="status" :label="t('status')" variant="solo-filled">
+              <v-select v-model="selectedStatus" :items="status" :label="t('status')" required variant="solo-filled">
                 <template #prepend>
                   <v-icon :icon="mdiCheckCircle"></v-icon>
                 </template>
@@ -46,13 +52,12 @@
           <v-row>
             <v-col>
               <v-textarea
+                v-model="description"
                 auto-grow
-                density="compact"
                 :label="t('description')"
-                :model-value="description"
                 name="description"
                 :prepend-icon="mdiPencil"
-                variant="filled"
+                variant="solo-filled"
               />
             </v-col>
           </v-row>
@@ -66,7 +71,7 @@
       </v-btn>
 
       <v-spacer />
-      <v-btn color="primary" variant="text" @click="updateControl()">
+      <v-btn color="primary" :disabled="!formIsValid || !formIsDirty" variant="text" @click="updateControl()">
         {{ $t('global.button.save') }}
       </v-btn>
     </template>
@@ -76,12 +81,15 @@
 <script setup lang="ts">
 import { mdiAccount, mdiCheckCircle, mdiPencil } from '@mdi/js';
 
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 
 import domainQueryDefinitions, { IVeoFetchPersonsInDomainParameters } from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
+
+import { getEntityDetailsFromLink } from '~/lib/utils';
+import { useCreateLink } from '~/composables/VeoObjectUtilities';
 
 const { mutateAsync: update } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
@@ -89,10 +97,12 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 const props = withDefaults(
   defineProps<{
-    object: object;
+    controlIndex: number;
+    object: Record<string, any>;
     showDialog: boolean;
   }>(),
   {
+    controlIndex: 0,
     object: undefined,
     showDialog: false
   }
@@ -106,12 +116,18 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
 const route = useRoute();
-
-const description = ref<string>('');
-const status = ref(['N_A', 'NO', 'PARTIAL', 'UNKNOWN', 'YES']);
+const { createLink } = useCreateLink();
 
 const domainId = computed(() => route.params.domain);
 const unitId = computed(() => route.params.unit);
+
+const copy = ref(cloneDeep(props.object));
+const status = ref(
+  ['N_A', 'NO', 'PARTIAL', 'UNKNOWN', 'YES'].map((status) => ({ title: t(`statuses.${status}`), value: status }))
+);
+
+const formIsValid = ref<boolean>(false);
+const formIsDirty = computed(() => !isEqual(props.object, copy.value));
 
 const queryParams = computed<IVeoFetchPersonsInDomainParameters>(() => ({
   domainId: domainId.value as string,
@@ -121,20 +137,23 @@ const queryParams = computed<IVeoFetchPersonsInDomainParameters>(() => ({
 const { data: persons } = useQuery(domainQueryDefinitions.queries.fetchPersonsInDomain, queryParams, {
   enabled: !!domainId.value && !!unitId.value
 });
-const personNames = computed(() => persons.value?.items?.map((person) => person.name));
+
+const controlAbbreviation = computed(
+  () => props.object?.controlImplementations[props.controlIndex].control.abbreviation
+);
+const controlName = computed(() => props.object?.controlImplementations[props.controlIndex].control.name);
+
+const personNames = computed(() =>
+  persons.value?.items?.map((person: any) => ({ title: person.name, value: person.id }))
+);
 
 const updateControl = async () => {
-  const copy = cloneDeep(props.object);
-
-  if (!copy) return;
-
-  // TODO: patch copy to update control ...
   try {
     await update({
       domain: domainId.value,
       endpoint: route.params.objectType,
-      id: route.params.object,
-      object: copy
+      id: copy.value.id,
+      object: copy.value
     });
 
     displaySuccessMessage(t('controlUpdate').toString());
@@ -144,6 +163,29 @@ const updateControl = async () => {
     emit('update:model-value', false);
   }
 };
+
+const person = computed({
+  get: () => getEntityDetailsFromLink(copy.value.controlImplementations[props.controlIndex]?.responsible || {}).id,
+  set: (newPerson) =>
+    (copy.value.controlImplementations[props.controlIndex].responsible = createLink('persons', newPerson))
+});
+
+const description = computed({
+  get: () => copy.value.controlImplementations[props.controlIndex]?.description || '',
+  set: (newDescription) => (copy.value.controlImplementations[props.controlIndex].description = newDescription)
+});
+
+const selectedStatus = computed({
+  get: () => copy.value.controlImplementations[props.controlIndex]?.implementationStatus || '',
+  set: (newStatus) => (copy.value.controlImplementations[props.controlIndex].implementationStatus = newStatus)
+});
+
+watch(
+  () => props.object,
+  (newValue) => {
+    copy.value = cloneDeep(newValue);
+  }
+);
 </script>
 
 <i18n>
@@ -176,7 +218,7 @@ const updateControl = async () => {
         "UNKNOWN": "Unbearbeitet",
         "YES": "Ja"
       },
-      "title": "Baustein editieren"
+      "title": "Baustein bearbeiten"
     }
   }
 </i18n>
