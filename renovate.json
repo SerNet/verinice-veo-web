@@ -7,22 +7,10 @@
   "dependencyDashboard": true,
   "dependencyDashboardOSVVulnerabilitySummary": "all",
   "osvVulnerabilityAlerts": true,
-  "postUpgradeTasks": {
-    "commands": [
-      "npm ci",
-      "npx generate-license-file --ci --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite"
-    ],
-    "fileFilters": ["LICENSE-3RD-PARTY.txt"],
-    "executionMode": "branch"
-  },
   "packageRules": [
     {
       "matchPackagePatterns": ["vitest"],
       "groupName": "Vitest"
-    },
-    {
-      "matchDatasources": ["docker"],
-      "postUpgradeTasks": {}
     }
   ]
 }

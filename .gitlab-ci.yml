@@ -55,18 +55,6 @@ check_formatting:
     - if [[ ${?} -ne 0 ]]; then echo "Use 'npm run format' to format your code"; exit 1; fi
   interruptible: true
 
-check_license:
-  stage: test
-  rules:
-    - !reference [.verification, rules]
-  needs: []
-  script:
-    - mv LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - npm run generate-3rd-party-license-file
-    - diff LICENSE-3RD-PARTY.txt LICENSE-3RD-PARTY.txt.orig
-    - if [ $? -ne 0 ]; then echo "LICENSE-3RD-PARTY.txt is not up to date, please re-run 'npm run generate-3rd-party-license-file'"; exit 1; fi
-  interruptible: true
-
 test:
   image: cypress/browsers:node18.12.0-chrome103-ff107
   stage: test

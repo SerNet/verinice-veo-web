@@ -40,11 +40,9 @@ echo "Created new release branch release/$1 based on $MAIN_BRANCH with changes f
 # Change version number
 npm --no-git-tag-version $1
 
-# Update third party license file
-npx generate-license-file --input ./package.json --output LICENSE-3RD-PARTY.txt --overwrite
 git add .
 git commit -m "Prepare for release $1"
-echo "Updated package.json and LICENSE-3RD-PARTY.txt for release $1"
+echo "Updated package.json for release $1"
 
 #
 # Merge release branch into main branch
