@@ -8597,7 +8597,7 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 The following npm package may be included in this product:
 
- - sass@1.77.7
+ - sass@1.77.8
 
 This package contains the following license and notice below:
 
