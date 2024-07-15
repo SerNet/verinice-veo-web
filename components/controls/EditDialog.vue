@@ -33,16 +33,9 @@
         <v-form v-model="formIsValid">
           <v-row class="mt-2">
             <v-col>
-              <v-select v-model="person" :items="personNames" :label="t('responsible')" variant="solo-filled">
+              <v-select v-model="person" clearable :items="personNames" :label="t('responsible')" variant="solo-filled">
                 <template #prepend>
                   <v-icon :icon="mdiAccount"></v-icon>
-                </template>
-              </v-select>
-            </v-col>
-            <v-col>
-              <v-select v-model="selectedStatus" :items="status" :label="t('status')" required variant="solo-filled">
-                <template #prepend>
-                  <v-icon :icon="mdiCheckCircle"></v-icon>
                 </template>
               </v-select>
             </v-col>
@@ -79,7 +72,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiAccount, mdiCheckCircle, mdiPencil } from '@mdi/js';
+import { mdiAccount, mdiPencil } from '@mdi/js';
 
 import { cloneDeep, isEqual } from 'lodash';
 
@@ -122,9 +115,6 @@ const domainId = computed(() => route.params.domain);
 const unitId = computed(() => route.params.unit);
 
 const copy = ref(cloneDeep(props.object));
-const status = ref(
-  ['N_A', 'NO', 'PARTIAL', 'UNKNOWN', 'YES'].map((status) => ({ title: t(`statuses.${status}`), value: status }))
-);
 
 const formIsValid = ref<boolean>(false);
 const formIsDirty = computed(() => !isEqual(props.object, copy.value));
@@ -167,17 +157,13 @@ const updateControl = async () => {
 const person = computed({
   get: () => getEntityDetailsFromLink(copy.value.controlImplementations[props.controlIndex]?.responsible || {}).id,
   set: (newPerson) =>
-    (copy.value.controlImplementations[props.controlIndex].responsible = createLink('persons', newPerson))
+    (copy.value.controlImplementations[props.controlIndex].responsible =
+      newPerson !== null ? createLink('persons', newPerson) : undefined)
 });
 
 const description = computed({
   get: () => copy.value.controlImplementations[props.controlIndex]?.description || '',
   set: (newDescription) => (copy.value.controlImplementations[props.controlIndex].description = newDescription)
-});
-
-const selectedStatus = computed({
-  get: () => copy.value.controlImplementations[props.controlIndex]?.implementationStatus || '',
-  set: (newStatus) => (copy.value.controlImplementations[props.controlIndex].implementationStatus = newStatus)
 });
 
 watch(
@@ -195,14 +181,6 @@ watch(
       "controlUpdateFailed": "Control could not be updated",
       "description": "Description",
       "responsible": "Responsible person",
-      "status": "Implementation status",
-      "statuses": {
-        "N_A": "Not applicable",
-        "NO": "No",
-        "PARTIAL": "Partial",
-        "UNKNOWN": "Unedited",
-        "YES": "Yes"
-      },
       "title": "Edit control"
     },
     "de": {
@@ -210,14 +188,6 @@ watch(
       "controlUpdateFailed": "Baustein konnte nicht aktualisiert werden",
       "description": "Beschreibung",
       "responsible": "Verantwortliche Person",
-      "status": "Umsetzungsstatus",
-      "statuses": {
-        "N_A": "Nicht anwendbar",
-        "NO": "Nein",
-        "PARTIAL": "Teilweise",
-        "UNKNOWN": "Unbearbeitet",
-        "YES": "Ja"
-      },
       "title": "Baustein bearbeiten"
     }
   }

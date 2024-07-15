@@ -530,21 +530,6 @@ export default defineComponent({
               render: (data: any) => h('span', data.internalItem.raw.description || '')
             },
             {
-              value: 'status',
-              key: 'status',
-              text: t('controls.status'),
-              width: 50,
-              truncate: false,
-              priority: 100,
-              order: 40,
-              render: (data: any) =>
-                h(
-                  'span',
-                  { class: 'text-truncate d-inline-block' },
-                  t(`controls.implementation.${data.internalItem.raw.implementationStatus}`) || ''
-                )
-            },
-            {
               value: 'responsibility',
               key: 'responsibility',
               text: t('controls.responsible'),
@@ -887,13 +872,6 @@ export default defineComponent({
       "abbreviation": "Abbreviation",
       "description": "Description",
       "edit": "Edit control",
-      "implementation": {
-        "NO": "no",
-        "PARTIAL": "partially",
-        "UNKNOWN": "unedited",
-        "YES": "yes",
-        "N_A": "not applicable"
-      },
       "responsible": "Responsible",
       "status": "Implementation status"
     },
@@ -937,13 +915,6 @@ export default defineComponent({
       "abbreviation": "Abkürzung",
       "description": "Beschreibung",
       "edit": "Baustein bearbeiten",
-      "implementation": {
-        "NO": "nein",
-        "PARTIAL": "teilweise",
-        "UNKNOWN": "unbearbeitet",
-        "YES": "ja",
-        "N_A": "nicht anwendbar"
-      },
       "responsible": "Verantwortlich",
       "status": "Umsetzungsstatus"
     },
