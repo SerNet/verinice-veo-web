@@ -18,7 +18,7 @@
 <template>
   <BasePage data-test-selector="welcome-page">
     <v-container fluid>
-      <BaseCard class="mx-12 mb-4 bg-basepage" style="max-width: 1280px">
+      <BaseCard class="mx-12 mb-4 bg-basepage" style="max-width: 1280px; min-width: 1280px">
         <v-card class="my-4 bg-surface">
           <div class="bg-accent" style="height: 75px">
             <v-card-title class="ml-8 small-caps">
@@ -30,49 +30,34 @@
             </v-card-subtitle>
           </div>
 
-          <!-- Decisions: load a profile or an empty unit -->
-          <v-row dense class="mt-8 mb-12">
-            <v-col cols="6">
-              <v-card class="mx-8 fill-height bg-background">
-                <v-card-title class="pt-4 bg-accent small-caps" style="min-height: 60px">
-                  {{ t('selection.noob.question') }}
-                </v-card-title>
-
-                <v-card-text class="mt-8 text-center text-h3">
-                  {{ isUnitExisting('Demo') ? t('selection.noob.advice') : t('selection.noob.adviceNoUnit') }}
-                </v-card-text>
-
-                <div class="d-flex justify-center my-4">
-                  <v-btn v-if="!isLoading" :disbaled="isLoading" color="primary" @click="applyProfile()">
-                    <span>
-                      {{ isUnitExisting('Demo') ? t('selection.noob.buttonCaption') : t('unitManagement') }}
-                    </span>
-                  </v-btn>
-                  <v-progress-linear v-else color="primary" height="30" :indeterminate="isLoading">
-                    <span class="small-caps text-h2">{{ t('applyProfile') }}</span>
-                  </v-progress-linear>
-                </div>
-              </v-card>
+          <v-row class="bg-accent d-flex justify-center mx-11 mt-8 mb-2 small-caps">
+            <v-col>
+              <v-card-title class="">
+                {{ t('headline') }}
+              </v-card-title>
             </v-col>
+          </v-row>
 
-            <v-col cols="6">
-              <v-card class="mx-8 fill-height bg-background">
+          <v-row dense class="ma-8 mt-2">
+            <v-col v-for="(step, index) in ['name', 'profile', 'domain', 'summary']" :key="step" cols="3">
+              <v-card class="mx-2 fill-height bg-background">
                 <v-card-title class="pt-4 bg-accent small-caps" style="min-height: 60px">
-                  {{ t('selection.seasoned.question') }}
+                  <v-chip class="mr-2" label color="red">{{ index + 1 }}</v-chip
+                  >{{ t(`step.${step}`) }}
                 </v-card-title>
 
                 <v-card-text class="mt-8 text-center text-h3">
-                  {{ isUnitExisting('Unit 1') ? t('selection.seasoned.advice') : t('selection.seasoned.adviceNoUnit') }}
+                  {{ t(`explanation.${step}`) }}
                 </v-card-text>
-
-                <div class="d-flex justify-center my-4">
-                  <v-btn color="primary" @click="loadUnit()">
-                    {{ isUnitExisting('Unit 1') ? t('selection.seasoned.buttonCaption') : t('unitManagement') }}
-                  </v-btn>
-                </div>
               </v-card>
             </v-col>
           </v-row>
+
+          <v-row class="d-flex justify-center my-4">
+            <v-btn color="primary" to="/units/create" style="width: 200px">{{ t('unitCreation') }}</v-btn>
+          </v-row>
+
+          <v-divider class="mx-4" />
 
           <!-- Links / Timeline -->
           <v-row dense>
@@ -177,86 +162,8 @@
 <script setup lang="ts">
 import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, mdiInformationOutline } from '@mdi/js';
 
-import domainQueryDefinitions from '../composables/api/queryDefinitions/domains';
-import unitQueryDefinitions from '../composables/api/queryDefinitions/units';
-import { useQuery, useQuerySync } from '../composables/api/utils/query';
-import { useMutation } from '../composables/api/utils/mutation';
-
-import { LOCAL_STORAGE_KEYS } from '../types/localStorage';
-
 const context = useNuxtApp();
-const { mutateAsync: apply, isLoading } = useMutation(domainQueryDefinitions.mutations.applyProfile);
-const { displayErrorMessage } = useVeoAlerts();
-
-const router = useRouter();
 const { t, locale } = useI18n();
-
-// fetch all client units
-const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
-
-// get unit- and domain-id according to the param given: <Demo> || <Unit 1>
-const routeIds = (unitName: any) => {
-  const unit = units.value?.find((unit: any) => unit.name === unitName);
-  // get the DS-GVO-Id of the unit's allocated domains
-  const domain = unit?.domains?.find((domain: any) => domain.name === 'DS-GVO');
-
-  return [unit?.id, domain?.id];
-};
-// point the router to the dashboard of the unit given
-const loadUnit = (unitname = 'Unit 1') => {
-  if (!isUnitExisting(unitname)) {
-    router.push({ name: 'units' });
-  }
-
-  const [unit, domain] = [...routeIds(unitname)];
-
-  if (unit && domain) {
-    // link to the dashboard
-    router.push({
-      name: 'unit-domains-domain',
-      params: {
-        unit,
-        domain
-      }
-    });
-  }
-};
-
-const applyProfile = async () => {
-  // navigate to indexpage if the UNIT 'Demo' has been renamed or deleted
-  if (!isUnitExisting('Demo')) {
-    router.push({ name: 'units' });
-  }
-  const isProfileApplied = localStorage.getItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED);
-  // navigate to the dashboard if the profile already has been applied
-  if (isProfileApplied) {
-    loadUnit('Demo');
-  }
-
-  const [unit, domain] = [...routeIds('Demo')];
-
-  const profiles = await useQuerySync(domainQueryDefinitions.queries.fetchProfiles, { domainId: domain });
-  if (unit && domain && profiles.length) {
-    try {
-      const profileId = profiles.find((profile) => profile.name === 'Beispieldaten')?.id;
-
-      if (!profileId) {
-        throw new Error('No profile ID found!');
-        return;
-      }
-      // set DEMO_UNIT_PROFILE_APPLIED to true on first call to ensure, that the profile is applied only once
-      localStorage.setItem(LOCAL_STORAGE_KEYS.DEMO_UNIT_PROFILE_APPLIED, true.toString());
-      // apply the profile / sample data to the unit <Demo>
-      await apply({ domainId: domain, unitId: unit, profileId });
-      // link to the dashboard
-      loadUnit('Demo');
-    } catch (error: any) {
-      displayErrorMessage('Error', t('errorMessage'));
-    }
-  }
-};
-
-const isUnitExisting = (unitName: any) => units.value?.find((unit: any) => unit.name === unitName);
 
 // external links
 const links = ref({
@@ -272,9 +179,14 @@ const links = ref({
 <i18n>
   {
     "en": {
-      "applyProfile": "Profile is applying...",
-      "errorMessage": "Could not apply profile!",
+      "explanation": {
+        "name": "Name and description",
+        "profile": "Choose profile",
+        "domain": "Choose domains",
+        "summary": "Summary"
+      },
       "greeting": "Welcome!",
+      "headline": "Create your first Unit in just four steps ...",
       "injector": {
         "channel": "YouTube channel",
         "documentation": "documentation",
@@ -284,27 +196,24 @@ const links = ref({
         "webinar": "webinars"
       },
       "reminder": "You can call up this page again at any time using the account button!",
-      "selection": {
-        "noob": {
-            "question": "Are you new to verinice and want to find your way around?",
-            "advice": "Download a sample organization to get to know all the functions ...",
-            "adviceNoUnit": "Create a sample organization ...",
-            "buttonCaption": "Load example data"
-        },
-        "seasoned": {
-            "question": "You want to get started right away?",
-            "advice": "Load an empty unit and map your organization ...",
-            "adviceNoUnit": "Select a unit ...",
-            "buttonCaption": "Load empty unit"
-        }
+      "step": {
+        "name": "Name and description",
+        "profile": "Choose profile",
+        "domain": "Choose domains",
+        "summary": "Summary"
       },
       "subTitle": "Your first steps in verinice:",
-      "unitManagement": "Goto unit management"
+      "unitCreation": "Create Unit"
     },
     "de": {
-      "applyProfile": "Profil wird geladen ...",
-      "errorMessage": "Profil konnte nicht angewendet werden!",
+      "explanation": {
+        "name": "Name and description",
+        "profile": "Choose profile",
+        "domain": "Choose domains",
+        "summary": "Summary"
+      },
       "greeting": "Willkommen!",
+      "headline": "Erstellen Sie Ihre erste Unit in nur vier Schritten ...",
       "injector": {
         "channel": "YouTube Channel",
         "documentation": "Dokumentation",
@@ -314,22 +223,14 @@ const links = ref({
         "webinar": "Webinaren"
       },
       "reminder": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
-      "selection": {
-        "noob": {
-            "question": "Sie sind neu in verinice und möchten sich orientieren?",
-            "advice": "Laden Sie eine Beispielorganisation um alle Funktionen kennenzulernen ...",
-            "adviceNoUnit": "Legen Sie eine Beispielorganisation an ...",
-            "buttonCaption": "Beispielorganisation laden"
-        },
-        "seasoned": {
-            "question": "Sie kennen sich bereits aus und möchten direkt starten?",
-            "advice": "Laden Sie eine leere Unit und bilden Sie Ihre Organisation ab ...",
-            "adviceNoUnit": "Wählen Sie eine Unit aus ...",
-            "buttonCaption": "Leere Unit laden"
-        }
+      "step": {
+        "name": "Name und Beschreibung",
+        "profile": "Profil auswählen",
+        "domain": "Dömänen auswählen",
+        "summary": "Zusammenfassung"
       },
       "subTitle": "Ihre ersten Schritte in verinice:",
-      "unitManagement": "Zur Unit-Verwaltung wechseln"
+      "unitCreation": "Unit erstellen"
     }
   }
 </i18n>
