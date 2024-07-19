@@ -23,3 +23,4 @@ export { useUnits, useCurrentUnit } from '~/composables/units/useUnits';
 export { useMutation } from '~/composables/api/utils/mutation';
 export { useRules } from '~/composables/utils';
 export { useActions, usePerformActions } from '~/composables/actions/useActions';
+export { useSearch } from '~/composables/search/useSearch';
