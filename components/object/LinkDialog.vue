@@ -40,6 +40,8 @@
         @update:filter="updateFilter"
       />
 
+      <SearchBar v-model:search="search" />
+
       <BaseCard id="link-dialog-select-all">
         <ObjectTable
           v-model="modifiedSelectedItems"
@@ -58,7 +60,7 @@
             'actions'
           ]"
           :items="selectableObjects"
-          :loading="objectsLoading || childrenLoading || parentsLoading"
+          :loading="objectsLoading || childrenLoading || parentsLoading || isLoadingSearchResults"
           :no-data-text="noDataTextWithLink"
         />
       </BaseCard>
@@ -86,7 +88,6 @@
 <script lang="ts">
 import { PropType } from 'vue';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
-import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -97,6 +98,8 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
+import type { IVeoLink, IVeoEntity } from '~/types/VeoTypes';
+import type { VeoSearch } from '~/types/VeoSearch';
 
 export default defineComponent({
   props: {
@@ -194,24 +197,45 @@ export default defineComponent({
       sortOrder: sortBy.value[0]?.order,
       page: page.value,
       unit: route.params.unit as string,
+      domain: route.params.domain as string,
       ...omit(filter.value, 'objectType'),
       endpoint: objectListEndpoint.value
     }));
     const objectsQueryEnabled = computed(() => !!objectListEndpoint.value);
-    const { data: objects, isFetching: objectsLoading } = useFetchObjects(combinedObjectsQueryParameters, {
+    const { data: _objects, isFetching: objectsLoading } = useFetchObjects(combinedObjectsQueryParameters, {
       enabled: objectsQueryEnabled,
       keepPreviousData: true
     });
 
-    const selectableObjects = computed(() => ({
-      ...objects.value,
-      items: (objects.value?.items || []).map((selectableObject) => ({
-        ...selectableObject,
-        disabled:
-          !!originalSelectedItems.value.find((item) => getIdFromItem(item) === selectableObject.id) ||
-          props.object?.id === selectableObject.id
-      }))
-    }));
+    // SEARCH
+    // v-model from `SearchBar`
+    const search = ref<VeoSearch[]>([]);
+
+    // get search results
+    const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
+      baseQueryParameters: combinedObjectsQueryParameters,
+      search
+    });
+
+    // items rendered in ObjectTable
+    const objects = computed(() => {
+      if (searchResults.value) {
+        return searchResults.value;
+      }
+      return _objects.value;
+    });
+
+    const selectableObjects = computed(() => {
+      return {
+        ...objects.value,
+        items: (objects.value?.items || []).map((selectableObject) => ({
+          ...selectableObject,
+          disabled:
+            !!originalSelectedItems.value.find((item) => getIdFromItem(item) === selectableObject.id) ||
+            props.object?.id === selectableObject.id
+        }))
+      };
+    });
 
     const getIdFromItem = (item: IVeoLink | IVeoEntity) => {
       return 'targetUri' in item ? getEntityDetailsFromLink(item).id : item.id;
@@ -388,6 +412,7 @@ export default defineComponent({
       (newValue) => {
         if (newValue) {
           resetQueryOptions();
+          search.value = [];
         }
       },
       {
@@ -427,7 +452,9 @@ export default defineComponent({
       noDataTextWithLink,
       globalT,
       t,
-      upperFirst
+      upperFirst,
+      search,
+      isLoadingSearchResults
     };
   }
 });
