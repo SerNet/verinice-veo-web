@@ -19,16 +19,16 @@
   <label>{{ t('search') }}</label>
 
   <v-combobox
+    ref="searchInput"
     v-model="select"
     :items="selectionItems"
     :item-title="(item) => translateItem(item)"
-    :append-inner-icon="mdiCloseCircle"
-    :append-icon="mdiMagnify"
+    :append-inner-icon="mdiMagnify"
     chips
     hide-selected
     auto-select-first="exact"
-    @click:clear="search = []"
-    @click:append-inner="resetSearch"
+    @click:clear="resetSearch"
+    @click:append-inner="runSearch"
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
   >
     <template #prepend-inner>
@@ -42,6 +42,9 @@
         <v-chip v-if="s.operator" size="large" class="mr-1" variant="flat" color="green">{{ s.operator }}</v-chip>
         <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ s.term }}</v-chip>
       </div>
+    </template>
+    <template #append-inner>
+      <v-icon :icon="mdiCloseCircle" @click="resetSearch" class="mr-4" />
     </template>
   </v-combobox>
 </template>
@@ -125,6 +128,12 @@ const selectionItems = computed(() => {
   if (lastSearchPart?.searchFilter) return operators;
   return filters;
 });
+
+const searchInput = ref<HTMLInputElement>();
+
+function runSearch() {
+  searchInput.value?.blur();
+}
 
 function resetSearch() {
   search.value = updateSearch({
