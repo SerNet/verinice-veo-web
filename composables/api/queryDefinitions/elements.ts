@@ -14,9 +14,6 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-
-/** @deprecated Use elements.ts instead. `objects.ts` uses the `useRoute` composable in global scope. This makes it unusable in other composables. */
-
 import { omit, cloneDeep, max } from 'lodash';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoMutationDefinition } from '../utils/mutation';
@@ -33,12 +30,11 @@ import {
   VeoRiskAffectedDomains
 } from '~/types/VeoTypes';
 
-const route = useRoute();
-
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
+  domain: string;
+  endpoint: string;
   childElementIds?: string | string[];
   displayName?: string;
-  endpoint: string;
   subType?: string;
   unit?: string;
 }
@@ -58,6 +54,7 @@ export interface IVeoFetchObjectChildrenParameters extends IVeoPaginationOptions
   domain: string;
   endpoint: string;
   id: string;
+  page?: number;
 }
 
 export interface IVeoFetchScopeChildrenParameters extends IVeoPaginationOptions {
@@ -217,7 +214,7 @@ export default {
       },
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          domain: route.params.domain,
+          domain: queryParameters.domain,
           endpoint: queryParameters.endpoint
         },
         query: {
@@ -242,7 +239,7 @@ export default {
       onDataFetched: (result) => formatObject(result),
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          domain: route.params.domain,
+          domain: queryParameters.domain,
           endpoint: queryParameters.endpoint,
           id: queryParameters.id
         }
@@ -260,7 +257,7 @@ export default {
       },
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          domain: route.params.domain,
+          domain: queryParameters.domain,
           endpoint: queryParameters.endpoint,
           id: queryParameters.id
         },
@@ -281,7 +278,7 @@ export default {
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
-        params: { domain: route.params.domain, id: queryParameters.id },
+        params: { domain: queryParameters.domain, id: queryParameters.id },
         query: {
           ...omit(queryParameters, 'domain', 'id', 'endpoint'),
           page: getPageNumber(queryParameters.page)
@@ -311,7 +308,7 @@ export default {
       url: '/api/domains/:domain/:endpoint/evaluation',
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
-          domain: route.params.domain,
+          domain: queryParameters.domain,
           endpoint: queryParameters.endpoint
         },
         query: {
@@ -345,7 +342,7 @@ export default {
         }
         return {
           params: {
-            domain: route.params.domain,
+            domain: queryParameters.domain,
             endpoint: mutationParameters.endpoint
           },
           query: { scopes: mutationParameters.parentScopes?.join(',') },
