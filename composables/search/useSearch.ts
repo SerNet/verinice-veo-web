@@ -17,28 +17,48 @@
  */
 
 import { useQuerySync } from '~/composables/api/utils/query';
-
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
+import { max } from 'lodash';
+import type { VeoSearch, VeoSearchQueryParameters } from '~/types/VeoSearch';
+import { IVeoFetchObjectParameters } from '../api/queryDefinitions/objects';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
-import { max, omit } from 'lodash';
+type UseSearchParams<T> = {
+  baseQueryParameters: Ref<T & { endpoint?: string; page?: number }>;
+  search: Ref<VeoSearch[]>;
+};
 
-export function useSearch({ baseQueryParameters, search }: { baseQueryParameters: any; search: VeoSearch[] }) {
+type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
+
+function getPage(baseQueryParameters: any) {
+  if (Object.hasOwn(baseQueryParameters, 'page') && typeof baseQueryParameters.page === 'number')
+    return max([(baseQueryParameters.page as number) - 1, 0]);
+  return 0;
+}
+
+export function useSearch<T>({ baseQueryParameters, search }: UseSearchParams<T>): {
+  data: Ref<VeoSearchResponse>;
+  isLoading: Ref<boolean>;
+} {
   const config = useRuntimeConfig();
-  const data = ref([]);
+  const data = ref<VeoSearchResponse>();
   const isLoading = ref(false);
 
   async function getSearchResults() {
     watch(
       [baseQueryParameters, search],
       async () => {
+        if (!baseQueryParameters.value?.endpoint) return;
         const parameters = ref({
           ...baseQueryParameters.value,
-          page: baseQueryParameters.value.page ? max([baseQueryParameters.value.page - 1, 0]) : 0,
+          page: getPage(baseQueryParameters.value),
           ...getSearchQueryParameters(search.value)
         });
         try {
           isLoading.value = true;
-          data.value = await useQuerySync(elementQueryDefinitions.queries.fetchAll, { ...parameters.value });
+          data.value = await useQuerySync(elementQueryDefinitions.queries.fetchAll, {
+            ...(parameters.value as IVeoFetchObjectParameters)
+          });
         } catch (err) {
           if (config.public.debug) console.error(err);
         } finally {
@@ -59,12 +79,11 @@ export function useSearch({ baseQueryParameters, search }: { baseQueryParameters
 
 function getSearchQueryParameters(search: VeoSearch[]): VeoSearchQueryParameters {
   if (!search.length) return {};
-  console.log({ search });
   return search.reduce(
     (queries, query) => ({
       ...queries,
-      ...(query.term && query.operator == '=' ? { [query.searchFilter]: query.term } : {})
+      ...(query.searchFilter && query.term && query.operator == '=' ? { [query.searchFilter]: query.term } : {})
     }),
     {}
-  );
+  ) as VeoSearchQueryParameters;
 }

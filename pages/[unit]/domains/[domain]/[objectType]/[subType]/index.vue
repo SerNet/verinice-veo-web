@@ -137,16 +137,15 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
-import { type TableHeader } from '~/components/base/Table.vue';
+import { ObjectTableHeader } from '~/components/object/Table.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 import { useFetchObjects } from '~/composables/api/objects';
-import type { VeoSearch, VeoSearchQueryParameters } from '~/types/VeoSearch';
+import type { VeoSearch } from '~/types/VeoSearch';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -174,7 +173,7 @@ const { clone } = useCloneObject();
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain as string
+  domain: route.params.domain
 }));
 const { data: translations, isFetching: translationsLoading } = useQuery(
   translationQueryDefinitions.queries.fetch,
@@ -190,23 +189,6 @@ const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
 });
 
 const domainId = computed(() => route.params.domain as string);
-
-// SEARCH
-const search = ref<VeoSearch[]>([]); // v-model from `SearchBar`
-
-// Object used to update `combinedQueryParameters`, cp. below
-const _search = computed<VeoSearchQueryParameters | Record<string, never>>(() => {
-  if (!search.value.length) return {};
-  return search.value.reduce(
-    (acc, query) => ({
-      ...acc,
-      ...(query.term && query.searchFilter ?
-        { [query.searchFilter]: { operator: query.operator, term: query.term } }
-      : {})
-    }),
-    {}
-  ) as VeoSearchQueryParameters;
-});
 
 //
 // Filter stuff
@@ -308,34 +290,36 @@ const resetQueryOptions = () => {
 
 const combinedQueryParameters = computed<any>(() => ({
   size: tablePageSize.value,
-  sortBy: sortBy.value[0]?.key,
-  sortOrder: sortBy.value[0]?.order,
+  sortBy: sortBy.value[0].key,
+  sortOrder: sortBy.value[0].order,
   page: page.value,
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),
   endpoint: endpoints.value?.[filter.value.objectType as string],
-  ...(Object.hasOwn(_search.value, 'name') ? { name: (_search?.value as VeoSearchQueryParameters)?.name?.term } : {}),
-  ...(Object.hasOwn(_search.value, 'abbreviation') ?
-    { abbreviation: (_search?.value as VeoSearchQueryParameters)?.abbreviation?.term }
-  : {}),
-  ...(Object.hasOwn(_search.value, 'displayName') ?
-    { displayName: (_search?.value as VeoSearchQueryParameters)?.displayName?.term }
-  : {})
+  domain: route.params.domain
 }));
 const queryEnabled = computed(() => !!endpoints.value?.[filter.value.objectType as string]);
-const { data: items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
+const { data: _items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
   enabled: queryEnabled,
   keepPreviousData: true
 });
 
-// Fetch items again if query parameters changed (usually because of a user's search)
-watch(
-  combinedQueryParameters,
-  async () => {
-    items.value = await useQuerySync(objectQueryDefinitions.queries.fetchAll, combinedQueryParameters.value);
-  },
-  { deep: true }
-);
+// SEARCH
+// v-model from `SearchBar`
+const search = ref<VeoSearch[]>([]);
+
+// get search results
+const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
+  baseQueryParameters: combinedQueryParameters,
+  search
+});
+
+// items rendered in ObjectTable
+const items = computed(() => {
+  const results = searchResults.value?.items;
+  if (results) return results;
+  return _items.value;
+});
 
 const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
 const formsQueryEnabled = computed(() => !!domainId.value);
@@ -344,7 +328,7 @@ const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, 
   placeholderData: []
 });
 
-const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
+const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value || isLoadingSearchResults.value);
 
 watch(() => filter.value, resetQueryOptions, { deep: true });
 
@@ -361,14 +345,14 @@ const updateRoute = async (newValue: Record<string, string | undefined | null | 
       filterValue = endpoints.value?.[filterValue as string];
     }
 
-    if (filterValue === undefined && filterDefinitions[filterKey]?.nullValue !== undefined) {
-      if (filterDefinitions[filterKey]?.source === FILTER_SOURCE.PARAMS) {
+    if (filterValue === undefined && filterDefinitions[filterKey].nullValue !== undefined) {
+      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
         routeDetails.params[filterKey] = filterDefinitions[filterKey].nullValue;
       } else {
         routeDetails.query[filterKey] = filterDefinitions[filterKey].nullValue;
       }
     } else {
-      if (filterDefinitions[filterKey]?.source === FILTER_SOURCE.PARAMS) {
+      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
         routeDetails.params[filterKey] = filterValue as string;
       } else {
         routeDetails.query[filterKey] = filterValue as string;
@@ -490,7 +474,7 @@ const actions = computed(() => [
 ]);
 
 // Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
-const additionalHeaders = computed<TableHeader[]>(() =>
+const additionalHeaders = computed<ObjectTableHeader[]>(() =>
   filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing' ?
     [
       {
