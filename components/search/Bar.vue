@@ -32,14 +32,12 @@
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
   >
     <template #prepend-inner>
-      <div v-for="s in search" :key="s.searchFilter" class="d-flex">
-        <v-chip v-if="s.searchFilter" size="small" class="mr-1">
-          <template #prepend>
-            <v-avatar class="bg-primary text-uppercase" start>{{ translateItem(s.searchFilter).slice(0, 1) }}</v-avatar>
-          </template>
+      <div v-for="s in search" key="s.searchFilter" class="d-flex">
+        <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
+          <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start></v-icon>
           {{ translateItem(s.searchFilter) }}
         </v-chip>
-        <v-chip v-if="s.operator" size="large" class="mr-1" variant="flat" color="green">{{ s.operator }}</v-chip>
+        <v-chip v-if="s.operator" size="large" class="mr-1" color="green">{{ s.operator }}</v-chip>
         <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ s.term }}</v-chip>
       </div>
     </template>
@@ -50,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiCloseCircle, mdiMagnify } from '@mdi/js';
+import { mdiCloseCircle, mdiMagnify, mdiFilter } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 import type { VeoSearch, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
@@ -207,6 +205,19 @@ function handleDelete(event: KeyboardEvent) {
 }
 </script>
 
+<style scoped lang="scss">
+:deep(.v-combobox__menu-icon) {
+  display: none;
+}
+
+:deep(.v-input__append) {
+  cursor: pointer;
+  :hover {
+    color: rgb(var(--v-theme-primary));
+  }
+}
+</style>
+
 <i18n>
 {
 "en": {
@@ -223,16 +234,3 @@ function handleDelete(event: KeyboardEvent) {
 }
 }
 </i18n>
-
-<style scoped lang="scss">
-:deep(.v-combobox__menu-icon) {
-  display: none;
-}
-
-:deep(.v-input__append) {
-  cursor: pointer;
-  :hover {
-    color: rgb(var(--v-theme-primary));
-  }
-}
-</style>
