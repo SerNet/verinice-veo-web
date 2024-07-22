@@ -60,7 +60,28 @@
           </v-row>
 
           <v-row class="d-flex justify-center my-4">
-            <v-btn color="primary" to="/units/create" style="width: 200px">{{ t('unitCreation') }}</v-btn>
+            <v-btn
+              v-if="!maxUnitsExceeded"
+              color="primary"
+              :disabled="maxUnitsExceeded"
+              style="width: 200px"
+              to="/units/create"
+            >
+              {{ t('unitCreation') }}
+            </v-btn>
+
+            <BaseAlert
+              v-else
+              :model-value="true"
+              :buttons="[{ text: t('goto'), onClick: () => navigateTo('/units') }]"
+              :title="t('requestHeadline')"
+              :type="VeoAlertType.INFO"
+              class="mx-14 my-2"
+              flat
+              no-close-button
+            >
+              {{ t('requestForDeletion') }}
+            </BaseAlert>
           </v-row>
 
           <v-row class="d-flex justify-center my-6">
@@ -181,6 +202,15 @@
 <script setup lang="ts">
 import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, mdiInformationOutline } from '@mdi/js';
 
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+import { useQuery } from '~~/composables/api/utils/query';
+
+const { userSettings } = useVeoUser();
+import { VeoAlertType } from '~/types/VeoTypes';
+const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+
+const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
+
 const context = useNuxtApp();
 const { t, locale } = useI18n();
 
@@ -206,6 +236,7 @@ const links = ref({
         "summary": "Check all the details and create your new unit - you will be redirected to the dashboard of your new unit."
       },
       "footer": "The number of possible units, available profiles and domains depends on the selected plan. See the ",
+      "goto": "Goto unit selection",
       "greeting": "Welcome!",
       "headline": "Create your first Unit in just four steps ...",
       "hint": {
@@ -222,8 +253,10 @@ const links = ref({
         "tutorial": "tutorials",
         "webinar": "webinars"
       },
-      "portal": "subscription portal!",
+      "portal": "subscription portal",
       "reminder": "You can call up this page again at any time using the account button!",
+      "requestForDeletion": "To enable creating a unit again, please delete an existing unit first.",
+      "requestHeadline": "Maximum amount of Units reached",
       "step": {
         "name": "Name and description",
         "profile": "Choose profile",
@@ -241,6 +274,7 @@ const links = ref({
         "summary": "Prüfen Sie alle Angaben und legen Sie Ihre neue Unit an. Sie werden auf das Dashboard Ihrer neuen Unit weitergeleitet."
       },
       "footer": "Die Anzahl möglicher Units, verfügbarer Profile und Domänen ist vom gewählten Plan abhängig. Siehe das ",
+      "goto": "Zur Unit-Auswahl",
       "greeting": "Willkommen!",
       "headline": "Erstellen Sie Ihre erste Unit in nur vier Schritten ...",
       "hint": {
@@ -259,10 +293,12 @@ const links = ref({
       },
       "portal": "Subskriptions-Portal",
       "reminder": "Sie können diese Seite jederzeit über den Account Button erneut aufrufen!",
+      "requestForDeletion": "Um das Erstellen einer Unit wieder zu aktivieren, löschen Sie zunächst bitte eine bestehende Unit.",
+      "requestHeadline": "Maximale Anzahl an Units erreicht",
       "step": {
         "name": "Name und Beschreibung",
         "profile": "Profil auswählen",
-        "domain": "Dömänen auswählen",
+        "domain": "Domänen auswählen",
         "summary": "Zusammenfassung"
       },
       "subTitle": "Ihre ersten Schritte in verinice:",
