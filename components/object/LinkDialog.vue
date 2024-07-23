@@ -190,8 +190,8 @@ export default defineComponent({
     const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order,
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order,
       page: page.value,
       unit: route.params.unit as string,
       ...omit(filter.value, 'objectType'),
