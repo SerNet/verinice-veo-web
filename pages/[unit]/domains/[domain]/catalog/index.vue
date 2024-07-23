@@ -20,8 +20,10 @@
     <template #default>
       <CatalogDefaultCatalog
         v-model="selectedItems"
+        v-model:page="page"
+        v-model:sortBy="sortBy"
         class="mt-6 mb-4"
-        :catalog-items="catalogItems?.items"
+        :catalog-items="catalogItems"
         :is-loading="catalogItemsAreFetching"
         :is-applying-items="isApplyingItems"
         @apply-items="applyItems"
@@ -75,16 +77,24 @@ if (!currentSubType.value) {
   });
 }
 
+const { tablePageSize } = useVeoUser();
+const page = ref();
+const sortBy = ref([{ key: 'name', order: 'asc' }]);
+
 // Fetch catalog items
 const fetchCatalogItemsQueryParameters = computed(() => ({
   domainId: currentDomainId?.value,
   subType: currentSubType?.value,
-  size: '10000'
+  size: tablePageSize.value,
+  page: page.value,
+  sortBy: sortBy.value[0]?.key,
+  sortOrder: sortBy.value[0]?.order
 }));
 
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
   catalogQueryDefinitions.queries.fetchCatalogItems,
-  fetchCatalogItemsQueryParameters
+  fetchCatalogItemsQueryParameters,
+  { keepPreviousData: true }
 );
 
 // Translate sub types

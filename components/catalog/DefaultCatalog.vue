@@ -23,10 +23,11 @@
     <BaseCard>
       <BaseTable
         v-model="selectedItems"
+        v-model:page="page"
+        v-model:sort-by="sortBy"
         :items="catalogItems"
         :additional-headers="headers"
         :loading="props.isLoading"
-        must-sort
         show-select
       />
     </BaseCard>
@@ -58,19 +59,17 @@
 
 <script setup lang="ts">
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { IVeoCatalogItem } from '~/composables/api/queryDefinitions/catalogs';
 import { TableHeader } from '../base/Table.vue';
-import { IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoPaginatedResponse, IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
-    catalogItems: IVeoCatalogItem[];
+    catalogItems: IVeoPaginatedResponse<IVeoEntity[]> | undefined;
     modelValue: IVeoEntity[] | [];
     isLoading?: boolean;
     isApplyingItems?: boolean;
   }>(),
   {
-    catalogItems: () => [],
     modelValue: () => [],
     loading: false,
     isLoading: false,
@@ -120,6 +119,9 @@ const headers: TableHeader[] = [
   }
 ];
 
+const page = defineModel<number>('page', { default: 1 });
+const sortBy = defineModel<{ key: string; order: string }>('sortBy', { default: [{ key: 'name', order: 'asc' }] });
+
 const selectedItems = computed({
   get() {
     return props.modelValue;
@@ -130,7 +132,7 @@ const selectedItems = computed({
 });
 
 const availableItems = computed(() =>
-  props.catalogItems.map((item) => {
+  props.catalogItems?.items?.map((item) => {
     const { abbreviation, name, id, description = '' } = item;
     return { abbreviation, name, id, description } || '';
   })
@@ -141,7 +143,7 @@ watch(
   () => availableItems.value,
   (newValue) => {
     const newValues = selectedItems.value.filter((selectedItem) =>
-      newValue.some((item) => item.id === selectedItem.id)
+      newValue?.some((item) => item.id === selectedItem.id)
     );
     selectedItems.value = newValues;
   }

@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoBaseObject, IVeoLink } from '~/types/VeoTypes';
-import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
+import { STALE_TIME } from '../utils/query';
+import type { IVeoQueryDefinition } from '../utils/query';
+import type { IVeoBaseObject, IVeoLink } from '~/types/VeoTypes';
+import type { IVeoPaginatedResponse, IVeoEntity } from '~/types/VeoTypes';
 
 export interface IVeoCatalog extends IVeoBaseObject {
   name: string;
@@ -54,7 +56,7 @@ export interface IVeoFetchCatalogItemsParameters {
   domainId?: string | undefined;
   elementType?: string | undefined;
   subType?: string;
-  size?: string;
+  size?: number;
   page?: string;
   sortBy?: string;
   sortOrder?: string;
@@ -101,7 +103,7 @@ export default {
         staleTime: STALE_TIME.INFINITY,
         placeholderData: []
       }
-    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoCatalogItemCollection>,
+    } as IVeoQueryDefinition<IVeoFetchCatalogItemsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchCatalogItemTypeCount: {
       primaryQueryKey: 'catalogItemTypeCount',
       url: '/api/domains/:domainId/catalog-items/type-count',
