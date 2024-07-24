@@ -61,7 +61,7 @@ describe('create units', () => {
   }
 
   function chooseDomains(testData: TestData) {
-    testData.domainSelectors.forEach((selector: string) => cy.get(selector).click());
+    testData.domainSelectors.forEach((selector: string) => cy.get(selector).first().click());
     clickNext();
   }
 

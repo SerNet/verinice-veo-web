@@ -25,7 +25,7 @@ describe('Add domains', () => {
     });
 
     // In /domains: select domain
-    selectors.forEach((selector) => cy.get(selector).click());
+    selectors.forEach((selector) => cy.get(selector).first().click());
 
     // Associate domains
     cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/units/**`).as('associateDomains');
