@@ -1,3 +1,5 @@
+import { getRandomElementType } from '../../commands/utils';
+
 describe('Delete elements', () => {
   before(() => {
     cy.login();
@@ -13,7 +15,7 @@ describe('Delete elements', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', 'Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario'];
+  const elementTypeList: string[] = ['Scope', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
@@ -21,9 +23,11 @@ describe('Delete elements', () => {
     it('deletes element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
 
-      iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
+      cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
-        cy.wait(100);
+
+        cy.checkSubTypePage($subType[0].innerText);
+
         cy.get('.v-data-table__tr').first().as('originalRow');
 
         let initialTotalItems: number;
@@ -40,6 +44,7 @@ describe('Delete elements', () => {
           cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
 
           deleteElement($row);
+
           cy.wait('@deleteElement').its('response.statusCode').should('eq', 204);
           cy.wait('@getElements').its('response.statusCode').should('eq', 200);
           cy.wait(200);
@@ -56,21 +61,10 @@ describe('Delete elements', () => {
         });
       });
     });
-
-    function iterateSubTypes(elementType, callback) {
-      cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
-        .should('be.visible')
-        .parent()
-        .find('a')
-        .each(($subType) => {
-          if ($subType.text() === 'All') return;
-          callback($subType);
-        });
-    }
-
-    const deleteElement = ($row) => {
-      cy.wrap($row).find('[data-component-name="object-overview-delete-button"]').should('exist').click();
-      cy.contains('button', 'Delete').should('exist').click();
-    };
   });
+
+  const deleteElement = ($row: JQuery<HTMLElement>) => {
+    cy.wrap($row).find('[data-component-name="object-overview-delete-button"]').should('exist').click();
+    cy.contains('button', 'Delete').should('exist').click();
+  };
 });

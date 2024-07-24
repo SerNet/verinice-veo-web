@@ -9,7 +9,6 @@ declare global {
       goToUnitSelection: typeof goToUnitSelection;
       selectUnit: typeof selectUnit;
       createUnit: typeof createUnit;
-      createUnitGUI: typeof createUnitGUI;
       deleteUnitGUI: typeof deleteUnit;
       deleteUnit: typeof deleteUnit;
       editUnit: typeof editUnit;
@@ -113,6 +112,7 @@ export function createUnit({
       // to make them accessible in tests and other commands
       const unitDetails = {
         ...Cypress.env('unitDetails'),
+        name: unitName,
         unitId: data.resourceId,
         domains: allVeoDomains
           .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))

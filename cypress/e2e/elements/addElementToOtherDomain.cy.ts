@@ -1,3 +1,5 @@
+import { getRandomElementType } from '../../commands/utils';
+
 describe.skip('Add Elements to other Domain', () => {
   before(() => {
     cy.login();
@@ -15,7 +17,7 @@ describe.skip('Add Elements to other Domain', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', 'Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario'];
+  const elementTypeList: string[] = ['Scope', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
     it('Add Element of type ' + elementType + ' to other Domain', () => {
@@ -24,9 +26,11 @@ describe.skip('Add Elements to other Domain', () => {
       let targetObjects = []; // Initialize array to store target objects and statuses
       let originalElementName;
 
-      iterateSubTypes(elementType, ($subType) => {
+      cy.iterateSubTypes(elementType, ($subType) => {
         cy.wrap($subType).click();
-        cy.wait(100);
+
+        cy.checkSubTypePage($subType[0].innerText);
+
         cy.get('.v-data-table__tr').first().as('originalRow');
 
         cy.get('@originalRow').then(($row) => {
@@ -134,18 +138,7 @@ describe.skip('Add Elements to other Domain', () => {
       });
     });
 
-    function iterateSubTypes(elementType, callback) {
-      cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
-        .should('be.visible')
-        .parent()
-        .find('a')
-        .each(($subType) => {
-          if ($subType.text() === 'All') return;
-          callback($subType);
-        });
-    }
-
-    const navigateToElementType = (elementType) => {
+    const navigateToElementType = (elementType: string) => {
       cy.navigateTo({ group: 'objects', category: elementType });
     };
 

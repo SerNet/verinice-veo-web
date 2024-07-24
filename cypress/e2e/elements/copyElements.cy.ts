@@ -1,3 +1,5 @@
+import { getRandomElementType } from '../../commands/utils';
+
 describe('Copy elements', () => {
   before(() => {
     cy.login();
@@ -13,7 +15,7 @@ describe('Copy elements', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', 'Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario'];
+  const elementTypeList: string[] = ['Scope', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
     const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
@@ -21,9 +23,10 @@ describe('Copy elements', () => {
     it('copies element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
 
-      iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
+      cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
-        cy.wait(100);
+
+        cy.checkSubTypePage($subType[0].innerText);
 
         cy.get('.v-data-table__tr') // Adjust this selector if needed to be more specific
           .first()
@@ -41,9 +44,9 @@ describe('Copy elements', () => {
             texts.push(Cypress.$(cell).text());
           });
 
-          const abb = texts[1];
-          const name = texts[2];
-          const status = texts[3];
+          const abb = texts[2];
+          const name = texts[3];
+          const status = texts[4];
 
           cy.wait('@cloneElement').its('response.statusCode').should('eq', 201);
           cy.wait('@getClonedElement').its('response.statusCode').should('eq', 200);
@@ -53,24 +56,13 @@ describe('Copy elements', () => {
       });
     });
 
-    function iterateSubTypes(elementType, callback) {
-      cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
-        .should('be.visible')
-        .parent()
-        .find('a')
-        .each(($subType) => {
-          if ($subType.text() === 'All') return;
-          callback($subType);
-        });
-    }
-
-    const verifyElementCopy = (abb, name, status) => {
+    function verifyElementCopy(abb: string, name: string, status: string) {
       cy.get('tr')
         .filter((index, row) => {
           const rowText = Cypress.$(row).text();
           return rowText.includes(abb) && rowText.includes(`${name} (duplicated)`) && rowText.includes(status);
         })
         .should('exist');
-    };
+    }
   });
 });

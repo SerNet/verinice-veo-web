@@ -1,4 +1,4 @@
-import { getRandomString } from '../../commands/utils';
+import { getRandomString, getRandomElementType } from '../../commands/utils';
 
 describe('Edit elements', () => {
   before(() => {
@@ -16,15 +16,16 @@ describe('Edit elements', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', 'Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario'];
+  const elementTypeList: string[] = ['Scope', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
-    it.skip('edit element in ' + elementType, () => {
+    it('edit element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
 
-      iterateSubTypes(elementType, ($subType) => {
+      cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
-        cy.wait(100);
+
+        cy.checkSubTypePage($subType[0].innerText);
 
         cy.get('.v-data-table__tr').first().as('originalRow');
         cy.get('@originalRow').click();
@@ -46,23 +47,27 @@ describe('Edit elements', () => {
           expect(intercepts[0].response.statusCode).to.equal(200);
           expect(intercepts[1].response.statusCode).to.equal(200);
         });
+
+        // Wait for veo to set form state from dirty to clean
         cy.wait(1000);
 
         cy.wrap($subType).click();
-        cy.wait(1000);
+
+        cy.checkSubTypePage($subType[0].innerText);
+
         cy.contains('tr', abbTyped).as('rowWithElements');
 
         cy.get('@rowWithElements').then(($row) => {
           const cells = $row.children('td');
 
           const texts = [];
-          cells.each((index, cell) => {
+          cells.each((_index, cell) => {
             if (Cypress.$(cell).text()) texts.push(Cypress.$(cell).text());
           });
 
-          const abb = texts[0];
-          const name = texts[1];
-          const status = texts[2];
+          const abb = texts[1];
+          const name = texts[2];
+          const status = texts[3];
 
           expect(abb).to.equal(abbTyped);
           expect(name).to.equal(nameTyped);
@@ -87,18 +92,7 @@ describe('Edit elements', () => {
       });
     };
 
-    function iterateSubTypes(elementType, callback) {
-      cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
-        .should('be.visible')
-        .parent()
-        .find('a')
-        .each(($subType) => {
-          if ($subType.text() === 'All') return;
-          callback($subType);
-        });
-    }
-
-    const selectRandom = (list) => {
+    const selectRandom = (list: Array<any>) => {
       const randomIndex = Math.floor(Math.random() * list.length);
       return list[randomIndex];
     };

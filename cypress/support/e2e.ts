@@ -2,6 +2,7 @@ import { veoRequest } from '../commands/requests';
 import { getVeoDomains, selectRandomDomain, getSelectedDomain, selectDomain, addDomain } from '../commands/domains';
 import { login } from '../commands/login';
 import { acceptAllCookies } from '../commands/cookies';
+import { checkSubTypePage } from '../commands/elements';
 import {
   goToUnitSelection,
   goToUnitDashboard,
@@ -16,7 +17,7 @@ import { generateUnitDetails } from './setupHelpers';
 import { testDashboardWidgets } from '../commands/dashboard';
 import { importUnit } from '../commands/importUnit';
 import { languageTo, handleLanguageBug } from '../commands/language';
-import { navigateTo } from '../commands/navigation';
+import { navigateTo, iterateSubTypes } from '../commands/navigation';
 
 Cypress.Commands.addAll({
   veoRequest,
@@ -39,7 +40,9 @@ Cypress.Commands.addAll({
   selectRandomDomain,
   getSelectedDomain,
   selectDomain,
-  handleLanguageBug
+  handleLanguageBug,
+  checkSubTypePage,
+  iterateSubTypes
 });
 
 before(() => {
