@@ -32,7 +32,7 @@
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
   >
     <template #prepend-inner>
-      <div v-for="s in search" key="s.searchFilter" class="d-flex">
+      <div v-for="s in search" :key="s.searchFilter" class="d-flex">
         <v-chip v-if="s.searchFilter" size="small" class="mr-1">
           <template #prepend>
             <v-avatar class="bg-primary text-uppercase" start>{{ translateItem(s.searchFilter).slice(0, 1) }}</v-avatar>
@@ -198,19 +198,6 @@ function handleDelete(event: KeyboardEvent) {
 }
 </script>
 
-<style scoped lang="scss">
-:deep(.v-combobox__menu-icon) {
-  display: none;
-}
-
-:deep(.v-input__append) {
-  cursor: pointer;
-  :hover {
-    color: rgb(var(--v-theme-primary));
-  }
-}
-</style>
-
 <i18n>
 {
 "en": {
@@ -227,3 +214,16 @@ function handleDelete(event: KeyboardEvent) {
 }
 }
 </i18n>
+
+<style scoped lang="scss">
+:deep(.v-combobox__menu-icon) {
+  display: none;
+}
+
+:deep(.v-input__append) {
+  cursor: pointer;
+  :hover {
+    color: rgb(var(--v-theme-primary));
+  }
+}
+</style>
