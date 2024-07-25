@@ -60,17 +60,17 @@
           v-bind="child"
           :level="level + 1"
           :mini-variant="miniVariant"
+          :data-veo-test="`nav-entry-${child.name?.toLowerCase()}`"
           @expand-menu="emit('expand-menu')"
           @open-parent="openCategory"
-          :data-veo-test="`nav-entry-${child.name?.toLowerCase()}`"
         />
         <NavigationPrimaryNavigationCategory
           v-else
           v-bind="child"
           :level="level + 1"
           :mini-variant="miniVariant"
-          @expand-menu="emit('expand-menu')"
           :data-veo-test="`nav-category-${child.name?.toLowerCase()}`"
+          @expand-menu="emit('expand-menu')"
         />
       </template>
     </template>
