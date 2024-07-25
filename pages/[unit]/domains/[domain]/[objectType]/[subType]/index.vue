@@ -137,7 +137,7 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
-import { ObjectTableHeader } from '~/components/object/Table.vue';
+import { type TableHeader } from '~/components/base/Table.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
@@ -174,7 +174,7 @@ const { clone } = useCloneObject();
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain
+  domain: route.params.domain as string
 }));
 const { data: translations, isFetching: translationsLoading } = useQuery(
   translationQueryDefinitions.queries.fetch,
@@ -195,7 +195,7 @@ const domainId = computed(() => route.params.domain as string);
 const search = ref<VeoSearch[]>([]); // v-model from `SearchBar`
 
 // Object used to update `combinedQueryParameters`, cp. below
-const _search = computed<VeoSearchQueryParameters | {}>(() => {
+const _search = computed<VeoSearchQueryParameters | Record<string, never>>(() => {
   if (!search.value.length) return {};
   return search.value.reduce(
     (acc, query) => ({
@@ -205,7 +205,7 @@ const _search = computed<VeoSearchQueryParameters | {}>(() => {
       : {})
     }),
     {}
-  );
+  ) as VeoSearchQueryParameters;
 });
 
 //
@@ -274,9 +274,9 @@ const filter = computed(() => {
       // Extract first query value
       let filterValue: any;
       if (filterDefinition.source === FILTER_SOURCE.QUERY) {
-        filterValue = stringOrFirstValue(route.query[filterKey]);
+        filterValue = stringOrFirstValue(route.query[filterKey] || null);
       } else if (filterDefinition.source === FILTER_SOURCE.PARAMS) {
-        filterValue = stringOrFirstValue(route.params[filterKey]);
+        filterValue = stringOrFirstValue(route.params[filterKey] || null);
       }
       if (filterValue === filterDefinition.nullValue) {
         filterValue = undefined;
@@ -308,17 +308,17 @@ const resetQueryOptions = () => {
 
 const combinedQueryParameters = computed<any>(() => ({
   size: tablePageSize.value,
-  sortBy: sortBy.value[0].key,
-  sortOrder: sortBy.value[0].order,
+  sortBy: sortBy.value[0]?.key,
+  sortOrder: sortBy.value[0]?.order,
   page: page.value,
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),
   endpoint: endpoints.value?.[filter.value.objectType as string],
-  ...(_search.value.hasOwnProperty('name') ? { name: (_search?.value as VeoSearchQueryParameters)?.name?.term } : {}),
-  ...(_search.value.hasOwnProperty('abbreviation') ?
+  ...(Object.hasOwn(_search.value, 'name') ? { name: (_search?.value as VeoSearchQueryParameters)?.name?.term } : {}),
+  ...(Object.hasOwn(_search.value, 'abbreviation') ?
     { abbreviation: (_search?.value as VeoSearchQueryParameters)?.abbreviation?.term }
   : {}),
-  ...(_search.value.hasOwnProperty('displayName') ?
+  ...(Object.hasOwn(_search.value, 'displayName') ?
     { displayName: (_search?.value as VeoSearchQueryParameters)?.displayName?.term }
   : {})
 }));
@@ -361,14 +361,14 @@ const updateRoute = async (newValue: Record<string, string | undefined | null | 
       filterValue = endpoints.value?.[filterValue as string];
     }
 
-    if (filterValue === undefined && filterDefinitions[filterKey].nullValue !== undefined) {
-      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
+    if (filterValue === undefined && filterDefinitions[filterKey]?.nullValue !== undefined) {
+      if (filterDefinitions[filterKey]?.source === FILTER_SOURCE.PARAMS) {
         routeDetails.params[filterKey] = filterDefinitions[filterKey].nullValue;
       } else {
         routeDetails.query[filterKey] = filterDefinitions[filterKey].nullValue;
       }
     } else {
-      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
+      if (filterDefinitions[filterKey]?.source === FILTER_SOURCE.PARAMS) {
         routeDetails.params[filterKey] = filterValue as string;
       } else {
         routeDetails.query[filterKey] = filterValue as string;
@@ -490,7 +490,7 @@ const actions = computed(() => [
 ]);
 
 // Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
-const additionalHeaders = computed<ObjectTableHeader[]>(() =>
+const additionalHeaders = computed<TableHeader[]>(() =>
   filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing' ?
     [
       {

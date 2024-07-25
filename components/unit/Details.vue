@@ -96,13 +96,18 @@ const { requiredRule } = useRules();
 
 // State
 const unitDetails = defineModel<UnitDetails>();
+
 const cardTitle = computed(() => {
-  if (!unitDetails.value?.hasOwnProperty('name')) return t('genericHeading');
-  if (unitDetails.value.name == '') return t('noUnitName');
-  return unitDetails.value.name;
+  return (
+    unitDetails.value?.name ?
+      unitDetails.value.name === '' ?
+        t('noUnitName')
+      : unitDetails.value.name
+    : t('genericHeading')
+  );
 });
 
-const hasUnitName = computed(() => !(unitDetails.value.name?.trim() === ''));
+const hasUnitName = computed(() => !(unitDetails.value?.name?.trim() === ''));
 </script>
 
 <i18n>
