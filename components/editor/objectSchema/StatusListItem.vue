@@ -29,7 +29,7 @@
       </div>
     </template>
     <v-row no-gutters>
-      <v-col class="d-flex align-center">
+      <v-col class="ml-2 d-flex align-center">
         <b>{{ status.key }}</b>
       </v-col>
       <v-col>

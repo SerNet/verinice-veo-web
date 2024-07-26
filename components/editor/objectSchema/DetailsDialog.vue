@@ -25,55 +25,90 @@
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
-      <div class="d-flex justify-space-between align-center px-1 pb-2">
-        <h2 class="text-h2">
-          {{ t('subtypesForDomain', { domain: domain && domain.name }) }}
-        </h2>
-        <v-select
-          v-model="displayLanguage"
-          :prepend-inner-icon="mdiTranslate"
-          :label="upperFirst(t('language').toString())"
-          dense
-          hide-details
-          :items="languages"
-          style="max-width: 200px"
-        />
-      </div>
-      <v-row>
+      <v-row class="d-flex justify-space-between align-center mx-2">
+        <v-col cols="9">
+          <h2 class="text-h2 small-caps">
+            {{ t('subtypesForDomain', { domain: domain?.name }) }}
+          </h2>
+        </v-col>
+
+        <v-col cols="3">
+          <v-select
+            v-model="displayLanguage"
+            :prepend-inner-icon="mdiTranslate"
+            :label="t('language').toString()"
+            dense
+            hide-details
+            :items="languages"
+            style="max-width: 200px"
+          />
+        </v-col>
+      </v-row>
+
+      <v-row class="d-flex justify-space-between align-center">
         <v-col v-for="(subType, subTypeIndex) of subTypes" :key="subTypeIndex" cols="6">
-          <BaseCard>
+          <BaseCard style="border: 1px solid grey" class="ml-4">
             <v-card-text>
-              <v-row>
-                <v-col cols="auto" class="flex-grow-1">
-                  <v-form v-model="subTypeForms[subTypeIndex]" @submit.prevent>
-                    <v-text-field
-                      v-model="subType.subType"
-                      :label="`${upperFirst(t('subtype').toString())}*`"
-                      dense
-                      required
-                      :rules="[requiredRule]"
-                    />
-                  </v-form>
-                </v-col>
-                <v-col cols="auto">
-                  <v-tooltip location="bottom">
-                    <template #activator="{ props }">
-                      <v-btn
-                        v-bind="props"
-                        :icon="mdiTrashCanOutline"
-                        variant="text"
-                        @click="deleteSubType(subTypeIndex)"
-                      />
-                    </template>
-                    <template #default>
-                      {{ upperFirst(t('deleteSubtype').toString()) }}
-                    </template>
-                  </v-tooltip>
-                </v-col>
-              </v-row>
-              <h3 class="text-h3 my-2">
-                {{ upperFirst(t('availableStatus').toString()) }}
+              <v-form v-model="subTypeForms[subTypeIndex]" @submit.prevent>
+                <v-row>
+                  <v-col cols="12">
+                    <v-row>
+                      <v-col cols="9">
+                        <v-text-field
+                          v-model="subType.subType"
+                          :label="`${t('subtype').toString()}*`"
+                          dense
+                          required
+                          :rules="[requiredRule]"
+                        />
+                      </v-col>
+                      <v-spacer />
+                      <v-col>
+                        <v-tooltip location="bottom">
+                          <template #activator="{ props }">
+                            <v-btn
+                              v-bind="props"
+                              :icon="mdiTrashCanOutline"
+                              color="primary"
+                              variant="tonal"
+                              @click="deleteSubType(subTypeIndex)"
+                            />
+                          </template>
+                          <template #default>
+                            {{ t('deleteSubtype').toString() }}
+                          </template>
+                        </v-tooltip>
+                      </v-col>
+                    </v-row>
+
+                    <v-row class="mt-0">
+                      <v-col cols="6">
+                        <v-text-field
+                          dense
+                          :prepend-inner-icon="mdiTranslate"
+                          :label="t('translation.singular').toString()"
+                          hide-details
+                          variant="underlined"
+                        />
+                      </v-col>
+                      <v-col cols="6">
+                        <v-text-field
+                          dense
+                          :prepend-inner-icon="mdiTranslate"
+                          :label="t('translation.plural').toString()"
+                          hide-details
+                          variant="underlined"
+                        />
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+              </v-form>
+
+              <h3 class="text-h3 mt-8">
+                {{ t('availableStatus').toString() }}
               </h3>
+
               <Draggable v-model="subType.status" item-key="key" handle=".handle">
                 <template #item="{ element, index }">
                   <EditorObjectSchemaStatusListItem
@@ -85,42 +120,50 @@
                   />
                 </template>
               </Draggable>
-              <v-form v-model="newStatusForms[subTypeIndex]" @submit.prevent="addStatusToSubType(subTypeIndex)">
-                <v-list-item class="px-0" dense>
-                  <v-text-field
-                    v-model="newStatusTextfields[subTypeIndex]"
-                    :label="upperFirst(t('status').toString())"
-                    dense
-                    variant="underlined"
-                    :rules="[alphaNumericUnderscoreRule]"
-                  />
-                  <v-list-item-action>
+
+              <v-form
+                v-model="newStatusForms[subTypeIndex]"
+                class="mt-4"
+                @submit.prevent="addStatusToSubType(subTypeIndex)"
+              >
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field
+                      v-model="newStatusTextfields[subTypeIndex]"
+                      :label="t('status').toString()"
+                      dense
+                      variant="underlined"
+                      :rules="[alphaNumericUnderscoreRule]"
+                    />
                     <v-btn
-                      variant="text"
+                      variant="outlined"
                       :disabled="!newStatusForms[subTypeIndex] || !newStatusTextfields[subTypeIndex]"
                       @click="addStatusToSubType(subTypeIndex)"
                     >
                       <v-icon :icon="mdiPlus" start />
                       {{ t('add') }}
                     </v-btn>
-                  </v-list-item-action>
-                </v-list-item>
+                  </v-col>
+                </v-row>
               </v-form>
             </v-card-text>
           </BaseCard>
         </v-col>
+
         <v-col cols="12">
-          <v-btn variant="text" @click="addSubType">
+          <v-btn class="ml-4" color="primary" @click="addSubType">
             <v-icon :icon="mdiPlus" start />
             {{ t('addSubtype') }}
           </v-btn>
         </v-col>
       </v-row>
     </template>
+
     <template #dialog-options>
       <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
+
       <v-spacer />
       <v-btn
         variant="text"
@@ -137,7 +180,7 @@
 <script lang="ts">
 import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
-import { upperFirst, cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { CHART_COLORS } from '~/lib/utils';
@@ -167,14 +210,16 @@ export default defineComponent({
     const route = useRoute();
 
     const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
-
-    // display stuff
     const fetchDomainQueryParameters = computed(() => ({
       id: props.domainId as string
     }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
 
     const displayLanguage = inject<Ref<string>>('displayLanguage');
+
+    if (displayLanguage?.value)
+      console.log(displayLanguage.value, objectSchemaHelper?.value?.getTranslations(displayLanguage.value));
+
     // We can't use a computed here, as changes sadly won't get picked up.
     const languages = ref(
       (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({
@@ -219,7 +264,7 @@ export default defineComponent({
         // Add translations to status
         for (const lang of objectSchemaHelper.value.getLanguages()) {
           for (const subTypeIndex in subTypes.value) {
-            for (const statusIndex in subTypes.value[subTypeIndex].status) {
+            for (const statusIndex in subTypes.value[subTypeIndex]?.status) {
               const translation = objectSchemaHelper.value.getTranslation(
                 lang,
                 `${objectSchemaHelper.value.getTitle()}_${subTypes.value[subTypeIndex].subType}_status_${
@@ -243,7 +288,7 @@ export default defineComponent({
       ) {
         return;
       }
-      subTypes.value[index].status.push({
+      subTypes.value[index]?.status.push({
         key: newStatusTextfields.value[index] as string
       });
       newStatusTextfields.value[index] = undefined;
@@ -272,7 +317,7 @@ export default defineComponent({
     }
 
     function onDeleteStatus(subTypeIndex: number, statusIndex: number) {
-      subTypes.value[subTypeIndex].status.splice(statusIndex, 1);
+      subTypes.value[subTypeIndex]?.status.splice(statusIndex, 1);
     }
 
     // Validation
@@ -301,7 +346,7 @@ export default defineComponent({
       // Save translations
       for (const lang of objectSchemaHelper?.value?.getLanguages() || []) {
         for (const subTypeIndex in subTypes.value) {
-          for (const statusIndex in subTypes.value[subTypeIndex].status) {
+          for (const statusIndex in subTypes.value[subTypeIndex]?.status) {
             if (subTypes.value[subTypeIndex].status[statusIndex][lang]) {
               objectSchemaHelper?.value?.updateTranslation(
                 lang,
@@ -343,7 +388,6 @@ export default defineComponent({
       mdiPlus,
       mdiTranslate,
       mdiTrashCanOutline,
-      upperFirst,
       CHART_COLORS
     };
   }
@@ -353,26 +397,34 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "add": "add",
-    "addSubtype": "add subtype",
-    "availableStatus": "available status",
-    "deleteSubtype": "delete subtype",
-    "language": "language",
-    "status": "status",
+    "add": "Add",
+    "addSubtype": "Add subtype",
+    "availableStatus": "Available status",
+    "deleteSubtype": "Delete subtype",
+    "language": "Language",
+    "status": "Status",
     "statusAlphaNumericUnderscore": "The status may only contain capital alphanumeric symbols and underscores",
-    "subtype": "subtype",
-    "subtypesForDomain": "Subtypes for domain {domain}"
+    "subtype": "Subtype",
+    "subtypesForDomain": "Subtypes for domain {domain}",
+    "translation": {
+      "singular": "Name singular",
+      "plural": "Name plural"
+    }
   },
   "de": {
-    "add": "hinzufügen",
-    "addSubtype": "subtyp hinzufügen",
-    "availableStatus": "verfügbare Status",
-    "deleteSubtype": "subtyp löschen",
-    "language": "sprache",
-    "status": "status",
+    "add": "Hinzufügen",
+    "addSubtype": "Subtyp hinzufügen",
+    "availableStatus": "Verfügbare Status",
+    "deleteSubtype": "Subtyp löschen",
+    "language": "Sprache",
+    "status": "Status",
     "statusAlphaNumericUnderscore": "Der Status darf nur großgeschriebene alphanummerische Zeichen und Unterstriche enthalten",
-    "subtype": "subtyp",
-    "subtypesForDomain": "Subtypen für die Domain {domain}"
+    "subtype": "Subtyp",
+    "subtypesForDomain": "Subtypen für die Domäne {domain}",
+    "translation": {
+      "singular": "Name singular",
+      "plural": "Name plural"
+    }
   }
 }
 </i18n>
