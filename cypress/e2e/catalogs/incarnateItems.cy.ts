@@ -13,7 +13,7 @@ describe('Catalogs', { testIsolation: false }, () => {
 
     // Check if the correct number of items is displayed
     cy.veoRequest({
-      url: `/api/domains/${Cypress.env('unitDetails').domains[0].id}/catalog-items`,
+      url: `/api/domains/${Cypress.env('unitDetails').domains[0].id}/catalog-items?size=20&sortBy=abbreviation&sortOrder=asc`,
       method: 'GET',
       waitForRequestMethod: false
     }).then((response: any) => {
