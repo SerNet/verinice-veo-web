@@ -25,24 +25,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <template v-if="units && !isLoadingUnits">
       <BaseListItem v-for="unit in units" :key="unit.id" :item="unit">
-        <template #details="{ item: unit }">
+        <template #details="{ item: u }">
           <Details
-            :name="unit.name"
-            :description="unit.description"
-            :meta="compileMetaData({ metaData: unit.metaData, unitId: unit.id })"
+            :name="u.name"
+            :description="u.description"
+            :meta="compileMetaData({ metaData: u.metaData, unitId: u.id })"
           />
         </template>
-        <template #center-aside="{ item: unit }">
-          <UnitActions :details-url="unit?.detailsUrl" @delete-unit="() => deleteUnit(unit)" />
+        <template #center-aside="{ item: u }">
+          <UnitActions :details-url="u?.detailsUrl" @delete-unit="() => deleteUnit(u)" />
         </template>
-        <template #bottom-left="{ item: unit }">
-          <DomainActions :domains="unit.domains" :domains-url="unit.domainsUrl" />
+        <template #bottom-left="{ item: u }">
+          <DomainActions :domains="u.domains" :domains-url="u.domainsUrl" />
         </template>
-        <template #prepend="{ item: unit }">
-          <BookmarkFavorite :is-favorite="unit?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(unit)" />
+        <template #prepend="{ item: u }">
+          <BookmarkFavorite :is-favorite="u?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(u)" />
         </template>
-        <template #bottom-right="{ item: unit }">
-          <ApplyProfiles :profiles-url="unit?.profilesUrl" />
+        <template #bottom-right="{ item: u }">
+          <ApplyProfiles :profiles-url="u?.profilesUrl" />
         </template>
       </BaseListItem>
     </template>

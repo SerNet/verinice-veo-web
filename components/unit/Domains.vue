@@ -9,16 +9,16 @@
 
     <template v-for="domain in domains" v-else :key="domain.id">
       <BaseListItem :item="domain" :data-veo-test="`domain-${domain.name}`">
-        <template #center-aside="{ item: domain }">
-          <v-icon :color="domain.color" :icon="mdiPuzzle" />
+        <template #center-aside="{ item: d }">
+          <v-icon :color="d.color" :icon="mdiPuzzle" />
         </template>
-        <template #prepend="{ item: domain }">
+        <template #prepend="{ item: d }">
           <v-checkbox
             v-model="selected"
-            :data-veo-test="`domain-card-checkbox-${domain?.abbreviation ? domain.abbreviation.toLowerCase() : ''}`"
+            :data-veo-test="`domain-card-checkbox-${d?.abbreviation ? d.abbreviation.toLowerCase() : ''}`"
             color="primary"
-            :value="domain"
-            :disabled="isDisabled || domain.id === mandatoryDomain?.id"
+            :value="d"
+            :disabled="isDisabled || d.id === mandatoryDomain?.id"
           ></v-checkbox>
         </template>
       </BaseListItem>

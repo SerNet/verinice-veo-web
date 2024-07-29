@@ -46,20 +46,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
       <template v-for="profile in profiles" :key="profile.id">
         <BaseListItem :item="profile" :data-veo-test="`profile-${profile.name}`">
-          <template #center-aside="{ item: profile }">
-            <LanguageChip :lang="profile.language" />
+          <template #center-aside="{ item: p }">
+            <LanguageChip :lang="p.language" />
           </template>
 
-          <template #bottom-left="{ item: profile }">
-            <DomainChip :domain-name="profile.domainName" />
+          <template #bottom-left="{ item: p }">
+            <DomainChip :domain-name="p.domainName" />
           </template>
 
-          <template #prepend="{ item: profile }">
-            <RadioButton
-              :data-veo-test="`profile-radio-btn-${profile.name}`"
-              :profile="profile"
-              :is-disabled="isDisabled"
-            />
+          <template #prepend="{ item: p }">
+            <RadioButton :data-veo-test="`profile-radio-btn-${p.name}`" :profile="p" :is-disabled="isDisabled" />
           </template>
         </BaseListItem>
       </template>
