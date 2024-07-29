@@ -24,6 +24,7 @@ import { IVeoQueryDefinition } from '../utils/query';
 import { VeoApiReponseType } from '../utils/request';
 import {
   IVeoAPIMessage,
+  IVeoControlImplementation,
   IVeoDecisionEvaluation,
   IVeoEntity,
   IVeoEntityLegacy,
@@ -270,6 +271,25 @@ export default {
         }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
+    fetchObjectControlImplementations: {
+      primaryQueryKey: 'controlImplementations',
+      url: '/api/domains/:domain/:endpoint/:id/control-implementation',
+      onDataFetched: (result) => {
+        result.page = result.page + 1;
+        return result;
+      },
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: route.params.domain,
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.id
+        },
+        query: {
+          ...omit(queryParameters, 'domain', 'id', 'endpoint'),
+          page: getPageNumber(queryParameters.page)
+        }
+      })
+    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoControlImplementation[]>>,
     fetchScopeChildren: {
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
