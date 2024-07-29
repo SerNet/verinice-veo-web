@@ -84,6 +84,7 @@
                     <v-row class="mt-0">
                       <v-col cols="6">
                         <v-text-field
+                          v-model="subTypeSingular"
                           dense
                           :prepend-inner-icon="mdiTranslate"
                           :label="t('translation.singular').toString()"
@@ -93,6 +94,7 @@
                       </v-col>
                       <v-col cols="6">
                         <v-text-field
+                          v-model="subTypePlural"
                           dense
                           :prepend-inner-icon="mdiTranslate"
                           :label="t('translation.plural').toString()"
@@ -217,9 +219,6 @@ export default defineComponent({
 
     const displayLanguage = inject<Ref<string>>('displayLanguage');
 
-    if (displayLanguage?.value)
-      console.log(displayLanguage.value, objectSchemaHelper?.value?.getTranslations(displayLanguage.value));
-
     // We can't use a computed here, as changes sadly won't get picked up.
     const languages = ref(
       (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({
@@ -234,6 +233,38 @@ export default defineComponent({
     const subTypeForms: Ref<boolean[]> = ref([]);
     const newStatusForms: Ref<boolean[]> = ref([]);
     const newStatusTextfields: Ref<(string | undefined)[]> = ref([]);
+
+    const subTypeTranslationKeys = computed(() => ({
+      plural: `${objectSchemaHelper?.value?.getTitle()}_${objectSchemaHelper?.value?.getSubTypes(route.params.domain as string)?.[0]?.subType}_plural`,
+      singular: `${objectSchemaHelper?.value?.getTitle()}_${objectSchemaHelper?.value?.getSubTypes(route.params.domain as string)?.[0]?.subType}_singular`
+    }));
+
+    const originalSubTypeSingular = computed(() =>
+      objectSchemaHelper?.value?.getTranslation(displayLanguage?.value || '', subTypeTranslationKeys.value.singular)
+    );
+    const originalSubTypePlural = computed(() =>
+      objectSchemaHelper?.value?.getTranslation(displayLanguage?.value || '', subTypeTranslationKeys.value.plural)
+    );
+
+    const subTypeTranslations = ref<Record<string, any>>({});
+    const subTypeSingular = computed({
+      get: () => subTypeTranslations.value[displayLanguage?.value || '']?.singular || '',
+      set: (newName) => {
+        if (subTypeTranslations.value[displayLanguage?.value || ''] === undefined) {
+          subTypeTranslations.value[displayLanguage?.value || ''] = {};
+        }
+        subTypeTranslations.value[displayLanguage?.value || ''].singular = newName;
+      }
+    });
+    const subTypePlural = computed({
+      get: () => subTypeTranslations.value[displayLanguage?.value || '']?.plural || '',
+      set: (newName) => {
+        if (subTypeTranslations.value[displayLanguage?.value || ''] === undefined) {
+          subTypeTranslations.value[displayLanguage?.value || ''] = {};
+        }
+        subTypeTranslations.value[displayLanguage?.value || ''].plural = newName;
+      }
+    });
 
     watch(
       () => objectSchemaHelper?.value,
@@ -276,6 +307,10 @@ export default defineComponent({
               }
             }
           }
+          subTypeTranslations.value[lang] = {
+            singular: objectSchemaHelper?.value?.getTranslation(lang, subTypeTranslationKeys.value.singular),
+            plural: objectSchemaHelper?.value?.getTranslation(lang, subTypeTranslationKeys.value.plural)
+          };
         }
       }
       originalSubTypes.value = cloneDeep(subTypes.value);
@@ -324,7 +359,13 @@ export default defineComponent({
     const requiredRule = (v: string) => !!v || t('global.input.required');
     const alphaNumericUnderscoreRule = (v: string) => !v || /^[A-Z0-9_]+$/.test(v) || t('statusAlphaNumericUnderscore');
 
-    const isFormDirty = computed(() => !isEqual(subTypes.value, originalSubTypes.value));
+    const isFormDirty = computed(() => {
+      return (
+        !isEqual(subTypes.value, originalSubTypes.value) ||
+        !isEqual(originalSubTypeSingular.value, subTypeSingular.value) ||
+        !isEqual(originalSubTypePlural.value, subTypePlural.value)
+      );
+    });
 
     function onSubmit() {
       // Remove old translations
@@ -358,6 +399,20 @@ export default defineComponent({
             }
           }
         }
+        if (subTypeTranslations.value[lang]?.singular) {
+          objectSchemaHelper?.value?.updateTranslation(
+            lang,
+            subTypeTranslationKeys.value.singular,
+            subTypeTranslations.value[lang]?.singular
+          );
+        }
+        if (subTypeTranslations.value[lang]?.plural) {
+          objectSchemaHelper?.value?.updateTranslation(
+            lang,
+            subTypeTranslationKeys.value.plural,
+            subTypeTranslations.value[lang]?.plural
+          );
+        }
       }
 
       emit('schema-updated');
@@ -380,6 +435,8 @@ export default defineComponent({
       onUpdateStatus,
       requiredRule,
       subTypeForms,
+      subTypePlural,
+      subTypeSingular,
       subTypes,
 
       t,
