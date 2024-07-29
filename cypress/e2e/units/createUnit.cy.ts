@@ -5,11 +5,11 @@ describe('create units', () => {
     cy.goToUnitSelection();
   });
 
-  after(() => cy.deleteUnit());
+  afterEach(() => cy.deleteUnit());
 
   const testData = {
     unitName: `TEST-NAME-${Math.random()}`,
-    unitDesc: 'TEST DESCRIPTION',
+    unitDesc: 'TEST DESCRIPTION FROM `createUnit.cy.ts`',
     domains: ['DS-GVO', 'IT-Grundschutz'],
     domainSelectors: ['[data-veo-test="domain-card-checkbox-ds-gvo"]', '[data-veo-test="domain-card-checkbox-itgs"]']
   };
