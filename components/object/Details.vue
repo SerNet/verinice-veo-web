@@ -199,7 +199,7 @@ export default defineComponent({
         hidden: !hasRiskTab.value
       },
       {
-        key: 'controls',
+        key: props.object?.type === 'control' && props.object?.subType === 'CTL_Module' ? 'targets' : 'controls',
         hidden: isControlsTabHidden.value
       }
     ]);
@@ -262,7 +262,8 @@ export default defineComponent({
     "parentObjects": "Part of",
     "parentScopes": "in Scope",
     "risks": "risks",
-    "updatedAt": "last change"
+    "updatedAt": "last change",
+    "targets": "target objects"
   },
   "de": {
     "by": "von",
@@ -274,7 +275,8 @@ export default defineComponent({
     "parentObjects": "Teil von",
     "parentScopes": "in Scope",
     "risks": "Risiken",
-    "updatedAt": "letzte Änderung"
+    "updatedAt": "letzte Änderung",
+    "targets": "Zielobjekte"
   }
 }
 </i18n>
