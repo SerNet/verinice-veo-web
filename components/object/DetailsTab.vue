@@ -104,6 +104,7 @@ import {
   IVeoRiskCategory,
   IVeoRiskDefinition,
   IVeoRiskValue,
+  OBJECT_TYPE_TO_URL_MAP,
   VeoRiskTreatment
 } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -114,12 +115,13 @@ import objectQueryDefinitions, {
   IVeoFetchRisksParameters,
   IVeoFetchScopeChildrenParameters
 } from '~/composables/api/queryDefinitions/objects';
-import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
+import { VeoSort } from '~/types/VeoSort';
+import { getSingularType } from '~/types/utils';
+import { useFetchParentObjects } from '~/composables/api/objects';
 
 export default defineComponent({
   props: {
@@ -142,36 +144,110 @@ export default defineComponent({
   },
   emits: ['reload'],
   setup(props, { emit }) {
+    // i18n
     const { t, locale } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
+    // Routing
     const route = useRoute();
     const router = useRouter();
+    // Permissions and User Settings
     const { ability } = useVeoPermissions();
     const { tablePageSize } = useVeoUser();
-
+    // Alerts
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+    // Object Operations
     const { link } = useLinkObject();
     const { clone } = useCloneObject();
+    // Query Client
     const queryClient = useQueryClient();
-
-    // Fetching different queries for the table
+    // State
     const page = ref(1);
-    const sortBy = ref([{ key: 'name', order: 'asc' }]);
+    const sortBy = ref<VeoSort[]>([{ key: 'name', order: 'asc' }]);
     const resetQueryOptions = () => {
       page.value = 1;
       sortBy.value = [{ key: 'name', order: 'asc' }];
     };
     watch(() => props.type, resetQueryOptions);
 
-    const fetchTranslationsQueryParameters = computed(() => ({
-      languages: [locale.value],
-      domain: props.domainId
-    }));
-    const { data: translations } = useQuery(
-      translationQueryDefinitions.queries.fetch,
-      fetchTranslationsQueryParameters
+    // Computed Properties
+    const tableSize = computed(() => (tablePageSize?.value === -1 ? 1000 : tablePageSize.value));
+
+    const children = computed(() => (props.object?.type === 'scope' ? scopeChildren.value : objectChildren.value));
+
+    const tableIsLoading = computed(
+      () =>
+        parentScopesIsFetching.value ||
+        parentObjectsIsFetching.value ||
+        childScopesIsFetching.value ||
+        childObjectsIsFetching.value ||
+        risksIsFetching.value ||
+        domainIsFetching.value
     );
 
+    const createEntityFromLink = (link: IVeoCustomLink) => {
+      const name = link.target.displayName;
+      const splitted = link.target.targetUri.split('/');
+      const type =
+        Object.entries(schemas.value || {}).find(([_key, value]) => value === splitted[4])?.[0] || splitted[4];
+      const id = splitted[5];
+      return { id, name, type };
+    };
+
+    const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
+      switch (props.type) {
+        case 'childScopes':
+        case 'childObjects':
+          return children.value;
+        case 'parentScopes':
+          return cloneDeep(parentScopes.value || []);
+        case 'parentObjects':
+          return parentObjects.value || [];
+        case 'risks':
+          return risks.value || [];
+        case 'controls':
+          return (props.object?.controlImplementations || []).map((control) => {
+            const details = getEntityDetailsFromLink(control.control);
+            return {
+              ...control,
+              type: details.type,
+              name: details.name,
+              id: details.id
+            };
+          });
+        case 'targets':
+          return (props.object?.controlImplementations || []).map((control) => {
+            const details = getEntityDetailsFromLink(control.owner);
+            return {
+              ...control.owner,
+              type: getSingularType(details.type),
+              responsible: control.responsible?.name
+            };
+          });
+        case 'links':
+        default:
+          return Object.entries(props.object?.links || {}).reduce(
+            (
+              linkArray: {
+                id: string;
+                name?: string;
+                type: string;
+                linkId: string;
+              }[],
+              [linkId, links]: [string, IVeoCustomLink[]]
+            ) => {
+              for (const link of links) {
+                linkArray.push({ ...createEntityFromLink(link), linkId });
+              }
+              return linkArray;
+            },
+            []
+          ) as any[];
+      }
+    });
+    /**
+     * Fetch Data
+     */
+    const { data: translations } = useTranslations({ domain: props.domainId, languages: [locale.value] });
     const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
@@ -203,9 +279,6 @@ export default defineComponent({
         enabled: parentObjectsQueryEnabled
       }
     );
-
-    const tableSize = computed(() => (tablePageSize?.value === -1 ? 1000 : tablePageSize.value));
-
     const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({
       id: props.object?.id || '',
       domain: (route.params.domain as string) || '',
@@ -260,290 +333,264 @@ export default defineComponent({
       { enabled: risksQueryEnabled }
     );
 
-    const children = computed(() => (props.object?.type === 'scope' ? scopeChildren.value : objectChildren.value));
-
-    const tableIsLoading = computed(
-      () =>
-        parentScopesIsFetching.value ||
-        parentObjectsIsFetching.value ||
-        childScopesIsFetching.value ||
-        childObjectsIsFetching.value ||
-        risksIsFetching.value ||
-        domainIsFetching.value
+    const fetchDomainQueryParameters = computed(() => ({
+      id: props.domainId as string
+    }));
+    const { data: domain, isFetching: domainIsFetching } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters
     );
-
-    const createEntityFromLink = (link: IVeoCustomLink) => {
-      const name = link.target.displayName;
-      const splitted = link.target.targetUri.split('/');
-      const type =
-        Object.entries(schemas.value || {}).find(([_key, value]) => value === splitted[4])?.[0] || splitted[4];
-      const id = splitted[5];
-      return { id, name, type };
-    };
-
-    const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
+    /**
+     * Headers
+     */
+    const defaultHeaders = computed(() => {
       switch (props.type) {
-        case 'childScopes':
-        case 'childObjects':
-          return children.value;
-        case 'parentScopes':
-          return cloneDeep(parentScopes.value || []);
-        case 'parentObjects':
-          return parentObjects.value || [];
-        case 'risks':
-          return risks.value || [];
-        case 'controls':
-          return (props.object?.controlImplementations || []).map((control) => {
-            const details = getEntityDetailsFromLink(control.control);
-            return {
-              ...control,
-              type: details.type,
-              name: details.name,
-              id: details.id
-            };
-          });
         case 'links':
+          return ['icon', 'name'];
+        case 'controls':
+          return ['icon', 'actions'];
+        case 'risks':
+          return ['designator', 'updatedAt', 'updatedBy', 'actions'];
+        case 'targets':
+          return ['icon', 'abbreviation', 'name', 'responsible', 'actions'];
         default:
-          return Object.entries(props.object?.links || {}).reduce(
-            (
-              linkArray: {
-                id: string;
-                name?: string;
-                type: string;
-                linkId: string;
-              }[],
-              [linkId, links]: [string, IVeoCustomLink[]]
-            ) => {
-              for (const link of links) {
-                linkArray.push({ ...createEntityFromLink(link), linkId });
-              }
-              return linkArray;
-            },
-            []
-          ) as any[];
+          return [
+            'icon',
+            'designator',
+            'abbreviation',
+            'name',
+            'status',
+            'description',
+            'updatedAt',
+            'updatedBy',
+            'actions'
+          ];
       }
     });
+    const useHeaders = () => {
+      const createScenarioAbbreviationHeader = () => ({
+        value: 'scenario.abbreviation',
+        key: 'scenario.abbreviation',
+        text: t('controls.abbreviation').toString(),
+        width: 50,
+        truncate: false,
+        priority: 100,
+        order: 30,
+        render: (data: any) => data.internalItem.raw.scenario?.abbreviation || ''
+      });
 
-    const defaultHeaders = computed(() =>
-      props.type !== 'risks' && props.type !== 'links' && props.type !== 'controls' ?
-        ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedAt', 'updatedBy', 'actions']
-      : props.type === 'links' ? ['icon', 'name']
-      : props.type === 'controls' ? ['icon', 'actions']
-      : ['designator', 'updatedAt', 'updatedBy', 'actions']
-    );
+      const createScenarioDisplayNameHeader = () => ({
+        value: 'scenario.displayName',
+        key: 'scenario.displayName',
+        text: t('scenario').toString(),
+        cellClass: ['font-weight-bold'],
+        width: 200,
+        truncate: true,
+        priority: 100,
+        order: 40,
+        render: (data: any) => {
+          const sliceIndex = data.internalItem.raw?.scenario?.abbreviation ? 2 : 1;
+          return data.internalItem.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
+        }
+      });
 
+      const createRiskCategoryHeaders = () => {
+        return riskDefinitionCategories.value.map((categoryId: string, index: number) => ({
+          value: `riskValues_${categoryId}`,
+          key: `riskValues_${categoryId}`,
+          text:
+            riskDefinition.value?.categories?.find((category: IVeoRiskCategory) => category.id === categoryId)
+              ?.translations[locale.value].name || '',
+          sortable: false,
+          sort: (a: any, b: any) => {
+            const values = riskDefinition.value?.riskValues;
+            const { inherentRisk: inherentRisk1 } = getInherentAndResidualRisk(a, categoryId);
+            const translatedInherentRisk1 = values?.find((entry) => entry.ordinalValue === inherentRisk1)?.translations[
+              locale.value
+            ].name;
+            const { inherentRisk: inherentRisk2 } = getInherentAndResidualRisk(b, categoryId);
+            const translatedInherentRisk2 = values?.find((entry) => entry.ordinalValue === inherentRisk2)?.translations[
+              locale.value
+            ].name;
+            return (translatedInherentRisk1 || '').localeCompare(translatedInherentRisk2 || '');
+          },
+          render: (data: any) => {
+            const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.internalItem.raw, categoryId);
+            const riskTreatments = getRiskTreatments(data.item, categoryId);
+            const values = riskDefinition.value?.riskValues;
+            const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)?.translations[
+              locale.value
+            ].name;
+            const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)?.translations[
+              locale.value
+            ].name;
+            return h('div', [
+              translatedInherentRisk ?
+                h(
+                  VTooltip,
+                  { location: 'bottom', maxWidth: 600 },
+                  {
+                    activator: ({ attrs, props }: any) =>
+                      h('span', { ...attrs, ...props, class: 'text-grey text--darken-4' }, translatedInherentRisk),
+                    default: () => h('span', t('inherentRisk').toString())
+                  }
+                )
+              : undefined,
+              translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
+              translatedResidualRisk ?
+                h(
+                  VTooltip,
+                  { location: 'bottom', maxWidth: 600 },
+                  {
+                    activator: ({ attrs, props }: any) =>
+                      h('span', { ...attrs, ...props, class: 'pr-1' }, translatedResidualRisk),
+                    default: () => h('span', t('residualRisk').toString())
+                  }
+                )
+              : undefined,
+              ...riskTreatments.map((riskTreatment) => {
+                let icon = mdiCheck;
+                switch (riskTreatment) {
+                  case 'RISK_TREATMENT_AVOIDANCE':
+                    icon = mdiTransitDetour;
+                    break;
+                  case 'RISK_TREATMENT_REDUCTION':
+                    icon = mdiArrowDown;
+                    break;
+                  case 'RISK_TREATMENT_TRANSFER':
+                    icon = mdiArrowRight;
+                    break;
+                }
+                return h(
+                  VTooltip,
+                  { location: 'bottom', maxWidth: 600 },
+                  {
+                    activator: ({ attrs, props }: any) => h(VIcon, { ...attrs, ...props, size: 'small', icon }),
+                    default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
+                  }
+                );
+              })
+            ]);
+          },
+          priority: 89 - index,
+          order: 41 + index,
+          width: 150
+        }));
+      };
+
+      const createRiskHeaders = () => [
+        createScenarioAbbreviationHeader(),
+        createScenarioDisplayNameHeader(),
+        ...createRiskCategoryHeaders()
+      ];
+
+      const createLinkHeaders = () => [
+        {
+          value: 'abbreviation',
+          key: 'abbreviation',
+          text: t('controls.abbreviation'),
+          width: 50,
+          truncate: false,
+          priority: 100,
+          order: 20,
+          render: (data: any) => h('span', data.internalItem.raw?.abbreviation || '')
+        },
+        {
+          value: 'linkId',
+          key: 'linkId',
+          order: 30,
+          priority: 60,
+          text: t('linkName'),
+          width: 150,
+          render: (data: any) =>
+            h(
+              'span',
+              translations.value?.lang?.[locale.value]?.[data.internalItem.raw.linkId] || data.internalItem.raw.linkId
+            )
+        }
+      ];
+
+      const createControlHeaders = () => [
+        {
+          value: 'abbreviation',
+          key: 'abbreviation',
+          text: t('controls.abbreviation'),
+          width: 50,
+          truncate: false,
+          priority: 100,
+          order: 20,
+          render: (data: any) => h('span', data.internalItem.raw.control?.abbreviation || '')
+        },
+        {
+          value: 'name',
+          key: 'name',
+          text: 'Name',
+          width: 200,
+          truncate: true,
+          priority: 100,
+          order: 30,
+          render: (data: any) => h('span', data.internalItem.raw.control?.name || '')
+        },
+        {
+          value: 'description',
+          key: 'description',
+          text: t('controls.description'),
+          width: 200,
+          truncate: false,
+          priority: 20,
+          order: 35,
+          render: (data: any) => h('span', data.internalItem.raw.description || '')
+        },
+        {
+          value: 'responsibility',
+          key: 'responsibility',
+          text: t('controls.responsible'),
+          width: 100,
+          truncate: false,
+          priority: 50,
+          order: 50,
+          render: (data: any) =>
+            h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible?.name || '')
+        }
+      ];
+
+      const createTargetHeaders = () => [
+        {
+          value: 'responsible',
+          key: 'responsible',
+          text: t('controls.responsible'),
+          width: 100,
+          truncate: false,
+          priority: 50,
+          order: 50,
+          render: (data: any) =>
+            h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible || '')
+        }
+      ];
+
+      return {
+        createRiskHeaders,
+        createLinkHeaders,
+        createControlHeaders,
+        createTargetHeaders
+      };
+    };
+    const { createRiskHeaders, createLinkHeaders, createControlHeaders, createTargetHeaders } = useHeaders();
     const additionalHeaders = computed<TableHeader[]>(() => {
       if (!riskDefinitionCategories.value || !riskDefinitionId.value) return [];
-      return (
-        props.type === 'risks' ?
-          [
-            {
-              value: 'scenario.abbreviation',
-              key: 'scenario.abbreviation',
-              text: t('controls.abbreviation').toString(),
-              width: 50,
-              truncate: false,
-              priority: 100,
-              order: 30,
-              render: (data: any) => data.internalItem.raw.scenario?.abbreviation || ''
-            },
-            {
-              value: 'scenario.displayName',
-              key: 'scenario.displayName',
-              text: t('scenario').toString(),
-              cellClass: ['font-weight-bold'],
-              width: 200,
-              truncate: true,
-              priority: 100,
-              order: 40,
-              render: (data: any) => {
-                // The display name contains designator, abbreviation and name of the scenario, however we only want the name, so we split the string
-                // As the abbreviation is optional, we check for it and slice accordingly
-                const sliceIndex = data.internalItem.raw?.scenario?.abbreviation ? 2 : 1;
-                return data.internalItem.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
-              }
-            },
-            ...riskDefinitionCategories.value.map((categoryId: string, index: number) => ({
-              value: `riskValues_${categoryId}`,
-              key: `riskValues_${categoryId}`,
-              text:
-                riskDefinition.value?.categories?.find((category: IVeoRiskCategory) => category.id === categoryId)
-                  ?.translations[locale.value].name || '',
-              sortable: false, // TODO 2023-02-27: Currently disabled, as sort is not working at the moment (vuetify 3.1.6)
-              sort: (a: any, b: any) => {
-                const values = riskDefinition.value?.riskValues;
-
-                const { inherentRisk: inherentRisk1 } = getInherentAndResidualRisk(a, categoryId);
-                const translatedInherentRisk1 = values?.find((entry) => entry.ordinalValue === inherentRisk1)
-                  ?.translations[locale.value].name;
-
-                const { inherentRisk: inherentRisk2 } = getInherentAndResidualRisk(b, categoryId);
-                const translatedInherentRisk2 = values?.find((entry) => entry.ordinalValue === inherentRisk2)
-                  ?.translations[locale.value].name;
-
-                return (translatedInherentRisk1 || '').localeCompare(translatedInherentRisk2 || '');
-              },
-              render: (data: any) => {
-                const { inherentRisk, residualRisk } = getInherentAndResidualRisk(data.internalItem.raw, categoryId);
-                const riskTreatments = getRiskTreatments(data.item, categoryId);
-                const values = riskDefinition.value?.riskValues;
-
-                const translatedInherentRisk = values?.find((entry) => entry.ordinalValue === inherentRisk)
-                  ?.translations[locale.value].name;
-                const translatedResidualRisk = values?.find((entry) => entry.ordinalValue === residualRisk)
-                  ?.translations[locale.value].name;
-
-                return h('div', [
-                  translatedInherentRisk ?
-                    h(
-                      VTooltip,
-                      {
-                        location: 'bottom',
-                        maxWidth: 600
-                      },
-                      {
-                        activator: ({ attrs, props }: any) =>
-                          h(
-                            'span',
-                            {
-                              ...attrs,
-                              ...props,
-                              class: 'text-grey text--darken-4'
-                            },
-                            translatedInherentRisk
-                          ),
-                        default: () => h('span', t('inherentRisk').toString())
-                      }
-                    )
-                  : undefined,
-                  translatedInherentRisk && translatedResidualRisk ? h('span', ' / ') : undefined,
-                  translatedResidualRisk ?
-                    h(
-                      VTooltip,
-                      {
-                        location: 'bottom',
-                        maxWidth: 600
-                      },
-                      {
-                        activator: ({ attrs, props }: any) =>
-                          h('span', { ...attrs, ...props, class: 'pr-1' }, translatedResidualRisk),
-                        default: () => h('span', t('residualRisk').toString())
-                      }
-                    )
-                  : undefined,
-                  riskTreatments.map((riskTreatment) => {
-                    let icon = mdiCheck;
-                    switch (riskTreatment) {
-                      case 'RISK_TREATMENT_AVOIDANCE':
-                        icon = mdiTransitDetour;
-                        break;
-                      case 'RISK_TREATMENT_REDUCTION':
-                        icon = mdiArrowDown;
-                        break;
-                      case 'RISK_TREATMENT_TRANSFER':
-                        icon = mdiArrowRight;
-                        break;
-                    }
-
-                    return h(
-                      VTooltip,
-                      {
-                        location: 'bottom',
-                        maxWidth: 600
-                      },
-                      {
-                        activator: ({ attrs, props }: any) =>
-                          h(VIcon, {
-                            ...attrs,
-                            ...props,
-                            size: 'small',
-                            icon
-                          }),
-                        default: () => h('span', t(`riskTreatments.${riskTreatment}`).toString())
-                      }
-                    );
-                  })
-                ]);
-              },
-              priority: 89 - index,
-              order: 41 + index,
-              width: 150
-            }))
-          ]
-        : props.type === 'links' ?
-          [
-            {
-              value: 'abbreviation',
-              key: 'abbreviation',
-              text: t('controls.abbreviation'),
-              width: 50,
-              truncate: false,
-              priority: 100,
-              order: 20,
-              render: (data: any) => h('span', data.internalItem.raw?.abbreviation || '')
-            },
-            {
-              value: 'linkId',
-              key: 'linkId',
-              order: 30,
-              priority: 60,
-              text: t('linkName'),
-              width: 150,
-              render: (data: any) =>
-                h(
-                  'span',
-                  translations.value?.lang?.[locale.value]?.[data.internalItem.raw.linkId] ||
-                    data.internalItem.raw.linkId
-                )
-            }
-          ]
-        : props.type === 'controls' ?
-          [
-            {
-              value: 'abbreviation',
-              key: 'abbreviation',
-              text: t('controls.abbreviation'),
-              width: 50,
-              truncate: false,
-              priority: 100,
-              order: 20,
-              render: (data: any) => h('span', data.internalItem.raw.control?.abbreviation || '')
-            },
-            {
-              value: 'name',
-              key: 'name',
-              text: 'Name',
-              width: 200,
-              truncate: true,
-              priority: 100,
-              order: 30,
-              render: (data: any) => h('span', data.internalItem.raw.control?.name || '')
-            },
-            {
-              value: 'description',
-              key: 'description',
-              text: t('controls.description'),
-              width: 200,
-              truncate: false,
-              priority: 20,
-              order: 35,
-              render: (data: any) => h('span', data.internalItem.raw.description || '')
-            },
-            {
-              value: 'responsibility',
-              key: 'responsibility',
-              text: t('controls.responsible'),
-              width: 100,
-              truncate: false,
-              priority: 50,
-              order: 50,
-              render: (data) =>
-                h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible?.name || '')
-            }
-          ]
-        : []
-      );
-    }); // end additionalHeaders
+      switch (props.type) {
+        case 'risks':
+          return createRiskHeaders();
+        case 'links':
+          return createLinkHeaders();
+        case 'controls':
+          return createControlHeaders();
+        case 'targets':
+          return createTargetHeaders();
+        default:
+          return [];
+      }
+    });
 
     // Crud stuff
     const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
@@ -571,15 +618,15 @@ export default defineComponent({
       }
     }
 
-    const controlsEditDialogVisible = ref<boolean>(false);
-    const confirmationDialogVisible = ref(false);
-    const confirmationDialogCallBack = ref<(...args: any[]) => any>(() => {});
-
-    const controlNameToUnlink = ref<string>('');
-    const index = ref<number>();
     /**
      * actions for cloning or unlinking objects
      */
+    const controlsEditDialogVisible = ref<boolean>(false);
+    const confirmationDialogVisible = ref(false);
+    const confirmationDialogCallBack = ref<(...args: any[]) => any>(() => {});
+    const controlNameToUnlink = ref<string>('');
+    const index = ref<number>();
+
     const actions = computed(() => {
       switch (props.type) {
         case 'risks':
@@ -746,24 +793,12 @@ export default defineComponent({
       scenarioId: undefined
     });
 
-    // Map object types to corresponding url paths segments
-    type ObjectTypeToUrlMap = { [key: string]: string };
-    const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
-      scope: 'scopes',
-      process: 'processes',
-      asset: 'assets',
-      person: 'persons',
-      incident: 'incidents',
-      document: 'documents',
-      scenario: 'scenarios',
-      control: 'controls'
-    };
     // push to object detail site (on click in table)
     const openItem = ({ internalItem }) => {
       const item = internalItem.raw as IVeoRisk;
       // assemble route params
       const { id: itemId, type: itemType } = internalItem.raw as IVeoEntity;
-      const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || route.params.objectType;
+      const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || itemType || route.params.objectType;
       const params = {
         ...route.params,
         object: itemId,
@@ -793,15 +828,9 @@ export default defineComponent({
       }
     };
 
-    // Risk tab
-    const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string
-    }));
-    const { data: domain, isFetching: domainIsFetching } = useQuery(
-      domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters
-    );
-
+    /**
+     * Risk tab
+     */
     const riskDefinition: ComputedRef<IVeoRiskDefinition> = computed(
       () => Object.values((domain.value?.riskDefinitions as object) || {})[0]
     );
