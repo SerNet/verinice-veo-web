@@ -59,7 +59,7 @@
     <ObjectCreateDialog
       v-if="createObjectDialog.objectType"
       v-model="createObjectDialog.value"
-      :domain-id="$route.params.domain as string"
+      :domain-id="$route.params.domain"
       :object-type="createObjectDialog.objectType"
       :sub-type="subType"
       :parent-scope-ids="createObjectDialog.parentScopeIds"
@@ -68,7 +68,7 @@
     <RiskCreateDialog
       v-if="object && createRiskDialogVisible"
       v-model="createRiskDialogVisible"
-      :domain-id="$route.params.domain as string"
+      :domain-id="$route.params.domain"
       :object-id="object.id"
       @success="onCreateRiskSuccess"
     />
@@ -80,10 +80,9 @@ import { PropType } from 'vue';
 import { upperFirst, cloneDeep } from 'lodash';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
 
-import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+import type { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject, useCreateLink } from '~/composables/VeoObjectUtilities';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
@@ -114,105 +113,124 @@ export default defineComponent({
     const { createLink } = useCreateLink();
     const queryClient = useQueryClient();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { data: translations } = useTranslations({
+      domain: route.params.domain as string,
+      languages: [locale.value]
+    });
 
-    const fetchTranslationsQueryParameters = computed(() => ({
-      languages: [locale.value],
-      domain: route.params.domain as string
-    }));
-    const { data: translations } = useQuery(
-      translationQueryDefinitions.queries.fetch,
-      fetchTranslationsQueryParameters
-    );
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const speedDialIsOpen = ref(false);
 
-    // configure possible action items
-    const actions = computed(() => {
-      const getCreateObjectTranslationParams = () => {
-        if (props.object?.type === 'scope') {
-          return t('object');
-        }
-        return translations.value?.lang[locale.value]?.[props.object?.type || ''] || t('object');
-      };
+    // Helper functions
+    const getCreateObjectTranslationParams = () => {
+      if (props.object?.type === 'scope') {
+        return t('object');
+      }
+      return translations.value?.lang[locale.value]?.[props.object?.type || ''] || t('object');
+    };
 
-      const getLinkObjectTranslationParams = () => {
-        if (props.type === 'controls') {
-          return t('controls');
-        }
-        return getCreateObjectTranslationParams();
-      };
+    const getLinkObjectTranslationParams = () => {
+      if (props.type === 'controls') {
+        return t('controls');
+      }
+      return getCreateObjectTranslationParams();
+    };
 
-      const getLinkObjectTranslation = () => {
-        return t('linkObject', [getLinkObjectTranslationParams()]);
-      };
+    const getLinkObjectTranslation = () => {
+      return t('linkObject', [getLinkObjectTranslationParams()]);
+    };
 
-      const createObjectAction = () =>
-        openCreateObjectDialog(
-          props.object?.type === 'scope' ? undefined : props.object?.type,
-          props.type === 'childObjects'
-        );
-      const linkObjectAction = () => {
-        let type = props.object?.type;
-        if (props.object?.type === 'scope') type = undefined;
-        if (props.type === 'controls') type = 'control';
-        openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls');
-      };
-      const createScopeAction = () => openCreateObjectDialog('scope', props.type === 'childScopes');
-      const linkScopeAction = () => openLinkObjectDialog('scope', props.type === 'childScopes');
-      const createRiskAction = () => onCreateRisk();
+    // Action functions
+    const createObjectAction = () =>
+      openCreateObjectDialog(
+        props.object?.type === 'scope' ? undefined : props.object?.type,
+        props.type === 'childObjects'
+      );
+    const linkObjectAction = () => {
+      let type = props.object?.type;
+      if (props.object?.type === 'scope') type = undefined;
+      if (props.type === 'controls') type = 'control';
+      openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls');
+    };
 
-      const createAction = (
-        key: string,
-        title: string,
-        icon: any,
-        tab: string[],
-        objectTypes: string[],
-        action: () => void
-      ) => ({
-        key,
-        title: title.toString(),
-        icon,
-        tab,
-        objectTypes,
-        action
-      });
+    const createScopeAction = () => openCreateObjectDialog('scope', props.type === 'childScopes');
+    const linkScopeAction = () =>
+      openLinkObjectDialog('scope', props.type === 'childScopes' || props.type !== 'targets');
+    const linkAssetAction = () => openLinkObjectDialog('asset', props.type !== 'targets');
+    const linkProcessAction = () => openLinkObjectDialog('process', props.type !== 'targets');
+    const createRiskAction = () => onCreateRisk();
 
-      return [
-        createAction(
-          'createObject',
-          t('createObject', [getCreateObjectTranslationParams()]),
-          mdiPlus,
-          ['childObjects', 'parentObjects'],
-          ['entity'],
-          createObjectAction
-        ),
-        createAction(
-          'linkObject',
-          getLinkObjectTranslation(),
-          mdiLinkPlus,
-          ['childObjects', 'parentObjects', 'controls'],
-          ['entity'],
-          linkObjectAction
-        ),
-        createAction(
-          'createScope',
-          t('createScope'),
-          mdiPlus,
-          ['childScopes', 'parentScopes'],
-          ['scope', 'entity'],
-          createScopeAction
-        ),
-        createAction(
-          'linkScope',
-          t('linkScope'),
-          mdiLinkPlus,
-          ['childScopes', 'parentScopes'],
-          ['scope', 'entity'],
-          linkScopeAction
-        ),
-        createAction('createRisk', t('createRisk'), mdiPlus, ['risks'], ['entity'], createRiskAction)
-      ];
-    });
+    // Action configuration
+    const actionConfigs = [
+      {
+        key: 'createObject',
+        title: t('createObject', [getCreateObjectTranslationParams()]),
+        icon: mdiPlus,
+        tab: ['childObjects', 'parentObjects'],
+        objectTypes: ['entity'],
+        action: createObjectAction
+      },
+      {
+        key: 'linkObject',
+        title: getLinkObjectTranslation(),
+        icon: mdiLinkPlus,
+        tab: ['childObjects', 'parentObjects', 'controls'],
+        objectTypes: ['entity'],
+        action: linkObjectAction
+      },
+      {
+        key: 'createScope',
+        title: t('createScope'),
+        icon: mdiPlus,
+        tab: ['childScopes', 'parentScopes'],
+        objectTypes: ['scope', 'entity'],
+        action: createScopeAction
+      },
+      {
+        key: 'linkScope',
+        title: t('linkScope'),
+        icon: mdiLinkPlus,
+        tab: ['childScopes', 'parentScopes', 'targets'],
+        objectTypes: ['scope', 'entity', 'targets'],
+        action: linkScopeAction
+      },
+      {
+        key: 'linkProcess',
+        title: t('linkProcess'),
+        icon: mdiLinkPlus,
+        tab: ['targets'],
+        objectTypes: ['entity', 'targets'],
+        action: linkProcessAction
+      },
+      {
+        key: 'linkAsset',
+        title: t('linkAsset'),
+        icon: mdiLinkPlus,
+        tab: ['targets'],
+        objectTypes: ['entity', 'targes'],
+        action: linkAssetAction
+      },
+      {
+        key: 'createRisk',
+        title: t('createRisk'),
+        icon: mdiPlus,
+        tab: ['risks'],
+        objectTypes: ['entity'],
+        action: createRiskAction
+      }
+    ];
+
+    // Create actions dynamically
+    const actions = computed(() =>
+      actionConfigs.map((config) => ({
+        key: config.key,
+        title: config.title.toString(),
+        icon: config.icon,
+        tab: config.tab,
+        objectTypes: config.objectTypes,
+        action: config.action
+      }))
+    );
 
     // filter allowed actions for current type
     const allowedActions = computed(() => {
@@ -230,22 +248,24 @@ export default defineComponent({
     // dialog options
     const addEntityDialog = ref<{
       object: IVeoEntity | undefined;
-      editScopeRelationship: boolean;
+      editRelationship: string | undefined;
       value: boolean;
       editParents: boolean;
       preselectedItems: (IVeoLink | IVeoEntity)[];
       returnObjects: boolean;
       preselectedFilters: Record<string, any>;
       disabledFields: string[];
+      linkRiskAffected: boolean;
     }>({
       object: undefined,
-      editScopeRelationship: false,
+      editRelationship: '',
       value: false,
       editParents: false,
       preselectedItems: [],
       returnObjects: false,
       preselectedFilters: {},
-      disabledFields: []
+      disabledFields: [],
+      linkRiskAffected: false
     });
 
     const createEntityDialog = ref({
@@ -283,22 +303,38 @@ export default defineComponent({
       linkDialogKey.value += 1;
     };
 
-    // control dialogs
+    // Control dialog function
     const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean, isControlImplementation?: boolean) => {
       addEntityDialog.value = {
-        object: isControlImplementation ? { type: 'control', displayName: 'CI' } : props.object,
-        editScopeRelationship: objectType === 'scope',
+        object: props.object,
+        editRelationship: objectType,
         value: true,
-        editParents: addAsChild !== undefined && !addAsChild,
-        preselectedItems:
-          isControlImplementation ? props.object?.controlImplementations?.map((control) => control.control) : [],
+        editParents: addAsChild === false,
+        preselectedItems: getPreselectedItems(isControlImplementation),
         returnObjects: !!isControlImplementation,
-        preselectedFilters: isControlImplementation ? { subType: 'CTL_Module' } : {},
-        disabledFields: isControlImplementation ? ['subType'] : []
+        preselectedFilters: getPreselectedFilters(isControlImplementation),
+        disabledFields: getDisabledFields(isControlImplementation),
+        linkRiskAffected: props.type === 'targets'
       };
       forceRerender();
     };
 
+    // Helper functions for openLinkObjectDialog
+    const getPreselectedItems = (isControlImplementation?: boolean): IVeoLink[] => {
+      if (!isControlImplementation) return [];
+
+      return (props.object?.controlImplementations ?? []).map((ci: IVeoControlImplementation) => ci.control);
+    };
+
+    const getPreselectedFilters = (isControlImplementation?: boolean) => {
+      return isControlImplementation ? { subType: 'CTL_Module' } : {};
+    };
+
+    const getDisabledFields = (isControlImplementation?: boolean) => {
+      return isControlImplementation ? ['subType'] : [];
+    };
+
+    // Update Item on Return Objects
     const onItemsUpdated = async (newItems: (IVeoEntity | IVeoLink)[]) => {
       const copy = cloneDeep(props.object);
       if (!copy) return;
@@ -407,6 +443,8 @@ export default defineComponent({
     "createRisk": "create risk",
     "createScope": "create scope",
     "linkScope": "select scope",
+    "linkAsset": "select asset",
+    "linkProcess": "select process",
     "object": "object",
     "objectLinked": "The links were successfully updated.",
     "objectNotLinked": "The links could not be updated."
@@ -416,6 +454,8 @@ export default defineComponent({
     "createRisk": "Risiko hinzufügen",
     "createScope": "Scope erstellen",
     "linkScope": "Scope auswählen",
+    "linkAsset": "Asset auswählen",
+    "linkProcess": "Prozess auswählen",
     "object": "Objekt",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
     "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden."

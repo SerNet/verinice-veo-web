@@ -113,9 +113,9 @@ export default defineComponent({
     /**
      * Defines whether the current objects parent/child scopes should be edited or the parent/child objects of the same type as the object.
      */
-    editScopeRelationship: {
-      type: Boolean,
-      default: false
+    editRelationship: {
+      type: String,
+      default: ''
     },
     /**
      * Defines whether the selected objects should be added as children or as parents
@@ -136,13 +136,17 @@ export default defineComponent({
      * Pass a list of objects that should be preselected. Those values will be merged with the values defined in this component.
      */
     preselectedItems: {
-      type: Array as PropType<IVeoEntity[]>,
+      type: Array as PropType<(IVeoLink | IVeoEntity)[]>,
       default: () => []
     },
     /**
      * Instead of saving, returns the selected items
      */
     returnObjects: {
+      type: Boolean,
+      default: false
+    },
+    linkRiskAffected: {
       type: Boolean,
       default: false
     },
@@ -166,19 +170,38 @@ export default defineComponent({
     const { unlink } = useUnlinkObject();
     const { ability } = useVeoPermissions();
     const queryClient = useQueryClient();
+    const { createLink } = useCreateLink();
+    const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const title = computed(() => {
+      const { object, editParents } = props;
+      const displayName = [object?.displayName];
 
-    const title = computed(() =>
-      t(
-        props.object?.type === 'control' ? 'addControls'
-        : props.editParents && props.editScopeRelationship ? 'editParentScopes'
-        : props.editScopeRelationship ? 'editChildScopes'
-        : props.editParents ? 'editParentObjects'
-        : 'editChildObjects',
-        [props.object?.displayName]
-      )
-    );
+      if (object?.type === 'control' && object?.subType === 'CTL_Module') {
+        return t('addTarget', [props.editRelationship]);
+      }
+
+      if (object?.type === 'control') {
+        return t('addControls', displayName);
+      }
+
+      const editScopeRelationship = props.editRelationship === 'scope';
+
+      if (editParents && editScopeRelationship) {
+        return t('editParentScopes', displayName);
+      }
+
+      if (editScopeRelationship) {
+        return t('editChildScopes', displayName);
+      }
+
+      if (editParents) {
+        return t('editParentObjects', displayName);
+      }
+
+      return t('editChildObjects', displayName);
+    });
 
     // Table/filter logic
     const filter = ref<Record<string, any>>({});
@@ -263,8 +286,8 @@ export default defineComponent({
     // get allowed filter-objectTypes for current parent and child type
     const availableObjectTypes = computed<string[]>(() => {
       const objectSchemaNames = Object.keys(endpoints.value || {});
-      if (props.editScopeRelationship) {
-        return objectSchemaNames.filter((item) => item === 'scope');
+      if (props.editRelationship) {
+        return objectSchemaNames.filter((item) => item === props.editRelationship);
       } else if (props.object?.type === 'scope') {
         return objectSchemaNames.filter((item) => item !== 'scope');
       } else {
@@ -334,8 +357,21 @@ export default defineComponent({
     );
     const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);
 
-    const originalSelectedItems = computed(() => (props.editParents ? parents.value?.items || [] : children.value)); // Doesn't get modified to compare which parents have been added removed
-    const modifiedSelectedItems = ref<IVeoEntity[]>([]);
+    const originalSelectedItems = computed(() => {
+      if (props.linkRiskAffected) {
+        return (
+          objects.value?.items.filter((item) =>
+            props.object?.controlImplementations?.some((ci) => ci.owner.id === item.id)
+          ) || []
+        );
+      } else if (props.editParents) {
+        return parents.value?.items || [];
+      } else {
+        return children.value;
+      }
+    }); // Doesn't get modified to compare which parents have been added removed
+
+    const modifiedSelectedItems = ref<(IVeoEntity | IVeoLink)[]>([]);
     const isDirty = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
 
     watch(
@@ -351,54 +387,107 @@ export default defineComponent({
     // Linking logic
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
-      if (ability.value.cannot('manage', 'objects')) {
-        return;
-      }
+      if (ability.value.cannot('manage', 'objects')) return;
       if (props.returnObjects) {
-        emit('update:preselected-items', modifiedSelectedItems.value);
-        emit('update:model-value', false);
+        handleReturnObjects();
       } else {
         savingObject.value = true;
         try {
           if (props.object && endpoints.value) {
-            if (props.editParents) {
-              const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
-              const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
-              for (const parent of parentsToAdd) {
-                const _parent = await useQuerySync(
-                  objectQueryDefinitions.queries.fetch,
-                  {
-                    domain: route.params.domain as string,
-                    endpoint: endpoints.value?.[parent.type],
-                    id: parent.id
-                  },
-                  queryClient
-                );
-                await link(_parent, props.object);
-              }
-              for (const parent of parentsToRemove) {
-                const _parent = await useQuerySync(
-                  objectQueryDefinitions.queries.fetch,
-                  {
-                    domain: route.params.domain as string,
-                    endpoint: endpoints.value?.[parent.type],
-                    id: parent.id
-                  },
-                  queryClient
-                );
-                await unlink(_parent, props.object.id);
-              }
-            } else {
-              await link(props.object, modifiedSelectedItems.value, true);
-            }
+            await handleObjectLinking();
           }
           emit('success');
-        } catch (error: any) {
+        } catch (error) {
           emit('error', error);
         } finally {
           savingObject.value = false;
         }
       }
+    };
+
+    const handleReturnObjects = () => {
+      emit('update:preselected-items', modifiedSelectedItems.value);
+      emit('update:model-value', false);
+    };
+
+    // Usage
+    const handleObjectLinking = async () => {
+      if (props.linkRiskAffected) {
+        handleLinkRiskAffected();
+      } else if (props.editParents) {
+        await linkOrUnlinkParents();
+      } else {
+        if (props.object) {
+          await link(props.object, modifiedSelectedItems.value, true);
+        }
+      }
+    };
+
+    const handleLinkRiskAffected = async () => {
+      const elementsToEdit: (IVeoEntity | IVeoLink)[] = differenceBy(
+        modifiedSelectedItems.value,
+        originalSelectedItems.value,
+        'id'
+      );
+      for (const element of elementsToEdit) {
+        await processElement(element);
+      }
+    };
+
+    const processElement = async (element: (IVeoEntity | IVeoLink)[]) => {
+      const clonedObject = await useQuerySync(
+        objectQueryDefinitions.queries.fetch,
+        {
+          domain: route.params.domain as string,
+          endpoint: endpoints.value?.[element.type] || '',
+          id: element.id
+        },
+        queryClient
+      );
+      clonedObject.controlImplementations?.push({
+        control: 'targetUri' in props.object ? props.object : createLink('controls', props.object.id)
+      });
+      await updateObject({
+        domain: route.params.domain,
+        endpoint: endpoints.value?.[element.type] || [],
+        id: clonedObject.id,
+        object: clonedObject
+      });
+    };
+
+    const linkOrUnlinkParents = async () => {
+      const parentsToAdd = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
+      const parentsToRemove = differenceBy(originalSelectedItems.value, modifiedSelectedItems.value, 'id');
+
+      for (const parent of parentsToAdd) {
+        await fetchAndLinkParent(parent);
+      }
+
+      for (const parent of parentsToRemove) {
+        await fetchAndUnlinkParent(parent);
+      }
+    };
+
+    const fetchAndLinkParent = async (parent: IVeoEntity) => {
+      const _parent: IVeoEntity = await fetchParent(parent);
+      await link(_parent, props.object);
+    };
+
+    const fetchAndUnlinkParent = async (parent: IVeoEntity) => {
+      const _parent: IVeoEntity = await fetchParent(parent);
+      await unlink(_parent, props.object.id);
+    };
+
+    const fetchParent = async (parent: IVeoEntity) => {
+      return await useQuerySync(
+        objectQueryDefinitions.queries.fetch,
+        {
+          domain: route.params.domain as string,
+          endpoint: endpoints.value?.[parent.type],
+          id: parent.id
+        },
+        queryClient
+      );
     };
 
     watch(
@@ -472,7 +561,8 @@ export default defineComponent({
     "object": "object",
     "noDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
     "noSearchResults": "Your search did not match any results",
-    "catalog": "catalog"
+    "catalog": "catalog",
+    "addTarget": "Add {0}"
         },
   "de": {
     "editChildObjects": "Teile von \"{0}\" bearbeiten",
@@ -482,7 +572,8 @@ export default defineComponent({
     "object": "Objekt",
     "noDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
     "noSearchResults": "Ihre Suche ergab keine Treffer",
-    "catalog": "Katalog"
+    "catalog": "Katalog",
+    "addTarget": "{0} hinzufügen"
     }
 }
 </i18n>

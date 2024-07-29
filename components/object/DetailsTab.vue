@@ -104,7 +104,7 @@ import {
   IVeoRiskCategory,
   IVeoRiskDefinition,
   IVeoRiskValue,
-  OBJECT_TYPE_TO_URL_MAP,
+  VeoElementTypesSingular,
   VeoRiskTreatment
 } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -120,7 +120,6 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
 import { VeoSort } from '~/types/VeoSort';
-import { getSingularType } from '~/types/utils';
 import { useFetchParentObjects } from '~/composables/api/objects';
 
 export default defineComponent({
@@ -219,7 +218,7 @@ export default defineComponent({
             const details = getEntityDetailsFromLink(control.owner);
             return {
               ...control.owner,
-              type: getSingularType(details.type),
+              type: VeoElementTypesSingular[details.type as keyof typeof VeoElementTypesSingular],
               responsible: control.responsible?.name
             };
           });

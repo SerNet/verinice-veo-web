@@ -37,7 +37,7 @@
             v-model:active-tab="activeTab"
             class="mb-10"
             :loading="loading"
-            :object="object.value"
+            :object="object"
             :domain-id="domainId"
             :dense="!!pageWidths[1]"
             @reload="updateObjectRelationships"
@@ -49,7 +49,7 @@
           <ObjectActionMenu
             color="primary"
             :disabled="ability.cannot('manage', 'objects')"
-            :object="object.value"
+            :object="object"
             :type="activeTab"
             @reload="updateObjectRelationships"
           />
@@ -66,7 +66,7 @@
             class="pb-4"
             :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
             :object-type="objectType"
-            :original-object="object.value"
+            :original-object="object"
             :loading="loading || !modifiedObject"
             :domain-id="domainId"
             :additional-context="additionalContext"
@@ -218,17 +218,16 @@ const {
   onSuccess: async (data: IVeoEntity) => {
     if (route.params.objectType === 'controls') {
       try {
-        const { data: Cis, isFetching: CisIsLoading } = useQuery(
+        const { data: cis } = useQuery(
           objectQueryDefinitions.queries.fetchObjectControlImplementations,
           fetchObjectQueryParameters,
           {
             enabled: fetchObjectQueryEnabled
           }
         );
-        additionalData.value = { controlImplementations: Cis.value };
+        additionalData.value = { controlImplementations: cis.value };
       } catch (error) {
         console.error(error);
-      } finally {
         additionalData.value = {};
       }
     } else {
@@ -253,9 +252,13 @@ const {
   }
 });
 
-const object = computed(() => ref<IVeoEntity>({ ...fetchedObject.value, ...additionalData.value }));
-watch([additionalData], () => {
-  Object.assign(object.value?.value, additionalData.value);
+const object = computed(() => ({
+  ...fetchedObject.value,
+  ...additionalData.value
+}));
+
+watch(additionalData, () => {
+  if (object.value && additionalData) Object.assign(object.value, additionalData.value);
 });
 
 onUnmounted(() => {
@@ -286,25 +289,8 @@ const objectType = computed(
   () => Object.entries(endpoints.value || {}).find(([, endpoint]) => endpoint === route.params.objectType)?.[0]
 );
 
-const areObjectsEqual = (originalObject: any, modifiedObject: any) => {
-  if (!originalObject || !modifiedObject) return true;
-  // Compare base properties
-  const baseEquality = isObjectEqual(
-    { ...originalObject, controlImplementations: undefined },
-    { ...modifiedObject, controlImplementations: undefined }
-  ).isEqual;
-
-  const additionalPropertiesEquality =
-    originalObject.type === 'control' ?
-      isObjectEqual(originalObject.controlImplementations, modifiedObject.controlImplementations).isEqual
-    : true;
-
-  return baseEquality && additionalPropertiesEquality;
-};
-
 const isFormDirty = computed(
-  () =>
-    !areObjectsEqual(object.value?.value as IVeoEntity, modifiedObject.value as IVeoEntity) && !formDataIsRevision.value
+  () => !isEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity) && !formDataIsRevision.value
 );
 const isFormValid = ref(false);
 const objectForm = ref();

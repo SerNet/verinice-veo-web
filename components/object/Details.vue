@@ -173,7 +173,9 @@ export default defineComponent({
     });
 
     const isControlsTabHidden = computed(() => {
-      return !isRiskAffected || ['DS-GVO', 'NIS2'].includes(domain.value?.name);
+      return (
+        !isRiskAffected || ['DS-GVO', 'NIS2'].includes(domain.value?.name) || props.object?.subType === 'CTL_Module'
+      );
     });
 
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
@@ -199,8 +201,12 @@ export default defineComponent({
         hidden: !hasRiskTab.value
       },
       {
-        key: props.object?.type === 'control' && props.object?.subType === 'CTL_Module' ? 'targets' : 'controls',
+        key: 'controls',
         hidden: isControlsTabHidden.value
+      },
+      {
+        key: 'targets',
+        hidden: props.object?.subType !== 'CTL_Module'
       }
     ]);
 

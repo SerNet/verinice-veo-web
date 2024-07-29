@@ -559,20 +559,29 @@ export interface IVeoObjectControlCompendiumEntry {
   };
 }
 
-type ObjectTypeToUrlMap = { [key: string]: string };
-export const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
-  scope: 'scopes',
-  process: 'processes',
-  asset: 'assets',
-  person: 'persons',
-  incident: 'incidents',
-  document: 'documents',
-  scenario: 'scenarios',
-  control: 'controls'
-};
+export enum VeoElementTypePlurals {
+  scope = 'scopes',
+  process = 'processes',
+  asset = 'assets',
+  person = 'persons',
+  incident = 'incidents',
+  document = 'documents',
+  scenario = 'scenarios',
+  control = 'controls'
+}
 
-// Create the reverse map (plural to singular)
-export const URL_TO_OBJECT_TYPE_MAP: Record<string, string> = {};
-Object.entries(OBJECT_TYPE_TO_URL_MAP).forEach(([singular, plural]) => {
-  URL_TO_OBJECT_TYPE_MAP[plural] = singular;
-});
+export enum VeoElementTypesSingular {
+  scopes = 'scope',
+  processes = 'process',
+  assets = 'asset',
+  persons = 'person',
+  incidents = 'incident',
+  documents = 'document',
+  scenarios = 'scenario',
+  controls = 'control'
+}
+
+export type VeoSort = {
+  key: string;
+  order: 'asc' | 'desc';
+};
