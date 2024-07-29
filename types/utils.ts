@@ -16,10 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { URL_TO_OBJECT_TYPE_MAP } from './VeoTypes';
+
 export type TInlineComponent = {
   props?: string[];
   emits?: string[];
   data?: () => Record<string, any>;
   methods?: Record<string, () => void | any>;
   template?: string;
+};
+
+export const getSingularType = (pluralType: string): string | undefined => {
+  return URL_TO_OBJECT_TYPE_MAP[pluralType];
 };

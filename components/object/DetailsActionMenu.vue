@@ -45,7 +45,7 @@ import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
 import ObjectDeleteDialog from '~/components/object/DeleteDialog.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { OBJECT_TYPE_TO_URL_MAP } from '~/types/VeoTypes';
 
 import type { IVeoEntity } from '~/types/VeoTypes';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
@@ -172,9 +172,9 @@ const visibleItems = computed(() =>
 
 // Veo actions
 const actionsRequestParams = {
-  domainId: route.params.domain as string,
-  elementType: VeoElementTypePlurals[props.object?.type as keyof typeof VeoElementTypePlurals],
-  elementId: props.object?.id as string
+  domainId: route.params.domain,
+  elementType: props.object?.type ? OBJECT_TYPE_TO_URL_MAP[props.object.type] : undefined,
+  elementId: props.object?.id!
 };
 
 const { data: actions, isLoading: isLoadingActions } = useActions(actionsRequestParams);
