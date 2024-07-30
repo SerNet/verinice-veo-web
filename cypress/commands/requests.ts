@@ -28,7 +28,7 @@ export function veoRequest({
 }): any {
   const options = requestBody ? { method, json: requestBody } : { method };
 
-  if (Cypress.env('debug')) cy.log('veoRequest arguments:', JSON.stringify(arguments));
+  if (Cypress.env('debug')) cy.log('veoRequest arguments:', (...args: any[]) => JSON.stringify(args));
 
   // Make sure window.request is available
   if (waitForRequestMethod) {
