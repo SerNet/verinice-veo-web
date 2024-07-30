@@ -71,7 +71,8 @@
                 {{ t('requirementDescription') }}
               </template>
               <template #text>
-                <div v-if="additionalInfo.requirementDescription" v-html="additionalInfo.requirementDescription"></div>
+                <!-- eslint-disable-next-line vue/no-v-html -- input sanitized -->
+                <div v-if="additionalInfo.requirementDescription" v-html="sanitizedDescription"></div>
                 <div v-else>{{ t('noRequirementDescriptionAvailable') }}</div>
               </template>
             </v-expansion-panel>
@@ -192,6 +193,8 @@ import { IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
 import { format } from 'date-fns';
 import { useDate } from 'vuetify';
 
+import DOMPurify from 'dompurify';
+
 const { request } = useRequest();
 
 const { t } = useI18n();
@@ -306,6 +309,7 @@ const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, contro
 });
 
 const additionalInfo = ref({});
+const sanitizedDescription = ref<string>('');
 
 const updateControlInfo = (control) => {
   const customAspects = control?.customAspects as IVeoObjectControlCompendiumEntry | undefined;
@@ -318,6 +322,14 @@ const updateControlInfo = (control) => {
 };
 
 watch(control, () => updateControlInfo(control.value), { immediate: true });
+
+watch(
+  () => additionalInfo.value.requirementDescription,
+  (newDescription) => {
+    sanitizedDescription.value = DOMPurify.sanitize(newDescription);
+  },
+  { immediate: true }
+);
 
 // Get and translate the protection approach value of the current item
 const { data: translations } = useTranslations({ domain: props.domainId });
