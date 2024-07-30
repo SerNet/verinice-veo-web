@@ -102,7 +102,7 @@ describe.skip('Add Elements to other Domain', () => {
       cy.then(() => {
         cy.selectDomain(targetDomain);
         navigateToElementType(elementType);
-        let foundCount = 0;
+        let _foundCount = 0;
         targetObjects.forEach((target) => {
           const targetObject = target.object;
           const targetObjectStatus = target.status;
@@ -130,7 +130,7 @@ describe.skip('Add Elements to other Domain', () => {
             .filter(`:contains("${targetObjectStatus}")`)
             .then(($rows) => {
               if ($rows.length === 1) {
-                foundCount++;
+                _foundCount++;
               }
             });
         });
