@@ -77,7 +77,7 @@ const newUnits = ref<any>(null);
 
 // Sort helper: show last updated unit on top
 function sortUnits(a: TVeoUnit, b: TVeoUnit) {
-  return Math.sign(new Date(b.updatedAt) - new Date(a.updatedAt));
+  return Math.sign(<any | number | bigint>new Date(b.updatedAt) - <any | number | bigint>new Date(a.updatedAt));
 }
 
 const units = computed({
@@ -101,7 +101,7 @@ function createUnit() {
   isManageDialogOpen.value = true;
 }
 
-function editUnit(unit: TVeoUnit) {
+function _editUnit(unit: TVeoUnit) {
   unitToEditId.value = unit.id;
   isManageDialogOpen.value = true;
 }

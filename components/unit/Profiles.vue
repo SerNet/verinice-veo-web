@@ -91,7 +91,7 @@ const { t } = useI18n();
 const { domainColorsByName } = useDomainColors();
 
 // State
-const selectedProfile = defineModel();
+const selectedProfile = defineModel<TVeoProfile>();
 
 // Components
 const LanguageChip: TInlineComponent = {

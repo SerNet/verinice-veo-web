@@ -81,7 +81,7 @@ const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | 
 const activeUnits = computed(() => unitsRef?.value?.activeUnits || null);
 const maxUnitsExceeded = computed(() => (activeUnits?.value || 0) >= userSettings.value.maxUnits);
 
-function createUnit() {
+function _createUnit() {
   if (!unitsRef.value) return null;
   unitsRef.value.createUnit();
 }
