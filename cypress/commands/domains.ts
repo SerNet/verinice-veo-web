@@ -20,7 +20,7 @@ export interface ICYVeoDomain {
   targetUri: string;
 }
 
-export function addDomain(domainName: string): void {
+export function addDomain(_domainName: string): void {
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains`).as('getDomains');
 
   cy.get('[data-veo-test="item-card-slot-center"]')

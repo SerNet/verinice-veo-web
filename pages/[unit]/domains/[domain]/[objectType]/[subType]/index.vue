@@ -274,9 +274,9 @@ const filter = computed(() => {
       // Extract first query value
       let filterValue: any;
       if (filterDefinition.source === FILTER_SOURCE.QUERY) {
-        filterValue = stringOrFirstValue(route.query[filterKey] || null);
+        filterValue = stringOrFirstValue(route.query[filterKey]);
       } else if (filterDefinition.source === FILTER_SOURCE.PARAMS) {
-        filterValue = stringOrFirstValue(route.params[filterKey] || null);
+        filterValue = stringOrFirstValue(route.params[filterKey]);
       }
       if (filterValue === filterDefinition.nullValue) {
         filterValue = undefined;
