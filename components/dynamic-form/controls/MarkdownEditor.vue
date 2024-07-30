@@ -26,7 +26,8 @@
       {{ options.label }}
     </div>
     <div v-if="!options.disabled" ref="editor" />
-    <div v-else class="no-editor-html-output" v-html="modelValue" />
+    <!-- eslint-disable-next-line vue/no-v-html -- input sanitized -->
+    <div v-else class="no-editor-html-output" v-html="sanitizedInput" />
   </div>
 </template>
 
@@ -35,6 +36,7 @@ import { last } from 'lodash';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
 import Editor from '@toast-ui/editor';
+import DOMPurify from 'dompurify';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
@@ -87,7 +89,17 @@ export default defineComponent({
       }
     };
 
-    watch(() => props.modelValue, onCreated, { immediate: true });
+    const sanitizedInput = ref();
+
+    watch(
+      () => props.modelValue,
+      (newContent) => {
+        onCreated;
+        sanitizedInput.value = DOMPurify.sanitize(newContent);
+      },
+      { immediate: true }
+    );
+
     watch(() => editor.value, onCreated, { immediate: true });
 
     onMounted(() => {
@@ -142,7 +154,7 @@ export default defineComponent({
 
     return {
       editor,
-
+      sanitizedInput,
       getControlErrorMessages,
       last
     };
