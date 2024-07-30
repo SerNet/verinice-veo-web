@@ -118,7 +118,7 @@ const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?
     }
   },
   ...(actions.value ?
-    actions.value?.map((action: TVeoAction) => ({
+    actions.value.map((action: TVeoAction) => ({
       icon: mdiCreation,
       key: action.id,
       title: action.name?.[locale?.value as keyof { en: string; de: string }] ?? t('noActionNameAvailable'),
@@ -172,9 +172,9 @@ const visibleItems = computed(() =>
 
 // Veo actions
 const actionsRequestParams = {
-  domainId: route.params.domain,
+  domainId: route.params.domain as string,
   elementType: VeoElementTypePlurals[props.object?.type as keyof typeof VeoElementTypePlurals],
-  elementId: props.object?.id!
+  elementId: props.object?.id as string
 };
 
 const { data: actions, isLoading: isLoadingActions } = useActions(actionsRequestParams);
