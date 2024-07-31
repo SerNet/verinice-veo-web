@@ -1,5 +1,7 @@
 // import { defineConfig } from "cypress";
 // use require to prevent issues in cypress docker (Gitlab)
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
