@@ -149,7 +149,7 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
     ':unit',
     {
       disabled: true,
-      hidden: false,
+      hidden: true,
       queriedText: {
         query: ':unit',
         parameterTransformationFn: (_param, value) => ({ id: value }),
