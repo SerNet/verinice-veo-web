@@ -76,8 +76,8 @@ const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
 
 // Sort helper: show last updated unit on top
-function sortUnits(a: TVeoUnit, b: TVeoUnit) {
-  return Math.sign(<any | number | bigint>new Date(b.updatedAt) - <any | number | bigint>new Date(a.updatedAt));
+function sortUnits(a: TVeoUnit, b: TVeoUnit): number {
+  return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
 }
 
 const units = computed({

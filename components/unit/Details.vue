@@ -98,13 +98,7 @@ const { requiredRule } = useRules();
 const unitDetails = defineModel<UnitDetails>();
 
 const cardTitle = computed(() => {
-  return (
-    unitDetails.value?.name ?
-      unitDetails.value.name === '' ?
-        t('noUnitName')
-      : unitDetails.value.name
-    : t('genericHeading')
-  );
+  return unitDetails.value?.name ? unitDetails.value.name || t('noUnitName') : t('genericHeading');
 });
 
 const hasUnitName = computed(() => !(unitDetails.value?.name?.trim() === ''));
