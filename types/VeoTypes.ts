@@ -529,9 +529,14 @@ export interface IVeoFormsWidgetDefinition {
   };
 }
 
+export interface IVeoSubTypeDefinition {
+  sortKey: number;
+  statuses: string[];
+}
+
 export interface IVeoElementTypeDefinition {
   subTypes: {
-    [key: string]: any;
+    [key: string]: IVeoSubTypeDefinition;
   };
   translations: {
     [lang: string]: {
