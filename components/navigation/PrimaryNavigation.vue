@@ -319,8 +319,13 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
   const catalogItems = [['all', { all: 'MISC' }], ...Object.entries(catalogItemTypes?.value || [])];
 
   const catalogNavItems = (catalogItems || []).map((catalogItem) => {
-    const _icon = CATALOG_TYPE_ICONS.get(catalogItem[0] as string);
-    const _subTypes = Object.keys(catalogItem[1] || {});
+    const modelType = catalogItem[0] as string;
+    const _icon = CATALOG_TYPE_ICONS.get(modelType);
+    const subTypeDefinitions =
+      modelType === 'all' || !domain.value ? {} : domain.value.elementTypeDefinitions[modelType].subTypes;
+    const _subTypes = Object.keys(catalogItem[1] || {}).sort(
+      (a, b) => (subTypeDefinitions?.[a]?.sortKey || 0) - (subTypeDefinitions?.[b]?.sortKey || 0)
+    );
 
     return _subTypes.map((_subType) => {
       const formSchema = getFormSchema({
