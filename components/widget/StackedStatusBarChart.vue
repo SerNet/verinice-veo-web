@@ -25,7 +25,13 @@
           </nuxt-link>
         </v-col>
         <v-col cols="12" sm="12" md="7" lg="5" xl="8">
-          <v-skeleton-loader v-if="schemasIsLoading" width="100%" type="image" height="25px" class="my-1" />
+          <v-skeleton-loader
+            v-if="schemasIsLoading || domainIsLoading"
+            width="100%"
+            type="image"
+            height="25px"
+            class="my-1"
+          />
           <Bar
             v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
@@ -65,7 +71,7 @@ import {
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { CHART_COLORS } from '~/lib/utils';
-import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
@@ -106,7 +112,7 @@ const { locale, t } = useI18n();
 const route = useRoute();
 
 const barChartRef = ref([]);
-const statusBarTitle = computed(() => props.objectType.charAt(0).toUpperCase() + props.objectType.slice(1) || ' ');
+const statusBarTitle = computed(() => translations.value?.lang?.[locale.value]?.[`${props.objectType}_plural`] || ' ');
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const objectTypePlural = computed(() => schemas.value?.[props.objectType]);
@@ -122,6 +128,16 @@ const { data: objectSchema, isFetching: schemasIsLoading } = useQuery(
   { enabled: fetchSchemaQueryEnabled }
 );
 
+const fetchDomainQueryParameters = computed(() => ({
+  id: props.domainId as string
+}));
+const fetchDomainQueryEnabled = computed(() => !!props.domainId);
+const { data: domain, isFetching: domainIsLoading } = useQuery(
+  domainQueryDefinitions.queries.fetchDomain,
+  fetchDomainQueryParameters,
+  { enabled: fetchDomainQueryEnabled }
+);
+
 const sortedStatusBySubType = computed<Record<string, any>>(() =>
   (objectSchema.value?.allOf || []).reduce((previousValue, currentValue) => {
     previousValue[currentValue.if.properties.subType.const] = currentValue.then.properties.status.enum;
@@ -135,19 +151,9 @@ const translationQueryParameters = computed(() => ({
 }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
-const formsQueryParameters = computed(() => ({
-  domainId: props.domainId as string
-}));
-const formsQueryEnabled = computed(() => !!props.domainId);
-const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, formsQueryParameters, {
-  enabled: formsQueryEnabled
-});
-
 const sortedSubTypes = computed(() =>
   Object.entries(props.data).sort(
-    ([subTypeA, _subTypeDataA], [subTypeB, _subTypeDataB]) =>
-      (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeA) -
-      (formSchemas.value || []).findIndex((formSchema) => formSchema.subType === subTypeB)
+    ([_subTypeA, _subTypeDataA], [_subTypeB, _subTypeDataB]) => _subTypeDataA.sortKey - _subTypeDataB.sortKey
   )
 );
 
@@ -215,7 +221,11 @@ const chartData = computed<IChartValue[]>(() =>
   sortedSubTypes.value.map(([subType, subTypeData]) => ({
     totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
     labels: [
-      (formSchemas.value || []).find((formSchema) => formSchema.subType === subType)?.name?.[locale.value] || subType
+      domain.value ?
+        domain.value.elementTypeDefinitions[props.objectType].translations[locale.value][
+          `${props.objectType}_${subType}_plural`
+        ]
+      : subType
     ],
     datasets: (
       Object.entries(sortedStatusBySubType.value).find(
@@ -237,27 +247,11 @@ const objectOveriewLink = (subTypeIndex: number) =>
 {
   "en": {
     "noObjects": "No objects available",
-    "noSubtypes": "There are no subtypes for this object type",
-    "Asset": "asset",
-    "Control": "control",
-    "Document": "document",
-    "Incident": "incident",
-    "Person": "Person",
-    "Process": "process",
-    "Scenario": "scenario",
-    "Scope": "scope"
+    "noSubtypes": "There are no subtypes for this object type"
   },
   "de": {
     "noObjects": "Keine Objekte vorhanden",
-    "noSubtypes": "Für diesen Objekttyp existieren keine Subtypen",
-    "Asset": "Asset",
-    "Control": "Maßnahme",
-    "Document": "Dokument",
-    "Incident": "Vorfall",
-    "Person": "Person",
-    "Process": "Prozess",
-    "Scenario": "Szenario",
-    "Scope": "Scope"
+    "noSubtypes": "Für diesen Objekttyp existieren keine Subtypen"
   }
 }
 </i18n>

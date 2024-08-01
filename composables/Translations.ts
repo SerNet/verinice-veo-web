@@ -1,11 +1,11 @@
 import { useQuery, useQuerySync } from './api/utils/query';
-import formsQueryDefinitions from './api/queryDefinitions/forms';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationsQueryDefinitions from './api/queryDefinitions/translations';
-import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
+import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 type TranslateSubTypeParams = {
-  formSchemas: IVeoFormSchemaMeta[] | undefined;
+  domainSchema: IVeoDomain | undefined;
   locale: string;
   subType: string | undefined;
   elementType?: string | undefined;
@@ -41,20 +41,10 @@ export function useTranslations({ domain, languages = ['en', 'de'] }: UseTransla
   };
 }
 
-function translateSubType({ formSchemas, locale, subType, elementType }: TranslateSubTypeParams) {
+function translateSubType({ domainSchema, locale, subType, elementType }: TranslateSubTypeParams) {
   if (!subType) subType = 'all';
-  if (!formSchemas) return;
-
-  const formSchema = formSchemas?.find((formSchema) => {
-    if (!elementType) {
-      return formSchema.subType === subType;
-    }
-
-    return formSchema.modelType === elementType && formSchema.subType === subType;
-  });
-
-  const translation = formSchema?.name[locale] || subType;
-  return translation;
+  if (!domainSchema || !elementType) return;
+  return domainSchema.elementTypeDefinitions[elementType]?.translations[locale]?.[`${elementType}_${subType}_plural`];
 }
 
 export function useSubTypeTranslation() {
@@ -71,20 +61,19 @@ export function useSubTypeTranslation() {
 
   const subType = computed(() => (route.query.subType as string) ?? route.params.subType);
 
-  // Translations are found in forms, so we fetch them:
-  const allFormSchemasQueryEnabled = computed(() => !!domainId);
+  // Translations are found in domain, so we fetch it:
+  const domainSchemaQueryEnabled = computed(() => !!domainId);
   const queryParameters = computed(() => ({
-    domainId: domainId.value
+    id: domainId.value
   }));
-  const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
-    enabled: allFormSchemasQueryEnabled,
-    placeholderData: []
+  const { data: domainSchema } = useQuery(domainQueryDefinitions.queries.fetchDomain, queryParameters, {
+    enabled: domainSchemaQueryEnabled
   });
 
   return {
     subTypeTranslation: computed(() =>
       translateSubType({
-        formSchemas: formSchemas.value,
+        domainSchema: domainSchema.value,
         locale: locale.value,
         subType: subType.value,
         elementType: elementType.value

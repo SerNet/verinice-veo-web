@@ -50,7 +50,6 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { onBeforeRouteLeave } from 'vue-router';
 
 // Types
-import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import type { IVeoEntity } from '~/types/VeoTypes';
 
 // Composables

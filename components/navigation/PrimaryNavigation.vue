@@ -119,7 +119,6 @@ import { useDisplay } from 'vuetify';
 
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
@@ -134,7 +133,6 @@ import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
@@ -170,31 +168,6 @@ const { authenticated } = useVeoUser();
 const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
 
-// Helpers
-/** Returns a form schema corresponding to an object/elementType and subType */
-function getFormSchema({
-  formSchemas,
-  elementType,
-  subType
-}: {
-  formSchemas: IVeoFormSchema[] | undefined;
-  elementType: string;
-  subType: string;
-}): IVeoFormSchema | undefined {
-  if (!formSchemas) return;
-
-  return formSchemas.find((formSchema) => formSchema.modelType === elementType && formSchema.subType === subType);
-}
-
-/**
- * Translates a subType using values from form schemas.
- * Necessary because objects/elements do not come with a translation.
- */
-function getDisplayName({ formSchema }: { formSchema: IVeoFormSchema | undefined }) {
-  const translation = formSchema?.name[locale.value];
-  return translation;
-}
-
 // Layout stuff
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, {
   serializer: StorageSerializers.boolean
@@ -212,15 +185,6 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 // objects specific stuff
 const objectSchemas = ref<IVeoObjectSchema[]>([]);
 const schemasLoading = ref(false);
-
-const queryParameters = computed(() => ({
-  domainId: props.domainId as string
-}));
-const allFormSchemasQueryEnabled = computed(() => !!props.domainId);
-const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
-  enabled: allFormSchemasQueryEnabled,
-  placeholderData: []
-});
 
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
 
@@ -247,23 +211,24 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
     .sort((a, b) => (objectTypeSortOrder.get(a.title) || 0) - (objectTypeSortOrder.get(b.title) || 0))
     .map((objectSchema) => {
       const objectSubTypes = extractSubTypesFromObjectSchema(objectSchema);
-      const _icon = OBJECT_TYPE_ICONS.get(objectSchema.title);
+      const modelType = objectSchema.title;
+      const _icon = OBJECT_TYPE_ICONS.get(modelType);
 
       return {
-        id: objectSchema.title,
-        name: upperFirst(translations.value?.lang[locale.value]?.[objectSchema.title] || objectSchema.title),
+        id: modelType,
+        name: translations.value?.lang[locale.value]?.[`${modelType}_plural`] || upperFirst(modelType),
         icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
         children: [
           // all of object type
           {
-            id: `${objectSchema.title}_all`,
+            id: `${modelType}_all`,
             name: upperFirst(t('all').toString()),
             to: {
               name: OBJECT_OVERVIEW_ROUTE_NAME,
               params: {
                 unit: props.unitId,
                 domain: props.domainId,
-                objectType: endpoints.value?.[objectSchema.title],
+                objectType: endpoints.value?.[modelType],
                 subType: '-'
               }
             }
@@ -271,14 +236,13 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
 
           // dynamic sub type routes
           ...sortBy(
-            objectSubTypes.map((subType) => {
-              const formSchema = getFormSchema({
-                formSchemas: formSchemas?.value as IVeoFormSchema[],
-                elementType: objectSchema?.title,
-                subType: subType.subType
-              });
-
-              const displayName = getDisplayName({ formSchema }) || subType.subType;
+            objectSubTypes.map(({ subType: subType }) => {
+              const displayName =
+                domain.value ?
+                  domain.value.elementTypeDefinitions[modelType].translations[locale.value][
+                    `${modelType}_${subType}_plural`
+                  ]
+                : subType;
 
               return {
                 id: displayName,
@@ -288,11 +252,11 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                   params: {
                     unit: props.unitId,
                     domain: props.domainId,
-                    objectType: endpoints.value?.[objectSchema.title],
-                    subType: subType.subType
+                    objectType: endpoints.value?.[modelType],
+                    subType: subType
                   }
                 },
-                sorting: formSchema?.sorting
+                sorting: domain.value ? domain.value.elementTypeDefinitions[modelType].subTypes[subType].sortKey : 0
               };
             }),
             'sorting'
@@ -328,20 +292,19 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
     );
 
     return _subTypes.map((_subType) => {
-      const formSchema = getFormSchema({
-        formSchemas: formSchemas?.value as IVeoFormSchema[],
-        elementType: catalogItem[0] as string,
-        subType: _subType
-      });
-
-      const displayName = _subType === 'all' ? t('all') : getDisplayName({ formSchema: formSchema }) || _subType;
+      const displayName =
+        _subType === 'all' ?
+          t('all')
+        : (domain.value ?
+            domain.value.elementTypeDefinitions[modelType].translations[locale.value][`${modelType}_${_subType}_plural`]
+          : null) || _subType;
 
       const item = {
         id: `${catalogItem[0]}`,
         name: displayName,
         subtype: _subType,
         elementType: catalogItem[0],
-        componentName: `catalog-child-${catalogItem[0]}`,
+        componentName: `catalog-child-${modelType}`,
         icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
         to: {
           name: CATALOGS_CATALOG_ROUTE_NAME,
@@ -350,7 +313,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
             domain: props.domainId
           },
           query: {
-            type: catalogItem[0],
+            type: modelType,
             subType: _subType
           }
         }
