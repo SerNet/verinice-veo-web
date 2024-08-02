@@ -20,11 +20,11 @@
     <v-breadcrumbs-item
       v-for="(item, index) of displayedBreadcrumbs"
       :key="item.key"
-      :disabled="item.disabled || item.to === $route.fullPath"
+      :disabled="item.disabled || item.to === route.fullPath"
       :to="item.to"
       nuxt
     >
-      <span v-if="index">
+      <span v-if="queryResultMap[item.param]">
         <v-icon :icon="mdiChevronRight" size="small" />
       </span>
       <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
@@ -37,7 +37,7 @@
           <template v-if="queryResultMap[item.param]">
             {{ queryResultMap[item.param] }}
           </template>
-          <v-skeleton-loader v-else type="image" width="80" height="14" />
+          <v-skeleton-loader v-else type="text" />
         </span>
         <span v-else-if="item.text" class="breadcrumbs-item-height small-caps capitalize">
           {{ item.text }}
@@ -67,7 +67,7 @@
                       <template v-if="queryResultMap[item.param]">
                         {{ queryResultMap[item.param] }}
                       </template>
-                      <v-skeleton-loader v-else type="image" width="80" height="14" />
+                      <v-skeleton-loader v-else type="text" />
                     </template>
                     <template v-if="menuItem.text">
                       {{ menuItem.text }}
