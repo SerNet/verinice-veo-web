@@ -84,7 +84,7 @@
                     <v-row class="mt-0">
                       <v-col cols="6">
                         <v-text-field
-                          v-model="subTypeSingular"
+                          v-model="subType.subTypeTranslations[displayLanguage || ''].singular"
                           dense
                           :prepend-inner-icon="mdiTranslate"
                           :label="t('translation.singular').toString()"
@@ -94,7 +94,7 @@
                       </v-col>
                       <v-col cols="6">
                         <v-text-field
-                          v-model="subTypePlural"
+                          v-model="subType.subTypeTranslations[displayLanguage || ''].plural"
                           dense
                           :prepend-inner-icon="mdiTranslate"
                           :label="t('translation.plural').toString()"
@@ -228,43 +228,13 @@ export default defineComponent({
     );
 
     // objectschema stuff
-    const subTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
+    const subTypes: Ref<
+      { subType: string; status: { key: string; [lang: string]: string }[]; subTypeTranslations: Record<string, any> }[]
+    > = ref([]);
     const originalSubTypes: Ref<{ subType: string; status: { key: string; [lang: string]: string }[] }[]> = ref([]);
     const subTypeForms: Ref<boolean[]> = ref([]);
     const newStatusForms: Ref<boolean[]> = ref([]);
     const newStatusTextfields: Ref<(string | undefined)[]> = ref([]);
-
-    const subTypeTranslationKeys = computed(() => ({
-      plural: `${objectSchemaHelper?.value?.getTitle()}_${objectSchemaHelper?.value?.getSubTypes(route.params.domain as string)?.[0]?.subType}_plural`,
-      singular: `${objectSchemaHelper?.value?.getTitle()}_${objectSchemaHelper?.value?.getSubTypes(route.params.domain as string)?.[0]?.subType}_singular`
-    }));
-
-    const originalSubTypeSingular = computed(() =>
-      objectSchemaHelper?.value?.getTranslation(displayLanguage?.value || '', subTypeTranslationKeys.value.singular)
-    );
-    const originalSubTypePlural = computed(() =>
-      objectSchemaHelper?.value?.getTranslation(displayLanguage?.value || '', subTypeTranslationKeys.value.plural)
-    );
-
-    const subTypeTranslations = ref<Record<string, any>>({});
-    const subTypeSingular = computed({
-      get: () => subTypeTranslations.value[displayLanguage?.value || '']?.singular || '',
-      set: (newName) => {
-        if (subTypeTranslations.value[displayLanguage?.value || ''] === undefined) {
-          subTypeTranslations.value[displayLanguage?.value || ''] = {};
-        }
-        subTypeTranslations.value[displayLanguage?.value || ''].singular = newName;
-      }
-    });
-    const subTypePlural = computed({
-      get: () => subTypeTranslations.value[displayLanguage?.value || '']?.plural || '',
-      set: (newName) => {
-        if (subTypeTranslations.value[displayLanguage?.value || ''] === undefined) {
-          subTypeTranslations.value[displayLanguage?.value || ''] = {};
-        }
-        subTypeTranslations.value[displayLanguage?.value || ''].plural = newName;
-      }
-    });
 
     watch(
       () => objectSchemaHelper?.value,
@@ -286,7 +256,8 @@ export default defineComponent({
         const oshSubTypes = cloneDeep(objectSchemaHelper.value.getSubTypes(route.params.domain as string));
         subTypes.value = oshSubTypes.map((subType) => ({
           subType: subType.subType,
-          status: subType.status.map((_status) => ({ key: _status }))
+          status: subType.status.map((_status) => ({ key: _status })),
+          subTypeTranslations: {}
         }));
         subTypeForms.value = Array(subTypes.value.length).fill(true);
         newStatusForms.value = Array(subTypes.value.length).fill(true);
@@ -295,6 +266,18 @@ export default defineComponent({
         // Add translations to status
         for (const lang of objectSchemaHelper.value.getLanguages()) {
           for (const subTypeIndex in subTypes.value) {
+            if (subTypes.value[subTypeIndex]) {
+              subTypes.value[subTypeIndex].subTypeTranslations[lang] = {
+                plural: objectSchemaHelper.value.getTranslation(
+                  lang,
+                  `${objectSchemaHelper?.value?.getTitle()}_${subTypes.value[subTypeIndex].subType}_plural`
+                ),
+                singular: objectSchemaHelper.value.getTranslation(
+                  lang,
+                  `${objectSchemaHelper?.value?.getTitle()}_${subTypes.value[subTypeIndex].subType}_singular`
+                )
+              };
+            }
             for (const statusIndex in subTypes.value[subTypeIndex]?.status) {
               const translation = objectSchemaHelper.value.getTranslation(
                 lang,
@@ -307,10 +290,6 @@ export default defineComponent({
               }
             }
           }
-          subTypeTranslations.value[lang] = {
-            singular: objectSchemaHelper?.value?.getTranslation(lang, subTypeTranslationKeys.value.singular),
-            plural: objectSchemaHelper?.value?.getTranslation(lang, subTypeTranslationKeys.value.plural)
-          };
         }
       }
       originalSubTypes.value = cloneDeep(subTypes.value);
@@ -330,7 +309,13 @@ export default defineComponent({
     }
 
     function addSubType() {
-      subTypes.value.push({ subType: '', status: [] });
+      subTypes.value.push({
+        subType: '',
+        status: [],
+        subTypeTranslations: Object.fromEntries(
+          (objectSchemaHelper?.value?.getLanguages() || []).map((lang) => [lang, {}])
+        )
+      });
       subTypeForms.value.push(true);
       newStatusForms.value.push(true);
       newStatusTextfields.value.push(undefined);
@@ -348,7 +333,9 @@ export default defineComponent({
       statusIndex: number,
       status: { key: string; [lang: string]: string }
     ) {
-      subTypes.value[subTypeIndex].status[statusIndex] = status;
+      if (subTypes.value[subTypeIndex]) {
+        subTypes.value[subTypeIndex].status[statusIndex] = status;
+      }
     }
 
     function onDeleteStatus(subTypeIndex: number, statusIndex: number) {
@@ -359,13 +346,7 @@ export default defineComponent({
     const requiredRule = (v: string) => !!v || t('global.input.required');
     const alphaNumericUnderscoreRule = (v: string) => !v || /^[A-Z0-9_]+$/.test(v) || t('statusAlphaNumericUnderscore');
 
-    const isFormDirty = computed(() => {
-      return (
-        !isEqual(subTypes.value, originalSubTypes.value) ||
-        !isEqual(originalSubTypeSingular.value, subTypeSingular.value) ||
-        !isEqual(originalSubTypePlural.value, subTypePlural.value)
-      );
-    });
+    const isFormDirty = computed(() => !isEqual(subTypes.value, originalSubTypes.value));
 
     function onSubmit() {
       // Remove old translations
@@ -387,6 +368,22 @@ export default defineComponent({
       // Save translations
       for (const lang of objectSchemaHelper?.value?.getLanguages() || []) {
         for (const subTypeIndex in subTypes.value) {
+          if (subTypes.value[subTypeIndex]?.subTypeTranslations[lang]?.singular) {
+            objectSchemaHelper?.value?.updateTranslation(
+              lang,
+              `${objectSchemaHelper?.value?.getTitle()}_${subTypes.value[subTypeIndex].subType}_singular`,
+              subTypes.value[subTypeIndex]?.subTypeTranslations[lang]?.singular
+            );
+          }
+
+          if (subTypes.value[subTypeIndex]?.subTypeTranslations[lang]?.plural) {
+            objectSchemaHelper?.value?.updateTranslation(
+              lang,
+              `${objectSchemaHelper?.value?.getTitle()}_${subTypes.value[subTypeIndex].subType}_plural`,
+              subTypes.value[subTypeIndex]?.subTypeTranslations[lang]?.plural
+            );
+          }
+
           for (const statusIndex in subTypes.value[subTypeIndex]?.status) {
             if (subTypes.value[subTypeIndex].status[statusIndex][lang]) {
               objectSchemaHelper?.value?.updateTranslation(
@@ -398,20 +395,6 @@ export default defineComponent({
               );
             }
           }
-        }
-        if (subTypeTranslations.value[lang]?.singular) {
-          objectSchemaHelper?.value?.updateTranslation(
-            lang,
-            subTypeTranslationKeys.value.singular,
-            subTypeTranslations.value[lang]?.singular
-          );
-        }
-        if (subTypeTranslations.value[lang]?.plural) {
-          objectSchemaHelper?.value?.updateTranslation(
-            lang,
-            subTypeTranslationKeys.value.plural,
-            subTypeTranslations.value[lang]?.plural
-          );
         }
       }
 
@@ -435,8 +418,6 @@ export default defineComponent({
       onUpdateStatus,
       requiredRule,
       subTypeForms,
-      subTypePlural,
-      subTypeSingular,
       subTypes,
 
       t,
