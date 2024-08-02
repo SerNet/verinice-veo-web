@@ -209,6 +209,7 @@ export default defineComponent({
 
     // SEARCH
     // v-model from `SearchBar`
+    const hasItems = computed(() => _objects.value?.totalItemCount && _objects.value.totalItemCount > 0);
     const search = ref<VeoSearch[]>([]);
 
     // get search results
@@ -421,6 +422,7 @@ export default defineComponent({
     );
 
     const noDataTextWithLink = computed(() => {
+      if (hasItems.value) return () => h(HtmlRenderer, { content: t('noSearchResults') });
       return () =>
         h(HtmlRenderer, {
           content: t('noDataText', {
@@ -469,6 +471,7 @@ export default defineComponent({
     "editParentScopes": "Edit parent scopes of \"{0}\"",
     "object": "object",
     "noDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
+    "noSearchResults": "Your search did not match any results",
     "catalog": "catalog"
         },
   "de": {
@@ -478,6 +481,7 @@ export default defineComponent({
     "editParentScopes": "Scopes über \"{0}\" bearbeiten",
     "object": "Objekt",
     "noDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
+    "noSearchResults": "Ihre Suche ergab keine Treffer",
     "catalog": "Katalog"
     }
 }
