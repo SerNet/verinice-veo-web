@@ -20,12 +20,12 @@ import { useQuerySync } from '~/composables/api/utils/query';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import { max } from 'lodash';
 import type { VeoSearch, VeoSearchQueryParameters } from '~/types/VeoSearch';
-import { IVeoFetchObjectParameters } from '../api/queryDefinitions/objects';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 type UseSearchParams<T> = {
   baseQueryParameters: Ref<T & { endpoint?: string; page?: number }>;
   search: Ref<VeoSearch[]>;
+  queryDefinition?: any;
 };
 
 type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
@@ -36,28 +36,31 @@ function getPage(baseQueryParameters: any) {
   return 0;
 }
 
-export function useSearch<T>({ baseQueryParameters, search }: UseSearchParams<T>): {
+export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: UseSearchParams<T>): {
   data: Ref<VeoSearchResponse>;
   isLoading: Ref<boolean>;
 } {
   const config = useRuntimeConfig();
   const data = ref<VeoSearchResponse>();
   const isLoading = ref(false);
+  const _queryDefinition = queryDefinition ? queryDefinition : elementQueryDefinitions.queries.fetchAll;
+  const isObjectSearch = !queryDefinition;
 
   async function getSearchResults() {
     watch(
       [baseQueryParameters, search],
       async () => {
-        if (!baseQueryParameters.value?.endpoint) return;
+        if (isObjectSearch && !baseQueryParameters.value?.endpoint) return;
         const parameters = ref({
           ...baseQueryParameters.value,
           page: getPage(baseQueryParameters.value),
           ...getSearchQueryParameters(search.value)
         });
+
         try {
           isLoading.value = true;
-          data.value = await useQuerySync(elementQueryDefinitions.queries.fetchAll, {
-            ...(parameters.value as IVeoFetchObjectParameters)
+          data.value = await useQuerySync(_queryDefinition, {
+            ...parameters.value
           });
         } catch (err) {
           if (config.public.debug) console.error(err);
