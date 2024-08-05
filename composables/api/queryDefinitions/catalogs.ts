@@ -53,6 +53,8 @@ export interface IVeoFetchCatalogParameters {
 }
 
 export interface IVeoFetchCatalogItemsParameters {
+  name?: string;
+  abbreviation?: string;
   domainId?: string | undefined;
   elementType?: string | undefined;
   subType?: string;
@@ -95,7 +97,9 @@ export default {
             size: queryParameters.size,
             page: queryParameters.page,
             sortBy: queryParameters.sortBy,
-            sortOrder: queryParameters.sortOrder
+            sortOrder: queryParameters.sortOrder,
+            name: queryParameters.name,
+            abbreviation: queryParameters.abbreviation
           }
         };
       },
