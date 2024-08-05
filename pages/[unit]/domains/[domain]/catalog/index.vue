@@ -18,13 +18,15 @@
 <template>
   <BasePage data-component-name="catalog-page">
     <template #default>
+      <v-spacer class="mt-8" />
+      <SearchBar v-model:search="search" :filters="searchFilters" />
       <CatalogDefaultCatalog
         v-model="selectedItems"
         v-model:page="page"
         v-model:sortBy="sortBy"
-        class="mt-6 mb-4"
-        :catalog-items="catalogItems"
-        :is-loading="catalogItemsAreFetching"
+        class="mt-2 mb-4"
+        :catalog-items="searchResults ?? catalogItems"
+        :is-loading="catalogItemsAreFetching || isLoadingSearchResults"
         :is-applying-items="isApplyingItems"
         @apply-items="applyItems"
       >
@@ -51,6 +53,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 
 // Types
 import type { IVeoEntity } from '~/types/VeoTypes';
+import type { VeoSearch } from '~/types/VeoSearch';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -95,6 +98,19 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
 );
 
 const { subTypeTranslation: currentSubTypeTranslated } = useSubTypeTranslation();
+
+// SEARCH
+const searchFilters = { all: ['abbreviation', 'name'], default: 'name' };
+
+// v-model from `SearchBar`
+const search = ref<VeoSearch[]>([]);
+
+// get search results
+const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
+  baseQueryParameters: fetchCatalogItemsQueryParameters,
+  queryDefinition: catalogQueryDefinitions.queries.fetchCatalogItems,
+  search
+});
 
 /* BREADCRUMBS */
 // Add breadcrumb for current filter
