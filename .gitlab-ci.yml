@@ -64,6 +64,19 @@ check_formatting:
     - if [[ ${?} -ne 0 ]]; then echo "Use 'npm run format' to format your code"; exit 1; fi
   interruptible: true
 
+lint:
+  stage: test
+  rules:
+    - !reference [.verification, rules]
+  needs: []
+  variables:
+    DEBUG: 'eslint:cli-engine'
+  script:
+    - npm run lint
+    - if [[ ${?} -ne 0 ]]; then echo "Linting errors were found"; exit 1; fi
+  interruptible: true
+  allow_failure: true
+
 build_test_app:
   stage: test
   rules:

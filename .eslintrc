@@ -21,7 +21,8 @@
     }
   ],
   "parserOptions": {
-    "project": ["./tsconfig.json"]
+    "project": ["./tsconfig.json"],
+    "projectService": true
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
