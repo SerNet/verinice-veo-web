@@ -104,6 +104,7 @@ import {
   IVeoRiskCategory,
   IVeoRiskDefinition,
   IVeoRiskValue,
+  VeoElementTypePlurals,
   VeoElementTypesSingular,
   VeoRiskTreatment
 } from '~/types/VeoTypes';
@@ -797,7 +798,8 @@ export default defineComponent({
       const item = internalItem.raw as IVeoRisk;
       // assemble route params
       const { id: itemId, type: itemType } = internalItem.raw as IVeoEntity;
-      const objectType = OBJECT_TYPE_TO_URL_MAP[itemType] || itemType || route.params.objectType;
+      const objectType =
+        VeoElementTypePlurals[itemType as keyof typeof VeoElementTypePlurals] || itemType || route.params.objectType;
       const params = {
         ...route.params,
         object: itemId,
