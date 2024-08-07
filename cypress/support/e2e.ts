@@ -11,7 +11,8 @@ import {
   editUnit,
   deleteUnit,
   deleteUnitGUI,
-  getVeoTestUnitCard
+  getVeoTestUnitCard,
+  selectUnitFromDropdown
 } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
 import { testDashboardWidgets, testEmptyDashboard } from '../commands/dashboard';
@@ -43,7 +44,8 @@ Cypress.Commands.addAll({
   selectDomain,
   handleLanguageBug,
   checkSubTypePage,
-  iterateSubTypes
+  iterateSubTypes,
+  selectUnitFromDropdown
 });
 
 before(() => {

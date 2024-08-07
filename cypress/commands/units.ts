@@ -14,6 +14,7 @@ declare global {
       editUnit: typeof editUnit;
       goToUnitDashboard: typeof goToUnitDashboard;
       getVeoTestUnitCard: typeof getVeoTestUnitCard;
+      selectUnitFromDropdown: typeof selectUnitFromDropdown;
     }
   }
 }
@@ -24,6 +25,23 @@ export function goToUnitSelection(): void {
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
   cy.visit('/units');
   cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
+}
+
+export function selectUnitFromDropdown(unitName?: string): void {
+  cy.get('[data-component-name="unit-select"] .v-autocomplete__menu-icon').click();
+  cy.get('[data-veo-test="unit-selection-nav-item"]').should('be.visible');
+  cy.get('[data-veo-test="unit-selection-nav-item"]').then(($els) => {
+    const found = $els.toArray().find((el) => {
+      const text = Cypress.$(el).text();
+      return text.includes(unitName);
+    });
+
+    if (found) {
+      cy.wrap(found).click();
+    } else {
+      cy.wrap($els[0]).click();
+    }
+  });
 }
 
 export function selectUnit({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
