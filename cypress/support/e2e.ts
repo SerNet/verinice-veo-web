@@ -14,7 +14,7 @@ import {
   getVeoTestUnitCard
 } from '../commands/units';
 import { generateUnitDetails } from './setupHelpers';
-import { testDashboardWidgets } from '../commands/dashboard';
+import { testDashboardWidgets, testEmptyDashboard } from '../commands/dashboard';
 import { importUnit } from '../commands/importUnit';
 import { languageTo, handleLanguageBug } from '../commands/language';
 import { navigateTo, iterateSubTypes } from '../commands/navigation';
@@ -37,6 +37,7 @@ Cypress.Commands.addAll({
   languageTo,
   getVeoTestUnitCard,
   testDashboardWidgets,
+  testEmptyDashboard,
   selectRandomDomain,
   getSelectedDomain,
   selectDomain,

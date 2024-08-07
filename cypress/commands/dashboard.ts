@@ -3,6 +3,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       testDashboardWidgets: typeof testDashboardWidgets;
+      testEmptyDashboard: typeof testEmptyDashboard;
     }
   }
 }
@@ -29,6 +30,15 @@ export function testDashboardWidgets(widgets = gdpr_widgets) {
     cy.get(`[data-veo-test="domain-dashboard-${widget.name}-widget"]`).as('widget');
     cy.get('@widget').within((_w) => {
       cy.get('canvas').should('have.length', widget.numOfElements);
+    });
+  });
+}
+
+export function testEmptyDashboard(widgets = gdpr_widgets) {
+  widgets.forEach((widget) => {
+    cy.get(`[data-veo-test="domain-dashboard-${widget.name}-widget"]`).as('widget');
+    cy.get('@widget').within((_w) => {
+      cy.get('div.font-italic:contains("No objects available")').should('have.length', widget.numOfElements);
     });
   });
 }
