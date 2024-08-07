@@ -267,17 +267,6 @@ export default defineComponent({
       return item.id;
     };
 
-    watch(
-      () => props.preselectedFilters,
-      (newValue) => {
-        filter.value = { ...filter.value, ...newValue };
-      },
-      {
-        deep: true,
-        immediate: true
-      }
-    );
-
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
     // update filter options
@@ -305,6 +294,17 @@ export default defineComponent({
         }
       },
       { immediate: true, deep: true }
+    );
+
+    watch(
+      () => props.preselectedFilters,
+      (newValue) => {
+        filter.value = { ...filter.value, ...newValue };
+      },
+      {
+        deep: true,
+        immediate: true
+      }
     );
 
     // Selectable and selected objects

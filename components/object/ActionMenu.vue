@@ -53,9 +53,27 @@
       @update:preselected-items="onItemsUpdated"
     />
     <ObjectSelectObjectTypeDialog
+      v-if="isCreateMode"
       v-model="createEntityDialog.value"
-      :v-bind="createEntityDialog"
+      :title="t('headline_create')"
+      :description-text="t('create_entity')"
+      :cancel-text="$t('global.button.cancel')"
+      :action-button-text="t('create')"
+      :action="'create-entity'"
+      :event-payload="{ addAsChild: createEntityDialog.eventPayload }"
       @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
+    />
+    <!-- @vue-ignore TODO #3066 $route does not exist -->
+    <ObjectSelectObjectTypeDialog
+      v-else
+      v-model="selectEntityDialog"
+      :title="t('headline_select')"
+      :description-text="t('select_entity')"
+      :cancel-text="$t('global.button.cancel')"
+      :action-button-text="t('select')"
+      :action="'select-entity'"
+      :target-element-type="objectType"
+      @select-entity="linkObjectCallback($event.type)"
     />
     <!-- @vue-ignore TODO #3066 $route does not exist -->
     <ObjectCreateDialog
@@ -150,10 +168,15 @@ export default defineComponent({
         props.type === 'childObjects'
       );
     const linkObjectAction = () => {
+      selectEntityDialog.value = true;
+    };
+
+    const linkObjectCallback = (typeTarget: any) => {
+      selectEntityDialog.value = false;
       let type = props.object?.type;
       if (props.object?.type === 'scope') type = undefined;
       if (props.type === 'controls') type = 'control';
-      openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls');
+      openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls', typeTarget);
     };
 
     const createScopeAction = () => openCreateObjectDialog('scope', props.type === 'childScopes');
@@ -270,10 +293,13 @@ export default defineComponent({
       disabledFields: [],
       linkRiskAffected: false
     });
-
+    const selectEntityDialog = ref(false);
     const createEntityDialog = ref({
       value: false,
       eventPayload: undefined as undefined | Record<string, any>
+    });
+    const isCreateMode = computed(() => {
+      return createEntityDialog.value.value;
     });
     const createObjectDialog = ref({
       value: false as boolean,
@@ -307,7 +333,12 @@ export default defineComponent({
     };
 
     // Control dialog function
-    const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean, isControlImplementation?: boolean) => {
+    const openLinkObjectDialog = (
+      objectType?: string,
+      addAsChild?: boolean,
+      isControlImplementation?: boolean,
+      preSelectedFilter?: string
+    ) => {
       addEntityDialog.value = {
         object: props.object,
         editRelationship: objectType,
@@ -315,7 +346,7 @@ export default defineComponent({
         editParents: addAsChild === false,
         preselectedItems: getPreselectedItems(isControlImplementation),
         returnObjects: !!isControlImplementation,
-        preselectedFilters: getPreselectedFilters(isControlImplementation),
+        preselectedFilters: getPreselectedFilters(isControlImplementation, preSelectedFilter),
         disabledFields: getDisabledFields(isControlImplementation),
         linkRiskAffected: props.type === 'targets'
       };
@@ -329,8 +360,8 @@ export default defineComponent({
       return (props.object?.controlImplementations ?? []).map((ci: IVeoControlImplementation) => ci.control);
     };
 
-    const getPreselectedFilters = (isControlImplementation?: boolean) => {
-      return isControlImplementation ? { subType: 'CTL_Module' } : {};
+    const getPreselectedFilters = (isControlImplementation?: boolean, preSelectedFilter?: string) => {
+      return isControlImplementation ? { subType: 'CTL_Module' } : { objectType: preSelectedFilter };
     };
 
     const getDisabledFields = (isControlImplementation?: boolean) => {
@@ -373,6 +404,7 @@ export default defineComponent({
     const subType = computed(() =>
       props.object?.type !== 'scope' && props.type.endsWith('Objects') ? props.object?.subType : undefined
     );
+    const objectType = computed(() => props.object?.type);
     // emit after new object creation for linking
     const onCreateObjectSuccess = async (newObjectId: string) => {
       if (props.object) {
@@ -424,16 +456,19 @@ export default defineComponent({
       onItemsUpdated,
       openCreateObjectDialog,
       openLinkObjectDialog,
+      linkObjectCallback,
       addEntityDialog,
       speedDialIsOpen,
       subType,
+      objectType,
       allowedActions,
-
+      selectEntityDialog,
       t,
       upperFirst,
       mdiClose,
       mdiPlus,
-      linkDialogKey
+      linkDialogKey,
+      isCreateMode
     };
   }
 });
@@ -450,7 +485,14 @@ export default defineComponent({
     "linkProcess": "Select process",
     "object": "object",
     "objectLinked": "The links were successfully updated.",
-    "objectNotLinked": "The links could not be updated."
+    "objectNotLinked": "The links could not be updated.",
+    "create_entity": "Please specify the type of the new object.",
+    "select_entity": "Please specify the type of the object to add.",
+    "headline_create": "Create new object",
+    "headline_select": "Select object type",
+    "select": "Select",
+    "create": "Create",
+
   },
   "de": {
     "createObject": "{0} erstellen",
@@ -461,7 +503,14 @@ export default defineComponent({
     "linkProcess": "Prozess auswählen",
     "object": "Objekt",
     "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
-    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden."
+    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
+    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
+    "select_entity": "Bitte wählen Sie den Typ des Objekts, das Sie hinzufügen wollen.",
+    "headline": "Objekt erstellen",
+    "headline_create": "Objekt erstellen",
+    "headline_select": "Objektstyp auswählen",
+    "select": "Auswählen",
+    "create": "Erstellen"
   }
 }
 </i18n>

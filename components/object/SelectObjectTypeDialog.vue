@@ -16,18 +16,18 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog v-bind="$attrs" :title="t('headline')">
+  <BaseDialog v-bind="$attrs" :title="title" @update:model-value="$emit('update:model-value', $event)">
     <template #default>
-      {{ t('create_entity') }}
+      {{ descriptionText }}
       <v-select v-model="type" :items="options" variant="underlined" />
     </template>
     <template #dialog-options>
-      <v-btn @click="$emit('update:model-value', false)">
-        {{ $t('global.button.cancel') }}
+      <v-btn variant="text" @click="$emit('update:model-value', false)">
+        {{ cancelText }}
       </v-btn>
       <v-spacer />
-      <v-btn color="primary" :disabled="!type" @click="$emit('create-entity', { type, ...eventPayload })">
-        {{ t('create') }}
+      <v-btn variant="text" color="primary" :disabled="!type" @click="handleAction">
+        {{ actionButtonText }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -38,22 +38,45 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 
-defineProps({
+const props = defineProps({
+  title: {
+    type: String,
+    default: 'Create new object'
+  },
+  descriptionText: {
+    type: String,
+    default: 'Please specify the type of the new object.'
+  },
+  cancelText: {
+    type: String,
+    default: 'Cancel'
+  },
+  actionButtonText: {
+    type: String,
+    default: 'Create'
+  },
+  targetElementType: {
+    type: String,
+    default: ''
+  },
+  action: {
+    type: String as PropType<'create-entity' | 'update:model-value' | 'select-entity'>,
+    default: 'create-entity'
+  },
   eventPayload: {
     type: Object,
     default: () => ({})
   }
 });
 
-defineEmits(['create-entity', 'update:model-value']);
+const emit = defineEmits(['create-entity', 'update:model-value', 'select-entity']);
 
-const { t, locale } = useI18n();
-const { t: $t } = useI18n({ useScope: 'global' });
+const { locale } = useI18n();
 const route = useRoute();
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain
+  domain: route.params.domain ?? ''
 }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
@@ -61,25 +84,18 @@ const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
 const type = ref<string | undefined>();
 
-const options = computed<{ title: string; value: string }[]>(() =>
-  Object.keys(schemas.value || {}).map((schemaName) => ({
+const options = computed<{ title: string; value: string }[]>(() => {
+  const objectSchemaNames = Object.keys(schemas.value || {}).filter((item) =>
+    props.targetElementType ? item !== props.targetElementType : true
+  );
+
+  return objectSchemaNames.map((schemaName) => ({
     value: schemaName,
     title: translations.value?.lang[locale.value]?.[schemaName] || schemaName
-  }))
-);
-</script>
+  }));
+});
 
-<i18n>
-{
-  "en": {
-    "create": "Create",
-    "create_entity": "Please specify the type of the new object.",
-    "headline": "Create new object"
-  },
-  "de": {
-    "create": "Erstellen",
-    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
-    "headline": "Objekt erstellen"
-  }
-}
-</i18n>
+const handleAction = () => {
+  emit(props.action, { type: type.value, ...props.eventPayload });
+};
+</script>
