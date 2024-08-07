@@ -50,7 +50,7 @@
     <template v-if="childrenLoading">
       <v-list-item v-for="index in 3" :key="index" disabled>
         <v-list-item-title>
-          <v-skeleton-loader type="text" width="100%" />
+          <v-skeleton-loader data-veo-test="loader" type="text" width="100%" />
         </v-list-item-title>
       </v-list-item>
     </template>

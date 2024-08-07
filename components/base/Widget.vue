@@ -19,11 +19,11 @@
   <BaseCard>
     <template v-if="loading">
       <v-card-title v-if="title" class="bg-accent mb-2 small-caps">
-        <v-skeleton-loader type="heading" width="400" />
+        <v-skeleton-loader data-veo-test="loader" type="heading" width="400" />
       </v-card-title>
       <v-card-text>
         <slot v-if="!!$slots.skeleton" name="skeleton" />
-        <v-skeleton-loader v-else type="image" />
+        <v-skeleton-loader v-else data-veo-test="loader" type="image" />
       </v-card-text>
     </template>
     <template v-else>

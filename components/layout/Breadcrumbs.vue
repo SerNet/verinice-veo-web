@@ -37,7 +37,7 @@
           <template v-if="queryResultMap[item.param]">
             {{ queryResultMap[item.param] }}
           </template>
-          <v-skeleton-loader v-else type="text" />
+          <v-skeleton-loader v-else data-veo-test="loader" type="text" />
         </span>
         <span v-else-if="item.text" class="breadcrumbs-item-height small-caps capitalize">
           {{ item.text }}
@@ -67,7 +67,7 @@
                       <template v-if="queryResultMap[menuItem.param]">
                         {{ queryResultMap[menuItem.param] }}
                       </template>
-                      <v-skeleton-loader v-else type="text" />
+                      <v-skeleton-loader v-else data-veo-test="loader" type="text" />
                     </template>
                     <template v-if="menuItem.text">
                       {{ menuItem.text }}

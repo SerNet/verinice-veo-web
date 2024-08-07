@@ -45,8 +45,8 @@
               </v-row>
             </template>
             <template v-else>
-              <v-skeleton-loader type="text" width="60%" />
-              <v-skeleton-loader type="text" width="60%" />
+              <v-skeleton-loader data-veo-test="loader" type="text" width="60%" />
+              <v-skeleton-loader data-veo-test="loader" type="text" width="60%" />
             </template>
           </div>
           <div
@@ -58,7 +58,7 @@
             <i v-else>{{ t('noDescription') }}</i>
           </div>
           <div v-else class="flex-grow-0">
-            <v-skeleton-loader type="paragraph" />
+            <v-skeleton-loader data-veo-test="loader" type="paragraph" />
           </div>
         </v-card-text>
       </BaseCard>

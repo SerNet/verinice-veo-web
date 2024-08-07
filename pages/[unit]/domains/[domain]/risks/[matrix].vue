@@ -82,7 +82,7 @@
         </v-col>
       </v-row>
 
-      <v-skeleton-loader v-else type="image" width="600px" />
+      <v-skeleton-loader v-else data-veo-test="loader" type="image" width="600px" />
     </BaseContainer>
 
     <RiskDefinitionEditor
@@ -108,7 +108,7 @@ import RiskLegends from '~/components/risk/riskElements/RiskLegends.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 
-import { getRiskDefinition, createNewRiskDefinition } from '~/components/risk/RiskDefinitionCustomization.module';
+import { createNewRiskDefinition, getRiskDefinition } from '~/components/risk/RiskDefinitionCustomization.module';
 import contentCustomizingQueryDefinitions from '~/composables/api/queryDefinitions/contentCustomizing';
 import type { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValue } from '~/types/VeoTypes';
 

@@ -21,6 +21,7 @@
     :key="i"
     v-bind="$attrs"
     class="v-skeleton-loader pulse"
+    data-veo-test="loader"
     :style="{
       width,
       height

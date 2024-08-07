@@ -19,8 +19,8 @@
   <BaseCard>
     <v-list>
       <v-list-item v-if="loading">
-        <v-skeleton-loader type="text" class="mb-0 flex-grow-0" width="100" />
-        <v-skeleton-loader type="text" class="flex-grow-0" width="100" />
+        <v-skeleton-loader data-veo-test="loader" type="text" class="mb-0 flex-grow-0" width="100" />
+        <v-skeleton-loader data-veo-test="loader" type="text" class="flex-grow-0" width="100" />
       </v-list-item>
       <template v-else>
         <v-list-item v-for="catalog in currentCatalogs" :key="catalog.id" :to="generateRoute(catalog.id)">

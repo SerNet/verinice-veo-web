@@ -22,9 +22,9 @@
     </h2>
     <div v-if="isLoading">
       <div v-for="index in [1, 2]" :key="index" class="my-6 px-4">
-        <v-skeleton-loader type="heading" />
-        <v-skeleton-loader type="text" class="my-2" />
-        <v-skeleton-loader type="text" />
+        <v-skeleton-loader data-veo-test="loader" type="heading" />
+        <v-skeleton-loader data-veo-test="loader" type="text" class="my-2" />
+        <v-skeleton-loader data-veo-test="loader" type="text" />
       </div>
     </div>
     <v-list v-else class="py-0" mandatory>

@@ -20,7 +20,7 @@
     <UtilNotFoundError v-if="domainNotFound" :text="t('domainNotFoundText')" />
 
     <template v-else>
-      <v-skeleton-loader v-if="!domain" class="mt-n2 mb-4 skeleton-subtitle" type="text" />
+      <v-skeleton-loader v-if="!domain" data-veo-test="loader" class="mt-n2 mb-4 skeleton-subtitle" type="text" />
 
       <v-row>
         <template v-if="elementStatusCountIsFetching">
@@ -29,10 +29,10 @@
               <template #skeleton>
                 <v-row v-for="k in [1, 2]" :key="k" class="align-center">
                   <v-col cols="12" md="4">
-                    <v-skeleton-loader class="ml-6" type="text" width="70%" />
+                    <v-skeleton-loader data-veo-test="loader" class="ml-6" type="text" width="70%" />
                   </v-col>
                   <v-col>
-                    <v-skeleton-loader class="ml-6" type="heading" width="210%" />
+                    <v-skeleton-loader data-veo-test="loader" class="ml-6" type="heading" width="210%" />
                   </v-col>
                 </v-row>
               </template>

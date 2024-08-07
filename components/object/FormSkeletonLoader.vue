@@ -18,7 +18,7 @@
 <template>
   <v-row class="flex-column pt-4">
     <v-col v-for="(skeleton, index) of skeletons" :key="index">
-      <v-skeleton-loader :type="skeleton.type" :width="skeleton.width" />
+      <v-skeleton-loader data-veo-test="loader" :type="skeleton.type" :width="skeleton.width" />
     </v-col>
   </v-row>
 </template>
