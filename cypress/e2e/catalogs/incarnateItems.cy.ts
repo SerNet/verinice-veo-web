@@ -72,7 +72,7 @@ describe('Catalogs', { testIsolation: false }, () => {
 
     // Check if all items were created and are rendered
     cy.intercept('GET', api.scenarios).as('getScenarios');
-    cy.navigateTo({ group: 'objects', category: 'scenario', entry: 'all' });
+    cy.navigateTo({ group: 'objects', category: 'scenario', entry: 'scenario_all' });
     cy.wait('@getScenarios').its('response.statusCode').should('eq', 200);
 
     getTableRows().as('scenarioTableRows');
