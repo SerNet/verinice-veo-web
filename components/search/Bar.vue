@@ -32,7 +32,7 @@
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
   >
     <template #prepend-inner>
-      <div v-for="s in search" key="s.searchFilter" class="d-flex">
+      <div v-for="s in search" :key="s.searchFilter" class="d-flex">
         <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
           <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start></v-icon>
           {{ translateItem(s.searchFilter) }}
@@ -42,7 +42,7 @@
       </div>
     </template>
     <template #append-inner>
-      <v-icon :icon="mdiCloseCircle" @click="resetSearch" class="mr-4" />
+      <v-icon class="mr-4" :icon="mdiCloseCircle" @click="resetSearch" />
     </template>
   </v-combobox>
 </template>
@@ -205,19 +205,6 @@ function handleDelete(event: KeyboardEvent) {
 }
 </script>
 
-<style scoped lang="scss">
-:deep(.v-combobox__menu-icon) {
-  display: none;
-}
-
-:deep(.v-input__append) {
-  cursor: pointer;
-  :hover {
-    color: rgb(var(--v-theme-primary));
-  }
-}
-</style>
-
 <i18n>
 {
 "en": {
@@ -234,3 +221,16 @@ function handleDelete(event: KeyboardEvent) {
 }
 }
 </i18n>
+
+<style scoped lang="scss">
+:deep(.v-combobox__menu-icon) {
+  display: none;
+}
+
+:deep(.v-input__append) {
+  cursor: pointer;
+  :hover {
+    color: rgb(var(--v-theme-primary));
+  }
+}
+</style>
