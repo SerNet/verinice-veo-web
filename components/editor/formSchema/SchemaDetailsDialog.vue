@@ -142,12 +142,10 @@ watch(
 );
 
 const subTypeOptions = computed(() =>
-  (props.objectSchema?.properties?.domains?.properties?.['{CURRENT_DOMAIN_ID}']?.properties?.subType?.enum || []).map(
-    (subType: string) => ({
-      title: subType,
-      value: subType
-    })
-  )
+  (props.objectSchema?.properties.subType.enum || []).map((subType: string) => ({
+    title: subType,
+    value: subType
+  }))
 );
 
 function doSave() {
