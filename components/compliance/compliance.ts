@@ -1,12 +1,13 @@
 // RI = Combination of riskAffected + control
 
 import { useRequest } from '@/composables/api/utils/request';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const { request } = useRequest();
 const route = useRoute();
 
 const state = {
-  type: computed(() => OBJECT_TYPE_TO_URL_MAP[route.query.type as string] || 'all'),
+  type: computed(() => VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals] || 'all'),
   riskAffected: computed(() => (route.query.riskAffected as string) || null),
   control: computed(() => (route.query.control as string) || null)
 };
@@ -56,16 +57,3 @@ export function useCompliance() {
     state: state
   };
 }
-
-// Map object types to corresponding url paths segments
-type ObjectTypeToUrlMap = { [key: string]: string };
-const OBJECT_TYPE_TO_URL_MAP: ObjectTypeToUrlMap = {
-  scope: 'scopes',
-  process: 'processes',
-  asset: 'assets',
-  person: 'persons',
-  incident: 'incidents',
-  document: 'documents',
-  scenario: 'scenarios',
-  control: 'controls'
-};
