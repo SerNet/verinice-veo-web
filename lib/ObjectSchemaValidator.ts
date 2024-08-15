@@ -18,19 +18,6 @@
 import type { ComposerTranslation } from 'vue-i18n';
 import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
-
-export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
-
-export interface VeoSchemaValidatorProperty {
-  name: string;
-  type?: string;
-  optional?: boolean;
-  additionalProperties?: VeoSchemaValidatorProperty[];
-  requiredAdditionalProperties?: VeoSchemaValidatorRequiredProperty[];
-  childProperties?: VeoSchemaValidatorProperty[];
-  requiredChildProperties?: VeoSchemaValidatorRequiredProperty[];
-}
-
 export interface VeoSchemaValidatorMessage {
   code: string;
   message: string;

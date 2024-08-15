@@ -26,8 +26,6 @@ import { IDynamicFormElementOptions, IVeoFormElementFormSchemaRule, IVeoFormElem
 import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
 import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
 
-export default {};
-
 export const VeoFormsElementProps = {
   metaData: {
     type: Object as PropType<Record<string, any>>,

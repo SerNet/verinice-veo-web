@@ -161,18 +161,6 @@ export default class ObjectSchemaHelper {
       this.updateAspectAttributePrefixes(aspectIndex);
     }
   }
-
-  public updateCustomAspectAttributes(aspectName: string, attributes: IVeoOSHCustomProperty[]) {
-    const aspectIndex = this._customAspects.findIndex((aspect) => aspect.title === aspectName);
-
-    if (aspectIndex === -1) {
-      throw new Error(`ObjectSchemaHelper2::updateCustomAspectAttributes: Aspect "${aspectName}" not found!`);
-    } else {
-      this._customAspects[aspectIndex].attributes = attributes;
-      this.updateAspectAttributePrefixes(aspectIndex);
-    }
-  }
-
   public renameCustomAspect(oldName: string, newName: string) {
     const aspectIndex = this._customAspects.findIndex((aspect) => aspect.title === oldName);
 
@@ -325,10 +313,6 @@ export default class ObjectSchemaHelper {
     }
   }
 
-  public removeLanguage(language: string) {
-    delete this._translations[language];
-  }
-
   public updateDomain(domainId: string, subTypes: IVeoOSHDomains['domain']) {
     this._domains[domainId] = subTypes;
   }
@@ -425,29 +409,6 @@ export default class ObjectSchemaHelper {
             title: 'The list of domains in which this element is present.',
             type: 'array',
             uniqueItems: true
-          },
-          id: {
-            format: 'regex',
-            pattern: '[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}',
-            title: 'The UUID to identify the element',
-            type: 'string'
-          },
-          references: {
-            items: {
-              properties: {
-                displayName: {
-                  description: 'A friendly human readable title of the referenced object.',
-                  type: 'string'
-                },
-                targetUri: {
-                  description: 'The resource URL of the referenced object.',
-                  type: 'string'
-                }
-              },
-              type: 'object',
-              required: ['targetUri']
-            },
-            type: 'array'
           },
           target: {
             properties: {
