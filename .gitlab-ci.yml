@@ -45,6 +45,15 @@ store_project_version:
     reports:
       dotenv: variables.env
 
+type_check:
+  stage: test
+  rules:
+    - !reference [.verification, rules]
+  needs: []
+  script:
+    - npm run typecheck
+  interruptible: true
+
 check_formatting:
   stage: test
   rules:

@@ -15,6 +15,7 @@
     "cy:local": "cypress run --env environment=local",
     "dev": "nuxi dev",
     "dev:public": "nuxi dev --public",
+    "typecheck": "nuxi typecheck",
     "e2e": "cypress run --env environment=local --browser firefox",
     "format:all": "prettier . --ignore-unknown --write",
     "format": "prettier --ignore-unknown --write",
@@ -69,12 +70,14 @@
     "@nuxt/eslint-config": "^0.5.0",
     "@nuxt/test-utils": "^3.12.0",
     "@nuxtjs/i18n": "8.5.1",
+    "@types/dompurify": "^3.0.5",
     "@types/glob": "^8.0.1",
     "@types/hash-sum": "^1.0.0",
     "@types/intro.js": "^5.1.0",
     "@types/js-cookie": "^3.0.3",
     "@types/lodash": "^4.14.191",
     "@types/node": "^22.0.0",
+    "@types/prismjs": "^1.26.4",
     "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@vitejs/plugin-vue": "^5.0.4",
@@ -89,6 +92,7 @@
     "nuxt": "^3.10.1",
     "prettier": "^3.2.5",
     "sass": "^1.77.8",
-    "vitest": "^1.6.0"
+    "vitest": "^1.6.0",
+    "vue-tsc": "^2.0.29"
   }
 }

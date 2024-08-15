@@ -37,7 +37,11 @@ export default defineNuxtConfig({
     tsConfig: {
       compilerOptions: {
         // Allow type imports without `type` modifier
-        verbatimModuleSyntax: false
+        verbatimModuleSyntax: false,
+        noUncheckedIndexedAccess: false,
+        noImplicitAny: false,
+        strictNullChecks: false,
+        skipLibCheck: true
       }
     }
   },
