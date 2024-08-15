@@ -15,18 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoLegacyObjectHistoryEntry, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 import { formatObject } from './objects';
-
-export interface IVeoObjectHistoryEntry {
-  author: string;
-  content: IVeoEntity;
-  time: string;
-  type: string;
-  changeNumber: number;
-  uri: string;
-}
 
 export interface IVeoFetchVersionsParameters {
   id: string;
@@ -81,7 +72,7 @@ export default {
           ...entry,
           content: formatObject(entry.content)
         }))
-    } as IVeoQueryDefinition<IVeoFetchLatestChangesParameters, IVeoObjectHistoryEntry[]>,
+    } as IVeoQueryDefinition<IVeoFetchLatestChangesParameters, IVeoLegacyObjectHistoryEntry[]>,
     fetchPagedRevisions: {
       primaryQueryKey: 'pagedRevisions',
       url: '/api/history/revisions/paged',

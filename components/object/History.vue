@@ -69,7 +69,7 @@
 <script lang="ts">
 import { cloneDeep } from 'lodash';
 
-import { useFetchVersions } from '~/composables/api/history';
+import { IVeoFetchVersionsParameters, useFetchVersions } from '~/composables/api/history';
 import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
@@ -93,10 +93,10 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const fetchVersionsQueryParameters = computed(() => ({
+    const fetchVersionsQueryParameters = computed<IVeoFetchVersionsParameters>(() => ({
       id: props.objectId,
       objectType: props.objectType,
-      domainId: route.params.domain
+      domainId: route.params.domain as string
     }));
     const { data: history, isLoading } = useFetchVersions(fetchVersionsQueryParameters, {
       keepPreviousData: true,

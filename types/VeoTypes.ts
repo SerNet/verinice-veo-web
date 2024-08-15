@@ -521,14 +521,18 @@ export interface IVeoFormSchemaItemDeleteEvent {
   name?: string;
 }
 
-export interface IVeoObjectHistoryEntry {
+export interface IVeoLegacyObjectHistoryEntry extends IVeoHistoryEntry<IVeoEntityLegacy> {}
+
+export interface IVeoObjectHistoryEntry extends IVeoHistoryEntry<IVeoEntity> {}
+
+interface IVeoHistoryEntry<T> {
   author: string;
-  content: IVeoEntity;
+  content: T;
   time: string;
   type: string;
   changeNumber: number;
   uri: string;
-  id?: string;
+  id: string;
 }
 
 export enum VeoAlertType {

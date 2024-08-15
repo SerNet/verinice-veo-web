@@ -38,7 +38,7 @@
 <script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
 import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
-import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoLegacyObjectHistoryEntry } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 const { t, locale } = useI18n();
@@ -51,7 +51,7 @@ const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatest
 
 const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
-const createUrl = (revision: IVeoObjectHistoryEntry, schemas: IVeoSchemaEndpoints) => {
+const createUrl = (revision: IVeoLegacyObjectHistoryEntry, schemas: IVeoSchemaEndpoints) => {
   const subType = revision.content.domains[route.params.domain as string]?.subType || '-';
 
   return `/${route.params.unit}/domains/${route.params.domain}/${schemas[revision.content.type]}/${subType}/${
