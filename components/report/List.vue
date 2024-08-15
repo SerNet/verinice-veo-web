@@ -54,10 +54,9 @@
 import { upperFirst, toUpper } from 'lodash';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
+import reportQueryDefinitions, { IVeoReportMeta, IVeoReportsMeta } from '~/composables/api/queryDefinitions/reports';
 import { useQuery } from '~/composables/api/utils/query';
 
-import type { IVeoReport } from '~/types/VeoTypes';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 interface IReport {
@@ -91,12 +90,12 @@ const { data: reports, isFetching: isFetchingReports } = useQuery(reportQueryDef
 /**
  * Filter reports according to domain and GUI language.
  * @param _domain {IVeoDomain} - The currently active veo domain.
- * @param _allReports {IVeoReport[]} - All reports from all domains.
+ * @param _allReports {IVeoReportMeta[]} - All reports from all domains.
  * @param _locale {string} - The current GUI language.
  */
 type TFilterReportsParams = {
   _domain: IVeoDomain;
-  _allReports: IVeoReport[];
+  _allReports: IVeoReportsMeta;
   _locale: string;
 };
 function filterReports({ _domain, _allReports, _locale }: TFilterReportsParams) {
@@ -129,7 +128,7 @@ function filterReports({ _domain, _allReports, _locale }: TFilterReportsParams) 
  * @param locale {string}- The current locale.
  */
 type TMapFilteredReportsParams = {
-  reports: [id: string, report: IVeoReport][];
+  reports: [id: string, report: IVeoReportMeta][];
   locale: string;
 };
 function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
