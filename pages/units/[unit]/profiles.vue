@@ -163,35 +163,35 @@ useHead({
 
 <i18n>
 {
-  "en": {
-    "profiles": "Profiles",
-    "active": "active",
-    "createUnit": "Create Unit",
-    "deleteUnit": "Delete Unit",
-    "editUnit": "Edit Unit",
-    "exceeded": "You have reached the maximum amount of Units",
-    "management": "Unit management",
-    "of": "of",
-    "warningAssociateDomainTitle": "Warning!",
-    "warningAssociateDomainBody": "Action cannot be reversed. Applying this profile requires associating a new domain with your unit. This cannot be undone!",
-    "applyProfiles": "Apply Profiles",
-    "applyProfileSuccess": "Profile successfully applied.",
-    "applyProfileErrorText": "Could not apply profile.",
-  },
-  "de": {
-    "profiles": "Profile",
-    "active": "aktiv",
-    "createUnit": "Unit erstellen",
-    "deleteUnit": "Unit löschen",
-    "editUnit": "Unit bearbeiten",
-    "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
-    "management": "Unit-Verwaltung",
-    "of": "von",
-    "warningAssociateDomainTitle": "Warnung!",
-    "warningAssociateDomainBody": " Aktion kann nicht rückgängig gemacht werden. Die Anwendung dieses Profils erfordert die Verknüpfung einer neuen Domäne mit Ihrer Unit. Dies kann nicht rückgängig gemacht werden!",
-    "applyProfiles": "Profile anwenden",
-    "applyProfileSuccess": "Das Profil wurde erfolgreich angewendet.",
-    "applyProfileErrorText": " Das Profil konnte nicht angewendet werden.",
-  }
+"en": {
+  "profiles": "Profiles",
+  "active": "active",
+  "createUnit": "Create Unit",
+  "deleteUnit": "Delete Unit",
+  "editUnit": "Edit Unit",
+  "exceeded": "You have reached the maximum amount of Units",
+  "management": "Unit management",
+  "of": "of",
+  "warningAssociateDomainTitle": "Warning!",
+  "warningAssociateDomainBody": "Action cannot be reversed. Applying this profile requires associating a new domain with your unit. This cannot be undone!",
+  "applyProfiles": "Apply Profiles",
+  "applyProfileSuccess": "Profile successfully applied.",
+  "applyProfileErrorText": "Could not apply profile."
+},
+"de": {
+  "profiles": "Profile",
+  "active": "aktiv",
+  "createUnit": "Unit erstellen",
+  "deleteUnit": "Unit löschen",
+  "editUnit": "Unit bearbeiten",
+  "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
+  "management": "Unit-Verwaltung",
+  "of": "von",
+  "warningAssociateDomainTitle": "Warnung!",
+  "warningAssociateDomainBody": " Aktion kann nicht rückgängig gemacht werden. Die Anwendung dieses Profils erfordert die Verknüpfung einer neuen Domäne mit Ihrer Unit. Dies kann nicht rückgängig gemacht werden!",
+  "applyProfiles": "Profile anwenden",
+  "applyProfileSuccess": "Das Profil wurde erfolgreich angewendet.",
+  "applyProfileErrorText": " Das Profil konnte nicht angewendet werden."
+}
 }
 </i18n>

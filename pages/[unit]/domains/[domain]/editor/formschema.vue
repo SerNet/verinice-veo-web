@@ -689,7 +689,7 @@ export default defineComponent({
     "saveSchemaError": "Couldn't save schema!",
     "error": "Error",
     "saveContentCreator": "You need the role \"Content Creator\" to save the formschema.",
-    "viewIn": "View in",
+    "viewIn": "View in"
   },
   "de": {
     "availableControls": "Verfügbare Steuerelemente",
@@ -705,7 +705,7 @@ export default defineComponent({
     "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "error": "Fehler",
     "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern.",
-    "viewIn": "Ansehen in",
+    "viewIn": "Ansehen in"
   }
 }
 </i18n>

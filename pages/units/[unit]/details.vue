@@ -98,13 +98,13 @@ const messages = computed(() => ({
     "updateUnitDetails": "Update unit details",
     "unitUpdateSuccess": "Updated unit successfully.",
     "unitUpdateErrorTitle": "An Error occurred.",
-    "unitUpdateErrorBody": "Could not update unit details.",
+    "unitUpdateErrorBody": "Could not update unit details."
   },
   "de": {
     "updateUnitDetails": "Unit-Details aktualisieren",
     "unitSuccessfullyUpdated": "Unit wurde erfolgreich aktualisiert.",
     "unitUpdateErrorTitle": "Ein Fehler ist passiert.",
-    "unitUpdateErrorBody": "Unit konnte nicht aktualisiert werden",
+    "unitUpdateErrorBody": "Unit konnte nicht aktualisiert werden"
   }
 }
 </i18n>

@@ -365,11 +365,11 @@ export default defineComponent({
     "inputFormat": "Input format",
     "values": "Available options",
     "valuesHint": "Available options (seperate entries with Enter)",
-    attributeTypes: {
-      date: 'Date',
-      dateTime: 'Date and Time',
-      text: 'Text',
-      uri: 'URI'
+    "attributeTypes": {
+      "date": "Date",
+      "dateTime": "Date and Time",
+      "text": "Text",
+      "uri": "URI"
     },
     "requiredIfEnum": "You have to enter at least one value if selecting type \"selection\""
   },
@@ -381,11 +381,11 @@ export default defineComponent({
     "inputFormat": "Eingabeformat",
     "values": "Auswahlmöglichkeiten",
     "valuesHint": "Werte (mit Enter trennen)",
-    attributeTypes: {
-      date: 'Datum',
-      dateTime: 'Datum und Uhrzeit',
-      text: 'Text',
-      uri: 'URI'
+    "attributeTypes": {
+      "date": "Datum",
+      "dateTime": "Datum und Uhrzeit",
+      "text": "Text",
+      "uri": "URI"
     },
     "requiredIfEnum": "Sie müssen mindestens einen Wert angeben, wenn Sie den Typ \"Auswahl\" auswählen."
   }

@@ -262,7 +262,7 @@ const messages = computed(() => ({
     "applyProfileSuccess": "Profile successfully applied.",
     "applyProfileErrorText": "Could not apply profile.",
     "preSelectedDomainTitle": "Pre-selected Domain",
-    "preSelectedDomainBody": "Because you are importing objects from the profile { profile }, the domain { domain } is preselected.",
+    "preSelectedDomainBody": "Because you are importing objects from the profile { profile }, the domain { domain } is preselected."
   },
   "de": {
     "createUnit": "Unit anlegen",
@@ -279,7 +279,7 @@ const messages = computed(() => ({
     "applyProfileSuccess": "Das Profil wurde erfolgreich angewendet.",
     "applyProfileErrorText": " Das Profil konnte nicht angewendet werden.",
     "preSelectedDomainTitle": "Pre-selected Domain",
-    "preSelectedDomainBody": "Weil Sie Objekte aus dem Profil { profile } importieren, ist die Domäne { domain } vorausgewählt.",
+    "preSelectedDomainBody": "Weil Sie Objekte aus dem Profil { profile } importieren, ist die Domäne { domain } vorausgewählt."
   }
 }
 </i18n>

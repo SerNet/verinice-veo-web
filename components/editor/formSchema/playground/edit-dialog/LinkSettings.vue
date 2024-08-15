@@ -143,7 +143,7 @@ const usedLinkAttributes = computed<string[]>({
   },
   "de": {
     "changesVisibleImmediately": "Änderungen in der Reihenfolge sind sofort ohne Klick auf \"Speichern\" sichtbar.",
-    "displayedAttributes": "Angezeigte Felder",
+    "displayedAttributes": "Angezeigte Felder"
   }
 }
 </i18n>

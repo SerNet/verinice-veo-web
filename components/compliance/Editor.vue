@@ -449,7 +449,7 @@ async function submitForm({
   "implementationUntil": "Umsetzung bis",
   "abbreviation": "Abkürzung",
   "implementation": "Umsetzung",
-  "riskAffectedLabel": "Zuordnung",
+  "riskAffectedLabel": "Zuordnung"
 },
 "en": {
   "requirement": "Requirement",
@@ -480,7 +480,7 @@ async function submitForm({
   "implementationUntil": "Implementation by",
   "abbreviation": "Abbreviation",
   "implementation": "Implementation",
-  "riskAffectedLabel": "Assignment",
+  "riskAffectedLabel": "Assignment"
 }
 }
 </i18n>
