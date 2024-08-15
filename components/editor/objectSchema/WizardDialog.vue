@@ -112,7 +112,7 @@
           </v-row>
           <v-row>
             <v-col>
-              <span style="text-decoration: undeline; font-weight: bold; cursor: pointer" @click="state = 'create'">
+              <span style="text-decoration: underline; font-weight: bold; cursor: pointer" @click="state = 'create'">
                 {{ t('importObjectSchemaSwitch') }}
               </span>
             </v-col>
