@@ -25,7 +25,7 @@
         (e) =>
           openItem({
             type: state.type.value,
-            riskAffected: state.CTLModule.value.owner.id,
+            riskAffected: state.CTLModule.value.owner?.id,
             item: e.item
           })
       "

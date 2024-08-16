@@ -3,10 +3,15 @@
 import { useRequest } from '@/composables/api/utils/request';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
+export type ComplianceState = {
+  type: Ref<string>;
+  CTLModule: Ref<any>;
+};
+
 const { request } = useRequest();
 const route = useRoute();
 
-const state = {
+const state: ComplianceState = {
   type: computed(() => VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals] || 'all'),
   CTLModule: ref() // if undefined, fetch it!
 };
