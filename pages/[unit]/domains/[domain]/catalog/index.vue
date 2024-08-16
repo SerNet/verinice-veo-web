@@ -46,7 +46,6 @@ import { useQuery } from '~/composables/api/utils/query';
 import { useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
-import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { onBeforeRouteLeave } from 'vue-router';
 
@@ -56,13 +55,12 @@ import type { IVeoEntity } from '~/types/VeoTypes';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const route = useRoute();
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
 // State
 const currentDomainId = computed(() => route.params.domain as string);
-const currentElementType = computed(() => (route.query.type === 'all' ? undefined : (route.query.type as string)));
 const currentSubType = computed(() => (route.query.subType === 'all' ? undefined : (route.query.subType as string)));
 
 // Always show query params in url
@@ -97,24 +95,7 @@ const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
   { keepPreviousData: true }
 );
 
-// Translate sub types
-// Translations are found in forms, so we fetch them:
-const allFormSchemasQueryEnabled = computed(() => !!currentDomainId);
-const queryParameters = computed(() => ({
-  domainId: currentDomainId.value
-}));
-const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
-  enabled: allFormSchemasQueryEnabled,
-  placeholderData: []
-});
-
-const currentSubTypeTranslated = computed(() =>
-  translateSubType({
-    formSchemas: formSchemas?.value,
-    elementType: currentElementType?.value,
-    subType: currentSubType.value
-  })
-);
+const { subTypeTranslation: currentSubTypeTranslated } = useSubTypeTranslation();
 
 /* BREADCRUMBS */
 // Add breadcrumb for current filter
@@ -177,20 +158,6 @@ async function applyItems() {
   } finally {
     isApplyingItems.value = false;
   }
-}
-
-// Helpers
-type TranslateSubTypeParams = {
-  formSchemas: IVeoFormSchemaMeta[] | undefined;
-  elementType: string | undefined;
-  subType: string | undefined;
-};
-
-function translateSubType({ formSchemas, elementType, subType }: TranslateSubTypeParams) {
-  const formSchema = formSchemas?.find(
-    (formSchema) => formSchema.modelType === elementType && formSchema.subType === subType
-  );
-  return formSchema?.name[locale.value];
 }
 </script>
 

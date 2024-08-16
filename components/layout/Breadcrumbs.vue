@@ -91,13 +91,13 @@ import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs'
 
 import { useQuery } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import translationsQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
+import { useSubTypeTranslation } from '~/composables/Translations';
 
-type SupportedQuery = ':unit' | ':domain' | ':subType' | ':report' | ':objectType' | ':object';
+type SupportedQuery = ':unit' | ':domain' | ':report' | ':objectType' | ':object';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -123,6 +123,7 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const route = useRoute();
 const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
+const { subTypeTranslation } = useSubTypeTranslation();
 
 const title = ref('');
 
@@ -184,16 +185,7 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
   [
     ':subType',
     {
-      queriedText: {
-        query: ':subType',
-        parameterTransformationFn: () => ({
-          domainId: route.params.domain
-        }),
-        resultTransformationFn: (_param, value, data) =>
-          value === '-' ?
-            t('all')
-          : data.find((formSchema: IVeoFormSchema) => formSchema.subType === value)?.name?.[locale.value]
-      }
+      dynamicText: (_param, _value) => (unref(subTypeTranslation) === 'all' ? t('all') : unref(subTypeTranslation))
     }
   ],
   [
@@ -269,12 +261,6 @@ const { data: object } = useQuery(objectsQueryDefinitions.queries.fetch, objectQ
   enabled: objectQueryEnabled
 });
 
-const subTypeQueryParameters = ref<any>({});
-const subTypeQueryEnabled = computed(() => !isEmpty(subTypeQueryParameters.value));
-const { data: subType } = useQuery(formsQueryDefinitions.queries.fetchForms, subTypeQueryParameters, {
-  enabled: subTypeQueryEnabled
-});
-
 const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
 const queryResultMap = computed<{ [key: string]: any }>(() => ({
@@ -308,14 +294,6 @@ const queryResultMap = computed<{ [key: string]: any }>(() => ({
         ':report',
         route.params.report as string,
         report.value
-      )
-    : undefined,
-  ':subType':
-    subType.value ?
-      BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':subType')?.queriedText?.resultTransformationFn(
-        ':subType',
-        route.params.subType as string,
-        subType.value
       )
     : undefined,
   ':unit':
@@ -411,9 +389,6 @@ watch(
         switch (replacementMapEntry.queriedText.query) {
           case ':domain':
             domainQueryParameters.value = transformedParameters;
-            break;
-          case ':subType':
-            subTypeQueryParameters.value = transformedParameters;
             break;
           case ':objectType':
             objectTypeQueryParameters.value = transformedParameters;
