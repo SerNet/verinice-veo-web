@@ -122,6 +122,7 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
 import { VeoSort } from '~/types/VeoSort';
 import { useFetchParentObjects } from '~/composables/api/objects';
+import { useCompliance } from '../compliance/compliance';
 
 export default defineComponent({
   props: {
@@ -750,6 +751,8 @@ export default defineComponent({
       }
     });
 
+    const { state: complianceState } = useCompliance();
+
     /**
      * control unlink dialogs
      */
@@ -813,6 +816,7 @@ export default defineComponent({
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
+          complianceState.CTLModule.value = internalItem.raw;
           return navigateTo({
             name: 'unit-domains-domain-compliance',
             query: {

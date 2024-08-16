@@ -160,10 +160,10 @@
         @click="
           () =>
             void (
-              state.riskAffected.value &&
+              state.CTLModule.value.owner.id &&
               submitForm({
                 type: state.type.value,
-                riskAffected: state.riskAffected.value,
+                riskAffected: state.CTLModule.value.owner.id as string,
                 form,
                 item: item,
                 request

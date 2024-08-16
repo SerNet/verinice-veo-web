@@ -39,7 +39,7 @@
     </template>
 
     <template #default>
-      <ComplianceList @update:current-name="currentName = $event" @update:current-module="currentModule = $event" />
+      <ComplianceList />
     </template>
   </BasePage>
 </template>

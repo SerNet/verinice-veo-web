@@ -1,16 +1,16 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2024 Aziz Khalledi
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
    - as published by the Free Software Foundation, either version 3 of the License,
    - or (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
    - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    - See the GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License along with this program.
    - If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -25,7 +25,7 @@
         (e) =>
           openItem({
             type: state.type.value,
-            riskAffected: state.riskAffected.value,
+            riskAffected: state.CTLModule.value.owner.id,
             item: e.item
           })
       "
@@ -47,7 +47,7 @@
   </BaseCard>
 </template>
 <script lang="ts">
-function translate(requirementImplementations, t) {
+function translate(requirementImplementations: { items: any[] }, t: any) {
   if (!requirementImplementations) return;
   return requirementImplementations.items.map((item) => {
     const status = t(`compliance.status.${item.status}`);
@@ -67,30 +67,29 @@ const { fetchRequirementImplementations, fetchRequirementImplementation, state }
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
-interface Emits {
-  (e: 'update:currentName', currentName: string): void;
-  (e: 'update:currentModule', currentModule: string): void;
-}
-const emit = defineEmits<Emits>();
-
-const fetchParams = computed(() => ({
-  type: state.type.value as string,
-  riskAffected: state.riskAffected.value as string,
-  control: state.control.value as string
-}));
+const fetchParams = computed(() => {
+  if (!state.CTLModule.value) return undefined;
+  return {
+    type: state.type.value as string,
+    riskAffected: state.CTLModule.value.owner.id as string,
+    control: state.CTLModule.value.id
+  };
+});
 
 const requirementImplementations = ref<any>();
-
-requirementImplementations.value = await fetchRequirementImplementations({
-  ...fetchParams.value
-});
-watch(
-  fetchParams,
-  async () =>
-    (requirementImplementations.value = await fetchRequirementImplementations({
+requirementImplementations.value =
+  fetchParams.value ?
+    await fetchRequirementImplementations({
       ...fetchParams.value
-    }))
-);
+    })
+  : undefined;
+
+watch(fetchParams, async () => {
+  if (!fetchParams.value) return;
+  requirementImplementations.value = await fetchRequirementImplementations({
+    ...fetchParams.value
+  });
+});
 
 // Translate
 const translatedRequirementImplementations = ref(translate(requirementImplementations.value, globalT));
@@ -101,17 +100,6 @@ watch(requirementImplementations, () => {
 
 watch(locale, () => {
   translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
-});
-
-const currentName = computed(() => requirementImplementations?.value?.items?.[0]?.origin?.displayName);
-const currentModule = computed(
-  () =>
-    requirementImplementations?.value?.items?.find((item: any) => item?.control?.id === state.control.value)?.control
-      ?.displayName
-);
-watch([currentName, currentModule], ([newName, newModule]) => {
-  emit('update:currentName', newName);
-  emit('update:currentModule', newModule);
 });
 
 // Open a single RI
@@ -131,6 +119,7 @@ async function openItem({ type, riskAffected, item }: { type: string | null; ris
 }
 
 const reloadRequirementImplementations = async () => {
+  if (!fetchParams.value) return;
   requirementImplementations.value = await fetchRequirementImplementations(fetchParams.value);
 };
 

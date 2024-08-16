@@ -8,8 +8,7 @@ const route = useRoute();
 
 const state = {
   type: computed(() => VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals] || 'all'),
-  riskAffected: computed(() => (route.query.riskAffected as string) || null),
-  control: computed(() => (route.query.control as string) || null)
+  CTLModule: ref() // if undefined, fetch it!
 };
 
 function getRequirementImplementationId(url: string) {
