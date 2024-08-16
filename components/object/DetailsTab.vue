@@ -804,7 +804,7 @@ export default defineComponent({
         ...route.params,
         object: itemId,
         objectType,
-        subType: '-'
+        subType: item.subType
       };
 
       switch (props.type) {
