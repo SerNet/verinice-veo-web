@@ -47,28 +47,34 @@ function translateSubType({ domainSchema, locale, subType, elementType }: Transl
   return domainSchema.elementTypeDefinitions[elementType]?.translations[locale]?.[`${elementType}_${subType}_plural`];
 }
 
-export function useSubTypeTranslation() {
+export function useSubTypeTranslation(_elementType?: string, _subType?: string) {
   const route = useRoute();
   const { locale } = useI18n();
 
-  const domainId = computed(() => route.params.domain as string);
+  const domainId = computed<string | undefined>(() => route.params.domain as string);
   const elementType = computed(() => {
-    if (route.params?.objectType) {
+    if (_elementType) return _elementType;
+    if (route.params?.objectType)
       return VeoElementTypesSingular[route.params?.objectType as keyof typeof VeoElementTypesSingular];
-    }
-    return route.query.type as string;
+    return route.query.type as string | undefined;
   });
 
-  const subType = computed(() => (route.query.subType as string) ?? route.params.subType);
+  const subType = computed<string | undefined>(() => {
+    if (_subType) return _subType;
+    return (route.params?.subType ?? route.query?.subType) as string | undefined;
+  });
 
   // Translations are found in domain, so we fetch it:
-  const domainSchemaQueryEnabled = computed(() => !!domainId);
-  const queryParameters = computed(() => ({
-    id: domainId.value
-  }));
-  const { data: domainSchema } = useQuery(domainQueryDefinitions.queries.fetchDomain, queryParameters, {
-    enabled: domainSchemaQueryEnabled
-  });
+  const domainSchemaQueryEnabled = computed(() => !!domainId.value);
+
+  const queryParameters = computed(() => ({ id: domainId.value }));
+  const { data: domainSchema } = useQuery(
+    domainQueryDefinitions.queries.fetchDomain,
+    queryParameters as Ref<{ id: string }>,
+    {
+      enabled: domainSchemaQueryEnabled
+    }
+  );
 
   return {
     subTypeTranslation: computed(() =>
