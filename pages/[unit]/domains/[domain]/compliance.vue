@@ -20,20 +20,11 @@
   <BasePage style="height: 100vh">
     <template #header>
       <div class="mt-8 mb-4 text-body-1">
-        <div v-if="currentName && currentModule">
-          <!-- Link back to Control-Object: to be changed when the IT-SA is done -->
-          <nuxt-link v-if="objectType && riskAffected" :to="riskAffectedUrl">
-            <v-icon size="small" start :icon="mdiArrowLeft" />
-            {{ t('targetObject', { currentName }) }}
-            <!-- Separator -->
-            <div class="separator" />
-          </nuxt-link>
-
-          <!-- Second link -->
-          <nuxt-link :to="moduleUrl">
-            {{ t('targetModule', { currentModule }) }}
-            <v-icon size="small" start :icon="mdiArrowRight" />
-          </nuxt-link>
+        <div v-if="currentModule">
+          <v-btn :to="currentModule.urlParams" variant="outlined">
+            {{ t('targetModule', { currentModule: currentModule.name }) }}
+            <v-icon size="small" :icon="mdiArrowRight" end />
+          </v-btn>
         </div>
       </div>
     </template>
@@ -49,50 +40,35 @@ export const ROUTE_NAME = 'unit-domains-domain-compliance';
 </script>
 
 <script setup lang="ts">
-import { mdiArrowLeft, mdiArrowRight } from '@mdi/js';
+import { mdiArrowRight } from '@mdi/js';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { ref } from 'vue';
 import { useCompliance } from '~/components/compliance/compliance';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
 import type { ComplianceState } from '~/components/compliance/compliance';
 
 const route = useRoute();
 const { t } = useI18n();
-const currentName = ref('');
-const currentModule = ref('');
 const { state } = useCompliance();
 
-const riskAffectedUrl = computed(() => {
-  return {
-    name: OBJECT_DETAIL_ROUTE,
-    params: {
-      ...route.params,
-      objectType: state.type.value,
-      object: riskAffected.value,
-      subType: '-'
-    },
-    hash: '#controls'
-  };
-});
-
-const moduleUrl = computed(() => {
-  const controlValue = state.control.value;
+const currentModule = computed(() => {
+  const module = state.CTLModule.value;
+  if (!module) return undefined;
 
   const params: { objectType: string; subType: string; object?: string } = {
     ...route.params,
     objectType: 'controls',
-    subType: 'CTL_Module'
+    subType: 'CTL_Module',
+    object: module.id
   };
 
-  if (controlValue) {
-    params.object = controlValue;
-  }
-
   return {
-    name: OBJECT_DETAIL_ROUTE,
-    params
+    name: module.name,
+    urlParams: {
+      name: OBJECT_DETAIL_ROUTE,
+      params
+    }
   };
 });
 
@@ -154,23 +130,10 @@ watch(() => route.fullPath, clearCustomBreadcrumbs);
 <i18n>
 {
 "de": {
-  "targetObject": "Zielobjekt \"{currentName}\" bearbeiten",
   "targetModule": "Baustein \"{currentModule}\" bearbeiten"
 },
 "en": {
-  "targetObject": "Edit target object \"{currentName}\"",
   "targetModule": "Edit module \"{currentModule}\""
 }
 }
 </i18n>
-
-<style lang="scss" scoped>
-.separator {
-  display: inline-block;
-  width: 1px;
-  height: 12px;
-  margin: 0 8px;
-  background-color: gray;
-  vertical-align: middle;
-}
-</style>
