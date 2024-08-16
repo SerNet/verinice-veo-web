@@ -131,11 +131,7 @@ async function openItem({ type, riskAffected, item }: { type: string | null; ris
 }
 
 const reloadRequirementImplementations = async () => {
-  requirementImplementations.value = await fetchRequirementImplementations({
-    type: state.type.value as string,
-    riskAffected: state.riskAffected.value as string,
-    control: state.control.value as string
-  });
+  requirementImplementations.value = await fetchRequirementImplementations(fetchParams.value);
 };
 
 // Table setup
