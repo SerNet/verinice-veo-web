@@ -27,6 +27,9 @@
       <span v-if="index > 0 && queryResultMap[item.param]">
         <v-icon :icon="mdiChevronRight" size="small" />
       </span>
+      <span v-if="index > 0 && item.indexToReplace">
+        <v-icon :icon="mdiChevronRight" size="small" />
+      </span>
       <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
       <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
         <v-icon v-if="item.icon" class="text-primary" :icon="item.icon" size="large" />
@@ -122,7 +125,7 @@ const props = defineProps<{
 
 const { t, locale } = useI18n();
 const route = useRoute();
-const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
+const { isOverridingBreadcrumbs, breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 const { subTypeTranslation } = useSubTypeTranslation();
 
 const title = ref('');
@@ -329,9 +332,7 @@ function generateBreadcrumbs(breadcrumbParts: string[]): IVeoBreadcrumb[] {
             t(`breadcrumbs.${part}`)
           ),
         index,
-        key:
-          breadcrumbParts.slice(0, breadcrumbParts.findIndex((_part) => _part === part) + 1).join('/') ||
-          '/',
+        key: breadcrumbParts.slice(0, breadcrumbParts.findIndex((_part) => _part === part) + 1).join('/') || '/',
         position: index * 10,
         ...pick(replacementMapEntry, ['disabled', 'exact', 'hidden', 'icon', 'position', 'text']),
         to:
@@ -358,17 +359,27 @@ function generateBreadcrumbs(breadcrumbParts: string[]): IVeoBreadcrumb[] {
       } else {
         return breadcrumb;
       }
-    })
-);
+    });
+}
 
 const breadcrumbs = computed(() => {
   let _breadcrumbs: IVeoBreadcrumb[] = [];
-  if (!props.overrideBreadcrumbs) {
+
+  if (!isOverridingBreadcrumbs.value) {
     _breadcrumbs = [...generatedBreadcrumbs.value];
   }
 
   for (const customBreadcrumb of customBreadcrumbs.value) {
-    _breadcrumbs.push({ ...customBreadcrumb, index: _breadcrumbs.length });
+    // Replace generated breadcrumb with custom breadcrumb:
+    const index = customBreadcrumb?.indexToReplace;
+    if (index && _breadcrumbs.length > index) {
+      _breadcrumbs[index] = customBreadcrumb;
+    }
+
+    // Append custom breadcrumb:
+    else {
+      _breadcrumbs.push({ ...customBreadcrumb, index: _breadcrumbs.length });
+    }
   }
 
   return _breadcrumbs.sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position);

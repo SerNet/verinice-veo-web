@@ -18,18 +18,21 @@
 export interface IVeoBreadcrumb {
   disabled?: boolean;
   exact?: boolean;
-  key: string;
+  key?: string;
   to: string;
   text?: string;
   icon?: any;
   position?: number;
   index: number; // Can be set to zero, as the VeoBreadcrumbs.vue component will handle it.
-  param: string;
+  indexToReplace?: number; // Breadcrumbs are stored in an array. When adding a custom BC it will either be appended, or (if setting `indexToReplace`) replace an existing BC at that index.
+  param?: string;
 }
 
 const breadcrumbs = ref<IVeoBreadcrumb[]>([]);
+const isOverridingBreadcrumbs = ref(false);
 
-export const useVeoBreadcrumbs = () => {
+export const useVeoBreadcrumbs = (isOverridingDefaultBreadcrumbs: boolean = false) => {
+  isOverridingBreadcrumbs.value = isOverridingDefaultBreadcrumbs;
   const addCustomBreadcrumb = (breadcrumb: IVeoBreadcrumb) => {
     breadcrumbs.value.push(breadcrumb);
   };
@@ -62,6 +65,7 @@ export const useVeoBreadcrumbs = () => {
     addCustomBreadcrumb,
     clearCustomBreadcrumbs,
     updateCustomBreadcrumb,
-    removeCustomBreadcrumb
+    removeCustomBreadcrumb,
+    isOverridingBreadcrumbs
   };
 };
