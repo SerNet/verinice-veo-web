@@ -96,9 +96,8 @@ import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects'
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import translationsQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useSubTypeTranslation } from '~/composables/Translations';
 
-type SupportedQuery = ':unit' | ':domain' | ':subType' | ':report' | ':catalog' | ':objectType' | ':object';
+type SupportedQuery = ':unit' | ':domain' | ':subType' | ':report' | ':objectType' | ':object';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
   disabled?: boolean;
@@ -124,7 +123,6 @@ const props = defineProps<{
 const { t, locale } = useI18n();
 const route = useRoute();
 const { breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
-const { subTypeTranslation } = useSubTypeTranslation();
 
 const title = ref('');
 
@@ -223,16 +221,6 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
     }
   ],
   [
-    ':catalog',
-    {
-      queriedText: {
-        query: ':catalog',
-        parameterTransformationFn: (_param, value) => ({ id: value }),
-        resultTransformationFn: () => (unref(subTypeTranslation) === 'all' ? t('all') : unref(subTypeTranslation))
-      }
-    }
-  ],
-  [
     ':matrix',
     {
       dynamicText: (_param, value) => value || ''
@@ -289,17 +277,7 @@ const { data: subType } = useQuery(formsQueryDefinitions.queries.fetchForms, sub
 
 const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
 
-const catalogQueryParameters = ref<any>({});
-
 const queryResultMap = computed<{ [key: string]: any }>(() => ({
-  ':catalog':
-    domain.value ?
-      BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':catalog')?.queriedText?.resultTransformationFn(
-        ':catalog',
-        route.query.subType as string,
-        subType.value
-      )
-    : undefined,
   ':domain':
     domain.value ?
       BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(
@@ -431,9 +409,6 @@ watch(
           route.params[breadcrumb.param.replace(/^:/, '')] as string
         );
         switch (replacementMapEntry.queriedText.query) {
-          case ':catalog':
-            catalogQueryParameters.value = transformedParameters;
-            break;
           case ':domain':
             domainQueryParameters.value = transformedParameters;
             break;
