@@ -20,14 +20,11 @@
     <v-breadcrumbs-item
       v-for="(item, index) of displayedBreadcrumbs"
       :key="item.key"
-      :disabled="item.disabled || item.to === route.fullPath"
+      :disabled="item.disabled || (item.to === route.fullPath && item.index < BREADCRUMB_BREAKOFF)"
       :to="item.to"
       nuxt
     >
-      <span v-if="index > 0 && queryResultMap[item.param]">
-        <v-icon :icon="mdiChevronRight" size="small" />
-      </span>
-      <span v-if="index > 0 && item.indexToReplace">
+      <span v-if="index > 0">
         <v-icon :icon="mdiChevronRight" size="small" />
       </span>
       <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
@@ -54,21 +51,20 @@
           </template>
           <template #default>
             <v-list dense>
-              <v-list-group mandatory color="primary">
-                <v-list-item
-                  v-for="menuItem of slicedBreadcrumbs"
-                  v-bind="menuItem"
+              <v-list-item v-for="menuItem of slicedBreadcrumbs" :key="menuItem.key" nuxt>
+                <v-breadcrumbs-item
                   :key="menuItem.key"
+                  :disabled="menuItem.disabled || menuItem.to === route.fullPath"
+                  :to="menuItem.to"
                   nuxt
-                  density="compact"
                 >
                   <template v-if="menuItem.icon" #prepend>
                     <v-icon :icon="menuItem.icon" color="primary" size="large" />
                   </template>
                   <v-list-item-title v-if="!menuItem.icon">
                     <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
-                      <template v-if="queryResultMap[item.param]">
-                        {{ queryResultMap[item.param] }}
+                      <template v-if="queryResultMap[menuItem.param]">
+                        {{ queryResultMap[menuItem.param] }}
                       </template>
                       <v-skeleton-loader v-else type="text" />
                     </template>
@@ -76,8 +72,8 @@
                       {{ menuItem.text }}
                     </template>
                   </v-list-item-title>
-                </v-list-item>
-              </v-list-group>
+                </v-breadcrumbs-item>
+              </v-list-item>
             </v-list>
           </template>
         </v-menu>
@@ -236,7 +232,7 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
 ]);
 
 // After this position, all breadcrumbs will be moved to a menu to avoid scrolling
-const BREADCRUMB_BREAKOFF = 4;
+const BREADCRUMB_BREAKOFF = 5;
 
 // Queried text. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
 // Must be refactored if for example two objects are part of the path.
