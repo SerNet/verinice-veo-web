@@ -310,8 +310,10 @@ const pathTemplate = computed(() => last(route.matched)?.path || '');
 
 const breadcrumbParts = computed(() => pathTemplate.value.replaceAll('()', '').split('/'));
 
-const generatedBreadcrumbs = computed<IVeoBreadcrumb[]>(() =>
-  breadcrumbParts.value
+const generatedBreadcrumbs = computed<IVeoBreadcrumb[]>(() => generateBreadcrumbs(breadcrumbParts.value));
+
+function generateBreadcrumbs(breadcrumbParts: string[]): IVeoBreadcrumb[] {
+  return breadcrumbParts
     .filter(
       (part) =>
         !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.has(part) || !BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(part)?.hidden
@@ -328,7 +330,7 @@ const generatedBreadcrumbs = computed<IVeoBreadcrumb[]>(() =>
           ),
         index,
         key:
-          breadcrumbParts.value.slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1).join('/') ||
+          breadcrumbParts.slice(0, breadcrumbParts.findIndex((_part) => _part === part) + 1).join('/') ||
           '/',
         position: index * 10,
         ...pick(replacementMapEntry, ['disabled', 'exact', 'hidden', 'icon', 'position', 'text']),
@@ -339,7 +341,7 @@ const generatedBreadcrumbs = computed<IVeoBreadcrumb[]>(() =>
             : replacementMapEntry.to()
           : route.fullPath
               .split('/')
-              .slice(0, breadcrumbParts.value.findIndex((_part) => _part === part) + 1)
+              .slice(0, breadcrumbParts.findIndex((_part) => _part === part) + 1)
               .join('/') || '/'
       };
     })
