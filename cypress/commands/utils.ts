@@ -19,3 +19,7 @@ export function waitForPageToLoad() {
     });
   });
 }
+
+export function pluralizeElementType(elementType: string) {
+  return elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
+}

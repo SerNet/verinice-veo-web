@@ -1,4 +1,4 @@
-import { getRandomElementType } from '../../commands/utils';
+import { getRandomElementType, pluralizeElementType } from '../../commands/utils';
 
 describe('Delete elements', () => {
   before(() => {
@@ -18,7 +18,7 @@ describe('Delete elements', () => {
   const elementTypeList: string[] = ['Scope', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
-    const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
+    const pluralizedElementType = pluralizeElementType(elementType);
 
     it('deletes element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });

@@ -1,4 +1,4 @@
-import { getRandomElementType } from '../../commands/utils';
+import { getRandomElementType, pluralizeElementType } from '../../commands/utils';
 
 describe('Copy elements', () => {
   before(() => {
@@ -18,7 +18,7 @@ describe('Copy elements', () => {
   const elementTypeList: string[] = ['Scope', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
-    const pluralizedElementType = elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
+    const pluralizedElementType = pluralizeElementType(elementType);
 
     it('copies element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
