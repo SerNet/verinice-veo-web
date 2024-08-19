@@ -8,3 +8,14 @@ export function getRandomElementType(
   const idx = Math.floor(Math.random() * elementTypes.length);
   return elementTypes[idx];
 }
+
+export function waitForPageToLoad() {
+  // Wait for Vue to finish rendering the new data
+  cy.window().then((win) => {
+    return new Cypress.Promise((resolve) => {
+      win.requestAnimationFrame(() => {
+        resolve();
+      });
+    });
+  });
+}
