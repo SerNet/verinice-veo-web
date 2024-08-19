@@ -299,7 +299,7 @@ const combinedQueryParameters = computed<any>(() => ({
   domain: route.params.domain
 }));
 const queryEnabled = computed(() => !!endpoints.value?.[filter.value.objectType as string]);
-const { data: _items, isLoading: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
+const { data: _items, isFetching: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
   enabled: queryEnabled,
   keepPreviousData: true
 });
