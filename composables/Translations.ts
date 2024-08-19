@@ -2,6 +2,7 @@ import { useQuery, useQuerySync } from './api/utils/query';
 import formsQueryDefinitions from './api/queryDefinitions/forms';
 import translationsQueryDefinitions from './api/queryDefinitions/translations';
 import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import { VeoElementTypesSingular } from '~/types/VeoTypes';
 
 type TranslateSubTypeParams = {
   formSchemas: IVeoFormSchemaMeta[] | undefined;
@@ -61,8 +62,14 @@ export function useSubTypeTranslation() {
   const { locale } = useI18n();
 
   const domainId = computed(() => route.params.domain as string);
-  const elementType = computed(() => route.query.type as string);
-  const subType = computed(() => route.query.subType as string);
+  const elementType = computed(() => {
+    if (route.params?.objectType) {
+      return VeoElementTypesSingular[route.params?.objectType as keyof typeof VeoElementTypesSingular];
+    }
+    return route.query.type as string;
+  });
+
+  const subType = computed(() => (route.query.subType as string) ?? route.params.subType);
 
   // Translations are found in forms, so we fetch them:
   const allFormSchemasQueryEnabled = computed(() => !!domainId);
