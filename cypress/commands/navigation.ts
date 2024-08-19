@@ -70,7 +70,7 @@ export function selectFirstSubType(elementType: string, callback: (args: any) =>
 export function visitObject(
   { unitId, domainId, objectType, subType, objectId } = {
     unitId: Cypress.env('dynamicTestData').unit.unitId,
-    domainId: Cypress.env('dynamicTestData').unit.domains[0].id,
+    domainId: Cypress.env('dynamicTestData').unit?.domains?.[0]?.id || Cypress.env('dsgvoUnitId'),
     objectType: Cypress.env('dynamicTestData').testObject.objectTypePlural,
     subType: Cypress.env('dynamicTestData').testObject.subType,
     objectId: Cypress.env('dynamicTestData').testObject.id

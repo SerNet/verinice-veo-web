@@ -47,6 +47,7 @@
                 :title="action.title.value"
                 :prepend-icon="action.icon"
                 density="compact"
+                data-veo-test="action-selection-nav-item"
                 @click="action.action"
               />
             </v-list>

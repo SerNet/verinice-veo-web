@@ -19,14 +19,14 @@
   <BaseDialog v-bind="$attrs" :title="title" @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       {{ descriptionText }}
-      <v-select v-model="type" :items="options" variant="underlined" />
+      <v-select v-model="type" data-veo-test="select-object-type" :items="options" variant="underlined" />
     </template>
     <template #dialog-options>
       <v-btn variant="text" @click="$emit('update:model-value', false)">
         {{ cancelText }}
       </v-btn>
       <v-spacer />
-      <v-btn variant="text" color="primary" :disabled="!type" @click="handleAction">
+      <v-btn variant="text" color="primary" data-veo-test="confirm-object-type" :disabled="!type" @click="handleAction">
         {{ actionButtonText }}
       </v-btn>
     </template>

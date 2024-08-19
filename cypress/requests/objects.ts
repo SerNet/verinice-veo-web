@@ -40,7 +40,7 @@ type TestObjectData = {
 };
 
 export function createObject({
-  domainId = Cypress.env('dynamicTestData').unit.domains[0].id,
+  domainId = Cypress.env('dynamicTestData').unit?.domains?.[0]?.id || Cypress.env('dsgvoUnitId'),
   unitId = Cypress.env('dynamicTestData').unit.unitId,
   objectData = defaultTestObjectData,
   dynamicTestDataKey = 'testObject'
