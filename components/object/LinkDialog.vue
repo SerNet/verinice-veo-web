@@ -99,6 +99,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import { getEntityDetailsFromLink } from '~/lib/utils';
 import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
 import type { IVeoLink, IVeoEntity } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { VeoSearch } from '~/types/VeoSearch';
 
 export default defineComponent({
@@ -162,8 +163,8 @@ export default defineComponent({
   emits: ['update:preselected-items', 'update:model-value', 'success', 'error'],
   setup(props, { emit }) {
     const route = useRoute();
-    const { navigateToCatalog } = useNavigation();
-    const { t } = useI18n();
+    const { navigateToCatalog, navigateToObject } = useNavigation();
+    const { t, locale } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
@@ -172,6 +173,7 @@ export default defineComponent({
     const queryClient = useQueryClient();
     const { createLink } = useCreateLink();
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
+    const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const title = computed(() => {
@@ -512,14 +514,26 @@ export default defineComponent({
 
     const noDataTextWithLink = computed(() => {
       if (hasItems.value) return () => h(HtmlRenderer, { content: t('noSearchResults') });
-      return () =>
-        h(HtmlRenderer, {
-          content: t('noDataText', {
-            catalogLink: `<a href="#">${t('catalog')}</a>`
-          }),
-          clickHandler: navigateToCatalog,
-          clickHandlerParams: ['control', 'CTL_Module']
-        });
+      if (filter.value.objectType === 'control') {
+        return () =>
+          h(HtmlRenderer, {
+            content: t('controlNoDataText', {
+              catalogLink: `<a href="#">${t('catalog')}</a>`
+            }),
+            clickHandler: navigateToCatalog,
+            clickHandlerParams: ['control', 'CTL_Module']
+          });
+      } else {
+        return () =>
+          h(HtmlRenderer, {
+            content: t('nonControlNoDataText', {
+              subType: `${upperFirst(translations.value?.lang[locale.value]?.[filter.value.objectType]).toString()}`,
+              correspondingObject: `<a href="#">${t('correspondingObject')}</a>`
+            }),
+            clickHandler: navigateToObject,
+            clickHandlerParams: [VeoElementTypePlurals[filter.value.objectType as keyof typeof VeoElementTypePlurals]]
+          });
+      }
     });
 
     return {
@@ -559,7 +573,9 @@ export default defineComponent({
     "editParentObjects": "Edit parent parts of \"{0}\"",
     "editParentScopes": "Edit parent scopes of \"{0}\"",
     "object": "object",
-    "noDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
+    "controlNoDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
+    "nonControlNoDataText": "There is currently no {subType}. Please {correspondingObject}",
+    "correspondingObject": "create a corresponding object.",
     "noSearchResults": "Your search did not match any results",
     "catalog": "catalog",
     "addTarget": "Add {0}"
@@ -570,7 +586,9 @@ export default defineComponent({
     "editParentObjects": "Teile über \"{0}\" bearbeiten",
     "editParentScopes": "Scopes über \"{0}\" bearbeiten",
     "object": "Objekt",
-    "noDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
+    "controlNoDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
+    "nonControlNoDataText": "Es gibt aktuell keinen {subType}. Bitte {correspondingObject}",
+    "correspondingObject": "legen Sie ein entsprechendes Object an.",
     "noSearchResults": "Ihre Suche ergab keine Treffer",
     "catalog": "Katalog",
     "addTarget": "{0} hinzufügen"
