@@ -16,6 +16,7 @@
  */
 import { useRouter, useRoute } from 'vue-router';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
 export function useNavigation() {
   const router = useRouter();
@@ -25,7 +26,7 @@ export function useNavigation() {
   const validUnitRoute = computed(() => !!route.params.unit);
 
   const navigateToCatalog = (type: string, subType: string) => {
-    if (validDomainRoute && validUnitRoute) {
+    if (validDomainRoute.value && validUnitRoute.value) {
       router.push({
         name: CATALOGS_CATALOG_ROUTE_NAME,
         params: {
@@ -39,7 +40,23 @@ export function useNavigation() {
       });
     }
   };
+
+  const navigateToObject = (objectType: string, subType?: string) => {
+    if (validDomainRoute.value && validUnitRoute.value) {
+      router.push({
+        name: OBJECT_OVERVIEW_ROUTE_NAME,
+        params: {
+          domain: route.params.domain,
+          unit: route.params.unit,
+          objectType: objectType,
+          subType: '-'
+        }
+      });
+    }
+  };
+
   return {
-    navigateToCatalog
+    navigateToCatalog,
+    navigateToObject
   };
 }
