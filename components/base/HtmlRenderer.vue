@@ -38,7 +38,11 @@ watch(
   { immediate: true }
 );
 
-const handleClick = () => {
-  props.clickHandler?.(...(props.clickHandlerParams || []));
+const handleClick = (event: MouseEvent) => {
+  const target = event.target as HTMLElement;
+  if (target && target.closest('a')) {
+    event.preventDefault();
+    props.clickHandler?.(...(props.clickHandlerParams || []));
+  }
 };
 </script>
