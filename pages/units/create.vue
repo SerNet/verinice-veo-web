@@ -46,10 +46,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
       <v-window v-model="step" class="my-6" style="width: 100%">
         <v-window-item :value="1">
+          <Description step="name" />
           <UnitDetails v-model="unitDetails" />
         </v-window-item>
 
         <v-window-item :value="2">
+          <Description step="profile" />
           <UnitProfiles
             v-model="selectedProfile"
             :profiles="profiles"
@@ -59,6 +61,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </v-window-item>
 
         <v-window-item :value="3">
+          <Description step="domain" />
           <BaseAlert
             :model-value="!!mandatoryDomain"
             class="mt-6 mb-4"
@@ -86,6 +89,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <!-- Overview -->
         <v-window-item :value="4">
+          <Description step="summary" />
           <UnitDetails v-model="unitDetails" :is-disabled="true" />
           <!-- @vue-ignore TODO #3066 not assignable -->
           <UnitDomains v-model="selectedDomains" :domains="selectedDomains" :is-disabled="true" />
@@ -150,6 +154,7 @@ import { useApplyProfile, redirectToUnits } from '~/components/unit/unit-module'
 import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 import type { TVeoDomain } from '~/composables/domains/useDomains';
 import type { UnitDetails } from '~/components/unit/Details.vue';
+import { TInlineComponent } from '~/types/utils';
 
 // Helper
 const { t } = useI18n();
@@ -246,6 +251,22 @@ const messages = computed(() => ({
   success: t('applyProfileSuccess'),
   error: { text: t('applyProfileError') }
 }));
+
+// Description field providing assistance for unit creation
+const Description: TInlineComponent = {
+  props: ['step'],
+  data: () => ({ t }),
+  template: `
+  <v-card class="my-3">
+      <v-alert
+  type="info"
+  variant="tonal"
+  :title="t(\`explanation.\${this.step}\`)"
+  :text="t(\`hint.\${this.step}\`)"
+></v-alert>
+    </v-card>
+  `
+};
 </script>
 <i18n>
 {
@@ -285,6 +306,9 @@ const messages = computed(() => ({
   }
 }
 </i18n>
+
+<i18n src="./messages.json" />
+
 <style scoped lang="scss">
 #unit-create-wizard {
   :deep(.v-window-item) {
