@@ -413,7 +413,7 @@ export default defineComponent({
     // Usage
     const handleObjectLinking = async () => {
       if (props.linkRiskAffected) {
-        handleLinkRiskAffected();
+        await handleLinkRiskAffected();
       } else if (props.editParents) {
         await linkOrUnlinkParents();
       } else {

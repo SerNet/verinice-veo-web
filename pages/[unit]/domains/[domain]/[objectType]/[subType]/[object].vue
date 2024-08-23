@@ -151,8 +151,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
 import { Ref } from 'vue';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 
-import { isObjectEqual } from '~/lib/utils';
-import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, IVeoPaginatedResponse, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -217,40 +216,50 @@ const {
   enabled: fetchObjectQueryEnabled,
   onSuccess: async (data: IVeoEntity) => {
     if (route.params.objectType === 'controls') {
-      try {
-        const { data: cis } = useQuery(
-          objectQueryDefinitions.queries.fetchObjectControlImplementations,
-          fetchObjectQueryParameters,
-          {
-            enabled: fetchObjectQueryEnabled
-          }
-        );
-        additionalData.value = { controlImplementations: cis.value };
-      } catch (error) {
-        console.error(error);
-        additionalData.value = {};
-      }
+      refetchControlImplementations();
     } else {
       additionalData.value = {};
-    }
-
-    // Update modifiedObject with fetched data
-    modifiedObject.value = cloneDeep({
-      ...data,
-      ...additionalData.value
-    });
-    // On the next tick, object is populated so disabling subtype will work
-    nextTick(getAdditionalContext);
-
-    if (wipObjectData.value) {
-      modifiedObject.value = {
-        ...modifiedObject.value,
-        ...wipObjectData.value
-      };
-      wipObjectData.value = undefined;
+      finalizeModifiedObject(data);
     }
   }
 });
+
+// Second useQuery: Fetch control implementations if needed
+const { refetch: refetchControlImplementations } = useQuery(
+  objectQueryDefinitions.queries.fetchObjectControlImplementations,
+  fetchObjectQueryParameters,
+  {
+    enabled: false, // Disabled initially, we manually trigger it
+    onSuccess: (cis: IVeoPaginatedResponse<IVeoEntity[]>) => {
+      additionalData.value = { controlImplementations: cis.items };
+      finalizeModifiedObject(fetchedObject.value);
+    },
+    onError: () => {
+      console.error('Error fetching control implementations');
+      additionalData.value = {};
+      finalizeModifiedObject(fetchedObject.value);
+    }
+  }
+);
+
+// Function to update modifiedObject with fetched data
+function finalizeModifiedObject(data?: IVeoEntity) {
+  modifiedObject.value = cloneDeep({
+    ...data,
+    ...additionalData.value
+  });
+  // On the next tick, object is populated so disabling subtype will work
+  nextTick(getAdditionalContext);
+
+  if (wipObjectData.value) {
+    const { controlImplementations, ...restWipData } = wipObjectData.value;
+    modifiedObject.value = {
+      ...modifiedObject.value,
+      ...restWipData
+    };
+    wipObjectData.value = undefined;
+  }
+}
 
 const object = computed(() => ({
   ...fetchedObject.value,
