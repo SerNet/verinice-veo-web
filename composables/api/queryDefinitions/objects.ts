@@ -273,7 +273,7 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchObjectControlImplementations: {
       primaryQueryKey: 'controlImplementations',
-      url: '/api/domains/:domain/:endpoint/:id/control-implementation',
+      url: '/api/domains/:domain/:endpoint/:id/control-implementations',
       onDataFetched: (result) => {
         result.page = result.page + 1;
         return result;
