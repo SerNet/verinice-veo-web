@@ -164,7 +164,7 @@ export default defineComponent({
     const actionConfigs = [
       {
         key: 'createObject',
-        title: t('createObject', [getCreateObjectTranslationParams()]),
+        title: computed(() => t('createObject', [getCreateObjectTranslationParams()])),
         icon: mdiPlus,
         tab: ['childObjects', 'parentObjects'],
         objectTypes: ['entity'],
@@ -172,7 +172,7 @@ export default defineComponent({
       },
       {
         key: 'linkObject',
-        title: getLinkObjectTranslation(),
+        title: computed(() => getLinkObjectTranslation()),
         icon: mdiLinkPlus,
         tab: ['childObjects', 'parentObjects', 'controls'],
         objectTypes: ['entity'],
@@ -180,7 +180,7 @@ export default defineComponent({
       },
       {
         key: 'createScope',
-        title: t('createScope'),
+        title: computed(() => t('createScope')),
         icon: mdiPlus,
         tab: ['childScopes', 'parentScopes'],
         objectTypes: ['scope', 'entity'],
@@ -188,7 +188,7 @@ export default defineComponent({
       },
       {
         key: 'linkScope',
-        title: t('linkScope'),
+        title: computed(() => t('linkScope')),
         icon: mdiLinkPlus,
         tab: ['childScopes', 'parentScopes', 'targets'],
         objectTypes: ['scope', 'entity', 'targets'],
@@ -196,7 +196,7 @@ export default defineComponent({
       },
       {
         key: 'linkProcess',
-        title: t('linkProcess'),
+        title: computed(() => t('linkProcess')),
         icon: mdiLinkPlus,
         tab: ['targets'],
         objectTypes: ['entity', 'targets'],
@@ -204,15 +204,15 @@ export default defineComponent({
       },
       {
         key: 'linkAsset',
-        title: t('linkAsset'),
+        title: computed(() => t('linkAsset')),
         icon: mdiLinkPlus,
         tab: ['targets'],
-        objectTypes: ['entity', 'targes'],
+        objectTypes: ['entity', 'targets'],
         action: linkAssetAction
       },
       {
         key: 'createRisk',
-        title: t('createRisk'),
+        title: computed(() => t('createRisk')),
         icon: mdiPlus,
         tab: ['risks'],
         objectTypes: ['entity'],
@@ -224,7 +224,7 @@ export default defineComponent({
     const actions = computed(() =>
       actionConfigs.map((config) => ({
         key: config.key,
-        title: config.title.toString(),
+        title: config.title.value.toString(),
         icon: config.icon,
         tab: config.tab,
         objectTypes: config.objectTypes,
@@ -439,12 +439,12 @@ export default defineComponent({
 <i18n>
 {
   "en": {
-    "createObject": "create {0}",
-    "createRisk": "create risk",
-    "createScope": "create scope",
-    "linkScope": "select scope",
-    "linkAsset": "select asset",
-    "linkProcess": "select process",
+    "createObject": "Create {0}",
+    "createRisk": "Create risk",
+    "createScope": "Create scope",
+    "linkScope": "Select scope",
+    "linkAsset": "Select asset",
+    "linkProcess": "Select process",
     "object": "object",
     "objectLinked": "The links were successfully updated.",
     "objectNotLinked": "The links could not be updated."
