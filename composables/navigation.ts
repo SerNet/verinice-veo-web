@@ -22,11 +22,11 @@ export function useNavigation() {
   const router = useRouter();
   const route = useRoute();
 
-  const validDomainRoute = computed(() => !!route.params.domain);
-  const validUnitRoute = computed(() => !!route.params.unit);
+  const hasDomainId = computed(() => !!route.params.domain);
+  const hasUnitId = computed(() => !!route.params.unit);
 
   const navigateToCatalog = (type: string, subType: string) => {
-    if (validDomainRoute.value && validUnitRoute.value) {
+    if (hasDomainId.value && hasUnitId.value) {
       router.push({
         name: CATALOGS_CATALOG_ROUTE_NAME,
         params: {
@@ -42,7 +42,7 @@ export function useNavigation() {
   };
 
   const navigateToObject = (objectType: string, subType?: string) => {
-    if (validDomainRoute.value && validUnitRoute.value) {
+    if (hasDomainId.value && hasUnitId.value) {
       router.push({
         name: OBJECT_OVERVIEW_ROUTE_NAME,
         params: {
