@@ -92,6 +92,7 @@ import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~/lib/utils';
 import { IPlaygroundElement } from '../Element.vue';
+import type { Ref } from 'vue';
 
 const props = withDefaults(
   defineProps<{

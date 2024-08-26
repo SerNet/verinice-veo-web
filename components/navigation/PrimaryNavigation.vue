@@ -83,6 +83,8 @@
 </template>
 
 <script lang="ts">
+import type { RouteLocationRaw } from 'vue-router';
+
 export interface INavItem {
   id: string;
   name: string;
@@ -102,7 +104,6 @@ export const PROVIDE_KEYS = {
 </script>
 
 <script setup lang="ts">
-import { RouteLocationRaw } from 'vue-router';
 import {
   mdiBookOpenPageVariantOutline,
   mdiChartBar,

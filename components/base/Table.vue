@@ -26,8 +26,15 @@
  * Can be used for paginated data (that uses the IVeoPaginatedResponse interface) and default arrays
  */
 
+import { VNode, VNodeArrayChildren, Slot } from 'vue';
+import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
+import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
+import { cloneDeep, omit } from 'lodash';
+
+import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { useVeoUser } from '~/composables/VeoUser';
+
 export type TableFormatter = (value: any) => string;
-export type TableTooltip = (value: any) => string;
 export type TableRenderer = (
   props: { item: any; internalItem: any; value: any },
   header?: TableHeader
@@ -44,23 +51,19 @@ interface TableHeaderAdditionalProperties {
   value?: keyof any | string;
   key: string;
 }
+import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 
-export type TableHeader = Omit<DataTableHeader, 'text'> & TableHeaderAdditionalProperties;
+export type TableHeader = Partial<Omit<VDataTableHeaders, 'text'>> & TableHeaderAdditionalProperties;
 
 export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K extends keyof V[0]> =
   V extends ReadonlyArray<Record<K, infer U>> ? U : never;
 </script>
 
 <script setup lang="ts">
-import { VNode, VNodeArrayChildren, Slot } from 'vue';
-import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
-import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
-import type { SortItem } from 'vuetify/components/VDataTable/composables/sort.mjs';
-import type { DataTableHeader } from 'vuetify/components/VDataTable/types.mjs';
-import { cloneDeep, omit } from 'lodash';
-
-import { IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { useVeoUser } from '~/composables/VeoUser';
+export interface SortItem {
+  key: string;
+  order: string;
+}
 
 const props = withDefaults(
   defineProps<{

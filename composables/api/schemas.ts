@@ -15,10 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
 import { QueryOptions, useQueries, useQuery } from './utils/query';
 
 import schemaQueryDefinitions from './queryDefinitions/schemas';
+import type { MaybeRef } from 'vue';
 
 export interface IVeoFetchSchemasDetailedParameters {
   domainId: string;

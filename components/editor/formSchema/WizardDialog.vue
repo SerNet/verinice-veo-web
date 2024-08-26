@@ -82,7 +82,7 @@
 import { mergeProps } from 'vue';
 import { Dictionary, isEqual, merge, pick } from 'lodash';
 import { JsonPointer } from 'json-ptr';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import { IVeoObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';

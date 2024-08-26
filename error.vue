@@ -61,7 +61,7 @@
 </template>
 
 <script setup lang="ts">
-import { NuxtError } from '#app';
+import { NuxtError } from 'nuxt/app';
 import { upperFirst } from 'lodash';
 
 const props = defineProps<{

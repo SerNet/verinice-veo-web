@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { VBtn, VTextField, VTooltip } from 'vuetify/lib/components/index.mjs';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 
 import { TableHeader } from '~/components/base/Table.vue';
 import { IEditorTranslations, TRANSLATION_SOURCE } from './types';

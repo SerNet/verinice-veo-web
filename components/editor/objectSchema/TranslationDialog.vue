@@ -88,7 +88,7 @@
 <script lang="ts">
 import { PropType, Ref } from 'vue';
 import { merge } from 'lodash';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { useVeoAlerts } from '~/composables/VeoAlert';

@@ -22,8 +22,8 @@ import {
   useQueryClient,
   QueryClient
 } from '@tanstack/vue-query';
-import { UseQueryOptions } from '@tanstack/vue-query/build/lib';
-import { QueryObserverResult } from '@tanstack/query-core/build/lib/types';
+import type { UseQueryOptions } from '@tanstack/vue-query';
+import type { QueryObserverResult } from '@tanstack/query-core';
 import { omit } from 'lodash';
 
 import { useRequest, VeoApiReponseType } from './request';

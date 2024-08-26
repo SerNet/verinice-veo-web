@@ -34,13 +34,12 @@
 
 <script setup lang="ts">
 import { mergeProps } from 'vue';
-import type { SortItem } from 'vuetify/components/VDataTable/composables/sort.mjs';
 
 import ObjectIcon from '~/components/object/Icon.vue';
 import { useFormatters } from '~/composables/utils';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
+import type { SortItem, TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
 
 const props = withDefaults(
   defineProps<{

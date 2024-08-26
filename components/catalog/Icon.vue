@@ -37,6 +37,20 @@
 </template>
 
 <script lang="ts">
+import {
+  mdiAccountOutline,
+  mdiAlarmLightOutline,
+  mdiDatabaseCogOutline,
+  mdiDevices,
+  mdiDotsHorizontal,
+  mdiFileDocumentOutline,
+  mdiFocusField,
+  mdiPlaylistCheck,
+  mdiShieldAlertOutline,
+  mdiAllInclusive
+} from '@mdi/js';
+
+import OBJECT_TYPE_ICONS from '../object/Icon.vue';
 export const CATALOG_TYPE_ICONS = new Map<string, { icon: string | string[]; library: 'mdi' }>([
   ['all', { icon: mdiAllInclusive, library: 'mdi' }],
   ['scope', { icon: mdiFocusField, library: 'mdi' }],
@@ -51,19 +65,6 @@ export const CATALOG_TYPE_ICONS = new Map<string, { icon: string | string[]; lib
 </script>
 
 <script lang="ts" setup>
-import {
-  mdiAccountOutline,
-  mdiAlarmLightOutline,
-  mdiDatabaseCogOutline,
-  mdiDevices,
-  mdiDotsHorizontal,
-  mdiFileDocumentOutline,
-  mdiFocusField,
-  mdiPlaylistCheck,
-  mdiShieldAlertOutline,
-  mdiAllInclusive
-} from '@mdi/js';
-
 import { useQuery } from '~/composables/api/utils/query';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 

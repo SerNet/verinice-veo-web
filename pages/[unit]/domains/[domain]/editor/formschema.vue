@@ -282,7 +282,7 @@ import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';

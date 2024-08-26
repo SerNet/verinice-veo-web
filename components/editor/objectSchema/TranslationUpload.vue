@@ -77,7 +77,7 @@
 <script lang="ts">
 import { trim } from 'lodash';
 import { PropType, Ref } from 'vue';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 
 import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
 

@@ -89,7 +89,7 @@
 
 <script lang="ts">
 import { Ref } from 'vue';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 import { JsonPointer } from 'json-ptr';
 import { trim } from 'lodash';
 

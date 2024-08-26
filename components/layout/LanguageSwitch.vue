@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 import { mdiTranslate } from '@mdi/js';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 import { useLocale } from 'vuetify/lib/framework.mjs';
 
 const { t, locale, locales, setLocale } = useI18n();

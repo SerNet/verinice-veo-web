@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { NavItem, ParsedContent } from '@nuxt/content/dist/runtime/types';
 import { cloneDeep, last } from 'lodash';
+import type { NavItem, ParsedContent } from '@nuxt/content';
 
 type ContentOptions = {
   path?: string;

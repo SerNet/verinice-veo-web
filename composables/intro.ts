@@ -17,7 +17,7 @@
  */
 import { Ref, WatchStopHandle } from 'vue';
 import introJs, { Hint, IntroJs } from 'intro.js';
-import { ParsedContent } from '@nuxt/content/dist/runtime/types';
+import type { ParsedContent } from '@nuxt/content';
 import { useIsFetching } from '@tanstack/vue-query';
 import { last } from 'lodash';
 

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ComposerTranslation } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { ComposerTranslation } from 'vue-i18n';
 import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
 

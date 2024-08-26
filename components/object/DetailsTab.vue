@@ -106,7 +106,8 @@ import {
   IVeoRiskValue,
   VeoElementTypePlurals,
   VeoElementTypesSingular,
-  VeoRiskTreatment
+  VeoRiskTreatment,
+  VeoSort
 } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
@@ -120,7 +121,6 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
-import { VeoSort } from '~/types/VeoSort';
 import { useFetchParentObjects } from '~/composables/api/objects';
 import { useCompliance } from '../compliance/compliance';
 

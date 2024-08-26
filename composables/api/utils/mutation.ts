@@ -15,9 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { QueryClient, useMutation as vueQueryUseMutation, useQueryClient } from '@tanstack/vue-query';
-import { UseMutationOptions } from '@tanstack/vue-query/build/lib';
-import { MaybeRef } from '@tanstack/vue-query/build/lib/types';
+import {
+  QueryClient,
+  useMutation as vueQueryUseMutation,
+  UseMutationOptions,
+  useQueryClient
+} from '@tanstack/vue-query';
 import { omit } from 'lodash';
 
 import { debugCacheAsArrayIncludesPrimaryKey, IVeoQueryDefinition, IVeoQueryParameters } from './query';

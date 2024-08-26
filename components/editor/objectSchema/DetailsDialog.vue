@@ -189,7 +189,7 @@ import { CHART_COLORS } from '~/lib/utils';
 import { Ref } from 'vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 
 export default defineComponent({
   components: {

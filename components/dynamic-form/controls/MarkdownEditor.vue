@@ -35,12 +35,12 @@
 import { last } from 'lodash';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
-import Editor from '@toast-ui/editor';
 import DOMPurify from 'dompurify';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { onMounted } from 'vue';
+import { Editor } from '@toast-ui/editor';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',

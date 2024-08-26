@@ -123,7 +123,7 @@
   </BaseDialog>
 </template>
 <script setup lang="ts">
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
+import type { LocaleObject } from '@nuxtjs/i18n';
 import { cloneDeep, isEqual } from 'lodash';
 
 import { IEditorTranslations, TRANSLATION_SOURCE } from '../translations/types';

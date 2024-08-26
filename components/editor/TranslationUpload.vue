@@ -101,11 +101,11 @@
 
 <script lang="ts">
 import { PropType } from 'vue';
-import { LocaleObject } from '@nuxtjs/i18n/dist/runtime/composables';
 import { mdiTranslate } from '@mdi/js';
 import { read, WorkBook, WorkSheet } from 'xlsx';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import type { LocaleObject } from '@nuxtjs/i18n';
 
 export default defineComponent({
   props: {
