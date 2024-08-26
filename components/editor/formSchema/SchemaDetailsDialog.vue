@@ -73,11 +73,11 @@
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn text @click="$emit('update:model-value', false)">
+      <v-btn @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!formIsValid" @click="doSave()">
+      <v-btn color="primary" :disabled="!formIsValid" @click="doSave()">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>

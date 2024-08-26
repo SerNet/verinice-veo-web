@@ -108,16 +108,15 @@
       <small>{{ $t('global.input.requiredfields') }}</small>
     </template>
     <template #dialog-options>
-      <v-btn v-if="propertyId" color="error" text @click="$emit('delete')">
+      <v-btn v-if="propertyId" color="error" @click="$emit('delete')">
         {{ t(`delete.${type}`) }}
       </v-btn>
       <v-spacer />
       <template v-if="dialogMode === 'edit'">
-        <v-btn text @click="close()">
+        <v-btn @click="close()">
           {{ $t('global.button.close') }}
         </v-btn>
         <v-btn
-          text
           color="primary"
           :disabled="form.valid === false || duplicates.length > 0 || !isFormDirty"
           @click="saveProperty()"
@@ -126,7 +125,7 @@
         </v-btn>
       </template>
       <template v-else>
-        <v-btn text color="primary" :disabled="!form.valid" @click="dialogMode = 'edit'">
+        <v-btn color="primary" :disabled="!form.valid" @click="dialogMode = 'edit'">
           {{ $t('global.button.next') }}
         </v-btn>
       </template>

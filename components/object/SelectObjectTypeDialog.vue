@@ -22,11 +22,11 @@
       <v-select v-model="type" :items="options" variant="underlined" />
     </template>
     <template #dialog-options>
-      <v-btn text @click="$emit('update:model-value', false)">
+      <v-btn @click="$emit('update:model-value', false)">
         {{ $t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="!type" @click="$emit('create-entity', { type, ...eventPayload })">
+      <v-btn color="primary" :disabled="!type" @click="$emit('create-entity', { type, ...eventPayload })">
         {{ t('create') }}
       </v-btn>
     </template>

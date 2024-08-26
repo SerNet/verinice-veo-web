@@ -121,14 +121,13 @@
       </v-window>
     </template>
     <template #dialog-options>
-      <v-btn v-if="state !== 'start'" text @click="state = 'start'">
+      <v-btn v-if="state !== 'start'" @click="state = 'start'">
         {{ $t('global.button.previous') }}
       </v-btn>
       <v-spacer />
       <v-btn
         v-if="state === 'create'"
         color="primary"
-        text
         role="submit"
         type="submit"
         :disabled="createFormIsValid === false"

@@ -21,11 +21,11 @@
       <span>{{ t(`delete.${type}`, { title }) }}</span>
     </template>
     <template #dialog-options>
-      <v-btn text @click="$emit('update:model-value', false)">
+      <v-btn @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" @click="$emit('delete-item')">
+      <v-btn color="primary" @click="$emit('delete-item')">
         {{ globalT('global.button.delete') }}
       </v-btn>
     </template>

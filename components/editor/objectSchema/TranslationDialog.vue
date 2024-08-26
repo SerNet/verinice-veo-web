@@ -75,11 +75,11 @@
       </div>
     </template>
     <template #dialog-options>
-      <v-btn text color="primary" @click="$emit('update:model-value', false)">
+      <v-btn color="primary" @click="$emit('update:model-value', false)">
         {{ t('global.button.close') }}
       </v-btn>
       <v-spacer />
-      <v-btn text color="primary" :disabled="formIsValid === false" @click="onSave">
+      <v-btn color="primary" :disabled="formIsValid === false" @click="onSave">
         {{ t('global.button.save') }}
       </v-btn>
     </template>
