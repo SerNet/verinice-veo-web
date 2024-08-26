@@ -115,7 +115,7 @@ import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import { IVeoDomainSpecificObjectSchema, IVeoObjectSchema } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
@@ -149,7 +149,7 @@ export default defineComponent({
       default: undefined
     },
     objectSchema: {
-      type: Object as PropType<IVeoObjectSchema | undefined>,
+      type: Object as PropType<IVeoDomainSpecificObjectSchema | undefined>,
       default: undefined
     }
   },

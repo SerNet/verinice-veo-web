@@ -17,7 +17,7 @@
  */
 import FormSchemaValidator from './FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import { IVeoFormSchemaTranslationCollection, IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
 import { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { cloneDeep } from 'lodash';
 
@@ -48,7 +48,7 @@ export function generateSchema(
 
 export function validate(
   schema: IVeoFormSchema,
-  objectSchema: undefined | IVeoObjectSchema
+  objectSchema: undefined | IVeoDomainSpecificObjectSchema
 ): VeoSchemaValidatorValidationResult {
   const validator = new FormSchemaValidator();
   return validator.validate(schema, objectSchema);

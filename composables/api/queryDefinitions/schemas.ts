@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchema } from '~/types/VeoTypes';
 import { VeoRiskAffectedDomains } from '~/types/VeoTypes';
-import type { IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
 export interface IVeoEntityMetaInfo {
@@ -127,7 +127,7 @@ export default {
         }
       }),
       staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
-    } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoObjectSchema>,
+    } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoDomainSpecificObjectSchema>,
     fetchSchemaLegacy: {
       primaryQueryKey: 'schema',
       url: '/api/schemas/:type',

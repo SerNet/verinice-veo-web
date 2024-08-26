@@ -257,10 +257,7 @@ export interface IVeoObjectSchemaTranslations {
 export interface IVeoObjectSchemaCustomAspect {
   type: 'object';
   properties: {
-    id: IVeoObjectSchemaProperty;
-    applicableTo: IVeoObjectSchemaArray;
     domains: IVeoObjectSchemaArray;
-    references: IVeoObjectSchemaArray;
     attributes: IVeoObjectSchemaObject;
   };
   additionalProperties: boolean;
@@ -274,8 +271,6 @@ export interface IVeoObjectSchemaCustomLink {
     properties: {
       attributes: IVeoObjectSchemaObject;
       domains: IVeoObjectSchemaArray;
-      id: IVeoObjectSchemaProperty;
-      references: IVeoObjectSchemaArray;
       target: IVeoObjectSchemaObject;
     };
     additionalProperties: boolean;
@@ -283,18 +278,25 @@ export interface IVeoObjectSchemaCustomLink {
   };
 }
 
-export interface IVeoObjectSchemaCustomObjects {
+interface Schema {
   type: JSONSchema7TypeName;
   title: string;
   description: string;
+}
+
+interface IVeoObjectSchemaCustomAspects extends Schema {
   properties: {
-    [key: string]: IVeoObjectSchemaCustomAspect | IVeoObjectSchemaCustomLink;
+    [key: string]: IVeoObjectSchemaCustomAspect;
   };
 }
 
-export interface IVeoObjectSchema {
-  $schema: string;
-  type: JSONSchema7TypeName;
+interface IVeoObjectSchemaCustomLinks extends Schema {
+  properties: {
+    [key: string]: IVeoObjectSchemaCustomLink;
+  };
+}
+
+export interface IVeoDomainSpecificObjectSchema {
   allOf?: {
     if: {
       properties: Record<string, any>;
@@ -307,10 +309,43 @@ export interface IVeoObjectSchema {
     abbreviation: IVeoObjectSchemaProperty;
     createdAt: IVeoObjectSchemaProperty;
     createdBy: IVeoObjectSchemaProperty;
-    customAspects: IVeoObjectSchemaCustomObjects;
     description: IVeoObjectSchemaProperty;
     id: IVeoObjectSchemaProperty;
-    links: IVeoObjectSchemaCustomObjects;
+    name: IVeoObjectSchemaProperty;
+    owner: IVeoObjectSchemaObject;
+    parts: IVeoObjectSchemaArray;
+    updatedAt: IVeoObjectSchemaProperty;
+    updatedBy: IVeoObjectSchemaProperty;
+    translations?: IVeoObjectSchemaTranslations;
+    subType: {
+      type: 'string';
+      enum: string[];
+    };
+    status: {
+      type: 'string';
+      enum: string[];
+    };
+    customAspects: IVeoObjectSchemaCustomAspects;
+    links: IVeoObjectSchemaCustomLinks;
+    riskValues?: IVeoObjectSchemaProperty;
+  };
+  required: string[];
+  title: string;
+  description: string;
+}
+
+export interface IVeoObjectSchema {
+  $schema: string;
+  type: JSONSchema7TypeName;
+  properties: {
+    abbreviation: IVeoObjectSchemaProperty;
+    createdAt: IVeoObjectSchemaProperty;
+    createdBy: IVeoObjectSchemaProperty;
+    customAspects: IVeoObjectSchemaCustomAspects;
+    description: IVeoObjectSchemaProperty;
+    domains: IVeoObjectSchemaPatternObject;
+    id: IVeoObjectSchemaProperty;
+    links: IVeoObjectSchemaCustomLinks;
     name: IVeoObjectSchemaProperty;
     owner: IVeoObjectSchemaObject;
     parts: IVeoObjectSchemaArray;

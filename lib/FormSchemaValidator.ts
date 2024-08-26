@@ -18,7 +18,7 @@
 import { JsonPointer } from 'json-ptr';
 
 import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
@@ -37,7 +37,7 @@ export default class FormSchemaValidator {
    */
   public validate(
     schema: IVeoFormSchema | IVeoFormSchema['content'],
-    objectSchema: IVeoObjectSchema | undefined = undefined
+    objectSchema: IVeoDomainSpecificObjectSchema | undefined = undefined
   ): VeoSchemaValidatorValidationResult {
     this.errors = [];
     this.warnings = [];
@@ -57,7 +57,7 @@ export default class FormSchemaValidator {
     };
   }
 
-  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoObjectSchema) {
+  private propertiesExistInObjectSchema(formSchema: any, objectSchema: IVeoDomainSpecificObjectSchema) {
     if (formSchema.content) {
       this.elementExists(formSchema.content, objectSchema, `#/`, undefined);
     } else if (formSchema.elements) {
@@ -70,7 +70,7 @@ export default class FormSchemaValidator {
     }
   }
 
-  private elementExists(element: any, objectSchema: IVeoObjectSchema, context: string, parent: any) {
+  private elementExists(element: any, objectSchema: IVeoDomainSpecificObjectSchema, context: string, parent: any) {
     if (!element.scope && element.type === 'Control') {
       this.errors.push({
         code: 'E_SCOPE_MISSING',
@@ -80,7 +80,7 @@ export default class FormSchemaValidator {
       let scope = element.scope;
       let schema = JsonPointer.get(objectSchema, scope) as any;
 
-      /* Link attributes don't have an absolute pointer, but one relative to their parent (to avoid 
+      /* Link attributes don't have an absolute pointer, but one relative to their parent (to avoid
        them getting used outside the link), so we have to add the pointer of the parent in front.
       */
       if (!schema && parent?.scope) {

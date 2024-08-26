@@ -119,7 +119,7 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
 
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
@@ -184,7 +184,7 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 });
 
 // objects specific stuff
-const objectSchemas = ref<IVeoObjectSchema[]>([]);
+const objectSchemas = ref<IVeoDomainSpecificObjectSchema[]>([]);
 const schemasLoading = ref(false);
 
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
@@ -199,9 +199,7 @@ const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, {
 watch(
   () => _schemas,
   (newValue) => {
-    objectSchemas.value = (newValue || [])
-      .map((schema) => schema.data)
-      .filter((schema) => schema) as IVeoObjectSchema[];
+    objectSchemas.value = (newValue || []).map((schema) => schema.data).filter((schema) => schema);
     schemasLoading.value = (newValue || []).some((schema) => schema.isFetching);
   },
   { deep: true }

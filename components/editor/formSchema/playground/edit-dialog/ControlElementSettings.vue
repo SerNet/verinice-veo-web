@@ -66,7 +66,7 @@
               <v-col cols="12" md="6">
                 <EditorFormSchemaPlaygroundEditDialogLinkSettings
                   :form-schema-element="formSchemaElement"
-                  :object-schema-element="objectSchemaElement"
+                  :object-schema-element="objectSchemaElement as IVeoObjectSchemaCustomLink"
                   :playground-element="playgroundElement"
                   :pointer="pointer"
                   @add="(elementPointer, element) => emit('add', elementPointer, element)"
@@ -93,6 +93,7 @@ import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~/lib/utils';
 import { IPlaygroundElement } from '../Element.vue';
 import type { Ref } from 'vue';
+import type { IVeoObjectSchemaCustomLink } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{

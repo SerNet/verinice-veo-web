@@ -275,7 +275,7 @@ import {
 import { useDisplay } from 'vuetify';
 
 import { deleteFormSchemaElementTranslations, validate } from '~/lib/FormSchemaHelper';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
@@ -329,7 +329,7 @@ export default defineComponent({
     /**
      * Schema related stuff
      */
-    const objectSchema: Ref<IVeoObjectSchema | undefined> = ref(undefined);
+    const objectSchema: Ref<IVeoDomainSpecificObjectSchema | undefined> = ref(undefined);
     const formSchema: Ref<IVeoFormSchema | undefined> = ref(undefined);
     provide(PROVIDE_KEYS.OBJECTSCHEMA, objectSchema);
     provide(PROVIDE_KEYS.FORMSCHEMA, formSchema);
@@ -341,7 +341,10 @@ export default defineComponent({
 
     const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
-    const onWizardFinished = (payload: { formSchema: IVeoFormSchema; objectSchema: IVeoObjectSchema }) => {
+    const onWizardFinished = (payload: {
+      formSchema: IVeoFormSchema;
+      objectSchema: IVeoDomainSpecificObjectSchema;
+    }) => {
       formSchema.value = payload.formSchema;
       objectSchema.value = payload.objectSchema;
     };

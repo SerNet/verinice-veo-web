@@ -46,7 +46,7 @@ import Widget from './widgets/Widget';
 import Layout from './layouts/Layout';
 import Label from './labels/Label.vue';
 import ValidationFailedError from './ValidationFailedError.vue';
-import { IVeoFormSchemaGeneratorOptions, IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoFormSchemaGeneratorOptions, IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
@@ -101,7 +101,7 @@ export default defineComponent({
      * The object schema. Required. Creates the requiresd inputs.
      */
     objectSchema: {
-      type: Object as PropType<IVeoObjectSchema>,
+      type: Object as PropType<IVeoDomainSpecificObjectSchema>,
       required: true
     },
     /**
@@ -216,7 +216,7 @@ export default defineComponent({
       element: any,
       formSchemaPointer: string,
       translations: Record<string, any>,
-      localObjectSchema: ComputedRef<IVeoObjectSchema>
+      localObjectSchema: ComputedRef<IVeoDomainSpecificObjectSchema>
     ): any => {
       const rule = evaluateRule(_value.value, element.rule);
 
@@ -261,7 +261,7 @@ export default defineComponent({
       element: IVeoFormElementFormSchema,
       formSchemaPointer: string,
       translations: Record<string, any>,
-      localObjectSchema: ComputedRef<IVeoObjectSchema>
+      localObjectSchema: ComputedRef<IVeoDomainSpecificObjectSchema>
     ) => {
       if (!element.elements || !element.elements.length) {
         return undefined;
@@ -278,7 +278,7 @@ export default defineComponent({
       element: IVeoFormElementFormSchema,
       formSchemaPointer: string,
       translations: Record<string, any>,
-      localObjectSchema: ComputedRef<IVeoObjectSchema>
+      localObjectSchema: ComputedRef<IVeoDomainSpecificObjectSchema>
     ) => {
       return h(
         Layout,
@@ -315,7 +315,7 @@ export default defineComponent({
       element: IVeoFormControlFormSchema,
       formSchemaPointer: string,
       translations: Record<string, any>,
-      localObjectSchema: ComputedRef<IVeoObjectSchema>
+      localObjectSchema: ComputedRef<IVeoDomainSpecificObjectSchema>
     ) => {
       let scope = cloneDeep(element.scope);
       if (!scope) {

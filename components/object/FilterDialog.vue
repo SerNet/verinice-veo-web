@@ -85,7 +85,7 @@ import { clone, omitBy, upperFirst } from 'lodash';
 
 import { IVeoFilterDivider, IVeoFilterOption, IVeoFilterOptionType } from './Filter.vue';
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
@@ -128,7 +128,7 @@ export default defineComponent({
 
     const queryParameters = computed(() => ({ domainId: props.domainId }));
     const _schemas = useFetchSchemasDetailed(queryParameters);
-    const schemas = ref<IVeoObjectSchema[]>([]);
+    const schemas = ref<IVeoDomainSpecificObjectSchema[]>([]);
 
     // _schemas is a non-reactive array, so we have to explicitly watch it to assign it to a ref so that the rest of vues reactivity picks up changes
     watch(

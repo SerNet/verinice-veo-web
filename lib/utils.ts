@@ -19,7 +19,13 @@ import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { isEqual, isPlainObject } from 'lodash';
-import { IVeoCustomLink, IVeoEntity, IVeoLink, IVeoObjectSchema } from '~/types/VeoTypes';
+import {
+  IVeoCustomLink,
+  IVeoDomainSpecificObjectSchema,
+  IVeoEntity,
+  IVeoLink,
+  IVeoObjectSchema
+} from '~/types/VeoTypes';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
@@ -51,7 +57,9 @@ export function sanitizeURLParams(url: string) {
   return url.replaceAll(/(\/|[^\w-])/g, '');
 }
 
-export function extractSubTypesFromObjectSchema(schema: IVeoObjectSchema): { subType: string; status: string[] }[] {
+export function extractSubTypesFromObjectSchema(
+  schema: IVeoDomainSpecificObjectSchema
+): { subType: string; status: string[] }[] {
   return (
     schema.allOf?.map((mapping) => ({
       subType: mapping.if.properties.subType.const,

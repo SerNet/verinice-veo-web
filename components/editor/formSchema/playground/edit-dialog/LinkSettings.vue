@@ -62,7 +62,6 @@
 
 <script setup lang="ts">
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiInformationOutline, mdiListBoxOutline } from '@mdi/js';
-import { JSONSchema7 } from 'json-schema';
 import { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
 import { difference, last } from 'lodash';
@@ -70,6 +69,7 @@ import { difference, last } from 'lodash';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { FORMSCHEMA_PLAYGROUND_NAMESPACE } from '../Playground.vue';
 import { IPlaygroundElement } from '../Element.vue';
+import type { IVeoObjectSchemaCustomLink } from '~/types/VeoTypes';
 
 const props = defineProps({
   formSchemaElement: {
@@ -77,7 +77,7 @@ const props = defineProps({
     required: true
   },
   objectSchemaElement: {
-    type: Object as PropType<JSONSchema7>,
+    type: Object as PropType<IVeoObjectSchemaCustomLink>,
     required: true
   },
   playgroundElement: {

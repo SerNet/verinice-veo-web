@@ -84,12 +84,12 @@
   </BaseDialog>
 </template>
 <script setup lang="ts">
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
     modelValue: boolean;
-    objectSchema: IVeoObjectSchema;
+    objectSchema: IVeoDomainSpecificObjectSchema;
     formSchema: string;
     subType: string | null;
     sorting: string | null;

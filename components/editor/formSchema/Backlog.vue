@@ -194,7 +194,7 @@ import { cloneDeep, pick, upperFirst } from 'lodash';
 import { mdiAutoFix, mdiFormatText, mdiFormSelect, mdiArrowCollapseVertical } from '@mdi/js';
 
 import { INPUT_TYPES } from '~/types/VeoEditor';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchema } from '~/types/VeoTypes';
 import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
 import { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
@@ -237,7 +237,7 @@ export default defineComponent({
       required: true
     },
     objectSchema: {
-      type: Object as PropType<IVeoObjectSchema>,
+      type: Object as PropType<IVeoDomainSpecificObjectSchema>,
       required: true
     }
   },
