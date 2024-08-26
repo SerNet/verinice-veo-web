@@ -30,6 +30,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <v-btn to="/units" size="large" class="my-6">
           {{ globalT('global.button.cancel') }}
         </v-btn>
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <v-btn
           data-veo-test="associate-domains"
           color="primary"

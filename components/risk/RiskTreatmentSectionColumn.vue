@@ -37,6 +37,7 @@
         <span v-if="index === 0" class="text-no-wrap">
           {{ item.title }}
         </span>
+        <!-- @vue-ignore TODO #3066 possibly undefined -->
         <v-chip v-else-if="index === 1" size="small"> +{{ riskTreatments.length - 1 }} {{ t('more') }} </v-chip>
       </template>
     </v-select>

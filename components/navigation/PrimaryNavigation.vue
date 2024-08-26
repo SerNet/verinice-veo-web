@@ -29,6 +29,7 @@
     <template #prepend>
       <div class="my-6">
         <NavigationUnitSelect :mini-variant="miniVariant" @expand-menu="miniVariant = false" />
+        <!-- @vue-ignore TODO #3066 $route does not exist -->
         <NavigationDomainSelect
           :disabled="!$route.params.unit"
           :mini-variant="miniVariant"
@@ -276,6 +277,7 @@ const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } = us
   { enabled: typeCountQueryEnabled }
 );
 
+// @ts-ignore TODO #3066 no overload matches
 const catalogsEntriesChildItems = computed<INavItem[]>(() => {
   if (isEmpty(catalogItemTypes?.value || {})) return [];
 

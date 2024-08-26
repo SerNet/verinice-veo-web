@@ -25,6 +25,7 @@
         <v-expansion-panel-text>
           <v-card outlined>
             <v-list class="py-0" dense disabled>
+              <!-- @vue-ignore TODO #3066 not assignable -->
               <EditorObjectSchemaListItem
                 v-for="(child, index) of basicProps"
                 v-show="attributeContainsTitle(child.item, search)"
@@ -51,6 +52,7 @@
           </div>
         </v-expansion-panel-title>
         <v-expansion-panel-text>
+          <!-- @vue-ignore TODO #3066 does not exist -->
           <v-card
             v-for="(aspect, index) of customAspects"
             v-show="
@@ -61,11 +63,13 @@
             variant="outlined"
           >
             <v-list class="py-0">
+              <!-- @vue-ignore TODO #3066 not assignable -->
               <EditorObjectSchemaListHeader
                 v-bind="aspect"
                 @edit-item="showEditDialog(aspect.item, 'aspect')"
                 @delete-item="showDeleteDialog(aspect.item.title, 'aspect')"
               />
+              <!-- @vue-ignore TODO #3066 does not exist -->
               <EditorObjectSchemaListItem
                 v-for="(attribute, index2) of aspect.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"
@@ -99,6 +103,7 @@
             variant="outlined"
           >
             <v-list class="py-0">
+              <!-- @vue-ignore TODO #3066 property icon is missing -->
               <EditorObjectSchemaListHeader
                 v-bind="link"
                 :styling="{
@@ -108,6 +113,7 @@
                 @edit-item="showEditDialog(link.item, 'link')"
                 @delete-item="showDeleteDialog(link.item.title, 'link')"
               />
+              <!-- @vue-ignore TODO #3066 does not exist -->
               <EditorObjectSchemaListItem
                 v-for="(attribute, index2) of link.item.attributes"
                 v-show="attributeContainsTitle(attribute, search)"

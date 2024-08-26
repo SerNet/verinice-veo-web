@@ -222,6 +222,7 @@
       </BasePage>
     </template>
     <template #helpers>
+      <!-- @vue-ignore TODO #3066 $route does not exist -->
       <EditorFormSchemaWizardDialog
         :model-value="creationDialogVisible"
         :domain-id="$route.params.domain as string"
@@ -238,6 +239,7 @@
         :form-schema-titles="formSchema?.name"
         @update:form-schema-titles="formSchema ? (formSchema.name = $event) : undefined"
       />
+      <!-- @vue-ignore TODO #3066 $route does not exist -->
       <EditorFormSchemaDetailsDialog
         v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"

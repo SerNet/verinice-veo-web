@@ -304,6 +304,7 @@ const _headers = computed<TableHeader[]>(() =>
         ...header,
         title: header.text ?? globalT(`objectlist.${String(header.value)}`),
         cellClass,
+        // @ts-ignore TODO #3066 class does not exist
         class: (header.class || []).concat(header.truncate ? truncateClasses : []),
         render:
           header.tooltip ?
@@ -372,7 +373,9 @@ const renderers = computed(() =>
 const displayedHeaders = ref<TableHeader[]>(_headers.value);
 
 // Normalized headers (not existing props get removed)
+// @ts-ignore TODO #3066 cannot find name
 const normalizedDisplayHeaders = computed<DataTableHeader[]>(() =>
+  // @ts-ignore TODO #3066 type instantiation is excessively deep
   displayedHeaders.value.map((header) =>
     omit(header, 'priority', 'order', 'truncate', 'map', 'text', 'render', 'tooltip', 'value')
   )
@@ -403,6 +406,7 @@ const indexOfHeaderWithLowestPriority = (headers: TableHeader[]) => {
 
 const onTableWidthChange = () => {
   if (props.showAllColumns) {
+    // @ts-ignore TODO #3066 not assignable
     displayedHeaders.value = _headers.value;
     return;
   }
@@ -434,6 +438,7 @@ const onTableWidthChange = () => {
       }
     }
 
+    // @ts-ignore TODO #3066 not assignable
     displayedHeaders.value = headers;
   }
 };
@@ -529,10 +534,12 @@ const render = () => {
   }
 
   if (isPaginatedResponse(props.items)) {
+    // @ts-ignore TODO #3066 no overload matches the call
     return h(VDataTableServer, dataTableProps, dataTableSlots);
   } else {
     const dataTableContent = props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : [];
 
+    // @ts-ignore TODO #3066 no overload matches the call
     return h('div', [...dataTableContent, h(VDataTable, dataTableProps, dataTableSlots)]);
   }
 };

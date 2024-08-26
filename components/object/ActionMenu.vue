@@ -42,6 +42,7 @@
       </template>
     </v-menu>
     <!-- dialogs -->
+    <!-- @vue-ignore TODO #3066 not assignable -->
     <ObjectLinkDialog
       v-if="addEntityDialog.object"
       :key="linkDialogKey"
@@ -56,6 +57,7 @@
       :v-bind="createEntityDialog"
       @create-entity="openCreateObjectDialog($event.type, $event.addAsChild)"
     />
+    <!-- @vue-ignore TODO #3066 $route does not exist -->
     <ObjectCreateDialog
       v-if="createObjectDialog.objectType"
       v-model="createObjectDialog.value"
@@ -65,6 +67,7 @@
       :parent-scope-ids="createObjectDialog.parentScopeIds"
       @success="onCreateObjectSuccess"
     />
+    <!-- @vue-ignore TODO #3066 $route does not exist -->
     <RiskCreateDialog
       v-if="object && createRiskDialogVisible"
       v-model="createRiskDialogVisible"

@@ -117,6 +117,7 @@
               </div>
             </template>
           </ObjectForm>
+          <!-- @vue-ignore TODO #3066 not assignable -->
           <ObjectUnsavedChangesDialog
             v-model="entityModifiedDialogVisible"
             :item="object"
@@ -214,6 +215,7 @@ const {
   refetch
 } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
   enabled: fetchObjectQueryEnabled,
+  // @ts-ignore TODO #3066 not assignable
   onSuccess: async (data: IVeoEntity) => {
     if (route.params.objectType === 'controls') {
       refetchControlImplementations();
@@ -230,6 +232,7 @@ const { refetch: refetchControlImplementations } = useQuery(
   fetchObjectQueryParameters,
   {
     enabled: false, // Disabled initially, we manually trigger it
+    // @ts-ignore TODO #3099 not assignable, BTW onSuccess is deprecated
     onSuccess: (cis: IVeoPaginatedResponse<IVeoEntity[]>) => {
       additionalData.value = { controlImplementations: cis.items };
       finalizeModifiedObject(fetchedObject.value);

@@ -141,6 +141,7 @@ export default defineComponent({
         case 'status':
           return (
             translations.value?.lang[locale.value]?.[
+              // @ts-ignore TODO #3066 does not exist
               `${props.filter.objectType}_${props.filter.subType}_status_${value}`
             ] || value
           );
@@ -151,6 +152,7 @@ export default defineComponent({
 
     // remove one filter
     const clearFilter = (key: string) => {
+      // @ts-ignore TODO #3066 spread types may only be created from object types
       emit('update:filter', { ...props.filter, [key]: undefined });
     };
 

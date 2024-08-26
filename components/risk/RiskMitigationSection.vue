@@ -73,6 +73,7 @@
         </v-menu>
       </div>
     </BaseCard>
+    <!-- @vue-ignore TODO #3066 not assignable -->
     <ObjectLinkDialog
       v-if="editMitigationsDialogVisible"
       v-model="editMitigationsDialogVisible"

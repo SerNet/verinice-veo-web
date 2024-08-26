@@ -80,12 +80,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               </template>
             </i18n-t>
           </BaseAlert>
+          <!-- @vue-ignore TODO #3066 not assignable -->
           <UnitDomains v-model="selectedDomains" :mandatory-domain="mandatoryDomain" :domains="domains" />
         </v-window-item>
 
         <!-- Overview -->
         <v-window-item :value="4">
           <UnitDetails v-model="unitDetails" :is-disabled="true" />
+          <!-- @vue-ignore TODO #3066 not assignable -->
           <UnitDomains v-model="selectedDomains" :domains="selectedDomains" :is-disabled="true" />
           <UnitProfiles
             v-if="selectedProfile"

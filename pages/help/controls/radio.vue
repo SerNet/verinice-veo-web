@@ -22,6 +22,7 @@
         <v-switch v-model="isVertical" label="Vertikal" hide-details color="primary" />
       </v-col>
       <v-col cols="auto" class="docs-form-sector">
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"

@@ -19,6 +19,7 @@
   <BasePage title="Disabled" fixed-header>
     <v-row justify="center">
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <DynamicFormEntrypoint v-model="form.data" :object-schema="form.objectSchema" :form-schema="form.formSchema" />
       </v-col>
     </v-row>

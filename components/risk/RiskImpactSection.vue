@@ -23,6 +23,7 @@
     <BaseCard border padding>
       <v-row>
         <template v-for="protectionGoal of riskDefinition.categories">
+          <!-- @vue-ignore TODO #3066 not assignable -->
           <RiskImpactSectionColumn
             v-if="protectionGoalExists(protectionGoal.id)"
             :key="protectionGoal.id"

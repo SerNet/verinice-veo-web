@@ -23,6 +23,7 @@
           {{ t('editors') }}
         </v-card-title>
         <v-list lines="two" class="overflow-hidden">
+          <!-- @vue-ignore TODO #3066 $route does not exist -->
           <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.objectschema.headline') }}
@@ -32,6 +33,7 @@
               <v-icon size="x-large" :icon="mdiChevronRight" />
             </template>
           </v-list-item>
+          <!-- @vue-ignore TODO #3066 $route does not exist -->
           <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.formschema.headline') }}

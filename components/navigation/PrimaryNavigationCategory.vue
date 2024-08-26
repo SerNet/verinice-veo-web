@@ -26,6 +26,7 @@
     :value="id"
     @click.stop="onClick"
   >
+    <!-- @vue-ignore TODO #3066 does not exist -->
     <template #prependIcon>
       <v-icon v-if="level > 0" :icon="mdiChevronDown" />
       <v-icon v-else-if="icon" :icon="icon" />

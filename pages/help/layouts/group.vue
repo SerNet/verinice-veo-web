@@ -39,6 +39,7 @@
         </v-row>
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <DynamicFormEntrypoint v-model="form.data" :object-schema="form.objectSchema" :form-schema="form.formSchema" />
       </v-col>
     </v-row>
@@ -97,6 +98,7 @@ const groupTitle = ref(undefined);
 watch(
   () => direction.value,
   (newValue) => {
+    // @ts-ignore TODO #3066 does not exist
     form.value.formSchema.options.direction = newValue;
   }
 );
@@ -104,6 +106,7 @@ watch(
 watch(
   () => border.value,
   (newValue) => {
+    // @ts-ignore TODO #3066 does not exist
     form.value.formSchema.options.class = newValue ? 'border' : '';
   }
 );
@@ -111,6 +114,7 @@ watch(
 watch(
   () => groupTitle.value,
   (newValue) => {
+    // @ts-ignore TODO #3066 does not exist
     form.value.formSchema.options.label = newValue;
   }
 );

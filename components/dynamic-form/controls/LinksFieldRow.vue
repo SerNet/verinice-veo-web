@@ -18,6 +18,7 @@
 <template>
   <div class="d-flex flex-column">
     <div>
+      <!-- @vue-ignore TODO #3066 not assignable -->
       <UtilObjectSelect
         :model-value="modelValue"
         :object-type="objectType"
@@ -48,6 +49,7 @@
       />
     </div>
     <div>
+      <!-- @vue-ignore TODO #3066 not assignable -->
       <DynamicFormControlsLinksFieldRowAttribute v-bind="$props">
         <slot name="default" />
       </DynamicFormControlsLinksFieldRowAttribute>

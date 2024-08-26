@@ -31,6 +31,7 @@
         <slot name="header" />
       </p>
 
+      <!-- @vue-ignore TODO #3066 $route does not exist -->
       <ObjectFilterBar
         :domain-id="$route.params.domain as string"
         :disabled-fields="disabledFields"

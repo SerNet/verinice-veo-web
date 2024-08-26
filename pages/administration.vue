@@ -38,6 +38,7 @@
           </span>
         </v-card-title>
 
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <BaseTable
           :default-headers="['actions']"
           :items="accounts"
@@ -88,6 +89,7 @@
         :existing-accounts="accounts"
         @update:model-value="onManageAccountDialogInput"
       />
+      <!-- @vue-ignore TODO #3066 not assignable -->
       <AccountDeleteDialog
         v-if="deleteAccountDialogVisible"
         v-model="deleteAccountDialogVisible"

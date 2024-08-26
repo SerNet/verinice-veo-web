@@ -19,6 +19,7 @@
   <BasePage title="Markdown Editor" fixed-header>
     <v-row justify="center">
       <v-col cols="auto" class="docs-form-sector">
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <DynamicFormEntrypoint v-model="form.data" :object-schema="form.objectSchema" :form-schema="form.formSchema" />
       </v-col>
     </v-row>

@@ -121,6 +121,7 @@ export default defineNuxtConfig({
     },
     locales: LOCALES.map((locale) => locale.code),
     defaultLocale: 'de',
+    // @ts-ignore TODO #3066 does not exist
     toc: {
       depth: 5
     }

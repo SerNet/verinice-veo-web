@@ -88,6 +88,7 @@ export default defineComponent({
       id: route.params.domain as string
     }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+      // @ts-ignore TODO #3066 not assignable
       onSuccess: redirectIfNoRiskDefinitionSelected
     });
 

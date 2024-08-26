@@ -58,7 +58,12 @@
         :email="profile.email"
         @logout="logout"
       />
-      <v-btn v-else color="primary" icon :href="$config.public.accountPath">
+      <v-btn
+        v-else
+        color="primary"
+        icon
+        :href="/* @ts-ignore TODO #3066 $config does not exist*/ $config.public.accountPath"
+      >
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>

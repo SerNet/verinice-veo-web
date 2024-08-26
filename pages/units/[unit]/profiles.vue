@@ -143,6 +143,7 @@ async function initApplyProfile() {
       await updateUnit(unit, unitMessages.value);
     }
   }
+  // @ts-ignore TODO #3066 not assignable
   await applyProfile(applyProfileParams.value, messages.value);
 }
 

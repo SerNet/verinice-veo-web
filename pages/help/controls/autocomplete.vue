@@ -22,6 +22,7 @@
         <v-switch v-model="isMultiselect" label="Multiselect" hide-details color="primary" />
       </v-col>
       <v-col cols="12" sm="6" lg="4" class="docs-form-sector">
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <DynamicFormEntrypoint
           v-model="dynamicForm.data"
           :object-schema="dynamicForm.objectSchema"

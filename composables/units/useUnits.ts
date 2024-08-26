@@ -64,6 +64,7 @@ export function useCurrentUnit() {
       () => route.params.unit,
       async () => {
         if (!route.params.unit) return;
+        // @ts-ignore TODO #3066 not assignable
         const result = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: route.params.unit });
         data.value = mapUnitValues({ unit: result });
         isLoading.value = false;

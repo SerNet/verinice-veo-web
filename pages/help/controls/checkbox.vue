@@ -19,6 +19,7 @@
   <BasePage title="Checkbox" fixed-header>
     <v-row justify="center">
       <v-col cols="auto" class="docs-form-sector">
+        <!-- @vue-ignore TODO #3066 not assignable -->
         <DynamicFormEntrypoint v-model="data" :object-schema="objectSchema" :form-schema="formSchema" />
       </v-col>
     </v-row>

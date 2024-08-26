@@ -83,6 +83,7 @@
               </span>
             </template>
             <template #selection="data">
+              <!-- @vue-ignore TODO #3066 property does not exist -->
               <v-chip
                 :key="JSON.stringify(data.item)"
                 v-bind="data.attrs"

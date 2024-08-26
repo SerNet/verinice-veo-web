@@ -36,6 +36,7 @@ export const useFetchUnitDomains = (
   const { data: unit, isFetching: isFetchingUnits } = useQuery(
     unitQueryDefinitions.queries.fetch,
     fetchUnitQueryParameters,
+    // @ts-ignore TODO #3066 does not exist
     { enabled: fetchUnitQueryEnabled }
   );
 

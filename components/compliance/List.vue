@@ -37,6 +37,7 @@
       </template>
     </BaseTable>
 
+    <!-- @vue-ignore TODO #3066 domainId is missing??? -->
     <ComplianceEditor
       :item="requirementImplementation"
       :show-dialog="showDialog"

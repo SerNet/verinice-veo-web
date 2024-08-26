@@ -356,6 +356,7 @@ function translateProtectionApproach({ translations, locale, protectionApproach 
   return translations.lang[locale][protectionApproach];
 }
 
+// @ts-ignore TODO #3066 ComputedRef<string> is not assignable to type string
 additionalInfo.value.protectionApproachTranslation = computed(() =>
   translateProtectionApproach({
     translations: translations.value,

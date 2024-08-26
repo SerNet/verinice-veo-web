@@ -474,6 +474,7 @@ const actions = computed(() => [
 ]);
 
 // Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
+// @ts-ignore TODO #3066 cannot find name
 const additionalHeaders = computed<ObjectTableHeader[]>(() =>
   filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing' ?
     [

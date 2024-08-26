@@ -28,6 +28,7 @@
       </p>
 
       <div>
+        <!-- @vue-ignore TODO #3066 $router does not exist -->
         <v-btn
           v-if="error.statusCode === 403 || error.statusCode === 404"
           variant="text"
@@ -36,7 +37,7 @@
         >
           {{ $t('global.button.previous') }}
         </v-btn>
-
+        <!-- @vue-ignore TODO #3066 $router does not exist -->
         <v-btn v-if="error.statusCode !== 401" variant="text" color="primary" @click="$router.push('/')">
           {{ t('goToHomepage') }}
         </v-btn>
@@ -53,6 +54,7 @@
         {{ upperFirst(t('texts.default').toString()) }}
       </p>
 
+      <!-- @vue-ignore TODO #3066 $router does not exist -->
       <v-btn variant="text" color="primary" @click="$router.push('/')">
         {{ t('goToHomepage') }}
       </v-btn>

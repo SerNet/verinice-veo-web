@@ -43,6 +43,7 @@
         <BaseCard border padding>
           <v-row>
             <v-col xs="12" md="6">
+              <!-- @vue-ignore TODO #3066 not assignable -->
               <UtilObjectSelect
                 data-test-selector="risk-scenario"
                 :model-value="data.scenario"
@@ -58,6 +59,7 @@
               />
             </v-col>
             <v-col xs="12" md="6">
+              <!-- @vue-ignore TODO #3066 $route does not exist -->
               <UtilObjectSelect
                 data-test-selector="risk-owner"
                 :model-value="data.riskOwner"

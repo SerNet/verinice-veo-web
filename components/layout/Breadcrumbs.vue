@@ -58,6 +58,7 @@
                   :to="menuItem.to"
                   nuxt
                 >
+                  <!-- @vue-ignore TODO #3099 property does not exist-->
                   <template v-if="menuItem.icon" #prepend>
                     <v-icon :icon="menuItem.icon" color="primary" size="large" />
                   </template>

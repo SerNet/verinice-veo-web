@@ -31,6 +31,7 @@ export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameter
 
   const endpoint = computed(() => endpoints.value?.[queryParameters.value.objectType]);
   const queryEnabled = computed(() =>
+    // @ts-ignore TODO #3066 not assignable
     !!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true
   );
 

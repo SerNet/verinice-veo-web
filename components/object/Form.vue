@@ -16,6 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
+  <!-- @vue-ignore TODO #3066 not assignable -->
   <LayoutPageWrapper unresponsive-page-widths :page-widths="[{ width: '100%', minWidth: 0 }, 'auto']">
     <template #default>
       <BasePage :id="scrollWrapperId" data-component-name="object-form-form" sticky-footer no-padding>

@@ -49,6 +49,7 @@
           <ObjectIcon :object-type="item.raw.type" :is-composite="!!(item.raw.parts && item.raw.parts.length)" left />
         </template>
         <template #append>
+          <!-- @vue-ignore TODO #3066 does not exist -->
           <v-hover v-slot="{ hover }">
             <v-icon
               end
@@ -128,17 +129,20 @@ const internalValue = computed<string | undefined>({
   },
   set: (newValue: string | undefined | null) => {
     if (!newValue && !props.required) {
+      // @ts-ignore TODO #3066 not assignable
       emit('update:model-value', newValue);
     } else if (props.valueAsLink) {
       emit(
         'update:model-value',
         newValue ?
           {
+            // @ts-ignore TODO #3066 not assignable
             targetUri: `${config.public.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}`
           }
         : undefined
       );
     } else {
+      // @ts-ignore TODO #3066 not assignable
       emit('update:model-value', newValue);
     }
   }

@@ -109,6 +109,7 @@
                 {{ t('help') }}
               </template>
             </v-tooltip>
+            <!-- @vue-ignore TODO #3066 $route does not exist -->
             <v-tooltip v-if="$route.query.os" location="bottom">
               <template #activator="{ props }">
                 <div v-bind="props">
@@ -186,6 +187,7 @@
           <v-divider class="mt-4" />
         </template>
         <template #default>
+          <!-- @vue-ignore TODO #3066 $route does not exist -->
           <EditorObjectSchemaMain
             v-if="schemaIsValid.valid"
             :search="searchQuery"
@@ -216,6 +218,7 @@
     </template>
     <template #helpers>
       <EditorObjectSchemaWizardDialog v-model="creationDialogVisible" @completed="setSchema" />
+      <!-- @vue-ignore TODO #3066 $route does not exist -->
       <EditorObjectSchemaDetailsDialog
         v-model="detailsDialogVisible"
         :domain-id="$route.params.domain as string"

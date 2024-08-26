@@ -296,6 +296,7 @@ const render = () =>
           ref: wrapper
         },
         (slots.default ? slots.default() : [])
+          // @ts-ignore TODO #3066 __name does not exist?
           .filter((slot) => slot.type.__name === 'Page')
           .map((slotItem, index) => {
             if (slotItem.props) {

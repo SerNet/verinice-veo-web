@@ -29,6 +29,7 @@
     <template #default>
       <LayoutLoadingWrapper v-if="generatingReport" />
 
+      <!-- @vue-ignore TODO #3066 $route does not exist -->
       <ObjectFilterBar
         class="mt-8"
         data-component-name="report-entity-selection-filter-bar"
@@ -218,6 +219,7 @@ export default defineComponent({
       Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
       await navigateTo({
         ...route,
+        // @ts-ignore TODO #3066 does not exist
         name: route.name as RouteRecordName | undefined,
         query
       });

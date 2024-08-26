@@ -29,6 +29,7 @@ describe('mapUnitValues()', () => {
       ...unit0.result,
       raw: unit0.data
     };
+    // @ts-ignore TODO #3066 does not exist
     const result = mapUnitValues({ unit: testUnit, favoriteUnitId: 'some_id' });
     expect(isEqual(result, expectedResult)).toBe(true);
   });
@@ -39,6 +40,7 @@ describe('mapUnitValues()', () => {
       isFavorite: true,
       raw: unit0.data
     };
+    // @ts-ignore TODO #3066 does not exist
     const result = mapUnitValues({ unit: testUnit, favoriteUnitId: testUnit.id });
     expect(isEqual(result, expectedResult)).toBe(true);
   });

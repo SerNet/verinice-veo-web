@@ -16,6 +16,7 @@
 - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
+  <!-- @vue-ignore TODO #3066 not assignable -->
   <BaseDialog
     v-bind="$attrs"
     data-veo-test="units-delete-dialog"

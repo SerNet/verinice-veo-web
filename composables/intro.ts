@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Ref, WatchStopHandle } from 'vue';
+// @ts-ignore TODO #3066 has no exported member
 import introJs, { Hint, IntroJs } from 'intro.js';
 import type { ParsedContent } from '@nuxt/content';
 import { useIsFetching } from '@tanstack/vue-query';
 import { last } from 'lodash';
 
+// @ts-ignore TODO #3066 cannot find namespace
 interface ITutorialDocument extends introJs.Options {
   title?: string;
 }
@@ -99,10 +101,12 @@ export function createIntro() {
       _watchStep = watch(
         () => step.value,
         (newValue, oldValue) => {
+          // @ts-ignore TODO #3066 does not exist
           if (!options.value.steps) {
             return;
           }
 
+          // @ts-ignore TODO #3066 does not exist
           const currentStep = options.value.steps[newValue];
 
           // Early exit if no element is specified.
@@ -131,6 +135,7 @@ export function createIntro() {
         (v) => {
           if (v) {
             nextTick(() => {
+              // @ts-ignore TODO #3066 does not exist
               if (!options.value.steps?.length) return;
               _instance.start();
               // defer step change to happen after start is finished
@@ -182,6 +187,7 @@ export function createIntro() {
                   stepsVisible.value = false;
                   step.value = 0;
                   // Hide hints when no hints are avaiable (-> set visible to false)
+                  // @ts-ignore TODO #3066 does not exist
                   if (!options.value?.hints?.length) {
                     hintsVisible.value = false;
                   } else if (hintsVisible.value) {
@@ -262,6 +268,7 @@ export function useIntro() {
    * Configure intro.js
    * @param opts Options
    */
+  // @ts-ignore TODO #3066 cannot find namespace
   const configure = (opts: introJs.Options | Ref<introJs.Options | undefined>) => {
     _watchHandle?.();
     // support reactive tutorials
@@ -270,6 +277,7 @@ export function useIntro() {
         opts,
         (opts) => {
           if (opts) {
+            // @ts-ignore TODO #3066 does not exist
             opts.tooltipClass = 'bg-surface';
             options.value = opts;
           } else {
@@ -306,18 +314,23 @@ export function useIntro() {
     /**
      * Provides information about whether hints are currently present
      */
+    // @ts-ignore TODO #3066 does not exist
     hasHints: computed(() => !!options.value.hints?.length),
     /**
      * Provides information about whether steps are currently present
      */
+    // @ts-ignore TODO #3066 does not exist
     hasSteps: computed(() => !!options.value.steps?.length),
+    // @ts-ignore TODO #3066 does not exist
     steps: computed(() => options.value.steps || []),
+    // @ts-ignore TODO #3066 does not exist
     hints: computed(() => options.value.hints || []),
     /**
      * Add a hint to current page
      * @returns list of current hints
      */
     addHint(hint: Hint) {
+      // @ts-ignore TODO #3066 does not exist
       const hints = [...(options.value?.hints || []), hint];
       configure({ ...options.value, hints });
       return hints;
@@ -328,6 +341,7 @@ export function useIntro() {
      * @returns false if no hint was removed otherwise the list of current hints
      */
     removeHint(predicate: number | string | ((hint: Hint) => boolean)) {
+      // @ts-ignore TODO #3066 does not exist
       const hints = options.value.hints || [];
       const filter = (() => {
         switch (typeof predicate) {
@@ -351,6 +365,7 @@ export function useIntro() {
      * Remove all hints from current page
      */
     removeAllHints() {
+      // @ts-ignore TODO #3066 does not exist
       options.value = { ...options.value, hints: [] };
     }
   };
