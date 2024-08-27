@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 import { pluralizeElementType } from './utils';
+import { upperFirst } from 'lodash';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -37,7 +38,7 @@ export function navigateTo({ group, category, entry }: { group: string; category
 
 export function iterateSubTypes(elementType: string, callback: (args: any) => void) {
   const pluralizedElementType = pluralizeElementType(elementType);
-  cy.contains('div[sub-group="true"] > div', new RegExp(`^${pluralizedElementType}$`))
+  cy.contains('div[sub-group="true"] > div', new RegExp(`^${upperFirst(pluralizedElementType)}$`))
     .should('be.visible')
     .parent()
     .find('a')

@@ -216,7 +216,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
 
       return {
         id: modelType,
-        name: translations.value?.lang[locale.value]?.[`${modelType}_plural`] || upperFirst(modelType),
+        name: upperFirst(translations.value?.lang[locale.value]?.[`${modelType}_plural`] || modelType),
         icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
         children: [
           // all of object type
