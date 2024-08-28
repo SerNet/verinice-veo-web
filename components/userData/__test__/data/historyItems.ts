@@ -31,10 +31,7 @@ export const historyItems = [
         displayName: 'DS-GVO-Controls'
       },
       element: {
-        targetUri: '/controls/39422d24-8456-4693-a109-1cfdb08a9220',
-        searchesUri: '/controls/searches',
-        resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        targetUri: '/controls/39422d24-8456-4693-a109-1cfdb08a9220'
       },
       createdAt: '2022-01-21T15:06:31.763513Z',
       createdBy: 'stce',
@@ -72,10 +69,7 @@ export const historyItems = [
         displayName: 'DS-GVO-Controls'
       },
       element: {
-        targetUri: '/controls/640f83b6-b60c-458b-a2e0-fd5b09f0eca5',
-        searchesUri: '/controls/searches',
-        resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        targetUri: '/controls/640f83b6-b60c-458b-a2e0-fd5b09f0eca5'
       },
       createdAt: '2022-01-21T15:06:31.696299Z',
       createdBy: 'stce',
@@ -113,10 +107,7 @@ export const historyItems = [
         displayName: 'DS-GVO-Controls'
       },
       element: {
-        targetUri: '/controls/c7dabb1f-7e14-4386-b127-a51ecb369bef',
-        searchesUri: '/controls/searches',
-        resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        targetUri: '/controls/c7dabb1f-7e14-4386-b127-a51ecb369bef'
       },
       createdAt: '2022-01-21T15:06:31.767124Z',
       createdBy: 'stce',
@@ -154,10 +145,7 @@ export const historyItems = [
         displayName: 'DS-GVO-Controls'
       },
       element: {
-        targetUri: '/controls/4086fbb0-8d0a-40fd-9937-0e2440359599',
-        searchesUri: '/controls/searches',
-        resourcesUri:
-          '/controls{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        targetUri: '/controls/4086fbb0-8d0a-40fd-9937-0e2440359599'
       },
       createdAt: '2022-01-21T15:06:31.770702Z',
       createdBy: 'stce',
@@ -195,10 +183,7 @@ export const historyItems = [
         displayName: 'DS-GVO-Controls'
       },
       element: {
-        targetUri: '/processes/69905992-5ded-41ae-9f25-c901be26f72e',
-        searchesUri: '/processes/searches',
-        resourcesUri:
-          '/processes{?unit,displayName,subType,status,description,designator,name,updatedBy,size,page,sortBy,sortOrder}'
+        targetUri: '/processes/69905992-5ded-41ae-9f25-c901be26f72e'
       },
       createdAt: '2022-01-21T15:06:31.775182Z',
       createdBy: 'stce',

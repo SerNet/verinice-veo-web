@@ -38,9 +38,7 @@ export interface IVeoBaseObject {
 
 export interface IVeoLink {
   displayName?: string;
-  resourcesUri?: string;
   targetUri: string;
-  searchesUri?: string;
   name?: string;
   abbreviation?: string;
   id?: string;

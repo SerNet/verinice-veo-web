@@ -869,14 +869,6 @@ export default class ObjectSchemaHelper {
               description: 'A friendly human readable title of the referenced unit.',
               readOnly: true
             },
-            resourcesUri: {
-              type: 'string',
-              readOnly: true
-            },
-            searchesUri: {
-              type: 'string',
-              readOnly: true
-            },
             targetUri: {
               type: 'string',
               description: 'The resource URL of the referenced unit.',
@@ -894,14 +886,6 @@ export default class ObjectSchemaHelper {
               displayName: {
                 type: 'string',
                 description: 'A friendly human readable title of the referenced entity.',
-                readOnly: true
-              },
-              resourcesUri: {
-                type: 'string',
-                readOnly: true
-              },
-              searchesUri: {
-                type: 'string',
                 readOnly: true
               },
               targetUri: {

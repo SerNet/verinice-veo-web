@@ -13,27 +13,21 @@ export const unit0 = {
         displayName: 'domain_0_display_name',
         name: 'domain_0_name',
         abbreviation: 'domain_0_abbreviation',
-        targetUri: 'https://example.com/domain_0_targetUri',
-        searchesUri: 'https://example.com/domain_0_searchesUri',
-        resourcesUri: 'https://example.com/domain_0_resourcesUri'
+        targetUri: 'https://example.com/domain_0_targetUri'
       },
       {
         id: 'domain_1_id',
         displayName: 'domain_1_display_name',
         name: 'domain_1_name',
         abbreviation: 'domain_1_abbreviation',
-        targetUri: 'https://example.com/domain_1_targetUri',
-        searchesUri: 'https://example.com/domain_1_searchesUri',
-        resourcesUri: 'https://example.com/domain_1_resourcesUri'
+        targetUri: 'https://example.com/domain_1_targetUri'
       },
       {
         id: 'domain_2_id',
         displayName: 'domain_2_display_name',
         name: 'domain_2_name',
         abbreviation: 'domain_2_abbreviation',
-        targetUri: 'https://example.com/domain_2_targetUri',
-        searchesUri: 'https://example.com/domain_2_searchesUri',
-        resourcesUri: 'https://example.com/domain_2_resourcesUri'
+        targetUri: 'https://example.com/domain_2_targetUri'
       }
     ],
     id: 'unit_0_id',

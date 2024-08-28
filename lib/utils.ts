@@ -84,8 +84,6 @@ const IGNORED_KEYS: (string | RegExp)[] = [
   /updatedAt$/,
   /updatedBy$/,
   /targetUri$/,
-  /searchesUri$/,
-  /resourcesUri$/,
   /displayName$/
 ];
 
