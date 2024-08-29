@@ -81,10 +81,15 @@ const { subTypeTranslation } = useSubTypeTranslation(
 
 const customCrumbs = computed(() => {
   if (!state.CTLModule.value) return undefined;
-  return generateCustomBreadcrumbs(route.params.unit as string, route.params.domain as string, state);
+  return generateCustomBreadcrumbs(
+    route.params.unit as string,
+    route.params.domain as string,
+    state,
+    subTypeTranslation.value
+  );
 });
 
-function generateCustomBreadcrumbs(unit: string, domain: string, state: ComplianceState) {
+function generateCustomBreadcrumbs(unit: string, domain: string, state: ComplianceState, subTypeTranslation: string) {
   return [
     {
       to: `/${unit}/domains/${domain}/${state.type.value}`,
@@ -98,7 +103,7 @@ function generateCustomBreadcrumbs(unit: string, domain: string, state: Complian
       to: `/${unit}/domains/${domain}/${state.type.value}/${state.CTLModule.value.owner.subType}`,
       exact: true,
       index: 3,
-      text: subTypeTranslation.value,
+      text: subTypeTranslation,
       disabled: false
     },
     {
@@ -112,7 +117,7 @@ function generateCustomBreadcrumbs(unit: string, domain: string, state: Complian
       to: `/${unit}/domains/${domain}/${state.type.value}/${state.CTLModule.value.owner.subType}/${state.CTLModule.value.owner.id}#controls`,
       exact: true,
       index: 5,
-      text: `Umsetzung (${state.CTLModule.value.name})`,
+      text: `${t('implementation')} (${state.CTLModule.value.name})`,
       disabled: true
     }
   ];
@@ -125,15 +130,24 @@ onBeforeRouteLeave(async () => clearCustomBreadcrumbs());
 
 // Update breadcrumb if a filter is changed
 watch(() => route.fullPath, clearCustomBreadcrumbs);
+
+const { locale } = useI18n();
+// Update breadcrumbs on changed locale
+watch(locale, () => {
+  clearCustomBreadcrumbs();
+  customCrumbs.value?.forEach((crumb) => addCustomBreadcrumb(crumb));
+});
 </script>
 
 <i18n>
 {
 "de": {
-  "targetModule": "Baustein \"{currentModule}\" bearbeiten"
+  "targetModule": "Baustein \"{currentModule}\" bearbeiten",
+  "implementation": "Umsetzung"
 },
 "en": {
-  "targetModule": "Edit module \"{currentModule}\""
+  "targetModule": "Edit module \"{currentModule}\"",
+  "implementation": "Implementation"
 }
 }
 </i18n>
