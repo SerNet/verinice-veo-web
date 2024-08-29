@@ -34,7 +34,7 @@
 
       <BaseAlert
         :model-value="true"
-        :buttons="[{ text: 'backup', onClick: () => navigateTo('/user-data') }]"
+        :buttons="[{ text: 'backup', onClick: navigateToUserData }]"
         title="Backup"
         :type="VeoAlertType.INFO"
         class="mt-4"
@@ -150,6 +150,10 @@ const deleteUnit = async () => {
     closeDeleteDialog();
   }
 };
+
+function navigateToUserData() {
+  navigateTo('/user-data');
+}
 </script>
 
 <i18n>

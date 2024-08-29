@@ -45,7 +45,7 @@ import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
 
 import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
+import { IVeoDomainRiskDefinition, IVeoRiskDefinition, VeoRiskTreatment } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -74,7 +74,7 @@ export default defineComponent({
     const protectionGoalExists = (protectionGoal: string) =>
       !!props.data.find((riskValue) => riskValue.category === protectionGoal);
 
-    const onRiskTreatmentChanged = (protectionGoal: string, newValue: string[]) => {
+    const onRiskTreatmentChanged = (protectionGoal: string, newValue: VeoRiskTreatment[]) => {
       const localData = cloneDeep(props.data);
       const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
       if (riskValue) {

@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import type { IVeoLink } from '~/types/VeoTypes';
+
 export type TInlineComponent = {
   props?: string[];
   emits?: string[];
@@ -22,3 +24,14 @@ export type TInlineComponent = {
   methods?: Record<string, () => void | any>;
   template?: string;
 };
+
+export function validateType<T>(value: any, typeGuard: (any) => any is T) {
+  if (!typeGuard(value)) {
+    throw 'invalid value:' + value;
+  }
+  return value;
+}
+
+export function isVeoLink(link: any): link is IVeoLink {
+  return typeof link === 'object' && typeof link.targetUri === 'string';
+}

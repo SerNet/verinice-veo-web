@@ -82,9 +82,11 @@ export default defineComponent({
               color: 'primary',
               ...attrs,
 
-              'onUpdate:modelValue': (newValue: number) => {
-                internalValue.value = newValue;
-                emit('update:model-value', newValue);
+              'onUpdate:modelValue': (newValue) => {
+                if (typeof newValue === 'number') {
+                  internalValue.value = newValue;
+                  emit('update:model-value', newValue);
+                }
               },
               class: {
                 'veo-tabs': true,

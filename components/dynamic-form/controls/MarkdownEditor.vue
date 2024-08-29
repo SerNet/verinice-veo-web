@@ -95,7 +95,7 @@ export default defineComponent({
       () => props.modelValue,
       (newContent) => {
         onCreated;
-        sanitizedInput.value = DOMPurify.sanitize(newContent);
+        sanitizedInput.value = typeof newContent === 'string' ? DOMPurify.sanitize(newContent) : undefined;
       },
       { immediate: true }
     );

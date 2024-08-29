@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { ComputedRef, PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
 import {
   mdiArrowDown,
@@ -194,6 +194,7 @@ export default defineComponent({
       return { id, name, type };
     };
 
+    // TODO #3066 fix type (it can also return risks or control implementations)
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
       switch (props.type) {
         case 'childScopes':
@@ -204,6 +205,7 @@ export default defineComponent({
         case 'parentObjects':
           return parentObjects.value || [];
         case 'risks':
+          // TODO #3066 find out why on earth this even compiles
           return risks.value || [];
         case 'controls':
           return (props.object?.controlImplementations || []).map((control) => {
@@ -798,21 +800,9 @@ export default defineComponent({
 
     // push to object detail site (on click in table)
     const openItem = ({ internalItem }) => {
-      const item = internalItem.raw as IVeoRisk;
-      // assemble route params
-      const { id: itemId, type: itemType } = internalItem.raw as IVeoEntity;
-      const objectType =
-        VeoElementTypePlurals[itemType as keyof typeof VeoElementTypePlurals] || itemType || route.params.objectType;
-      const params = {
-        ...route.params,
-        object: itemId,
-        objectType,
-        subType: item.subType
-      };
-
       switch (props.type) {
         case 'risks':
-          editRiskDialog.value.scenarioId = getEntityDetailsFromLink(item.scenario).id;
+          editRiskDialog.value.scenarioId = getEntityDetailsFromLink((internalItem.raw as IVeoRisk).scenario).id;
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
@@ -826,12 +816,21 @@ export default defineComponent({
             }
           });
         default:
-          router.push({
-            name: OBJECT_DETAIL_ROUTE,
-            params
-          });
+          openObject(internalItem.raw as IVeoEntity);
       }
     };
+
+    function openObject(object: IVeoEntity) {
+      router.push({
+        ...route.params,
+        name: OBJECT_DETAIL_ROUTE,
+        params: {
+          object: object.id,
+          objectType: VeoElementTypePlurals[object.type as keyof typeof VeoElementTypePlurals],
+          subType: object.subType
+        }
+      });
+    }
 
     /**
      * Risk tab

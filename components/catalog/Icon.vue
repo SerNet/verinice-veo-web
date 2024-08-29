@@ -85,7 +85,7 @@ const icon = computed(() => OBJECT_TYPE_ICONS.get(props.objectType));
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
-  domain: route.params.domain
+  domain: route.params.domain || []
 }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 const translatedObjectType = computed(

@@ -96,9 +96,8 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useNavigation } from '~/composables/navigation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
-import { getEntityDetailsFromLink } from '~/lib/utils';
 import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
-import type { IVeoLink, IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { VeoSearch } from '~/types/VeoSearch';
 
@@ -137,7 +136,7 @@ export default defineComponent({
      * Pass a list of objects that should be preselected. Those values will be merged with the values defined in this component.
      */
     preselectedItems: {
-      type: Array as PropType<(IVeoLink | IVeoEntity)[]>,
+      type: Array as PropType<IVeoEntity[]>,
       default: () => []
     },
     /**
@@ -244,7 +243,7 @@ export default defineComponent({
     });
 
     // items rendered in ObjectTable
-    const objects = computed(() => {
+    const objects = computed<IVeoPaginatedResponse<IVeoEntity[]>>(() => {
       if (searchResults.value) {
         return searchResults.value;
       }
@@ -263,8 +262,8 @@ export default defineComponent({
       };
     });
 
-    const getIdFromItem = (item: IVeoLink | IVeoEntity) => {
-      return 'targetUri' in item ? getEntityDetailsFromLink(item).id : item.id;
+    const getIdFromItem = (item: IVeoEntity) => {
+      return item.id;
     };
 
     watch(
@@ -351,7 +350,7 @@ export default defineComponent({
       { enabled: childScopesQueryEnabled }
     );
 
-    const children = computed(() =>
+    const children = computed<IVeoEntity[]>(() =>
       uniqBy(
         [...(childObjects.value?.items || []), ...(childScopes.value?.items || []), ...props.preselectedItems],
         (arrayEntry) => getIdFromItem(arrayEntry)
@@ -359,7 +358,7 @@ export default defineComponent({
     );
     const childrenLoading = computed(() => childObjectsLoading.value || childScopesLoading.value);
 
-    const originalSelectedItems = computed(() => {
+    const originalSelectedItems = computed<IVeoEntity[]>(() => {
       if (props.linkRiskAffected) {
         return (
           objects.value?.items.filter((item) =>
@@ -373,7 +372,7 @@ export default defineComponent({
       }
     }); // Doesn't get modified to compare which parents have been added removed
 
-    const modifiedSelectedItems = ref<(IVeoEntity | IVeoLink)[]>([]);
+    const modifiedSelectedItems = ref<IVeoEntity[]>([]);
     const isDirty = computed(() => !isEqual(originalSelectedItems.value, modifiedSelectedItems.value));
 
     watch(
@@ -426,17 +425,13 @@ export default defineComponent({
     };
 
     const handleLinkRiskAffected = async () => {
-      const elementsToEdit: (IVeoEntity | IVeoLink)[] = differenceBy(
-        modifiedSelectedItems.value,
-        originalSelectedItems.value,
-        'id'
-      );
+      const elementsToEdit: IVeoEntity[] = differenceBy(modifiedSelectedItems.value, originalSelectedItems.value, 'id');
       for (const element of elementsToEdit) {
         await processElement(element);
       }
     };
 
-    const processElement = async (element: (IVeoEntity | IVeoLink)[]) => {
+    const processElement = async (element: IVeoEntity) => {
       const clonedObject = await useQuerySync(
         objectQueryDefinitions.queries.fetch,
         {
@@ -447,7 +442,7 @@ export default defineComponent({
         queryClient
       );
       clonedObject.controlImplementations?.push({
-        control: 'targetUri' in props.object ? props.object : createLink('controls', props.object.id)
+        control: createLink('controls', props.object.id)
       });
       await updateObject({
         domain: route.params.domain,

@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { upperFirst, toUpper } from 'lodash';
 
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, { getSubTypes } from '~/composables/api/queryDefinitions/domains';
 import reportQueryDefinitions, { IVeoReportMeta, IVeoReportsMeta } from '~/composables/api/queryDefinitions/reports';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -109,8 +109,8 @@ function filterReports({ _domain, _allReports, _locale }: TFilterReportsParams) 
         const targetTypesForReport = report.targetTypes;
         return targetTypesForReport.some(({ modelType, subTypes }) => {
           // if there is no subType, the report exists in the current domain
-          if (subTypes === null) return true;
-          const subTypesInDomain = Object.keys(_domain.elementTypeDefinitions[modelType].subTypes);
+          if (!subTypes) return true;
+          const subTypesInDomain = getSubTypes(_domain, modelType);
           return subTypesInDomain.some((subTypeInDomain) => subTypes.indexOf(subTypeInDomain) >= 0);
         });
       });
@@ -169,6 +169,9 @@ function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
 }
 
 const displayedItems = computed(() => {
+  if (!domain.value || !reports.value) {
+    return;
+  }
   const _locale = locale.value;
   const filteredReports = filterReports({
     _domain: toRaw(domain.value),

@@ -50,6 +50,9 @@ interface TableHeaderAdditionalProperties {
   tooltip?: TableRenderer;
   value?: keyof any | string;
   key: string;
+  sortable?: boolean;
+  width?: number;
+  cellClass?: string[];
 }
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 

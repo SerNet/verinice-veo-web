@@ -73,7 +73,7 @@
             <BaseAlert
               v-else
               :model-value="true"
-              :buttons="[{ text: t('goto'), onClick: () => navigateTo('/units') }]"
+              :buttons="[{ text: t('goto'), onClick: navigateToUnits }]"
               :title="t('requestHeadline')"
               :type="VeoAlertType.INFO"
               class="mx-14 my-2"
@@ -224,6 +224,10 @@ const links = ref({
     en: 'https://verinice.com/en/pro/webinars-1'
   }
 });
+
+function navigateToUnits() {
+  navigateTo('/units');
+}
 </script>
 
 <i18n>

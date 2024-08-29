@@ -89,7 +89,7 @@ export default defineComponent({
     const { t } = useI18n();
     // @ts-ignore At this point we expect objectSchema to be set, so type WILL exist
     const multiple = computed(
-      () => props.objectSchema.type === 'array' && typeof props.objectSchema.items?.enum !== 'undefined'
+      () => props.objectSchema['type'] === 'array' && typeof props.objectSchema['items']?.['enum'] !== 'undefined'
     );
 
     // If the user deselects from one item to zero items, we want to pass undefined instead of an empty array as an empty array has to be explicitly selected

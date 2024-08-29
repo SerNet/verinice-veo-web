@@ -65,8 +65,8 @@ export default {
     }
   },
   methods: {
-    stringify(json: JSON): string {
-      return JSON.stringify(json, null, 4);
+    stringify(arg: any): string {
+      return JSON.stringify(arg, null, 4);
     }
   }
 };

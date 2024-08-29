@@ -117,8 +117,8 @@ export default defineComponent({
     const items = computed(() => {
       // @ts-ignore At this point we expect objectSchema to be set, so type WILL exist
       const items =
-        props.objectSchema.enum ||
-        [props.objectSchema.items || []].flat().flatMap((def) => (typeof def === 'object' ? def.enum || [] : []));
+        props.objectSchema['enum'] ||
+        [props.objectSchema['items'] || []].flat().flatMap((def) => (typeof def === 'object' ? def.enum || [] : []));
       return items.map((item, index) =>
         props.options.enum ?
           { title: props.options.enum[index], value: item }
@@ -138,7 +138,7 @@ export default defineComponent({
       ...props,
       options: {
         ...props.options,
-        disabled: props.objectSchema.readOnly || props.options.disabled
+        disabled: props.objectSchema['readOnly'] || props.options.disabled
       },
       items: items.value,
       valuePointer: valuePointer.value,

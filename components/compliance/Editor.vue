@@ -189,11 +189,13 @@ import controlQueryDefinitions, { IVeoFetchObjectParameters } from '~/composable
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 import { useRequest } from '@/composables/api/utils/request';
-import { IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
+import type { IVeoLink, IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
 import { format } from 'date-fns';
 import { useDate } from 'vuetify';
 
 import DOMPurify from 'dompurify';
+import type { ComputedRef, Ref } from 'vue';
+import { isVeoLink, validateType } from '~/types/utils';
 
 const { request } = useRequest();
 
@@ -206,6 +208,7 @@ interface Props {
   item: RequirementImplementation | null;
   showDialog: boolean;
   locale: string;
+  domainId: string;
 }
 
 interface Emits {
@@ -214,18 +217,26 @@ interface Emits {
 }
 
 export type RequirementImplementation = {
-  origin: { displayName?: string };
-  control: { id?: string; displayName?: string };
-  responsible: ResponsiblePerson | null;
+  origin: IVeoLink;
+  control: IVeoLink;
+  responsible?: ResponsiblePerson;
   status: string;
-  implementationStatement?: string | null;
   origination: string;
+  implementationStatement?: string;
+  implementationUntil?: string;
 };
 
-type ResponsiblePerson = {
-  name: string;
-  targetUri: string;
+type RequirementImplementationForForm = {
+  origin: Partial<IVeoLink>;
+  control: Partial<IVeoLink>;
+  responsible?: ResponsiblePerson;
+  status: string;
+  origination: string;
+  implementationStatement?: string;
+  implementationUntil?: Date;
 };
+
+type ResponsiblePerson = IVeoLink;
 
 /** Cp. comment in template above */
 /*
@@ -251,7 +262,7 @@ const route = useRoute();
 
 /** STATE */
 // data
-const initialForm = {
+const initialForm: RequirementImplementationForForm = {
   origin: {},
   control: {},
   responsible: null,
@@ -260,7 +271,7 @@ const initialForm = {
   origination: 'SYSTEM_SPECIFIC'
 };
 
-const form: Ref<RequirementImplementation> = ref(initialForm);
+const form: Ref<RequirementImplementationForForm> = ref(initialForm);
 
 // React on changing props, e.g. if a new item is passed
 const _item = computed(() => props.item);
@@ -268,7 +279,9 @@ watch(_item, () => {
   if (!_item.value) return;
   form.value = {
     ..._item.value,
-    implementationUntil: _item.value.implementationUntil ? adapter.parseISO(_item.value.implementationUntil) : undefined
+    // TODO #3066 is there some way to get a date adapter that explicitly returns Dates and doesn't need casting?
+    implementationUntil:
+      _item.value.implementationUntil ? (adapter.parseISO(_item.value.implementationUntil) as Date) : undefined
   };
 });
 
@@ -301,14 +314,18 @@ const { data: _personsForTotalItemCount } = useQuery(
 // Fetch Control
 const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
   id: props.item?.control.id as string,
-  domain: domainId.value,
+  domain: domainId.value as string,
   endpoint: 'controls'
 }));
 const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, controlParameters, {
   enabled: computed(() => !!props.item?.control.id)
 });
 
-const additionalInfo = ref({});
+const additionalInfo = ref<{
+  requirementDescription?: string;
+  protectionApproach?: string;
+  protectionApproachTranslation?: ComputedRef<string>;
+}>({});
 const sanitizedDescription = ref<string>('');
 
 const updateControlInfo = (control) => {
@@ -318,7 +335,7 @@ const updateControlInfo = (control) => {
 
   additionalInfo.value.requirementDescription = customAspects?.control_bpCompendium?.control_bpCompendium_content ?? '';
   additionalInfo.value.protectionApproach =
-    customAspects.control_bpInformation?.control_bpInformation_protectionApproach;
+    customAspects['control_bpInformation']?.control_bpInformation_protectionApproach;
 };
 
 watch(control, () => updateControlInfo(control.value), { immediate: true });
@@ -334,7 +351,7 @@ watch(
 // Get and translate the protection approach value of the current item
 const { data: translations } = useTranslations({ domain: props.domainId });
 
-function translateProtectionApproach({ translations, locale, protectionApproach }) {
+function translateProtectionApproach({ translations, locale, protectionApproach }): string {
   if (!translations?.lang || !locale || !protectionApproach) return '';
   return translations.lang[locale][protectionApproach];
 }
@@ -380,7 +397,7 @@ async function submitForm({
 }: {
   type: string;
   riskAffected: string;
-  form: RequirementImplementation;
+  form: RequirementImplementationForForm;
   item: any;
   request: any;
 }) {
@@ -389,12 +406,13 @@ async function submitForm({
   view.isLoading = true;
 
   // Filter out empty properties
-  const _form = cloneDeep(form);
-
-  // Format implementation date
-  if (_form.implementationUntil) {
-    _form.implementationUntil = format(_form.implementationUntil, 'yyyy-MM-dd');
-  }
+  const clone = cloneDeep(form);
+  const _form: RequirementImplementation = {
+    ...clone,
+    control: validateType(clone.control, isVeoLink),
+    origin: validateType(clone.origin, isVeoLink),
+    implementationUntil: format(form.implementationUntil, 'yyyy-MM-dd')
+  };
 
   const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
 

@@ -150,7 +150,10 @@ export default defineComponent({
     const sheet = ref<string>();
     const sheets = computed(() => workbook.value?.SheetNames || []);
 
-    const uploadLanguageFile = (newFile: File[] | undefined) => {
+    const uploadLanguageFile = (newFile: File | File[] | undefined) => {
+      if (newFile instanceof File) {
+        newFile = [newFile];
+      }
       // Reset selection
       uploadingLanguageFile.value = true;
       languageFile.value = newFile;

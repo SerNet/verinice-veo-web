@@ -61,6 +61,7 @@
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { TableHeader } from '../base/Table.vue';
 import type { IVeoPaginatedResponse, IVeoEntity } from '~/types/VeoTypes';
+import type { SortItem } from '~/components/base/Table.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -120,7 +121,7 @@ const headers: TableHeader[] = [
 ];
 
 const page = defineModel<number>('page', { default: 1 });
-const sortBy = defineModel<{ key: string; order: string }>('sortBy', {
+const sortBy = defineModel<SortItem[]>('sortBy', {
   default: [{ key: 'abbreviation', order: 'asc' }]
 });
 
@@ -136,7 +137,7 @@ const selectedItems = computed({
 const availableItems = computed(() =>
   props.catalogItems?.items?.map((item) => {
     const { abbreviation, name, id, description = '' } = item;
-    return { abbreviation, name, id, description } || '';
+    return { abbreviation, name, id, description };
   })
 );
 

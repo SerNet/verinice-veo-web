@@ -18,7 +18,7 @@
 <template>
   <v-col cols="6" :md="12 / numOfCols">
     <h3 class="text-h3">
-      {{ protectionGoal.translations[locale].name }}
+      {{ protectionGoal.translations[locale]?.name }}
     </h3>
     <v-select
       data-test-selector="risk-treatments"

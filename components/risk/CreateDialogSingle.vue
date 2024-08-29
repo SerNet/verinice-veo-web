@@ -114,7 +114,7 @@ import { getEntityDetailsFromLink } from '~/lib/utils';
 import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions, { getSubTypes, IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
@@ -311,7 +311,7 @@ export default defineComponent({
 
     const getFirstControlSubType = (domain: IVeoDomain | undefined) => {
       if (!domain) return;
-      return Object.keys(domain.elementTypeDefinitions.control.subTypes)[0];
+      return getSubTypes(domain, 'control')[0];
     };
 
     const newMitigatingAction = computed(() => ({
@@ -393,7 +393,7 @@ const makeRiskObject = (
       }
     });
 
-    for (const category of riskDefinitions[riskDefinition].categories.map((category) => category.id)) {
+    for (const category of riskDefinitions[riskDefinition]!.categories.map((category) => category.id)) {
       const impactValueObject = {
         category,
         effectiveImpact: undefined,

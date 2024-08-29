@@ -27,12 +27,13 @@
         <BaseCard>
           <v-card-text>
             <v-list>
+              <!-- TODO #3066 the divider biz is hideous -->
               <ObjectFilter
                 v-for="(option, index) of defaultFilterOptions"
-                :key="option.name || `${option.type}_${index}`"
-                :model-value="localFilter[option.name]"
+                :key="(!isDivider(option) && option.name) || `${option.type}_${index}`"
+                :model-value="!isDivider(option) && localFilter[option.name]"
                 v-bind="option"
-                @update:model-value="onFilterInput($event, option.name)"
+                @update:model-value="onFilterInput($event, !isDivider(option) && option.name)"
               />
             </v-list>
           </v-card-text>
@@ -40,12 +41,13 @@
         <BaseCard v-if="showAllFilters" class="mt-2">
           <v-card-text>
             <v-list density="compact">
+              <!-- TODO #3066 the divider biz is hideous -->
               <ObjectFilter
                 v-for="(option, index) of additionalFilterOptions"
-                :key="option.name || `${option.type}_${index}`"
-                :model-value="localFilter[option.name]"
+                :key="(!isDivider(option) && option.name) || `${option.type}_${index}`"
+                :model-value="!isDivider(option) && localFilter[option.name]"
                 v-bind="option"
-                @update:model-value="onFilterInput($event, option.name)"
+                @update:model-value="onFilterInput($event, !isDivider(option) && option.name)"
               />
             </v-list>
           </v-card-text>
@@ -134,7 +136,7 @@ export default defineComponent({
     watch(
       () => _schemas,
       (newValue) => {
-        schemas.value = newValue.map((query) => query.data).filter((schema) => schema) as IVeoObjectSchema[];
+        schemas.value = newValue.map((query) => query.data).filter((schema) => schema);
       },
       { deep: true, immediate: true }
     );
@@ -338,6 +340,10 @@ export default defineComponent({
       ];
     });
 
+    function isDivider(a: any): a is IVeoFilterDivider {
+      return typeof a === 'object' && a.type === IVeoFilterOptionType.DIVIDER;
+    }
+
     // Display stuff
     const dialog = computed({
       get() {
@@ -377,7 +383,7 @@ export default defineComponent({
       onSubmit,
       showAllFilters,
       IVeoFilterOptionType,
-
+      isDivider,
       t,
       upperFirst,
       mdiChevronDown,

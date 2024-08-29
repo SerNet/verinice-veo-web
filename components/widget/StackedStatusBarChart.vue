@@ -32,11 +32,12 @@
             height="25px"
             class="my-1"
           />
+          <!-- TODO #3066 fix any cast -->
           <Bar
             v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
             :data="chart"
-            :options="options[index]"
+            :options="options[index] as any"
             :plugins="[ChartDataLabels]"
             :style="{
               height: `${chartHeight}px`,

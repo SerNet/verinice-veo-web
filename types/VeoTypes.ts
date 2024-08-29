@@ -44,7 +44,7 @@ export interface IVeoLink {
   name?: string;
   abbreviation?: string;
   id?: string;
-  designator: string;
+  designator?: string;
 }
 
 export interface IVeoRiskDefinitionItemTranslations {
@@ -414,10 +414,11 @@ export interface IVeoEntityDomain {
 
 export interface IVeoControlImplementation {
   control: IVeoLink;
-  description: string;
-  owner: IVeoLink;
-  responsible: IVeoLink;
-  _self: string;
+  description?: string;
+  // TODO #3066 find some way to express read-only properties
+  owner?: IVeoLink;
+  responsible?: IVeoLink;
+  _self?: string;
 }
 
 export interface IVeoEntityLegacy extends IVeoBaseObject {
@@ -465,6 +466,8 @@ export interface IVeoRiskValue {
   riskTreatmentExplanation: string;
   inherentRisk: number;
   effectiveRisk: number;
+  ordinalValue: number;
+  translations: Record<string, Record<string, string>>;
 }
 
 export interface IVeoRiskDefinition {
@@ -560,13 +563,6 @@ export interface IVeoFormSchemaGeneratorOptions {
   groupedNamespaces?: { namespace: string; label?: string }[];
   generateControlFunction: (pointer: string, schema: Record<string, any>, mode: Mode) => any;
   generateGroupFunction: (children: any[], label?: string) => any;
-}
-
-export interface IVeoFormsWidgetDefinition {
-  name: string;
-  description: {
-    [lang: string]: string;
-  };
 }
 
 export interface IVeoSubTypeDefinition {

@@ -18,6 +18,7 @@
 <script lang="ts">
 import { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
+import type { IVeoCustomLink } from '~/types/VeoTypes';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -36,7 +37,7 @@ export default defineComponent({
   props: {
     ...VeoFormsControlProps,
     otherSelectedLinks: {
-      type: Array,
+      type: Array<IVeoCustomLink>,
       default: () => []
     },
     index: {
