@@ -23,7 +23,6 @@
         <div v-if="currentModule">
           <v-btn :to="currentModule.urlParams" variant="outlined">
             {{ t('targetModule', { currentModule: currentModule.name }) }}
-            <v-icon size="small" :icon="mdiArrowRight" end />
           </v-btn>
         </div>
       </div>
@@ -40,7 +39,6 @@ export const ROUTE_NAME = 'unit-domains-domain-compliance';
 </script>
 
 <script setup lang="ts">
-import { mdiArrowRight } from '@mdi/js';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
