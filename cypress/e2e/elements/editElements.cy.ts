@@ -16,7 +16,7 @@ describe('Edit elements', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', getRandomElementType()];
+  const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
     it('edit element in ' + elementType, () => {

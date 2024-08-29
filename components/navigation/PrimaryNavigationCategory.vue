@@ -61,7 +61,7 @@
           v-bind="child"
           :level="level + 1"
           :mini-variant="miniVariant"
-          :data-veo-test="`nav-entry-${child.name?.toLowerCase()}`"
+          :data-veo-test="`nav-entry-${name?.toLowerCase().replace(/\s+/g, '-')}-${child.name?.toLowerCase().replace(/\s+/g, '-')}`"
           @expand-menu="emit('expand-menu')"
           @open-parent="openCategory"
         />
@@ -70,7 +70,7 @@
           v-bind="child"
           :level="level + 1"
           :mini-variant="miniVariant"
-          :data-veo-test="`nav-category-${child.id}`"
+          :data-veo-test="`nav-category-${name?.toLowerCase().replace(/\s+/g, '-')}-${child.name?.toLowerCase().replace(/\s+/g, '-')}`"
           @expand-menu="emit('expand-menu')"
         />
       </template>

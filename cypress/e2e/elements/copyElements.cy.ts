@@ -1,4 +1,4 @@
-import { getRandomElementType, pluralizeElementType } from '../../commands/utils';
+import { getRandomElementType } from '../../commands/utils';
 
 describe('Copy elements', () => {
   before(() => {
@@ -15,11 +15,9 @@ describe('Copy elements', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', getRandomElementType()];
+  const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
-    const pluralizedElementType = pluralizeElementType(elementType);
-
     it('copies element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
 
@@ -33,8 +31,10 @@ describe('Copy elements', () => {
           .as('originalRow');
 
         cy.get('@originalRow').then(($row) => {
-          cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${pluralizedElementType}`).as('cloneElement');
-          cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**/${pluralizedElementType}**`).as(
+          cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}`).as(
+            'cloneElement'
+          );
+          cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}**`).as(
             'getClonedElement'
           );
           cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').should('be.visible').click();

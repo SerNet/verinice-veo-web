@@ -3,7 +3,7 @@ export function getRandomString(length = 8) {
 }
 
 export function getRandomElementType(
-  elementTypes: string[] = ['Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario', 'Control']
+  elementTypes: string[] = ['Processes', 'Assets', 'Persons', 'Incidents', 'Documents', 'Scenarios', 'Controls']
 ) {
   const idx = Math.floor(Math.random() * elementTypes.length);
   return elementTypes[idx];

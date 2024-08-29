@@ -1,4 +1,4 @@
-import { getRandomElementType, pluralizeElementType } from '../../commands/utils';
+import { getRandomElementType } from '../../commands/utils';
 
 describe('Delete elements', () => {
   before(() => {
@@ -15,11 +15,9 @@ describe('Delete elements', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', getRandomElementType()];
+  const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
-    const pluralizedElementType = pluralizeElementType(elementType);
-
     it('deletes element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
 
@@ -40,7 +38,7 @@ describe('Delete elements', () => {
         });
 
         cy.get('@originalRow').then(($row) => {
-          cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/${pluralizedElementType}/**`).as('deleteElement');
+          cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/${elementType.toLowerCase()}/**`).as('deleteElement');
           cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
 
           deleteElement($row);

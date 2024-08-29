@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-import { pluralizeElementType } from './utils';
 import { upperFirst } from 'lodash';
 
 declare global {
@@ -20,30 +19,42 @@ export function navigateTo({ group, category, entry }: { group: string; category
 
   if (category) {
     cy.get('@group').within(() => {
-      cy.get(`[data-veo-test="nav-category-${category.toLowerCase()}"]`).as('category').click();
+      cy.get(
+        `[data-veo-test="nav-category-${group.toLowerCase().replace(/\s+/g, '-')}-${category.toLowerCase().replace(/\s+/g, '-')}"]`
+      )
+        .as('category')
+        .click();
     });
 
     if (entry) {
       cy.get('@category').within(() => {
-        cy.get(`[data-veo-test="nav-entry-${entry.toLowerCase()}"]`).as('entry').click();
+        cy.get(
+          `[data-veo-test="nav-entry-${category.toLowerCase().replace(/\s+/g, '-')}-${entry.toLowerCase().replace(/\s+/g, '-')}"]`
+        )
+          .as('entry')
+          .click();
       });
     }
     return;
   }
 
   cy.get('@group').within(() => {
-    cy.get(`[data-veo-test="nav-entry-${entry.toLowerCase()}"]`).as('entry').click();
+    cy.get(
+      `[data-veo-test="nav-entry-${group.toLowerCase().replace(/\s+/g, '-')}-${entry.toLowerCase().replace(/\s+/g, '-')}"]`
+    )
+      .as('entry')
+      .click();
   });
 }
 
 export function iterateSubTypes(elementType: string, callback: (args: any) => void) {
-  const pluralizedElementType = pluralizeElementType(elementType);
-  cy.contains('div[sub-group="true"] > div', new RegExp(`^${upperFirst(pluralizedElementType)}$`))
+  cy.contains('div[sub-group="true"] > div', new RegExp(`^${upperFirst(elementType)}$`))
     .should('be.visible')
     .parent()
     .find('a')
     .each(($subType) => {
       if ($subType.text() === 'All') return;
+      // cy.wait(200);
       callback($subType);
     });
 }

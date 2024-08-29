@@ -21,7 +21,7 @@ describe('Navigation Menu', () => {
   const groupsWithCategories = [
     {
       name: 'objects',
-      elementTypes: ['Scope', 'Process', 'Asset', 'Person', 'Incident', 'Document', 'Scenario', 'Control']
+      elementTypes: ['Scopes', 'Processes', 'Assets', 'Persons', 'Incidents', 'Documents', 'Scenarios', 'Controls']
     }
   ];
 
@@ -37,7 +37,7 @@ describe('Navigation Menu', () => {
     const groupsDsgvo = [
       {
         name: 'catalog',
-        entry: ['Data Processings', 'Scenarios', 'TOMs']
+        entry: ['data processings', 'scenarios', 'toms']
       },
       {
         name: 'Reports',
@@ -50,7 +50,7 @@ describe('Navigation Menu', () => {
       },
       {
         name: 'Risk definitions',
-        entry: ['DSRA']
+        entry: ['dsra']
       }
     ];
 
@@ -84,7 +84,7 @@ describe('Navigation Menu', () => {
     const groupsItgs = [
       {
         name: 'catalog',
-        entry: ['Elementary threats', 'Information domains', 'Layers', 'Modules', 'Requirements', 'Families']
+        entry: ['elementary threats', 'information domains', 'layers', 'modules', 'requirements', 'families']
       },
       {
         name: 'reports',
@@ -100,7 +100,7 @@ describe('Navigation Menu', () => {
       },
       {
         name: 'Risk definitions',
-        entry: ['GSRA']
+        entry: ['gsra']
       }
     ];
 

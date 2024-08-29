@@ -17,7 +17,7 @@ describe.skip('Add Elements to other Domain', () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', getRandomElementType()];
+  const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
     it('Add Element of type ' + elementType + ' to other Domain', () => {

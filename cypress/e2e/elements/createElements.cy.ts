@@ -13,7 +13,7 @@ describe('Create elements', { testIsolation: false }, () => {
 
   after(() => cy.deleteUnit());
 
-  const elementTypeList: string[] = ['Scope', getRandomElementType()];
+  const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 
   // number of elements to be created in each sub type
   const numOfElements = 1;
@@ -38,13 +38,9 @@ describe('Create elements', { testIsolation: false }, () => {
             status: selectRandom(['Archived', 'New', 'In progress', 'Released', 'For review'])
           };
 
-          let extra = 's';
-          if (elementType === 'Process') extra = 'es';
-
-          cy.intercept(
-            'POST',
-            `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLocaleLowerCase() + extra}?scopes=**`
-          ).as('createElement');
+          cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}?scopes=**`).as(
+            'createElement'
+          );
 
           createElement(elements.abb, elements.name, elements.des, elements.status);
 
