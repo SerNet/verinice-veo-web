@@ -167,23 +167,40 @@ export default defineComponent({
         props.object?.type === 'scope' ? undefined : props.object?.type,
         props.type === 'childObjects'
       );
+
+    const determineType = () => {
+      if (props.object?.type === 'scope') return undefined;
+      if (props.type === 'controls') return 'control';
+      return props.object?.type;
+    };
+
+    const openDialog = (objectType: string, typeTarget?: string) => {
+      openLinkObjectDialog(
+        objectType,
+        props.type !== 'parentObjects' && (props.type === 'childScopes' || props.type !== 'targets'),
+        props.type === 'controls',
+        typeTarget
+      );
+    };
+
+    // Action functions
     const linkObjectAction = () => {
-      selectEntityDialog.value = true;
+      if (props.object?.type === 'scope') {
+        selectEntityDialog.value = true;
+      } else {
+        linkObjectCallback(props.object?.type);
+      }
     };
 
     const linkObjectCallback = (typeTarget: any) => {
       selectEntityDialog.value = false;
-      let type = props.object?.type;
-      if (props.object?.type === 'scope') type = undefined;
-      if (props.type === 'controls') type = 'control';
-      openLinkObjectDialog(type, props.type !== 'parentObjects', props.type === 'controls', typeTarget);
+      openDialog(determineType(), typeTarget);
     };
 
     const createScopeAction = () => openCreateObjectDialog('scope', props.type === 'childScopes');
-    const linkScopeAction = () =>
-      openLinkObjectDialog('scope', props.type === 'childScopes' || props.type !== 'targets');
-    const linkAssetAction = () => openLinkObjectDialog('asset', props.type !== 'targets');
-    const linkProcessAction = () => openLinkObjectDialog('process', props.type !== 'targets');
+    const linkScopeAction = () => openDialog('scope', 'scope');
+    const linkAssetAction = () => openDialog('asset', props.object?.type);
+    const linkProcessAction = () => openDialog('process', props.object?.type);
     const createRiskAction = () => onCreateRisk();
 
     // Action configuration
