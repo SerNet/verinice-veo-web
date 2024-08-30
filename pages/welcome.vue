@@ -91,7 +91,7 @@
               class="text-decoration-none text-primary"
               rel="noopener noreferrer"
               target="_blank"
-              :to="links.portal"
+              :to="links.portal[locale] ?? links.portal.en"
             >
               <strong>{{ t('portal') }}!</strong>
             </nuxt-link>
@@ -218,7 +218,10 @@ const { t, locale } = useI18n();
 const links = ref({
   channel: 'https://www.youtube.com/playlist?list=PLYG8Ez-PzQxtY660HESHsyD9sultD1ldf',
   forum: 'https://forum.verinice.com',
-  portal: 'https://account.verinice.com/',
+  portal: {
+    de: 'https://account.verinice.com/',
+    en: 'https://account.verinice.com/en/'
+  },
   webinar: {
     de: 'https://verinice.com/webinare',
     en: 'https://verinice.com/en/pro/webinars-1'
@@ -236,7 +239,7 @@ function navigateToUnits() {
       "explanation": {
         "name": "Give your new unit a descriptive name and optionally a description.",
         "profile": "Load demo data or an IT-Grundschutz profile, for example, or start with an empty unit.",
-        "domain": "Determine which domains you want to work with in your unit (e.g. ISO, NIS-2 or GDPR).",
+        "domain": "Determine which domains (e.g. ISO, NIS-2 or GDPR) you want to work with in your unit.",
         "summary": "Check all the details and create your new unit - you will be redirected to the dashboard of your new unit."
       },
       "footer": "The number of possible units, available profiles and domains depends on the selected plan. See the ",
@@ -247,7 +250,7 @@ function navigateToUnits() {
         "name": "You can always create at least two units, for example for test purposes and productive work!",
         "profile": "Profiles are always specific to at least one domain, e.g. sample data for the ISO domain!",
         "domain": "At least one domain is required!",
-        "summary": "At least one domain is required!"
+        "summary": "You can edit your unit at any time later via the unit administration!"
       },
       "injector": {
         "channel": "YouTube channel",
@@ -274,7 +277,7 @@ function navigateToUnits() {
       "explanation": {
         "name": "Geben Sie Ihrer neuen Unit einen sprechenden Namen und optional eine Beschreibung.",
         "profile": "Laden Sie z.B. Demodaten oder ein IT-Grundschutz-Profil oder starten Sie mit einer leeren Unit.",
-        "domain": "Legen Sie fest mit welchen Domänen Sie in Ihrer Unit arbeiten möchten (z.B. ISO, NIS-2 oder DS-GVO).",
+        "domain": "Legen Sie fest mit welchen Domänen (wie z.B. ISO, NIS-2 oder DS-GVO) Sie in Ihrer Unit arbeiten möchten.",
         "summary": "Prüfen Sie alle Angaben und legen Sie Ihre neue Unit an. Sie werden auf das Dashboard Ihrer neuen Unit weitergeleitet."
       },
       "footer": "Die Anzahl möglicher Units, verfügbarer Profile und Domänen ist vom gewählten Plan abhängig. Siehe das ",
@@ -308,5 +311,5 @@ function navigateToUnits() {
       "subTitle": "Ihre ersten Schritte in verinice:",
       "unitCreation": "Unit erstellen"
     }
-  }
+  }  
 </i18n>
