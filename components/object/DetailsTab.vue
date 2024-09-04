@@ -79,8 +79,6 @@
 </template>
 
 <script lang="ts">
-import type { ComputedRef, PropType } from 'vue';
-import { cloneDeep, upperFirst } from 'lodash';
 import {
   mdiArrowDown,
   mdiArrowRight,
@@ -91,37 +89,39 @@ import {
   mdiTransitDetour,
   mdiTrashCanOutline
 } from '@mdi/js';
+import { cloneDeep, upperFirst } from 'lodash';
+import type { ComputedRef, PropType } from 'vue';
 import { VIcon, VTooltip } from 'vuetify/components';
 
+import { useQueryClient } from '@tanstack/vue-query';
 import { TableHeader } from '~/components/base/Table.vue';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFetchParentObjects } from '~/composables/api/objects';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import elementsQueryDefinitions from '~/composables/api/queryDefinitions/elements';
+import objectQueryDefinitions, {
+  IVeoFetchRisksParameters,
+  IVeoFetchScopeChildrenParameters
+} from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { getEntityDetailsFromLink } from '~/lib/utils';
-import {
-  IVeoCustomLink,
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import type {
+  IInOutLink,
   IVeoEntity,
   IVeoPaginatedResponse,
   IVeoRisk,
   IVeoRiskCategory,
   IVeoRiskDefinition,
   IVeoRiskValue,
-  VeoElementTypePlurals,
-  VeoElementTypesSingular,
   VeoRiskTreatment,
   VeoSort
 } from '~/types/VeoTypes';
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
-import { useVeoPermissions } from '~/composables/VeoPermissions';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import objectQueryDefinitions, {
-  IVeoFetchRisksParameters,
-  IVeoFetchScopeChildrenParameters
-} from '~/composables/api/queryDefinitions/objects';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { useMutation } from '~/composables/api/utils/mutation';
-import { useQueryClient } from '@tanstack/vue-query';
-import { useFetchParentObjects } from '~/composables/api/objects';
+import { VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
 import { useCompliance } from '../compliance/compliance';
 
 export default defineComponent({
@@ -182,16 +182,15 @@ export default defineComponent({
         childScopesIsFetching.value ||
         childObjectsIsFetching.value ||
         risksIsFetching.value ||
-        domainIsFetching.value
+        domainIsFetching.value ||
+        linksIsFetching.value
     );
 
-    const createEntityFromLink = (link: IVeoCustomLink) => {
-      const name = link.target.displayName;
-      const splitted = link.target.targetUri.split('/');
-      const type =
-        Object.entries(schemas.value || {}).find(([_key, value]) => value === splitted[4])?.[0] || splitted[4];
-      const id = splitted[5];
-      return { id, name, type };
+    const createEntityFromLink = (link: IInOutLink) => {
+      const { linkedElement, direction, linkType } = link;
+      const { displayName: name, abbreviation, type, id } = linkedElement;
+      const normalizedDirection = t(direction.toLowerCase());
+      return { id, name, type, abbreviation, direction: normalizedDirection, linkType };
     };
 
     // TODO #3066 fix type (it can also return risks or control implementations)
@@ -227,24 +226,9 @@ export default defineComponent({
             };
           });
         case 'links':
+          return links?.value?.items.map((link) => createEntityFromLink(link)) || [];
         default:
-          return Object.entries(props.object?.links || {}).reduce(
-            (
-              linkArray: {
-                id: string;
-                name?: string;
-                type: string;
-                linkId: string;
-              }[],
-              [linkId, links]: [string, IVeoCustomLink[]]
-            ) => {
-              for (const link of links) {
-                linkArray.push({ ...createEntityFromLink(link), linkId });
-              }
-              return linkArray;
-            },
-            []
-          ) as any[];
+          return [];
       }
     });
     /**
@@ -252,6 +236,7 @@ export default defineComponent({
      */
     const { data: translations } = useTranslations({ domain: props.domainId, languages: [locale.value] });
     const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
       childObjectId: props.object?.id || '',
@@ -260,13 +245,41 @@ export default defineComponent({
       sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value
     }));
-    const parentScopesQueryEnabled = computed(() => props.type !== 'risks' && !!props.object?.id);
+    const parentScopesQueryEnabled = computed(() => props.type === 'parentScopes' && !!props.object?.id);
     const { data: parentScopes, isFetching: parentScopesIsFetching } = useFetchParentObjects(
       parentScopesQueryParameters,
       {
         enabled: parentScopesQueryEnabled
       }
     ); // Used by table and cloning objects
+
+    const linksQueryParameters = computed(() => ({
+      id: props.object?.id || '',
+      endpoint: schemas.value?.[props.object?.type || ''] || '',
+      domain: (route.params.domain as string) || '',
+      sortBy: mapLinkSortKey(sortBy.value[0]?.key),
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
+      page: page.value,
+      size: tableSize.value
+    }));
+    const linksQueryEnabled = computed(() => props.type === 'links' && !!props.object?.id);
+    const { data: links, isFetching: linksIsFetching } = useQuery(
+      elementsQueryDefinitions.queries.fetchObjectLinks,
+      linksQueryParameters,
+      { enabled: linksQueryEnabled }
+    );
+    function mapLinkSortKey(key: string) {
+      switch (key) {
+        case 'name':
+          return 'LINKED_ELEMENT_NAME';
+        case 'abbreviation':
+          return 'LINKED_ELEMENT_ABBREVIATION';
+        case 'direction':
+          return 'DIRECTION';
+        default:
+          throw new Error(`Cannot sort link by key: ${key}`);
+      }
+    }
     const parentObjectsQueryParameters = computed(() => ({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
@@ -489,6 +502,16 @@ export default defineComponent({
 
       const createLinkHeaders = () => [
         {
+          value: 'direction',
+          key: 'direction',
+          text: t('direction'),
+          width: 50,
+          truncate: false,
+          priority: 100,
+          order: 20,
+          render: (data: any) => h('span', data.internalItem.raw?.direction || '')
+        },
+        {
           value: 'abbreviation',
           key: 'abbreviation',
           text: t('controls.abbreviation'),
@@ -501,15 +524,18 @@ export default defineComponent({
         {
           value: 'linkId',
           key: 'linkId',
+          sortable: false,
           order: 30,
           priority: 60,
           text: t('linkName'),
           width: 150,
-          render: (data: any) =>
-            h(
+          render: (data: any) => {
+            return h(
               'span',
-              translations.value?.lang?.[locale.value]?.[data.internalItem.raw.linkId] || data.internalItem.raw.linkId
-            )
+              translations.value?.lang?.[locale.value]?.[data.internalItem.raw.linkType] ||
+                data.internalItem.raw.linkType
+            );
+          }
         }
       ];
 
@@ -919,6 +945,9 @@ export default defineComponent({
     },
     "inherentRisk": "Inherent risk",
     "linkName": "Link name",
+    "direction": "Direction",
+    "outbound": "Outgoing",
+    "inbound": "Ingoing",
     "no": "no",
     "objectCloned": "Object successfully cloned",
     "partial": "partially",
@@ -962,6 +991,9 @@ export default defineComponent({
     },
     "inherentRisk": "Bruttorisiko",
     "linkName": "Name des Links",
+    "direction": "Richtung",
+    "outbound": "Ausgehend",
+    "inbound": "Eingehend",
     "objectCloned": "Das Objekt wurde erfolgreich dupliziert",
     "parentType": "Elterntyp",
     "removeFromObject": "Aus Objekt entfernen",
