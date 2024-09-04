@@ -18,10 +18,10 @@
 import { MaybeRef } from '@vueuse/core';
 import { JSONSchema7TypeName } from 'json-schema';
 
-import { UISchemaElement } from './UISchema';
+import { IAlertButton } from '~/components/base/Alert.vue';
 import { Mode } from '~/components/dynamic-form/util';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
-import { IAlertButton } from '~/components/base/Alert.vue';
+import { UISchemaElement } from './UISchema';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
@@ -43,6 +43,7 @@ export interface IVeoLink {
   abbreviation?: string;
   id?: string;
   designator?: string;
+  type?: string;
 }
 
 export interface IVeoRiskDefinitionItemTranslations {
@@ -434,6 +435,12 @@ export interface IVeoEntityLegacy extends IVeoBaseObject {
   parts: IVeoLink[]; // Only contains values for objects not of type scope
   type: string;
   _self: string;
+}
+
+export interface IInOutLink {
+  direction: 'OUTBOUND' | 'INBOUND';
+  linkType: string;
+  linkedElement: IVeoLink;
 }
 
 export interface IVeoEntity extends IVeoBaseObject {
