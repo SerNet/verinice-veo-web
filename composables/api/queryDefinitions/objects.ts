@@ -17,11 +17,8 @@
 
 /** @deprecated Use elements.ts instead. `objects.ts` uses the `useRoute` composable in global scope. This makes it unusable in other composables. */
 
-import { omit, cloneDeep, max } from 'lodash';
+import { cloneDeep, max, omit } from 'lodash';
 import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoMutationDefinition } from '../utils/mutation';
-import { IVeoQueryDefinition } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
 import {
   IVeoAPIMessage,
   IVeoControlImplementation,
@@ -33,6 +30,9 @@ import {
   IVeoRisk,
   VeoRiskAffectedDomains
 } from '~/types/VeoTypes';
+import { IVeoMutationDefinition } from '../utils/mutation';
+import { IVeoQueryDefinition } from '../utils/query';
+import { VeoApiReponseType } from '../utils/request';
 
 const route = useRoute();
 
@@ -55,7 +55,7 @@ export interface IVeoFetchObjectLegacyParameters {
   id: string;
 }
 
-export interface IVeoFetchObjectChildrenParameters extends IVeoPaginationOptions {
+export interface IVeoFetchObjectSubResourceParameters extends IVeoPaginationOptions {
   domain: string;
   endpoint: string;
   id: string;
@@ -270,7 +270,7 @@ export default {
           page: getPageNumber(queryParameters.page)
         }
       })
-    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
+    } as IVeoQueryDefinition<IVeoFetchObjectSubResourceParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchObjectControlImplementations: {
       primaryQueryKey: 'controlImplementations',
       url: '/api/domains/:domain/:endpoint/:id/control-implementations',
@@ -289,7 +289,7 @@ export default {
           page: getPageNumber(queryParameters.page)
         }
       })
-    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoControlImplementation[]>>,
+    } as IVeoQueryDefinition<IVeoFetchObjectSubResourceParameters, IVeoPaginatedResponse<IVeoControlImplementation[]>>,
     fetchScopeChildren: {
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',

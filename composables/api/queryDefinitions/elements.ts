@@ -14,12 +14,10 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { omit, cloneDeep, max } from 'lodash';
+import { cloneDeep, max, omit } from 'lodash';
 import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoMutationDefinition } from '../utils/mutation';
-import { IVeoQueryDefinition } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
 import {
+  IInOutLink,
   IVeoAPIMessage,
   IVeoDecisionEvaluation,
   IVeoEntity,
@@ -29,6 +27,9 @@ import {
   IVeoRisk,
   VeoRiskAffectedDomains
 } from '~/types/VeoTypes';
+import { IVeoMutationDefinition } from '../utils/mutation';
+import { IVeoQueryDefinition } from '../utils/query';
+import { VeoApiReponseType } from '../utils/request';
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   domain: string;
@@ -50,7 +51,7 @@ export interface IVeoFetchObjectLegacyParameters {
   id: string;
 }
 
-export interface IVeoFetchObjectChildrenParameters extends IVeoPaginationOptions {
+export interface IVeoFetchObjectSubResourceParameters extends IVeoPaginationOptions {
   domain: string;
   endpoint: string;
   id: string;
@@ -245,6 +246,22 @@ export default {
         }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectParameters, IVeoEntity>,
+    fetchObjectLinks: {
+      primaryQueryKey: 'links',
+      url: '/api/domains/:domain/:endpoint/:id/links',
+      onDataFetched: (result) => (result.page++, result),
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: queryParameters.domain,
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.id
+        },
+        query: {
+          ...omit(queryParameters, 'domain', 'id', 'endpoint'),
+          page: getPageNumber(queryParameters.page)
+        }
+      })
+    } as IVeoQueryDefinition<IVeoFetchObjectSubResourceParameters, IVeoPaginatedResponse<IInOutLink[]>>,
     fetchObjectChildren: {
       primaryQueryKey: 'childObjects',
       url: '/api/domains/:domain/:endpoint/:id/parts',
@@ -266,7 +283,7 @@ export default {
           page: getPageNumber(queryParameters.page)
         }
       })
-    } as IVeoQueryDefinition<IVeoFetchObjectChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
+    } as IVeoQueryDefinition<IVeoFetchObjectSubResourceParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchScopeChildren: {
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
