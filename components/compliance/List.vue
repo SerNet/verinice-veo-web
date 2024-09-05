@@ -17,6 +17,7 @@
 <template>
   <BaseCard class="mb-8">
     <BaseTable
+      v-model:sort-by="sortBy"
       :items="translatedRequirementImplementations"
       item-key="id"
       :additional-headers="headers"
@@ -63,17 +64,34 @@ import { TableHeader } from '../base/Table.vue';
 import { useCompliance } from './compliance';
 import { RequirementImplementation } from './Editor.vue';
 
+const { tablePageSize } = useVeoUser();
+
 const { fetchRequirementImplementations, fetchRequirementImplementation, state } = useCompliance();
 
+const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
+
+function mapSortingKey(key: string) {
+  switch (key) {
+    case 'translations.origination':
+      return 'origination';
+    case 'translations.status':
+      return 'status';
+    default:
+      return key;
+  }
+}
 
 const fetchParams = computed(() => {
   if (!state.CTLModule.value) return undefined;
   return {
     type: state.type.value as string,
     riskAffected: state.CTLModule.value.owner.id as string,
-    control: state.CTLModule.value.id
+    control: state.CTLModule.value.id,
+    sortBy: mapSortingKey(sortBy.value[0].key),
+    sortOrder: sortBy.value[0].order,
+    size: tablePageSize.value
   };
 });
 
@@ -144,7 +162,7 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
   {
     text: t('thResponsibleBody'),
     key: 'responsible.displayName',
-    sortable: true,
+    sortable: false,
     priority: 60,
     order: 30
   },
