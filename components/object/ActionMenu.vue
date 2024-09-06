@@ -171,8 +171,8 @@ export default defineComponent({
       );
 
     const determineType = () => {
-      if (props.object?.type === 'scope') return undefined;
       if (props.type === 'controls') return 'control';
+      if (props.object?.type === 'scope') return undefined;
       return props.object?.type;
     };
 
@@ -187,7 +187,7 @@ export default defineComponent({
 
     // Action functions
     const linkObjectAction = () => {
-      if (props.object?.type === 'scope') {
+      if (props.object?.type === 'scope' && props.type !== 'controls') {
         selectEntityDialog.value = true;
       } else {
         linkObjectCallback(props.object?.type);
