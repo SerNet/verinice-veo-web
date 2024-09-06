@@ -97,18 +97,18 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
-import { upperFirst, cloneDeep } from 'lodash';
 import { mdiClose, mdiLinkPlus, mdiPlus } from '@mdi/js';
+import { cloneDeep, upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
-import type { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useLinkObject, useCreateLink } from '~/composables/VeoObjectUtilities';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { useMutation } from '~/composables/api/utils/mutation';
 import { useQueryClient } from '@tanstack/vue-query';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import type { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -158,6 +158,9 @@ export default defineComponent({
     };
 
     const getLinkObjectTranslation = () => {
+      if (props.type === 'controls') {
+        return t('linkControl', [getLinkObjectTranslationParams()]);
+      }
       return t('linkObject', [getLinkObjectTranslationParams()]);
     };
 
