@@ -87,20 +87,20 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import { useQueryClient } from '@tanstack/vue-query';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
-import { useUnlinkObject, useLinkObject } from '~/composables/VeoObjectUtilities';
-import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
+import { PropType } from 'vue';
+import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
+import { useLinkObject, useUnlinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useNavigation } from '~/composables/navigation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { useQueryClient } from '@tanstack/vue-query';
-import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
+import { useNavigation } from '~/composables/navigation';
+import type { VeoSearch } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import type { VeoSearch } from '~/types/VeoSearch';
 
 export default defineComponent({
   props: {
@@ -523,7 +523,7 @@ export default defineComponent({
         return () =>
           h(HtmlRenderer, {
             content: t('nonControlNoDataText', {
-              subType: `${upperFirst(translations.value?.lang[locale.value]?.[filter.value.objectType]).toString()}`,
+              subType: `${upperFirst(translations.value?.lang[locale.value]?.[filter.value.objectType + '_plural'].toString())}`,
               correspondingObject: `<a href="#">${t('correspondingObject')}</a>`
             }),
             clickHandler: navigateToObject,
@@ -583,8 +583,8 @@ export default defineComponent({
     "editParentScopes": "Scopes über \"{0}\" bearbeiten",
     "object": "Objekt",
     "controlNoDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
-    "nonControlNoDataText": "Es gibt aktuell keinen {subType}. Bitte {correspondingObject}",
-    "correspondingObject": "legen Sie ein entsprechendes Object an.",
+    "nonControlNoDataText": "Es gibt aktuell keine {subType}. Bitte {correspondingObject}",
+    "correspondingObject": "legen Sie ein entsprechendes Objekt an.",
     "noSearchResults": "Ihre Suche ergab keine Treffer",
     "catalog": "Katalog",
     "addTarget": "{0} hinzufügen"
