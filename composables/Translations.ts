@@ -1,8 +1,23 @@
-import { useQuery, useQuerySync } from './api/utils/query';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import translationsQueryDefinitions from './api/queryDefinitions/translations';
+/*
+ * verinice.veo web
+ * Copyright (C) 2024 Aziz Khalledi
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
-import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import translationsQueryDefinitions from './api/queryDefinitions/translations';
+import { useQuery, useQuerySync } from './api/utils/query';
 
 type TranslateSubTypeParams = {
   domainSchema: IVeoDomain | undefined;
@@ -13,27 +28,48 @@ type TranslateSubTypeParams = {
 
 type UseTranslationsParams = { domain: string | string[]; languages?: string[] };
 
-export function useTranslations({ domain, languages = ['en', 'de'] }: UseTranslationsParams) {
-  const data = ref();
-  const isLoading = ref();
-  const error = ref();
+// Shared translation cache
+const translationCache = reactive({
+  data: null,
+  isLoading: false,
+  error: null,
+  isFetching: false,
+  fetchPromise: null
+});
 
-  async function fetchTranslations({ languages, domain }: UseTranslationsParams) {
-    if (!languages?.length) return;
-    isLoading.value = true;
+export function useTranslations({ domain }: UseTranslationsParams) {
+  const { data, isLoading, error } = toRefs(translationCache);
 
-    try {
-      data.value = await useQuerySync(translationsQueryDefinitions.queries.fetch, { languages, domain });
-    } catch (err) {
-      console.error(err);
-      error.value = err;
-    } finally {
-      isLoading.value = false;
+  function fetchTranslations({ domain }: UseTranslationsParams) {
+    if (translationCache.isFetching) {
+      return translationCache.fetchPromise;
     }
+
+    if (data.value) return Promise.resolve(data.value);
+    translationCache.isFetching = true;
+    isLoading.value = true;
+    translationCache.fetchPromise = useQuerySync(translationsQueryDefinitions.queries.fetch, {
+      languages: ['en', 'de'],
+      domain
+    })
+      .then((fetchedData) => {
+        data.value = fetchedData;
+        return fetchedData;
+      })
+      .catch((err) => {
+        console.error(err);
+        error.value = err;
+        throw err;
+      })
+      .finally(() => {
+        translationCache.isFetching = false;
+        isLoading.value = false;
+        translationCache.fetchPromise = null;
+      });
+    return translationCache.fetchPromise;
   }
 
-  fetchTranslations({ languages, domain });
-
+  fetchTranslations({ domain });
   return {
     data,
     isLoading,
@@ -42,7 +78,7 @@ export function useTranslations({ domain, languages = ['en', 'de'] }: UseTransla
 }
 
 function translateSubType({ domainSchema, locale, subType, elementType }: TranslateSubTypeParams) {
-  if (!subType) subType = 'all';
+  if (!subType || subType === '-') return 'all';
   if (!domainSchema || !elementType) return;
   return domainSchema.elementTypeDefinitions[elementType]?.translations[locale]?.[`${elementType}_${subType}_plural`];
 }

@@ -135,8 +135,7 @@ export default defineComponent({
     const queryClient = useQueryClient();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const { data: translations } = useTranslations({
-      domain: route.params.domain as string,
-      languages: [locale.value]
+      domain: route.params.domain as string
     });
 
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);

@@ -234,7 +234,7 @@ export default defineComponent({
     /**
      * Fetch Data
      */
-    const { data: translations } = useTranslations({ domain: props.domainId, languages: [locale.value] });
+    const { data: translations } = useTranslations({ domain: props.domainId });
     const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const parentScopesQueryParameters = computed(() => ({
