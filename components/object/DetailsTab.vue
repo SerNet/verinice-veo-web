@@ -263,11 +263,13 @@ export default defineComponent({
       size: tableSize.value
     }));
     const linksQueryEnabled = computed(() => props.type === 'links' && !!props.object?.id);
-    const { data: links, isFetching: linksIsFetching } = useQuery(
-      elementsQueryDefinitions.queries.fetchObjectLinks,
-      linksQueryParameters,
-      { enabled: linksQueryEnabled }
-    );
+    const {
+      data: links,
+      isFetching: linksIsFetching,
+      refetch: refetchLinks
+    } = useQuery(elementsQueryDefinitions.queries.fetchObjectLinks, linksQueryParameters, {
+      enabled: linksQueryEnabled
+    });
     function mapLinkSortKey(key: string) {
       switch (key) {
         case 'name':
@@ -892,6 +894,14 @@ export default defineComponent({
     const onRelatedObjectModified = () => {
       emit('reload');
     };
+
+    watch(
+      () => props.object.links,
+      () => {
+        refetchLinks();
+      }
+    );
+
     return {
       ability,
       additionalHeaders,
