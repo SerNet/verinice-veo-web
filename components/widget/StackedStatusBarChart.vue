@@ -139,6 +139,8 @@ const { data: domain, isFetching: domainIsLoading } = useQuery(
   { enabled: fetchDomainQueryEnabled }
 );
 
+const elementTypeDefinition = computed(() => domain.value?.elementTypeDefinitions?.[props.objectType]);
+
 const sortedStatusBySubType = computed<Record<string, any>>(() =>
   (objectSchema.value?.allOf || []).reduce((previousValue, currentValue) => {
     previousValue[currentValue.if.properties.subType.const] = currentValue.then.properties.status.enum;
@@ -154,7 +156,9 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 
 const sortedSubTypes = computed(() =>
   Object.entries(props.data).sort(
-    ([_subTypeA, _subTypeDataA], [_subTypeB, _subTypeDataB]) => _subTypeDataA.sortKey - _subTypeDataB.sortKey
+    ([_subTypeA, _subTypeDataA], [_subTypeB, _subTypeDataB]) =>
+      elementTypeDefinition?.value?.subTypes?.[_subTypeA]?.sortKey -
+      elementTypeDefinition?.value?.subTypes?.[_subTypeB]?.sortKey
   )
 );
 
@@ -222,10 +226,8 @@ const chartData = computed<IChartValue[]>(() =>
   sortedSubTypes.value.map(([subType, subTypeData]) => ({
     totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
     labels: [
-      domain.value ?
-        domain.value.elementTypeDefinitions[props.objectType].translations[locale.value][
-          `${props.objectType}_${subType}_plural`
-        ]
+      elementTypeDefinition.value ?
+        elementTypeDefinition.value.translations[locale.value][`${props.objectType}_${subType}_plural`]
       : subType
     ],
     datasets: (
