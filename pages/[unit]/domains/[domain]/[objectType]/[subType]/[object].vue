@@ -149,17 +149,17 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
 </script>
 
 <script setup lang="ts">
-import { Ref } from 'vue';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
+import { Ref } from 'vue';
 
-import { IVeoEntity, IVeoObjectHistoryEntry, IVeoPaginatedResponse, VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
+import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
 
 onBeforeRouteLeave((to, _from, next) => {
   // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
@@ -206,10 +206,8 @@ const fetchObjectQueryEnabled = computed(
     !!fetchObjectQueryParameters.value.id
 );
 
-const additionalData = ref<any>({});
-
 const {
-  data: fetchedObject,
+  data: object,
   isFetching: loading,
   isError: notFoundError,
   refetch
@@ -217,40 +215,13 @@ const {
   enabled: fetchObjectQueryEnabled,
   // @ts-ignore TODO #3066 not assignable
   onSuccess: async (data: IVeoEntity) => {
-    if (route.params.objectType === 'controls') {
-      refetchControlImplementations();
-    } else {
-      additionalData.value = {};
-      finalizeModifiedObject(data);
-    }
+    finalizeModifiedObject(data);
   }
 });
 
-// Second useQuery: Fetch control implementations if needed
-const { refetch: refetchControlImplementations } = useQuery(
-  objectQueryDefinitions.queries.fetchObjectControlImplementations,
-  fetchObjectQueryParameters,
-  {
-    enabled: false, // Disabled initially, we manually trigger it
-    // @ts-ignore TODO #3099 not assignable, BTW onSuccess is deprecated
-    onSuccess: (cis: IVeoPaginatedResponse<IVeoEntity[]>) => {
-      additionalData.value = { controlImplementations: cis.items };
-      finalizeModifiedObject(fetchedObject.value);
-    },
-    onError: () => {
-      console.error('Error fetching control implementations');
-      additionalData.value = {};
-      finalizeModifiedObject(fetchedObject.value);
-    }
-  }
-);
-
 // Function to update modifiedObject with fetched data
 function finalizeModifiedObject(data?: IVeoEntity) {
-  modifiedObject.value = cloneDeep({
-    ...data,
-    ...additionalData.value
-  });
+  modifiedObject.value = cloneDeep(data);
   // On the next tick, object is populated so disabling subtype will work
   nextTick(getAdditionalContext);
 
@@ -263,15 +234,6 @@ function finalizeModifiedObject(data?: IVeoEntity) {
     wipObjectData.value = undefined;
   }
 }
-
-const object = computed(() => ({
-  ...fetchedObject.value,
-  ...additionalData.value
-}));
-
-watch(additionalData, () => {
-  if (object.value && additionalData) Object.assign(object.value, additionalData.value);
-});
 
 onUnmounted(() => {
   expireOptimisticLockingAlert();
