@@ -156,6 +156,7 @@ export default defineComponent({
     // accepted filter keys (others wont be respected when specified in URL query parameters)
     const filterKeys = [
       'objectType',
+      'abbreviation',
       'subType',
       'designator',
       'name',
