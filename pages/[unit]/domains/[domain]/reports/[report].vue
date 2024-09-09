@@ -38,6 +38,7 @@
         :domain-id="$route.params.domain as string"
         :filter="filter"
         :required-fields="requiredFields"
+        :disabled-fields="disabledFields"
         @update:filter="updateRouteQuery"
       />
 
@@ -90,16 +91,16 @@
 <script lang="ts">
 import { omit, upperCase, upperFirst } from 'lodash';
 
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoUser } from '~/composables/VeoUser';
+import { QueryClient } from '@tanstack/vue-query';
 import { RouteRecordName } from 'vue-router';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { useFetchObjects } from '~/composables/api/objects';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
-import { useFetchObjects } from '~/composables/api/objects';
-import { QueryClient } from '@tanstack/vue-query';
+import { useQuery } from '~/composables/api/utils/query';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useVeoUser } from '~/composables/VeoUser';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -149,6 +150,8 @@ export default defineComponent({
     const requiredFields = computed(() =>
       availableSubTypes.value.length ? ['objectType', 'subType'] : ['objectType']
     );
+
+    const disabledFields = ['objectType'];
 
     // accepted filter keys (others wont be respected when specified in URL query parameters)
     const filterKeys = [
@@ -284,9 +287,9 @@ export default defineComponent({
       report,
       reportsFetching,
       requiredFields,
+      disabledFields,
       title,
       updateRouteQuery,
-
       t,
       locale,
       upperFirst
