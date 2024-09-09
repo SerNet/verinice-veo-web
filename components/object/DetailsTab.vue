@@ -183,7 +183,8 @@ export default defineComponent({
         childObjectsIsFetching.value ||
         risksIsFetching.value ||
         domainIsFetching.value ||
-        linksIsFetching.value
+        linksIsFetching.value ||
+        cisIsFetching.value
     );
 
     const createEntityFromLink = (link: IInOutLink) => {
@@ -207,7 +208,7 @@ export default defineComponent({
           // TODO #3066 find out why on earth this even compiles
           return risks.value || [];
         case 'controls':
-          return (props.object?.controlImplementations || []).map((control) => {
+          return (cis.value?.items || []).map((control) => {
             const details = getEntityDetailsFromLink(control.control);
             return {
               ...control,
@@ -217,7 +218,7 @@ export default defineComponent({
             };
           });
         case 'targets':
-          return (props.object?.controlImplementations || []).map((control) => {
+          return (cis.value?.items || []).map((control) => {
             const details = getEntityDetailsFromLink(control.owner);
             return {
               ...control.owner,
@@ -245,7 +246,7 @@ export default defineComponent({
       sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value
     }));
-    const parentScopesQueryEnabled = computed(() => props.type === 'parentScopes' && !!props.object?.id);
+    const parentScopesQueryEnabled = computed(() => props.type === 'parentScopes');
     const { data: parentScopes, isFetching: parentScopesIsFetching } = useFetchParentObjects(
       parentScopesQueryParameters,
       {
@@ -262,7 +263,7 @@ export default defineComponent({
       page: page.value,
       size: tableSize.value
     }));
-    const linksQueryEnabled = computed(() => props.type === 'links' && !!props.object?.id);
+    const linksQueryEnabled = computed(() => props.type === 'links');
     const {
       data: links,
       isFetching: linksIsFetching,
@@ -279,9 +280,46 @@ export default defineComponent({
         case 'direction':
           return 'DIRECTION';
         default:
-          throw new Error(`Cannot sort link by key: ${key}`);
+          return key;
       }
     }
+
+    const fetchControlImplementationsQueryParameters = computed(() => ({
+      domain: route.params.domain as string,
+      endpoint: route.params.objectType as string,
+      id: route.params.object as string,
+      sortBy: mapCisSortingKey(sortBy.value[0]?.key),
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
+      page: page.value,
+      size: tableSize.value
+    }));
+    const cisQueryEnabled = computed(() => props.type === 'controls' || props.type === 'targets');
+    const {
+      data: cis,
+      isFetching: cisIsFetching,
+      refetch: refetchCis
+    } = useQuery(
+      objectQueryDefinitions.queries.fetchObjectControlImplementations,
+      fetchControlImplementationsQueryParameters,
+      {
+        enabled: cisQueryEnabled
+      }
+    );
+    function mapCisSortingKey(key: string) {
+      if (cisQueryEnabled.value) {
+        switch (key) {
+          case 'name':
+            return 'control.name';
+          case 'abbreviation':
+            return 'control.abbreviation';
+          case 'responsibility':
+            return 'responsible.name';
+          default:
+            return key;
+        }
+      }
+    }
+
     const parentObjectsQueryParameters = computed(() => ({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
@@ -290,7 +328,7 @@ export default defineComponent({
       sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value
     }));
-    const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects' && !!props.object?.id);
+    const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects');
     const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(
       parentObjectsQueryParameters,
       {
@@ -310,9 +348,7 @@ export default defineComponent({
       size: tableSize.value
     }));
 
-    const childScopesQueryEnabled = computed(
-      () => props.type.startsWith('child') && props.object?.type === 'scope' && !!props.object?.id
-    );
+    const childScopesQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type === 'scope');
     const { data: scopeChildren, isFetching: childScopesIsFetching } = useQuery(
       objectQueryDefinitions.queries.fetchScopeChildren,
       childScopesQueryParameters,
@@ -332,9 +368,7 @@ export default defineComponent({
       page: page.value,
       size: tableSize.value
     }));
-    const childObjectsQueryEnabled = computed(
-      () => props.type.startsWith('child') && props.object?.type !== 'scope' && !!props.object?.id
-    );
+    const childObjectsQueryEnabled = computed(() => props.type.startsWith('child') && props.object?.type !== 'scope');
     const { data: objectChildren, isFetching: childObjectsIsFetching } = useQuery(
       objectQueryDefinitions.queries.fetchObjectChildren,
       childObjectsQueryParameters,
@@ -344,7 +378,7 @@ export default defineComponent({
       id: props.object?.id || '',
       endpoint: schemas.value?.[props.object?.type || ''] || ''
     }));
-    const risksQueryEnabled = computed(() => props.type === 'risks' && !!props.object?.id);
+    const risksQueryEnabled = computed(() => props.type === 'risks');
     const { data: risks, isFetching: risksIsFetching } = useQuery(
       objectQueryDefinitions.queries.fetchRisks,
       risksQueryParameters,
@@ -896,9 +930,14 @@ export default defineComponent({
     };
 
     watch(
-      () => props.object.links,
-      () => {
-        refetchLinks();
+      () => [props.object.links, props.object.controlImplementations],
+      ([newLinks, newCis], [oldLinks, oldCis]) => {
+        if (newLinks !== oldLinks) {
+          refetchLinks();
+        }
+        if (newCis !== oldCis) {
+          refetchCis();
+        }
       }
     );
 
