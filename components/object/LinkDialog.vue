@@ -367,7 +367,7 @@ export default defineComponent({
           ) || []
         );
       } else if (props.editParents) {
-        return parents.value?.items || [];
+        return [...(parents.value?.items || []), ...props.preselectedItems];
       } else {
         return children.value;
       }
