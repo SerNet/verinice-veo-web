@@ -52,28 +52,11 @@
   </v-tooltip>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { mdiInformationOffOutline, mdiInformationOutline } from '@mdi/js';
-
 import { useTutorials } from '~/composables/intro';
-
-export default defineComponent({
-  setup() {
-    const { t } = useI18n();
-    const { load, stop, tutorialsForRoute, visible } = useTutorials();
-
-    return {
-      load,
-      stop,
-      tutorialsForRoute,
-      visible,
-
-      mdiInformationOffOutline,
-      mdiInformationOutline,
-      t
-    };
-  }
-});
+const { load, stop, tutorialsForRoute, visible } = useTutorials();
+const { t } = useI18n();
 </script>
 
 <i18n>
