@@ -314,11 +314,7 @@ const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
 });
 
 // items rendered in ObjectTable
-const items = computed(() => {
-  const results = searchResults.value?.items;
-  if (results) return results;
-  return _items.value;
-});
+const items = computed(() => (search.value.length ? searchResults.value : _items.value) || []);
 
 const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
 const formsQueryEnabled = computed(() => !!domainId.value);
