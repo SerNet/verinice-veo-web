@@ -50,6 +50,7 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
     watch(
       [baseQueryParameters, search],
       async () => {
+        if (!search.value.length) return;
         if (isObjectSearch && !baseQueryParameters.value?.endpoint) return;
         const parameters = ref({
           ...baseQueryParameters.value,
