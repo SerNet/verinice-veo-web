@@ -85,7 +85,6 @@ import {
   mdiCheck,
   mdiContentCopy,
   mdiLinkOff,
-  mdiPencil,
   mdiTransitDetour,
   mdiTrashCanOutline
 } from '@mdi/js';
@@ -93,6 +92,7 @@ import { cloneDeep, upperFirst } from 'lodash';
 import type { ComputedRef, PropType } from 'vue';
 import { VIcon, VTooltip } from 'vuetify/components';
 
+import { mdiTextBoxCheckOutline } from '@mdi/js';
 import { useQueryClient } from '@tanstack/vue-query';
 import { TableHeader } from '~/components/base/Table.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -112,6 +112,7 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 import type {
   IInOutLink,
   IVeoEntity,
+  IVeoLink,
   IVeoPaginatedResponse,
   IVeoRisk,
   IVeoRiskCategory,
@@ -122,7 +123,6 @@ import type {
 } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useCompliance } from '../compliance/compliance';
-
 export default defineComponent({
   props: {
     type: {
@@ -733,15 +733,20 @@ export default defineComponent({
         case 'controls':
           return [
             {
-              id: 'edit',
-              label: t('controls.edit'),
-              icon: mdiPencil,
+              id: 'implementations',
+              label: t('implementations'),
+              icon: mdiTextBoxCheckOutline,
 
-              async action(item: any) {
-                index.value = (props.object?.controlImplementations || []).findIndex((ci) =>
-                  ci.control.targetUri.endsWith(item.control.id)
-                );
-                controlsEditDialogVisible.value = true;
+              async action(item: IVeoLink) {
+                complianceState.CTLModule.value = item;
+                return navigateTo({
+                  name: 'unit-domains-domain-compliance',
+                  query: {
+                    type: props.object?.type,
+                    riskAffected: props.object?.id,
+                    control: item.id
+                  }
+                });
               }
             },
             {
@@ -882,15 +887,11 @@ export default defineComponent({
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
-          complianceState.CTLModule.value = internalItem.raw;
-          return navigateTo({
-            name: 'unit-domains-domain-compliance',
-            query: {
-              type: props.object?.type,
-              riskAffected: props.object?.id,
-              control: internalItem.raw.id
-            }
-          });
+          index.value = (props.object?.controlImplementations || []).findIndex((ci) =>
+            ci.control.id === internalItem.raw.control.id
+          );
+          controlsEditDialogVisible.value = true;
+          break;
         default:
           openObject(internalItem.raw as IVeoEntity);
       }
@@ -993,7 +994,6 @@ export default defineComponent({
     "controls": {
       "abbreviation": "Abbreviation",
       "description": "Description",
-      "edit": "Edit control",
       "responsible": "Responsible",
       "status": "Implementation status"
     },
@@ -1031,7 +1031,8 @@ export default defineComponent({
       "RISK_TREATMENT_REDUCTION": "risk reduction",
       "RISK_TREATMENT_TRANSFER": "risk transfer"
     },
-    "scenario": "Scenario"
+    "scenario": "Scenario",
+    "implementations": "Show implementations",
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
@@ -1039,7 +1040,6 @@ export default defineComponent({
     "controls": {
       "abbreviation": "Abkürzung",
       "description": "Beschreibung",
-      "edit": "Baustein bearbeiten",
       "responsible": "Verantwortlich",
       "status": "Umsetzungsstatus"
     },
@@ -1075,7 +1075,9 @@ export default defineComponent({
       "RISK_TREATMENT_REDUCTION": "Risikoreduktion",
       "RISK_TREATMENT_TRANSFER": "Risikotransfer"
     },
-    "scenario": "Szenario"
+    "scenario": "Szenario",
+    "implementations": "Implementierungen anzeigen",
+
   }
 }
 </i18n>
