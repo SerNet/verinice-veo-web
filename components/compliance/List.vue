@@ -18,6 +18,7 @@
   <BaseCard class="mb-8">
     <BaseTable
       v-model:sort-by="sortBy"
+      v-model:page="page"
       :items="translatedRequirementImplementations"
       item-key="id"
       :additional-headers="headers"
@@ -48,16 +49,6 @@
     />
   </BaseCard>
 </template>
-<script lang="ts">
-function translate(requirementImplementations: { items: any[] }, t: any) {
-  if (!requirementImplementations) return;
-  return requirementImplementations.items.map((item) => {
-    const status = t(`compliance.status.${item.status}`);
-    const origination = t(`compliance.origination.${item.origination}`);
-    return { ...item, translations: { status, origination } };
-  });
-}
-</script>
 
 <script setup lang="ts">
 import { TableHeader } from '../base/Table.vue';
@@ -69,6 +60,7 @@ const { tablePageSize } = useVeoUser();
 const { fetchRequirementImplementations, fetchRequirementImplementation, state } = useCompliance();
 
 const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
+const page = defineModel<number>('page', { default: 1 });
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
@@ -91,7 +83,8 @@ const fetchParams = computed(() => {
     control: state.CTLModule.value.id,
     sortBy: mapSortingKey(sortBy.value[0].key),
     sortOrder: sortBy.value[0].order,
-    size: tablePageSize.value
+    size: tablePageSize.value,
+    page: page.value
   };
 });
 
@@ -111,16 +104,34 @@ watch(fetchParams, async () => {
 });
 
 // Translate
-const translatedRequirementImplementations = ref(translate(requirementImplementations.value, globalT));
+const translatedRequirementImplementations = ref(translate(requirementImplementations.value));
 
 watch(requirementImplementations, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
+  translatedRequirementImplementations.value = translate(requirementImplementations.value);
 });
 
 watch(locale, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value, globalT);
+  translatedRequirementImplementations.value = translate(requirementImplementations.value);
 });
 
+function translate(requirementImplementations) {
+  if (!requirementImplementations?.items || requirementImplementations.items.length === 0) {
+    return [];
+  }
+
+  return {
+    ...requirementImplementations,
+    items: requirementImplementations.items.map((item) => {
+      const status = globalT(`compliance.status.${item.status}`);
+      const origination = globalT(`compliance.origination.${item.origination}`);
+
+      return {
+        ...item,
+        translations: { status, origination }
+      };
+    })
+  };
+}
 // Open a single RI
 const requirementImplementation: Ref<RequirementImplementation | null> = ref(null);
 const showDialog = ref(false);
