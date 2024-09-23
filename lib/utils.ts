@@ -15,10 +15,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
+import { JSONSchema7 } from 'json-schema';
 
 import { isEqual, isPlainObject } from 'lodash';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import {
   IVeoCustomLink,
   IVeoDomainSpecificObjectSchema,
@@ -26,8 +28,6 @@ import {
   IVeoLink,
   IVeoObjectSchema
 } from '~/types/VeoTypes';
-import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 export const CHART_COLORS = ['#666', '#ffc107', '#3f51b5', '#8bc34a', '#bbb'];
 // export const CHART_COLORS = ['#5c3f5a', '#304655', '#2892e4', '#8d9ac5', '#36384c'];
@@ -49,7 +49,7 @@ export function getEntityDetailsFromLink(link: IVeoLink): {
   return {
     id: destructedLink?.pop() || '',
     type: destructedLink?.pop() || '',
-    name: link.displayName || ''
+    name: link.name || ''
   };
 }
 
