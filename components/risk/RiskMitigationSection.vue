@@ -17,8 +17,13 @@
 -->
 <template>
   <div>
-    <h2 class="text-h2 mt-2 mb-1">
+    <h2 class="text-h2 mt-2 mb-1 d-flex align-center">
+      <nuxt-link :to="navigateToContainer" class="headline-link" target="_blank" rel="noopener noreferrer">
+        {{ upperFirst(t('Container').toString()) }}&nbsp;&gt;&nbsp;
+      </nuxt-link>
+
       {{ upperFirst(t('mitigationSection').toString()) }}
+
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-icon v-bind="props" :icon="mdiInformationOutline" />
@@ -43,6 +48,19 @@
       >
         <template #actions="{ item }">
           <div class="d-flex justify-end">
+            <v-tooltip location="start">
+              <template #activator="{ props }">
+                <v-btn
+                  v-bind="props"
+                  :icon="mdiArrowRightCircleOutline"
+                  variant="text"
+                  :to="navigateToPart(item)"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              </template>
+              {{ t('navigateToPart') }}
+            </v-tooltip>
             <v-tooltip location="start">
               <template #activator="{ props }">
                 <v-btn v-bind="props" :icon="mdiLinkOff" variant="text" @click="removeMitigationPart(item)" />
@@ -96,15 +114,17 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
-import { upperFirst } from 'lodash';
 import { mdiInformationOutline, mdiLinkOff, mdiPencilOutline } from '@mdi/js';
+import { upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
-import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
-import { useQuerySync } from '~/composables/api/utils/query';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { mdiArrowRightCircleOutline } from '@mdi/js';
 import { useQueryClient } from '@tanstack/vue-query';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuerySync } from '~/composables/api/utils/query';
+import { getEntityDetailsFromLink } from '~/lib/utils';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -184,9 +204,36 @@ export default defineComponent({
       );
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
+    const route = useRoute();
 
     const removeMitigationPart = (item: any) => {
       selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.id);
+    };
+
+    const navigateToContainer = computed(() => {
+      const params: { objectType: string; subType: string; object?: string } = {
+        ...route.params,
+        objectType: 'controls',
+        subType: 'CTL_Module',
+        object: props.data?.mitigation?.id
+      };
+      return {
+        name: OBJECT_DETAIL_ROUTE,
+        params
+      };
+    });
+
+    const navigateToPart = (item: any) => {
+      const params: { objectType: string; subType: string; object?: string } = {
+        ...route.params,
+        objectType: 'controls',
+        subType: 'CTL_Module',
+        object: item?.id
+      };
+      return {
+        name: OBJECT_DETAIL_ROUTE,
+        params
+      };
     };
 
     watch(
@@ -202,13 +249,15 @@ export default defineComponent({
       fetchingMitigation,
       removeMitigationPart,
       onMitigationCreated,
+      mdiArrowRightCircleOutline,
       selectedItems,
-
       t,
       upperFirst,
       mdiInformationOutline,
       mdiLinkOff,
-      mdiPencilOutline
+      mdiPencilOutline,
+      navigateToPart,
+      navigateToContainer
     };
   }
 });
@@ -223,7 +272,9 @@ export default defineComponent({
     "editMitigatingActions": "add mitigating actions",
     "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions.{lineBreak} All selected mitigating actions are available under the action \"Mitigating action for {risk}\"",
     "mitigationSection": "risk reduction actions (mitigating actions)",
-    "unlinkPart": "Unlink mitigating action"
+    "unlinkPart": "Unlink mitigating action",
+    "navigateToPart": "Navigate to mitigating action",
+    "container": "Container"
   },
   "de": {
     "addMitigation": "Mitigierende Maßnahme verknüpfen",
@@ -232,7 +283,18 @@ export default defineComponent({
     "editMitigatingActions": "Mitigierende Maßnahmen hinzufügen",
     "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg.{lineBreak} Alle hier ausgewählten Maßnahmen sind unter der Maßnahme \"Mitigierende Maßnahme für {risk}\" zu finden",
     "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
-    "unlinkPart": "Mitigierende Maßnahme entfernen"
+    "unlinkPart": "Mitigierende Maßnahme entfernen",
+    "navigateToPart": "Zu der mitigierenden Maßnahme wechseln",
+    "container": "Container"
   }
 }
 </i18n>
+<style scoped>
+.headline-link {
+  text-decoration: none;
+}
+
+.headline-link:hover {
+  text-decoration: underline;
+}
+</style>
