@@ -194,6 +194,24 @@ export default defineComponent({
       return { id, name, type, abbreviation, direction: normalizedDirection, linkType };
     };
 
+    function mapItems<IVeoControlImplementation, IVeoEntity>(
+      cis: globalThis.Ref<IVeoPaginatedResponse<IVeoControlImplementation[]>>,
+      mapFunction: (item: IVeoControlImplementation) => IVeoEntity
+    ): IVeoPaginatedResponse<IVeoEntity[]> {
+      if (!Array.isArray(cis.value?.items) || cis.value.items.length === 0) {
+        return {
+          items: [],
+          totalItemCount: 0,
+          pageCount: 0,
+          page: 0
+        } as IVeoPaginatedResponse<IVeoEntity[]>;
+      }
+
+      return {
+        ...cis.value,
+        items: cis.value.items.map(mapFunction)
+      };
+    }
     // TODO #3066 fix type (it can also return risks or control implementations)
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
       switch (props.type) {
@@ -208,7 +226,7 @@ export default defineComponent({
           // TODO #3066 find out why on earth this even compiles
           return risks.value || [];
         case 'controls':
-          return (cis.value?.items || []).map((control) => {
+          return mapItems(cis, (control) => {
             const details = getEntityDetailsFromLink(control.control);
             return {
               ...control,
@@ -218,7 +236,7 @@ export default defineComponent({
             };
           });
         case 'targets':
-          return (cis.value?.items || []).map((control) => {
+          return mapItems(cis, (control) => {
             const details = getEntityDetailsFromLink(control.owner);
             return {
               ...control.owner,
