@@ -208,10 +208,12 @@ watch(
 
 const objectTypesChildItems = computed<INavItem[]>(() =>
   objectSchemas.value
-    .sort((a, b) => (objectTypeSortOrder.get(a.title) || 0) - (objectTypeSortOrder.get(b.title) || 0))
-    .map((objectSchema) => {
-      const objectSubTypes = extractSubTypesFromObjectSchema(objectSchema);
-      const modelType = objectSchema.title;
+    .map((objectSchema) => ({ modelType: objectSchema.title, subTypes: extractSubTypesFromObjectSchema(objectSchema) }))
+    .sort(
+      ({ modelType: aModelType }, { modelType: bModelType }) =>
+        (objectTypeSortOrder.get(aModelType) || 0) - (objectTypeSortOrder.get(bModelType) || 0)
+    )
+    .map(({ modelType, subTypes }) => {
       const _icon = OBJECT_TYPE_ICONS.get(modelType);
 
       return {
@@ -236,7 +238,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
 
           // dynamic sub type routes
           ...sortBy(
-            objectSubTypes.map(({ subType: subType }) => {
+            subTypes.map(({ subType: subType }) => {
               const displayName =
                 domain.value ?
                   domain.value.elementTypeDefinitions[modelType].translations[locale.value][
