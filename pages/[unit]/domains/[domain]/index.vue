@@ -112,11 +112,13 @@ export default defineComponent({
     );
     // Create chart data
     const chartData = computed(() => {
-      const widgets = Object.entries(domainObjectInformation.value || {}).sort(
-        ([keyA, _valueA], [keyB, _valueB]) =>
-          WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyA) -
-          WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyB)
-      );
+      const widgets = Object.entries(domainObjectInformation.value || {})
+        .filter(([_key, value]) => Object.keys(value).length !== 0)
+        .sort(
+          ([keyA, _valueA], [keyB, _valueB]) =>
+            WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyA) -
+            WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyB)
+        );
       widgets.push(['my_latest_widget', {}]);
 
       const rows = [];

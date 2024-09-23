@@ -209,6 +209,7 @@ watch(
 const objectTypesChildItems = computed<INavItem[]>(() =>
   objectSchemas.value
     .map((objectSchema) => ({ modelType: objectSchema.title, subTypes: extractSubTypesFromObjectSchema(objectSchema) }))
+    .filter(({ subTypes }) => subTypes.length !== 0)
     .sort(
       ({ modelType: aModelType }, { modelType: bModelType }) =>
         (objectTypeSortOrder.get(aModelType) || 0) - (objectTypeSortOrder.get(bModelType) || 0)

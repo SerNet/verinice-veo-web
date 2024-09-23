@@ -51,9 +51,6 @@
           </div>
         </v-col>
       </v-row>
-      <div v-if="chartData.length === 0" class="ml-6 font-italic text-body-2">
-        {{ t('noSubtypes') }}
-      </div>
     </template>
   </BaseWidget>
 </template>
@@ -250,11 +247,9 @@ const objectOveriewLink = (subTypeIndex: number) =>
 {
   "en": {
     "noObjects": "No objects available",
-    "noSubtypes": "There are no subtypes for this object type"
   },
   "de": {
     "noObjects": "Keine Objekte vorhanden",
-    "noSubtypes": "Für diesen Objekttyp existieren keine Subtypen"
   }
 }
 </i18n>
