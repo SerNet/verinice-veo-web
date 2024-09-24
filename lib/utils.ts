@@ -21,13 +21,7 @@ import { JSONSchema7 } from 'json-schema';
 import { isEqual, isPlainObject } from 'lodash';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import {
-  IVeoCustomLink,
-  IVeoDomainSpecificObjectSchema,
-  IVeoEntity,
-  IVeoLink,
-  IVeoObjectSchema
-} from '~/types/VeoTypes';
+import { IVeoCustomLink, IVeoDomainSpecificObjectSchema, IVeoEntity, IVeoObjectSchema } from '~/types/VeoTypes';
 
 export const CHART_COLORS = ['#666', '#ffc107', '#3f51b5', '#8bc34a', '#bbb'];
 // export const CHART_COLORS = ['#5c3f5a', '#304655', '#2892e4', '#8d9ac5', '#36384c'];
@@ -37,20 +31,6 @@ export interface IForm {
   formSchema?: IVeoFormSchema;
   objectData: Record<string, any> | IVeoEntity;
   lang?: Record<string, any>;
-}
-
-export function getEntityDetailsFromLink(link: IVeoLink): {
-  type: string;
-  id: string;
-  name: string;
-} {
-  const destructedLink = link.targetUri?.split('/');
-
-  return {
-    id: destructedLink?.pop() || '',
-    type: destructedLink?.pop() || '',
-    name: link.name || ''
-  };
 }
 
 export function sanitizeURLParams(url: string) {
@@ -71,7 +51,7 @@ export function extractSubTypesFromObjectSchema(
 export function getFirstDomainDomaindId(unit: IVeoUnit): string | undefined {
   const firstDomain = unit.domains?.[0];
 
-  return firstDomain ? getEntityDetailsFromLink(firstDomain).id : undefined;
+  return firstDomain ? firstDomain.id : undefined;
 }
 
 export const dateIsValid = (date: Date) => date.toString() !== 'Invalid Date';

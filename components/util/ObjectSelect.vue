@@ -66,18 +66,17 @@
 </template>
 
 <script setup lang="ts">
-import { cloneDeep, upperFirst } from 'lodash';
 import { mdiOpenInNew } from '@mdi/js';
+import { cloneDeep, upperFirst } from 'lodash';
 
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
-import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
-import { useFetchObjects } from '~/composables/api/objects';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 type ModelVal = string | IVeoLink | IVeoEntity | undefined;
 interface Props {
@@ -121,7 +120,7 @@ const internalValue = computed<string | undefined>({
       if (props.valueAsEntity) {
         return (props.modelValue as IVeoEntity).id;
       } else {
-        return getEntityDetailsFromLink(props.modelValue as IVeoLink).id;
+        return (props.modelValue as IVeoLink).id;
       }
     } else {
       return props.modelValue as string;

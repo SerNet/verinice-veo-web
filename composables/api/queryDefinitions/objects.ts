@@ -18,7 +18,6 @@
 /** @deprecated Use elements.ts instead. `objects.ts` uses the `useRoute` composable in global scope. This makes it unusable in other composables. */
 
 import { cloneDeep, max, omit } from 'lodash';
-import { getEntityDetailsFromLink } from '~/lib/utils';
 import {
   IVeoAPIMessage,
   IVeoControlImplementation,
@@ -509,7 +508,7 @@ export default {
             queryKey: [
               'risk',
               {
-                scenarioId: getEntityDetailsFromLink(variables.json.scenario).id,
+                scenarioId: variables.json.scenario.id,
                 objectId: variables.params?.objectId,
                 endpoint: variables.params?.endpoint
               }

@@ -15,7 +15,6 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { cloneDeep, max, omit } from 'lodash';
-import { getEntityDetailsFromLink } from '~/lib/utils';
 import {
   IInOutLink,
   IVeoAPIMessage,
@@ -504,7 +503,7 @@ export default {
             queryKey: [
               'risk',
               {
-                scenarioId: getEntityDetailsFromLink(variables.json.scenario).id,
+                scenarioId: variables.json.scenario.id,
                 objectId: variables.params?.objectId,
                 endpoint: variables.params?.endpoint
               }

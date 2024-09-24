@@ -122,7 +122,6 @@ import { mdiArrowRightCircleOutline } from '@mdi/js';
 import { useQueryClient } from '@tanstack/vue-query';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuerySync } from '~/composables/api/utils/query';
-import { getEntityDetailsFromLink } from '~/lib/utils';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 
@@ -171,7 +170,6 @@ export default defineComponent({
     const fetchMitigation = async () => {
       if (props.data?.mitigation) {
         fetchingMitigation.value = true;
-        const { id } = getEntityDetailsFromLink(props.data.mitigation);
 
         try {
           selectedItems.value = (
@@ -180,7 +178,7 @@ export default defineComponent({
               {
                 domain: props.domainId,
                 endpoint: 'controls',
-                id: id,
+                id: props.data.mitigation.id,
                 size: 9999
               },
               queryClient

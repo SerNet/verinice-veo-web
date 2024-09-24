@@ -111,16 +111,15 @@
 <script lang="ts">
 import { cloneDeep, isEqual, merge, upperFirst } from 'lodash';
 
+import { useQueryClient } from '@tanstack/vue-query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoLink, IVeoRisk, IVeoDomainRiskDefinition, VeoAlertType, IVeoEntity } from '~/types/VeoTypes';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import domainQueryDefinitions, { getSubTypes, IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
-import { useQueryClient } from '@tanstack/vue-query';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { IVeoDomainRiskDefinition, IVeoEntity, IVeoLink, IVeoRisk, VeoAlertType } from '~/types/VeoTypes';
 
 export interface IDirtyFields {
   [field: string]: boolean;
@@ -263,7 +262,7 @@ export default defineComponent({
                 {
                   domain: props.domainId,
                   endpoint: 'controls',
-                  id: getEntityDetailsFromLink(data.value.mitigation).id
+                  id: data.value.mitigation.id
                 },
                 queryClient
               ),

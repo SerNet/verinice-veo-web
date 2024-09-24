@@ -78,10 +78,9 @@ import { cloneDeep, isEqual } from 'lodash';
 
 import domainQueryDefinitions, { IVeoFetchPersonsInDomainParameters } from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useQuery } from '~/composables/api/utils/query';
 import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
 
-import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useCreateLink } from '~/composables/VeoObjectUtilities';
 
 const { mutateAsync: update } = useMutation(objectQueryDefinitions.mutations.updateObject);
@@ -155,7 +154,7 @@ const updateControl = async () => {
 };
 
 const person = computed({
-  get: () => getEntityDetailsFromLink(copy.value.controlImplementations[props.controlIndex]?.responsible || {}).id,
+  get: () => copy.value.controlImplementations[props.controlIndex]?.responsible?.id,
   set: (newPerson) =>
     (copy.value.controlImplementations[props.controlIndex].responsible =
       newPerson !== null ? createLink('persons', newPerson) : undefined)

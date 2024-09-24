@@ -81,15 +81,14 @@
 <script lang="ts">
 import { cloneDeep, omit, upperFirst } from 'lodash';
 
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { getEntityDetailsFromLink } from '~/lib/utils';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useVeoUser } from '~/composables/VeoUser';
+import { useFetchObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
-import { useVeoUser } from '~/composables/VeoUser';
 import { useMutation } from '~/composables/api/utils/mutation';
-import { useFetchObjects } from '~/composables/api/objects';
 import { useQuery } from '~/composables/api/utils/query';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -143,7 +142,7 @@ export default defineComponent({
 
       for (const risk of risks.value) {
         // Get id of scenario
-        const objectId = getEntityDetailsFromLink(risk.scenario).id;
+        const objectId = risk.scenario.id;
 
         // If scenario is already part of selected scenarios, skip
         if (selectedScenarios.value.find((object) => object.id === objectId)) {
@@ -198,7 +197,7 @@ export default defineComponent({
         const _objects = cloneDeep(objects.value);
 
         _objects?.items.forEach((item: IVeoEntity & { disabled?: boolean }) => {
-          if (risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === item.id)) {
+          if (risks.value?.find((risk) => risk.scenario.id === item.id)) {
             item.disabled = true;
           }
         });
@@ -219,7 +218,7 @@ export default defineComponent({
 
       // Create new risks, but only for those scenarios that aren't yet linked to a risk!
       const newRisks = selectedScenarios.value
-        .filter((scenario) => !risks.value?.find((risk) => getEntityDetailsFromLink(risk.scenario).id === scenario.id))
+        .filter((scenario) => !risks.value?.find((risk) => risk.scenario.id === scenario.id))
         .map((scenario) => ({
           scenario: {
             targetUri: `${config.public.apiUrl}/scenarios/${scenario.id}`

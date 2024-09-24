@@ -60,14 +60,13 @@
 <script lang="ts">
 import { mdiPlus } from '@mdi/js';
 
-import { IVeoFormsElementDefinition } from '../types';
-import { getControlErrorMessages, VeoFormsControlProps } from '../util';
-import { getEntityDetailsFromLink } from '~/lib/utils';
-import { IVeoCustomLink } from '~/types/VeoTypes';
+import { PropType } from 'vue';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { PropType } from 'vue';
 import { useQuery } from '~/composables/api/utils/query';
+import { IVeoCustomLink } from '~/types/VeoTypes';
+import { IVeoFormsElementDefinition } from '../types';
+import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
@@ -134,9 +133,7 @@ export default defineComponent({
 
     // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect
     const hiddenValues = computed(() =>
-      props.otherSelectedLinks
-        .filter((link) => link.target?.targetUri)
-        .map((link) => getEntityDetailsFromLink(link.target).id)
+      props.otherSelectedLinks.filter((link) => link.target?.targetUri).map((link) => link.target.id)
     );
 
     return {

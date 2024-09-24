@@ -108,7 +108,6 @@ import objectQueryDefinitions, {
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { getEntityDetailsFromLink } from '~/lib/utils';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import type {
   IInOutLink,
@@ -121,7 +120,7 @@ import type {
   VeoRiskTreatment,
   VeoSort
 } from '~/types/VeoTypes';
-import { VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useCompliance } from '../compliance/compliance';
 
 export default defineComponent({
@@ -226,23 +225,21 @@ export default defineComponent({
           // TODO #3066 find out why on earth this even compiles
           return risks.value || [];
         case 'controls':
-          return mapItems(cis, (control) => {
-            const details = getEntityDetailsFromLink(control.control);
+          return mapItems(cis, (ci) => {
             return {
-              ...control,
-              type: details.type,
-              name: details.name,
-              id: details.id
-            };
+              ...ci,
+              type: ci.control.type,
+              name: ci.control.name,
+              id: ci.control.id
+            } as unknown as IVeoEntity;
           });
         case 'targets':
-          return mapItems(cis, (control) => {
-            const details = getEntityDetailsFromLink(control.owner);
+          return mapItems(cis, (ci) => {
             return {
-              ...control.owner,
-              type: VeoElementTypesSingular[details.type as keyof typeof VeoElementTypesSingular],
-              responsible: control.responsible?.name
-            };
+              ...ci.owner,
+              type: ci.owner.type,
+              responsible: ci.responsible?.name
+            } as unknown as IVeoEntity;
           });
         case 'links':
           return links?.value?.items.map((link) => createEntityFromLink(link)) || [];
@@ -721,11 +718,10 @@ export default defineComponent({
 
               async action(item: IVeoRisk) {
                 try {
-                  const { id } = getEntityDetailsFromLink(item.scenario);
                   await deleteRisk({
                     objectId: props.object?.id,
                     endpoint: schemas.value?.[props.object?.type || ''] || '',
-                    scenarioId: id
+                    scenarioId: item.scenario.id
                   });
                   displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
                 } catch (e: any) {
@@ -882,7 +878,7 @@ export default defineComponent({
     const openItem = ({ internalItem }) => {
       switch (props.type) {
         case 'risks':
-          editRiskDialog.value.scenarioId = getEntityDetailsFromLink((internalItem.raw as IVeoRisk).scenario).id;
+          editRiskDialog.value.scenarioId = (internalItem.raw as IVeoRisk).scenario.id;
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
