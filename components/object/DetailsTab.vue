@@ -32,10 +32,12 @@
           <v-tooltip v-for="btn in actions" :key="btn.id" location="bottom">
             <template #activator="{ props }">
               <v-btn
+                :class="{ 'custom-readonly-btn': btn.isDisabled(item) }"
                 v-bind="props"
                 :icon="btn.icon"
                 size="small"
                 variant="flat"
+                :readonly="btn.isDisabled(item)"
                 :disabled="ability.cannot('manage', 'objects')"
                 @click="btn.action(item)"
               />
@@ -712,10 +714,30 @@ export default defineComponent({
         case 'risks':
           return [
             {
+              id: 'implementations',
+              label: t('implementations'),
+              icon: mdiTextBoxCheckOutline,
+              isDisabled: (item: any) => !item.mitigation, // Disable if mitigation exists (coerce to boolean)
+              async action(item: any) {
+                complianceState.CTLModule.value = { ...item.mitigation, owner: item.scope };
+                // Check for mitigation and navigate accordingly
+                if (item.mitigation) {
+                  return navigateTo({
+                    name: 'unit-domains-domain-compliance',
+                    query: {
+                      type: props.object?.type,
+                      riskAffected: props.object?.id,
+                      control: item?.mitigation?.id
+                    }
+                  });
+                }
+              }
+            },
+            {
               id: 'delete',
               label: upperFirst(t('deleteRisk').toString()),
               icon: mdiTrashCanOutline,
-
+              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
               async action(item: IVeoRisk) {
                 try {
                   await deleteRisk({
@@ -736,6 +758,7 @@ export default defineComponent({
               id: 'implementations',
               label: t('implementations'),
               icon: mdiTextBoxCheckOutline,
+              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
               async action(item: IVeoLink) {
                 complianceState.CTLModule.value = item;
@@ -753,6 +776,7 @@ export default defineComponent({
               id: 'delete',
               label: upperFirst(t('deleteDialogTitle').toString()),
               icon: mdiLinkOff,
+              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
               async action(item: any) {
                 controlNameToUnlink.value = item.name.split(' ').slice(1).join(' ');
@@ -768,6 +792,8 @@ export default defineComponent({
               id: 'clone',
               label: upperFirst(t('cloneObject').toString()),
               icon: mdiContentCopy,
+              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
+
               async action(item: IVeoEntity) {
                 try {
                   const clonedObjectId = (
@@ -808,6 +834,7 @@ export default defineComponent({
                 ).toString()
               ),
               icon: mdiLinkOff,
+              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
               action: async (item: IVeoEntity) => {
                 const parent = await useQuerySync(
@@ -887,8 +914,8 @@ export default defineComponent({
           editRiskDialog.value.visible = true;
           break;
         case 'controls':
-          index.value = (props.object?.controlImplementations || []).findIndex((ci) =>
-            ci.control.id === internalItem.raw.control.id
+          index.value = (props.object?.controlImplementations || []).findIndex(
+            (ci) => ci.control.id === internalItem.raw.control.id
           );
           controlsEditDialogVisible.value = true;
           break;
@@ -1081,3 +1108,8 @@ export default defineComponent({
   }
 }
 </i18n>
+<style>
+.custom-readonly-btn .v-icon {
+  opacity: 0.5;
+}
+</style>
