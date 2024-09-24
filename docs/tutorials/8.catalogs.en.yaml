@@ -6,6 +6,9 @@ steps:
   - title: 'Catalogues'
     element: '[data-component-name=catalog-page]'
     intro: In this section, existing catalogues can be applied.
+  - title: 'Search Function'
+    element: '[data-component-name=veo-search]'
+    intro: The search box allows you to quickly find items on the website. Enter either the name, the abbreviation, or a combination of both to get relevant results.
   - title: 'Apply objects'
     element: '[data-component-name=catalogs-nav-item]'
     intro: Select the objects to be copied to your current unit and can be used there.

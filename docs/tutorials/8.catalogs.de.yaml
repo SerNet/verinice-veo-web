@@ -6,6 +6,9 @@ steps:
   - title: 'Kataloge'
     element: '[data-component-name=catalog-page]'
     intro: Im diesem Abschnitt können vorhandene Kataloge angewendet werden.
+  - title: 'Suchfunktion'
+    element: '[data-component-name=veo-search]'
+    intro: Mit dem Suchfenster können Sie schnell Objekte auf der Webseite finden. Geben Sie entweder den Namen, die Abkürzung oder eine Kombination aus beidem ein, um passende Ergebnisse zu erhalten.
   - title: 'Objekte anwenden'
     element: '[data-component-name=catalogs-nav-item]'
     intro: Wählen Sie die Objekte aus, die in Ihre aktuelle Unit kopiert und dort verwendet werden können.

@@ -21,6 +21,7 @@
   <v-combobox
     ref="searchInput"
     v-model="select"
+    data-component-name="veo-search"
     :items="selectionItems"
     :item-title="(item) => translateItem(item)"
     :append-inner-icon="mdiMagnify"

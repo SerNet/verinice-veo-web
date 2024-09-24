@@ -19,6 +19,9 @@ steps:
   - title: 'WICHTIG!'
     element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
     intro: Der Objekttyp als Mindestkriterium kann nur über den Filterdialog geändert werden!
+  - title: 'Suchfunktion'
+    element: '[data-component-name=veo-search]'
+    intro: Mit dem Suchfenster können Sie schnell Objekte auf der Webseite finden. Geben Sie entweder den Namen, die Abkürzung oder eine Kombination aus beidem ein, um passende Ergebnisse zu erhalten.
   - title: 'Übrigens ...'
     element: '[data-component-name=breadcrumbs]'
     intro: ... über die Breadcrumbs navigieren Sie per Mausklick direkt zu allen aufgelisteten Elementen.

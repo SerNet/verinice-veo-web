@@ -19,6 +19,9 @@ steps:
   - title: 'IMPORTANT!'
     element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
     intro: The object type as minimum criterion can only be changed via the filter dialogue!
+  - title: 'Search Function'
+    element: '[data-component-name=veo-search]'
+    intro: The search box allows you to quickly find items on the website. Enter either the name, the abbreviation, or a combination of both to get relevant results.
   - title: 'By the way ...'
     element: '[data-component-name=breadcrumbs]'
     intro: ... via the breadcrumb you navigate directly to all listed elements by mouse click.
