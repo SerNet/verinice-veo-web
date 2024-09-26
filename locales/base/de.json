@@ -180,5 +180,10 @@
 
   "inputPlaceholders": {
     "date": "tt.mm.jjjj"
+  },
+
+  "inputLabel": {
+    "name": "Name",
+    "description": "Beschreibung"
   }
 }
