@@ -91,7 +91,7 @@ import {
   mdiTrashCanOutline
 } from '@mdi/js';
 import { cloneDeep, upperFirst } from 'lodash';
-import type { ComputedRef, PropType } from 'vue';
+import type { ComputedRef, PropType, Ref } from 'vue';
 import { VIcon, VTooltip } from 'vuetify/components';
 
 import { mdiTextBoxCheckOutline } from '@mdi/js';
@@ -104,6 +104,7 @@ import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import elementsQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import objectQueryDefinitions, {
+  IVeoFetchControlImplementationsParameters,
   IVeoFetchRisksParameters,
   IVeoFetchScopeChildrenParameters
 } from '~/composables/api/queryDefinitions/objects';
@@ -307,10 +308,11 @@ export default defineComponent({
       }
     }
 
-    const fetchControlImplementationsQueryParameters = computed(() => ({
+    const fetchControlImplementationsQueryParameters: Ref<IVeoFetchControlImplementationsParameters> = computed(() => ({
       domain: route.params.domain as string,
       endpoint: route.params.objectType as string,
       id: route.params.object as string,
+      purpose: 'COMPLIANCE',
       sortBy: mapCisSortingKey(sortBy.value[0]?.key),
       sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,

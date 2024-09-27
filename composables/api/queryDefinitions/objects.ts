@@ -60,6 +60,10 @@ export interface IVeoFetchObjectSubResourceParameters extends IVeoPaginationOpti
   id: string;
 }
 
+export interface IVeoFetchControlImplementationsParameters extends IVeoFetchObjectSubResourceParameters {
+  purpose?: 'MITIGATION' | 'COMPLIANCE';
+}
+
 export interface IVeoFetchScopeChildrenParameters extends IVeoPaginationOptions {
   domain: string;
   id: string;
@@ -288,7 +292,10 @@ export default {
           page: getPageNumber(queryParameters.page)
         }
       })
-    } as IVeoQueryDefinition<IVeoFetchObjectSubResourceParameters, IVeoPaginatedResponse<IVeoControlImplementation[]>>,
+    } as IVeoQueryDefinition<
+      IVeoFetchControlImplementationsParameters,
+      IVeoPaginatedResponse<IVeoControlImplementation[]>
+    >,
     fetchScopeChildren: {
       primaryQueryKey: 'childScopes',
       url: '/api/domains/:domain/scopes/:id/members',
