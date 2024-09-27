@@ -134,7 +134,7 @@
                     <div
                       v-bind="props"
                       :style="{
-                        backgroundColor: cell.htmlColor,
+                        backgroundColor: riskValues[cell.ordinalValue].htmlColor,
                         color: getMostContrastyColor(cell.htmlColor),
                         display: 'flex',
                         justifyContent: 'center',
