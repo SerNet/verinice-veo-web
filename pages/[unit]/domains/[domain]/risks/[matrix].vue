@@ -25,7 +25,7 @@
               <RiskLegends
                 :get-most-contrasty-color="getMostContrastyColor"
                 :title="t('riskCategories')"
-                :items="totalImpacts"
+                :items="riskValues"
               />
               <RiskLegends
                 :get-most-contrasty-color="getMostContrastyColor"
@@ -85,18 +85,8 @@ const { data: domain, isFetching: domainIsFetching } = useQuery(
 
 const data = computed(() => domain.value?.riskDefinitions?.[route.params.matrix as string]);
 
-const totalImpacts = computed(() => {
-  const impacts = (data.value?.categories || []).flatMap((category) => category?.potentialImpacts || []);
-
-  const uniqueImpacts = new Map();
-  impacts.forEach((impact) => {
-    uniqueImpacts.set(impact.ordinalValue, impact);
-  });
-
-  return [...uniqueImpacts.values()];
-});
-
 const probabilities = computed(() => data.value?.probability.levels || []);
+const riskValues = computed(() => data.value?.riskValues || []);
 
 const protectionGoals = computed(() =>
   (data.value?.categories || []).map((category) => ({
