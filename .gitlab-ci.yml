@@ -112,7 +112,7 @@ test:
   image: cypress/browsers:node18.12.0-chrome103-ff107
   extends: .test_template
   variables:
-    CYPRESS_parallel_group: 8
+    CYPRESS_parallel_group: 2
   script:
     - ./run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
   artifacts:
@@ -123,7 +123,7 @@ test:
       - ${CI_PROJECT_DIR}/cypress/videos
   parallel:
     matrix:
-      - CI_NODE_INDEX: [0, 1, 2, 3, 4, 5, 6, 7]
+      - CI_NODE_INDEX: [0, 1]
 
 docker_image:
   stage: build
