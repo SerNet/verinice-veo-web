@@ -164,7 +164,13 @@ export default defineComponent({
     const queryClient = useQueryClient();
     // State
     const page = ref(1);
-    const sortBy = ref<VeoSort[]>([{ key: 'name', order: 'asc' }]);
+    const getDefaultSortBy = (tab: string): VeoSort[] => {
+      if (tab === 'controls') {
+        return [{ key: 'abbreviation', order: 'asc' }];
+      }
+      return [{ key: 'name', order: 'asc' }];
+    };
+    const sortBy = ref<VeoSort[]>(getDefaultSortBy(props.type));
     const resetQueryOptions = () => {
       page.value = 1;
       sortBy.value = [{ key: 'name', order: 'asc' }];
@@ -319,7 +325,8 @@ export default defineComponent({
       objectQueryDefinitions.queries.fetchObjectControlImplementations,
       fetchControlImplementationsQueryParameters,
       {
-        enabled: cisQueryEnabled
+        enabled: cisQueryEnabled,
+        keepPreviousData: true
       }
     );
     function mapCisSortingKey(key: string) {
