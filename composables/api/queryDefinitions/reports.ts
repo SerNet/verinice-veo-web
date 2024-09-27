@@ -50,16 +50,22 @@ export interface IVeoCreateReportParameters {
   };
 }
 
+export interface IVeoFetchReportsParameters {
+  domain: string;
+}
+
 export default {
   queries: {
     fetchAll: {
       primaryQueryKey: 'reports',
       url: '/api/reporting/reports',
-      queryParameterTransformationFn: () => ({}),
+      queryParameterTransformationFn: (queryParameters) => ({
+        query: queryParameters
+      }),
       staticQueryOptions: {
         staleTime: STALE_TIME.INFINITY
       }
-    } as IVeoQueryDefinition<Record<string, never>, IVeoReportsMeta>
+    } as IVeoQueryDefinition<IVeoFetchReportsParameters, IVeoReportsMeta>
   },
   mutations: {
     create: {
