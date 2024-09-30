@@ -15,9 +15,9 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-container class="my-4 mx-2">
+  <v-container class="pt-0">
     <div class="d-flex align-center">
-      <v-card-subtitle class="pr-0">{{ t('riskMatrix') }} </v-card-subtitle>
+      <v-card-subtitle class="pr-0 px-0">{{ t('riskMatrix') }} </v-card-subtitle>
       <v-btn :icon="mdiPencil" variant="plain" size="small" />
     </div>
 
@@ -39,34 +39,35 @@
             <tr>
               <th :style="{ border: 'none' }"></th>
               <th :style="{ border: 'none' }"></th>
-              <th
+              <v-tooltip
                 v-for="probability in probabilities"
                 :key="probability.ordinalValue"
-                :style="{
-                  flex: 1,
-                  height: '100%',
-                  width: 'auto',
-                  textAlign: 'center',
-                  border: '0.01em solid white',
-                  backgroundColor: probability.htmlColor,
-                  color: getMostContrastyColor(probability.htmlColor)
-                }"
+                max-width="400px"
+                top
+                :text="
+                  (probability.translations[locale] && probability.translations[locale].description) ||
+                  Object.values(probability.translations)[0].description
+                "
               >
-                <v-tooltip
-                  max-width="400px"
-                  top
-                  :text="
-                    (probability.translations[locale] && probability.translations[locale].description) ||
-                    Object.values(probability.translations)[0].description
-                  "
-                >
-                  <template #activator="{ props }">
-                    <div v-bind="props">
+                <template #activator="{ props }">
+                  <th
+                    v-bind="props"
+                    :style="{
+                      flex: 1,
+                      height: '100%',
+                      width: 'auto',
+                      textAlign: 'center',
+                      border: '0.01em solid white',
+                      backgroundColor: probability.htmlColor,
+                      color: getMostContrastyColor(probability.htmlColor)
+                    }"
+                  >
+                    <div>
                       {{ probability.translations[locale]?.name || Object.values(probability.translations)[0].name }}
                     </div>
-                  </template>
-                </v-tooltip>
-              </th>
+                  </th>
+                </template>
+              </v-tooltip>
             </tr>
           </thead>
           <tbody>
@@ -86,53 +87,53 @@
                 textAlign: 'center'
               }"
             >
-              <td
-                :style="{
-                  height: '100%',
-                  width: 'auto',
-                  border: '0.01em solid white',
-                  backgroundColor: impacts[rowIndex].htmlColor,
-                  color: getMostContrastyColor(impacts[rowIndex].htmlColor)
-                }"
+              <v-tooltip
+                max-width="400px"
+                top
+                :text="
+                  (impacts[rowIndex].translations[locale] && impacts[rowIndex].translations[locale].description) ||
+                  Object.values(impacts[rowIndex].translations)[0].description
+                "
               >
-                <v-tooltip
-                  max-width="400px"
-                  top
-                  :text="
-                    (impacts[rowIndex].translations[locale] && impacts[rowIndex].translations[locale].description) ||
-                    Object.values(impacts[rowIndex].translations)[0].description
-                  "
-                >
-                  <template #activator="{ props }">
-                    <div v-bind="props">
+                <template #activator="{ props }">
+                  <td
+                    v-bind="props"
+                    :style="{
+                      height: '100%',
+                      width: 'auto',
+                      border: '0.01em solid white',
+                      backgroundColor: impacts[rowIndex].htmlColor,
+                      color: getMostContrastyColor(impacts[rowIndex].htmlColor)
+                    }"
+                  >
+                    <div>
                       {{
                         (impacts[rowIndex].translations[locale] && impacts[rowIndex].translations[locale].name) ||
                         Object.values(impacts[rowIndex].translations)[0].name
                       }}
                     </div>
-                  </template>
-                </v-tooltip>
-              </td>
-
-              <td
+                  </td>
+                </template>
+              </v-tooltip>
+              <v-tooltip
                 v-for="(cell, cellIndex) in getImpactValues(rowIndex)"
                 :key="cellIndex"
-                :style="{
-                  border: '0.01em solid white'
-                }"
-                class="text-center px-0 py-0"
+                max-width="400px"
+                top
+                :text="
+                  (cell.translations[locale] && cell.translations[locale].description) ||
+                  Object.values(cell.translations)[0].description
+                "
               >
-                <v-tooltip
-                  max-width="400px"
-                  top
-                  :text="
-                    (cell.translations[locale] && cell.translations[locale].description) ||
-                    Object.values(cell.translations)[0].description
-                  "
-                >
-                  <template #activator="{ props }">
+                <template #activator="{ props }">
+                  <td
+                    v-bind="props"
+                    :style="{
+                      border: '0.01em solid white'
+                    }"
+                    class="text-center px-0 py-0"
+                  >
                     <div
-                      v-bind="props"
                       :style="{
                         backgroundColor: riskValues[cell.ordinalValue].htmlColor,
                         color: getMostContrastyColor(cell.htmlColor),
@@ -148,9 +149,9 @@
                         Object.values(riskValues[cell.ordinalValue].translations)[0].name
                       }}
                     </div>
-                  </template>
-                </v-tooltip>
-              </td>
+                  </td>
+                </template>
+              </v-tooltip>
             </tr>
           </tbody>
         </v-table>
@@ -219,7 +220,7 @@ const impactRows = ref(['vernachlässigbar', 'begrenzt', 'beträchtlich', 'exist
 
 .impact-title {
   position: absolute;
-  top: 75%;
+  top: 80%;
   left: 3%;
   transform: rotate(-90deg);
   transform-origin: left center;
