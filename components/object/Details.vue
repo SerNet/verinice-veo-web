@@ -174,7 +174,9 @@ export default defineComponent({
 
     const isControlsTabHidden = computed(() => {
       return (
-        !isRiskAffected || ['DS-GVO', 'NIS2'].includes(domain.value?.name) || props.object?.subType === 'CTL_Module'
+        !isRiskAffected.value ||
+        ['DS-GVO', 'NIS2'].includes(domain.value?.name) ||
+        props.object?.subType === 'CTL_Module'
       );
     });
 
