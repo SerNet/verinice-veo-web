@@ -178,20 +178,20 @@
 </template>
 
 <script setup lang="ts">
-import { useCompliance } from './compliance';
 import { cloneDeep } from 'lodash';
-import { useQuery } from '~/composables/api/utils/query';
 import domainQueryDefinitions, {
   IVeoFetchPersonsInDomainParameters,
   IVeoPersonInDomain
 } from '~/composables/api/queryDefinitions/domains';
 import controlQueryDefinitions, { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
+import { useQuery } from '~/composables/api/utils/query';
+import { useCompliance } from './compliance';
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 import { useRequest } from '@/composables/api/utils/request';
-import type { IVeoLink, IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
 import { format } from 'date-fns';
 import { useDate } from 'vuetify';
+import type { IVeoLink, IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
 
 import DOMPurify from 'dompurify';
 import type { ComputedRef, Ref } from 'vue';
@@ -412,7 +412,7 @@ async function submitForm({
     ...clone,
     control: validateType(clone.control, isVeoLink),
     origin: validateType(clone.origin, isVeoLink),
-    implementationUntil: format(form.implementationUntil, 'yyyy-MM-dd')
+    implementationUntil: form.implementationUntil && format(form.implementationUntil, 'yyyy-MM-dd')
   };
 
   const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
