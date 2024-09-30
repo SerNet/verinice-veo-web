@@ -20,7 +20,14 @@
       <v-row v-if="!domainIsFetching">
         <v-col cols="12" md="6">
           <v-card class="mb-6 elevation-2" outlined>
-            <div class="d-flex border-b pb-2">
+            <!-- Kriterien -->
+            <v-card-title
+              ><span>{{ t('criterion') }}</span></v-card-title
+            >
+            <v-row v-for="(protectionGoal, index) in protectionGoals" :key="index" style="padding: 0rem 1rem">
+              <RiskCriterion v-bind="getMatrixData(protectionGoal.id)" :title="protectionGoal.text" />
+            </v-row>
+            <div class="d-flex border-t border-b my-4 pb-4">
               <!-- Risikokategorien -->
               <RiskLegends
                 :get-most-contrasty-color="getMostContrastyColor"
@@ -33,18 +40,11 @@
                 :items="probabilities"
               />
             </div>
-
-            <!-- Kriterien -->
-            <v-card-title><span>Kriterien</span></v-card-title>
-            <v-row v-for="(protectionGoal, index) in protectionGoals" :key="index" style="padding: 0rem 1rem">
-              <RiskCriterion v-bind="getMatrixData(protectionGoal.id)" :title="protectionGoal.text" />
-            </v-row>
-
             <!-- Neues Kriterium -->
             <v-row>
               <v-col cols="12">
                 <div class="px-4 pb-4">
-                  <v-btn class="dashed-border text-center elevation-1" outlined block> + {{ t('NewCriterion') }}</v-btn>
+                  <v-btn class="dashed-border text-center elevation-1" outlined block> + {{ t('Newcriterion') }}</v-btn>
                 </div>
               </v-col>
             </v-row>
@@ -99,7 +99,7 @@ const getMatrixData = (protectionGoal: string) => {
   const category = data.value?.categories.find((category) => category.id === protectionGoal);
 
   return {
-    impacts: cloneDeep(category?.potentialImpacts || []),
+    impacts: reverse(cloneDeep(category?.potentialImpacts || [])),
     value: reverse(cloneDeep(category?.valueMatrix || [])),
     probabilities: data.value?.probability.levels || [],
     riskValues: data.value?.riskValues || []
@@ -129,13 +129,15 @@ const getMostContrastyColor = (backgroundColor: string) => {
       "noData": "no data",
       "probability": "probability",
       "riskCategories": "Risk categories",
-      "criterion": "New criterion",
+      "Newcriterion": "New criterion",
+      "criterion": "Criterion"
       
     },
     "de": {
       "impact": "auswirkung",
       "noData": "keine Daten",
-      "criterion": "Neues Kriterium",
+      "Newcriterion": "Neues Kriterium",
+      "criterion": "Kriterium",
       "riskCategories": "Risikokategorien",
       "probability": "Eintrittswahrscheinlichkeit"
     }
