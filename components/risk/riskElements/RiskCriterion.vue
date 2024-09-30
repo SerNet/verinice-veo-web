@@ -19,33 +19,46 @@
     <v-card class="elevation-2" outlined rounded="xl">
       <div class="d-flex justify-space-between align-center">
         <div class="d-flex align-center">
-          <v-card-title class="pr-0">Schutzbedarf ({{ title }})</v-card-title>
+          <v-card-title class="pr-0">{{ title }}</v-card-title>
           <v-btn :icon="mdiPencil" variant="plain" size="small" />
         </div>
         <v-btn :icon="mdiDelete" variant="plain" size="small" />
       </div>
-      <v-card-subtitle>Kategorien:</v-card-subtitle>
-      <div class="px-4 d-flex align-center">
-        <v-chip
+      <v-card-subtitle>{{ t('categories') }}</v-card-subtitle>
+      <div class="px-4 d-flex align-center flex-wrap">
+        <v-tooltip
           v-for="impact in impacts"
           :key="impact.ordinalValue"
-          :style="{
-            marginLeft: '1px',
-            marginRight: '1px',
-            marginTop: '1px',
-            marginBottom: '1px',
-            backgroundColor: impact.htmlColor,
-            color: getMostContrastyColor(impact.htmlColor)
-          }"
-          outlined
-          rounded
-          size="small"
+          max-width="400px"
+          top
+          :text="
+            (impact.translations[locale] && impact.translations[locale].description) ||
+            Object.values(impact.translations)[0].description
+          "
         >
-          {{
-            (impact.translations[locale] && impact.translations[locale].name) ||
-            Object.values(impact.translations)[0].name
-          }}
-        </v-chip>
+          <template #activator="{ props }">
+            <div v-bind="props">
+              <v-chip
+                :style="{
+                  marginLeft: '1px',
+                  marginRight: '1px',
+                  marginTop: '1px',
+                  marginBottom: '1px',
+                  backgroundColor: impact.htmlColor,
+                  color: getMostContrastyColor(impact.htmlColor)
+                }"
+                outlined
+                rounded
+                size="small"
+              >
+                {{
+                  (impact.translations[locale] && impact.translations[locale].name) ||
+                  Object.values(impact.translations)[0].name
+                }}
+              </v-chip>
+            </div>
+          </template>
+        </v-tooltip>
         <v-btn :icon="mdiPencil" variant="plain" size="small" />
       </div>
 
@@ -56,10 +69,10 @@
         :value="value"
         :risk-values="riskValues"
         :get-most-contrasty-color="getMostContrastyColor"
-        :impacts="impacts"
+        :impacts="reverse(impacts)"
       />
       <div v-else class="d-flex align-center">
-        <v-card-subtitle class="pr-0">Keine Risikomatrix definiert.</v-card-subtitle>
+        <v-card-subtitle class="pr-0">{{ t('noMatrix') }}</v-card-subtitle>
         <v-btn :icon="mdiPencil" variant="plain" size="small"> </v-btn>
       </div>
     </v-card>
@@ -68,10 +81,11 @@
 
 <script setup lang="ts">
 import { mdiDelete, mdiPencil } from '@mdi/js';
+import { reverse } from 'lodash';
 import { defineProps } from 'vue';
 import { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValueLevel } from '~/types/VeoTypes';
 import Matrix from './Matrix.vue';
-const { locale } = useI18n();
+const { locale, t } = useI18n();
 
 defineProps({
   value: {
@@ -109,3 +123,16 @@ const getMostContrastyColor = (backgroundColor: string) => {
   }
 };
 </script>
+<i18n>
+  {
+    "en": {
+      "categories": "Categories:",
+      "NoMatrix": "No risk matrix defined."
+      
+    },
+    "de": {
+      "categories": "Kategorien:",
+      "NoMatrix": "Keine Risikomatrix definiert."
+    }
+  }
+  </i18n>
