@@ -22,25 +22,37 @@
     </div>
 
     <div class="px-4">
-      <v-chip
+      <v-tooltip
         v-for="item in items"
         :key="item.ordinalValue"
-        outlined
-        rounded
-        size="small"
-        :style="{
-          marginLeft: '1px',
-          marginRight: '1px',
-          marginTop: '1px',
-          marginBottom: '1px',
-          backgroundColor: item.htmlColor,
-          color: getMostContrastyColor(item.htmlColor)
-        }"
+        max-width="400px"
+        top
+        :text="
+          (item.translations[locale] && item.translations[locale].description) ||
+          Object.values(item.translations)[0].description
+        "
       >
-        {{
-          (item.translations[locale] && item.translations[locale].name) || Object.values(item.translations)[0].name
-        }}&nbsp;</v-chip
-      >
+        <template #activator="{ props }">
+          <v-chip
+            v-bind="props"
+            outlined
+            rounded
+            size="small"
+            :style="{
+              marginLeft: '1px',
+              marginRight: '1px',
+              marginTop: '1px',
+              marginBottom: '1px',
+              backgroundColor: item.htmlColor,
+              color: getMostContrastyColor(item.htmlColor)
+            }"
+          >
+            {{
+              (item.translations[locale] && item.translations[locale].name) || Object.values(item.translations)[0].name
+            }}&nbsp;</v-chip
+          >
+        </template>
+      </v-tooltip>
     </div>
   </div>
 </template>
