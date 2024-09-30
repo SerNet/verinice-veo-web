@@ -238,61 +238,51 @@ export default defineComponent({
     const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
     const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.updateRisk);
     const saveRisk = async () => {
-      if (ability.value.cannot('manage', 'objects')) {
-        return;
-      }
-      if (data.value) {
-        savingRisk.value = true;
+      if (ability.value.cannot('manage', 'objects') || !data.value) return;
 
-        try {
-          if (mitigationsModified.value && !data.value.mitigation && mitigations.value.length) {
-            const newMitigationId = (
-              await createObject({
+      savingRisk.value = true;
+
+      try {
+        if (mitigationsModified.value) {
+          let mitigationId = data.value.mitigation?.id;
+
+          // If there's no existing mitigation ID and there are mitigations available, create a new one
+          if (!mitigationId && mitigations.value.length) {
+            const { resourceId } = await createObject({
+              endpoint: 'controls',
+              object: newMitigatingAction.value
+            });
+            mitigationId = resourceId;
+            data.value.mitigation = createLink('controls', mitigationId); // Link the new mitigation to the data
+          }
+
+          // If a mitigation ID exists, fetch its data and link it to the current mitigations
+          if (mitigationId) {
+            const mitigationData = await useQuerySync(
+              objectQueryDefinitions.queries.fetch,
+              {
+                domain: props.domainId,
                 endpoint: 'controls',
-                object: newMitigatingAction.value
-              })
-            ).resourceId;
-            data.value.mitigation = createLink('controls', newMitigationId);
-          }
-
-          if (mitigationsModified.value && data.value.mitigation) {
-            await link(
-              await useQuerySync(
-                objectQueryDefinitions.queries.fetch,
-                {
-                  domain: props.domainId,
-                  endpoint: 'controls',
-                  id: data.value.mitigation.id
-                },
-                queryClient
-              ),
-              mitigations.value,
-              true
+                id: mitigationId
+              },
+              queryClient
             );
+            await link(mitigationData, mitigations.value, true);
           }
-
-          if (props.scenarioId) {
-            await updateRisk({
-              endpoint: route.params.objectType,
-              id: props.objectId,
-              scenarioId: props.scenarioId,
-              risk: data.value
-            });
-          } else {
-            await createRisk({
-              endpoint: route.params.objectType,
-              objectId: props.objectId,
-              risk: data.value
-            });
-          }
-          displaySuccessMessage(
-            props.scenarioId ? upperFirst(t('riskUpdated').toString()) : upperFirst(t('riskCreated').toString())
-          );
-        } catch (e: any) {
-          displayErrorMessage(upperFirst(t('riskNotSaved').toString()), e.message);
-        } finally {
-          savingRisk.value = false;
         }
+
+        const riskParams = {
+          endpoint: route.params.objectType,
+          risk: data.value,
+          ...(props.scenarioId ? { id: props.objectId, scenarioId: props.scenarioId } : { objectId: props.objectId })
+        };
+        await (props.scenarioId ? updateRisk(riskParams) : createRisk(riskParams));
+
+        displaySuccessMessage(upperFirst(t(props.scenarioId ? 'riskUpdated' : 'riskCreated').toString()));
+      } catch (error: any) {
+        displayErrorMessage(upperFirst(t('riskNotSaved').toString()), error.message);
+      } finally {
+        savingRisk.value = false;
       }
     };
 
