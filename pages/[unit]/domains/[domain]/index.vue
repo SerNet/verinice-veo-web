@@ -66,6 +66,7 @@
 </template>
 
 <script lang="ts">
+import { OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
@@ -116,8 +117,7 @@ export default defineComponent({
         .filter(([_key, value]) => Object.keys(value).length !== 0)
         .sort(
           ([keyA, _valueA], [keyB, _valueB]) =>
-            WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyA) -
-            WIDGET_LAYOUT.findIndex((widgetName) => widgetName === keyB)
+            OBJECT_TYPE_SORT_ORDER.indexOf(keyA) - OBJECT_TYPE_SORT_ORDER.indexOf(keyB)
         );
       widgets.push(['my_latest_widget', {}]);
 
@@ -128,7 +128,6 @@ export default defineComponent({
       return rows;
     });
 
-    const WIDGET_LAYOUT = ['scope', 'process', 'asset', 'person', 'control', 'incident', 'document', 'scenario'];
     const WIDGETS_PER_ROW = 5;
 
     const onBarClicked = (objectType: string, subType: string, status: string) => {

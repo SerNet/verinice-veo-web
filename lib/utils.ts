@@ -143,3 +143,14 @@ export const getFormSchemaControlType = (objectSchemaElement: JSONSchema7) => {
 
   return objectSchemaElement.type;
 };
+
+export const OBJECT_TYPE_SORT_ORDER = [
+  'scope',
+  'process',
+  'asset',
+  'person',
+  'incident',
+  'document',
+  'control',
+  'scenario'
+];

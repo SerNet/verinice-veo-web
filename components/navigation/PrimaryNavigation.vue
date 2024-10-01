@@ -119,7 +119,7 @@ import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
 
-import { extractSubTypesFromObjectSchema } from '~/lib/utils';
+import { extractSubTypesFromObjectSchema, OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -139,17 +139,6 @@ import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-
-const objectTypeSortOrder = new Map<string, number>([
-  ['scope', 1],
-  ['process', 2],
-  ['asset', 3],
-  ['person', 4],
-  ['incident', 5],
-  ['document', 6],
-  ['scenario', 7],
-  ['control', 8]
-]);
 
 const props = withDefaults(
   defineProps<{
@@ -212,7 +201,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
     .filter(({ subTypes }) => subTypes.length !== 0)
     .sort(
       ({ modelType: aModelType }, { modelType: bModelType }) =>
-        (objectTypeSortOrder.get(aModelType) || 0) - (objectTypeSortOrder.get(bModelType) || 0)
+        OBJECT_TYPE_SORT_ORDER.indexOf(aModelType) - OBJECT_TYPE_SORT_ORDER.indexOf(bModelType)
     )
     .map(({ modelType, subTypes }) => {
       const _icon = OBJECT_TYPE_ICONS.get(modelType);
@@ -284,7 +273,12 @@ const { data: catalogItemTypes, isFetching: catalogItemTypeCountIsLoading } = us
 const catalogsEntriesChildItems = computed<INavItem[]>(() => {
   if (isEmpty(catalogItemTypes?.value || {})) return [];
 
-  const catalogItems = [['all', { all: 'MISC' }], ...Object.entries(catalogItemTypes?.value || [])];
+  const catalogItems = [
+    ['all', { all: 'MISC' }],
+    ...Object.entries(catalogItemTypes?.value || []).sort(
+      (a, b) => OBJECT_TYPE_SORT_ORDER.indexOf(a[0]) - OBJECT_TYPE_SORT_ORDER.indexOf(b[0])
+    )
+  ];
 
   const catalogNavItems = (catalogItems || []).map((catalogItem) => {
     const modelType = catalogItem[0] as string;
