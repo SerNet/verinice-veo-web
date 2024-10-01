@@ -367,7 +367,10 @@ const reportsEntriesChildItems = computed<INavItem[]>(() => {
       }
     }
   }));
-  return selectionItems.filter((entry) => entry.name); // Don't show reports which aren't translated in the users language
+  return sortBy(
+    selectionItems.filter((entry) => entry.name), // Don't show reports which aren't translated in the users language
+    'name'
+  );
 });
 
 // risk specific stuff
