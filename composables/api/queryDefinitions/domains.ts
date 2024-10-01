@@ -18,10 +18,10 @@
 import {
   IVeoBaseObject,
   IVeoDomainRiskDefinition,
+  IVeoElementTypeDefinition,
   IVeoEntity,
   IVeoPiaMandatoryRule,
-  IVeoRisk,
-  IVeoElementTypeDefinition
+  IVeoRisk
 } from '../../../types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';

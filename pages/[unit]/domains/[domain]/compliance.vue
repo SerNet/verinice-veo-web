@@ -20,14 +20,11 @@
   <BasePage style="height: 100vh">
     <template #header>
       <div class="mt-8 mb-4 text-body-1">
-        <div v-if="currentModule">
-          <v-btn :to="currentModule.urlParams" variant="outlined">
-            {{ t('targetModule', { currentModule: currentModule.name }) }}
-          </v-btn>
-        </div>
+        <v-btn v-if="currentModule" :to="currentModule.urlParams" variant="outlined">
+          {{ t('targetModule', { subType: currentModule.subType, currentModule: currentModule.name }) }}
+        </v-btn>
       </div>
     </template>
-
     <template #default>
       <ComplianceList />
     </template>
@@ -39,51 +36,81 @@ export const ROUTE_NAME = 'unit-domains-domain-compliance';
 </script>
 
 <script setup lang="ts">
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
-import { useCompliance } from '~/components/compliance/compliance';
-import { VeoElementTypesSingular } from '~/types/VeoTypes';
+import { useRoute } from 'vue-router';
 import type { ComplianceState } from '~/components/compliance/compliance';
+import { useCompliance } from '~/components/compliance/compliance';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { VeoElementTypesSingular } from '~/types/VeoTypes';
 
 const route = useRoute();
 const { t } = useI18n();
 const { state } = useCompliance();
+const { data: currentDomain, isLoading } = useCurrentDomain();
 
-const currentModule = computed(() => {
+interface CurrentModule {
+  name: string;
+  subType: string;
+  urlParams: {
+    name: string;
+    params: {
+      objectType: string;
+      subType: string;
+      object?: string;
+      [key: string]: string | undefined;
+    };
+  };
+}
+
+const currentModule = computed<CurrentModule | undefined>(() => {
+  if (isLoading.value || !state.CTLModule.value || !currentDomain.value) {
+    return undefined;
+  }
+
   const module = state.CTLModule.value;
-  if (!module) return undefined;
+  const domain = currentDomain.value;
 
-  const params: { objectType: string; subType: string; object?: string } = {
-    ...route.params,
-    objectType: 'controls',
-    subType: 'CTL_Module',
-    object: module.id
-  };
+  try {
+    const subType =
+      module.control ?
+        domain.raw.controlImplementationConfiguration.complianceControlSubType
+      : domain.raw.controlImplementationConfiguration.mitigationControlSubType;
 
-  return {
-    name: module.name,
-    urlParams: {
-      name: OBJECT_DETAIL_ROUTE,
-      params
+    if (!subType) {
+      throw new Error('SubType is undefined');
     }
-  };
-});
 
+    return {
+      name: module.name,
+      subType: subType,
+      urlParams: {
+        name: OBJECT_DETAIL_ROUTE,
+        params: {
+          ...route.params,
+          objectType: 'controls',
+          subType,
+          object: module.id
+        }
+      }
+    };
+  } catch (error) {
+    console.error('Error computing current module:', error);
+    return undefined;
+  }
+});
 /* BREADCRUMBS */
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
-const { subTypeTranslation } = useSubTypeTranslation(
+const { subTypeTranslation: ownerSubType } = useSubTypeTranslation(
   VeoElementTypesSingular[state.type.value as keyof typeof VeoElementTypesSingular],
   state.CTLModule.value?.owner.subType
 );
-
 const customCrumbs = computed(() => {
   if (!state.CTLModule.value) return undefined;
   return generateCustomBreadcrumbs(
     route.params.unit as string,
     route.params.domain as string,
     state,
-    subTypeTranslation.value
+    ownerSubType.value
   );
 });
 
@@ -140,8 +167,8 @@ watch(locale, () => {
 <i18n>
 {
 "de": {
-  "targetModule": "Baustein \"{currentModule}\" bearbeiten",
-  "implementation": "Umsetzung"
+  "targetModule": "{subType} \"{currentModule}\" bearbeiten",
+  "implementation": "Umsetzung",
 },
 "en": {
   "targetModule": "Edit module \"{currentModule}\"",
