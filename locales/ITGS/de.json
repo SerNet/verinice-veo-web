@@ -1,4 +1,6 @@
 {
+  "controls": "Bausteine",
+  "control": "Baustein",
   "addControls": "Baustein hinzufügen",
   "linkControl": "{0} modellieren"
 }

@@ -173,6 +173,8 @@
 
   "linkObject": "Select {0}",
   "linkControl": "Select {0}",
+  "controls": "Controls",
+  "control": "Control",
   "addControls": "Add Controls",
 
   "inputPlaceholders": {
