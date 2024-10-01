@@ -40,7 +40,7 @@
         </BaseCard>
 
         <!-- Requirement -->
-        <v-label class="mt-4">{{ t('requirement') }}</v-label>
+        <v-label class="mt-4">{{ ciSubType }}</v-label>
         <BaseCard border padding>
           <v-row>
             <v-col>
@@ -198,11 +198,12 @@ import type { ComputedRef, Ref } from 'vue';
 import { isVeoLink, validateType } from '~/types/utils';
 
 const { request } = useRequest();
-
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { getRequirementImplementationId, state } = useCompliance();
 const adapter = useDate();
+const route = useRoute();
+const { data: currentDomain } = useCurrentDomain();
 
 interface Props {
   item: RequirementImplementation | null;
@@ -258,7 +259,18 @@ enum Status {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-const route = useRoute();
+// State to hold the subtype translation
+const ciSubType = computed(() => {
+  const newSubType =
+    state.CTLModule.value?.control ?
+      currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType
+    : currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType;
+  const ctModuleType = state.CTLModule.value?.type;
+  if (ctModuleType && newSubType) {
+    return useSubTypeTranslation(ctModuleType, newSubType, false).subTypeTranslation;
+  }
+  return t('control'); // default
+});
 
 /** STATE */
 // data
@@ -293,14 +305,14 @@ const view = reactive({
 
 // Load persons from current unit + current domain
 const unitId = computed(() => route.params.unit);
-const domainId = computed(() => route.params.domain);
+const currentDomainId = computed(() => route.params.domain);
 const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
 
 // Fetch to get total number of persons
-const isFetchingTotalItemCount = computed(() => !!domainId.value && !!unitId.value);
+const isFetchingTotalItemCount = computed(() => !!currentDomainId.value && !!unitId.value);
 
 const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
-  domainId: domainId.value as string,
+  domainId: currentDomainId.value as string,
   unitId: unitId.value as string,
   size: '1'
 }));
@@ -314,7 +326,7 @@ const { data: _personsForTotalItemCount } = useQuery(
 // Fetch Control
 const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
   id: props.item?.control.id as string,
-  domain: domainId.value as string,
+  domain: currentDomainId.value as string,
   endpoint: 'controls'
 }));
 const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, controlParameters, {
@@ -366,10 +378,10 @@ additionalInfo.value.protectionApproachTranslation = computed(() =>
 );
 
 // Fetch again to get all persons in current domain + unit
-const isFetchingPersons = computed(() => !!domainId.value && !!unitId.value && !!totalItemCount);
+const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount);
 
 const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
-  domainId: domainId.value as string,
+  domainId: currentDomainId.value as string,
   unitId: unitId.value as string,
   size: totalItemCount.value
 }));
@@ -460,9 +472,9 @@ async function submitForm({
     "NA": "Entbehrlich"
   },
   "responsible": "Verantwortlich",
-  "editRequirementImplementation": "Anforderung bearbeiten",
-  "requirementImplementationNotUpdated": "Anforderung konnte nicht aktualisiert werden.",
-  "requirementImplementationUpdated": "Anforderung wurde erfolgreich aktualisiert.",
+  "editRequirementImplementation": "Umsetzung bearbeiten",
+  "requirementImplementationNotUpdated": "Umsetzung konnte nicht aktualisiert werden.",
+  "requirementImplementationUpdated": "Umsetzung wurde erfolgreich aktualisiert.",
   "name": "Name",
   "protectionApproach": "Vorgehensweise",
   "implementationUntil": "Umsetzung bis",
@@ -491,9 +503,9 @@ async function submitForm({
     "NA": "dispensable"
   },
   "responsible": "responsible",
-  "editRequirementImplementation": "edit Requirement Implementation",
-  "requirementImplementationNotUpdated": "Requirement Implementation could not be updated.",
-  "requirementImplementationUpdated": "Requirement Implementation successfully updated.",
+  "editRequirementImplementation": "Edit implementation",
+  "requirementImplementationNotUpdated": "Implementation could not be updated.",
+  "requirementImplementationUpdated": "Implementation successfully updated.",
   "name": "Name",
   "protectionApproach": "Protection approach",
   "implementationUntil": "Implementation by",
