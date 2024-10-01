@@ -735,7 +735,7 @@ export default defineComponent({
               icon: mdiTextBoxCheckOutline,
               isDisabled: (item: any) => !item.mitigation, // Disable if mitigation exists (coerce to boolean)
               async action(item: any) {
-                complianceState.CTLModule.value = { ...item.mitigation, owner: item.scope };
+                complianceState.CTLModule.value = { ...item.mitigation, owner: props.object };
                 // Check for mitigation and navigate accordingly
                 if (item.mitigation) {
                   return navigateTo({
