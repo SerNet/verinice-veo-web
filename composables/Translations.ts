@@ -24,6 +24,7 @@ type TranslateSubTypeParams = {
   locale: string;
   subType: string | undefined;
   elementType?: string | undefined;
+  plural: boolean;
 };
 
 type UseTranslationsParams = { domain: string | string[]; languages?: string[] };
@@ -77,13 +78,15 @@ export function useTranslations({ domain }: UseTranslationsParams) {
   };
 }
 
-function translateSubType({ domainSchema, locale, subType, elementType }: TranslateSubTypeParams) {
+function translateSubType({ domainSchema, locale, subType, elementType, plural }: TranslateSubTypeParams) {
   if (!subType || subType === '-') return 'all';
   if (!domainSchema || !elementType) return;
-  return domainSchema.elementTypeDefinitions[elementType]?.translations[locale]?.[`${elementType}_${subType}_plural`];
+  return plural ?
+      domainSchema.elementTypeDefinitions[elementType]?.translations[locale]?.[`${elementType}_${subType}_plural`]
+    : domainSchema.elementTypeDefinitions[elementType]?.translations[locale]?.[`${elementType}_${subType}_singular`];
 }
 
-export function useSubTypeTranslation(_elementType?: string, _subType?: string) {
+export function useSubTypeTranslation(_elementType?: string, _subType?: string, _plural: boolean = true) {
   const route = useRoute();
   const { locale } = useI18n();
 
@@ -118,7 +121,8 @@ export function useSubTypeTranslation(_elementType?: string, _subType?: string) 
         domainSchema: domainSchema.value,
         locale: locale.value,
         subType: subType.value,
-        elementType: elementType.value
+        elementType: elementType.value,
+        plural: _plural
       })
     )
   };
