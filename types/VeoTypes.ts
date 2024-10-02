@@ -481,6 +481,7 @@ export interface IVeoRiskDefinition {
     potentialProbability: number;
     specificProbability: number;
     specificProbabilityExplanation: string;
+    levels: IVeoRiskProbability[];
   };
   impactValues: {
     category: string;
