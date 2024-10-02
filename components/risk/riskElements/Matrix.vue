@@ -79,7 +79,7 @@
               </th>
             </tr>
             <tr
-              v-for="(row, rowIndex) in value"
+              v-for="(_row, rowIndex) in reversedValue"
               :key="rowIndex"
               :style="{
                 height: '100%',
@@ -91,8 +91,9 @@
                 max-width="400px"
                 top
                 :text="
-                  (impacts[rowIndex].translations[locale] && impacts[rowIndex].translations[locale].description) ||
-                  Object.values(impacts[rowIndex].translations)[0].description
+                  (reversedImpacts[rowIndex].translations[locale] &&
+                    reversedImpacts[rowIndex].translations[locale].description) ||
+                  Object.values(reversedImpacts[rowIndex].translations)[0].description
                 "
               >
                 <template #activator="{ props }">
@@ -102,14 +103,15 @@
                       height: '100%',
                       width: 'auto',
                       border: '0.01em solid white',
-                      backgroundColor: impacts[rowIndex].htmlColor,
-                      color: getMostContrastyColor(impacts[rowIndex].htmlColor)
+                      backgroundColor: reversedImpacts[rowIndex].htmlColor,
+                      color: getMostContrastyColor(reversedImpacts[rowIndex].htmlColor)
                     }"
                   >
                     <div>
                       {{
-                        (impacts[rowIndex].translations[locale] && impacts[rowIndex].translations[locale].name) ||
-                        Object.values(impacts[rowIndex].translations)[0].name
+                        (reversedImpacts[rowIndex].translations[locale] &&
+                          reversedImpacts[rowIndex].translations[locale].name) ||
+                        Object.values(reversedImpacts[rowIndex].translations)[0].name
                       }}
                     </div>
                   </td>
@@ -164,7 +166,8 @@
 import { mdiPencil } from '@mdi/js';
 import { upperFirst } from 'lodash';
 import { defineProps } from 'vue';
-import { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValueLevel } from '~/types/VeoTypes';
+import { reverse, cloneDeep } from 'lodash';
+import type { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValueLevel } from '~/types/VeoTypes';
 const props = defineProps({
   probabilities: {
     type: Array as PropType<IVeoRiskProbabilityLevel[]>,
@@ -187,12 +190,21 @@ const props = defineProps({
     required: true
   }
 });
+
 const { t, locale } = useI18n();
 
 const getImpactValues = (rowIndex: number) => {
-  return props.value[rowIndex];
+  return reversedValue.value[rowIndex];
 };
+
 const impactRows = ref(['vernachlässigbar', 'begrenzt', 'beträchtlich', 'existenzbedrohend']);
+
+/**
+ * Values are reversed to correctly render the matrix:
+ * severity levels should increase from bottom to top
+ */
+const reversedValue = computed(() => reverse(cloneDeep(props.value)));
+const reversedImpacts = computed(() => reverse(cloneDeep(props.impacts)));
 </script>
 
 <i18n>

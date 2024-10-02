@@ -82,7 +82,7 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
 </script>
 
 <script setup lang="ts">
-import { cloneDeep, isEqual, reverse } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -123,8 +123,8 @@ const getMatrixData = (protectionGoal: string) => {
   const category = data.value?.categories.find((category) => category.id === protectionGoal);
 
   return {
-    impacts: reverse(cloneDeep(category?.potentialImpacts || [])),
-    value: reverse(cloneDeep(category?.valueMatrix || [])),
+    impacts: category?.potentialImpacts ?? [],
+    value: category?.valueMatrix ?? [],
     probabilities: data.value?.probability.levels || [],
     riskValues: data.value?.riskValues || []
   };
