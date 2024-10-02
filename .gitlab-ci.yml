@@ -64,8 +64,32 @@ check_formatting:
     - if [[ ${?} -ne 0 ]]; then echo "Use 'npm run format' to format your code"; exit 1; fi
   interruptible: true
 
+build_test_app:
+  stage: test
+  rules:
+    - !reference [.verification, rules]
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - .npm/
+  before_script:
+    - npm ci --cache .npm --prefer-offline
+    - chmod +x ./setup-env.sh
+  script:
+    - ./setup-env.sh
+    - npm run generate
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - ${CI_PROJECT_DIR}/.output/public
+  interruptible: true
+
 .test_template:
   image: cypress/browsers:node18.12.0-chrome103-ff107
+  needs: ['build_test_app']
   stage: test
   rules:
     - !reference [.verification, rules]
@@ -80,7 +104,6 @@ check_formatting:
     - chmod +x ./setup-env.sh ./run-parallel-tests.sh
     - ./setup-env.sh
     - export {http,https}_proxy="${http_proxy}"
-    - npm run generate
     - npx serve .output/public/ &
   interruptible: true
 
