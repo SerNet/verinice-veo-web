@@ -82,6 +82,7 @@ check_formatting:
     - export {http,https}_proxy="${http_proxy}"
     - npm run generate
     - npx serve .output/public/ &
+  interruptible: true
 
 test:
   stage: test
