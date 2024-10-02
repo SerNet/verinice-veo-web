@@ -174,7 +174,7 @@ export default defineComponent({
 
     const objectTypes = computed(() => {
       const objectSchemaOptions = Object.keys(objectSchemas.value || {}).map((schemaName) => ({
-        title: upperFirst(schemaName),
+        title: upperFirst(schemaName) as string,
         value: schemaName
       }));
       objectSchemaOptions.unshift({
