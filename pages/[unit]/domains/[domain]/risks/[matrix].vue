@@ -41,7 +41,7 @@
               />
             </div>
             <!-- Neues Kriterium -->
-            <v-row>
+            <v-row class="d-none">
               <v-col cols="12">
                 <div class="px-4 pb-4">
                   <v-btn class="dashed-border text-center elevation-1" outlined block> + {{ t('Newcriterion') }}</v-btn>

@@ -20,9 +20,9 @@
       <div class="d-flex justify-space-between align-center">
         <div class="d-flex align-center">
           <v-card-title class="pr-0">{{ title }}</v-card-title>
-          <v-btn :icon="mdiPencil" variant="plain" size="small" />
+          <v-btn :icon="mdiPencil" variant="plain" size="small" class="d-none" />
         </div>
-        <v-btn :icon="mdiDelete" variant="plain" size="small" />
+        <v-btn :icon="mdiDelete" variant="plain" size="small" class="d-none" />
       </div>
       <v-card-subtitle>{{ t('categories') }}</v-card-subtitle>
       <div class="px-4 d-flex align-center flex-wrap">
@@ -73,7 +73,7 @@
       />
       <div v-else class="d-flex align-center">
         <v-card-subtitle class="pr-0">{{ t('noMatrix') }}</v-card-subtitle>
-        <v-btn :icon="mdiPencil" variant="plain" size="small"> </v-btn>
+        <v-btn :icon="mdiPencil" variant="plain" size="small" class="d-none"> </v-btn>
       </div>
     </v-card>
   </v-col>

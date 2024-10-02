@@ -1,16 +1,16 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2024 Aziz Khalledi
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
    - as published by the Free Software Foundation, either version 3 of the License,
    - or (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
    - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    - See the GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License along with this program.
    - If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -18,7 +18,7 @@
   <v-container class="pt-0">
     <div class="d-flex align-center">
       <v-card-subtitle class="pr-0 px-0">{{ t('riskMatrix') }} </v-card-subtitle>
-      <v-btn :icon="mdiPencil" variant="plain" size="small" />
+      <v-btn :icon="mdiPencil" variant="plain" size="small" class="d-none" />
     </div>
 
     <v-card-text class="pt-0 overflow-x-auto">
