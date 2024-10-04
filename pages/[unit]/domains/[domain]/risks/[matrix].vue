@@ -33,6 +33,7 @@
                     setUpEditing({
                       type: 'potentialImpacts',
                       items: getMatrixData(protectionGoal.id).impacts,
+                      typeTranslation: t('potentialImpacts'),
                       riskCategoryId: protectionGoal.id
                     })
                 "
@@ -42,15 +43,29 @@
               <!-- Risikokategorien -->
               <RiskLegends
                 :get-most-contrasty-color="getMostContrastyColor"
-                :title="t('riskCategories')"
+                :title="t('riskValues')"
                 :items="riskValues"
-                @edit="() => setUpEditing({ type: 'riskValues', items: riskValues })"
+                @edit="
+                  () =>
+                    setUpEditing({
+                      type: 'riskValues',
+                      items: riskValues,
+                      typeTranslation: t('riskValues')
+                    })
+                "
               />
               <RiskLegends
                 :get-most-contrasty-color="getMostContrastyColor"
                 :title="t('probability')"
                 :items="probabilities"
-                @edit="() => setUpEditing({ type: 'probability', items: probabilities })"
+                @edit="
+                  () =>
+                    setUpEditing({
+                      type: 'probability',
+                      items: probabilities,
+                      typeTranslation: t('probability')
+                    })
+                "
               />
             </div>
             <!-- Neues Kriterium -->
@@ -155,6 +170,7 @@ const riskDefinitionId = computed(() => route.params.matrix);
 
 function setUpEditing({
   type,
+  typeTranslation,
   items,
   riskCategoryId
 }: {
@@ -170,6 +186,7 @@ function setUpEditing({
     const _items = cloneDeep(items);
     riskDefinitionPart.value = {
       type,
+      typeTranslation,
       items: _items,
       ...(riskCategoryId ? { riskCategoryId: riskCategoryId } : {})
     };
@@ -217,22 +234,23 @@ function updateRiskDefinition({ riskDefinitionPart: newRiskDefinitionPart }) {
       "impact": "impact",
       "noData": "no data",
       "probability": "probability",
-      "riskCategories": "Risk categories",
+      "riskValues": "Risk categories",
       "Newcriterion": "New criterion",
       "criterion": "Criterion",
       "error": "Updating risk definitions failed.",
-      "success":"Successfully updaded risk definitions."
-
+      "success":"Successfully updaded risk definitions.",
+      "potentialImpacts": "Impact"
     },
     "de": {
       "impact": "auswirkung",
       "noData": "keine Daten",
       "Newcriterion": "Neues Kriterium",
       "criterion": "Kriterium",
-      "riskCategories": "Risikokategorien",
+      "riskValues": "Risikokategorien",
       "probability": "Eintrittswahrscheinlichkeit",
       "error": "Riskodefinitionen konnten nicht aktualisert werden.",
-      "success":"Riskodefinitionen wurden erfolgreich aktualisiert."
+      "success":"Riskodefinitionen wurden erfolgreich aktualisiert.",
+      "potentialImpacts": "Auswirkung"
     }
   }
   </i18n>
