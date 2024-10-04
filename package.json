@@ -2,7 +2,7 @@
   "author": "NBRX AG <info@nbrx.de>",
   "description": "veo-web",
   "engines": {
-    "node": "20.17.x",
+    "node": "20.18.x",
     "npm": "10.8.x"
   },
   "name": "veo-web",
