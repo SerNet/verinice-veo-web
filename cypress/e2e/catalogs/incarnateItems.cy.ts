@@ -18,12 +18,11 @@ describe('Catalogs', { testIsolation: false }, () => {
 
     // Check if the correct number of items is displayed
     cy.veoRequest({
-      url: `/api/domains/${Cypress.env(unitDetails.name).domains[0].id}/catalog-items?size=20&sortBy=abbreviation&sortOrder=asc`,
-      method: 'GET',
-      waitForRequestMethod: false
+      endpoint: `domains/${Cypress.env(unitDetails.name).domains[0].id}/catalog-items?size=20&sortBy=abbreviation&sortOrder=asc`,
+      method: 'GET'
     }).then((response: any) => {
       // Get number of table rows, which should be rendered
-      const expectedDataTableRows = response.totalItemCount > 20 ? 20 : response.totalItemCount;
+      const expectedDataTableRows = response.body.totalItemCount > 20 ? 20 : response.body.totalItemCount;
 
       cy.navigateTo({ group: 'catalog', entry: 'all' });
 
@@ -33,13 +32,13 @@ describe('Catalogs', { testIsolation: false }, () => {
       cy.get('.v-data-table-footer__info div').as('tableFooter');
 
       // Check if table footer displays the right number of total catalog items
-      cy.get('@tableFooter').contains(response.totalItemCount);
+      cy.get('@tableFooter').contains(response.body.totalItemCount);
       // Check if the number of rendered table rows is correct
       cy.get('@tableRows').should('have.length', expectedDataTableRows);
       // Check if the first item is rendered correctly
-      cy.get('@tableRows').contains(response.items[0].name, { matchCase: false });
+      cy.get('@tableRows').contains(response.body.items[0].name, { matchCase: false });
       // Check if the last item is rendered correctly
-      cy.get('@tableRows').contains(response.items.at(-1).name, { matchCase: false });
+      cy.get('@tableRows').contains(response.body.items.at(-1).name, { matchCase: false });
     });
   });
 

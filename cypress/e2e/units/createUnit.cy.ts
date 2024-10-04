@@ -35,13 +35,10 @@ describe('create units', () => {
             .then(($a) => {
               const href = $a.attr('href');
               const idBeforeDomains = href.match(/\/([^/]+)\/domains/)[1];
-              cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
               cy.veoRequest({
-                url: `/api/units/${idBeforeDomains}`,
-                method: 'DELETE',
-                waitForRequestMethod: true
-              });
-              cy.wait(['@deleteUnit']).its('response.statusCode').should('eq', 204);
+                endpoint: `units/${idBeforeDomains}`,
+                method: 'DELETE'
+              }).then((res) => expect(res.status).to.eq(204));
             });
         }
       });
@@ -75,11 +72,9 @@ describe('create units', () => {
               const idBeforeDomains = href.match(/\/([^/]+)\/domains/)[1];
               cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
               cy.veoRequest({
-                url: `/api/units/${idBeforeDomains}`,
-                method: 'DELETE',
-                waitForRequestMethod: true
-              });
-              cy.wait(['@deleteUnit']).its('response.statusCode').should('eq', 204);
+                endpoint: `units/${idBeforeDomains}`,
+                method: 'DELETE'
+              }).then((res) => expect(res.status).to.eq(204));
             });
         }
       });

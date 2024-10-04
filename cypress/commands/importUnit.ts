@@ -12,18 +12,18 @@ declare global {
 export function importUnit(unitName: string, { fixturePath }: { fixturePath: string }) {
   cy.fixture(fixturePath).then((json) => {
     cy.veoRequest({
-      url: '/api/units/import',
+      endpoint: 'units/import',
       method: 'POST',
-      requestBody: prepareUnitData(unitName, json)
+      body: prepareUnitData(json, unitName)
     });
   });
 }
 
-function prepareUnitData(unitName: string, json: any) {
+function prepareUnitData(json: any, unitName: string) {
   const replacementData = [
     {
       key: '{%%DOMAIN_ID%%}',
-      val: Cypress.env('dsgvoUnitId')
+      val: Cypress.env('domainIdDSGVO')
     },
     {
       key: '{%%UNIT_NAME%%}',

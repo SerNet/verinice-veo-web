@@ -104,59 +104,57 @@ export function createUnit({
   desc = Cypress.env('unitDetails').desc,
   domains: domainNames = Cypress.env('unitDetails').domains
 }: UnitDetails): void {
-  cy.log(name);
-  cy.log(desc);
+  if (Cypress.env('debug')) {
+    cy.log(name);
+    cy.log(desc);
+  }
+
   cy.getVeoDomains().then((allVeoDomains) => {
     // Get targetUris of domains the test unit will be associated with
     const domains = allVeoDomains
       .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))
       .map((filteredDomain) => ({ targetUri: filteredDomain.targetUri }));
 
-    const waitForRequestMethod = Cypress.env('veoDomains') ? false : true;
-
-    cy.intercept('POST', `${Cypress.env('veoApiUrl')}/units`).as('createUnit');
-    cy.veoRequest({
-      url: '/api/units',
+    const requestOptions = {
+      endpoint: 'units',
       method: 'POST',
-      waitForRequestMethod,
-      requestBody: {
+      body: {
         name: name,
         description: desc,
         domains
       }
-    }).then((data: any) => {
+    };
+
+    cy.veoRequest(requestOptions).then((response: any) => {
       // Store unit id and domainNames
       // to make them accessible in tests and other commands
       const unitDetails = {
         ...Cypress.env(name),
         name: name,
-        unitId: data.resourceId,
+        unitId: response.body.resourceId,
         desc: desc,
         domains: allVeoDomains
           .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))
           .map((filteredDomain) => ({ name: filteredDomain.name, id: filteredDomain.id }))
       };
-      cy.log(unitDetails.name);
+
+      if (Cypress.env('debug')) cy.log(unitDetails.name);
       Cypress.env(unitDetails.name, unitDetails);
     });
-    cy.wait(['@createUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 201);
   });
 }
 
-export function deleteUnit(unitName: string, waitForRequestMethod = true): void {
+export function deleteUnit(unitName: string): void {
   // Check if the cypress environment has an ID for the test unit
   if (!unitName) {
-    cy.log('Could not find test unit ID. Test unit cannot be deleted.');
+    if (Cypress.env('debug')) cy.log('Could not find test unit ID. Test unit cannot be deleted.');
     return;
   }
 
-  cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
   cy.veoRequest({
-    url: `/api/units/${Cypress.env(unitName).unitId}`,
-    method: 'DELETE',
-    waitForRequestMethod
-  });
-  cy.wait(['@deleteUnit']).its('response.statusCode').should('eq', 204);
+    endpoint: `units/${Cypress.env(unitName).unitId}`,
+    method: 'DELETE'
+  }).then((response) => expect(response.status).to.equal(204));
 }
 
 export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {

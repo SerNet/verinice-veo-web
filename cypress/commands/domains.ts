@@ -68,21 +68,20 @@ export function getSelectedDomain(): Cypress.Chainable<string> {
  * reduce them to a concise format,
  * write them into an env var.
  */
-export function getVeoDomains(): Promise<ICYVeoDomain[]> {
-  cy.log('Fetching domains...');
+export function getVeoDomains(): Cypress.Chainable<ICYVeoDomain[]> {
+  if (Cypress.env('debug')) cy.log('Fetching domains...');
 
-  return cy
-    .veoRequest({
-      url: '/api/domains',
-      method: 'GET'
-    })
-    .then((domains: IVeoDomain[]) => {
-      const reducedDomains = domains.reduce(
-        (acc: ICYVeoDomain[], cur: IVeoDomain) => [...acc, { name: cur.name, id: cur.id, targetUri: cur._self }],
-        []
-      );
+  return cy.veoRequest({ endpoint: 'domains' }).then((res) => {
+    const domains: IVeoDomain[] = res.body;
 
-      Cypress.env('veoDomains', reducedDomains);
-      return reducedDomains;
-    });
+    const reducedDomains = domains.reduce(
+      (acc: ICYVeoDomain[], cur: IVeoDomain) => [...acc, { name: cur.name, id: cur.id, targetUri: cur._self }],
+      []
+    );
+
+    // Store domains in cypress environment
+    Cypress.env('veoDomains', reducedDomains);
+
+    return reducedDomains;
+  });
 }
