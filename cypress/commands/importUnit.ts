@@ -23,7 +23,7 @@ function prepareUnitData(json: any, unitName: string) {
   const replacementData = [
     {
       key: '{%%DOMAIN_ID%%}',
-      val: Cypress.env('domainIdDSGVO')
+      val: Cypress.env('dsgvoUnitId')
     },
     {
       key: '{%%UNIT_NAME%%}',

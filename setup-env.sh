@@ -21,6 +21,11 @@ CY_CONFIG_LOCAL='{
   "name": "'${CYPRESS_TESTUSER_NAME}'",
   "pw": "'${CYPRESS_TESTUSER_PASS}'"
 },
+"keycloak": {
+  "baseUrl": "'${KEYCLOAK_BASE_URL}'",
+  "realm": "'${KEYCLOAK_BASE_REALM}'",
+  "clientId": "'${KEYCLOAK_CLIENT_ID}'"
+},
 "baseUrl": "'${CYPRESS_BASE_URL_LOCAL}'",
 "veoOidcUrl": "'${VEO_OIDC_URL}'",
 "veoApiUrl" : "'${VEO_DEFAULT_API_URL}'",
