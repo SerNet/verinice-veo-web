@@ -59,7 +59,7 @@
             </div>
           </template>
         </v-tooltip>
-        <v-btn :icon="mdiPencil" variant="plain" size="small" />
+        <v-btn :icon="mdiPencil" variant="plain" size="small" @click="emit('edit')" />
       </div>
 
       <!-- Risk Matrix -->
@@ -109,6 +109,11 @@ defineProps({
     default: ''
   }
 });
+
+const emit = defineEmits<{
+  (e: 'edit'): void;
+}>();
+
 const CONTRAST_THRESHOLD = 90;
 const getMostContrastyColor = (backgroundColor: string) => {
   if (backgroundColor) {
