@@ -408,7 +408,11 @@ export default defineComponent({
     };
 
     const handleReturnObjects = () => {
-      emit('update:preselected-items', modifiedSelectedItems.value);
+      const cleanedItems = (modifiedSelectedItems.value as any[]).map((item) => {
+        const { disabled: _, ...rest } = item;
+        return rest;
+      });
+      emit('update:preselected-items', cleanedItems);
       emit('update:model-value', false);
     };
 
