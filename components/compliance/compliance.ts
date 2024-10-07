@@ -58,7 +58,7 @@ async function fetchRequirementImplementations({
   if (!type || !riskAffected || !control) return;
 
   const url =
-    `/api/${type}/${riskAffected}/control-implementations/${control}/requirement-implementations?size=${size}&page=${getPageNumber(page)}` +
+    `/api/${type}/${riskAffected}/control-implementations/${control}/requirement-implementations?size=${size > 0 ? size : 1000}&page=${getPageNumber(page)}` +
     (sortBy ? `&sortBy=${sortBy}&sortOrder=${sortOrder}` : '');
 
   return await request(url, {});
