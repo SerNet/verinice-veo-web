@@ -161,23 +161,31 @@ export default defineComponent({
 
     // Update Item on Return Objects
     const onItemsUpdated = async (newItems: (IVeoEntity | IVeoLink)[]) => {
-      const copy = cloneDeep(props.object);
-      if (!copy) return;
-      copy.controlImplementations?.push(
-        ...newItems.map((item) => {
-          return {
-            control: 'targetUri' in item ? item : createLink('controls', item.id)
-          };
-        })
-      );
+      if (!props.object) return;
 
-      await updateObject({
-        domain: route.params.domain,
-        endpoint: route.params?.objectType,
-        id: copy?.id,
-        object: copy
-      });
-      displaySuccessMessage(upperFirst(t('objectLinked').toString()));
+      const copy = cloneDeep(props.object);
+      copy.controlImplementations ??= [];
+
+      const newImplementations = newItems
+        .filter((item) => !copy.controlImplementations.some((impl) => impl.control.id === item.id))
+        .map((item) => ({
+          control: 'targetUri' in item ? item.targetUri : createLink('controls', item.id)
+        }));
+
+      copy.controlImplementations.push(...newImplementations);
+
+      try {
+        await updateObject({
+          domain: route.params.domain,
+          endpoint: route.params?.objectType,
+          id: copy.id,
+          object: copy
+        });
+        displaySuccessMessage(upperFirst(t('objectLinked').toString()));
+      } catch (error) {
+        console.error('Error updating object:', error);
+        displayErrorMessage(upperFirst(t('objectNotLinked').toString()), JSON.stringify(error));
+      }
     };
     // show error or success message
     const onAddEntitySuccess = () => {
