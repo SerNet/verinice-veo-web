@@ -31,18 +31,19 @@
         <div class="d-flex justify-end">
           <v-tooltip v-for="btn in actions" :key="btn.id" location="bottom">
             <template #activator="{ props }">
-              <v-btn
-                :class="{ 'custom-readonly-btn': btn.isDisabled(item) }"
-                v-bind="props"
-                :icon="btn.icon"
-                size="small"
-                variant="flat"
-                :readonly="btn.isDisabled(item)"
-                :disabled="ability.cannot('manage', 'objects')"
-                @click="btn.action(item)"
-              />
+              <div v-bind="props">
+                <v-btn
+                  :class="{ 'custom-readonly-btn': btn.isDisabled(item) }"
+                  :icon="btn.icon"
+                  size="small"
+                  variant="flat"
+                  :readonly="btn.isDisabled(item)"
+                  :disabled="ability.cannot('manage', 'objects')"
+                  @click="btn.action(item)"
+                />
+              </div>
             </template>
-            {{ btn.label }}
+            {{ btn.label(item) }}
           </v-tooltip>
         </div>
       </template>
@@ -54,8 +55,6 @@
       :title="t('deleteDialogTitle')"
       :confirmation-text="globalT('global.button.delete')"
       :callback="confirmationDialogCallBack"
-      @success="displaySuccessMessage(t('controlDeleted'))"
-      @error="displayErrorMessage(t('errors.control'), JSON.stringify($event))"
     />
     <ObjectUnlinkDialog
       v-model="unlinkEntityDialog.value"
@@ -72,6 +71,7 @@
       :object-id="object.id"
     />
     <ControlsEditDialog
+      v-if="controlsEditDialogVisible"
       :control-index="index"
       :object="object"
       :show-dialog="controlsEditDialogVisible"
@@ -688,24 +688,31 @@ export default defineComponent({
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
     async function onDeleteControl(item: any) {
-      const controlId = item.control?.id;
-      // since props mustn't be mutated, we need a shallow copy of the object which can be changed
-      const copy = cloneDeep(props.object);
-      // if the ID matches, get the appropriate CI index that will be deleted from the object
-      const controlIndex = (copy?.controlImplementations || []).findIndex((ci) =>
-        ci.control.targetUri.endsWith(controlId)
-      );
-      // finally mutate the object, if an ID matched
-      if (controlIndex >= 0) {
-        // delete the appropriate key at <controlIndex>
-        copy?.controlImplementations?.splice(controlIndex, 1);
-        // patch the object / PUT changed riskAffected
-        await updateObject({
-          domain: props.domainId,
-          endpoint: route.params?.objectType,
-          id: copy?.id,
-          object: copy
-        });
+      try {
+        const controlId = item.control?.id;
+        // since props mustn't be mutated, we need a shallow copy of the object which can be changed
+        const copy = cloneDeep(props.object);
+        // if the ID matches, get the appropriate CI index that will be deleted from the object
+        const controlIndex = (copy?.controlImplementations || []).findIndex((ci) =>
+          ci.control.targetUri.endsWith(controlId)
+        );
+        // finally mutate the object, if an ID matched
+        if (controlIndex >= 0) {
+          // delete the appropriate key at <controlIndex>
+          copy?.controlImplementations?.splice(controlIndex, 1);
+          // patch the object / PUT changed riskAffected
+          await updateObject({
+            domain: props.domainId,
+            endpoint: route.params?.objectType,
+            id: copy?.id,
+            object: copy
+          });
+        }
+        displaySuccessMessage(t('controlDeleted'));
+      } catch (error) {
+        displayErrorMessage(t('errors.control'), JSON.stringify(error));
+      } finally {
+        confirmationDialogVisible.value = false;
       }
     }
 
@@ -724,7 +731,7 @@ export default defineComponent({
           return [
             {
               id: 'implementations',
-              label: t('implementations'),
+              label: (item: any) => (!item.mitigation ? t('noImplementations') : t('implementations')),
               icon: mdiTextBoxCheckOutline,
               isDisabled: (item: any) => !item.mitigation, // Disable if mitigation exists (coerce to boolean)
               async action(item: any) {
@@ -744,7 +751,7 @@ export default defineComponent({
             },
             {
               id: 'delete',
-              label: upperFirst(t('deleteRisk').toString()),
+              label: (_item: any) => upperFirst(t('deleteRisk').toString()),
               icon: mdiTrashCanOutline,
               isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
               async action(item: IVeoRisk) {
@@ -765,7 +772,7 @@ export default defineComponent({
           return [
             {
               id: 'implementations',
-              label: t('implementations'),
+              label: (_item: any) => t('implementations'),
               icon: mdiTextBoxCheckOutline,
               isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
@@ -783,12 +790,12 @@ export default defineComponent({
             },
             {
               id: 'delete',
-              label: upperFirst(t('deleteDialogTitle').toString()),
+              label: (_item: any) => upperFirst(t('deleteDialogTitle').toString()),
               icon: mdiLinkOff,
               isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
               async action(item: any) {
-                controlNameToUnlink.value = item.name.split(' ').slice(1).join(' ');
+                controlNameToUnlink.value = item.name;
                 confirmationDialogCallBack.value = () => onDeleteControl(item);
                 confirmationDialogVisible.value = true;
               }
@@ -799,7 +806,7 @@ export default defineComponent({
           return [
             {
               id: 'clone',
-              label: upperFirst(t('cloneObject').toString()),
+              label: (_item: any) => upperFirst(t('cloneObject').toString()),
               icon: mdiContentCopy,
               isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
@@ -835,13 +842,14 @@ export default defineComponent({
             },
             {
               id: 'unlink',
-              label: upperFirst(
-                t(
-                  props.object?.type === 'scope' || props.type === 'parentScopes' ?
-                    'removeFromScope'
-                  : 'removeFromObject'
-                ).toString()
-              ),
+              label: (_item: any) =>
+                upperFirst(
+                  t(
+                    props.object?.type === 'scope' || props.type === 'parentScopes' ?
+                      'removeFromScope'
+                    : 'removeFromObject'
+                  ).toString()
+                ),
               icon: mdiLinkOff,
               isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
@@ -1069,6 +1077,7 @@ export default defineComponent({
     },
     "scenario": "Scenario",
     "implementations": "Show implementations",
+    "noImplementations": "No mitigating controls found"
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
@@ -1112,7 +1121,8 @@ export default defineComponent({
       "RISK_TREATMENT_TRANSFER": "Risikotransfer"
     },
     "scenario": "Szenario",
-    "implementations": "Implementierungen anzeigen",
+    "implementations": "Umsetzung anzeigen",
+    "noImplementations": "keine mitigierenden Maßnahmen gefunden"
 
   }
 }
