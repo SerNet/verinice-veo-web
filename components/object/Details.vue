@@ -95,15 +95,15 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 
-import { IVeoEntity } from '~/types/VeoTypes';
 import { useFormatters } from '~/composables/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -199,16 +199,16 @@ export default defineComponent({
         key: 'links'
       },
       {
-        key: 'risks',
-        hidden: !hasRiskTab.value
-      },
-      {
         key: 'controls',
         hidden: isControlsTabHidden.value
       },
       {
         key: 'targets',
         hidden: props.object?.subType !== 'CTL_Module'
+      },
+      {
+        key: 'risks',
+        hidden: !hasRiskTab.value
       }
     ]);
 
