@@ -17,12 +17,12 @@
  */
 import { cloneDeep, isString } from 'lodash';
 
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
 import { IVeoEntity } from '~/types/VeoTypes';
-import { useQuery } from './api/utils/query';
 import { useMutation } from './api/utils/mutation';
+import { useQuery } from './api/utils/query';
 
 const route = useRoute();
 
@@ -35,7 +35,8 @@ export const useCreateLink = () => {
   const config = useRuntimeConfig();
 
   const createLink = (endpoint: string, objectId: string) => ({
-    targetUri: `${config.public.apiUrl}/${endpoint}/${objectId}`
+    targetUri: `${config.public.apiUrl}/${endpoint}/${objectId}`,
+    id: objectId
   });
 
   return { createLink };

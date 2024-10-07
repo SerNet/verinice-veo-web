@@ -155,9 +155,10 @@ const updateControl = async () => {
 
 const person = computed({
   get: () => copy.value.controlImplementations[props.controlIndex]?.responsible?.id,
-  set: (newPerson) =>
-    (copy.value.controlImplementations[props.controlIndex].responsible =
-      newPerson !== null ? createLink('persons', newPerson) : undefined)
+  set: (newPerson) => {
+    copy.value.controlImplementations[props.controlIndex].responsible =
+      newPerson !== null ? createLink('persons', newPerson) : undefined;
+  }
 });
 
 const description = computed({
@@ -165,12 +166,9 @@ const description = computed({
   set: (newDescription) => (copy.value.controlImplementations[props.controlIndex].description = newDescription)
 });
 
-watch(
-  () => props.object,
-  (newValue) => {
-    copy.value = cloneDeep(newValue);
-  }
-);
+watch(props, () => {
+  copy.value = cloneDeep(props.object);
+});
 </script>
 
 <i18n>

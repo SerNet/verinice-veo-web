@@ -169,7 +169,7 @@ export default defineComponent({
       const newImplementations = newItems
         .filter((item) => !copy.controlImplementations.some((impl) => impl.control.id === item.id))
         .map((item) => ({
-          control: 'targetUri' in item ? item.targetUri : createLink('controls', item.id)
+          control: 'targetUri' in item ? item : createLink('controls', item.id)
         }));
 
       copy.controlImplementations.push(...newImplementations);
