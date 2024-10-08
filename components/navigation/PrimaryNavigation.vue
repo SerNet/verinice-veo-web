@@ -458,8 +458,8 @@ const items = computed<INavItem[]>(() => [
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
       ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
-      reportsNavEntry.value,
-      risksNavEntry.value
+      ...(!isEmpty(reportsEntriesChildItems.value) ? [reportsNavEntry.value] : []),
+      ...(!isEmpty(riskChildItems.value) ? [risksNavEntry.value] : [])
     ]
   : [])
 ]);
