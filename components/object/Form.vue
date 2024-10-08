@@ -269,7 +269,7 @@ export default defineComponent({
 
       return {
         ...(objectSchema.value?.title === 'person' ? personReactiveFormActions() : {}),
-        ...(['process', 'asset', 'scope'].includes(objectSchema.value?.title || '') ?
+        ...(riskDefinitionId !== undefined && ['process', 'asset', 'scope'].includes(objectSchema.value?.title || '') ?
           riskReactiveFormActions(
             riskDefinitionId,
             Object.keys(

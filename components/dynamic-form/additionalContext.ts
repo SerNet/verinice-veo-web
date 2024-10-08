@@ -123,6 +123,9 @@ export const getRiskAdditionalContext = (
 ): IVeoFormsAdditionalContext => {
   // we assume "the one and only" risk definition per domain, so we extract the first and only key available
   const riskDefinitionName = Object.keys(domain.riskDefinitions)[0];
+  if (!riskDefinitionName) {
+    return {};
+  }
   const riskDefinitionCategories = domain.riskDefinitions[riskDefinitionName].categories.map((category) => category.id);
 
   switch (objectType) {
