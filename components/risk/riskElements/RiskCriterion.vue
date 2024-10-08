@@ -131,11 +131,12 @@ const getMostContrastyColor = (backgroundColor: string) => {
   {
     "en": {
       "categories": "Categories:",
-      "NoMatrix": "No risk matrix defined."
+      "noMatrix": "No risk matrix defined."
+      
     },
     "de": {
       "categories": "Kategorien:",
-      "NoMatrix": "Keine Risikomatrix definiert."
+      "noMatrix": "Keine Risikomatrix definiert."
     }
   }
   </i18n>
