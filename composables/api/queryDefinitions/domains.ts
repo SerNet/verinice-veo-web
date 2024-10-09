@@ -81,6 +81,10 @@ export interface IVeoDomain extends IVeoBaseObject {
   elementTypeDefinitions: {
     [key: string]: IVeoElementTypeDefinition;
   };
+  controlImplementationConfiguration: {
+    complianceControlSubType?: string;
+    mitigationControlSubType?: string;
+  };
 }
 
 export function getSubTypes(domain: IVeoDomain, elementType: string): string[] {

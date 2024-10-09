@@ -115,7 +115,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import domainQueryDefinitions, { getSubTypes, IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
@@ -300,22 +300,13 @@ export default defineComponent({
       dirtyFields.value.mitigation = true;
     };
 
-    const getFirstControlSubType = (domain: IVeoDomain | undefined) => {
-      if (!domain) return;
-      return getSubTypes(domain, 'control')[0];
-    };
-
     const newMitigatingAction = computed(() => ({
       type: 'control',
       name: t('mitigatingAction', [data.value?.designator]).toString(),
       owner: {
         targetUri: `${config.public.apiUrl}/units/${route.params.unit}`
       },
-      /*
-       * Pass a subtype which exists in the current domain.
-       * Which one exactly does not matter: getting the first one is arbitrary.
-       */
-      subType: getFirstControlSubType(domain.value),
+      subType: domain.value?.controlImplementationConfiguration?.mitigationControlSubType,
       status: 'NEW'
     }));
 

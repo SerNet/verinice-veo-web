@@ -107,6 +107,7 @@
       v-if="createMitigationDialogVisible"
       v-model="createMitigationDialogVisible"
       object-type="control"
+      :sub-type="currentDomain.raw.controlImplementationConfiguration.mitigationControlSubType"
       :domain-id="domainId"
       @success="onMitigationCreated"
     />
@@ -124,6 +125,7 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuerySync } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { useCurrentDomain } from '~/composables/index';
 
 export default defineComponent({
   props: {
@@ -194,6 +196,8 @@ export default defineComponent({
       }
     };
 
+    const { data: currentDomain } = useCurrentDomain();
+
     const onMitigationCreated = async (objectId: string) => {
       const newMitigation = await useQuerySync(
         objectQueryDefinitions.queries.fetch,
@@ -255,7 +259,8 @@ export default defineComponent({
       mdiLinkOff,
       mdiPencilOutline,
       navigateToPart,
-      navigateToContainer
+      navigateToContainer,
+      currentDomain
     };
   }
 });
