@@ -29,7 +29,7 @@
     :return-object="valueAsEntity"
     v-bind="$attrs"
     variant="underlined"
-    @update:search="updateSearchQuery"
+    @input="onSearchInput"
     @click="() => updateSearchQuery()"
     @click:clear="onClearClicked"
   >
@@ -177,6 +177,11 @@ watch(
 
 const updateSearchQuery = (newValue = '') => {
   searchQuery.value = newValue;
+};
+
+const onSearchInput = (event: InputEvent) => {
+  const typedValue: string = (event.target as HTMLInputElement).value;
+  searchQuery.value = typedValue;
 };
 
 const onClearClicked = () => {
