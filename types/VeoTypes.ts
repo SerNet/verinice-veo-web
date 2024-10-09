@@ -64,7 +64,7 @@ export interface IVeoRiskValueLevel {
 export interface IVeoRiskPotentialImpact {
   htmlColor: string;
   translations: IVeoRiskDefinitionItemTranslations;
-  ordinalValue: string;
+  ordinalValue: number;
   valueMatrix?: IVeoRiskValueLevel[][];
 }
 

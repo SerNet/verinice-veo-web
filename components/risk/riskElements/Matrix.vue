@@ -44,10 +44,7 @@
                 :key="probability.ordinalValue"
                 max-width="400px"
                 top
-                :text="
-                  (probability.translations[locale] && probability.translations[locale].description) ||
-                  Object.values(probability.translations)[0].description
-                "
+                :text="getProbabilityTooltipText(probability)"
               >
                 <template #activator="{ props }">
                   <th
@@ -63,7 +60,7 @@
                     }"
                   >
                     <div>
-                      {{ probability.translations[locale]?.name || Object.values(probability.translations)[0].name }}
+                      {{ getProbabilityName(probability) }}
                     </div>
                   </th>
                 </template>
@@ -87,15 +84,7 @@
                 textAlign: 'center'
               }"
             >
-              <v-tooltip
-                max-width="400px"
-                top
-                :text="
-                  (reversedImpacts[rowIndex].translations[locale] &&
-                    reversedImpacts[rowIndex].translations[locale].description) ||
-                  Object.values(reversedImpacts[rowIndex].translations)[0].description
-                "
-              >
+              <v-tooltip max-width="400px" top :text="getImpactTooltipText(rowIndex)">
                 <template #activator="{ props }">
                   <td
                     v-bind="props"
@@ -108,11 +97,7 @@
                     }"
                   >
                     <div>
-                      {{
-                        (reversedImpacts[rowIndex].translations[locale] &&
-                          reversedImpacts[rowIndex].translations[locale].name) ||
-                        Object.values(reversedImpacts[rowIndex].translations)[0].name
-                      }}
+                      {{ getImpactName(rowIndex) }}
                     </div>
                   </td>
                 </template>
@@ -122,10 +107,7 @@
                 :key="cellIndex"
                 max-width="400px"
                 top
-                :text="
-                  (cell.translations[locale] && cell.translations[locale].description) ||
-                  Object.values(cell.translations)[0].description
-                "
+                :text="getCellTooltipText(cell)"
               >
                 <template #activator="{ props }">
                   <td
@@ -146,10 +128,7 @@
                         flex: 1
                       }"
                     >
-                      {{
-                        riskValues[cell.ordinalValue]?.translations[locale]?.name ||
-                        Object.values(riskValues[cell.ordinalValue].translations)[0].name
-                      }}
+                      {{ getCellName(cell) }}
                     </div>
                   </td>
                 </template>
@@ -164,9 +143,8 @@
 
 <script setup lang="ts">
 import { mdiPencil } from '@mdi/js';
-import { upperFirst } from 'lodash';
+import { cloneDeep, reverse, upperFirst } from 'lodash';
 import { defineProps } from 'vue';
-import { reverse, cloneDeep } from 'lodash';
 import type { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValueLevel } from '~/types/VeoTypes';
 const props = defineProps({
   probabilities: {
@@ -205,6 +183,29 @@ const impactRows = ref(['vernachlässigbar', 'begrenzt', 'beträchtlich', 'exist
  */
 const reversedValue = computed(() => reverse(cloneDeep(props.value)));
 const reversedImpacts = computed(() => reverse(cloneDeep(props.impacts)));
+
+// Probability levels
+const getProbabilityTooltipText = (probability: IVeoRiskProbabilityLevel) =>
+  translate(probability.translations)['description'];
+const getProbabilityName = (probability: IVeoRiskProbabilityLevel) => translate(probability.translations)['name'];
+
+// Impacts
+const getImpactTooltipText = (rowIndex: number) =>
+  translate(reversedImpacts.value[rowIndex].translations)['description'];
+const getImpactName = (rowIndex: number) => translate(reversedImpacts.value[rowIndex].translations)['name'];
+
+// Risk values
+const getCellTranslation = (cell: IVeoRiskValueLevel, key: 'description' | 'name') => {
+  const matchingRiskValue = props.riskValues.find((value) => value.ordinalValue === cell.ordinalValue);
+  return translate(matchingRiskValue.translations)[key];
+};
+
+const getCellTooltipText = (cell: IVeoRiskValueLevel) => getCellTranslation(cell, 'description');
+const getCellName = (cell: IVeoRiskValueLevel) => getCellTranslation(cell, 'name');
+
+function translate<T>(translations: { [lang: string]: T }): T {
+  return translations[locale.value] || Object.values(translations)[0];
+}
 </script>
 
 <i18n>
