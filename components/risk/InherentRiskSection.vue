@@ -22,16 +22,14 @@
     </h2>
     <BaseCard border padding>
       <v-row>
-        <template v-for="protectionGoal of riskDefinition.categories">
+        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
           <RiskInherentRiskSectionColumn
-            v-if="protectionGoalExists(protectionGoal.id)"
-            :key="protectionGoal.id"
             :disabled="disabled"
-            :protection-goal="protectionGoal"
+            :protection-goal="riskCriterion"
             :risk-definition="riskDefinition"
             :dirty-fields="dirtyFields"
-            :num-of-cols="riskDefinition.categories.length"
-            v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
+            :num-of-cols="filteredRiskCriteria.length"
+            v-bind="data.find((riskValue) => riskValue.category === riskCriterion.id)"
             @update:dirty-fields="$emit('update:dirty-fields', $event)"
           />
         </template>
@@ -41,11 +39,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
+import { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition } from '~/types/VeoTypes';
 import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -70,13 +68,18 @@ export default defineComponent({
   emits: ['update:dirty-fields'],
   setup(props) {
     const { t } = useI18n();
+    const filteredRiskCriteria = computed(() =>
+      props.riskDefinition.categories.filter(
+        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
+      )
+    );
+    const riskCriterionExists = (riskCriterion: string) =>
+      !!props.data.find((riskValue) => riskValue.category === riskCriterion);
 
-    const protectionGoalExists = (protectionGoal: string) =>
-      !!props.data.find((riskValue) => riskValue.category === protectionGoal);
+    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
 
     return {
-      protectionGoalExists,
-
+      filteredRiskCriteria,
       t,
       upperFirst
     };
