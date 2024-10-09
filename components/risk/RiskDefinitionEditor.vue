@@ -21,11 +21,7 @@
     <v-card min-width="640">
       <div v-if="form.items?.length" class="d-flex flex-column">
         <v-tabs v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
-          <v-tab
-            v-for="(translation, index) in Object.keys(form.items?.[0]?.translations ?? {})"
-            :key="translation"
-            :value="`${translation}-${index}`"
-          >
+          <v-tab v-for="translation in Object.keys(form.items?.[0]?.translations ?? {})" :key="translation">
             {{ translation }}
           </v-tab>
         </v-tabs>
@@ -34,7 +30,6 @@
           <v-tabs-window-item
             v-for="(translation, index) in Object.keys(form.items?.[0]?.translations ?? {})"
             :key="translation"
-            :value="`${translation}-${index}`"
           >
             <v-tabs v-model="tab" color="primary" direction="vertical">
               <v-tab
@@ -51,9 +46,8 @@
             <v-tabs-window v-model="tab">
               <v-tabs-window-item
                 v-for="(item, indexItems) in form.items"
-                :key="item.ordinalValue + index"
+                :key="indexItems"
                 :text="item.translations[translation].name"
-                :value="index"
               >
                 <v-container fluid>
                   <v-form>
