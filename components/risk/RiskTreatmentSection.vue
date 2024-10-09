@@ -22,17 +22,15 @@
     </h2>
     <BaseCard border padding>
       <v-row>
-        <template v-for="protectionGoal of riskDefinition.categories">
+        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
           <RiskTreatmentSectionColumn
-            v-if="protectionGoalExists(protectionGoal.id)"
-            :key="protectionGoal.id"
             :disabled="disabled"
-            :protection-goal="protectionGoal"
+            :protection-goal="riskCriterion"
             :risk-definition="riskDefinition"
-            :num-of-cols="riskDefinition.categories.length"
-            v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
-            @update:risk-treatments="onRiskTreatmentChanged(protectionGoal.id, $event)"
-            @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(protectionGoal.id, $event)"
+            :num-of-cols="filteredRiskCriteria.length"
+            v-bind="data.find((riskValue) => riskValue.category === riskCriterion.id)"
+            @update:risk-treatments="onRiskTreatmentChanged(riskCriterion.id, $event)"
+            @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(riskCriterion.id, $event)"
           />
         </template>
       </v-row>
@@ -41,11 +39,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
+import { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition, VeoRiskTreatment } from '~/types/VeoTypes';
 import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoDomainRiskDefinition, IVeoRiskDefinition, VeoRiskTreatment } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -70,26 +68,32 @@ export default defineComponent({
   emits: ['update:data', 'update:dirty-fields'],
   setup(props, { emit }) {
     const { t } = useI18n();
+    const filteredRiskCriteria = computed(() =>
+      props.riskDefinition.categories.filter(
+        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
+      )
+    );
+    const riskCriterionExists = (riskCriterion: string) =>
+      !!props.data.find((riskValue) => riskValue.category === riskCriterion);
 
-    const protectionGoalExists = (protectionGoal: string) =>
-      !!props.data.find((riskValue) => riskValue.category === protectionGoal);
+    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
 
-    const onRiskTreatmentChanged = (protectionGoal: string, newValue: VeoRiskTreatment[]) => {
+    const onRiskTreatmentChanged = (riskCriterion: string, newValue: VeoRiskTreatment[]) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
+      const riskValue = localData.find((riskValue) => riskValue.category === riskCriterion);
       if (riskValue) {
         riskValue.riskTreatments = newValue;
       }
       emit('update:data', localData);
       emit('update:dirty-fields', {
         ...props.dirtyFields,
-        [`${props.riskDefinition.id}_${protectionGoal}_riskTreatments`]: true
+        [`${props.riskDefinition.id}_${riskCriterion}_riskTreatments`]: true
       });
     };
 
-    const onRiskTreatmentExplanationChanged = (protectionGoal: string, newValue: string) => {
+    const onRiskTreatmentExplanationChanged = (riskCriterion: string, newValue: string) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
+      const riskValue = localData.find((riskValue) => riskValue.category === riskCriterion);
       if (riskValue) {
         riskValue.riskTreatmentExplanation = newValue;
       }
@@ -99,9 +103,8 @@ export default defineComponent({
     return {
       onRiskTreatmentChanged,
       onRiskTreatmentExplanationChanged,
-      protectionGoalExists,
-
       t,
+      filteredRiskCriteria,
       upperFirst
     };
   }
