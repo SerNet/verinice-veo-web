@@ -113,6 +113,7 @@ const router = useRouter();
 const route = useRoute();
 
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+const { createLink } = useCreateLink();
 
 const internalValue = computed<string | undefined>({
   get: () => {
@@ -133,12 +134,7 @@ const internalValue = computed<string | undefined>({
     } else if (props.valueAsLink) {
       emit(
         'update:model-value',
-        newValue ?
-          {
-            // @ts-ignore TODO #3066 not assignable
-            targetUri: `${config.public.apiUrl}/${endpoints.value?.[props.objectType]}/${newValue}`
-          }
-        : undefined
+        newValue ? (createLink(endpoints.value?.[props.objectType], newValue) as any) : undefined
       );
     } else {
       // @ts-ignore TODO #3066 not assignable
