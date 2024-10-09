@@ -22,19 +22,17 @@
     </h2>
     <BaseCard border padding>
       <v-row>
-        <template v-for="protectionGoal of riskDefinition.categories">
+        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
           <!-- @vue-ignore TODO #3066 not assignable -->
           <RiskImpactSectionColumn
-            v-if="protectionGoalExists(protectionGoal.id)"
-            :key="protectionGoal.id"
             :dirty-fields="dirtyFields"
-            :protection-goal="protectionGoal"
+            :protection-goal="riskCriterion"
             :disabled="disabled"
             :risk-definition="riskDefinition"
-            :num-of-cols="riskDefinition.categories.length"
-            v-bind="data.find((impactValue) => impactValue.category === protectionGoal.id)"
-            @update:specific-impact-explanation="onSpecificImpactExplanationChanged(protectionGoal.id, $event)"
-            @update:specific-impact="onSpecificImpactChanged(protectionGoal.id, $event)"
+            :num-of-cols="filteredRiskCriteria.length"
+            v-bind="data.find((impactValue) => impactValue.category === riskCriterion.id)"
+            @update:specific-impact-explanation="onSpecificImpactExplanationChanged(riskCriterion.id, $event)"
+            @update:specific-impact="onSpecificImpactChanged(riskCriterion.id, $event)"
           />
         </template>
       </v-row>
@@ -43,11 +41,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
+import { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition } from '~/types/VeoTypes';
 import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -73,26 +71,33 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const protectionGoalExists = (protectionGoal: string) =>
-      !!props.data.find((impactValue) => impactValue.category === protectionGoal);
+    const filteredRiskCriteria = computed(() =>
+      props.riskDefinition.categories.filter(
+        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
+      )
+    );
+    const riskCriterionExists = (riskCriterion: string) =>
+      !!props.data.find((impactValue) => impactValue.category === riskCriterion);
 
-    const onSpecificImpactExplanationChanged = (protectionGoal: string, newValue: string) => {
+    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
+
+    const onSpecificImpactExplanationChanged = (riskCriterion: string, newValue: string) => {
       const localData = cloneDeep(props.data);
-      const impactValue = localData.find((impactValue) => impactValue.category === protectionGoal);
+      const impactValue = localData.find((impactValue) => impactValue.category === riskCriterion);
       if (impactValue) {
         impactValue.specificImpactExplanation = newValue;
       }
       emit('update:data', localData);
     };
 
-    const onSpecificImpactChanged = (protectionGoal: string, newValue: string) => {
+    const onSpecificImpactChanged = (riskCriterion: string, newValue: string) => {
       emit('update:dirty-fields', {
         ...props.dirtyFields,
-        [`${props.riskDefinition.id}_${protectionGoal}_specificImpact`]: true
+        [`${props.riskDefinition.id}_${riskCriterion}_specificImpact`]: true
       });
 
       const localData = cloneDeep(props.data);
-      const impactValue = localData.find((impactValue) => impactValue.category === protectionGoal);
+      const impactValue = localData.find((impactValue) => impactValue.category === riskCriterion);
       if (impactValue) {
         impactValue.specificImpact = newValue;
       }
@@ -102,8 +107,7 @@ export default defineComponent({
     return {
       onSpecificImpactChanged,
       onSpecificImpactExplanationChanged,
-      protectionGoalExists,
-
+      filteredRiskCriteria,
       t,
       upperFirst
     };
