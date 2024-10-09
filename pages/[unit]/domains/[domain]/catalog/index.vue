@@ -44,16 +44,15 @@ export const ROUTE_NAME = 'unit-domains-domain-catalog';
 </script>
 
 <script setup lang="ts">
-import { useQuery } from '~/composables/api/utils/query';
-import { useQuerySync } from '~/composables/api/utils/query';
-import { useMutation } from '~/composables/api/utils/mutation';
+import { onBeforeRouteLeave } from 'vue-router';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { onBeforeRouteLeave } from 'vue-router';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 
 // Types
-import type { IVeoEntity } from '~/types/VeoTypes';
 import type { VeoSearch } from '~/types/VeoSearch';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -78,7 +77,7 @@ if (!currentSubType.value) {
 }
 
 const { tablePageSize } = useVeoUser();
-const page = ref();
+const page = ref<number>(1);
 const sortBy = ref([{ key: 'abbreviation', order: 'asc' }]);
 
 // Fetch catalog items
