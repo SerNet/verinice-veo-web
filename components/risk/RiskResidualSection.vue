@@ -22,17 +22,15 @@
     </h2>
     <BaseCard border padding margin-bottom>
       <v-row>
-        <template v-for="protectionGoal of riskDefinition.categories">
+        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
           <RiskResidualSectionColumn
-            v-if="protectionGoalExists(protectionGoal.id)"
-            :key="protectionGoal.id"
             :disabled="disabled"
-            :protection-goal="protectionGoal"
+            :protection-goal="riskCriterion"
             :risk-definition="riskDefinition"
-            :num-of-cols="riskDefinition.categories.length"
-            v-bind="data.find((riskValue) => riskValue.category === protectionGoal.id)"
-            @update:user-defined-residual-risk="onUserDefinedResidualRiskChanged(protectionGoal.id, $event)"
-            @update:residual-risk-explanation="onResidualRiskExplanationChanged(protectionGoal.id, $event)"
+            :num-of-cols="filteredRiskCriteria.length"
+            v-bind="data.find((riskValue) => riskValue.category === riskCriterion.id)"
+            @update:user-defined-residual-risk="onUserDefinedResidualRiskChanged(riskCriterion.id, $event)"
+            @update:residual-risk-explanation="onResidualRiskExplanationChanged(riskCriterion.id, $event)"
           />
         </template>
       </v-row>
@@ -41,10 +39,10 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
 import { cloneDeep, upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
-import { IVeoDomainRiskDefinition, IVeoRiskDefinition } from '~/types/VeoTypes';
+import { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -65,21 +63,28 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
 
-    const protectionGoalExists = (protectionGoal: string) =>
-      !!props.data.find((riskValue) => riskValue.category === protectionGoal);
+    const filteredRiskCriteria = computed(() =>
+      props.riskDefinition.categories.filter(
+        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
+      )
+    );
+    const riskCriterionExists = (riskCriterion: string) =>
+      !!props.data.find((riskValue) => riskValue.category === riskCriterion);
 
-    const onUserDefinedResidualRiskChanged = (protectionGoal: string, newValue: number) => {
+    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
+
+    const onUserDefinedResidualRiskChanged = (riskCriterion: string, newValue: number) => {
       const localData = cloneDeep(props.data);
-      const riskValueIndex = localData.findIndex((riskValue) => riskValue.category === protectionGoal);
+      const riskValueIndex = localData.findIndex((riskValue) => riskValue.category === riskCriterion);
       if (riskValueIndex >= 0) {
         localData[riskValueIndex].userDefinedResidualRisk = newValue;
       }
       emit('update:data', localData);
     };
 
-    const onResidualRiskExplanationChanged = (protectionGoal: string, newValue: string) => {
+    const onResidualRiskExplanationChanged = (riskCriterion: string, newValue: string) => {
       const localData = cloneDeep(props.data);
-      const riskValue = localData.find((riskValue) => riskValue.category === protectionGoal);
+      const riskValue = localData.find((riskValue) => riskValue.category === riskCriterion);
       if (riskValue) {
         riskValue.residualRiskExplanation = newValue;
       }
@@ -89,8 +94,7 @@ export default defineComponent({
     return {
       onResidualRiskExplanationChanged,
       onUserDefinedResidualRiskChanged,
-      protectionGoalExists,
-
+      filteredRiskCriteria,
       t,
       upperFirst
     };
