@@ -1077,7 +1077,7 @@ export default defineComponent({
     },
     "scenario": "Scenario",
     "implementations": "Show implementations",
-    "noImplementations": "No mitigating controls found"
+    "noImplementations": "No mitigating controls"
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
@@ -1122,7 +1122,7 @@ export default defineComponent({
     },
     "scenario": "Szenario",
     "implementations": "Umsetzung anzeigen",
-    "noImplementations": "keine mitigierenden Maßnahmen gefunden"
+    "noImplementations": "Keine mitigierenden Maßnahmen"
 
   }
 }
