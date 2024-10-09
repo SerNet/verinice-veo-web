@@ -73,7 +73,7 @@
           :disabled="tab.disabled"
           :data-component-name="`object-details-${tab.key}-tab`"
         >
-          {{ t(tab.key) }}
+          {{ tab.key === 'controls' ? controlsTabLabel : t(tab.key) }}
         </v-tab>
       </template>
       <template #items>
@@ -130,7 +130,7 @@ export default defineComponent({
   },
   emits: ['reload', 'update:activeTab'],
   setup(props, { emit }) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { formatDateTime } = useFormatters();
     const { ability } = useVeoPermissions();
     // Hide tabs
@@ -242,6 +242,13 @@ export default defineComponent({
     const updatedAtFormatted = computed(() =>
       props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined
     );
+    const controlsTabLabel = computed(() => {
+      if (!domain.value) {
+        return t('controls');
+      }
+      const subType = domain.value.controlImplementationConfiguration.complianceControlSubType;
+      return domain.value.elementTypeDefinitions.control.translations[locale.value][`control_${subType}_plural`];
+    });
 
     return {
       ability,
@@ -250,7 +257,7 @@ export default defineComponent({
       subType,
       tabs,
       updatedAtFormatted,
-
+      controlsTabLabel,
       upperFirst,
       t
     };

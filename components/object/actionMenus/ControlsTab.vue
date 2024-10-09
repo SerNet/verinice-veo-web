@@ -23,6 +23,8 @@
 <script setup lang="ts">
 import { mdiLinkPlus } from '@mdi/js';
 import { computed, inject } from 'vue';
+const { locale } = useI18n();
+import { useCurrentDomain } from '~/composables/index';
 import { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 
 // Define props
@@ -37,6 +39,12 @@ const emit = defineEmits(['update:addEntityDialog']);
 // Dependency injection
 const t: any = inject('t');
 
+const { data: currentDomain } = useCurrentDomain();
+
+const complianceControlSubType = computed(
+  () => currentDomain.value.raw.controlImplementationConfiguration.complianceControlSubType
+);
+
 // Function to open the link object dialog
 const openLinkObjectDialog = (objectType?: string) => {
   const updatedDialog = {
@@ -46,7 +54,7 @@ const openLinkObjectDialog = (objectType?: string) => {
     editParents: true,
     preselectedItems: getPreselectedItems(),
     returnObjects: true, // explicitly setting it to true
-    preselectedFilters: { subType: 'CTL_Module' },
+    preselectedFilters: { subType: complianceControlSubType.value },
     disabledFields: ['subType', 'objectType'],
     linkRiskAffected: false
   };
@@ -67,7 +75,13 @@ const getPreselectedItems = (): IVeoLink[] => {
 const actions = computed(() => [
   {
     key: 'linkObject',
-    title: computed(() => t('linkControl', [t('controls')])),
+    title: computed(() =>
+      t('linkControl', [
+        currentDomain.value.raw.elementTypeDefinitions.control.translations[locale.value][
+          `control_${complianceControlSubType.value}_plural`
+        ]
+      ])
+    ),
     icon: mdiLinkPlus,
     tab: ['controls'],
     objectTypes: ['entity'],
