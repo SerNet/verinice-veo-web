@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     :label="t('unitDescription')"
                     :disabled="isDisabled"
                     counter
-                    maxlength="1200"
+                    maxlength="5000"
                   ></v-textarea>
                 </v-col>
               </v-row>

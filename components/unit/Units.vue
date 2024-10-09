@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row align="center" justify="center">
+  <v-row align="center" class="flex overflow-auto" justify="center">
     <template v-if="isLoadingUnits">
       <v-col cols="12">
         <VSkeletonLoader v-for="i in 5" :key="i" type="image" elevation="2" class="my-6" height="160px" />
@@ -24,7 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     </template>
 
     <template v-if="units && !isLoadingUnits">
-      <BaseListItem v-for="unit in units" :key="unit.id" :item="unit">
+      <BaseListItem v-for="unit in units" :key="unit.id" class="parent" :item="unit">
         <template #details="{ item: u }">
           <Details
             :name="u.name"
@@ -52,16 +52,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </template>
 
 <script setup lang="ts">
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import {
-  mdiPencilOutline,
-  mdiPuzzle,
   mdiBookmark,
   mdiBookmarkOutline,
   mdiDeleteOutline,
-  mdiShapeOutline,
-  mdiPlus
+  mdiPencilOutline,
+  mdiPlus,
+  mdiPuzzle,
+  mdiShapeOutline
 } from '@mdi/js';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 // Types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
@@ -301,5 +301,8 @@ const ApplyProfiles: TInlineComponent = {
 <style scoped lang="scss">
 :deep(.domain-btn) {
   cursor: default;
+}
+.parent * {
+  overflow-wrap: anywhere;
 }
 </style>
