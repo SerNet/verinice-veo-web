@@ -15,10 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { STALE_TIME } from '../utils/query';
+import type { IVeoBaseObject, IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import type { IVeoQueryDefinition } from '../utils/query';
-import type { IVeoBaseObject, IVeoLink } from '~/types/VeoTypes';
-import type { IVeoPaginatedResponse, IVeoEntity } from '~/types/VeoTypes';
+import { STALE_TIME } from '../utils/query';
 
 export interface IVeoCatalog extends IVeoBaseObject {
   name: string;
@@ -59,7 +58,7 @@ export interface IVeoFetchCatalogItemsParameters {
   elementType?: string | undefined;
   subType?: string;
   size?: number;
-  page?: string;
+  page?: number;
   sortBy?: string;
   sortOrder?: string;
 }
@@ -89,13 +88,19 @@ export default {
       primaryQueryKey: 'catalogItems',
       url: '/api/domains/:domainId/catalog-items',
       queryParameterTransformationFn: (queryParameters) => {
+        const { tablePageSize } = useVeoUser();
+        const _tablePageSize = tablePageSize?.value === -1 ? 1000 : tablePageSize.value;
         return {
           params: { domainId: queryParameters.domainId },
           query: {
             elementType: queryParameters.elementType,
             subType: queryParameters.subType,
-            size: queryParameters.size,
-            page: queryParameters.page,
+            // TODO #2474 The size should be well defined, the hardcoded 1000 makes no sense.
+            size:
+              queryParameters.size === undefined ? _tablePageSize
+              : queryParameters.size === -1 ? 1000
+              : queryParameters.size,
+            page: queryParameters.page - 1,
             sortBy: queryParameters.sortBy,
             sortOrder: queryParameters.sortOrder,
             name: queryParameters.name,
