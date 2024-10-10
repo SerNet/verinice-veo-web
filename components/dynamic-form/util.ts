@@ -15,16 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { PropType } from 'vue';
-import { JsonPointer } from 'json-ptr';
-import Ajv2019 from 'ajv/dist/2019';
 import addFormats from 'ajv-formats';
-import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
+import Ajv2019 from 'ajv/dist/2019';
+import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
+import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
+import { PropType } from 'vue';
+import type { IVeoLink } from '~/types/VeoTypes';
 
-import { IDynamicFormElementOptions, IVeoFormElementFormSchemaRule, IVeoFormElementRule } from './types';
 import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
 import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
+import { IDynamicFormElementOptions, IVeoFormElementFormSchemaRule, IVeoFormElementRule } from './types';
 
 export const VeoFormsElementProps = {
   metaData: {
@@ -83,7 +84,9 @@ export const VeoFormsControlProps = {
   },
   // The value of this control. Might get modified in the Control.ts if control is part of a custom link.
   modelValue: {
-    type: [Number, String, Object, Array, Boolean],
+    type: [Object as PropType<IVeoLink>, Object, String, Number, Boolean, Array] as PropType<
+      IVeoLink | unknown | string | number | boolean | any[]
+    >,
     default: undefined
   },
   // Map containing all errors present in the form

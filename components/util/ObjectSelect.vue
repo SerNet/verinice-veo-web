@@ -25,8 +25,6 @@
     :loading="isLoading"
     no-filter
     :label="localLabel"
-    :clearable="!required"
-    :return-object="valueAsEntity"
     v-bind="$attrs"
     variant="underlined"
     @input="onSearchInput"
@@ -78,35 +76,27 @@ import { useQuery } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
-type ModelVal = string | IVeoLink | IVeoEntity | undefined;
 interface Props {
-  modelValue?: ModelVal;
-  required: boolean;
+  modelValue?: IVeoLink;
   label?: string | undefined;
   objectType: string;
   subType: string | undefined;
   domainId: string | undefined;
-  valueAsLink?: boolean;
-  valueAsEntity?: boolean;
   hiddenValues?: string[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
   modelValue: undefined,
-  required: false,
   label: undefined,
   subType: undefined,
   domainId: undefined,
-  valueAsLink: false,
-  valueAsEntity: false,
   hiddenValues: () => []
 });
 
 const emit = defineEmits<{
-  (e: 'update:model-value', modelValue: IVeoEntity): void;
+  (e: 'update:model-value', modelValue: IVeoLink): void;
 }>();
 
-const config = useRuntimeConfig();
 const { locale, t } = useI18n();
 const { displayErrorMessage } = useVeoAlerts();
 const router = useRouter();
@@ -118,28 +108,13 @@ const { createLink } = useCreateLink();
 const internalValue = computed<string | undefined>({
   get: () => {
     if (typeof props.modelValue === 'object' && props.modelValue !== null) {
-      if (props.valueAsEntity) {
-        return (props.modelValue as IVeoEntity).id;
-      } else {
-        return (props.modelValue as IVeoLink).id;
-      }
+      return (props.modelValue as IVeoLink).id;
     } else {
-      return props.modelValue as string;
+      return undefined;
     }
   },
   set: (newValue: string | undefined | null) => {
-    if (!newValue && !props.required) {
-      // @ts-ignore TODO #3066 not assignable
-      emit('update:model-value', newValue);
-    } else if (props.valueAsLink) {
-      emit(
-        'update:model-value',
-        newValue ? (createLink(endpoints.value?.[props.objectType], newValue) as any) : undefined
-      );
-    } else {
-      // @ts-ignore TODO #3066 not assignable
-      emit('update:model-value', newValue);
-    }
+    emit('update:model-value', newValue ? createLink(endpoints.value?.[props.objectType], newValue) : undefined);
   }
 });
 
@@ -251,10 +226,7 @@ const currentSubTypeFormName = computed(
 );
 const localLabel = computed(
   () =>
-    props.label ??
-    `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${
-      props.required ? '*' : ''
-    }`
+    props.label ?? `${currentSubTypeFormName.value ? currentSubTypeFormName.value : upperFirst(props.objectType)}${'*'}`
 );
 
 // Object select display

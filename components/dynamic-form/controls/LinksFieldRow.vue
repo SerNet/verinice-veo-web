@@ -27,9 +27,7 @@
         :disabled="disabled"
         :domain-id="domainId"
         :hidden-values="hiddenValues"
-        required
         :error-messages="getControlErrorMessages($props, '/properties/target')"
-        value-as-link
         @update:model-value="$emit('update:model-value', $event)"
       >
         <template v-if="!objectCreationDisabled" #prepend-item>

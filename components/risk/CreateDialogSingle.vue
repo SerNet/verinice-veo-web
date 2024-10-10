@@ -49,11 +49,9 @@
                 :model-value="data.scenario"
                 object-type="scenario"
                 sub-type="route.params.subType"
-                required
                 :rules="[requiredRule]"
                 :domain-id="domainId"
                 :disabled="formDisabled"
-                value-as-link
                 hide-details
                 @update:model-value="onScenarioChanged"
               />
@@ -64,11 +62,9 @@
                 data-test-selector="risk-owner"
                 :model-value="data.riskOwner"
                 object-type="person"
-                required
                 :label="upperFirst(t('riskOwner').toString())"
                 :domain-id="domainId"
                 :disabled="formDisabled"
-                value-as-link
                 hide-details
                 @update:model-value="onRiskOwnerChanged"
               />
