@@ -93,9 +93,8 @@ import { useQuery } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
-import translationsQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useSubTypeTranslation } from '~/composables/Translations';
+import { useSubTypeTranslation, useTranslations } from '~/composables/Translations';
 
 type SupportedQuery = ':unit' | ':domain' | ':report' | ':objectType' | ':object';
 
@@ -124,6 +123,7 @@ const { t, locale } = useI18n();
 const route = useRoute();
 const { isOverridingBreadcrumbs, breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 const { subTypeTranslation } = useSubTypeTranslation();
+const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
 const title = ref('');
 
@@ -249,12 +249,6 @@ const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, do
   enabled: domainQueryEnabled
 });
 
-const objectTypeQueryParameters = ref<any>({});
-const objectTypeQueryEnabled = computed(() => !isEmpty(objectTypeQueryParameters.value));
-const { data: objectType } = useQuery(translationsQueryDefinitions.queries.fetch, objectTypeQueryParameters, {
-  enabled: objectTypeQueryEnabled
-});
-
 const objectQueryParameters = ref<any>({});
 const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value));
 const { data: object } = useQuery(objectsQueryDefinitions.queries.fetch, objectQueryParameters, {
@@ -273,11 +267,11 @@ const queryResultMap = computed<{ [key: string]: any }>(() => ({
       )
     : undefined,
   ':objectType':
-    objectType.value ?
+    translations.value ?
       BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':objectType')?.queriedText?.resultTransformationFn(
         ':objectType',
         route.params.objectType as string,
-        objectType.value
+        translations.value
       )
     : undefined,
   ':object':
@@ -399,9 +393,6 @@ watch(
         switch (replacementMapEntry.queriedText.query) {
           case ':domain':
             domainQueryParameters.value = transformedParameters;
-            break;
-          case ':objectType':
-            objectTypeQueryParameters.value = transformedParameters;
             break;
           case ':object':
             objectQueryParameters.value = transformedParameters;
