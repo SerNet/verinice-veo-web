@@ -179,6 +179,7 @@ export default class ObjectSchemaHelper {
       throw new Error(`ObjectSchemaHelper2::removeCustomAspect: Aspect "${aspectName}" not found!`);
     } else {
       this._customAspects.splice(aspectIndex, 1);
+      this.removeTranslationsContainingKey(`${this.getTitle()}_${aspectName}`);
     }
   }
 
