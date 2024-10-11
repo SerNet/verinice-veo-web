@@ -98,12 +98,12 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
 import { cloneDeep } from 'lodash';
+import { PropType } from 'vue';
 
-import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { IDirtyFields } from './CreateDialogSingle.vue';
 
 export default defineComponent({
   props: {
@@ -129,7 +129,7 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['update:mitigations', 'update:model-value', 'update:dirty-fields'],
+  emits: ['mitigations:modified', 'update:model-value', 'update:dirty-fields'],
   setup(props, { emit }) {
     const internalValue = ref<IVeoRisk | undefined>();
 
@@ -186,14 +186,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    const localMitigations = computed({
-      get() {
-        return props.mitigations;
-      },
-      set(newValue: IVeoEntity[]) {
-        emit('update:mitigations', newValue);
-      }
-    });
+    const localMitigations = computed(() => props.mitigations);
 
     return {
       activeTab,

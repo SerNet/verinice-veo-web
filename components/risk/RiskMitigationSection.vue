@@ -123,9 +123,9 @@ import { mdiArrowRightCircleOutline } from '@mdi/js';
 import { useQueryClient } from '@tanstack/vue-query';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuerySync } from '~/composables/api/utils/query';
+import { useCurrentDomain } from '~/composables/index';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
-import { useCurrentDomain } from '~/composables/index';
 
 export default defineComponent({
   props: {
@@ -146,7 +146,7 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['mitigations-modified', 'update:mitigations'],
+  emits: ['mitigations-modified'],
   setup(props, { emit }) {
     const { t } = useI18n();
     const queryClient = useQueryClient();
@@ -162,8 +162,7 @@ export default defineComponent({
         return props.mitigations;
       },
       set(newValue: IVeoEntity[]) {
-        emit('update:mitigations', newValue);
-        emit('mitigations-modified', true);
+        emit('mitigations-modified', true, newValue);
       }
     });
 

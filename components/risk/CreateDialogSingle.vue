@@ -20,7 +20,7 @@
     data-test-selector="create-dialog-single"
     :model-value="modelValue"
     :close-disabled="savingRisk"
-    :confirm-close="!!Object.keys(dirtyFields).length"
+    :confirm-close="Object.keys(dirtyFields).length && Object.values(dirtyFields).some(Boolean)"
     :title="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     x-large
     fixed-footer
@@ -77,7 +77,6 @@
           :domain="domain"
           :disabled="formDisabled"
           :mitigations="mitigations"
-          @update:mitigations="onMitigationsChanged"
           @update:new-mitigating-action="newMitigatingAction = $event"
           @mitigations-modified="onMitigationsModified"
           @update:model-value="onRiskDefinitionsChanged"
@@ -275,6 +274,9 @@ export default defineComponent({
         await (props.scenarioId ? updateRisk(riskParams) : createRisk(riskParams));
 
         displaySuccessMessage(upperFirst(t(props.scenarioId ? 'riskUpdated' : 'riskCreated').toString()));
+        dirtyFields.value = {};
+        formModified.value = false;
+        mitigationsModified.value = false;
       } catch (error: any) {
         displayErrorMessage(upperFirst(t('riskNotSaved').toString()), error.message);
       } finally {
@@ -286,14 +288,11 @@ export default defineComponent({
     const mitigations = ref<IVeoEntity[]>([]);
 
     const mitigationsModified = ref(false);
-    const onMitigationsModified = (value: boolean) => {
+    const onMitigationsModified = (value: boolean, newMitigation?: IVeoEntity[]) => {
       mitigationsModified.value = value;
+      dirtyFields.value.mitigation = value;
+      if (value) mitigations.value = newMitigation;
       validate();
-    };
-
-    const onMitigationsChanged = (newMitigation: IVeoEntity[]) => {
-      mitigations.value = newMitigation;
-      dirtyFields.value.mitigation = true;
     };
 
     const newMitigatingAction = computed(() => ({
@@ -317,7 +316,6 @@ export default defineComponent({
       mitigations,
       mitigationsModified,
       newMitigatingAction,
-      onMitigationsChanged,
       onMitigationsModified,
       onRiskDefinitionsChanged,
       onRiskOwnerChanged,
