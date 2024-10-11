@@ -18,7 +18,7 @@
 <template>
   <div>
     <h2 class="text-h2 mt-2 mb-1 d-flex align-center">
-      <nuxt-link :to="navigateToContainer" class="headline-link" target="_blank" rel="noopener noreferrer">
+      <nuxt-link v-if="data?.mitigation" class="headline-link" @click="showNavigationDialog(null)">
         {{ upperFirst(t('Container').toString()) }}&nbsp;&gt;&nbsp;
       </nuxt-link>
 
@@ -50,16 +50,16 @@
           <div class="d-flex justify-end">
             <v-tooltip location="start">
               <template #activator="{ props }">
-                <v-btn
-                  v-bind="props"
-                  :icon="mdiArrowRightCircleOutline"
-                  variant="text"
-                  :to="navigateToPart(item)"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
+                <div v-bind="props">
+                  <v-btn
+                    :disabled="!data?.mitigation"
+                    :icon="mdiArrowRightCircleOutline"
+                    variant="text"
+                    @click="showNavigationDialog(item)"
+                  />
+                </div>
               </template>
-              {{ t('navigateToPart') }}
+              {{ data?.mitigation ? t('navigateToPart') : t('saveFirst') }}
             </v-tooltip>
             <v-tooltip location="start">
               <template #activator="{ props }">
@@ -111,6 +111,31 @@
       :domain-id="domainId"
       @success="onMitigationCreated"
     />
+    <v-dialog v-model="closeConfirmationDialogVisible" width="450px">
+      <v-card>
+        <v-card-title class="bg-accent small-caps">
+          {{ t('navigationDialog') }}
+        </v-card-title>
+        <v-card-text>
+          {{ t('leavePage') }}
+          <v-card-actions class="px-0 pb-0">
+            <v-btn variant="text" @click="closeConfirmationDialogVisible = false">
+              {{ t('global.button.cancel') }}
+            </v-btn>
+            <v-spacer />
+            <v-btn
+              ref="confirmButton"
+              color="primary"
+              variant="text"
+              @click="confirmNavigation()"
+              @keydown.enter="confirmNavigation()"
+            >
+              {{ t('global.button.yes') }}
+            </v-btn>
+          </v-card-actions>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -150,13 +175,11 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const queryClient = useQueryClient();
-
     // We don't need the name, as it only gets used by the text in the linkObjectDialog and this text gets overwritten by template#header
     const editedObject = { type: 'control', name: '' };
 
     const createMitigationDialogVisible = ref(false);
     const editMitigationsDialogVisible = ref(false);
-
     const selectedItems = computed<IVeoEntity[]>({
       get() {
         return props.mitigations;
@@ -171,7 +194,6 @@ export default defineComponent({
     const fetchMitigation = async () => {
       if (props.data?.mitigation) {
         fetchingMitigation.value = true;
-
         try {
           selectedItems.value = (
             await useQuerySync(
@@ -210,19 +232,26 @@ export default defineComponent({
     const removeMitigationPart = (item: any) => {
       selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.id);
     };
+    const navigateToRef = ref<IVeoEntity | null>(null);
+    const showNavigationDialog = (item?: IVeoEntity) => {
+      if (item && typeof item === 'object') {
+        navigateToRef.value = item;
+      }
+      closeConfirmationDialogVisible.value = true;
+    };
 
-    const navigateToContainer = computed(() => {
+    const navigateToContainer = () => {
       const params: { objectType: string; subType: string; object?: string } = {
         ...route.params,
         objectType: 'controls',
         subType: 'CTL_Module',
         object: props.data?.mitigation?.id
       };
-      return {
+      navigateTo({
         name: OBJECT_DETAIL_ROUTE,
         params
-      };
-    });
+      });
+    };
 
     const navigateToPart = (item: any) => {
       const params: { objectType: string; subType: string; object?: string } = {
@@ -231,19 +260,48 @@ export default defineComponent({
         subType: 'CTL_Module',
         object: item?.id
       };
-      return {
+      navigateTo({
         name: OBJECT_DETAIL_ROUTE,
         params
-      };
+      });
     };
 
     watch(
-      () => props.data?.mitigation,
+      () => props.data?.mitigation?.id,
       () => fetchMitigation(),
       { immediate: true }
     );
 
+    const confirmButton = ref();
+    // Everything regarding closing the dialog
+    const closeConfirmationDialogVisible = ref(false);
+    // Focus okay button so the user can leave the dialog by pressing enter
+    watch(
+      () => closeConfirmationDialogVisible.value,
+      (value) => {
+        if (value) {
+          nextTick(() => {
+            confirmButton.value.$el.focus();
+          });
+        } else {
+          (document.activeElement as HTMLElement | null)?.blur?.();
+        }
+      }
+    );
+    const confirmNavigation = () => {
+      closeConfirmationDialogVisible.value = false;
+      if (navigateToRef.value) {
+        navigateToPart(navigateToRef.value);
+      } else {
+        navigateToContainer();
+      }
+    };
+
     return {
+      confirmNavigation,
+      showNavigationDialog,
+      confirmButton,
+      closeConfirmationDialogVisible,
       createMitigationDialogVisible,
       editedObject,
       editMitigationsDialogVisible,
@@ -276,7 +334,10 @@ export default defineComponent({
     "mitigationSection": "risk reduction actions (mitigating actions)",
     "unlinkPart": "Unlink mitigating action",
     "navigateToPart": "Navigate to mitigating action",
-    "container": "Container"
+    "container": "Container",
+    "saveFirst": "Save the risk before you can navigate to the mitigations.",
+    "navigationDialog": "Confirm Navigation",
+    "leavePage": "Are you sure you want to leave this page? Unsaved changes might be lost."
   },
   "de": {
     "addMitigation": "Mitigierende Maßnahme verknüpfen",
@@ -287,13 +348,17 @@ export default defineComponent({
     "mitigationSection": "Maßnahmen zur Risikoreduktion (Mitigierende Maßnahmen)",
     "unlinkPart": "Mitigierende Maßnahme entfernen",
     "navigateToPart": "Zu der mitigierenden Maßnahme wechseln",
-    "container": "Container"
+    "container": "Container",
+    "navigationDialog": "Seite verlassen",
+    "saveFirst": "Risiko speichern, bevor Sie zu den mitigierenden Maßnahmen navigieren können",
+    "leavePage": "Sind Sie sicher, dass Sie diese Seite verlassen möchten? Nicht gespeicherte Änderungen werden verloren gehen."
   }
 }
 </i18n>
 <style scoped>
 .headline-link {
   text-decoration: none;
+  cursor: pointer; /* Ensures the cursor changes to a pointer on hover */
 }
 
 .headline-link:hover {
