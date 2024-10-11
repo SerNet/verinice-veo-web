@@ -175,6 +175,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const queryClient = useQueryClient();
+    const { data: currentDomain } = useCurrentDomain();
     // We don't need the name, as it only gets used by the text in the linkObjectDialog and this text gets overwritten by template#header
     const editedObject = { type: 'control', name: '' };
 
@@ -217,8 +218,6 @@ export default defineComponent({
       }
     };
 
-    const { data: currentDomain } = useCurrentDomain();
-
     const onMitigationCreated = async (objectId: string) => {
       const newMitigation = await useQuerySync(
         objectQueryDefinitions.queries.fetch,
@@ -244,7 +243,7 @@ export default defineComponent({
       const params: { objectType: string; subType: string; object?: string } = {
         ...route.params,
         objectType: 'controls',
-        subType: 'CTL_Module',
+        subType: currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType,
         object: props.data?.mitigation?.id
       };
       navigateTo({
@@ -257,7 +256,7 @@ export default defineComponent({
       const params: { objectType: string; subType: string; object?: string } = {
         ...route.params,
         objectType: 'controls',
-        subType: 'CTL_Module',
+        subType: currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType,
         object: item?.id
       };
       navigateTo({
