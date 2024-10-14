@@ -15,13 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+export class Timer {
+  public timeout: number;
+  public callback: () => void;
+  public handle: ReturnType<typeof setTimeout>;
 
-/** Auto import nested exports */
-export { useDomains, useDomainColors, useCurrentDomain } from '~/composables/domains/useDomains';
-export { useProfiles } from '~/composables/profiles/useProfiles';
-export { useUnits, useCurrentUnit } from '~/composables/units/useUnits';
-export { useMutation } from '~/composables/api/utils/mutation';
-export { useRules } from '~/composables/utils';
-export { useActions, usePerformActions } from '~/composables/actions/useActions';
-export { useSearch } from '~/composables/search/useSearch';
-export { useSystemMessages } from '~/composables/messages/useSystemMessages';
+  constructor(timeout: number, callback: () => void) {
+    this.timeout = timeout;
+    this.callback = callback;
+    this.handle = setTimeout(() => {
+      callback();
+    }, this.timeout);
+  }
+  async cancel() {
+    clearTimeout(this.handle);
+  }
+}
+
+export class SystemMessageTimer extends Timer {
+  public messageId: number;
+
+  constructor(timeout: number, callback: () => void, messageId: number) {
+    super(timeout, callback);
+    this.messageId = messageId;
+  }
+}
