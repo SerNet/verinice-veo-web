@@ -59,6 +59,7 @@
             />
             <RiskImpactSection
               v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].impactValues"
+              :risk-criteria="filteredImpactCriteria"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
@@ -66,6 +67,7 @@
             />
             <RiskInherentRiskSection
               v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
+              :risk-criteria="filteredRiskCriteriaValue"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
@@ -73,6 +75,7 @@
             />
             <RiskTreatmentSection
               v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
+              :risk-criteria="filteredRiskCriteriaValue"
               :dirty-fields="dirtyFields"
               :disabled="disabled"
               :risk-definition="riskDefinition"
@@ -87,6 +90,7 @@
             />
             <RiskResidualSection
               v-model:data="internalValue.domains[domain.id].riskDefinitions[riskDefinition.id].riskValues"
+              :risk-criteria="filteredRiskCriteriaValue"
               :risk-definition="riskDefinition"
               :disabled="disabled"
             />
@@ -102,7 +106,7 @@ import { cloneDeep } from 'lodash';
 import { PropType } from 'vue';
 
 import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import { IVeoDomainRiskDefinition, IVeoEntity, IVeoRisk, IVeoRiskCategory } from '~/types/VeoTypes';
 import { IDirtyFields } from './CreateDialogSingle.vue';
 
 export default defineComponent({
@@ -188,10 +192,50 @@ export default defineComponent({
 
     const localMitigations = computed(() => props.mitigations);
 
+    const filteredImpactCriteria = computed(() => {
+      return filteredRiskCriteria(activeRiskDefinition.value, SECTION_TYPES.IMPACT);
+    });
+
+    const filteredRiskCriteriaValue = computed(() => {
+      return filteredRiskCriteria(activeRiskDefinition.value, SECTION_TYPES.RISK);
+    });
+
+    // helpers
+    enum SECTION_TYPES {
+      IMPACT = 'IMPACT',
+      RISK = 'RISK'
+    }
+
+    const filteredRiskCriteria = (riskDefinition: IVeoDomainRiskDefinition, sectionType: SECTION_TYPES) => {
+      const isImpact = sectionType === SECTION_TYPES.IMPACT;
+      return riskDefinition.categories.filter(
+        (riskCriterion) =>
+          riskCriterionExists(riskCriterion.id, riskDefinition, isImpact) && riskMatrixExists(riskCriterion)
+      );
+    };
+
+    const riskCriterionExists = (
+      riskCriterion: string,
+      riskDefinition: IVeoDomainRiskDefinition,
+      isImpact: boolean
+    ) => {
+      const values =
+        isImpact ?
+          internalValue.value.domains[props.domain.id].riskDefinitions[riskDefinition.id].impactValues
+        : internalValue.value.domains[props.domain.id].riskDefinitions[riskDefinition.id].riskValues;
+
+      return !!values.find((value) => value.category === riskCriterion);
+    };
+
+    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
+
     return {
       activeTab,
       activeRiskDefinition,
       getRiskValuesByProtectionGoal,
+      filteredImpactCriteria,
+      filteredRiskCriteriaValue,
+      SECTION_TYPES,
       internalValue,
       localMitigations
     };

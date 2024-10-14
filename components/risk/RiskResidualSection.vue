@@ -22,12 +22,12 @@
     </h2>
     <BaseCard border padding margin-bottom>
       <v-row>
-        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
+        <template v-for="riskCriterion of riskCriteria" :key="riskCriterion.id">
           <RiskResidualSectionColumn
             :disabled="disabled"
             :protection-goal="riskCriterion"
             :risk-definition="riskDefinition"
-            :num-of-cols="filteredRiskCriteria.length"
+            :num-of-cols="riskCriteria.length"
             v-bind="data.find((riskValue) => riskValue.category === riskCriterion.id)"
             @update:user-defined-residual-risk="onUserDefinedResidualRiskChanged(riskCriterion.id, $event)"
             @update:residual-risk-explanation="onResidualRiskExplanationChanged(riskCriterion.id, $event)"
@@ -50,6 +50,10 @@ export default defineComponent({
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
       required: true
     },
+    riskCriteria: {
+      type: Array as PropType<IVeoRiskCategory[]>,
+      required: true
+    },
     disabled: {
       type: Boolean,
       default: false
@@ -62,16 +66,6 @@ export default defineComponent({
   emits: ['update:data'],
   setup(props, { emit }) {
     const { t } = useI18n();
-
-    const filteredRiskCriteria = computed(() =>
-      props.riskDefinition.categories.filter(
-        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
-      )
-    );
-    const riskCriterionExists = (riskCriterion: string) =>
-      !!props.data.find((riskValue) => riskValue.category === riskCriterion);
-
-    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
 
     const onUserDefinedResidualRiskChanged = (riskCriterion: string, newValue: number) => {
       const localData = cloneDeep(props.data);
@@ -94,7 +88,6 @@ export default defineComponent({
     return {
       onResidualRiskExplanationChanged,
       onUserDefinedResidualRiskChanged,
-      filteredRiskCriteria,
       t,
       upperFirst
     };

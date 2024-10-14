@@ -22,14 +22,14 @@
     </h2>
     <BaseCard border padding>
       <v-row>
-        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
+        <template v-for="riskCriterion of riskCriteria" :key="riskCriterion.id">
           <!-- @vue-ignore TODO #3066 not assignable -->
           <RiskImpactSectionColumn
             :dirty-fields="dirtyFields"
             :protection-goal="riskCriterion"
             :disabled="disabled"
             :risk-definition="riskDefinition"
-            :num-of-cols="filteredRiskCriteria.length"
+            :num-of-cols="riskCriteria.length"
             v-bind="data.find((impactValue) => impactValue.category === riskCriterion.id)"
             @update:specific-impact-explanation="onSpecificImpactExplanationChanged(riskCriterion.id, $event)"
             @update:specific-impact="onSpecificImpactChanged(riskCriterion.id, $event)"
@@ -53,6 +53,10 @@ export default defineComponent({
       type: Array as PropType<IVeoRiskDefinition['impactValues']>,
       required: true
     },
+    riskCriteria: {
+      type: Array as PropType<IVeoRiskCategory[]>,
+      required: true
+    },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
       required: true
@@ -70,16 +74,6 @@ export default defineComponent({
   emits: ['update:data', 'update:dirty-fields'],
   setup(props, { emit }) {
     const { t } = useI18n();
-
-    const filteredRiskCriteria = computed(() =>
-      props.riskDefinition.categories.filter(
-        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
-      )
-    );
-    const riskCriterionExists = (riskCriterion: string) =>
-      !!props.data.find((impactValue) => impactValue.category === riskCriterion);
-
-    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
 
     const onSpecificImpactExplanationChanged = (riskCriterion: string, newValue: string) => {
       const localData = cloneDeep(props.data);
@@ -107,7 +101,6 @@ export default defineComponent({
     return {
       onSpecificImpactChanged,
       onSpecificImpactExplanationChanged,
-      filteredRiskCriteria,
       t,
       upperFirst
     };

@@ -22,12 +22,12 @@
     </h2>
     <BaseCard border padding>
       <v-row>
-        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
+        <template v-for="riskCriterion of riskCriteria" :key="riskCriterion.id">
           <RiskTreatmentSectionColumn
             :disabled="disabled"
             :protection-goal="riskCriterion"
             :risk-definition="riskDefinition"
-            :num-of-cols="filteredRiskCriteria.length"
+            :num-of-cols="riskCriteria.length"
             v-bind="data.find((riskValue) => riskValue.category === riskCriterion.id)"
             @update:risk-treatments="onRiskTreatmentChanged(riskCriterion.id, $event)"
             @update:risk-treatment-explanation="onRiskTreatmentExplanationChanged(riskCriterion.id, $event)"
@@ -51,6 +51,10 @@ export default defineComponent({
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
       required: true
     },
+    riskCriteria: {
+      type: Array as PropType<IVeoRiskCategory[]>,
+      required: true
+    },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
       required: true
@@ -68,15 +72,6 @@ export default defineComponent({
   emits: ['update:data', 'update:dirty-fields'],
   setup(props, { emit }) {
     const { t } = useI18n();
-    const filteredRiskCriteria = computed(() =>
-      props.riskDefinition.categories.filter(
-        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
-      )
-    );
-    const riskCriterionExists = (riskCriterion: string) =>
-      !!props.data.find((riskValue) => riskValue.category === riskCriterion);
-
-    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
 
     const onRiskTreatmentChanged = (riskCriterion: string, newValue: VeoRiskTreatment[]) => {
       const localData = cloneDeep(props.data);
@@ -104,7 +99,6 @@ export default defineComponent({
       onRiskTreatmentChanged,
       onRiskTreatmentExplanationChanged,
       t,
-      filteredRiskCriteria,
       upperFirst
     };
   }

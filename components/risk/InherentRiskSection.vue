@@ -22,13 +22,13 @@
     </h2>
     <BaseCard border padding>
       <v-row>
-        <template v-for="riskCriterion of filteredRiskCriteria" :key="riskCriterion.id">
+        <template v-for="riskCriterion of riskCriteria" :key="riskCriterion.id">
           <RiskInherentRiskSectionColumn
             :disabled="disabled"
             :protection-goal="riskCriterion"
             :risk-definition="riskDefinition"
             :dirty-fields="dirtyFields"
-            :num-of-cols="filteredRiskCriteria.length"
+            :num-of-cols="riskCriteria.length"
             v-bind="data.find((riskValue) => riskValue.category === riskCriterion.id)"
             @update:dirty-fields="$emit('update:dirty-fields', $event)"
           />
@@ -51,6 +51,10 @@ export default defineComponent({
       type: Array as PropType<IVeoRiskDefinition['riskValues']>,
       required: true
     },
+    riskCriteria: {
+      type: Array as PropType<IVeoRiskCategory[]>,
+      required: true
+    },
     riskDefinition: {
       type: Object as PropType<IVeoDomainRiskDefinition>,
       required: true
@@ -68,18 +72,8 @@ export default defineComponent({
   emits: ['update:dirty-fields'],
   setup(props) {
     const { t } = useI18n();
-    const filteredRiskCriteria = computed(() =>
-      props.riskDefinition.categories.filter(
-        (riskCriterion) => riskCriterionExists(riskCriterion.id) && riskMatrixExists(riskCriterion)
-      )
-    );
-    const riskCriterionExists = (riskCriterion: string) =>
-      !!props.data.find((riskValue) => riskValue.category === riskCriterion);
-
-    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
 
     return {
-      filteredRiskCriteria,
       t,
       upperFirst
     };
