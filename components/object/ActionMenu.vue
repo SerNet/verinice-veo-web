@@ -235,7 +235,7 @@ export default defineComponent({
         displaySuccessMessage(t('objectLinked').toString());
         handleReload();
       } catch (e: any) {
-        displayErrorMessage(upperFirst(t('errors.link').toString()), e.message);
+        displayErrorMessage(upperFirst(t('objectNotLinked').toString()), e.message);
       }
     };
 
