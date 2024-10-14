@@ -91,6 +91,6 @@ const linkScopeAction = () => openLinkObjectDialog('scope', true, false, 'scope'
 
 // Success handler for object creation
 const onCreateObjectSuccess = (newObjectId: string) => {
-  emit('child-create-success', newObjectId, createObjectDialog.value?.objectType);
+  emit('child-create-success', newObjectId, createObjectDialog.value);
 };
 </script>
