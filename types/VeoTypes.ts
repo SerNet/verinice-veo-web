@@ -550,7 +550,9 @@ interface IVeoHistoryEntry<T> {
 export enum VeoAlertType {
   ERROR,
   INFO,
-  SUCCESS
+  SUCCESS,
+  WARNING,
+  URGENT
 }
 
 export interface IVeoGlobalAlertParams {
