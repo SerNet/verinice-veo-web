@@ -18,8 +18,8 @@
 import { max, omit } from 'lodash';
 import { Ref } from 'vue';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
-import { QueryOptions, useQuery } from './utils/query';
 import objectQueryDefinitions, { IVeoFetchObjectsParameters } from './queryDefinitions/objects';
+import { QueryOptions, useQuery } from './utils/query';
 
 export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions {
   parentEndpoint: string;
@@ -30,16 +30,9 @@ export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions 
 export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>, queryOptions?: QueryOptions) => {
   const { tablePageSize } = useVeoUser();
 
-  // tablePageSize is possibly -1
-  // if so, we assign a default value to not send invalid queries with `?size="-1"`
-  const _tablePageSize = tablePageSize?.value === -1 ? 1000 : tablePageSize.value;
-
   const transformedQueryParameters = computed(() => ({
     ...queryParameters.value,
-    size:
-      queryParameters.value.size === undefined ? _tablePageSize
-      : queryParameters.value.size === -1 ? 1000
-      : queryParameters.value.size,
+    size: queryParameters.value.size === undefined ? tablePageSize.value : queryParameters.value.size,
     page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
   }));
   return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, {
@@ -54,19 +47,12 @@ export const useFetchParentObjects = (
 ) => {
   const { tablePageSize } = useVeoUser();
 
-  // tablePageSize is possibly -1
-  // if so, we assign a default value to not send invalid queries with `?size="-1"`
-  const _tablePageSize = tablePageSize?.value === -1 ? 1000 : tablePageSize.value;
-
   const transformedQueryParameters = computed(() => ({
     ...omit(queryParameters.value, 'unitId', 'parentEndpoint', 'childObjectId'),
     unit: queryParameters.value.unitId,
     endpoint: queryParameters.value.parentEndpoint,
     childElementIds: queryParameters.value.childObjectId,
-    size:
-      queryParameters.value.size === undefined ? _tablePageSize
-      : queryParameters.value.size === -1 ? 1000
-      : queryParameters.value.size,
+    size: queryParameters.value.size === undefined ? tablePageSize.value : queryParameters.value.size,
     page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
   }));
   return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, queryOptions);

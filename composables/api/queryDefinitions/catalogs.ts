@@ -89,18 +89,13 @@ export default {
       url: '/api/domains/:domainId/catalog-items',
       queryParameterTransformationFn: (queryParameters) => {
         const { tablePageSize } = useVeoUser();
-        const _tablePageSize = tablePageSize?.value === -1 ? 1000 : tablePageSize.value;
         return {
           params: { domainId: queryParameters.domainId },
           query: {
             elementType: queryParameters.elementType,
             subType: queryParameters.subType,
-            // TODO #2474 The size should be well defined, the hardcoded 1000 makes no sense.
-            size:
-              queryParameters.size === undefined ? _tablePageSize
-              : queryParameters.size === -1 ? 1000
-              : queryParameters.size,
-            page: queryParameters.page - 1 < 0 ? 0 : queryParameters.page - 1,
+            size: queryParameters.size === undefined ? tablePageSize.value : queryParameters.size,
+            page: queryParameters.page - 1,
             sortBy: queryParameters.sortBy,
             sortOrder: queryParameters.sortOrder,
             name: queryParameters.name,
