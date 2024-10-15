@@ -26,13 +26,14 @@
  * Can be used for paginated data (that uses the IVeoPaginatedResponse interface) and default arrays
  */
 
-import { VNode, VNodeArrayChildren, Slot } from 'vue';
+import { cloneDeep, omit } from 'lodash';
+import { Slot, VNode, VNodeArrayChildren } from 'vue';
 import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
-import { cloneDeep, omit } from 'lodash';
 
-import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 import { useVeoUser } from '~/composables/VeoUser';
+import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export type TableFormatter = (value: any) => string;
 export type TableRenderer = (
@@ -54,7 +55,6 @@ interface TableHeaderAdditionalProperties {
   width?: number;
   cellClass?: string[];
 }
-import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 
 export type TableHeader = Partial<Omit<VDataTableHeaders, 'text'>> & TableHeaderAdditionalProperties;
 
@@ -476,11 +476,19 @@ const internalModelValue = computed({
   }
 });
 
+const itemsPerPageOptions = [
+  { value: 10, title: '10' },
+  { value: 25, title: '25' },
+  { value: 50, title: '50' },
+  { value: 100, title: '100' }
+];
+
 const sharedProps = computed(() => ({
   ...attrs,
   id: `veo-object-table-${vm?.uid}`,
   items: items.value,
   itemsPerPage: tablePageSize.value,
+  itemsPerPageOptions: itemsPerPageOptions,
   modelValue: internalModelValue.value,
   mustSort: true,
   headers: normalizedDisplayHeaders.value,
