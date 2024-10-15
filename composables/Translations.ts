@@ -86,20 +86,20 @@ function translateSubType({ domainSchema, locale, subType, elementType, plural }
     : domainSchema.elementTypeDefinitions[elementType]?.translations[locale]?.[`${elementType}_${subType}_singular`];
 }
 
-export function useSubTypeTranslation(_elementType?: string, _subType?: string, _plural: boolean = true) {
+export function useSubTypeTranslation(_elementType?: Ref<string>, _subType?: Ref<string>, _plural: boolean = true) {
   const route = useRoute();
   const { locale } = useI18n();
 
   const domainId = computed<string | undefined>(() => route.params.domain as string);
   const elementType = computed(() => {
-    if (_elementType) return _elementType;
+    if (isRef(_elementType)) return _elementType.value;
     if (route.params?.objectType)
       return VeoElementTypesSingular[route.params?.objectType as keyof typeof VeoElementTypesSingular];
     return route.query.type as string | undefined;
   });
 
-  const subType = computed<string | undefined>(() => {
-    if (_subType) return _subType;
+  const subType = computed(() => {
+    if (isRef(_subType)) return _subType.value;
     return (route.params?.subType ?? route.query?.subType) as string | undefined;
   });
 
@@ -110,9 +110,7 @@ export function useSubTypeTranslation(_elementType?: string, _subType?: string, 
   const { data: domainSchema } = useQuery(
     domainQueryDefinitions.queries.fetchDomain,
     queryParameters as Ref<{ id: string }>,
-    {
-      enabled: domainSchemaQueryEnabled
-    }
+    { enabled: domainSchemaQueryEnabled }
   );
 
   return {

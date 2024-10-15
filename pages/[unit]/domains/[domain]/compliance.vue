@@ -44,7 +44,7 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
 
 const route = useRoute();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { state } = useCompliance();
 const { data: currentDomain, isLoading } = useCurrentDomain();
 
@@ -62,47 +62,44 @@ interface CurrentModule {
   };
 }
 
+const newSubType = computed(() => {
+  return state.CTLModule.value?.control ?
+      currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType
+    : currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType;
+});
+
+const ctModuleType = computed(() => {
+  return state.CTLModule.value?.type;
+});
+
+const { subTypeTranslation } = useSubTypeTranslation(ctModuleType, newSubType, false);
+
 const currentModule = computed<CurrentModule | undefined>(() => {
   if (isLoading.value || !state.CTLModule.value || !currentDomain.value) {
     return undefined;
   }
 
   const module = state.CTLModule.value;
-  const domain = currentDomain.value;
 
-  try {
-    const subType =
-      module.control ?
-        domain.raw.controlImplementationConfiguration.complianceControlSubType
-      : domain.raw.controlImplementationConfiguration.mitigationControlSubType;
-
-    if (!subType) {
-      throw new Error('SubType is undefined');
-    }
-
-    return {
-      name: module.name,
-      subType: subType,
-      urlParams: {
-        name: OBJECT_DETAIL_ROUTE,
-        params: {
-          ...route.params,
-          objectType: 'controls',
-          subType,
-          object: module.id
-        }
+  return {
+    name: module.name,
+    subType: subTypeTranslation.value,
+    urlParams: {
+      name: OBJECT_DETAIL_ROUTE,
+      params: {
+        ...route.params,
+        objectType: 'controls',
+        subType: subTypeTranslation.value,
+        object: module.id
       }
-    };
-  } catch (error) {
-    console.error('Error computing current module:', error);
-    return undefined;
-  }
+    }
+  };
 });
 /* BREADCRUMBS */
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 const { subTypeTranslation: ownerSubType } = useSubTypeTranslation(
-  VeoElementTypesSingular[state.type.value as keyof typeof VeoElementTypesSingular],
-  state.CTLModule.value?.owner.subType
+  toRef(() => VeoElementTypesSingular[state.type.value as keyof typeof VeoElementTypesSingular]),
+  toRef(() => state.CTLModule.value?.owner.subType)
 );
 const customCrumbs = computed(() => {
   if (!state.CTLModule.value) return undefined;
@@ -156,7 +153,6 @@ onBeforeRouteLeave(async () => clearCustomBreadcrumbs());
 // Update breadcrumb if a filter is changed
 watch(() => route.fullPath, clearCustomBreadcrumbs);
 
-const { locale } = useI18n();
 // Update breadcrumbs on changed locale
 watch(locale, () => {
   clearCustomBreadcrumbs();

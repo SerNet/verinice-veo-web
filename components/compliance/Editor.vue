@@ -259,19 +259,6 @@ enum Status {
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 
-// State to hold the subtype translation
-const ciSubType = computed(() => {
-  const newSubType =
-    state.CTLModule.value?.control ?
-      currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType
-    : currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType;
-  const ctModuleType = state.CTLModule.value?.type;
-  if (ctModuleType && newSubType) {
-    return useSubTypeTranslation(ctModuleType, newSubType, false).subTypeTranslation;
-  }
-  return t('control'); // default
-});
-
 /** STATE */
 // data
 const initialForm: RequirementImplementationForForm = {
@@ -332,6 +319,12 @@ const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
 const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, controlParameters, {
   enabled: computed(() => !!props.item?.control.id)
 });
+
+const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
+  toRef(() => control.value?.type),
+  toRef(() => control.value?.subType),
+  false
+);
 
 const additionalInfo = ref<{
   requirementDescription?: string;
