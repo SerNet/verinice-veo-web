@@ -11,6 +11,10 @@
     {
       "matchPackagePatterns": ["vitest"],
       "groupName": "Vitest"
+    },
+    {
+      "matchPackageNames": ["cypress/browsers"],
+      "versioning": "regex:^node-?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-(?:[a-zA-Z]+\\d*|[\\d.]+))*$"
     }
   ]
 }
