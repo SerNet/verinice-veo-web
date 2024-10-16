@@ -100,7 +100,7 @@ export default {
               queryParameters.size === undefined ? _tablePageSize
               : queryParameters.size === -1 ? 1000
               : queryParameters.size,
-            page: queryParameters.page - 1,
+            page: queryParameters.page - 1 < 0 ? 0 : queryParameters.page - 1,
             sortBy: queryParameters.sortBy,
             sortOrder: queryParameters.sortOrder,
             name: queryParameters.name,
