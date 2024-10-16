@@ -145,6 +145,7 @@ interface IVeoCustomObject {
   applicableTo: IVeoLink[];
   attributes: IVeoCustomAttributes;
   domains: IVeoLink[];
+  control_bpInformation_protectionApproach?: string;
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
@@ -586,6 +587,7 @@ export interface IVeoElementTypeDefinition {
       [key: string]: string;
     };
   };
+  customAspects: IVeoCustomAspects;
 }
 
 export enum VeoRiskAffectedDomains {
