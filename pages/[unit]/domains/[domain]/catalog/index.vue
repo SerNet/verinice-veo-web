@@ -45,7 +45,7 @@ export const ROUTE_NAME = 'unit-domains-domain-catalog';
 
 <script setup lang="ts">
 import { onBeforeRouteLeave } from 'vue-router';
-import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
+import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDefinitions/catalogs';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
@@ -87,7 +87,8 @@ const fetchCatalogItemsQueryParameters = computed(() => ({
   size: tablePageSize.value,
   page: page.value,
   sortBy: sortBy.value[0]?.key,
-  sortOrder: sortBy.value[0]?.order
+  sortOrder: sortBy.value[0]?.order,
+  customAspects: [CustomAspect.ControlBpInformation]
 }));
 
 const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(

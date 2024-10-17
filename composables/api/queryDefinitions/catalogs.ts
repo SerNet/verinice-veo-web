@@ -61,6 +61,7 @@ export interface IVeoFetchCatalogItemsParameters {
   page?: number;
   sortBy?: string;
   sortOrder?: string;
+  customAspects?: string[];
 }
 
 export interface IVeoFetchCatalogItemTypeCountParameters {
@@ -69,6 +70,11 @@ export interface IVeoFetchCatalogItemTypeCountParameters {
 
 export interface IVeoCatalogItemTypeCount {
   [key: string]: Record<string, number>;
+}
+
+export enum CustomAspect {
+  ControlBpInformation = 'control_bpInformation',
+  ControlBpCompendium = 'control_bpCompendium'
 }
 
 export default {
@@ -99,7 +105,8 @@ export default {
             sortBy: queryParameters.sortBy,
             sortOrder: queryParameters.sortOrder,
             name: queryParameters.name,
-            abbreviation: queryParameters.abbreviation
+            abbreviation: queryParameters.abbreviation,
+            customAspects: queryParameters.customAspects
           }
         };
       },
