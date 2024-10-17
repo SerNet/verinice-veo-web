@@ -186,5 +186,6 @@
   "inputLabel": {
     "name": "Name",
     "description": "Beschreibung"
-  }
+  },
+  "VdA": "Vorgehensweise der Absicherung"
 }

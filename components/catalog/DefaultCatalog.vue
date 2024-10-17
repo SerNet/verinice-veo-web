@@ -58,10 +58,10 @@
 </template>
 
 <script setup lang="ts">
-import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { TableHeader } from '../base/Table.vue';
-import type { IVeoPaginatedResponse, IVeoEntity } from '~/types/VeoTypes';
 import type { SortItem } from '~/components/base/Table.vue';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { TableHeader } from '../base/Table.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -84,11 +84,20 @@ interface Emits {
 }
 const emit = defineEmits<Emits>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { ability } = useVeoPermissions();
+const { data: currentDomain } = useCurrentDomain();
+const route = useRoute();
+const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
-const headers: TableHeader[] = [
+const elementType = computed(() => {
+  // Since all catalog items are of the same type, we can just use the first one
+  const firstItem = props.catalogItems.items?.[0];
+  return firstItem?.elementType ?? null;
+});
+
+const headers = computed<TableHeader[]>(() => [
   {
     value: 'abbreviation',
     key: 'abbreviation',
@@ -117,8 +126,32 @@ const headers: TableHeader[] = [
     tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description,
     priority: 30,
     order: 60
-  }
-];
+  },
+  ...((
+    elementType.value &&
+    currentDomain.value?.raw?.elementTypeDefinitions?.[elementType.value]?.customAspects?.control_bpInformation
+  ) ?
+    [
+      {
+        priority: 100,
+        order: 60,
+        key: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+        value: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+        render: ({ item }: any) => {
+          return h(
+            'div',
+            translations.value?.lang?.[locale.value]?.[
+              item.customAspects?.control_bpInformation?.control_bpInformation_protectionApproach
+            ] ?? ''
+          );
+        },
+        text: t('VdA').toString(),
+        sortable: false,
+        width: 80
+      }
+    ]
+  : [])
+]);
 
 const page = defineModel<number>('page', { default: 1 });
 const sortBy = defineModel<SortItem[]>('sortBy', {
