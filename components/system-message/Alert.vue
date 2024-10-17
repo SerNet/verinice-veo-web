@@ -31,25 +31,32 @@
           :no-close-button="!message.displayProps.isDismissable"
           @update:model-value="message.displayProps.isShown = false"
         >
-          {{ t('messageBecomesEffective') }}
+          {{ t('messageBecomesEffective', [formatTime(message.displayProps.effectiveDate).value]) }}
+
+          <SystemMessageTimer
+            v-if="message.displayProps.isUrgent"
+            :effective-date="message.displayProps.effectiveDate"
+          />
         </BaseAlert>
       </v-col>
     </v-row>
   </BaseContainer>
 </template>
 <script setup lang="ts">
+import { useFormatters } from '~/composables/utils';
 import { TSystemMessage } from '~/composables/messages/useSystemMessages';
 import { VeoAlertType } from '~/types/VeoTypes';
 defineProps<{ messages: TSystemMessage[] }>();
 const { locale, t } = useI18n();
+const { formatTime } = useFormatters();
 </script>
 <i18n>
 {
   "en": {
-    "messageBecomesEffective": "This message will become effective soon!",
+  "messageBecomesEffective": "This message becomes effective on {0}.",
   },
   "de": {
-    "messageBecomesEffective": "Diese Nachricht wird bald effektiv!",
+  "messageBecomesEffective": "Diese Nachricht wird am {0} wirksam.",
   }
 }
 </i18n>
