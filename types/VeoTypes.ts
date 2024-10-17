@@ -461,6 +461,7 @@ export interface IVeoEntity extends IVeoBaseObject {
   status: string;
   subType: string;
   type: string;
+  elementType?: string;
   _self: string;
 }
 
