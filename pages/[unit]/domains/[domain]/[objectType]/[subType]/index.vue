@@ -133,18 +133,18 @@ import { mdiContentCopy, mdiDotsVertical, mdiPlus, mdiTrashCanOutline } from '@m
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import { IVeoEntity } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
-import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~/composables/api/utils/query';
+import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchObjects } from '~/composables/api/objects';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~/composables/api/utils/query';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import type { VeoSearch } from '~/types/VeoSearch';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -166,7 +166,7 @@ const { tablePageSize } = useVeoUser();
 const { ability } = useVeoPermissions();
 
 const route = useRoute();
-
+const { data: currentDomain } = useCurrentDomain();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
 
@@ -490,6 +490,29 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
         width: 210
       }
     ]
+  : (
+    currentDomain.value?.raw?.elementTypeDefinitions?.[filter.value.objectType as string]?.customAspects
+      ?.control_bpInformation
+  ) ?
+    [
+      {
+        priority: 100,
+        order: 60,
+        key: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+        value: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+        render: ({ item }: any) => {
+          return h(
+            'div',
+            translations.value?.lang?.[locale.value]?.[
+              item.customAspects?.control_bpInformation?.control_bpInformation_protectionApproach
+            ] ?? ''
+          );
+        },
+        text: t('VdA').toString(),
+        sortable: false,
+        width: 80
+      }
+    ]
   : []
 );
 </script>
@@ -510,7 +533,8 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
       "delete": "Could not delete object"
     },
     "objectDeleted": "Object deleted.",
-    "open": "Open"
+    "open": "Open",
+    "VdA": "Procedure for securing"
   },
   "de": {
     "assignObject": "Objekt einer weiteren Domäne zuordnen",
@@ -526,7 +550,8 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
       "delete": "Das Objekt konnte nicht gelöscht werden"
     },
     "objectDeleted": "Objekt wurde gelöscht.",
-    "open": "Öffnen"
+    "open": "Öffnen",
+    "VdA": "Vorgehensweise der Absicherung"
   }
 }
 </i18n>
