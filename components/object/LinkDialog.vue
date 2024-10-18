@@ -310,7 +310,7 @@ export default defineComponent({
     // Selectable and selected objects
     const objectEndpoint = computed(() => endpoints.value?.[props.object?.type || ''] || '');
     const parentsQueryParameters = computed(() => ({
-      size: -1,
+      size: tablePageSize.value,
       page: 1,
       unitId: route.params.unit as string,
       parentEndpoint: objectListEndpoint.value,
