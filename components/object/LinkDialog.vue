@@ -60,6 +60,7 @@
             'updatedAt',
             'actions'
           ]"
+          :additional-headers="additionalHeaders"
           :items="selectableObjects"
           :loading="objectsLoading || childrenLoading || parentsLoading || isLoadingSearchResults"
           :no-data-text="noDataTextWithLink"
@@ -101,6 +102,7 @@ import { useNavigation } from '~/composables/navigation';
 import type { VeoSearch } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { TableHeader } from '../base/Table.vue';
 
 export default defineComponent({
   props: {
@@ -174,7 +176,7 @@ export default defineComponent({
     const { createLink } = useCreateLink();
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const { data: translations } = useTranslations({ domain: route.params.domain as string });
-
+    const { data: currentDomain } = useCurrentDomain();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const title = computed(() => {
       const { object, editParents } = props;
@@ -536,6 +538,32 @@ export default defineComponent({
       }
     });
 
+    const createCustomHeader = () => ({
+      priority: 100,
+      order: 60,
+      key: 'customAspects.control_bpInformation.control_bpInformation_protectionApproach',
+      value: 'customAspects.control_bpInformation.control_bpInformation_protectionApproach',
+      render: ({ item }: any) => {
+        return h(
+          'div',
+          translations.value?.lang?.[locale.value]?.[
+            item.customAspects?.control_bpInformation?.control_bpInformation_protectionApproach
+          ] ?? ''
+        );
+      },
+      text: t('VdA').toString(),
+      sortable: false,
+      width: 80
+    });
+
+    const additionalHeaders = computed<TableHeader[]>(() => {
+      const hasControlBpInformation =
+        currentDomain.value?.raw?.elementTypeDefinitions?.[filter.value.objectType as string]?.customAspects
+          ?.control_bpInformation;
+
+      return hasControlBpInformation ? [createCustomHeader()] : [];
+    });
+
     return {
       navigateToCatalog,
       ability,
@@ -559,7 +587,8 @@ export default defineComponent({
       t,
       upperFirst,
       search,
-      isLoadingSearchResults
+      isLoadingSearchResults,
+      additionalHeaders
     };
   }
 });
