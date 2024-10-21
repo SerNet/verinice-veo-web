@@ -65,16 +65,21 @@
     </div>
     <BaseTabs v-model="internalActiveTab">
       <template #tabs>
-        <!-- We use v-show instead of v-if, as v-show doesn't cause side effects in the v-model if risks are not present -->
-        <v-tab
-          v-for="tab in tabs"
-          v-show="!tab.hidden"
-          :key="tab.key"
-          :disabled="tab.disabled"
-          :data-component-name="`object-details-${tab.key}-tab`"
-        >
-          {{ tab.key === 'controls' ? controlsTabLabel : t(tab.key) }}
-        </v-tab>
+        <div v-for="tab in tabs" v-show="!tab.hidden" :key="tab.key">
+          <v-tooltip v-if="tab.disabled" location="top">
+            <template #activator="{ props: tooltipProps }">
+              <div v-bind="tooltipProps">
+                <v-tab :disabled="tab.disabled" :data-component-name="`object-details-${tab.key}-tab`">
+                  {{ tab.key === 'controls' ? controlsTabLabel : t(tab.key) }}
+                </v-tab>
+              </div>
+            </template>
+            <span>{{ tab.tooltip ?? t('defaultDisabledTooltip') }}</span>
+          </v-tooltip>
+          <v-tab v-else :data-component-name="`object-details-${tab.key}-tab`">
+            {{ tab.key === 'controls' ? controlsTabLabel : t(tab.key) }}
+          </v-tab>
+        </div>
       </template>
       <template #items>
         <v-window-item v-for="tab in tabs" :key="tab.key">
@@ -180,7 +185,7 @@ export default defineComponent({
       );
     });
 
-    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean }[]>(() => [
+    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; tooltip?: string }[]>(() => [
       {
         key: 'childScopes',
         hidden: props.object?.type !== 'scope'
@@ -208,6 +213,8 @@ export default defineComponent({
       },
       {
         key: 'risks',
+        disabled: !props.object?.riskDefinition,
+        tooltip: t('risksDisabledTooltip'),
         hidden: !hasRiskTab.value
       }
     ]);
@@ -278,7 +285,9 @@ export default defineComponent({
     "parentScopes": "in Scope",
     "risks": "risks",
     "updatedAt": "last change",
-    "targets": "target objects"
+    "targets": "target objects",
+    "risksDisabledTooltip": "To enable the Risks tab, a Risk Definition must be defined",
+    "defaultDisabledTooltip": "The Tab is disabled",
   },
   "de": {
     "by": "von",
@@ -291,7 +300,9 @@ export default defineComponent({
     "parentScopes": "in Scope",
     "risks": "Risiken",
     "updatedAt": "letzte Änderung",
-    "targets": "Zielobjekte"
+    "targets": "Zielobjekte",
+    "risksDisabledTooltip": "Um den Risiko Reiter zu aktivieren, muss eine Risikodefinition hinterlegt werden",
+    "defaultDisabledTooltip": "Der Reiter ist deaktiviert"
   }
 }
 </i18n>
