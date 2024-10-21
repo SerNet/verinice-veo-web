@@ -455,6 +455,7 @@ export interface IVeoEntity extends IVeoBaseObject {
   customAspects: IVeoCustomAspects;
   members: IVeoLink[]; // Only contains values for scopes
   parts: IVeoLink[]; // Only contains values for objects not of type scope
+  riskDefinition?: string;
   riskValues: any;
   status: string;
   subType: string;
