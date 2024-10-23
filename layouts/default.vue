@@ -69,8 +69,11 @@
     />
 
     <v-main :class="$style.main">
-      <slot />
-      <LayoutCookieBanner />
+      <BasePage>
+        <SystemMessageAlert v-if="messages.length" :messages="messages" />
+        <slot />
+        <LayoutCookieBanner />
+      </BasePage>
     </v-main>
 
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
@@ -95,6 +98,7 @@ const { alerts } = useVeoAlerts();
 const { t } = useI18n();
 const theme = useTheme();
 const context = useNuxtApp();
+const { data: messages } = useSystemMessages();
 
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
