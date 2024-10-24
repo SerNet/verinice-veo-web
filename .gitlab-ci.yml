@@ -93,6 +93,17 @@ build_test_app:
   stage: test
   rules:
     - !reference [.verification, rules]
+  variables:
+    CYPRESS_parallel_group: 2
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - ${CI_PROJECT_DIR}/cypress/screenshots
+      - ${CI_PROJECT_DIR}/cypress/videos
+  parallel:
+    matrix:
+      - CI_NODE_INDEX: [0, 1]
   cache:
     key:
       files:
@@ -108,22 +119,9 @@ build_test_app:
   interruptible: true
 
 test:
-  stage: test
-  image: cypress/browsers:node-18.20.3-chrome-125.0.6422.141-1-ff-126.0.1-edge-125.0.2535.85-1
   extends: .test_template
-  variables:
-    CYPRESS_parallel_group: 2
   script:
     - ./run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
-  artifacts:
-    expire_in: 1 week
-    when: always
-    paths:
-      - ${CI_PROJECT_DIR}/cypress/screenshots
-      - ${CI_PROJECT_DIR}/cypress/videos
-  parallel:
-    matrix:
-      - CI_NODE_INDEX: [0, 1]
 
 docker_image:
   stage: build
