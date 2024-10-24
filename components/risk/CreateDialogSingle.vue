@@ -239,7 +239,7 @@ export default defineComponent({
 
       try {
         if (mitigationsModified.value) {
-          let mitigationId = data.value.mitigation?.id;
+          const mitigationId = data.value.mitigation?.id;
 
           // If there's no existing mitigation ID and there are mitigations available, create a new one
           if (!mitigationId && mitigations.value.length) {
@@ -247,12 +247,11 @@ export default defineComponent({
               endpoint: 'controls',
               object: newMitigatingAction.value
             });
-            mitigationId = resourceId;
-            data.value.mitigation = createLink('controls', mitigationId); // Link the new mitigation to the data
+            data.value.mitigation = createLink('controls', resourceId); // Link the new mitigation to the data
           }
 
           // If a mitigation ID exists, fetch its data and link it to the current mitigations
-          if (mitigationId) {
+          else if (mitigationId) {
             const mitigationData = await useQuerySync(
               objectQueryDefinitions.queries.fetch,
               {
@@ -302,7 +301,8 @@ export default defineComponent({
         targetUri: `${config.public.apiUrl}/units/${route.params.unit}`
       },
       subType: domain.value?.controlImplementationConfiguration?.mitigationControlSubType,
-      status: 'NEW'
+      status: 'NEW',
+      parts: mitigations.value.map((m) => createLink('controls', m.id))
     }));
 
     return {
