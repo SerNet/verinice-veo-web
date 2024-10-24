@@ -89,7 +89,7 @@ const currentModule = computed<CurrentModule | undefined>(() => {
       params: {
         ...route.params,
         objectType: 'controls',
-        subType: subTypeTranslation.value,
+        subType: newSubType.value,
         object: module.id
       }
     }
