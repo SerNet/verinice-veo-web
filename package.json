@@ -16,7 +16,7 @@
     "dev": "nuxi dev",
     "dev:public": "nuxi dev --public",
     "typecheck": "nuxi typecheck",
-    "e2e": "cypress run --env environment=local --browser firefox",
+    "e2e": "cypress run --env environment=local --browser chrome",
     "format:all": "prettier . --ignore-unknown --write",
     "format": "prettier --ignore-unknown --write",
     "format:check": "prettier . --check",
