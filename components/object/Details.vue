@@ -213,7 +213,7 @@ export default defineComponent({
       },
       {
         key: 'risks',
-        disabled: !props.object?.riskDefinition,
+        disabled: props.object?.type === 'scope' && !props.object?.riskDefinition,
         tooltip: t('risksDisabledTooltip'),
         hidden: !hasRiskTab.value
       }
