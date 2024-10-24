@@ -134,7 +134,7 @@ const headers = computed<TableHeader[]>(() => [
     [
       {
         priority: 100,
-        order: 60,
+        order: 31,
         key: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
         value: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
         render: ({ item }: any) => {
