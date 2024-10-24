@@ -101,7 +101,7 @@ export default {
             elementType: queryParameters.elementType,
             subType: queryParameters.subType,
             size: queryParameters.size === undefined ? tablePageSize.value : queryParameters.size,
-            page: queryParameters.page - 1,
+            page: queryParameters.page ?? 0,
             sortBy: queryParameters.sortBy,
             sortOrder: queryParameters.sortOrder,
             name: queryParameters.name,

@@ -30,12 +30,6 @@ type UseSearchParams<T> = {
 
 type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
 
-function getPage(baseQueryParameters: any) {
-  if (Object.hasOwn(baseQueryParameters, 'page') && typeof baseQueryParameters.page === 'number')
-    return max([(baseQueryParameters.page as number) - 1, 0]);
-  return 0;
-}
-
 export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: UseSearchParams<T>): {
   data: Ref<VeoSearchResponse>;
   isLoading: Ref<boolean>;
@@ -54,7 +48,6 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
         if (isObjectSearch && !baseQueryParameters.value?.endpoint) return;
         const parameters = ref({
           ...baseQueryParameters.value,
-          page: getPage(baseQueryParameters.value),
           ...getSearchQueryParameters(search.value)
         });
 

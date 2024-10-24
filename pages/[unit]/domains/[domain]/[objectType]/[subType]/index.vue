@@ -280,10 +280,10 @@ const filter = computed(() => {
 //
 // table stuff
 //
-const page = ref(1);
+const page = ref(0);
 const sortBy = ref([{ key: 'name', order: 'asc' }]);
 const resetQueryOptions = () => {
-  page.value = 1;
+  page.value = 0;
   sortBy.value = [{ key: 'name', order: 'asc' }];
 };
 

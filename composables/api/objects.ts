@@ -33,7 +33,7 @@ export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>
   const transformedQueryParameters = computed(() => ({
     ...queryParameters.value,
     size: queryParameters.value.size === undefined ? tablePageSize.value : queryParameters.value.size,
-    page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
+    page: queryParameters.value.page ?? 0
   }));
   return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, {
     ...queryOptions,
@@ -53,7 +53,7 @@ export const useFetchParentObjects = (
     endpoint: queryParameters.value.parentEndpoint,
     childElementIds: queryParameters.value.childObjectId,
     size: queryParameters.value.size === undefined ? tablePageSize.value : queryParameters.value.size,
-    page: queryParameters.value.page ? max([queryParameters.value.page - 1, 0]) : 0
+    page: queryParameters.value.page ?? 0
   }));
   return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, queryOptions);
 };

@@ -166,7 +166,7 @@ export default defineComponent({
       refetch();
     };
 
-    const page = ref(1);
+    const page = ref(0);
     const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const combinedQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,

@@ -77,7 +77,7 @@ if (!currentSubType.value) {
 }
 
 const { tablePageSize } = useVeoUser();
-const page = ref<number>(1);
+const page = ref<number>(0);
 const sortBy = ref([{ key: 'abbreviation', order: 'asc' }]);
 
 // Fetch catalog items

@@ -127,8 +127,6 @@ export interface IVeoFetchWipDecisionEvaluationParameters {
   subType: string;
 }
 
-export const getPageNumber = (page: number | undefined) => (page ? max([page - 1, 0]) : 0);
-
 export const transFormObject = (object: any) => {
   const _object = cloneDeep(object);
 
@@ -208,8 +206,6 @@ export default {
       url: '/api/domains/:domain/:endpoint',
       onDataFetched: (result) => {
         result.items.map((item) => formatObject(item));
-        // +1, because the first page for the api is 0, however vuetify expects it to be 1
-        result.page = result.page + 1;
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
@@ -248,7 +244,7 @@ export default {
     fetchObjectLinks: {
       primaryQueryKey: 'links',
       url: '/api/domains/:domain/:endpoint/:id/links',
-      onDataFetched: (result) => (result.page++, result),
+      onDataFetched: (result) => result,
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
           domain: queryParameters.domain,
@@ -257,7 +253,7 @@ export default {
         },
         query: {
           ...omit(queryParameters, 'domain', 'id', 'endpoint'),
-          page: getPageNumber(queryParameters.page)
+          page: queryParameters.page ?? 0
         }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectSubResourceParameters, IVeoPaginatedResponse<IInOutLink[]>>,
@@ -266,9 +262,6 @@ export default {
       url: '/api/domains/:domain/:endpoint/:id/parts',
       onDataFetched: (result) => {
         result.items.map((item) => formatObject(item));
-        // +1, because the first page for the api is 0, however vuetify expects it to be 1
-        result.page = result.page + 1;
-
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
@@ -279,7 +272,7 @@ export default {
         },
         query: {
           ...omit(queryParameters, 'domain', 'id', 'endpoint'),
-          page: getPageNumber(queryParameters.page)
+          page: queryParameters.page ?? 0
         }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectSubResourceParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
@@ -288,16 +281,13 @@ export default {
       url: '/api/domains/:domain/scopes/:id/members',
       onDataFetched: (result) => {
         result.items.map((item) => formatObject(item));
-        // +1, because the first page for the api is 0, however vuetify expects it to be 1
-        result.page = result.page + 1;
-
         return result;
       },
       queryParameterTransformationFn: (queryParameters) => ({
         params: { domain: queryParameters.domain, id: queryParameters.id },
         query: {
           ...omit(queryParameters, 'domain', 'id', 'endpoint'),
-          page: getPageNumber(queryParameters.page)
+          page: queryParameters.page ?? 0
         }
       })
     } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,

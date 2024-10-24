@@ -17,7 +17,6 @@
 // RI = Combination of riskAffected + control
 
 import { useRequest } from '@/composables/api/utils/request';
-import { getPageNumber } from '~/composables/api/queryDefinitions/objects';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export type ComplianceState = {
@@ -58,7 +57,7 @@ async function fetchRequirementImplementations({
   if (!type || !riskAffected || !control) return;
 
   const url =
-    `/api/${type}/${riskAffected}/control-implementations/${control}/requirement-implementations?size=${size}&page=${getPageNumber(page)}` +
+    `/api/${type}/${riskAffected}/control-implementations/${control}/requirement-implementations?size=${size}&page=${page}` +
     (sortBy ? `&sortBy=${sortBy}&sortOrder=${sortOrder}` : '');
 
   return await request(url, {});

@@ -210,10 +210,10 @@ export default defineComponent({
     // Table/filter logic
     const filter = ref<Record<string, any>>({});
 
-    const page = ref(1);
+    const page = ref(0);
     const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const resetQueryOptions = () => {
-      page.value = 1;
+      page.value = 0;
       sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
@@ -313,7 +313,7 @@ export default defineComponent({
     const objectEndpoint = computed(() => endpoints.value?.[props.object?.type || ''] || '');
     const parentsQueryParameters = computed(() => ({
       size: tablePageSize.value,
-      page: 1,
+      page: 0,
       unitId: route.params.unit as string,
       parentEndpoint: objectListEndpoint.value,
       childObjectId: props.object?.id || ''

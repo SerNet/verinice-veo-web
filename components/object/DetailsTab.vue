@@ -164,7 +164,7 @@ export default defineComponent({
     // Query Client
     const queryClient = useQueryClient();
     // State
-    const page = ref(1);
+    const page = ref(0);
     const getDefaultSortBy = (tab: string): VeoSort[] => {
       if (tab === 'controls') {
         return [{ key: 'abbreviation', order: 'asc' }];
@@ -173,7 +173,7 @@ export default defineComponent({
     };
     const sortBy = ref<VeoSort[]>(getDefaultSortBy(props.type));
     const resetQueryOptions = () => {
-      page.value = 1;
+      page.value = 0;
       sortBy.value = [{ key: 'name', order: 'asc' }];
     };
     watch(() => props.type, resetQueryOptions);
