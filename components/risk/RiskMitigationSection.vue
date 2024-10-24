@@ -243,7 +243,7 @@ export default defineComponent({
       const params: { objectType: string; subType: string; object?: string } = {
         ...route.params,
         objectType: 'controls',
-        subType: currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType,
+        subType: currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType,
         object: props.data?.mitigation?.id
       };
       navigateTo({
@@ -256,7 +256,7 @@ export default defineComponent({
       const params: { objectType: string; subType: string; object?: string } = {
         ...route.params,
         objectType: 'controls',
-        subType: currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType,
+        subType: currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType,
         object: item?.id
       };
       navigateTo({
