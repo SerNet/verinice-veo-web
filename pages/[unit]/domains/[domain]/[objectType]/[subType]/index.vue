@@ -468,7 +468,8 @@ const actions = computed(() => [
   }
 ]);
 
-// Additional headers (only if user is viewing processes with subtype PRO_DataProcessing)
+// Additional headers
+const SUBTYPES_WITH_VDA = ['CTL_Requirement', 'CTL_PartialRequirement', 'CTL_Safeguard', '-'];
 // @ts-ignore TODO #3066 cannot find name
 const additionalHeaders = computed<ObjectTableHeader[]>(() =>
   filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing' ?
@@ -491,13 +492,14 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
       }
     ]
   : (
+    (!filter.value.subType || SUBTYPES_WITH_VDA.includes(filter.value.subType as string)) &&
     currentDomain.value?.raw?.elementTypeDefinitions?.[filter.value.objectType as string]?.customAspects
       ?.control_bpInformation
   ) ?
     [
       {
         priority: 100,
-        order: 60,
+        order: 31,
         key: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
         value: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
         render: ({ item }: any) => {
