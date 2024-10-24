@@ -16,72 +16,74 @@
 -->
 <template>
   <v-row data-component-name="risk-matrix-wrapper">
-    <v-container>
+    <BaseContainer>
       <v-row v-if="!domainIsFetching">
-        <v-col cols="12" md="6">
-          <v-card class="mb-6 elevation-2" outlined>
-            <!-- Kriterien -->
-            <v-card-title
-              ><span>{{ t('criterion') }}</span></v-card-title
-            >
-            <v-row v-for="(protectionGoal, index) in protectionGoals" :key="index" style="padding: 0rem 1rem">
-              <RiskCriterion
-                v-bind="getMatrixData(protectionGoal.id)"
-                :title="protectionGoal.text"
-                @edit="
-                  () =>
-                    setUpEditing({
-                      type: 'potentialImpacts',
-                      items: getMatrixData(protectionGoal.id).impacts,
-                      typeTranslation: t('potentialImpacts'),
-                      riskCategoryId: protectionGoal.id
-                    })
-                "
-              />
-            </v-row>
-            <div class="d-flex border-t border-b my-4 pb-4">
-              <!-- Risikokategorien -->
-              <RiskLegends
-                :get-most-contrasty-color="getMostContrastyColor"
-                :title="t('riskValues')"
-                :items="riskValues"
-                @edit="
-                  () =>
-                    setUpEditing({
-                      type: 'riskValues',
-                      items: riskValues,
-                      typeTranslation: t('riskValues')
-                    })
-                "
-              />
-              <RiskLegends
-                :get-most-contrasty-color="getMostContrastyColor"
-                :title="t('probability')"
-                :items="probabilities"
-                @edit="
-                  () =>
-                    setUpEditing({
-                      type: 'probability',
-                      items: probabilities,
-                      typeTranslation: t('probability')
-                    })
-                "
-              />
-            </div>
-            <!-- Neues Kriterium -->
-            <v-row class="d-none">
-              <v-col cols="12">
-                <div class="px-4 pb-4">
-                  <v-btn class="dashed-border text-center elevation-1" outlined block> + {{ t('Newcriterion') }}</v-btn>
+        <v-col cols="12">
+          <!-- Kriterien -->
+          <h1>{{ t('criterion') }}</h1>
+          <v-row v-for="(protectionGoal, index) in protectionGoals" :key="index">
+            <RiskCriterion
+              v-bind="getMatrixData(protectionGoal.id)"
+              :title="protectionGoal.text"
+              @edit="
+                () =>
+                  setUpEditing({
+                    type: 'potentialImpacts',
+                    items: getMatrixData(protectionGoal.id).impacts,
+                    typeTranslation: t('potentialImpacts'),
+                    riskCategoryId: protectionGoal.id
+                  })
+              "
+            />
+          </v-row>
+          <v-row>
+            <v-col>
+              <v-card>
+                <div class="d-flex my-4 pb-4">
+                  <!-- Risikokategorien -->
+                  <RiskLegends
+                    :get-most-contrasty-color="getMostContrastyColor"
+                    :title="t('riskValues')"
+                    :items="riskValues"
+                    @edit="
+                      () =>
+                        setUpEditing({
+                          type: 'riskValues',
+                          items: riskValues,
+                          typeTranslation: t('riskValues')
+                        })
+                    "
+                  />
+                  <RiskLegends
+                    :get-most-contrasty-color="getMostContrastyColor"
+                    :title="t('probability')"
+                    :items="probabilities"
+                    @edit="
+                      () =>
+                        setUpEditing({
+                          type: 'probability',
+                          items: probabilities,
+                          typeTranslation: t('probability')
+                        })
+                    "
+                  />
                 </div>
-              </v-col>
-            </v-row>
-          </v-card>
+              </v-card>
+            </v-col>
+          </v-row>
+          <!-- Neues Kriterium -->
+          <v-row class="d-none">
+            <v-col cols="12">
+              <div class="px-4 pb-4">
+                <v-btn class="dashed-border text-center elevation-1" outlined block> + {{ t('Newcriterion') }}</v-btn>
+              </div>
+            </v-col>
+          </v-row>
         </v-col>
       </v-row>
 
       <v-skeleton-loader v-else type="image" width="600px" />
-    </v-container>
+    </BaseContainer>
 
     <RiskDefinitionEditor
       v-model:is-open="hasEditor"

@@ -16,7 +16,7 @@
 -->
 <template>
   <v-col cols="12">
-    <v-card class="elevation-2" outlined rounded="xl">
+    <v-card class="pa-2">
       <div class="d-flex justify-space-between align-center">
         <div class="d-flex align-center">
           <v-card-title class="pr-0">{{ title }}</v-card-title>
@@ -25,7 +25,7 @@
         <v-btn :icon="mdiDelete" variant="plain" size="small" class="d-none" />
       </div>
       <v-card-subtitle>{{ t('categories') }}</v-card-subtitle>
-      <div class="px-4 d-flex align-center flex-wrap">
+      <div class="mb-4 px-4 d-flex align-center flex-wrap">
         <v-tooltip
           v-for="impact in impacts"
           :key="impact.ordinalValue"
@@ -132,7 +132,7 @@ const getMostContrastyColor = (backgroundColor: string) => {
     "en": {
       "categories": "Categories:",
       "noMatrix": "No risk matrix defined."
-      
+
     },
     "de": {
       "categories": "Kategorien:",
