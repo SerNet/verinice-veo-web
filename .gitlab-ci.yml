@@ -88,7 +88,7 @@ build_test_app:
   interruptible: true
 
 .test_template:
-  image: cypress/browsers:node18.12.0-chrome103-ff107
+  image: cypress/browsers:node-18.20.3-chrome-125.0.6422.141-1-ff-126.0.1-edge-125.0.2535.85-1
   needs: ['build_test_app']
   stage: test
   rules:
@@ -109,7 +109,7 @@ build_test_app:
 
 test:
   stage: test
-  image: cypress/browsers:node18.12.0-chrome103-ff107
+  image: cypress/browsers:node-18.20.3-chrome-125.0.6422.141-1-ff-126.0.1-edge-125.0.2535.85-1
   extends: .test_template
   variables:
     CYPRESS_parallel_group: 2
