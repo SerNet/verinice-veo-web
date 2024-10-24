@@ -86,7 +86,6 @@ const props = withDefaults(
     /**
      * Reflects the current page displayed in the table. Can be used with paginated data and simple arrays.
      */
-    page?: number;
     /**
      * Defines how the table should be sorted.
      * NOTE: Paginated data can only be sorted by one column, all entries besides [0] will be ignored.
@@ -118,7 +117,6 @@ const props = withDefaults(
     items: () => [],
     loading: false,
     modelValue: () => [],
-    page: 1,
     sortBy: () => [{ key: 'name', order: 'asc' }],
     defaultHeaders: () => [],
     additionalHeaders: () => [],
@@ -130,7 +128,6 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:sort-by', newSorting: SortItem[]): void;
-  (e: 'update:page', newPage: number): void;
   (e: 'update:items-per-page', newItemsPerPage: number): void;
   (e: 'click', event: any): void;
   (e: 'update:model-value', newValue: any[]): void;
@@ -143,20 +140,29 @@ const vm = getCurrentInstance();
 const slots = useSlots();
 const attrs = useAttrs();
 
-// Local sortBy and page property. Used so the table can be paginated if the props aren't set. synced by watchers.
-const localPage = ref(props.page);
+/** @description Synchronizes the current API page parameter with the parent component, 0-indexed */
+const page = defineModel<number>('page', { default: 0 });
+
+/** @description Tracks the current page state of VDataTable, has to be 1-indexed. */
+const localPage = ref(1);
+
+watch(
+  () => page,
+  (newValue) => {
+    localPage.value = newValue.value + 1;
+  },
+  { immediate: true, deep: true }
+);
+
 watch(
   () => localPage.value,
   (newValue) => {
-    emit('update:page', newValue);
+    page.value = newValue - 1;
   }
 );
-watch(
-  () => props.page,
-  (newValue) => {
-    localPage.value = newValue;
-  }
-);
+
+watch(localPage, () => console.log({ localPage: localPage.value }), { immediate: true });
+watch(page, () => console.log({ page: page.value }), { immediate: true });
 const localSortBy = ref(props.sortBy);
 watch(
   () => localSortBy.value,
