@@ -54,7 +54,6 @@ export function iterateSubTypes(elementType: string, callback: (args: any) => vo
     .find('a')
     .each(($subType) => {
       if ($subType.text() === 'All') return;
-      // cy.wait(200);
       callback($subType);
     });
 }
