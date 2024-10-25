@@ -266,7 +266,7 @@ export default defineComponent({
     };
 
     watch(
-      () => props.data?.mitigation?.id,
+      () => props.data?.mitigation,
       () => fetchMitigation(),
       { immediate: true }
     );
