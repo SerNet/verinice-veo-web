@@ -352,7 +352,8 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
       ],
       style: {
         width: `${column.width}px`
-      }
+      },
+      'data-veo-test': column.key
     },
     header?.key ? context.internalItem.columns[header.key] : undefined
   );

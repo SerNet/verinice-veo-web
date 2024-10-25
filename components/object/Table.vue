@@ -134,7 +134,7 @@ const renderIcon: TableRenderer = ({ item }) => {
  * Render date column using date formatter
  */
 const renderDate: TableRenderer = ({ internalItem: item }) =>
-  item.raw.updatedAt ? formatDate(item.raw.updatedAt) : '';
+  h('span', { 'data-veo-test': 'updatedAt' }, `${item.raw.updatedAt ? formatDate(item.raw.updatedAt) : ''}`);
 
 /**
  * Render created at / updated at tooltip
@@ -188,7 +188,10 @@ const formatDate: TableFormatter = (v: any) => {
  */
 const renderStatus: TableRenderer = ({ item }: { item: any }) => {
   const key = `${item.type}_${item.subType}_status_${item.status}`;
-  return translations.value?.lang?.[locale.value]?.[key] || item?.status || '';
+  //return translations.value?.lang?.[locale.value]?.[key] || item?.status || '';
+  return h('div', { 'data-veo-test': 'status' }, [
+    `${translations.value?.lang?.[locale.value]?.[key] || item?.status || ''}`
+  ]);
 };
 
 /**
