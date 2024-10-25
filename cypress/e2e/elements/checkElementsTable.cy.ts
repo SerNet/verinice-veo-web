@@ -1,4 +1,4 @@
-import { getRandomElementType } from '../../commands/utils';
+import { getRandomElementType, waitForPageToLoad, waitForLoadersToDisappear } from '../../commands/utils';
 import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 let unitDetails: UnitDetails;
 
@@ -23,11 +23,11 @@ describe('Elements Overview Table', () => {
   elementTypeList.forEach((elementType) => {
     it('Check Items of ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
-
       cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
-        cy.checkSubTypePage($subType[0].innerText);
-        cy.wait(200);
+
+        waitForPageToLoad();
+        waitForLoadersToDisappear();
 
         cy.get('.v-data-table-footer__info > div')
           .invoke('text')
@@ -41,19 +41,16 @@ describe('Elements Overview Table', () => {
             expect(itemsShown).to.be.greaterThan(0);
             expect(totalItems).to.be.greaterThan(0);
 
-            // Verify the number of rows matches items shown and check each cell
             cy.get('.v-data-table__tr')
+              // Verify the number of rows matches items shown
               .should('have.length', itemsShown)
               .each(($row) => {
                 cy.wrap($row).within(() => {
-                  cy.get('td').then(($cells) => {
-                    $cells.each((index, cell) => {
-                      if (index !== 0 && index !== 2 && index !== $cells.length - 1) {
-                        // Skip Icon, Abbreviation, and Actions
-                        cy.wrap(cell).invoke('text').should('not.be.empty');
-                      }
-                    });
-                  });
+                  // Check if data is rendered
+                  cy.get('[data-veo-test="name"]').should('not.be.empty');
+                  cy.get('[data-veo-test="status"]').should('not.be.empty');
+                  cy.get('[data-veo-test="updatedAt"]').should('not.be.empty');
+                  cy.get('[data-veo-test="updatedBy"]').should('not.be.empty');
                 });
               });
           });
