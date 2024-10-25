@@ -69,11 +69,9 @@
     />
 
     <v-main :class="$style.main">
-      <BasePage>
-        <SystemMessageAlert v-if="messages.length" :messages="messages" />
-        <slot />
-        <LayoutCookieBanner />
-      </BasePage>
+      <SystemMessageAlert v-if="messages.length" :messages="messages" />
+      <slot />
+      <LayoutCookieBanner />
     </v-main>
 
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />

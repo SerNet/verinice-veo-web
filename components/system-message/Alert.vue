@@ -17,30 +17,25 @@
 -->
 <template>
   <!-- Admin messages -->
-  <BaseContainer v-if="messages.length" class="d-flex flex-direction-column mt-4 px-2 pt-6">
-    <v-row>
-      <v-col>
-        <BaseAlert
-          v-for="message in messages"
-          :key="message.id"
-          :model-value="message.displayProps.isShown"
-          :title="message.message[locale]"
-          :type="VeoAlertType[message.displayProps.alertType]"
-          class="mt-2"
-          flat
-          :no-close-button="!message.displayProps.isDismissable"
-          @update:model-value="message.displayProps.isShown = false"
-        >
-          {{ t('messageBecomesEffective', [formatTime(message.displayProps.effectiveDate).value]) }}
+  <v-row class="px-2 bg-basepage">
+    <v-col>
+      <BaseAlert
+        v-for="message in messages"
+        :key="message.id"
+        :model-value="message.displayProps.isShown"
+        :title="message.message[locale]"
+        :type="VeoAlertType[message.displayProps.alertType]"
+        class="mt-2"
+        flat
+        :no-close-button="!message.displayProps.isDismissable"
+        @update:model-value="message.displayProps.isShown = false"
+      >
+        {{ t('messageBecomesEffective', [formatTime(message.displayProps.effectiveDate).value]) }}
 
-          <SystemMessageTimer
-            v-if="message.displayProps.isUrgent"
-            :effective-date="message.displayProps.effectiveDate"
-          />
-        </BaseAlert>
-      </v-col>
-    </v-row>
-  </BaseContainer>
+        <SystemMessageTimer v-if="message.displayProps.isUrgent" :effective-date="message.displayProps.effectiveDate" />
+      </BaseAlert>
+    </v-col>
+  </v-row>
 </template>
 <script setup lang="ts">
 import { useFormatters } from '~/composables/utils';
