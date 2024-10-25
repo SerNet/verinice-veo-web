@@ -23,3 +23,8 @@ export function waitForPageToLoad() {
 export function pluralizeElementType(elementType: string) {
   return elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 }
+export function waitForLoadersToDisappear() {
+  cy.get('.v-skeleton-loader').should('not.exist');
+  cy.get('[loading=true]').should('not.exist');
+  cy.get('[role=progressbar]:visible').should('not.exist');
+}
