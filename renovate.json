@@ -15,7 +15,7 @@
     {
       "matchPackageNames": ["cypress/browsers"],
       "versioning": "regex:^node-?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)(?:-(?:[a-zA-Z]+\\d*|[\\d.]+))*$",
-      "allowedVersions": "!/^node-20.18.0-chrome-129.0.6668.89-1-ff-131.0.2-edge-129.0.2792.65-1$/"
+      "allowedVersions": "!/^node-22.7.0-chrome-127.0.6533.119-1-ff-129.0.1-edge-127.0.2651.98-1$/"
     }
   ]
 }
