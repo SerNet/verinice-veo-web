@@ -160,10 +160,10 @@
         @click="
           () =>
             void (
-              state.CTLModule.value.owner.id &&
+              route.query.riskAffected &&
               submitForm({
-                type: state.type.value,
-                riskAffected: state.CTLModule.value.owner.id as string,
+                type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
+                riskAffected: route.query.riskAffected as string,
                 form,
                 item: item,
                 request
@@ -192,6 +192,7 @@ import { useRequest } from '@/composables/api/utils/request';
 import { format } from 'date-fns';
 import { useDate } from 'vuetify';
 import type { IVeoLink, IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 import DOMPurify from 'dompurify';
 import type { ComputedRef, Ref } from 'vue';
@@ -200,10 +201,9 @@ import { isVeoLink, validateType } from '~/types/utils';
 const { request } = useRequest();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { getRequirementImplementationId, state } = useCompliance();
+const { getRequirementImplementationId } = useCompliance();
 const adapter = useDate();
 const route = useRoute();
-const { data: currentDomain } = useCurrentDomain();
 
 interface Props {
   item: RequirementImplementation | null;
