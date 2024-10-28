@@ -247,6 +247,12 @@ function translate<T>(translations: { [lang: string]: T }): T {
 }
 
 .impact-title {
-  writing-mode: sideways-lr;
+  @supports (writing-mode: sideways-lr) {
+    writing-mode: sideways-lr;
+  }
+
+  @supports not (writing-mode: sideways-lr) {
+    transform: rotate(-90deg);
+  }
 }
 </style>
