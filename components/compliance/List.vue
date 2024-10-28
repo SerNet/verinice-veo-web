@@ -26,8 +26,8 @@
       @click="
         (e) =>
           openItem({
-            type: state.type.value,
-            riskAffected: state.CTLModule.value.owner?.id,
+            type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
+            riskAffected: route.query.riskAffected as string,
             item: e.item
           })
       "
@@ -51,13 +51,14 @@
 </template>
 
 <script setup lang="ts">
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { TableHeader } from '../base/Table.vue';
 import { useCompliance } from './compliance';
 import { RequirementImplementation } from './Editor.vue';
 
 const { tablePageSize } = useVeoUser();
-
-const { fetchRequirementImplementations, fetchRequirementImplementation, state } = useCompliance();
+const route = useRoute();
+const { fetchRequirementImplementations, fetchRequirementImplementation } = useCompliance();
 
 const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
 const page = defineModel<number>('page', { default: 0 });
@@ -76,14 +77,15 @@ function mapSortingKey(key: string) {
 }
 
 const fetchParams = computed(() => {
-  if (!state.CTLModule.value) return undefined;
+  if (!route.query.riskAffected) return;
   return {
-    type: state.type.value as string,
-    riskAffected: state.CTLModule.value.owner.id as string,
-    control: state.CTLModule.value.id,
+    type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
+    riskAffected: route.query.riskAffected as string,
+    control: route.query.control as string,
     sortBy: mapSortingKey(sortBy.value[0].key),
     sortOrder: sortBy.value[0].order,
     size: tablePageSize.value,
+
     page: page.value
   };
 });
