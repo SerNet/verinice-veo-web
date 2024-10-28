@@ -161,8 +161,6 @@ watch(
   }
 );
 
-watch(localPage, () => console.log({ localPage: localPage.value }), { immediate: true });
-watch(page, () => console.log({ page: page.value }), { immediate: true });
 const localSortBy = ref(props.sortBy);
 watch(
   () => localSortBy.value,
