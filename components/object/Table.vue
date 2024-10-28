@@ -57,10 +57,6 @@ const props = withDefaults(
      */
     modelValue?: any[];
     /**
-     * Reflects the current page displayed in the table. Can be used with paginated data and simple arrays.
-     */
-    page?: number;
-    /**
      * Defines how the table should be sorted.
      * NOTE: Paginated data can only be sorted by one column, all entries besides [0] will be ignored.
      */
@@ -91,7 +87,6 @@ const props = withDefaults(
     items: () => [],
     loading: false,
     modelValue: () => [],
-    page: 1,
     sortBy: () => [{ key: 'name', order: 'asc' }],
     defaultHeaders: () => [],
     additionalHeaders: () => [],
