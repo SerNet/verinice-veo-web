@@ -178,11 +178,8 @@ export default defineComponent({
     });
 
     const isControlsTabHidden = computed(() => {
-      return (
-        !isRiskAffected.value ||
-        ['DS-GVO', 'NIS2'].includes(domain.value?.name) ||
-        props.object?.subType === 'CTL_Module'
-      );
+      const complianceControlSubType = domain.value.controlImplementationConfiguration.complianceControlSubType;
+      return !complianceControlSubType || !isRiskAffected.value;
     });
 
     const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; tooltip?: string }[]>(() => [
@@ -209,7 +206,7 @@ export default defineComponent({
       },
       {
         key: 'targets',
-        hidden: props.object?.subType !== 'CTL_Module'
+        hidden: props.object?.subType !== domain.value.controlImplementationConfiguration.complianceControlSubType
       },
       {
         key: 'risks',
