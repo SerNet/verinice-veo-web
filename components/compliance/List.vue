@@ -60,7 +60,7 @@ const { tablePageSize } = useVeoUser();
 const { fetchRequirementImplementations, fetchRequirementImplementation, state } = useCompliance();
 
 const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
-const page = defineModel<number>('page', { default: 1 });
+const page = defineModel<number>('page', { default: 0 });
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
