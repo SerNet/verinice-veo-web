@@ -48,8 +48,6 @@ describe('Create elements', { testIsolation: false }, () => {
 
           cy.wait(['@createElement']).its('response.statusCode').should('eq', 201);
 
-          veoAlertDismiss();
-
           cy.contains(elements.name).closest('tr').as('tmp');
 
           cy.get('@tmp').then(($row) => {
@@ -60,10 +58,6 @@ describe('Create elements', { testIsolation: false }, () => {
       });
     });
   }
-
-  const veoAlertDismiss = () => {
-    cy.get('div[role="alert"][params="[object Object]"]').click();
-  };
 
   const createElement = (abbreviation: string, name: string, description: string, status: string) => {
     cy.get('input[id="#/properties/abbreviation"]').type(abbreviation);

@@ -66,3 +66,14 @@ Cypress.on('uncaught:exception', (err, _runnable) => {
 
   return false;
 });
+
+const dismissAlertIfPresent = () => {
+  setInterval(() => {
+    const alert = Cypress.$('div[role="alert"][params="[object Object]"]');
+    if (alert.length > 0) {
+      alert.first().trigger('click');
+    }
+  }, 1000);
+};
+
+dismissAlertIfPresent();
