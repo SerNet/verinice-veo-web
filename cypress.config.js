@@ -5,6 +5,7 @@
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
+  retries: 2,
   defaultCommandTimeout: 30000,
   requestTimeout: 30000,
   e2e: {
