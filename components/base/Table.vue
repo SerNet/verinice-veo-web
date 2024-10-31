@@ -531,7 +531,8 @@ const render = () => {
     ...sharedProps.value,
     loading: props.loading,
     loadingText: t('loadingData'),
-    itemsLength: props.items.totalItemCount
+    itemsLength: props.items.totalItemCount,
+    ...(props.loading ? { 'data-veo-test': 'loadingDataTable' } : { 'data-veo-test': 'loadedDataTable' })
   };
 
   let dataTableSlots = {
