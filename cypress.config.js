@@ -14,6 +14,12 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       // Load cypress.env.[environment].json files for different environments
       // if version not defined, use local
+      on('before:browser:launch', (browser, launchOptions) => {
+        if (browser.family === 'firefox') {
+          launchOptions.preferences['network.proxy.testing_localhost_is_secure_when_hijacked'] = true;
+        }
+        return launchOptions;
+      });
       const environment = config.env.environment || 'local';
       // load env from json
       config.env = require(`cypress/config/cypress.env.${environment}.json`);
