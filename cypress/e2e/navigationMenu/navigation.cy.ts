@@ -56,12 +56,16 @@ describe('Navigation Menu', () => {
         entry: ['dsra']
       }
     ];
+    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/**`).as('gettingData');
 
     groupsWithCategories.forEach((group) => {
       group.elementTypes.forEach((elementType) => {
         cy.navigateTo({ group: group.name, category: elementType });
         cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
           cy.wrap($subType).click();
+          cy.wait(['@gettingData'], { responseTimeout: 15000 })
+            .its('response.statusCode')
+            .should('be.oneOf', [200, 304]);
           cy.get('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
         });
       });
@@ -70,6 +74,7 @@ describe('Navigation Menu', () => {
     groupsDsgvo.forEach((group) => {
       group.entry.forEach((entry) => {
         cy.navigateTo({ group: group.name, entry: entry });
+        cy.wait(['@gettingData'], { responseTimeout: 15000 }).its('response.statusCode').should('be.oneOf', [200, 304]);
         cy.get('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
       });
     });
@@ -113,12 +118,16 @@ describe('Navigation Menu', () => {
         entry: ['gsra']
       }
     ];
+    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/**`).as('gettingData');
 
     groupsWithCategories.forEach((group) => {
       group.elementTypes.forEach((elementType) => {
         cy.navigateTo({ group: group.name, category: elementType });
         cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
           cy.wrap($subType).click();
+          cy.wait(['@gettingData'], { responseTimeout: 15000 })
+            .its('response.statusCode')
+            .should('be.oneOf', [200, 304]);
           cy.get('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
         });
       });
@@ -127,6 +136,7 @@ describe('Navigation Menu', () => {
     groupsItgs.forEach((group) => {
       group.entry.forEach((entry) => {
         cy.navigateTo({ group: group.name, entry: entry });
+        cy.wait(['@gettingData'], { responseTimeout: 15000 }).its('response.statusCode').should('be.oneOf', [200, 304]);
         cy.get('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
       });
     });
