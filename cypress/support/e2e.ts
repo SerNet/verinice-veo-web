@@ -7,6 +7,7 @@ import { handleLanguageBug, languageTo } from '../commands/language';
 import { login } from '../commands/login';
 import { iterateSubTypes, navigateTo } from '../commands/navigation';
 import { veoRequest } from '../commands/requests';
+import { checkPagination } from '../commands/table/pagination';
 import {
   createUnit,
   deleteUnit,
@@ -44,7 +45,8 @@ Cypress.Commands.addAll({
   handleLanguageBug,
   checkSubTypePage,
   iterateSubTypes,
-  selectUnitFromDropdown
+  selectUnitFromDropdown,
+  checkPagination
 });
 
 // Uncaught exeptions make cypress test runs fail

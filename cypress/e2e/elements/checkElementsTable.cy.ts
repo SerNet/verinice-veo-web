@@ -1,4 +1,4 @@
-import { getRandomElementType, waitForPageToLoad, waitForLoadersToDisappear } from '../../commands/utils';
+import { getRandomElementType, waitForLoadersToDisappear, waitForPageToLoad } from '../../commands/utils';
 import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 let unitDetails: UnitDetails;
 
@@ -29,31 +29,7 @@ describe('Elements Overview Table', () => {
         waitForPageToLoad();
         waitForLoadersToDisappear();
 
-        cy.get('.v-data-table-footer__info > div')
-          .invoke('text')
-          .then((footerText) => {
-            const itemsShownMatch = footerText.match(/(\d+)\s+of\s+\d+/);
-            const totalItemsMatch = footerText.match(/of (\d+)/);
-
-            const itemsShown = parseInt(itemsShownMatch[1], 10);
-            const totalItems = parseInt(totalItemsMatch[1], 10);
-
-            expect(itemsShown).to.be.greaterThan(0);
-            expect(totalItems).to.be.greaterThan(0);
-
-            cy.get('.v-data-table__tr')
-              // Verify the number of rows matches items shown
-              .should('have.length', itemsShown)
-              .each(($row) => {
-                cy.wrap($row).within(() => {
-                  // Check if data is rendered
-                  cy.get('[data-veo-test="name"]').should('not.be.empty');
-                  cy.get('[data-veo-test="status"]').should('not.be.empty');
-                  cy.get('[data-veo-test="updatedAt"]').should('not.be.empty');
-                  cy.get('[data-veo-test="updatedBy"]').should('not.be.empty');
-                });
-              });
-          });
+        cy.checkPagination(['name', 'status', 'updatedAt', 'updatedBy']);
       });
     });
   });
