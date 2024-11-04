@@ -18,7 +18,12 @@
 <template>
   <div>
     <h2 class="text-h2 mt-2 mb-1 d-flex align-center">
-      <nuxt-link v-if="data?.mitigation" class="headline-link" @click="showNavigationDialog(null)">
+      <nuxt-link
+        v-if="data?.mitigation"
+        :to="containerHref"
+        class="headline-link"
+        @click.capture.prevent="showNavigationDialog"
+      >
         {{ upperFirst(t('Container').toString()) }}&nbsp;&gt;&nbsp;
       </nuxt-link>
 
@@ -53,9 +58,10 @@
                 <div v-bind="props">
                   <v-btn
                     :disabled="!data?.mitigation"
+                    :to="partHref(item)"
                     :icon="mdiArrowRightCircleOutline"
                     variant="text"
-                    @click="showNavigationDialog(item)"
+                    @click.capture.prevent="(e: MouseEvent) => showNavigationDialog(e, item)"
                   />
                 </div>
               </template>
@@ -227,43 +233,53 @@ export default defineComponent({
       selectedItems.value = [...selectedItems.value, newMitigation]; // We reassign the ref instead of using .push so that the computed setter picks up the changes
     };
     const route = useRoute();
+    const router = useRouter();
 
     const removeMitigationPart = (item: any) => {
       selectedItems.value = selectedItems.value.filter((mitigation) => mitigation.id !== item.id);
     };
     const navigateToRef = ref<IVeoEntity | null>(null);
-    const showNavigationDialog = (item?: IVeoEntity) => {
-      if (item && typeof item === 'object') {
-        navigateToRef.value = item;
-      }
+    const showNavigationDialog = (event: MouseEvent, item?: IVeoEntity) => {
+      navigateToRef.value = item;
       closeConfirmationDialogVisible.value = true;
     };
 
-    const navigateToContainer = () => {
-      const params: { objectType: string; subType: string; object?: string } = {
-        ...route.params,
-        objectType: 'controls',
-        subType: currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType,
-        object: props.data?.mitigation?.id
-      };
-      navigateTo({
+    // Helper function to generate route parameters based on an object ID
+    const getRouteParams = (objectId) => ({
+      ...route.params,
+      objectType: 'controls',
+      subType: currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType,
+      object: objectId
+    });
+
+    // Generic function to generate href
+    const generateHref = (objectId) => {
+      const params = getRouteParams(objectId);
+      const { href } = router.resolve({
         name: OBJECT_DETAIL_ROUTE,
         params
+      });
+      return href;
+    };
+
+    // Navigation functions
+    const navigateToContainer = () => {
+      router.push({
+        name: OBJECT_DETAIL_ROUTE,
+        params: getRouteParams(props.data?.mitigation?.id)
       });
     };
 
-    const navigateToPart = (item: any) => {
-      const params: { objectType: string; subType: string; object?: string } = {
-        ...route.params,
-        objectType: 'controls',
-        subType: currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType,
-        object: item?.id
-      };
-      navigateTo({
+    const containerHref = computed(() => generateHref(props.data?.mitigation?.id));
+
+    const navigateToPart = (item) => {
+      router.push({
         name: OBJECT_DETAIL_ROUTE,
-        params
+        params: getRouteParams(item?.id)
       });
     };
+
+    const partHref = (item: IVeoEntity) => generateHref(item?.id);
 
     watch(
       () => props.data?.mitigation,
@@ -316,7 +332,9 @@ export default defineComponent({
       mdiPencilOutline,
       navigateToPart,
       navigateToContainer,
-      currentDomain
+      currentDomain,
+      containerHref,
+      partHref
     };
   }
 });
