@@ -42,7 +42,7 @@
       </v-list-item>
     </template>
     <template #item="{ props: _props, item }">
-      <v-list-item v-bind="_props">
+      <v-list-item v-bind="_props" data-veo-test="object-select-item">
         <template #prepend>
           <ObjectIcon :object-type="item.raw.type" :is-composite="!!(item.raw.parts && item.raw.parts.length)" left />
         </template>

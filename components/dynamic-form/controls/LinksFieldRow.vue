@@ -30,7 +30,13 @@
         @update:model-value="$emit('update:model-value', $event)"
       >
         <template v-if="!objectCreationDisabled" #prepend-item>
-          <v-btn block color="primary" variant="text" @click="createObjectDialogVisible = true">
+          <v-btn
+            block
+            color="primary"
+            variant="text"
+            data-veo-test="create-object-button"
+            @click="createObjectDialogVisible = true"
+          >
             <v-icon start :icon="mdiPlus" />
             {{ t('create', [createButtonLabel]).toString() }}
           </v-btn>
