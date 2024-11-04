@@ -30,7 +30,11 @@
         :no-close-button="!message.displayProps.isDismissable"
         @update:model-value="message.displayProps.isShown = false"
       >
-        {{ t('messageBecomesEffective', [formatTime(message.displayProps.effectiveDate).value]) }}
+        <div class="d-flex">
+          <v-icon :icon="mdiAlarm" />
+          <span>&nbsp;</span>
+          <span>{{ formatTime(message.displayProps.effectiveDate).value }}</span>
+        </div>
 
         <SystemMessageTimer v-if="message.displayProps.isUrgent" :effective-date="message.displayProps.effectiveDate" />
       </BaseAlert>
@@ -41,17 +45,8 @@
 import { useFormatters } from '~/composables/utils';
 import { TSystemMessage } from '~/composables/messages/useSystemMessages';
 import { VeoAlertType } from '~/types/VeoTypes';
+import { mdiAlarm } from '@mdi/js';
 defineProps<{ messages: TSystemMessage[] }>();
-const { locale, t } = useI18n();
+const { locale } = useI18n();
 const { formatTime } = useFormatters();
 </script>
-<i18n>
-{
-  "en": {
-  "messageBecomesEffective": "This message becomes effective on {0}.",
-  },
-  "de": {
-  "messageBecomesEffective": "Diese Nachricht wird am {0} wirksam.",
-  }
-}
-</i18n>
