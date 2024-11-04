@@ -18,7 +18,6 @@
 <template>
   <div class="d-flex flex-column">
     <div>
-      <!-- @vue-ignore TODO #3066 not assignable -->
       <UtilObjectSelect
         :model-value="modelValue"
         :object-type="objectType"
@@ -56,16 +55,6 @@
 </template>
 
 <script lang="ts">
-import { mdiPlus } from '@mdi/js';
-
-import { PropType } from 'vue';
-import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { useQuery } from '~/composables/api/utils/query';
-import { IVeoCustomLink } from '~/types/VeoTypes';
-import { IVeoFormsElementDefinition } from '../types';
-import { getControlErrorMessages, VeoFormsControlProps } from '../util';
-
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-links-field-row',
   name: {
@@ -77,78 +66,93 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     de: 'Einzelner Eintrag des Link-Feldes. Wird nicht alleine genutzt.'
   }
 };
+</script>
 
-export default defineComponent({
-  name: CONTROL_DEFINITION.code,
-  props: {
-    ...VeoFormsControlProps,
-    otherSelectedLinks: {
-      type: Array as PropType<IVeoCustomLink[]>,
-      default: () => []
-    },
-    index: {
-      type: Number,
-      default: 0
-    }
-  },
-  emits: ['update:model-value'],
-  setup(props, { emit }) {
-    const route = useRoute();
-    const config = useRuntimeConfig();
-    const { t, locale } = useI18n();
+<script setup lang="ts">
+import { mdiPlus } from '@mdi/js';
+import { computed, ref } from 'vue';
+import { useI18n } from 'vue-i18n';
+import { useRoute } from 'vue-router';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { useQuery } from '~/composables/api/utils/query';
 
-    const domainId = computed(() => route.params.domain as string);
+import type { IVeoCustomLink, IVeoLink } from '~/types/VeoTypes';
+import type { IDynamicFormElementOptions, IVeoFormsElementDefinition } from '../types';
 
-    const objectType = computed<string>(() =>
-      ((props.objectSchema as any).items?.properties?.target?.properties?.type?.enum?.[0] + '').toLowerCase()
-    );
-    const subType = computed<string>(
-      () => (props.objectSchema as any).items?.properties?.target?.properties?.subType?.enum?.[0]
-    );
+import { getControlErrorMessages } from '../util';
 
-    const queryParameters = computed(() => ({ domainId: domainId.value }));
-    const queryEnabled = computed(() => !!domainId.value);
+interface Props {
+  otherSelectedLinks: IVeoCustomLink[];
+  modelValue: IVeoLink | undefined;
+  options: IDynamicFormElementOptions;
+  index: number | undefined;
+  objectSchema: any;
+  disabled: boolean;
+  objectCreationDisabled: boolean;
+  objectSchemaPointer: string;
+  errors: Map<string, string[]>;
+}
 
-    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
-      enabled: queryEnabled
-    });
-
-    const createButtonLabel = computed(() =>
-      subType.value ?
-        formSchemas.value?.find((formSchema) => formSchema.subType === subType.value)?.name?.[locale.value] ||
-        objectType.value
-      : objectType.value
-    );
-
-    // new object creation
-    const createObjectDialogVisible = ref(false);
-    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const onTargetCreated = (newElementId: string) => {
-      emit('update:model-value', {
-        targetUri: `${config.public.apiUrl}/${schemas.value?.[objectType.value]}/${newElementId}`
-      });
-    };
-
-    // Users should only be able to select an item once per link, thus we have to remove all already selected items from the VeoObjectSelect
-    const hiddenValues = computed(() =>
-      props.otherSelectedLinks.filter((link) => link.target?.targetUri).map((link) => link.target.id)
-    );
-
-    return {
-      createButtonLabel,
-      createObjectDialogVisible,
-      domainId,
-      hiddenValues,
-      objectType,
-      onTargetCreated,
-      subType,
-
-      getControlErrorMessages,
-      mdiPlus,
-      t
-    };
-  }
+const props = withDefaults(defineProps<Props>(), {
+  otherSelectedLinks: () => [],
+  modelValue: undefined,
+  options: () => ({ visible: true, disabled: false, label: '' }),
+  index: undefined,
+  objectSchema: {},
+  disabled: false,
+  objectCreationDisabled: false,
+  objectSchemaPointer: '',
+  errors: () => new Map()
 });
+
+const emit = defineEmits<{
+  (event: 'update:model-value', value: IVeoLink | undefined): void;
+}>();
+
+// Localization and routing
+const { t, locale } = useI18n();
+const route = useRoute();
+
+// Computed properties for domain and object schema
+const domainId = computed(() => route.params.domain as string);
+const objectType = computed<string>(() =>
+  ((props.objectSchema as any)?.items?.properties?.target?.properties?.type?.enum?.[0] || '').toLowerCase()
+);
+const subType = computed<string>(
+  () => (props.objectSchema as any)?.items?.properties?.target?.properties?.subType?.enum?.[0]
+);
+
+// Form schema query
+const { data: formSchemas } = useQuery(
+  formsQueryDefinitions.queries.fetchForms,
+  computed(() => ({ domainId: domainId.value })),
+  { enabled: computed(() => Boolean(domainId.value)) }
+);
+
+// Create button label based on form schema or object type
+const createButtonLabel = computed(() =>
+  subType.value ?
+    formSchemas.value?.find((form) => form.subType === subType.value)?.name?.[locale.value] || objectType.value
+  : objectType.value
+);
+
+// Object creation dialog visibility
+const createObjectDialogVisible = ref(false);
+
+// Schema query for object creation
+const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+
+// Emits the newly created target ID
+const { createLink } = useCreateLink();
+const onTargetCreated = (newElementId: string) => {
+  emit('update:model-value', newElementId ? createLink(schemas.value?.[objectType.value], newElementId) : undefined);
+};
+
+// Hidden values: exclude already selected items in the selector
+const hiddenValues = computed(() =>
+  props.otherSelectedLinks.filter((link) => link.target?.targetUri).map((link) => link.target.id)
+);
 </script>
 
 <i18n>
