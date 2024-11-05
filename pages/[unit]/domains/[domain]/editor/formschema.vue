@@ -206,7 +206,6 @@
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
             :translations="eligibleTranslations"
-            :additional-context="additionalContext"
             :locale="editorLanguage"
           />
         </template>
@@ -285,7 +284,6 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import type { LocaleObject } from '@nuxtjs/i18n';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { PENDING_TRANSLATIONS } from '~/components/editor/formSchema/playground/EditElementDialog.vue';
@@ -415,11 +413,6 @@ export default defineComponent({
       controlItems.value = items;
     }
 
-    const fetchDomainQueryParameters = computed(() => ({
-      id: route.params.domain as string
-    }));
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
-
     /**
      * Translations/language related stuff
      */
@@ -547,60 +540,6 @@ export default defineComponent({
       });
     };
 
-    // Circumventing {CURRENT_DOMAIN_ID} in fse controls
-    const additionalContext = computed(() => ({
-      [`#/properties/riskValues/properties/DSRA/properties/implementationStatus`]: {
-        formSchema: {
-          enum: (() =>
-            (domain.value?.riskDefinitions?.DSRA?.implementationStateDefinition?.levels || []).map(
-              (level: any) => level.name
-            ))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialProbability`]: {
-        formSchema: {
-          enum: (() =>
-            (domain.value?.riskDefinitions?.DSRA?.probability?.levels || []).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/C`]: {
-        formSchema: {
-          enum: (() =>
-            (
-              domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'C')
-                ?.potentialImpacts || []
-            ).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/I`]: {
-        formSchema: {
-          enum: (() =>
-            (
-              domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'I')
-                ?.potentialImpacts || []
-            ).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/A`]: {
-        formSchema: {
-          enum: (() =>
-            (
-              domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'A')
-                ?.potentialImpacts || []
-            ).map((level: any) => level.name))()
-        }
-      },
-      [`#/properties/riskValues/properties/DSRA/properties/potentialImpacts/properties/R`]: {
-        formSchema: {
-          enum: (() =>
-            (
-              domain.value?.riskDefinitions?.DSRA?.categories?.find((category) => category.id === 'R')
-                ?.potentialImpacts || []
-            ).map((level: any) => level.name))()
-        }
-      }
-    }));
-
     const validationActions: Record<string, (errorCode: string, details: Record<string, any>) => void> = {
       onFix: (errorCode, details) => {
         switch (errorCode) {
@@ -633,7 +572,6 @@ export default defineComponent({
 
     return {
       ability,
-      additionalContext,
       creationDialogVisible,
       editorLanguage,
       eligibleTranslations,
