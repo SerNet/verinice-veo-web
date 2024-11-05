@@ -26,8 +26,7 @@ import {
   IVeoEntityLegacy,
   IVeoPaginatedResponse,
   IVeoPaginationOptions,
-  IVeoRisk,
-  VeoRiskAffectedDomains
+  IVeoRisk
 } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
@@ -141,7 +140,7 @@ export const transFormObject = (object: any) => {
 
   const analysisTypes = Object.keys(_object.riskValues || {});
 
-  if (riskAffectedEntities.includes(_object.type) && analysisTypes[0] && analysisTypes[0] in VeoRiskAffectedDomains) {
+  if (riskAffectedEntities.includes(_object.type) && analysisTypes[0]) {
     const riskValues = {};
 
     Object.entries(_object.riskValues[analysisTypes[0]].potentialImpacts || {}).forEach(([protectionGoal, value]) => {
@@ -177,7 +176,7 @@ export const formatObject = (object: any) => {
   const riskAffectedEntities = ['scope', 'asset', 'process'];
   const [analysisType] = Object.keys(object.riskValues || {});
 
-  if (riskAffectedEntities.includes(object.type) && !!analysisType && analysisType in VeoRiskAffectedDomains) {
+  if (riskAffectedEntities.includes(object.type) && !!analysisType) {
     const keysToTransform = [
       'potentialImpacts',
       'potentialImpactsCalculated',

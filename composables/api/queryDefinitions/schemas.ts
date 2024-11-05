@@ -16,7 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchema } from '~/types/VeoTypes';
-import { VeoRiskAffectedDomains } from '~/types/VeoTypes';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
 export interface IVeoEntityMetaInfo {
@@ -67,7 +66,7 @@ export default {
           // determine the specific anylysis type, e.g. DSRA, GSRA, NIS2RA
           const [analysisType] = Object.keys(result.properties?.riskValues?.properties);
 
-          if (analysisType && analysisType in VeoRiskAffectedDomains) {
+          if (analysisType) {
             // shorten the key for convenience
             const analysisTypeProps = result.properties.riskValues.properties[analysisType].properties;
             // extract the impactTypes, e.g. potentialImpactEffectiveReasons, potentialImpactExplanations, ...
