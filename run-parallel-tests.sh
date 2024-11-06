@@ -39,5 +39,32 @@ fi
 
 echo "Files to run on node $CI_NODE_INDEX: ${FILES_TO_RUN[*]}"
 
-# Run Cypress tests with the selected files
-npx cypress run --spec "${FILES_TO_RUN[@]}" --env environment=local --browser firefox
+# Create a temporary directory inside cypress/e2e
+TMP_DIR=$(mktemp -d cypress/e2e/tmp.XXXXXX)
+echo "Created temporary directory: $TMP_DIR"
+
+# Copy the selected test files to the temporary directory
+for FILE in "${FILES_TO_RUN[@]}"; do
+  cp "$FILE" "$TMP_DIR/"
+done
+
+# ---------------------------------
+# Run Cypress tests with parallelism
+# ---------------------------------
+# 8 threads are chosen as an optimal balance between speed and parallel execution.
+# Running 8 tests in a single job using the Electron browser.
+
+npx cypress-parallel -s cy:local --d "$TMP_DIR" -t 8 -m
+TEST_RESULT=$?  # Capture the exit code
+
+# Clean up the temporary directory after the tests run
+rm -rf "$TMP_DIR"
+
+# Exit with the test result code
+exit $TEST_RESULT
+
+# ---------------------------------
+# Alternative: Run without parallelism
+# ---------------------------------
+# Uncomment the line below to run without parallel execution on Firefox.
+# npx cypress run --spec "${FILES_TO_RUN[@]}" --env environment=local --browser firefox
