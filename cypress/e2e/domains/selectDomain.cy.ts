@@ -29,21 +29,21 @@ describe('Domain Selection Functionality', () => {
   it('should switch domain and verify domain selection', () => {
     cy.selectDomain('IT-Grundschutz');
 
-    cy.get('[data-veo-test="domain-select"] span')
+    cy.getCustom('[data-veo-test="domain-select"] span')
       .invoke('text')
       .then((text) => {
         expect(text.trim()).to.equal('IT-Grundschutz');
-        cy.get('[data-component-name="breadcrumbs"]').contains('ITGS');
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains('ITGS');
         cy.testEmptyDashboard(itgs_widgets);
       });
 
     cy.selectDomain('DS-GVO');
 
-    cy.get('[data-veo-test="domain-select"] span')
+    cy.getCustom('[data-veo-test="domain-select"] span')
       .invoke('text')
       .then((text) => {
         expect(text.trim()).to.equal('DS-GVO');
-        cy.get('[data-component-name="breadcrumbs"]').contains('DS-GVO');
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains('DS-GVO');
         cy.testEmptyDashboard();
       });
   });

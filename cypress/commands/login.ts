@@ -24,7 +24,7 @@ export function login({
     [username, password],
     () => {
       cy.visit('/login');
-      cy.get('[data-veo-test="login-btn-login"]', { timeout: 30000 }).click();
+      cy.getCustom('[data-veo-test="login-btn-login"]', { timeout: 30000 }).click();
 
       if (!isLocalhost) {
         applyCredentials({ username, password });
@@ -43,7 +43,7 @@ export function login({
 }
 
 function applyCredentials({ username, password }: { username: string; password: string }) {
-  cy.get('input').first().type(username);
-  cy.get('input#password').type(password);
-  cy.get('input#kc-login').click();
+  cy.getCustom('input').first().type(username);
+  cy.getCustom('input#password').type(password);
+  cy.getCustom('input#kc-login').click();
 }

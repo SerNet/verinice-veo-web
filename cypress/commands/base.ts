@@ -13,9 +13,9 @@ declare global {
 }
 
 // Override the default Cypress commands
-export function getCustom(selector: string, options = {}) {
+export function getCustom(selector: string, options = {}): any {
   waitForLoadersToDisappear();
-  return cy.getCustom(selector, options);
+  return cy.get(selector, options);
 }
 
 export function containsCustom(selector: string, options = {}) {

@@ -18,14 +18,14 @@ describe('create units', () => {
     enterUnitDetails(testData);
 
     // Click next on /profiles (not choosing any profile)
-    cy.get('[data-veo-test="profile-radio-btn-none"]'); // make sure view is loaded
+    cy.getCustom('[data-veo-test="profile-radio-btn-none"]'); // make sure view is loaded
     clickNext();
 
     chooseDomains(testData);
     createUnit();
     testUnitCard(testData);
 
-    cy.get('div.v-card-title')
+    cy.getCustom('div.v-card-title')
       .contains(testData.unitName)
       .first()
       .then(($el) => {
@@ -48,7 +48,7 @@ describe('create units', () => {
     enterUnitDetails(testData);
 
     // Choose profile `Beispieldaten`
-    cy.get('[data-veo-test="profile-radio-btn-Beispieldaten"]').click();
+    cy.getCustom('[data-veo-test="profile-radio-btn-Beispieldaten"]').click();
     clickNext();
 
     // domainSelectors[0] is preselected when choosing profile `Beispieldata` (cp. above)
@@ -60,7 +60,7 @@ describe('create units', () => {
     cy.goToUnitSelection();
     testUnitCard(testData);
 
-    cy.get('div.v-card-title')
+    cy.getCustom('div.v-card-title')
       .contains(testData.unitName)
       .first()
       .then(($el) => {
@@ -82,20 +82,20 @@ describe('create units', () => {
   function enterUnitDetails(testData: TestData) {
     cy.log('enter unit details!');
     // Go to details page of the test unit
-    cy.get('[data-veo-test="create-unit-btn"]').click().as('clickCreateBtn');
-    cy.get('[data-veo-test="unit-details-card"]').as('detailsCard');
+    cy.getCustom('[data-veo-test="create-unit-btn"]').click().as('clickCreateBtn');
+    cy.getCustom('[data-veo-test="unit-details-card"]').as('detailsCard');
 
     // Enter details
-    cy.get('@detailsCard').within((_$card) => {
-      cy.get('input').type(testData.unitName);
-      cy.get('textarea').type(testData.unitDesc);
+    cy.getCustom('@detailsCard').within((_$card) => {
+      cy.getCustom('input').type(testData.unitName);
+      cy.getCustom('textarea').type(testData.unitDesc);
     });
 
     clickNext();
   }
 
   function chooseDomains(testData: TestData) {
-    testData.domainSelectors.forEach((selector: string) => cy.get(selector).first().click());
+    testData.domainSelectors.forEach((selector: string) => cy.getCustom(selector).first().click());
     clickNext();
   }
 
@@ -106,7 +106,7 @@ describe('create units', () => {
     }
 
     cy.intercept('POST', `${Cypress.env('veoApiUrl')}/units`).as('createUnit');
-    cy.get('[data-veo-test="create-unit-create-btn"]').click();
+    cy.getCustom('[data-veo-test="create-unit-create-btn"]').click();
     cy.wait('@createUnit').its('response.statusCode').should('eq', 201);
 
     if (hasProfile) {
@@ -127,19 +127,19 @@ describe('create units', () => {
     // Assertions
 
     // Check name + description
-    cy.get('@testUnitCard').should('contain', testData.unitName);
-    cy.get('@testUnitCard').should('contain', testData.unitDesc);
+    cy.getCustom('@testUnitCard').should('contain', testData.unitName);
+    cy.getCustom('@testUnitCard').should('contain', testData.unitDesc);
 
     // Check domain
-    cy.get('@testUnitCard').within((_card) => {
-      cy.get('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
+    cy.getCustom('@testUnitCard').within((_card) => {
+      cy.getCustom('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
     });
-    cy.get('@domainButtons').each((button) => {
+    cy.getCustom('@domainButtons').each((button) => {
       expect(testData.domains).to.includes(button.text());
     });
   }
 
   function clickNext() {
-    cy.get('[data-veo-test="create-unit-next-btn"]').click();
+    cy.getCustom('[data-veo-test="create-unit-next-btn"]').click();
   }
 });

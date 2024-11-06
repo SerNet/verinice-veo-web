@@ -29,16 +29,16 @@ describe('Catalogs', { testIsolation: false }, () => {
       getTableRows().as('tableRows');
 
       // Get table footer
-      cy.get('.v-data-table-footer__info div').as('tableFooter');
+      cy.getCustom('.v-data-table-footer__info div').as('tableFooter');
 
       // Check if table footer displays the right number of total catalog items
-      cy.get('@tableFooter').contains(response.body.totalItemCount);
+      cy.getCustom('@tableFooter').contains(response.body.totalItemCount);
       // Check if the number of rendered table rows is correct
-      cy.get('@tableRows').should('have.length', expectedDataTableRows);
+      cy.getCustom('@tableRows').should('have.length', expectedDataTableRows);
       // Check if the first item is rendered correctly
-      cy.get('@tableRows').contains(response.body.items[0].name, { matchCase: false });
+      cy.getCustom('@tableRows').contains(response.body.items[0].name, { matchCase: false });
       // Check if the last item is rendered correctly
-      cy.get('@tableRows').contains(response.body.items.at(-1).name, { matchCase: false });
+      cy.getCustom('@tableRows').contains(response.body.items.at(-1).name, { matchCase: false });
     });
   });
 
@@ -57,9 +57,9 @@ describe('Catalogs', { testIsolation: false }, () => {
 
     getTableRows().as('tableRows');
 
-    cy.get('@tableRows').then(($rows) => (numOfItemsToIncarnate = $rows.length));
+    cy.getCustom('@tableRows').then(($rows) => (numOfItemsToIncarnate = $rows.length));
 
-    cy.get('th input').click();
+    cy.getCustom('th input').click();
 
     // Intercept api calls, below we'll check if the right endpoints are being used
     // get incarnation descriptions: tells us what to incarnate
@@ -68,7 +68,7 @@ describe('Catalogs', { testIsolation: false }, () => {
     cy.intercept('POST', api.incarnations).as('incarnateItems');
 
     // Start incarnating
-    cy.get('[data-veo-test="catalogs-btn-apply"]').click();
+    cy.getCustom('[data-veo-test="catalogs-btn-apply"]').click();
 
     // Check endpoints and response codes
     cy.wait(['@getIncarnationDescriptions']).its('response.statusCode').should('eq', 200);
@@ -80,10 +80,10 @@ describe('Catalogs', { testIsolation: false }, () => {
     cy.wait('@getScenarios').its('response.statusCode').should('eq', 200);
 
     getTableRows().as('scenarioTableRows');
-    cy.get('@scenarioTableRows').then(($rows) => expect($rows.length).to.be.equal(numOfItemsToIncarnate));
+    cy.getCustom('@scenarioTableRows').then(($rows) => expect($rows.length).to.be.equal(numOfItemsToIncarnate));
   });
 
   function getTableRows() {
-    return cy.get('[id^="veo-object-table-"] .v-data-table__tr--clickable');
+    return cy.getCustom('[id^="veo-object-table-"] .v-data-table__tr--clickable');
   }
 });

@@ -15,11 +15,11 @@ declare global {
 export function navigateTo({ group, category, entry }: { group: string; category?: string; entry?: string }) {
   cy.handleLanguageBug();
   cy.viewport(2000, 1320);
-  cy.get(`[data-veo-test="nav-group-${group.toLowerCase()}"]`).as('group').click();
+  cy.getCustom(`[data-veo-test="nav-group-${group.toLowerCase()}"]`).as('group').click();
 
   if (category) {
-    cy.get('@group').within(() => {
-      cy.get(
+    cy.getCustom('@group').within(() => {
+      cy.getCustom(
         `[data-veo-test="nav-category-${group.toLowerCase().replace(/\s+/g, '-')}-${category.toLowerCase().replace(/\s+/g, '-')}"]`
       )
         .as('category')
@@ -27,8 +27,8 @@ export function navigateTo({ group, category, entry }: { group: string; category
     });
 
     if (entry) {
-      cy.get('@category').within(() => {
-        cy.get(
+      cy.getCustom('@category').within(() => {
+        cy.getCustom(
           `[data-veo-test="nav-entry-${category.toLowerCase().replace(/\s+/g, '-')}-${entry.toLowerCase().replace(/\s+/g, '-')}"]`
         )
           .as('entry')
@@ -38,8 +38,8 @@ export function navigateTo({ group, category, entry }: { group: string; category
     return;
   }
 
-  cy.get('@group').within(() => {
-    cy.get(
+  cy.getCustom('@group').within(() => {
+    cy.getCustom(
       `[data-veo-test="nav-entry-${group.toLowerCase().replace(/\s+/g, '-')}-${entry.toLowerCase().replace(/\s+/g, '-')}"]`
     )
       .as('entry')

@@ -23,28 +23,28 @@ describe('Add domains', () => {
     cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
 
     // Go to /units/**/domains
-    cy.get('@testUnitCard').within((_card) => {
+    cy.getCustom('@testUnitCard').within((_card) => {
       cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains`).as('domains');
-      cy.get('[data-veo-test="units-add-domains-button"]').click();
+      cy.getCustom('[data-veo-test="units-add-domains-button"]').click();
       cy.wait(['@domains']).its('response.statusCode').should('eq', 200);
     });
 
     // In /domains: select domain
-    selectors.forEach((selector) => cy.get(selector).first().click());
+    selectors.forEach((selector) => cy.getCustom(selector).first().click());
 
     // Associate domains
     cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/units/**`).as('associateDomains');
-    cy.get('[data-veo-test="associate-domains"]').click();
+    cy.getCustom('[data-veo-test="associate-domains"]').click();
     cy.wait(['@associateDomains']).its('response.statusCode').should('eq', 200);
 
     // Check if veo redirects to /units after successfully association the new domain
     cy.url().should('be.equal', `${Cypress.config('baseUrl')}/units`);
 
     // Check if new domains show up in card
-    cy.get('@testUnitCard').within((_card) => {
-      cy.get('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
+    cy.getCustom('@testUnitCard').within((_card) => {
+      cy.getCustom('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
     });
-    cy.get('@domainButtons').each((button) => {
+    cy.getCustom('@domainButtons').each((button) => {
       expect(domainNames).to.includes(button.text());
     });
   });

@@ -23,7 +23,7 @@ export interface ICYVeoDomain {
 export function addDomain(unitName: string, _domainName: string): void {
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains`).as('getDomains');
 
-  cy.get('[data-veo-test="item-card-slot-center"]')
+  cy.getCustom('[data-veo-test="item-card-slot-center"]')
     .filter((index, element) => {
       return Cypress.$(element).find('.v-card-title').text().includes(unitName);
     })
@@ -33,15 +33,15 @@ export function addDomain(unitName: string, _domainName: string): void {
     .click({ force: true });
   cy.wait(['@getDomains']).its('response.statusCode').should('eq', 200);
 
-  cy.get('[data-veo-test="domain-IT-Grundschutz"] input').click({ force: true });
-  cy.get('[data-veo-test="associate-domains"]').click({ force: true });
+  cy.getCustom('[data-veo-test="domain-IT-Grundschutz"] input').click({ force: true });
+  cy.getCustom('[data-veo-test="associate-domains"]').click({ force: true });
 }
 
 export function selectDomain(domainName: string): void {
-  cy.get('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
-  cy.get('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
+  cy.getCustom('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
+  cy.getCustom('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
   cy.wait(500);
-  cy.get('[data-veo-test="domain-selection-nav-item"]').each(($el) => {
+  cy.getCustom('[data-veo-test="domain-selection-nav-item"]').each(($el) => {
     if ($el.text().trim() === domainName) {
       cy.wrap($el).click();
       return false; // Exit the .each() loop early
@@ -50,17 +50,17 @@ export function selectDomain(domainName: string): void {
 }
 
 export function selectRandomDomain(unitName: string): void {
-  cy.get('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
-  cy.get('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
+  cy.getCustom('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
+  cy.getCustom('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
   cy.wait(500);
-  cy.get('[data-veo-test="domain-selection-nav-item"]').then(($options) => {
+  cy.getCustom('[data-veo-test="domain-selection-nav-item"]').then(($options) => {
     const randomIndex = Math.floor(Math.random() * Cypress.env(unitName).domains.length);
     cy.wrap($options[randomIndex]).click();
   });
 }
 
 export function getSelectedDomain(): Cypress.Chainable<string> {
-  return cy.get('.v-list-item--active .v-list-item-title').invoke('text');
+  return cy.getCustom('.v-list-item--active .v-list-item-title').invoke('text');
 }
 
 /**

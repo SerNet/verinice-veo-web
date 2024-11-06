@@ -18,10 +18,10 @@ describe('Unit-Card', () => {
 
   it('displays the right unit data', () => {
     cy.getVeoTestUnitCard(unitDetails.name).as('veo-card');
-    cy.get('@veo-card').should('contain', Cypress.env(unitDetails.name).name);
-    cy.get('@veo-card').should('contain', Cypress.env(unitDetails.name).desc);
+    cy.getCustom('@veo-card').should('contain', Cypress.env(unitDetails.name).name);
+    cy.getCustom('@veo-card').should('contain', Cypress.env(unitDetails.name).desc);
     Cypress.env(unitDetails.name).domains.forEach((domain: { name: string; id: string }) => {
-      cy.get('@veo-card').should('contain', domain.name);
+      cy.getCustom('@veo-card').should('contain', domain.name);
     });
   });
 
@@ -29,8 +29,8 @@ describe('Unit-Card', () => {
     cy.getVeoTestUnitCard(unitDetails.name).as('veo-card');
 
     // Bookmark test unit as favorite unit
-    cy.get('@veo-card').within((_card) => {
-      cy.get('[data-veo-test="item-card-slot-prepend"] button').click();
+    cy.getCustom('@veo-card').within((_card) => {
+      cy.getCustom('[data-veo-test="item-card-slot-prepend"] button').click();
     });
 
     // Get id of favorite unit from LS
@@ -39,15 +39,15 @@ describe('Unit-Card', () => {
     });
 
     // Get bookmark button
-    cy.get('@veo-card').within((_card) => {
-      cy.get('button svg path').as('favorite-unit-btn');
+    cy.getCustom('@veo-card').within((_card) => {
+      cy.getCustom('button svg path').as('favorite-unit-btn');
     });
 
     // Compare id of favorite unit to the id of the test unit
-    cy.get('@favorite-unit-id').should('equal', Cypress.env(unitDetails.name).unitId);
+    cy.getCustom('@favorite-unit-id').should('equal', Cypress.env(unitDetails.name).unitId);
 
     // Check draw-path to figure out if the correct svg is rendered
-    cy.get('@favorite-unit-btn').should(
+    cy.getCustom('@favorite-unit-btn').should(
       'have.attr',
       'd',
       'M17,3H7A2,2 0 0,0 5,5V21L12,18L19,21V5C19,3.89 18.1,3 17,3Z'

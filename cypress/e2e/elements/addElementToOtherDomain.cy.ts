@@ -34,9 +34,9 @@ describe.skip('Add Elements to other Domain', () => {
 
         cy.checkSubTypePage($subType[0].innerText);
 
-        cy.get('.v-data-table__tr').first().as('originalRow');
+        cy.getCustom('.v-data-table__tr').first().as('originalRow');
 
-        cy.get('@originalRow').then(($row) => {
+        cy.getCustom('@originalRow').then(($row) => {
           const cells = $row.children();
           const texts = [];
           cells.each((index, cell) => {
@@ -53,9 +53,9 @@ describe.skip('Add Elements to other Domain', () => {
           cy.wait(200);
         });
 
-        cy.get('[data-veo-test="dialog-card"]').as('container');
+        cy.getCustom('[data-veo-test="dialog-card"]').as('container');
 
-        cy.get('@container')
+        cy.getCustom('@container')
           .find('.v-list-item.v-list-item--link:not(.v-list-item--disabled)')
           .each(($item) => {
             const text = $item.find('.v-list-item-title').text().trim();
@@ -67,11 +67,11 @@ describe.skip('Add Elements to other Domain', () => {
               cy.wrap($item).find('[data-veo-test="subtype-select"] .v-field').first().click({ force: true });
               cy.wait(200);
 
-              cy.get('.v-menu')
+              cy.getCustom('.v-menu')
                 .should('be.visible')
                 .first()
                 .within(() => {
-                  cy.get('.v-list-item:not(.v-list-item--disabled)').then(($dropdownItems) => {
+                  cy.getCustom('.v-list-item:not(.v-list-item--disabled)').then(($dropdownItems) => {
                     const randomIndex = Math.floor(Math.random() * $dropdownItems.length);
                     const $randomItem = $dropdownItems.eq(randomIndex);
                     const targetObject = $randomItem.find('.v-list-item-title').text().trim();
@@ -82,11 +82,11 @@ describe.skip('Add Elements to other Domain', () => {
                 });
 
               cy.wrap($item).find('[data-veo-test="status-select"] .v-field').first().click({ force: true });
-              cy.get('.v-menu')
+              cy.getCustom('.v-menu')
                 .should('be.visible')
                 .first()
                 .within(() => {
-                  cy.get('.v-list-item:not(.v-list-item--disabled)').then(($dropdownItems) => {
+                  cy.getCustom('.v-list-item:not(.v-list-item--disabled)').then(($dropdownItems) => {
                     const randomIndex = Math.floor(Math.random() * $dropdownItems.length);
                     const $randomItem = $dropdownItems.eq(randomIndex);
                     const targetObjectStatus = $randomItem.find('.v-list-item-title').text().trim();
@@ -96,7 +96,7 @@ describe.skip('Add Elements to other Domain', () => {
                     targetObjects[targetObjects.length - 1].name = originalElementName;
                   });
                 });
-              cy.get('@container').contains('button', 'Save').should('exist').click();
+              cy.getCustom('@container').contains('button', 'Save').should('exist').click();
               veoAlertDismiss();
             }
           });
@@ -128,7 +128,7 @@ describe.skip('Add Elements to other Domain', () => {
 
           cy.wait(200);
 
-          cy.get('tr')
+          cy.getCustom('tr')
             .filter(`:contains("${targetObjectName}")`)
             .filter(`:contains("${targetObjectStatus}")`)
             .then(($rows) => {
@@ -146,7 +146,7 @@ describe.skip('Add Elements to other Domain', () => {
     };
 
     const veoAlertDismiss = () => {
-      cy.get('div[role="alert"][params="[object Object]"]').click();
+      cy.getCustom('div[role="alert"][params="[object Object]"]').click();
     };
   });
 });

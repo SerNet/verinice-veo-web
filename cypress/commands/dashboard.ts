@@ -27,18 +27,18 @@ export function testDashboardWidgets(widgets = gdpr_widgets) {
    */
 
   widgets.forEach((widget) => {
-    cy.get(`[data-veo-test="domain-dashboard-${widget.name}-widget"]`).as('widget');
-    cy.get('@widget').within((_w) => {
-      cy.get('canvas').should('have.length', widget.numOfElements);
+    cy.getCustom(`[data-veo-test="domain-dashboard-${widget.name}-widget"]`).as('widget');
+    cy.getCustom('@widget').within((_w) => {
+      cy.getCustom('canvas').should('have.length', widget.numOfElements);
     });
   });
 }
 
 export function testEmptyDashboard(widgets = gdpr_widgets) {
   widgets.forEach((widget) => {
-    cy.get(`[data-veo-test="domain-dashboard-${widget.name}-widget"]`).as('widget');
-    cy.get('@widget').within((_w) => {
-      cy.get('div.font-italic:contains("No objects available")').should('have.length', widget.numOfElements);
+    cy.getCustom(`[data-veo-test="domain-dashboard-${widget.name}-widget"]`).as('widget');
+    cy.getCustom('@widget').within((_w) => {
+      cy.getCustom('div.font-italic:contains("No objects available")').should('have.length', widget.numOfElements);
     });
   });
 }

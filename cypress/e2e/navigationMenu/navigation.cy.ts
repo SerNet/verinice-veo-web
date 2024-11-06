@@ -31,11 +31,11 @@ describe('Navigation Menu', () => {
   it('DSGVO navigate to all expected menu entries', () => {
     cy.selectDomain('DS-GVO');
 
-    cy.get('[data-veo-test="domain-select"]').should('be.visible');
-    cy.get('[data-component-name="unit-select"]').should('be.visible');
-    cy.get('[data-veo-test="nav-entry-title"]').as('navEntries');
-    cy.get('@navEntries').contains('Dashboard');
-    cy.get('@navEntries').contains('Editors');
+    cy.getCustom('[data-veo-test="domain-select"]').should('be.visible');
+    cy.getCustom('[data-component-name="unit-select"]').should('be.visible');
+    cy.getCustom('[data-veo-test="nav-entry-title"]').as('navEntries');
+    cy.getCustom('@navEntries').contains('Dashboard');
+    cy.getCustom('@navEntries').contains('Editors');
 
     const groupsDsgvo = [
       {
@@ -66,7 +66,7 @@ describe('Navigation Menu', () => {
           cy.wait(['@gettingData'], { responseTimeout: 15000 })
             .its('response.statusCode')
             .should('be.oneOf', [200, 304]);
-          cy.get('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
+          cy.getCustom('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
         });
       });
     });
@@ -75,7 +75,7 @@ describe('Navigation Menu', () => {
       group.entry.forEach((entry) => {
         cy.navigateTo({ group: group.name, entry: entry });
         cy.wait(['@gettingData'], { responseTimeout: 15000 }).its('response.statusCode').should('be.oneOf', [200, 304]);
-        cy.get('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
       });
     });
   });
@@ -83,18 +83,18 @@ describe('Navigation Menu', () => {
   it('ITGS navigate to all expected menu entries', () => {
     cy.selectDomain('IT-Grundschutz');
 
-    cy.get('[data-veo-test="domain-select"] span')
+    cy.getCustom('[data-veo-test="domain-select"] span')
       .invoke('text')
       .then((text) => {
         expect(text.trim()).to.equal('IT-Grundschutz');
-        cy.get('[data-component-name="breadcrumbs"]').contains('ITGS');
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains('ITGS');
       });
 
-    cy.get('[data-veo-test="domain-select"]').should('be.visible');
-    cy.get('[data-component-name="unit-select"]').should('be.visible');
-    cy.get('[data-veo-test="nav-entry-title"]').as('navEntries');
-    cy.get('@navEntries').contains('Dashboard');
-    cy.get('@navEntries').contains('Editors');
+    cy.getCustom('[data-veo-test="domain-select"]').should('be.visible');
+    cy.getCustom('[data-component-name="unit-select"]').should('be.visible');
+    cy.getCustom('[data-veo-test="nav-entry-title"]').as('navEntries');
+    cy.getCustom('@navEntries').contains('Dashboard');
+    cy.getCustom('@navEntries').contains('Editors');
 
     const groupsItgs = [
       {
@@ -128,7 +128,7 @@ describe('Navigation Menu', () => {
           cy.wait(['@gettingData'], { responseTimeout: 15000 })
             .its('response.statusCode')
             .should('be.oneOf', [200, 304]);
-          cy.get('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
+          cy.getCustom('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
         });
       });
     });
@@ -137,7 +137,7 @@ describe('Navigation Menu', () => {
       group.entry.forEach((entry) => {
         cy.navigateTo({ group: group.name, entry: entry });
         cy.wait(['@gettingData'], { responseTimeout: 15000 }).its('response.statusCode').should('be.oneOf', [200, 304]);
-        cy.get('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
       });
     });
   });

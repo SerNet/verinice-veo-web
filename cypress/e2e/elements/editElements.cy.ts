@@ -30,17 +30,17 @@ describe('Edit elements', () => {
 
         cy.checkSubTypePage($subType[0].innerText);
 
-        cy.get('.v-data-table__tr').first().as('originalRow');
-        cy.get('@originalRow').click();
+        cy.getCustom('.v-data-table__tr').first().as('originalRow');
+        cy.getCustom('@originalRow').click();
 
         const abbTyped = getRandomString();
         const nameTyped = 'AAAAAAAA';
         const descriptionTyped = getRandomString();
 
         const statusSelected = selectRandom(['Archived', 'New', 'In progress', 'Released', 'For review']);
-        cy.get('input[id="#/properties/abbreviation"]').clear().type(abbTyped);
-        cy.get('input[id="#/properties/name"]').clear().type(nameTyped);
-        cy.get('textarea[id="#/properties/description"]').clear().type(descriptionTyped);
+        cy.getCustom('input[id="#/properties/abbreviation"]').clear().type(abbTyped);
+        cy.getCustom('input[id="#/properties/name"]').clear().type(nameTyped);
+        cy.getCustom('textarea[id="#/properties/description"]').clear().type(descriptionTyped);
         selectMenuItem(statusSelected);
         cy.wait(500);
         cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/domains/**`).as('editElement');
@@ -60,7 +60,7 @@ describe('Edit elements', () => {
 
         cy.contains('tr', abbTyped).as('rowWithElements');
 
-        cy.get('@rowWithElements').then(($row) => {
+        cy.getCustom('@rowWithElements').then(($row) => {
           const cells = $row.children('td');
 
           const texts = [];
@@ -77,9 +77,9 @@ describe('Edit elements', () => {
           expect(status).to.equal(statusSelected);
         });
 
-        cy.get('@rowWithElements').click();
+        cy.getCustom('@rowWithElements').click();
 
-        cy.get('textarea[id="#/properties/description"]')
+        cy.getCustom('textarea[id="#/properties/description"]')
           .should('be.visible')
           .invoke('val')
           .then((descriptionValue) => {
@@ -90,8 +90,8 @@ describe('Edit elements', () => {
 
     const selectMenuItem = (status: string) => {
       new Cypress.Promise(() => {
-        cy.get('div[data-attribute-name="status"]').click();
-        cy.get('div[role="listbox"]').contains(status).click();
+        cy.getCustom('div[data-attribute-name="status"]').click();
+        cy.getCustom('div[role="listbox"]').contains(status).click();
       });
     };
 

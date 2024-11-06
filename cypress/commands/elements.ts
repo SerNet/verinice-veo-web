@@ -12,7 +12,7 @@ declare global {
 }
 
 export function checkSubTypePage(subTypeName: string) {
-  cy.get('[data-component-name="breadcrumbs"]').contains(subTypeName).as('activeBreadcrumb');
-  cy.get('@activeBreadcrumb').should('have.text', subTypeName);
+  cy.getCustom('[data-component-name="breadcrumbs"]').contains(subTypeName).as('activeBreadcrumb');
+  cy.getCustom('@activeBreadcrumb').should('have.text', subTypeName);
   waitForPageToLoad();
 }

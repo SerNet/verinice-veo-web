@@ -31,7 +31,7 @@ describe('Create elements', { testIsolation: false }, () => {
         cy.checkSubTypePage($subType[0].innerText);
 
         for (let i = 0; i < numOfElements; i++) {
-          cy.get('button[data-component-name="create-object-button"]').click();
+          cy.getCustom('button[data-component-name="create-object-button"]').click();
 
           const elements = {
             name: elementType + '_' + $subType.text() + '_' + i,
@@ -50,7 +50,7 @@ describe('Create elements', { testIsolation: false }, () => {
 
           cy.contains(elements.name).closest('tr').as('tmp');
 
-          cy.get('@tmp').then(($row) => {
+          cy.getCustom('@tmp').then(($row) => {
             cy.wrap($row).contains(elements.abb).should('be.visible');
             cy.wrap($row).contains(elements.status).should('be.visible');
           });
@@ -60,9 +60,9 @@ describe('Create elements', { testIsolation: false }, () => {
   }
 
   const createElement = (abbreviation: string, name: string, description: string, status: string) => {
-    cy.get('input[id="#/properties/abbreviation"]').type(abbreviation);
-    cy.get('input[id="#/properties/name"]').type(name);
-    cy.get('textarea[id="#/properties/description"]').type(description);
+    cy.getCustom('input[id="#/properties/abbreviation"]').type(abbreviation);
+    cy.getCustom('input[id="#/properties/name"]').type(name);
+    cy.getCustom('textarea[id="#/properties/description"]').type(description);
 
     selectMenuItem(status);
 
@@ -71,11 +71,11 @@ describe('Create elements', { testIsolation: false }, () => {
 
   const selectMenuItem = (status: string) => {
     new Cypress.Promise(() => {
-      cy.get('div[data-attribute-name="status"]').click();
-      cy.get('div[role="listbox"]').contains(status).click();
+      cy.getCustom('div[data-attribute-name="status"]').click();
+      cy.getCustom('div[role="listbox"]').contains(status).click();
     });
 
-    cy.get('.v-overlay__content .v-field__input').contains(status);
+    cy.getCustom('.v-overlay__content .v-field__input').contains(status);
   };
 
   const selectRandom = (list: string[]) => {

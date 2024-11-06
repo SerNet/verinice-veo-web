@@ -29,9 +29,9 @@ export function goToUnitSelection(): void {
 }
 
 export function selectUnitFromDropdown(unitName?: string): void {
-  cy.get('[data-component-name="unit-select"] .v-autocomplete__menu-icon').click();
-  cy.get('[data-veo-test="unit-selection-nav-item"]').should('be.visible');
-  cy.get('[data-veo-test="unit-selection-nav-item"]').then(($els) => {
+  cy.getCustom('[data-component-name="unit-select"] .v-autocomplete__menu-icon').click();
+  cy.getCustom('[data-veo-test="unit-selection-nav-item"]').should('be.visible');
+  cy.getCustom('[data-veo-test="unit-selection-nav-item"]').then(($els) => {
     const found = $els.toArray().find((el) => {
       const text = Cypress.$(el).text();
       return text.includes(unitName);
@@ -46,11 +46,11 @@ export function selectUnitFromDropdown(unitName?: string): void {
 }
 
 export function selectUnit(unitName: string): void {
-  cy.get('.v-card-title')
+  cy.getCustom('.v-card-title')
     .contains(unitName)
     .click()
     .then(() => {
-      cy.get('[data-component-name="domain-dashboard-page"]');
+      cy.getCustom('[data-component-name="domain-dashboard-page"]');
       cy.url().then((url) => {
         const segments = url.split('/');
 
@@ -84,18 +84,18 @@ export function editUnit({
   // Commands not chained,
   // because it would be unsafe: https://docs.cypress.io/api/commands/clear
   // Name
-  cy.get('.new-unit-form input').first().clear();
-  cy.get('.new-unit-form input').first().type(unitName);
+  cy.getCustom('.new-unit-form input').first().clear();
+  cy.getCustom('.new-unit-form input').first().type(unitName);
 
   // Description
-  cy.get('.new-unit-form input').last().clear();
-  cy.get('.new-unit-form input').last().type(unitDesc);
+  cy.getCustom('.new-unit-form input').last().clear();
+  cy.getCustom('.new-unit-form input').last().type(unitDesc);
 
   if (domainNames.length) chooseDomains(['DS-GVO']);
 
   // Submit
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('updatedUnit');
-  cy.get('.v-card-actions button').last().click();
+  cy.getCustom('.v-card-actions button').last().click();
   cy.wait(['@updatedUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
 }
 
@@ -159,7 +159,7 @@ export function deleteUnit(unitName: string): void {
 
 export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
   cy.goToUnitSelection();
-  cy.get('.v-card-title')
+  cy.getCustom('.v-card-title')
     .contains(unitName)
     .parent()
     .parent()
@@ -167,13 +167,13 @@ export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { 
     .click();
 
   // Get delete dialog
-  cy.get('[data-veo-test="units-delete-dialog"]').as('deleteDialog');
+  cy.getCustom('[data-veo-test="units-delete-dialog"]').as('deleteDialog');
 
   // Set up a listener for API responses
   cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
 
   // Request delete unit
-  cy.get('@deleteDialog')
+  cy.getCustom('@deleteDialog')
     .find('input')
     .type(unitName)
     .get('@deleteDialog')
@@ -189,7 +189,7 @@ export function goToUnitDashboard({ isStoringUnitID = true, unitName = Cypress.e
   cy.goToUnitSelection();
 
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('getUnitForDashboard');
-  cy.get('.v-list-item--link').contains(unitName).parent().parent().click();
+  cy.getCustom('.v-list-item--link').contains(unitName).parent().parent().click();
   cy.wait(['@getUnitForDashboard']).its('response.statusCode').should('eq', 200);
 
   if (!isStoringUnitID) return;
@@ -203,20 +203,20 @@ export function goToUnitDashboard({ isStoringUnitID = true, unitName = Cypress.e
 
 function chooseDomains(domainNames: string[]) {
   // Choose domains
-  cy.get('.new-unit-form .v-list-item')
+  cy.getCustom('.new-unit-form .v-list-item')
     .as('availableDomains')
     .then(($el) => {
       const numAvailableDomains = $el.length;
 
       if (numAvailableDomains > 1) {
-        cy.get('@availableDomains').click({ multiple: true });
-        domainNames.forEach((domain) => cy.get('@availableDomains').contains(domain).click());
+        cy.getCustom('@availableDomains').click({ multiple: true });
+        domainNames.forEach((domain) => cy.getCustom('@availableDomains').contains(domain).click());
       } else if (numAvailableDomains < domainNames.length) {
         cy.log('Domains:', domainNames);
-        cy.get('@availableDomains').then(($el) => cy.log($el.text()));
+        cy.getCustom('@availableDomains').then(($el) => cy.log($el.text()));
         throw new Error('Some of the choosen domains are not applicable');
       } else if (numAvailableDomains === 1 && domainNames.length === 1) {
-        cy.get('@availableDomains').contains(domainNames[0]);
+        cy.getCustom('@availableDomains').contains(domainNames[0]);
       }
     });
 }
@@ -224,5 +224,5 @@ function chooseDomains(domainNames: string[]) {
 export function getVeoTestUnitCard(unitName: string) {
   const url = `/${Cypress.env(unitName).unitId}/domains/`;
   const veoCardSelector = `a[data-veo-test="item-card-slot-center-link"][href^="${url}"]`;
-  return cy.get(veoCardSelector).parent().parent().parent();
+  return cy.getCustom(veoCardSelector).parent().parent().parent();
 }

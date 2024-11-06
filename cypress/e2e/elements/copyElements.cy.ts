@@ -30,11 +30,11 @@ describe('Copy elements', () => {
 
         cy.checkSubTypePage($subType[0].innerText);
 
-        cy.get('.v-data-table__tr') // Adjust this selector if needed to be more specific
+        cy.getCustom('.v-data-table__tr') // Adjust this selector if needed to be more specific
           .first()
           .as('originalRow');
 
-        cy.get('@originalRow').then(($row) => {
+        cy.getCustom('@originalRow').then(($row) => {
           cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}`).as(
             'cloneElement'
           );
@@ -61,7 +61,7 @@ describe('Copy elements', () => {
     });
 
     function verifyElementCopy(abb: string, name: string, status: string) {
-      cy.get('tr')
+      cy.getCustom('tr')
         .filter((index, row) => {
           const rowText = Cypress.$(row).text();
           return rowText.includes(abb) && rowText.includes(`${name} (duplicated)`) && rowText.includes(status);

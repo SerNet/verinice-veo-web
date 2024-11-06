@@ -29,10 +29,10 @@ describe('Delete elements', () => {
 
         cy.checkSubTypePage($subType[0].innerText);
 
-        cy.get('.v-data-table__tr').first().as('originalRow');
+        cy.getCustom('.v-data-table__tr').first().as('originalRow');
 
         let initialTotalItems: number;
-        cy.get('.v-data-table-footer__info > div').then(($element) => {
+        cy.getCustom('.v-data-table-footer__info > div').then(($element) => {
           const footerText = $element.text(); // Get the text content of the footer
           const totalItemsMatch = footerText.match(/of (\d+)/); // Use regex to extract the number after 'of'
           if (totalItemsMatch) {
@@ -40,7 +40,7 @@ describe('Delete elements', () => {
           }
         });
 
-        cy.get('@originalRow').then(($row) => {
+        cy.getCustom('@originalRow').then(($row) => {
           cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/${elementType.toLowerCase()}/**`).as('deleteElement');
           cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
 
@@ -49,7 +49,7 @@ describe('Delete elements', () => {
           cy.wait('@deleteElement').its('response.statusCode').should('eq', 204);
           cy.wait('@getElements').its('response.statusCode').should('eq', 200);
           cy.wait(200);
-          cy.get('.v-data-table-footer__info > div')
+          cy.getCustom('.v-data-table-footer__info > div')
             .should('not.contain', `of ${initialTotalItems}`)
             .then(($element) => {
               const footerText = $element.text();

@@ -13,7 +13,7 @@ export function checkPagination(columnSelectors: string[] = ['name', 'status', '
   const paginationRegex = /(\d+)-(\d+)\s+of\s+(\d+)/;
 
   function verifyAndNavigate(page, pages, itemsShown) {
-    cy.get('.v-data-table-footer__info > div')
+    cy.getCustom('.v-data-table-footer__info > div')
       .invoke('text')
       .then((footerText) => {
         const matches = footerText.match(paginationRegex);
@@ -29,24 +29,24 @@ export function checkPagination(columnSelectors: string[] = ['name', 'status', '
 
         const currentItemsShown = endItem - startItem + 1;
 
-        cy.get('.v-data-table__tr')
+        cy.getCustom('.v-data-table__tr')
           .should('have.length', currentItemsShown)
           .each(($row) => {
             cy.wrap($row).within(() => {
               columnSelectors.forEach((col) => {
-                cy.get(`[data-veo-test="${col}"]`).should('not.be.empty');
+                cy.getCustom(`[data-veo-test="${col}"]`).should('not.be.empty');
               });
             });
           });
 
         if (page < pages) {
-          cy.get('.v-pagination__next').click();
+          cy.getCustom('.v-pagination__next').click();
           verifyAndNavigate(page + 1, pages, itemsShown);
         }
       });
   }
 
-  cy.get('.v-data-table-footer__info > div')
+  cy.getCustom('.v-data-table-footer__info > div')
     .invoke('text')
     .then((footerText) => {
       const matches = footerText.match(paginationRegex);
