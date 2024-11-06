@@ -6,7 +6,7 @@ import { checkSubTypePage } from '../commands/elements';
 import { importUnit } from '../commands/importUnit';
 import { handleLanguageBug, languageTo } from '../commands/language';
 import { login } from '../commands/login';
-import { iterateSubTypes, navigateTo } from '../commands/navigation';
+import { navigateTo, selectFirstSubType } from '../commands/navigation';
 import { veoRequest } from '../commands/requests';
 import { checkPagination } from '../commands/table/pagination';
 import {
@@ -45,7 +45,7 @@ Cypress.Commands.addAll({
   selectDomain,
   handleLanguageBug,
   checkSubTypePage,
-  iterateSubTypes,
+  selectFirstSubType,
   selectUnitFromDropdown,
   checkPagination,
   getCustom,

@@ -24,7 +24,7 @@ describe('Delete elements', () => {
     it('deletes element in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
 
-      cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
+      cy.selectFirstSubType(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
 
         cy.checkSubTypePage($subType[0].innerText);

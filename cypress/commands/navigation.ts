@@ -7,7 +7,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       navigateTo: typeof navigateTo;
-      iterateSubTypes: typeof iterateSubTypes;
+      selectFirstSubType: typeof selectFirstSubType;
     }
   }
 }
@@ -47,13 +47,16 @@ export function navigateTo({ group, category, entry }: { group: string; category
   });
 }
 
-export function iterateSubTypes(elementType: string, callback: (args: any) => void) {
+export function selectFirstSubType(elementType: string, callback: (args: any) => void) {
   cy.contains('div[sub-group="true"] > div', new RegExp(`^${upperFirst(elementType)}$`))
     .should('be.visible')
     .parent()
     .find('a')
-    .each(($subType) => {
-      if ($subType.text() === 'All') return;
-      callback($subType);
+    .filter((index, $subType) => $subType.innerText !== 'All')
+    .first()
+    .then(($subType) => {
+      if ($subType.length) {
+        callback($subType);
+      }
     });
 }

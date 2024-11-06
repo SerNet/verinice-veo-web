@@ -29,7 +29,7 @@ describe.skip('Add Elements to other Domain', () => {
       let targetObjects = []; // Initialize array to store target objects and statuses
       let originalElementName;
 
-      cy.iterateSubTypes(elementType, ($subType) => {
+      cy.selectFirstSubType(elementType, ($subType) => {
         cy.wrap($subType).click();
 
         cy.checkSubTypePage($subType[0].innerText);

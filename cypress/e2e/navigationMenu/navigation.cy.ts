@@ -61,7 +61,7 @@ describe('Navigation Menu', () => {
     groupsWithCategories.forEach((group) => {
       group.elementTypes.forEach((elementType) => {
         cy.navigateTo({ group: group.name, category: elementType });
-        cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
+        cy.selectFirstSubType(elementType, ($subType: JQuery<HTMLElement>) => {
           cy.wrap($subType).click();
           cy.wait(['@gettingData'], { responseTimeout: 15000 })
             .its('response.statusCode')
@@ -123,7 +123,7 @@ describe('Navigation Menu', () => {
     groupsWithCategories.forEach((group) => {
       group.elementTypes.forEach((elementType) => {
         cy.navigateTo({ group: group.name, category: elementType });
-        cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
+        cy.selectFirstSubType(elementType, ($subType: JQuery<HTMLElement>) => {
           cy.wrap($subType).click();
           cy.wait(['@gettingData'], { responseTimeout: 15000 })
             .its('response.statusCode')

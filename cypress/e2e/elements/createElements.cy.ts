@@ -24,7 +24,7 @@ describe('Create elements', { testIsolation: false }, () => {
     it('creates elements in ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
 
-      cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
+      cy.selectFirstSubType(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
 
         //Wait for the next element tab to load correctly
@@ -48,9 +48,9 @@ describe('Create elements', { testIsolation: false }, () => {
 
           cy.wait(['@createElement']).its('response.statusCode').should('eq', 201);
 
-          cy.contains(elements.name).closest('tr').as('tmp');
+          cy.contains(elements.name).closest('tr').as('createdElement');
 
-          cy.getCustom('@tmp').then(($row) => {
+          cy.getCustom('@createdElement').then(($row) => {
             cy.wrap($row).contains(elements.abb).should('be.visible');
             cy.wrap($row).contains(elements.status).should('be.visible');
           });

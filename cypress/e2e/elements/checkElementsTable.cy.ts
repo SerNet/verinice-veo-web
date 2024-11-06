@@ -23,7 +23,7 @@ describe('Elements Overview Table', () => {
   elementTypeList.forEach((elementType) => {
     it('Check Items of ' + elementType, () => {
       cy.navigateTo({ group: 'objects', category: elementType });
-      cy.iterateSubTypes(elementType, ($subType: JQuery<HTMLElement>) => {
+      cy.selectFirstSubType(elementType, ($subType: JQuery<HTMLElement>) => {
         cy.wrap($subType).click();
 
         waitForPageToLoad();
