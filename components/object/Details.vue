@@ -166,15 +166,7 @@ export default defineComponent({
         return ['scope', 'process'].includes(props.object.type);
       }
 
-      if (domain.value.name === 'IT-Grundschutz') {
-        return ['asset', 'process', 'scope'].includes(props.object?.type);
-      }
-
-      if (domain.value.name === 'NIS2') {
-        return ['asset', 'process', 'scope'].includes(props.object?.type);
-      }
-
-      return false;
+      return Object.keys(domain.value.riskDefinitions || {}).length > 0 && isRiskAffected.value;
     });
 
     const isControlsTabHidden = computed(() => {
