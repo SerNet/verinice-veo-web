@@ -38,10 +38,25 @@ describe('Edit elements', () => {
         const descriptionTyped = getRandomString();
 
         const statusSelected = selectRandom(['Archived', 'New', 'In progress', 'Released', 'For review']);
+        selectMenuItem(statusSelected);
+
+        cy.intercept(
+          'POST',
+          `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}/evaluation?domain=**`,
+          { times: 2 }
+        ).as('updateForm');
+
+        // Interact with the form
         cy.getCustom('input[id="#/properties/abbreviation"]').clear().type(abbTyped);
         cy.getCustom('input[id="#/properties/name"]').clear().type(nameTyped);
         cy.getCustom('textarea[id="#/properties/description"]').clear().type(descriptionTyped);
-        selectMenuItem(statusSelected);
+
+        // Wait for both requests and check status codes
+        cy.wait(['@updateForm', '@updateForm']).then((intercepts) => {
+          expect(intercepts[0].response.statusCode).to.equal(200);
+          expect(intercepts[1].response.statusCode).to.equal(200);
+        });
+
         cy.wait(500);
         cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/domains/**`).as('editElement');
         cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
@@ -88,11 +103,34 @@ describe('Edit elements', () => {
       });
     });
 
-    const selectMenuItem = (status: string) => {
-      new Cypress.Promise(() => {
-        cy.getCustom('div[data-attribute-name="status"]').click();
-        cy.getCustom('div[role="listbox"]').contains(status).click();
-      });
+    const selectMenuItem = (status, retryCount = 0) => {
+      if (retryCount > 5) {
+        throw new Error('Max retries reached. Could not select the status.');
+      }
+
+      // Attempt to open the menu and select the item
+      cy.getCustom('input[id="#/properties/status"]').scrollIntoView().click({ force: true });
+
+      cy.contains('[data-veo-test="object-select-item"]', status, { timeout: 2000 })
+        .should('exist')
+        .then(($el) => {
+          if ($el.length > 0) {
+            // If the menu item is found, click it
+            cy.wrap($el).click();
+            // Verify the status selection is visible
+            cy.getCustom('[data-attribute-name="status"]').should('be.visible').contains(status);
+          } else {
+            // If the item is not found, try to reopen the menu and retry
+            cy.getCustom('input[id="#/properties/abbreviation"]').scrollIntoView().click({ force: true });
+            cy.getCustom('input[id="#/properties/status"]').scrollIntoView().click({ force: true });
+
+            // Use Cypress.Promise.delay to wait briefly before retrying
+            Cypress.Promise.delay(500).then(() => {
+              // Recursively call the function, increasing the retry count
+              selectMenuItem(status, retryCount + 1);
+            });
+          }
+        });
     };
 
     const selectRandom = (list: Array<any>) => {
