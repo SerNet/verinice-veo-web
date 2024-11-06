@@ -34,7 +34,13 @@
     @click:clear="$emit('update:model-value', undefined)"
   >
     <template v-if="multiple" #item="{ props, item }">
-      <v-list-item v-if="item.value === '_empty_array_'" v-bind="props" :active="isEmpty(modelValue)" color="primary" />
+      <v-list-item
+        v-if="item.value === '_empty_array_'"
+        v-bind="props"
+        :active="isEmpty(modelValue)"
+        color="primary"
+        data-veo-test="object-select-item"
+      />
       <v-list-item
         v-else
         v-bind="props"
@@ -42,6 +48,7 @@
         :title="undefined"
         :active="isArray(modelValue) && modelValue?.includes(item.value)"
         color="primary"
+        data-veo-test="object-select-item"
       >
         <div class="d-flex align-center">
           <v-icon
@@ -55,12 +62,15 @@
         </div>
       </v-list-item>
     </template>
+    <template v-else #item="{ props: _props }">
+      <v-list-item v-bind="_props" data-veo-test="object-select-item"> </v-list-item>
+    </template>
   </v-autocomplete>
 </template>
 
 <script lang="ts">
-import { isArray, isEmpty, last } from 'lodash';
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked } from '@mdi/js';
+import { isArray, isEmpty, last } from 'lodash';
 
 import { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
