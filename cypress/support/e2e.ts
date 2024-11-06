@@ -1,3 +1,4 @@
+import { containsCustom, getCustom } from '../commands/base';
 import { acceptAllCookies } from '../commands/cookies';
 import { testDashboardWidgets, testEmptyDashboard } from '../commands/dashboard';
 import { addDomain, getSelectedDomain, getVeoDomains, selectDomain, selectRandomDomain } from '../commands/domains';
@@ -46,7 +47,9 @@ Cypress.Commands.addAll({
   checkSubTypePage,
   iterateSubTypes,
   selectUnitFromDropdown,
-  checkPagination
+  checkPagination,
+  getCustom,
+  containsCustom
 });
 
 // Uncaught exeptions make cypress test runs fail

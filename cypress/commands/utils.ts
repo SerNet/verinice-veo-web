@@ -27,4 +27,6 @@ export function waitForLoadersToDisappear() {
   cy.get('.v-skeleton-loader').should('not.exist');
   cy.get('[loading=true]').should('not.exist');
   cy.get('[role=progressbar]:visible').should('not.exist');
+  cy.get('[data-veo-test="loadingDataTable"]').should('not.exist');
+  cy.get('[data-veo-test="loader"]').should('not.exist');
 }
