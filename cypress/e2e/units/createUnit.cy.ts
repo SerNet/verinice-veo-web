@@ -120,7 +120,7 @@ describe('create units', () => {
 
   function testUnitCard(testData: TestData) {
     // Get test unit card
-    cy.contains(testData.unitName) //.parent().as('testUnitCard');
+    cy.containsCustom(testData.unitName) //.parent().as('testUnitCard');
       .parents('[data-veo-test="veo-card"]')
       .as('testUnitCard');
 

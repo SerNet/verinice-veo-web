@@ -10,8 +10,8 @@ module.exports = defineConfig({
   video: false, // disable video recording
   numTestsKeptInMemory: 1,
   experimentalMemoryManagement: true,
-  defaultCommandTimeout: 30000,
-  requestTimeout: 30000,
+  defaultCommandTimeout: 8000,
+  requestTimeout: 15000,
   e2e: {
     setupNodeEvents(on, config) {
       // Load cypress.env.[environment].json files for different environments

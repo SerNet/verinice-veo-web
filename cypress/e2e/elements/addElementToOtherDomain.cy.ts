@@ -112,7 +112,7 @@ describe.skip('Add Elements to other Domain', () => {
           const targetObjectName = target.name;
           let targetSubType;
           const normalizeString = (str) => str.toLowerCase().replace(/[^a-z]/g, '');
-          cy.contains('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
+          cy.containsCustom('div[sub-group="true"] > div', new RegExp(`^${elementType}$`))
             .should('be.visible')
             .parent()
             .find('a')

@@ -60,7 +60,7 @@ describe('Edit elements', () => {
         cy.wait(500);
         cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/domains/**`).as('editElement');
         cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
-        cy.contains('Save').click();
+        cy.containsCustom('Save').click();
         cy.wait(['@editElement', '@getElements']).then((intercepts) => {
           expect(intercepts[0].response.statusCode).to.equal(200);
           expect(intercepts[1].response.statusCode).to.equal(200);
@@ -73,7 +73,7 @@ describe('Edit elements', () => {
 
         cy.checkSubTypePage($subType[0].innerText);
 
-        cy.contains('tr', abbTyped).as('rowWithElements');
+        cy.containsCustom('tr', abbTyped).as('rowWithElements');
 
         cy.getCustom('@rowWithElements').then(($row) => {
           const cells = $row.children('td');

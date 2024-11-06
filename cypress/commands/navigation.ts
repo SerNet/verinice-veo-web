@@ -48,7 +48,7 @@ export function navigateTo({ group, category, entry }: { group: string; category
 }
 
 export function selectFirstSubType(elementType: string, callback: (args: any) => void) {
-  cy.contains('div[sub-group="true"] > div', new RegExp(`^${upperFirst(elementType)}$`))
+  cy.containsCustom('div[sub-group="true"] > div', new RegExp(`^${upperFirst(elementType)}$`))
     .should('be.visible')
     .parent()
     .find('a')

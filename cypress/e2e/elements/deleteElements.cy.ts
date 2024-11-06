@@ -66,6 +66,6 @@ describe('Delete elements', () => {
 
   const deleteElement = ($row: JQuery<HTMLElement>) => {
     cy.wrap($row).find('[data-component-name="object-overview-delete-button"]').should('exist').click();
-    cy.contains('button', 'Delete').should('exist').click();
+    cy.containsCustom('button', 'Delete').should('exist').click();
   };
 });

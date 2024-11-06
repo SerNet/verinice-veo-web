@@ -48,11 +48,11 @@ describe('Create elements', { testIsolation: false }, () => {
 
           cy.wait(['@createElement']).its('response.statusCode').should('eq', 201);
 
-          cy.contains(elements.name).closest('tr').as('createdElement');
+          cy.containsCustom(elements.name).closest('tr').as('createdElement');
 
           cy.getCustom('@createdElement').then(($row) => {
-            cy.wrap($row).contains(elements.abb).should('be.visible');
-            cy.wrap($row).contains(elements.status).should('be.visible');
+            cy.wrap($row).containsCustom(elements.abb).should('be.visible');
+            cy.wrap($row).containsCustom(elements.status).should('be.visible');
           });
         }
       });

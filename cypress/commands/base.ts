@@ -19,22 +19,12 @@ export function getCustom(selector: string, options = {}): any {
   return cy.get(selector, options);
 }
 
-<<<<<<< Updated upstream
-export function containsCustom(selector: string, options = {}) {
+export function containsCustom(selector: string, content?: string | RegExp, options = {}): any {
   waitForLoadersToDisappear();
-  return cy.contains(selector, options);
-=======
-export function selectFirstSubType(elementType: string, callback: (args: any) => void, iterations: number = 1) {
-  cy.containsCustom('div[sub-group="true"] > div', new RegExp(`^${upperFirst(elementType)}$`))
-    .should('be.visible')
-    .parent()
-    .find('a')
-    .filter((index, $subType) => $subType.innerText !== 'All')
-    .slice(0, iterations)
-    .each(($subType) => {
-      if ($subType.length) {
-        callback($subType);
-      }
-    });
->>>>>>> Stashed changes
+
+  if (content) {
+    return cy.contains(selector, content, options);
+  } else {
+    return cy.contains(selector, options);
+  }
 }
