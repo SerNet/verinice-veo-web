@@ -163,7 +163,7 @@ export default defineComponent({
       if (!domain.value || !subType.value || !props.object?.type) return false;
 
       if (domain.value.name === 'DS-GVO') {
-        return ['scope'].includes(props.object.type) || ['PRO_DataProcessing', 'PRO_DPIA'].includes(subType.value);
+        return ['scope', 'process'].includes(props.object.type);
       }
 
       if (domain.value.name === 'IT-Grundschutz') {
