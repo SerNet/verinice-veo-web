@@ -6,9 +6,8 @@ describe('Navigation Menu', () => {
   before(() => {
     unitDetails = generateUnitDetails('copyElements');
     cy.login();
-    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
     cy.goToUnitSelection();
-    cy.addDomain(unitDetails.name, 'IT-Grundschutz');
   });
 
   beforeEach(() => {
