@@ -2,19 +2,7 @@ import { resolve } from 'path';
 import DocsModule from './modules/docs/module.mjs';
 
 // Types
-import { PluginOption } from 'vite';
 import { LOCALES } from './types/locales';
-
-/** UNIT TESTING
- * When testing the application, vue + vuetify are not available,
- * thus we have to import/plug them in manually
- * however, in dev mode or when building this causes an ERROR,
- * that is why we only add vue + vuetify in when testing
- */
-import vue from '@vitejs/plugin-vue';
-import vuetify from 'vite-plugin-vuetify';
-let vitePlugins: PluginOption[] = [];
-if (process.env.NODE_ENV === 'test') vitePlugins = [vue(), vuetify({ autoImport: true })];
 
 export default defineNuxtConfig({
   //==============================================================
@@ -91,7 +79,8 @@ export default defineNuxtConfig({
     '@nuxt/content',
     '@nuxtjs/i18n',
     './modules/vuetify-sass-variables.ts',
-    'nuxt-font-loader'
+    'nuxt-font-loader',
+    '@nuxt/test-utils/module'
   ],
 
   build: {
@@ -99,7 +88,6 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: vitePlugins,
     resolve: {
       alias: {
         '@toast-ui': resolve(__dirname, 'node_modules/@toast-ui')
