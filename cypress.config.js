@@ -7,9 +7,7 @@ const fs = require('fs');
 
 module.exports = defineConfig({
   retries: 2,
-  video: false, // disable video recording
-  numTestsKeptInMemory: 1,
-  experimentalMemoryManagement: true,
+  video: true, // Let's enable video recording by default
   defaultCommandTimeout: 8000,
   requestTimeout: 15000,
   e2e: {
@@ -21,30 +19,6 @@ module.exports = defineConfig({
       config.env = require(`cypress/config/cypress.env.${environment}.json`);
       // change baseUrl
       config.baseUrl = config.env.baseUrl;
-      on('before:browser:launch', (browser, launchOptions) => {
-        if (browser.name === 'electron') {
-          launchOptions.preferences.webPreferences = {
-            ...launchOptions.preferences.webPreferences,
-            sandbox: true,
-            nodeIntegration: false,
-            contextIsolation: true,
-            webSecurity: false
-          };
-
-          launchOptions.preferences = {
-            ...launchOptions.preferences,
-            webSecurity: false
-          };
-          launchOptions.args['--js-flags'] = '--max-old-space-size=8192';
-          launchOptions.args['--disable-gpu'] = true;
-          launchOptions.args['--disable-dev-shm-usage'] = true;
-          launchOptions.args['--no-sandbox'] = true;
-          launchOptions.args['--disable-gl-drawing-for-tests'] = true;
-        }
-        launchOptions.preferences.width = 1024;
-        launchOptions.preferences.height = 768;
-        return launchOptions;
-      });
 
       // delete the video if the spec passed and no tests retried
       on('after:spec', (spec, results) => {
