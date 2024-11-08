@@ -27,7 +27,7 @@
         (e) =>
           openItem({
             type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
-            riskAffected: route.query.riskAffected as string,
+            targetObject: route.query.targetObject as string,
             item: e.item
           })
       "
@@ -77,10 +77,10 @@ function mapSortingKey(key: string) {
 }
 
 const fetchParams = computed(() => {
-  if (!route.query.riskAffected) return;
+  if (!route.query.targetObject) return;
   return {
     type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
-    riskAffected: route.query.riskAffected as string,
+    targetObject: route.query.targetObject as string,
     control: route.query.control as string,
     sortBy: mapSortingKey(sortBy.value[0].key),
     sortOrder: sortBy.value[0].order,
@@ -138,14 +138,14 @@ function translate(requirementImplementations) {
 const requirementImplementation: Ref<RequirementImplementation | null> = ref(null);
 const showDialog = ref(false);
 
-async function openItem({ type, riskAffected, item }: { type: string | null; riskAffected: string | null; item: any }) {
-  if (!type || !riskAffected) return;
+async function openItem({ type, targetObject, item }: { type: string | null; targetObject: string | null; item: any }) {
+  if (!type || !targetObject) return;
 
   showDialog.value = true;
 
   requirementImplementation.value = await fetchRequirementImplementation({
     type: type as string,
-    riskAffected: riskAffected as string,
+    targetObject: targetObject as string,
     item
   });
 }

@@ -36,18 +36,15 @@ export const ROUTE_NAME = 'unit-domains-domain-compliance';
 </script>
 
 <script setup lang="ts">
+import { computed, onMounted, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useRoute } from 'vue-router';
-import type { ComplianceState } from '~/components/compliance/compliance';
-import { useCompliance } from '~/components/compliance/compliance';
+import { onBeforeRouteLeave, useRoute } from 'vue-router';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuery } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import { VeoElementTypesSingular } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-const route = useRoute();
-const { t, locale } = useI18n();
-const { state } = useCompliance();
-const { data: currentDomain, isLoading } = useCurrentDomain();
-
+// Types
 interface CurrentModule {
   name: string;
   subType: string;
@@ -62,25 +59,55 @@ interface CurrentModule {
   };
 }
 
-const newSubType = computed(() => {
-  return state.CTLModule.value?.control ?
-      currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubType
-    : currentDomain.value?.raw.controlImplementationConfiguration.mitigationControlSubType;
-});
+interface BreadcrumbItem {
+  to: string;
+  exact: boolean;
+  index: number;
+  text: string;
+  indexToReplace?: number;
+  disabled: boolean;
+}
 
-const ctModuleType = computed(() => {
-  return state.CTLModule.value?.type;
-});
+// Composables
+const route = useRoute();
+const { t, locale } = useI18n();
+const { data: currentDomain, isLoading } = useCurrentDomain();
+const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
+// Query Parameters
+const targetObjectQueryParameters = computed(() => ({
+  endpoint: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
+  id: route.query.targetObject as string,
+  domain: route.params.domain as string
+}));
+
+const containerObjectQueryParameters = computed(() => ({
+  endpoint: 'controls',
+  id: route.query.control as string,
+  domain: route.params.domain as string
+}));
+
+// Queries
+const { data: targetObject } = useQuery(objectQueryDefinitions.queries.fetch, targetObjectQueryParameters);
+const { data: containerControl } = useQuery(objectQueryDefinitions.queries.fetch, containerObjectQueryParameters);
+
+// Computed Properties
+const newSubType = computed(() => containerControl.value?.subType);
+const ctModuleType = computed(() => containerControl.value?.type);
+
+// SubType Translations
 const { subTypeTranslation } = useSubTypeTranslation(ctModuleType, newSubType, false);
+const { subTypeTranslation: ownerSubType } = useSubTypeTranslation(
+  toRef(() => targetObject.value.type),
+  toRef(() => targetObject.value?.subType)
+);
 
 const currentModule = computed<CurrentModule | undefined>(() => {
-  if (isLoading.value || !state.CTLModule.value || !currentDomain.value) {
+  if (isLoading.value || !containerControl.value || !currentDomain.value) {
     return undefined;
   }
 
-  const module = state.CTLModule.value;
-
+  const module = containerControl.value;
   return {
     name: module.name,
     subType: subTypeTranslation.value,
@@ -95,65 +122,66 @@ const currentModule = computed<CurrentModule | undefined>(() => {
     }
   };
 });
-/* BREADCRUMBS */
-const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
-const { subTypeTranslation: ownerSubType } = useSubTypeTranslation(
-  toRef(() => VeoElementTypesSingular[state.type.value as keyof typeof VeoElementTypesSingular]),
-  toRef(() => state.CTLModule.value?.owner.subType)
-);
-const customCrumbs = computed(() => {
-  if (!state.CTLModule.value) return undefined;
-  return generateCustomBreadcrumbs(
-    route.params.unit as string,
-    route.params.domain as string,
-    state,
-    ownerSubType.value
-  );
-});
 
-function generateCustomBreadcrumbs(unit: string, domain: string, state: ComplianceState, subTypeTranslation: string) {
+// Breadcrumbs Logic
+const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslation: string): BreadcrumbItem[] => {
+  if (!containerControl.value || !targetObject.value) {
+    return [];
+  }
+
+  const typePlural = VeoElementTypePlurals[targetObject.value.type as keyof typeof VeoElementTypePlurals];
+
   return [
     {
-      to: `/${unit}/domains/${domain}/${state.type.value}`,
+      to: `/${unit}/domains/${domain}/${typePlural}`,
       exact: true,
       index: 2,
-      text: state.type.value,
+      text: typePlural,
       indexToReplace: 2,
       disabled: false
     },
     {
-      to: `/${unit}/domains/${domain}/${state.type.value}/${state.CTLModule.value.owner.subType}`,
+      to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value.subType}`,
       exact: true,
       index: 3,
       text: subTypeTranslation,
       disabled: false
     },
     {
-      to: `/${unit}/domains/${domain}/${state.type.value}/${state.CTLModule.value.owner.subType}/${state.CTLModule.value.owner.id}`,
+      to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value.subType}/${targetObject.value.id}`,
       exact: true,
       index: 4,
-      text: state.CTLModule.value.owner.displayName,
+      text: targetObject.value.displayName,
       disabled: false
     },
     {
-      to: `/${unit}/domains/${domain}/${state.type.value}/${state.CTLModule.value.owner.subType}/${state.CTLModule.value.owner.id}#controls`,
+      to: `/${unit}/domains/${domain}/${typePlural}/${containerControl.value.subType}/${targetObject.value.id}#controls`,
       exact: true,
       index: 5,
-      text: `${t('implementation')} (${state.CTLModule.value.name})`,
+      text: `${t('implementation')} (${containerControl.value.name})`,
       disabled: true
     }
   ];
-}
+};
 
-onMounted(() => customCrumbs.value?.forEach((crumb) => addCustomBreadcrumb(crumb)));
+const customCrumbs = computed(() => {
+  if (!containerControl.value) return undefined;
+  return generateCustomBreadcrumbs(route.params.unit as string, route.params.domain as string, ownerSubType.value);
+});
 
-// Remove breadcrumb on leaving route: otherwise they persist in other views
-onBeforeRouteLeave(async () => clearCustomBreadcrumbs());
+// Lifecycle Hooks and Watchers
+onMounted(() => {
+  clearCustomBreadcrumbs();
+  customCrumbs.value?.forEach((crumb) => addCustomBreadcrumb(crumb));
+});
 
-// Update breadcrumb if a filter is changed
+onBeforeRouteLeave(() => {
+  clearCustomBreadcrumbs();
+});
+
+// Watchers
 watch(() => route.fullPath, clearCustomBreadcrumbs);
 
-// Update breadcrumbs on changed locale
 watch(locale, () => {
   clearCustomBreadcrumbs();
   customCrumbs.value?.forEach((crumb) => addCustomBreadcrumb(crumb));

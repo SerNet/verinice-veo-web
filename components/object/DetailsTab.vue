@@ -125,7 +125,6 @@ import type {
   VeoSort
 } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import { useCompliance } from '../compliance/compliance';
 export default defineComponent({
   props: {
     type: {
@@ -733,14 +732,13 @@ export default defineComponent({
               icon: mdiTextBoxCheckOutline,
               isDisabled: (item: any) => !item.mitigation, // Disable if mitigation exists (coerce to boolean)
               async action(item: any) {
-                complianceState.CTLModule.value = { ...item.mitigation, owner: props.object };
                 // Check for mitigation and navigate accordingly
                 if (item.mitigation) {
                   return navigateTo({
                     name: 'unit-domains-domain-compliance',
                     query: {
                       type: props.object?.type,
-                      riskAffected: props.object?.id,
+                      targetObject: props.object?.id,
                       control: item?.mitigation?.id
                     }
                   });
@@ -775,12 +773,11 @@ export default defineComponent({
               isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
 
               async action(item: IVeoLink) {
-                complianceState.CTLModule.value = item;
                 return navigateTo({
                   name: 'unit-domains-domain-compliance',
                   query: {
                     type: props.object?.type,
-                    riskAffected: props.object?.id,
+                    targetObject: props.object?.id,
                     control: item.id
                   }
                 });
@@ -875,8 +872,6 @@ export default defineComponent({
           ];
       }
     });
-
-    const { state: complianceState } = useCompliance();
 
     /**
      * control unlink dialogs
