@@ -170,7 +170,7 @@ export default defineComponent({
     });
 
     const isControlsTabHidden = computed(() => {
-      const complianceControlSubType = domain.value.controlImplementationConfiguration.complianceControlSubType;
+      const complianceControlSubType = domain.value?.controlImplementationConfiguration?.complianceControlSubType;
       return !complianceControlSubType || !isRiskAffected.value;
     });
 
@@ -198,7 +198,7 @@ export default defineComponent({
       },
       {
         key: 'targets',
-        hidden: props.object?.subType !== domain.value.controlImplementationConfiguration.complianceControlSubType
+        hidden: props.object?.subType !== domain.value?.controlImplementationConfiguration?.complianceControlSubType
       },
       {
         key: 'risks',
