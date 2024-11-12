@@ -1,16 +1,16 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2024 Aziz Khalledi
-   -
+   - 
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
    - as published by the Free Software Foundation, either version 3 of the License,
    - or (at your option) any later version.
-   -
+   - 
    - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
    - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    - See the GNU Affero General Public License for more details.
-   -
+   - 
    - You should have received a copy of the GNU Affero General Public License along with this program.
    - If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -19,7 +19,7 @@
     <BaseTable
       v-model:sort-by="sortBy"
       v-model:page="page"
-      :items="translatedRequirementImplementations"
+      :items="isLoadingRequirementImplementations ? [] : translatedRequirementImplementations"
       item-key="id"
       :additional-headers="headers"
       enable-click
@@ -33,9 +33,7 @@
       "
     >
       <template #no-data>
-        <span class="text-center">
-          {{ t('noRequirementImplementations') }}
-        </span>
+        <span class="text-center">{{ t('noRequirementImplementations') }}</span>
       </template>
     </BaseTable>
 
@@ -45,117 +43,46 @@
       :show-dialog="showDialog"
       :locale="locale"
       @update:show-dialog="showDialog = !showDialog"
-      @update:item="reloadRequirementImplementations"
+      @update:item="refetch"
     />
   </BaseCard>
 </template>
 
 <script setup lang="ts">
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
+import { useRequirementImplementationList } from '~/composables/requirementImplementations';
+import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { TableHeader } from '../base/Table.vue';
-import { useCompliance } from './compliance';
-import { RequirementImplementation } from './Editor.vue';
 
-const { tablePageSize } = useVeoUser();
+const props = defineProps<{
+  containerControl: Partial<IVeoEntity>;
+}>();
+
 const route = useRoute();
-const { fetchRequirementImplementations, fetchRequirementImplementation } = useCompliance();
-
-const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
-const page = defineModel<number>('page', { default: 0 });
 const { t, locale } = useI18n();
-const { t: globalT } = useI18n({ useScope: 'global' });
+const { data: currentDomain } = useCurrentDomain();
+const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
-function mapSortingKey(key: string) {
-  switch (key) {
-    case 'translations.origination':
-      return 'origination';
-    case 'translations.status':
-      return 'status';
-    default:
-      return key;
-  }
-}
-
-const fetchParams = computed(() => {
-  if (!route.query.targetObject) return;
-  return {
-    type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
-    targetObject: route.query.targetObject as string,
-    control: route.query.control as string,
-    sortBy: mapSortingKey(sortBy.value[0].key),
-    sortOrder: sortBy.value[0].order,
-    size: tablePageSize.value,
-
-    page: page.value
-  };
-});
-
-const requirementImplementations = ref<any>();
-requirementImplementations.value =
-  fetchParams.value ?
-    await fetchRequirementImplementations({
-      ...fetchParams.value
-    })
-  : undefined;
-
-watch(fetchParams, async () => {
-  if (!fetchParams.value) return;
-  requirementImplementations.value = await fetchRequirementImplementations({
-    ...fetchParams.value
-  });
-});
-
-// Translate
-const translatedRequirementImplementations = ref(translate(requirementImplementations.value));
-
-watch(requirementImplementations, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value);
-});
-
-watch(locale, () => {
-  translatedRequirementImplementations.value = translate(requirementImplementations.value);
-});
-
-function translate(requirementImplementations) {
-  if (!requirementImplementations?.items || requirementImplementations.items.length === 0) {
-    return [];
-  }
-
-  return {
-    ...requirementImplementations,
-    items: requirementImplementations.items.map((item) => {
-      const status = globalT(`compliance.status.${item.status}`);
-      const origination = globalT(`compliance.origination.${item.origination}`);
-
-      return {
-        ...item,
-        translations: { status, origination }
-      };
-    })
-  };
-}
+// Fetch RIs
+const { sortBy, page, translatedRequirementImplementations, isLoadingRequirementImplementations, refetch } =
+  useRequirementImplementationList();
 // Open a single RI
-const requirementImplementation: Ref<RequirementImplementation | null> = ref(null);
-const showDialog = ref(false);
-
-async function openItem({ type, targetObject, item }: { type: string | null; targetObject: string | null; item: any }) {
-  if (!type || !targetObject) return;
-
-  showDialog.value = true;
-
-  requirementImplementation.value = await fetchRequirementImplementation({
-    type: type as string,
-    targetObject: targetObject as string,
-    item
-  });
-}
-
-const reloadRequirementImplementations = async () => {
-  if (!fetchParams.value) return;
-  requirementImplementations.value = await fetchRequirementImplementations(fetchParams.value);
-};
-
+const { showDialog, requirementImplementation, openItem } = useRequirementImplementationQuery();
 // Table setup
+const showVdA = ref(false);
+
+watch(
+  [() => currentDomain.value, () => route.query.type, () => props.containerControl?.subType],
+  () => {
+    const elementTypeDefinitions = currentDomain.value?.raw?.elementTypeDefinitions?.control;
+    const customAspects = elementTypeDefinitions?.customAspects?.control_bpInformation;
+    const complianceControlSubType =
+      currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubType;
+    // Update showVdA based on the conditions
+    showVdA.value = customAspects && props.containerControl?.subType === complianceControlSubType;
+  },
+  { immediate: true }
+);
 const headers: ComputedRef<TableHeader[]> = computed(() => [
   {
     text: t('thAbbreviation'),
@@ -164,6 +91,27 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
     priority: 60,
     order: 30
   },
+  ...(showVdA.value ?
+    [
+      {
+        priority: 60,
+        order: 30,
+        key: `control.customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+        value: `control.customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+        render: ({ item }: any) => {
+          return h(
+            'div',
+            translations.value?.lang?.[locale.value]?.[
+              item.control?.customAspects?.control_bpInformation?.control_bpInformation_protectionApproach
+            ] ?? ''
+          );
+        },
+        text: t('VdA').toString(),
+        sortable: false,
+        width: 80
+      }
+    ]
+  : []),
   {
     text: t('thName'),
     key: 'control.name',

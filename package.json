@@ -19,7 +19,7 @@
     "e2e": "cypress run --env environment=local --browser chrome",
     "format:all": "prettier . --ignore-unknown --write",
     "format": "prettier --ignore-unknown --write",
-    "format:check": "prettier . --check",
+    "format:check": "prettier . --check --write",
     "format:install-hook": "chmod u+x scripts/format-install-pre-commit-hook.sh && ./scripts/format-install-pre-commit-hook.sh",
     "generate": "nuxi generate",
     "lint": "eslint --ext .js,.vue,.ts --ignore-path .gitignore --ignore-pattern 'public/paged.polyfill.js' .",

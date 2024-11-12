@@ -87,14 +87,14 @@ export function useRequirementImplementationQuery() {
   // Open item function
   async function openItem({
     type,
-    riskAffected,
+    targetObject,
     item
   }: {
     type: string | null;
-    riskAffected: string | null;
+    targetObject: string | null;
     item: any;
   }) {
-    if (!type || !riskAffected) {
+    if (!type || !targetObject) {
       console.error('Missing required parameters');
       return;
     }
@@ -111,7 +111,7 @@ export function useRequirementImplementationQuery() {
       // Update query parameters
       queryParams.value = {
         endpoint: type,
-        id: riskAffected,
+        id: targetObject,
         requirementId: requirementImplementationId
       };
 

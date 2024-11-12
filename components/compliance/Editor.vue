@@ -185,7 +185,6 @@ import domainQueryDefinitions, {
 } from '~/composables/api/queryDefinitions/domains';
 import controlQueryDefinitions, { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
 import { useQuery } from '~/composables/api/utils/query';
-import { useCompliance } from './compliance';
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 import { useRequest } from '@/composables/api/utils/request';
@@ -206,7 +205,6 @@ import { isVeoLink, validateType } from '~/types/utils';
 const { request } = useRequest();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { getRequirementImplementationId } = useCompliance();
 const adapter = useDate();
 const route = useRoute();
 

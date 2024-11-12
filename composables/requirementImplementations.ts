@@ -17,10 +17,9 @@
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
-import { useCompliance } from '~/components/compliance/compliance';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import { useQuery } from '~/composables/api/utils/query';
-import type { RequirementImplementation } from '~/types/VeoTypes';
+import { VeoElementTypePlurals, type RequirementImplementation } from '~/types/VeoTypes';
 import { CustomAspect } from './api/queryDefinitions/catalogs';
 
 interface QueryParameters {
@@ -50,38 +49,37 @@ function mapSortingKey(key: string): string {
 }
 
 /**
- * Fetches a list of requirement implementations for a given control module.
+ * Composable to fetch requirement implementations for a given target object.
  *
- * This composable returns a reactive object with the following properties:
- * - `sortBy`: the sorting key that is currently used for the list
- * - `page`: the current page number
- * - `translatedRequirementImplementations`: the list of requirement implementations, where each item has a `translations` property with translated values for `status` and `origination`
- * - `isLoadingRequirementImplementations`: a boolean indicating whether the list is currently being fetched from the API
- * - `refetch`: a function that can be used to refetch the list from the API
+ * It expects the route to have the following parameters:
+ * - `domain`: the ID of the domain
+ * - `type`: the type of the target object (e.g. 'controls', 'measures', 'all')
+ * - `targetObject`: the ID of the target object
+ * - `control`: the ID of the control for which to fetch requirement implementations
  *
- * The sorting key and page number can be changed by assigning new values to `sortBy` and `page`. The composable will automatically fetch the new list from the API.
+ * The composable returns an object with the following properties:
+ * - `sortBy`: a reactive reference to the sorting key
+ * - `page`: a reactive reference to the current page
+ * - `translatedRequirementImplementations`: an object with the translated requirement implementations
+ * - `isLoadingRequirementImplementations`: a boolean indicating whether the requirement implementations are currently being fetched
+ * - `refetch`: a function to refetch the requirement implementations
  *
- * The list is fetched from the API when the composable is initialized, and whenever the `sortBy` or `page` values change.
- *
- * The composable uses the `useRoute` composable to get the current route, and the `useCompliance` composable to get the current compliance type and the current control module.
- * It also uses the `useVeoUser` composable to get the user's preferred table page size.
- *
- * @returns a reactive object with the properties `sortBy`, `page`, `translatedRequirementImplementations`, `isLoadingRequirementImplementations`, and `refetch`
+ * The `translatedRequirementImplementations` property is a reactive reference to an object with the following properties:
+ * - `items`: an array of requirement implementations with translated status and origination properties
  */
 export function useRequirementImplementationList() {
   const { t: globalT } = useI18n();
   const { tablePageSize } = useVeoUser();
   const route = useRoute();
-  const { state } = useCompliance();
 
   const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
   const page = ref(0);
 
   const requirementImplementationsQueryParameters = computed<QueryParameters>(() => ({
     domain: route.params.domain as string,
-    endpoint: state.type.value as string,
-    id: state.CTLModule.value.owner.id as string,
-    requirementId: state.CTLModule.value.id,
+    endpoint: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
+    id: route.query.targetObject as string,
+    requirementId: route.query.control as string,
     sortBy: mapSortingKey(sortBy.value[0].key),
     sortOrder: sortBy.value[0].order as 'asc' | 'desc',
     size: tablePageSize.value,
@@ -90,7 +88,7 @@ export function useRequirementImplementationList() {
   }));
 
   const isQueryEnabled = computed(() =>
-    Boolean(state.CTLModule.value && state.type.value !== 'all' && route.params.domain)
+    Boolean(route.query.control && route.query.type !== 'all' && route.params.domain)
   );
 
   const {
