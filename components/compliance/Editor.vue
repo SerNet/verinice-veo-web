@@ -191,7 +191,12 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 import { useRequest } from '@/composables/api/utils/request';
 import { format } from 'date-fns';
 import { useDate } from 'vuetify';
-import type { IVeoLink, IVeoObjectControlCompendiumEntry } from '~/types/VeoTypes';
+import type {
+  IVeoLink,
+  IVeoObjectControlCompendiumEntry,
+  RequirementImplementation,
+  ResponsiblePerson
+} from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 import DOMPurify from 'dompurify';
@@ -217,16 +222,6 @@ interface Emits {
   (e: 'update:item'): void;
 }
 
-export type RequirementImplementation = {
-  origin: IVeoLink;
-  control: IVeoLink;
-  responsible?: ResponsiblePerson;
-  status: string;
-  origination: string;
-  implementationStatement?: string;
-  implementationUntil?: string;
-};
-
 type RequirementImplementationForForm = {
   origin: Partial<IVeoLink>;
   control: Partial<IVeoLink>;
@@ -236,8 +231,6 @@ type RequirementImplementationForForm = {
   implementationStatement?: string;
   implementationUntil?: Date;
 };
-
-type ResponsiblePerson = IVeoLink;
 
 /** Cp. comment in template above */
 /*
@@ -422,7 +415,7 @@ async function submitForm({
 
   const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
 
-  const requirementImplementationId = getRequirementImplementationId(item._self);
+  const requirementImplementationId = item?.control?.id;
   const url = `/api/${type}/${riskAffected}/requirement-implementations/${requirementImplementationId}`;
 
   try {

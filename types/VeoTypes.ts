@@ -422,6 +422,18 @@ export interface IVeoControlImplementation {
   _self?: string;
 }
 
+export type RequirementImplementation = {
+  origin: IVeoLink;
+  control: IVeoLink;
+  responsible?: ResponsiblePerson;
+  status: string;
+  origination: string;
+  implementationStatement?: string;
+  implementationUntil?: string;
+};
+
+export type ResponsiblePerson = IVeoLink;
+
 export interface IVeoEntityLegacy extends IVeoBaseObject {
   name: string;
   abbreviation?: string;
