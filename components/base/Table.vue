@@ -453,16 +453,12 @@ watch(() => _headers.value, onTableWidthChange);
 const resizeObserver = new ResizeObserver(onTableWidthChange);
 
 const tableWrapper = ref();
-watch(
-  () => tableWrapper.value,
-  (newValue, oldValue) => {
-    if (newValue) {
-      resizeObserver.observe(newValue.$el);
-    } else {
-      resizeObserver.unobserve(oldValue?.$el);
-    }
-  }
-);
+watch(tableWrapper, (newValue, oldValue) => {
+  if (oldValue?.$el) resizeObserver.unobserve(oldValue.$el);
+  if (newValue?.$el) resizeObserver.observe(newValue.$el);
+});
+
+onUnmounted(() => resizeObserver.disconnect());
 
 // Internal model value. Used so the data table can work with strings, while returning fully qualified objects. Used as otherwise already selected items won't get shown as selected
 const internalModelValue = computed({
