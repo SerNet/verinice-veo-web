@@ -37,7 +37,7 @@ export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>
   }));
   return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, {
     ...queryOptions,
-    placeholderData: { items: [], pageCount: 0, page: 1, totalItemCount: 0 }
+    placeholderData: { items: [], pageCount: 0, page: 0, totalItemCount: 0 }
   });
 };
 

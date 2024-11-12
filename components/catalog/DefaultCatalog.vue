@@ -153,7 +153,7 @@ const headers = computed<TableHeader[]>(() => [
   : [])
 ]);
 
-const page = defineModel<number>('page', { default: 1 });
+const page = defineModel<number>('page', { default: 0 });
 const sortBy = defineModel<SortItem[]>('sortBy', {
   default: [{ key: 'abbreviation', order: 'asc' }]
 });

@@ -131,13 +131,13 @@ const fetchObjectsQueryParameters = computed(
     ({
       unit: route.params.unit,
       endpoint: endpoint.value,
-      page: 1,
+      page: 0,
       ...(props.subType !== undefined ? { subType: props.subType } : {}),
       displayName: searchQuery.value ?? undefined
     }) as any
 );
 const { data: _fetchObjectsData, isFetching: isLoadingObjects } = useFetchObjects(fetchObjectsQueryParameters, {
-  placeholderData: { items: [], pageCount: 0, page: 1, totalItemCount: 0 },
+  placeholderData: { items: [], pageCount: 0, page: 0, totalItemCount: 0 },
   enabled: searchQueryNotStale,
   refetchOnMount: false // If set to true (the default), refetches queries every time input changes, causing some weird cache issues
 });
