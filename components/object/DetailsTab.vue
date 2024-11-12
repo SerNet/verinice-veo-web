@@ -556,11 +556,10 @@ export default defineComponent({
         }));
       };
 
-      const createRiskHeaders = () => [
-        createScenarioAbbreviationHeader(),
-        createScenarioDisplayNameHeader(),
-        ...createRiskCategoryHeaders()
-      ];
+      const createRiskHeaders = () => {
+        if (!riskDefinitionCategories.value || !riskDefinitionId.value) return [];
+        return [createScenarioAbbreviationHeader(), createScenarioDisplayNameHeader(), ...createRiskCategoryHeaders()];
+      };
 
       const createLinkHeaders = () => [
         {
@@ -668,7 +667,6 @@ export default defineComponent({
     };
     const { createRiskHeaders, createLinkHeaders, createControlHeaders, createTargetHeaders } = useHeaders();
     const additionalHeaders = computed<TableHeader[]>(() => {
-      if (!riskDefinitionCategories.value || !riskDefinitionId.value) return [];
       switch (props.type) {
         case 'risks':
           return createRiskHeaders();
