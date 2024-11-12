@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { cloneDeep, max, omit } from 'lodash';
-import {
+import { cloneDeep, omit } from 'lodash';
+import type {
   IInOutLink,
   IVeoAPIMessage,
   IVeoDecisionEvaluation,
@@ -23,7 +23,8 @@ import {
   IVeoEntityLegacy,
   IVeoPaginatedResponse,
   IVeoPaginationOptions,
-  IVeoRisk
+  IVeoRisk,
+  RequirementImplementation
 } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
@@ -53,6 +54,17 @@ export interface IVeoFetchObjectSubResourceParameters extends IVeoPaginationOpti
   domain: string;
   endpoint: string;
   id: string;
+  page?: number;
+}
+
+export interface IVeoFetchRequirementImplementationsParameters extends IVeoPaginationOptions {
+  domain?: string;
+  endpoint: string;
+  id: string;
+  requirementId: string;
+  size?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
   page?: number;
 }
 
@@ -328,7 +340,41 @@ export default {
       staticQueryOptions: {
         method: 'POST'
       }
-    } as IVeoQueryDefinition<IVeoFetchWipDecisionEvaluationParameters, IVeoDecisionEvaluation>
+    } as IVeoQueryDefinition<IVeoFetchWipDecisionEvaluationParameters, IVeoDecisionEvaluation>,
+    fetchObjectRequirementImplementations: {
+      primaryQueryKey: 'requirementImplementations',
+      url: '/api/domains/:domain/:endpoint/:id/control-implementations/:requirementId/requirement-implementations',
+      onDataFetched: (result) => {
+        return result;
+      },
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: queryParameters.domain,
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.id,
+          requirementId: queryParameters.requirementId
+        },
+        query: {
+          ...omit(queryParameters, 'domain', 'id', 'endpoint'),
+          page: queryParameters.page ?? 0,
+          controlCustomAspects: queryParameters.customAspects
+        }
+      })
+    } as IVeoQueryDefinition<
+      IVeoFetchRequirementImplementationsParameters,
+      IVeoPaginatedResponse<RequirementImplementation[]>
+    >,
+    fetchObjectRequirementImplementation: {
+      primaryQueryKey: 'requirementImplementations',
+      url: '/api/:endpoint/:id/requirement-implementations/:requirementId',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.id,
+          requirementId: queryParameters.requirementId
+        }
+      })
+    } as IVeoQueryDefinition<IVeoFetchRequirementImplementationsParameters, RequirementImplementation>
   },
   mutations: {
     createObject: {
