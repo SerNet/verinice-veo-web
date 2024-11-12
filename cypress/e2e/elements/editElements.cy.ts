@@ -108,29 +108,27 @@ describe('Edit elements', () => {
         throw new Error('Max retries reached. Could not select the status.');
       }
 
-      // Attempt to open the menu and select the item
+      // Attempt to open the status menu and select the item
       cy.getCustom('input[id="#/properties/status"]').scrollIntoView().click({ force: true });
 
-      cy.contains('[data-veo-test="object-select-item"]', status, { timeout: 2000 })
-        .should('exist')
-        .then(($el) => {
-          if ($el.length > 0) {
-            // If the menu item is found, click it
-            cy.wrap($el).click();
-            // Verify the status selection is visible
-            cy.getCustom('[data-attribute-name="status"]').should('be.visible').contains(status);
-          } else {
-            // If the item is not found, try to reopen the menu and retry
-            cy.getCustom('input[id="#/properties/abbreviation"]').scrollIntoView().click({ force: true });
-            cy.getCustom('input[id="#/properties/status"]').scrollIntoView().click({ force: true });
+      cy.contains('[data-veo-test="object-select-item"]', status, { timeout: 2000 }).then(($el) => {
+        if ($el.length > 0) {
+          // If the menu item is found, click it
+          cy.wrap($el).click();
+          // Verify the status selection is visible
+          cy.getCustom('[data-attribute-name="status"]').should('be.visible').contains(status);
+        } else {
+          // If the item is not found, try to reopen the menu and click the abbreviation field
+          cy.getCustom('input[id="#/properties/abbreviation"]').scrollIntoView().click({ force: true });
+          cy.getCustom('input[id="#/properties/status"]').scrollIntoView().click({ force: true });
 
-            // Use Cypress.Promise.delay to wait briefly before retrying
-            Cypress.Promise.delay(500).then(() => {
-              // Recursively call the function, increasing the retry count
-              selectMenuItem(status, retryCount + 1);
-            });
-          }
-        });
+          // Use Cypress.Promise.delay to wait briefly before retrying
+          Cypress.Promise.delay(500).then(() => {
+            // Recursively call the function, increasing the retry count
+            selectMenuItem(status, retryCount + 1);
+          });
+        }
+      });
     };
 
     const selectRandom = (list: Array<any>) => {
