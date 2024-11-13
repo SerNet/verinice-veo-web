@@ -160,10 +160,10 @@
         @click="
           () =>
             void (
-              route.query.riskAffected &&
+              route.query.targetObject &&
               submitForm({
                 type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
-                riskAffected: route.query.riskAffected as string,
+                riskAffected: route.query.targetObject as string,
                 form,
                 item: item,
                 request
