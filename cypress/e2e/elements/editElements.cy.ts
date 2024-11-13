@@ -111,7 +111,7 @@ describe('Edit elements', () => {
       // Attempt to open the status menu and select the item
       cy.getCustom('input[id="#/properties/status"]').scrollIntoView().click({ force: true });
 
-      cy.contains('[data-veo-test="object-select-item"]', status, { timeout: 2000 }).then(($el) => {
+      cy.contains('.v-overlay__content [data-veo-test="object-select-item"]', status, { timeout: 2000 }).then(($el) => {
         if ($el.length > 0) {
           // If the menu item is found, click it
           cy.wrap($el).click();
