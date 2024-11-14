@@ -16,10 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="text-h3" data-component-name="breadcrumbs">
+  <div class="text-h3" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
     <v-breadcrumbs-item
       v-for="(item, index) of displayedBreadcrumbs"
       :key="item.key"
+      :data-veo-test="item.dataVeoTest ?? 'breadcrumb-item'"
       :disabled="item.disabled || (item.to === route.fullPath && item.index < BREADCRUMB_BREAKOFF)"
       :to="item.to"
       nuxt

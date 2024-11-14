@@ -26,6 +26,7 @@ export interface IVeoBreadcrumb {
   index: number; // Can be set to zero, as the VeoBreadcrumbs.vue component will handle it.
   indexToReplace?: number; // Breadcrumbs are stored in an array. When adding a custom BC it will either be appended, or (if setting `indexToReplace`) replace an existing BC at that index.
   param?: string;
+  dataVeoTest?: string;
 }
 
 const breadcrumbs = ref<IVeoBreadcrumb[]>([]);

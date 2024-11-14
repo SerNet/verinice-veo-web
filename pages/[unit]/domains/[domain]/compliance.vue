@@ -20,7 +20,12 @@
   <BasePage style="height: 100vh">
     <template #header>
       <div class="mt-8 mb-4 text-body-1">
-        <v-btn v-if="currentModule" :to="currentModule.urlParams" variant="outlined">
+        <v-btn
+          v-if="currentModule"
+          :to="currentModule.urlParams"
+          variant="outlined"
+          data-veo-test="compliance-list-go-to-btn"
+        >
           {{ t('targetModule', { subType: currentModule.subType, currentModule: currentModule.name }) }}
         </v-btn>
       </div>
@@ -66,6 +71,7 @@ interface BreadcrumbItem {
   text: string;
   indexToReplace?: number;
   disabled: boolean;
+  dataVeoTest?: string;
 }
 
 // Composables
@@ -137,6 +143,7 @@ const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslat
   return [
     {
       to: `/${unit}/domains/${domain}/${typePlural}`,
+      dataVeoTest: 'breadcrumb-item-targetObject-typePlural',
       exact: true,
       index: 2,
       text: typePlural,
@@ -145,6 +152,7 @@ const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslat
     },
     {
       to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value?.subType}`,
+      dataVeoTest: 'breadcrumb-item-targetObject-subType',
       exact: true,
       index: 3,
       text: subTypeTranslation,
@@ -152,6 +160,7 @@ const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslat
     },
     {
       to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value?.subType}/${targetObject.value?.id}`,
+      dataVeoTest: 'breadcrumb-item-targetObject-id',
       exact: true,
       index: 4,
       text: targetObject.value.displayName,
@@ -159,6 +168,7 @@ const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslat
     },
     {
       to: `/${unit}/domains/${domain}/${typePlural}/${containerControl.value?.subType}/${targetObject.value?.id}#controls`,
+      dataVeoTest: 'breadcrumb-item-implementation-name',
       exact: true,
       index: 5,
       text: `${t('implementation')} (${containerControl.value.name})`,

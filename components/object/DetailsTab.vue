@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
+  <div :data-veo-test="`object-details-tab-table-${type}`">
     <ObjectTable
       v-model:page="page"
       v-model:sort-by="sortBy"
@@ -39,6 +39,7 @@
                   variant="flat"
                   :readonly="btn.isDisabled(item)"
                   :disabled="ability.cannot('manage', 'objects')"
+                  :data-veo-test="`object-details-action-btn-${btn.id}`"
                   @click="btn.action(item)"
                 />
               </div>
@@ -453,7 +454,8 @@ export default defineComponent({
         truncate: false,
         priority: 100,
         order: 30,
-        render: (data: any) => data.internalItem.raw.scenario?.abbreviation || ''
+        render: (data: any) =>
+          h('span', { 'data-veo-test': 'scenario-abbreviation' }, data.internalItem.raw.scenario?.abbreviation || '')
       });
 
       const createScenarioDisplayNameHeader = () => ({
@@ -608,7 +610,8 @@ export default defineComponent({
           truncate: false,
           priority: 100,
           order: 20,
-          render: (data: any) => h('span', data.internalItem.raw.control?.abbreviation || '')
+          render: (data: any) =>
+            h('span', { 'data-veo-test': 'control-abbreviation' }, data.internalItem.raw.control?.abbreviation || '')
         },
         {
           value: 'name',
@@ -618,7 +621,8 @@ export default defineComponent({
           truncate: true,
           priority: 100,
           order: 30,
-          render: (data: any) => h('span', data.internalItem.raw.control?.name || '')
+          render: (data: any) =>
+            h('span', { 'data-veo-test': 'control-name' }, data.internalItem.raw.control?.name || '')
         },
         {
           value: 'description',
@@ -628,7 +632,8 @@ export default defineComponent({
           truncate: false,
           priority: 20,
           order: 35,
-          render: (data: any) => h('span', data.internalItem.raw.description || '')
+          render: (data: any) =>
+            h('span', { 'data-veo-test': 'control-description' }, data.internalItem.raw.description || '')
         },
         {
           value: 'responsibility',
@@ -639,7 +644,11 @@ export default defineComponent({
           priority: 50,
           order: 50,
           render: (data: any) =>
-            h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible?.name || '')
+            h(
+              'span',
+              { class: 'text-truncate d-inline-block', 'data-veo-test': 'control-responsibility' },
+              data.internalItem.raw.responsible?.name || ''
+            )
         }
       ];
 
@@ -728,6 +737,7 @@ export default defineComponent({
           return [
             {
               id: 'implementations',
+              name: 'risks',
               label: (item: any) => (!item.mitigation ? t('noImplementations') : t('implementations')),
               icon: mdiTextBoxCheckOutline,
               isDisabled: (item: any) => !item.mitigation, // Disable if mitigation exists (coerce to boolean)
@@ -768,6 +778,7 @@ export default defineComponent({
           return [
             {
               id: 'implementations',
+              name: 'controls',
               label: (_item: any) => t('implementations'),
               icon: mdiTextBoxCheckOutline,
               isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)

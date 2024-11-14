@@ -21,6 +21,7 @@
     :close-disabled="view.isLoading || view.formIsDirty"
     large
     fixed-footer
+    data-veo-test="compliance-editor"
     @keydown.enter="submitForm"
     @update:model-value="emit('update:show-dialog', $event)"
   >
@@ -34,7 +35,7 @@
       <v-card-text v-if="item">
         <!-- Read only text fields -->
 
-        <!-- Risk affected -->
+        <!-- Target object  -->
         <v-label class="mt-4">{{ t('riskAffectedLabel') }}</v-label>
         <BaseCard border padding>
           <v-text-field
@@ -42,6 +43,7 @@
             :model-value="form?.origin?.displayName"
             disabled
             variant="underlined"
+            data-veo-test="compliance-editor-target-object"
           />
         </BaseCard>
 
@@ -55,6 +57,7 @@
                 :model-value="form?.control?.abbreviation"
                 disabled
                 variant="underlined"
+                data-veo-test="compliance-editor-ri-abbreviation"
               />
             </v-col>
 
@@ -68,7 +71,13 @@
             </v-col>
           </v-row>
 
-          <v-text-field :label="t('name')" :model-value="form?.control?.name" disabled variant="underlined" />
+          <v-text-field
+            :label="t('name')"
+            :model-value="form?.control?.name"
+            disabled
+            variant="underlined"
+            data-veo-test="compliance-editor-ri-name"
+          />
 
           <!-- Foldable Requirement Description -->
           <v-expansion-panels>
@@ -100,6 +109,7 @@
             return-object
             variant="underlined"
             class="my-4"
+            data-veo-test="compliance-editor-ri-responsible-person"
           />
 
           <!-- Implementation date -->
@@ -111,6 +121,7 @@
             v-model="form.implementationUntil"
             :label="t('implementationUntil')"
             :placeholder="globalT('inputPlaceholders.date')"
+            data-veo-test="compliance-editor-ri-implementation-date"
             prepend-icon=""
             prepend-inner-icon="$calendar"
             clearable
@@ -124,12 +135,21 @@
               <div>{{ t('status') }}</div>
             </template>
             <template v-for="(key, value) in Status" :key="key">
-              <v-radio :label="t(`statusValues.${value}`)" :value="`${key}`" />
+              <v-radio
+                :label="t(`statusValues.${value}`)"
+                :value="`${key}`"
+                :data-veo-test="`compliance-editor-staus-${value}`"
+              />
             </template>
           </v-radio-group>
 
           <!-- Description -->
-          <v-textarea v-model="form.implementationStatement" :label="t('description')" variant="underlined" />
+          <v-textarea
+            v-model="form.implementationStatement"
+            :label="t('description')"
+            variant="underlined"
+            data-veo-test="compliance-editor-description"
+          />
 
           <!-- Originiation -->
 

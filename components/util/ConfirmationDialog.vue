@@ -30,7 +30,7 @@
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
-      <v-btn variant="text" color="primary" @click="handler">
+      <v-btn variant="text" color="primary" data-veo-test="confirmation-dialog-btn-ok" @click="handler">
         {{ confirmationText }}
       </v-btn>
       <LayoutLoadingWrapper v-if="callbackExecuting" />
