@@ -20,7 +20,7 @@
     data-test-selector="create-dialog-single"
     :model-value="modelValue"
     :close-disabled="savingRisk"
-    :confirm-close="Object.keys(dirtyFields).length && Object.values(dirtyFields).some(Boolean)"
+    :confirm-close="!!Object.keys(dirtyFields).length && Object.values(dirtyFields).some(Boolean)"
     :title="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
     x-large
     fixed-footer
