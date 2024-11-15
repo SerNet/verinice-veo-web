@@ -105,13 +105,13 @@ export function createUnit({
   name,
   desc = Cypress.env('unitDetails').desc,
   domains: domainNames = Cypress.env('unitDetails').domains
-}: UnitDetails): void {
+}: UnitDetails) {
   if (Cypress.env('debug')) {
     cy.log(name);
     cy.log(desc);
   }
 
-  cy.getVeoDomains().then((allVeoDomains) => {
+  return cy.getVeoDomains().then((allVeoDomains) => {
     // Get targetUris of domains the test unit will be associated with
     const domains = allVeoDomains
       .filter((domain) => domainNames.includes(domain.name as TCYVeoUnitNames))
@@ -127,7 +127,7 @@ export function createUnit({
       }
     };
 
-    cy.veoRequest(requestOptions).then((response: any) => {
+    return cy.veoRequest(requestOptions).then((response: any) => {
       // Store unit id and domainNames
       // to make them accessible in tests and other commands
       const unitDetails = {
@@ -142,6 +142,7 @@ export function createUnit({
 
       if (Cypress.env('debug')) cy.log(unitDetails.name);
       Cypress.env(unitDetails.name, unitDetails);
+      Cypress.env('dynamicTestData').unit = unitDetails;
     });
   });
 }

@@ -18,5 +18,8 @@ export function generateUnitDetails(nodeName: string) {
     domains: ['DS-GVO']
   };
 
+  // Initialize env var to share test data between tests
+  Cypress.env('dynamicTestData', {});
+
   return unitDetails;
 }
