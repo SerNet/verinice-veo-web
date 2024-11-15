@@ -1,4 +1,24 @@
+/*
+ * verinice.veo web
+ * Copyright (C) 2024 jae
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 /// <reference types="cypress" />
+
+import { omit } from 'lodash';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -17,9 +37,8 @@ type RequestOptions = { endpoint: string; method?: string; headers?: RequestHead
 
 export function veoRequest(options: RequestOptions): Cypress.Chainable<any> {
   const url = `${Cypress.env('veoApiUrl')}/${options.endpoint}`;
-  cy.log(url);
   return getToken().then((token) => {
-    const opts = { method: 'GET', headers: generateHeaders(token), ...options, url };
+    const opts = { method: 'GET', headers: generateHeaders(token, options.headers), ...omit(options, 'headers'), url };
     return cy.request(opts).then((response) => {
       return response;
     });
@@ -51,11 +70,12 @@ function getToken(): Cypress.Chainable<any> {
   });
 }
 
-function generateHeaders(token: string, etag = '') {
+function generateHeaders(token: string, headers: RequestHeaders) {
   return {
     Authorization: token,
-    'If-Match': etag,
+    'If-Match': '',
     'Content-Type': 'application/json',
-    Accept: 'application/json'
+    Accept: 'application/json',
+    ...headers
   };
 }
