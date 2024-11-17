@@ -1,30 +1,40 @@
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
 let unitDetails: UnitDetails;
-
+let currentUnit = '';
 before(() => {
-  unitDetails = generateUnitDetails('copyElements');
+  unitDetails = generateUnitDetails('riskDialog');
   cy.login();
   cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
+  cy.acceptAllCookies();
+  cy.goToUnitSelection();
+  cy.selectUnit(unitDetails.name);
+  cy.selectDomain('DS-GVO');
 });
 
 beforeEach(() => {
   cy.login();
+  if (currentUnit) {
+    cy.visit(currentUnit, { failOnStatusCode: false });
+  }
+  cy.handleLanguageBug();
+  cy.viewport(2000, 1320);
   cy.acceptAllCookies();
-  cy.goToUnitSelection();
-  cy.selectUnit(unitDetails.name);
-  cy.navigateTo({ group: 'objects', category: 'scopes' });
-  cy.selectFirstSubType('scopes', ($subType: JQuery<HTMLElement>) => {
-    cy.wrap($subType).click();
-    cy.checkSubTypePage($subType[0].innerText);
-    cy.getCustom('.v-data-table__tr').first().click();
-  });
 });
 after(() => cy.deleteUnit(unitDetails.name));
 
 describe('Risk Dialog', { testIsolation: false }, () => {
   it('should set a Risk Definition to an Element', () => {
+    cy.navigateTo({ group: 'objects', category: 'scopes' });
+    cy.selectFirstSubType('scopes', ($subType: JQuery<HTMLElement>) => {
+      cy.wrap($subType).click();
+      cy.checkSubTypePage($subType[0].innerText);
+      cy.getCustom('.v-data-table__tr').first().click();
+    });
     cy.getCustom('[data-component-name="object-details-risks-tab"]').should('have.attr', 'disabled');
+    cy.url().then((fullUrl) => {
+      currentUnit = fullUrl;
+    });
     cy.getCustom('input[id="#/properties/riskDefinition"]').scrollIntoView().click();
     cy.getCustom('.v-overlay-container').contains('DSRA').click();
     cy.containsCustom('Save').click();
@@ -39,7 +49,9 @@ describe('Risk Dialog', { testIsolation: false }, () => {
     cy.getCustom('[data-component-name="object-details-risks-tab"]').first().should('not.have.attr', 'disabled');
   });
 
-  it('Should add a Scenario to an Element', () => {
+  let selectedRiskText = '';
+
+  it('should add a Scenario to an Element', () => {
     cy.getCustom('[data-component-name="object-details-risks-tab"]').first().click();
     cy.getCustom('[data-component-name="object-details-actions-button"]').click();
     cy.getCustom('.v-overlay__content').contains('Create risk').click();
@@ -51,27 +63,47 @@ describe('Risk Dialog', { testIsolation: false }, () => {
         .filter('[aria-disabled="false"]')
         .first()
         .then(($checkbox) => {
-          // Traverse up to the parent <tr> and get the text
           const $parentRow = $checkbox.closest('tr');
-          const selectedRiskText = $parentRow.find('td').eq(4).text().trim();
-          // Click the checkbox and wrap the text value
+          selectedRiskText = $parentRow.find('td').eq(4).text().trim();
+          Cypress.env('selectedRiskText', selectedRiskText);
           cy.wrap(selectedRiskText).as('selectedRiskText');
           cy.wrap($checkbox).click();
         });
     });
 
-    // Intercept the POST request and wait for the response
     cy.intercept('POST', `${Cypress.env('veoApiUrl')}/scopes/**/risks`).as('addRisk');
     cy.containsCustom('create risk').should('exist').click();
     cy.wait('@addRisk').its('response.statusCode').should('eq', 201);
-
-    // Verify that the selected risk is added to the data table
     cy.getCustom('[data-veo-test="loadedDataTable"]').should('be.visible');
     cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').should('have.length.greaterThan', 0);
 
-    // Check if the selected risk text is present in the added items
     cy.get('@selectedRiskText').then((selectedRiskText) => {
       cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').contains(selectedRiskText).should('exist');
+    });
+  });
+
+  it('should edit a Scenario through risk dialog', () => {
+    cy.getCustom('[data-component-name="object-details-risks-tab"]').first().click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]').should('be.visible');
+    const selectedRiskText = Cypress.env('selectedRiskText');
+    cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').contains(selectedRiskText).should('exist').click();
+
+    cy.getCustom('[data-veo-test="dialog-card"]').as('container');
+    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**/persons?unit=**`).as('getPersons');
+
+    cy.getCustom('@container').within(() => {
+      cy.getCustom('[data-test-selector="risk-owner"]').should('be.visible').click();
+    });
+    cy.wait('@getPersons').its('response.statusCode').should('eq', 200);
+    cy.wait(500);
+    cy.getCustom('.v-overlay__content div[role="listbox"]').first().click();
+    cy.getCustom('.v-card').contains('button', 'Save').click();
+    cy.wait(1000);
+    cy.getCustom('.v-card').find('.close-button').click();
+    cy.getCustom('[data-component-name="object-details-risks-tab"]').first().click();
+    cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').contains(selectedRiskText).should('exist').click();
+    cy.getCustom('@container').within(() => {
+      cy.getCustom('[data-test-selector="risk-owner"]').invoke('text').should('not.equal', 'Risk owner');
     });
   });
 });
