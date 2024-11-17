@@ -1,17 +1,12 @@
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
 let unitDetails: UnitDetails;
-
+let currentUnit = '';
 describe('Navigation Menu', () => {
   before(() => {
-    unitDetails = generateUnitDetails('copyElements');
+    unitDetails = generateUnitDetails('NavigationMenu');
     cy.login();
     cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
-    cy.goToUnitSelection();
-  });
-
-  beforeEach(() => {
-    cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
     cy.selectUnit(unitDetails.name);
@@ -36,6 +31,9 @@ describe('Navigation Menu', () => {
     cy.getCustom('@navEntries').contains('Dashboard');
     cy.getCustom('@navEntries').contains('Editors');
 
+    cy.url().then((url) => {
+      currentUnit = url;
+    });
     const groupsDsgvo = [
       {
         name: 'catalog',
@@ -80,6 +78,9 @@ describe('Navigation Menu', () => {
   });
 
   it('ITGS navigate to all expected menu entries', () => {
+    cy.login();
+    cy.visit(currentUnit, { failOnStatusCode: false });
+    cy.handleLanguageBug();
     cy.selectDomain('IT-Grundschutz');
 
     cy.getCustom('[data-veo-test="domain-select"] span')
