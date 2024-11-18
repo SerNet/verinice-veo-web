@@ -1,6 +1,7 @@
 /// <reference types="cypress" />
 
 import { upperFirst } from 'lodash';
+import { waitForLoadersToDisappear } from './utils';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -8,6 +9,7 @@ declare global {
     interface Chainable {
       navigateTo: typeof navigateTo;
       selectFirstSubType: typeof selectFirstSubType;
+      visitObject: typeof visitObject;
     }
   }
 }
@@ -59,4 +61,35 @@ export function selectFirstSubType(elementType: string, callback: (args: any) =>
         callback($subType);
       }
     });
+}
+
+export function visitObject(
+  { unitId, domainId, objectType, subType, objectId } = {
+    unitId: Cypress.env('dynamicTestData').unit.unitId,
+    domainId: Cypress.env('dynamicTestData').unit.domains[0].id,
+    objectType: Cypress.env('dynamicTestData').testObject.objectTypePlural,
+    subType: Cypress.env('dynamicTestData').testObject.subType,
+    objectId: Cypress.env('dynamicTestData').testObject.id
+  }
+) {
+  // `failOnStatusCode: false` -> otherwise this code fails in gitlab pipelines
+  cy.visit(`/${unitId}/domains/${domainId}/${objectType}/${subType}/${objectId}`, { failOnStatusCode: false });
+  cy.get('[data-component-name="breadcrumbs"]', { timeout: 30000 }); // loading an object might take a long time...
+  waitForLoadersToDisappear();
+}
+
+export function visitRIList(
+  { unitId, domainId, targetObjectSubType, targetObjectId, controlImplementationId } = {
+    unitId: Cypress.env('dynamicTestData').unit.unitId,
+    domainId: Cypress.env('dynamicTestData').unit.domains[0].id,
+    targetObjectSubType: Cypress.env('dynamicTestData').testObject.objectType,
+    targetObjectId: Cypress.env('dynamicTestData').testObject.id,
+    controlImplementationId: Cypress.env('dynamicTestData').modules[0].id
+  }
+) {
+  cy.visit(
+    `/${unitId}/domains/${domainId}/compliance?type=${targetObjectSubType}&targetObject=${targetObjectId}&control=${controlImplementationId}`,
+    { failOnStatusCode: false }
+  );
+  cy.get('[data-component-name="breadcrumbs"]', { timeout: 30000 }); // loading an list of requirement implementations might take a long time...
 }
