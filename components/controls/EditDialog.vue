@@ -163,7 +163,8 @@ const person = computed({
 
 const description = computed({
   get: () => copy.value.controlImplementations[props.controlIndex]?.description || '',
-  set: (newDescription) => (copy.value.controlImplementations[props.controlIndex].description = newDescription)
+  set: (newDescription) =>
+    (copy.value.controlImplementations[props.controlIndex].description = newDescription === '' ? null : newDescription)
 });
 
 watch(props, () => {
