@@ -44,6 +44,7 @@ export interface IVeoLink {
   id?: string;
   designator?: string;
   type?: string;
+  subType?: string;
 }
 
 export interface IVeoRiskDefinitionItemTranslations {

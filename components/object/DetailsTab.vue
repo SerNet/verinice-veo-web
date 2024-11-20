@@ -196,9 +196,9 @@ export default defineComponent({
 
     const createEntityFromLink = (link: IInOutLink) => {
       const { linkedElement, direction, linkType } = link;
-      const { displayName: name, abbreviation, type, id } = linkedElement;
+      const { displayName: name, abbreviation, type, id, subType } = linkedElement;
       const normalizedDirection = t(direction.toLowerCase());
-      return { id, name, type, abbreviation, direction: normalizedDirection, linkType };
+      return { id, name, type, abbreviation, direction: normalizedDirection, linkType, subType };
     };
 
     function mapItems<IVeoControlImplementation, IVeoEntity>(
