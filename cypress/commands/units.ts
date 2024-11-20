@@ -40,7 +40,7 @@ export function selectUnitFromDropdown(unitName?: string): void {
     if (found) {
       cy.wrap(found).click();
     } else {
-      cy.wrap($els[0]).click();
+      cy.wrap($els[$els.length - 1]).click();
     }
   });
 }
