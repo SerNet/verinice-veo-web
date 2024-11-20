@@ -48,7 +48,7 @@
                   <span>{{ t(`step.${step}`) }}</span>
                 </v-card-title>
 
-                <v-card-text class="bg-background ma-8 text-justify">
+                <v-card-text class="bg-background ma-8">
                   <v-row class="mb-4 text-h5">{{ t(`explanation.${step}`) }}</v-row>
                   <v-divider class="mb-4" />
                   <v-row
@@ -232,4 +232,5 @@ function navigateToUnits() {
   navigateTo('/units');
 }
 </script>
+
 <i18n src="./units/messages.json" />
