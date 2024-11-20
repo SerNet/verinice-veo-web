@@ -26,7 +26,7 @@
       </div>
     </template>
     <template #default>
-      <ComplianceList />
+      <ComplianceList :container-control="containerControl" />
     </template>
   </BasePage>
 </template>
@@ -89,7 +89,10 @@ const containerObjectQueryParameters = computed(() => ({
 
 // Queries
 const { data: targetObject } = useQuery(objectQueryDefinitions.queries.fetch, targetObjectQueryParameters);
-const { data: containerControl } = useQuery(objectQueryDefinitions.queries.fetch, containerObjectQueryParameters);
+const { data: containerControl } = useQuery(objectQueryDefinitions.queries.fetch, containerObjectQueryParameters, {
+  enabled: !!route.query.control,
+  keepPreviousData: false
+});
 
 // Computed Properties
 const newSubType = computed(() => containerControl.value?.subType);
@@ -98,7 +101,7 @@ const ctModuleType = computed(() => containerControl.value?.type);
 // SubType Translations
 const { subTypeTranslation } = useSubTypeTranslation(ctModuleType, newSubType, false);
 const { subTypeTranslation: ownerSubType } = useSubTypeTranslation(
-  toRef(() => targetObject.value.type),
+  toRef(() => targetObject.value?.type),
   toRef(() => targetObject.value?.subType)
 );
 
@@ -129,7 +132,7 @@ const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslat
     return [];
   }
 
-  const typePlural = VeoElementTypePlurals[targetObject.value.type as keyof typeof VeoElementTypePlurals];
+  const typePlural = VeoElementTypePlurals[targetObject.value?.type as keyof typeof VeoElementTypePlurals];
 
   return [
     {
@@ -141,21 +144,21 @@ const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslat
       disabled: false
     },
     {
-      to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value.subType}`,
+      to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value?.subType}`,
       exact: true,
       index: 3,
       text: subTypeTranslation,
       disabled: false
     },
     {
-      to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value.subType}/${targetObject.value.id}`,
+      to: `/${unit}/domains/${domain}/${typePlural}/${targetObject.value?.subType}/${targetObject.value?.id}`,
       exact: true,
       index: 4,
       text: targetObject.value.displayName,
       disabled: false
     },
     {
-      to: `/${unit}/domains/${domain}/${typePlural}/${containerControl.value.subType}/${targetObject.value.id}#controls`,
+      to: `/${unit}/domains/${domain}/${typePlural}/${containerControl.value?.subType}/${targetObject.value?.id}#controls`,
       exact: true,
       index: 5,
       text: `${t('implementation')} (${containerControl.value.name})`,
@@ -165,7 +168,7 @@ const generateCustomBreadcrumbs = (unit: string, domain: string, subTypeTranslat
 };
 
 const customCrumbs = computed(() => {
-  if (!containerControl.value) return undefined;
+  if (!containerControl.value || !targetObject.value) return undefined;
   return generateCustomBreadcrumbs(route.params.unit as string, route.params.domain as string, ownerSubType.value);
 });
 
@@ -182,7 +185,7 @@ onBeforeRouteLeave(() => {
 // Watchers
 watch(() => route.fullPath, clearCustomBreadcrumbs);
 
-watch(locale, () => {
+watch([locale, customCrumbs], () => {
   clearCustomBreadcrumbs();
   customCrumbs.value?.forEach((crumb) => addCustomBreadcrumb(crumb));
 });
