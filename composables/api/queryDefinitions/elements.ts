@@ -68,6 +68,12 @@ export interface IVeoFetchRequirementImplementationsParameters extends IVeoPagin
   page?: number;
 }
 
+export interface IVeoUpdateRequirementImplementationsParameters extends IVeoPaginationOptions {
+  endpoint: string;
+  id: string;
+  requirementId: string;
+}
+
 export interface IVeoFetchScopeChildrenParameters extends IVeoPaginationOptions {
   domain: string;
   id: string;
@@ -597,6 +603,24 @@ export default {
             queryClient.invalidateQueries({ queryKey: ['evaluation'] });
         }
       }
-    } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>
+    } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>,
+    updateRequirementImplementation: {
+      primaryQueryKey: 'requirementImplementations',
+      url: '/api/:endpoint/:id/requirement-implementations/:requirementId',
+      method: 'PUT',
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: {
+          endpoint: mutationParameters.endpoint,
+          id: mutationParameters.id,
+          requirementId: mutationParameters.requirementId
+        },
+        json: mutationParameters.requirementImplementation
+      }),
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, _variables, _context) => {
+          queryClient.invalidateQueries({ queryKey: ['requirementImplementations'] });
+        }
+      }
+    } as IVeoMutationDefinition<IVeoUpdateRequirementImplementationsParameters, void>
   }
 };
