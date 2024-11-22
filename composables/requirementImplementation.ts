@@ -68,6 +68,8 @@ function getRequirementImplementationId(url: string): string | undefined {
  *   }
  * });
  */
+import { useMutation } from '~/composables/api/utils/mutation';
+
 export function useRequirementImplementationQuery() {
   const showDialog = ref(false);
   const queryParams = ref<RequirementImplementationParams | null>(null);
@@ -83,6 +85,7 @@ export function useRequirementImplementationQuery() {
       keepPreviousData: false
     }
   );
+  const { mutateAsync } = useMutation(elementQueryDefinitions.mutations.updateRequirementImplementation);
 
   // Open item function
   async function openItem({
@@ -143,9 +146,36 @@ export function useRequirementImplementationQuery() {
     if (!newValue) reset();
   });
 
+  // Update item function
+  async function updateItem({
+    endpoint,
+    id,
+    requirementId,
+    requirementImplementation
+  }: {
+    endpoint: string;
+    id: string;
+    requirementId: string;
+    requirementImplementation: any;
+  }) {
+    try {
+      // Call the mutation
+      await mutateAsync({
+        endpoint,
+        id,
+        requirementId,
+        requirementImplementation
+      });
+    } catch (error) {
+      console.error('Error updating requirement implementation:', error);
+      throw error;
+    }
+  }
+
   return {
     showDialog,
     requirementImplementation,
-    openItem
+    openItem,
+    updateItem
   };
 }
