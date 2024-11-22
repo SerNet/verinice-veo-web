@@ -207,6 +207,7 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const adapter = useDate();
 const route = useRoute();
+const { updateItem } = useRequirementImplementationQuery();
 
 interface Props {
   item: RequirementImplementation | null;
@@ -413,14 +414,12 @@ async function submitForm({
 
   const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
 
-  const requirementImplementationId = item?.control?.id;
-  const url = `/api/${type}/${riskAffected}/requirement-implementations/${requirementImplementationId}`;
-
   try {
-    await request(url, {
-      method: 'PUT',
-      json: requirementImplementation,
-      params: { id: requirementImplementationId }
+    updateItem({
+      endpoint: type,
+      id: riskAffected,
+      requirementId: item?.control?.id,
+      requirementImplementation: requirementImplementation
     });
     emit('update:item');
     displaySuccessMessage(t('requirementImplementationUpdated'));
