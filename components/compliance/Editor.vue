@@ -244,7 +244,6 @@ interface Props {
 
 interface Emits {
   (e: 'update:show-dialog', value: boolean): void;
-  (e: 'update:item'): void;
 }
 
 type RequirementImplementationForForm = {
@@ -417,8 +416,7 @@ async function submitForm({
   type,
   riskAffected,
   form,
-  item,
-  request
+  item
 }: {
   type: string;
   riskAffected: string;
@@ -448,7 +446,6 @@ async function submitForm({
       requirementId: item?.control?.id,
       requirementImplementation: requirementImplementation
     });
-    emit('update:item');
     displaySuccessMessage(t('requirementImplementationUpdated'));
   } catch (error: any) {
     displayErrorMessage(t('requirementImplementationNotUpdated'), error.message);

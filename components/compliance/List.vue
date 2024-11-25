@@ -44,7 +44,6 @@
       :show-dialog="showDialog"
       :locale="locale"
       @update:show-dialog="showDialog = !showDialog"
-      @update:item="refetch"
     />
   </BaseCard>
 </template>
