@@ -68,6 +68,12 @@ done
 # We use 8 threads here as an optimal balance between speed and resource usage. This can be adjusted based on your system.
 # Running 8 tests in a single job using the Electron browser to speed up execution without overloading the system.
 
+# Explicitly using the -p flag to specify the reporter-config.json file because Cypress-Parallel  
+# doesn't reliably detect reporter settings from the Cypress config file.  
+# Without this flag, Cypress-Parallel defaults to its internal multi-reporter-config, ignoring custom reporters,  
+# which results in missing test suite results (.json files not generated).  
+# This workaround forces Cypress-Parallel to use the correct reporter settings, ensuring test results are captured  
+# and preventing false failures due to mismatched test suite counts.  
 npx cypress-parallel -s cy:local --d "$TMP_DIR" -t 4 -m -p 'cypress/reporter-config.json'
 TEST_RESULT=$? # Capture the exit code of the Cypress parallel test run
 
