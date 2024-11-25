@@ -79,7 +79,10 @@ watch(
     const complianceControlSubType =
       currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubType;
     // Update showVdA based on the conditions
-    showVdA.value = customAspects && props.containerControl?.subType === complianceControlSubType;
+    showVdA.value =
+      customAspects &&
+      props.containerControl?.subType === complianceControlSubType &&
+      !!currentDomain.value?.raw?.elementTypeDefinitions?.control?.customAspects?.control_bpInformation;
   },
   { immediate: true }
 );
