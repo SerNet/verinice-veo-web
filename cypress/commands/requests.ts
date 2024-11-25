@@ -32,7 +32,7 @@ declare global {
   }
 }
 
-type RequestHeaders = { Authorization: string; 'Content-type': string; Accept: string; 'If-Match': string };
+type RequestHeaders = { Authorization?: string; 'Content-type'?: string; Accept?: string; 'If-Match'?: string };
 type RequestOptions = { endpoint: string; method?: string; headers?: RequestHeaders; body?: any };
 
 export function veoRequest(options: RequestOptions): Cypress.Chainable<any> {
