@@ -26,13 +26,13 @@
     @update:model-value="emit('update:show-dialog', $event)"
   >
     <BaseCard>
-      <v-card-text v-if="!item">
+      <v-card-text v-if="!item || view.isLoading">
         <v-skeleton-loader class="mb-4" type="list-item-two-line" />
         <v-skeleton-loader class="mb-4" type="paragraph" />
         <v-skeleton-loader class="mb-4" type="article" />
       </v-card-text>
 
-      <v-card-text v-if="item">
+      <v-card-text v-if="item && !view.isLoading">
         <!-- Read only text fields -->
 
         <!-- Target object  -->
