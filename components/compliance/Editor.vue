@@ -330,7 +330,8 @@ const updateControlInfo = (control) => {
 
   if (!customAspects) return undefined;
 
-  additionalInfo.value.requirementDescription = customAspects?.control_bpCompendium?.control_bpCompendium_content ?? '';
+  additionalInfo.value.requirementDescription =
+    customAspects?.control_bpCompendium?.control_bpCompendium_content ?? control?.description ?? '';
   additionalInfo.value.protectionApproach =
     customAspects['control_bpInformation']?.control_bpInformation_protectionApproach;
 };
