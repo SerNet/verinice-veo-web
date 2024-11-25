@@ -72,6 +72,7 @@ export function useRequirementImplementationList() {
   const { tablePageSize } = useVeoUser();
   const route = useRoute();
   const { data: currentDomain } = useCurrentDomain();
+  const isLoadingTranslations = ref(true);
 
   const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
   const page = ref(0);
@@ -124,7 +125,9 @@ export function useRequirementImplementationList() {
   function translateData(data: { items: RequirementImplementation[] } | null) {
     if (!data?.items || data.items.length === 0) return null;
 
-    return {
+    isLoadingTranslations.value = true;
+
+    const translations = {
       ...data,
       items: data.items.map((item) => ({
         ...item,
@@ -134,13 +137,15 @@ export function useRequirementImplementationList() {
         }
       }))
     };
+    isLoadingTranslations.value = false;
+    return translations;
   }
 
   return {
     sortBy,
     page,
     translatedRequirementImplementations,
-    isLoadingRequirementImplementations,
+    isLoading: computed(() => isLoadingRequirementImplementations.value && isLoadingTranslations.value),
     refetch
   };
 }

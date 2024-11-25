@@ -19,8 +19,8 @@
     <BaseTable
       v-model:sort-by="sortBy"
       v-model:page="page"
-      :items="isLoadingRequirementImplementations ? [] : translatedRequirementImplementations"
-      :loading="!translatedRequirementImplementations"
+      :items="isLoading ? [] : translatedRequirementImplementations"
+      :loading="isLoading"
       item-key="id"
       :additional-headers="headers"
       enable-click
@@ -65,8 +65,7 @@ const { data: currentDomain } = useCurrentDomain();
 const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
 // Fetch RIs
-const { sortBy, page, translatedRequirementImplementations, isLoadingRequirementImplementations, refetch } =
-  useRequirementImplementationList();
+const { sortBy, page, translatedRequirementImplementations, isLoading, refetch } = useRequirementImplementationList();
 // Open a single RI
 const { showDialog, requirementImplementation, openItem } = useRequirementImplementationQuery();
 // Table setup
