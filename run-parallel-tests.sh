@@ -68,7 +68,7 @@ done
 # We use 8 threads here as an optimal balance between speed and resource usage. This can be adjusted based on your system.
 # Running 8 tests in a single job using the Electron browser to speed up execution without overloading the system.
 
-npx cypress-parallel -s cy:local --d "$TMP_DIR" -t 4 -m
+npx cypress-parallel -s cy:local --d "$TMP_DIR" -t 4 -m -p 'cypress/reporter-config.json'
 TEST_RESULT=$? # Capture the exit code of the Cypress parallel test run
 
 # Clean up the temporary directory after the tests run to avoid leaving unnecessary files behind

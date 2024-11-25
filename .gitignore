@@ -18,6 +18,7 @@ coverage
 # Cypress
 cypress.env.json
 cypress/config
+cypress/results
 cypress/downloads
 cypress/screenshots
 cypress/videos

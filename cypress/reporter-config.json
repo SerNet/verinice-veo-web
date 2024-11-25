@@ -1,0 +1,15 @@
+{
+  "reporterEnabled": "mochawesome, cypress-parallel/json-stream.reporter.js, cypress-parallel/simple-spec.reporter.js, mocha-junit-reporter",
+  "mochawesomeReporterOptions": {
+    "reportDir": "cypress/results/",
+    "overwrite": false,
+    "html": false,
+    "json": true
+  },
+  "cypressParallelSimpleSpecReporterJsReporterOptions": {
+    "reportDir": "runner-results"
+  },
+  "mochaJunitReporterReporterOptions": {
+    "mochaFile": "cypress/results/user-[hash].xml"
+  }
+}
