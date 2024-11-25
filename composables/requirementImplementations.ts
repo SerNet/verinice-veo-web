@@ -71,6 +71,7 @@ export function useRequirementImplementationList() {
   const { t: globalT } = useI18n();
   const { tablePageSize } = useVeoUser();
   const route = useRoute();
+  const { data: currentDomain } = useCurrentDomain();
 
   const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
   const page = ref(0);
@@ -84,7 +85,10 @@ export function useRequirementImplementationList() {
     sortOrder: sortBy.value[0].order as 'asc' | 'desc',
     size: tablePageSize.value,
     page: page.value,
-    customAspects: [CustomAspect.ControlBpInformation]
+    customAspects:
+      currentDomain.value?.raw?.elementTypeDefinitions?.control?.customAspects?.control_bpInformation ?
+        [CustomAspect.ControlBpInformation]
+      : undefined
   }));
 
   const isQueryEnabled = computed(() =>
