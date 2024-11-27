@@ -92,34 +92,32 @@
 <script lang="ts">
 import { PropType } from 'vue';
 
-import { upperFirst, merge, debounce, isEmpty } from 'lodash';
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
+import { debounce, isEmpty, merge, upperFirst } from 'lodash';
 
-import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import {
   getRiskAdditionalContext,
   getStatusAdditionalContext,
   getSubTypeTranslation
 } from '~/components/dynamic-form/additionalContext';
+import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { IVeoDecisionResults, IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
-import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 
-import ObjectDisplayOptions from '~/components/object/DisplayOptions.vue';
 import LayoutFormNavigation from '~/components/layout/FormNavigation.vue';
+import ObjectDisplayOptions from '~/components/object/DisplayOptions.vue';
 import ObjectHistory from '~/components/object/History.vue';
-import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
-import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
 import Messages, { Message } from '~/components/object/messages/Messages.vue';
 
 import { useQuery } from '~/composables/api/utils/query';
-import { SideBarAction } from './SideBarAction.vue';
 import { INestedMenuEntries } from '../util/NestedMenu.vue';
+import { SideBarAction } from './SideBarAction.vue';
 
 export default defineComponent({
   props: {
@@ -337,21 +335,12 @@ export default defineComponent({
                 {
                   key: `${suggestion.partSubType}_create`,
                   title: t('createDPIA'),
-                  component: ObjectCreateDialog,
-                  componentProps: {
-                    objectType: props.objectType,
-                    subType: suggestion.partSubType,
-                    domainId: props.domainId
-                  }
+                  callback: () => emit('create-dpia')
                 },
                 {
                   key: `${suggestion.partSubType}_link`,
                   title: t('linkDPIA'),
-                  component: ObjectLinkDialog,
-                  componentProps: {
-                    object: props.originalObject,
-                    preselectedFilters: { subType: suggestion?.partSubType }
-                  }
+                  callback: () => emit('link-dpia')
                 }
               ];
             default:
