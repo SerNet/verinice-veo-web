@@ -79,13 +79,13 @@
 </template>
 
 <script setup lang="ts">
-import { useDisplay, useTheme } from 'vuetify';
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
+import { useDisplay, useTheme } from 'vuetify';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useVeoUser } from '~/composables/VeoUser';
 
 const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
@@ -132,7 +132,7 @@ onBeforeMount(() => {
     "openDocumentationInNewTab": "Open documentation in new tab"
   },
   "de": {
-    "openDocumentationInNewTab": "Dokumentaion in neuem Tab öffnen"
+    "openDocumentationInNewTab": "Dokumentation in neuem Tab öffnen"
   }
 }
 </i18n>
