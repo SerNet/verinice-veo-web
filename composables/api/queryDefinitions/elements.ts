@@ -580,6 +580,7 @@ export default {
             ]
           });
           queryClient.invalidateQueries({ queryKey: ['evaluation'] });
+          queryClient.invalidateQueries({ queryKey: ['object'] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateRiskParameters, IVeoRisk>,

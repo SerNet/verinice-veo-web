@@ -111,7 +111,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { IVeoDomainRiskDefinition, IVeoEntity, IVeoLink, IVeoRisk, VeoAlertType } from '~/types/VeoTypes';
@@ -153,7 +153,7 @@ export default defineComponent({
     const { link } = useLinkObject();
     const { createLink } = useCreateLink();
     const { ability } = useVeoPermissions();
-    const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
+    const { mutateAsync: createObject } = useMutation(elementQueryDefinitions.mutations.createObject);
     const { requiredRule } = useRules();
     const queryClient = useQueryClient();
 
@@ -204,7 +204,7 @@ export default defineComponent({
     }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
 
-    const { data: _risk } = useQuery(objectQueryDefinitions.queries.fetchRisk, fetchRiskQueryParameters, {
+    const { data: _risk } = useQuery(elementQueryDefinitions.queries.fetchRisk, fetchRiskQueryParameters, {
       enabled: fetchRiskQueryEnabled,
       onSuccess: () => {
         init();
@@ -230,8 +230,8 @@ export default defineComponent({
     watch(() => props.modelValue, init, { immediate: true });
 
     const savingRisk = ref(false);
-    const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
-    const { mutateAsync: updateRisk } = useMutation(objectQueryDefinitions.mutations.updateRisk);
+    const { mutateAsync: createRisk } = useMutation(elementQueryDefinitions.mutations.createRisk);
+    const { mutateAsync: updateRisk } = useMutation(elementQueryDefinitions.mutations.updateRisk);
     const saveRisk = async () => {
       if (ability.value.cannot('manage', 'objects') || !data.value) return;
 
@@ -253,7 +253,7 @@ export default defineComponent({
           // If a mitigation ID exists, fetch its data and link it to the current mitigations
           else if (mitigationId) {
             const mitigationData = await useQuerySync(
-              objectQueryDefinitions.queries.fetch,
+              elementQueryDefinitions.queries.fetch,
               {
                 domain: props.domainId,
                 endpoint: 'controls',
