@@ -17,8 +17,6 @@
 -->
 <template>
   <div class="wrapper">
-    <LayoutAppLogoDesktop />
-
     <BaseAlert
       :model-value="!!route.query.client_disabled"
       class="my-4"
@@ -44,7 +42,7 @@
         <v-divider class="mx-7" vertical light />
         <div style="flex-basis: 0; flex-grow: 1">
           <h4 class="text-h4 mb-4 cta">
-            {{ t('createAccountCTA') }}
+            {{ t('subscribeCTA') }}
           </h4>
           <div class="text-center">
             <v-btn
@@ -53,7 +51,7 @@
               size="x-large"
               :href="context.$config.public.accountPath"
             >
-              {{ t('register') }}
+              {{ t('buy') }}
             </v-btn>
           </div>
         </div>
@@ -108,25 +106,25 @@ const imprintLink = computed(() =>
 {
   "en": {
     "access": "Account disabled.",
-    "createAccountCTA": "Create a new account",
-    "dataProtectionRegulations": "Data protection regulations",
+    "subscribeCTA": "Subscribe to\nverinice.cloud:",
+        "dataProtectionRegulations": "Data protection regulations",
     "error-message": "Please contact your account manager.",
     "imprint": "Imprint",
     "login": "Login",
-    "loginCTA": "Login with an existing account",
+    "loginCTA": "Enter the\nverinice.cloud:",
     "policy": "Security policy",
-    "register": "Register"
+    "buy": "Buy"
   },
   "de": {
     "access": "Account deaktiviert.",
-    "createAccountCTA": "Einen neuen Account erstellen",
+    "subscribeCTA": "Abonniere die\nverinice.cloud:",
     "dataProtectionRegulations": "Datenschutzerklärung",
     "error-message": "Bitte kontaktieren Sie Ihren Account-Manager.",
     "imprint": "Impressum",
     "login": "Anmelden",
-    "loginCTA": "Mit einem vorhandenen Account anmelden",
+    "loginCTA": "Direkt zur\nverinice.cloud:",
     "policy": "Sicherheitsrichtlinie",
-    "register": "Registrieren"
+    "buy": "Kaufen"
   }
 }
 </i18n>
@@ -147,6 +145,7 @@ const imprintLink = computed(() =>
   .cta {
     height: 75px;
     text-align: center;
+    white-space: pre-line;
   }
 }
 </style>
