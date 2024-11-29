@@ -247,10 +247,7 @@ export default defineComponent({
 
     // items rendered in ObjectTable
     const objects = computed<IVeoPaginatedResponse<IVeoEntity[]>>(() => {
-      if (searchResults.value) {
-        return searchResults.value;
-      }
-      return _objects.value;
+      return search.value?.length && searchResults.value ? searchResults.value : _objects.value;
     });
 
     const selectableObjects = computed(() => {
