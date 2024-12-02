@@ -31,17 +31,19 @@ export function goToUnitSelection(): void {
 export function selectUnitFromDropdown(unitName?: string): void {
   cy.getCustom('[data-component-name="unit-select"] .v-autocomplete__menu-icon').click();
   cy.getCustom('[data-veo-test="unit-selection-nav-item"]').should('be.visible');
-  cy.getCustom('[data-veo-test="unit-selection-nav-item"]').then(($els) => {
+  cy.getCustom('[data-veo-test="unit-selection-nav-item"]').then(($els: JQuery<HTMLElement[]>) => {
     const found = $els.toArray().find((el) => {
       const text = Cypress.$(el).text();
       return text.includes(unitName);
     });
 
+    cy.intercept(`${Cypress.env('veoApiUrl')}/units/**`).as('getUnit');
     if (found) {
       cy.wrap(found).click();
     } else {
       cy.wrap($els[$els.length - 1]).click();
     }
+    cy.wait('@getUnit').its('response.statusCode').should('eq', 200);
   });
 }
 

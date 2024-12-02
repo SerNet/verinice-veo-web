@@ -19,7 +19,7 @@ describe('Unit Selection Functionality', () => {
     const defaultUnitName = Cypress.env(unitDetails.name).name;
     cy.getCustom('[data-component-name="unit-select"] span')
       .invoke('text')
-      .then((text) => {
+      .then((text: string) => {
         expect(text.trim()).to.equal(defaultUnitName);
         cy.getCustom('[data-component-name="breadcrumbs"]').contains(defaultUnitName);
       });
@@ -28,7 +28,7 @@ describe('Unit Selection Functionality', () => {
 
     cy.getCustom('[data-component-name="unit-select"] span')
       .invoke('text')
-      .then((newUnitText) => {
+      .then((newUnitText: string) => {
         expect(newUnitText.trim()).to.not.equal(defaultUnitName);
         cy.getCustom('[data-component-name="breadcrumbs"]').contains(newUnitText);
       });
