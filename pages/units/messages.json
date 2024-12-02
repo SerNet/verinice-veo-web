@@ -9,7 +9,7 @@
     "footer": "The number of possible units, available profiles and domains depends on the selected plan. See the ",
     "goto": "Goto unit selection",
     "greeting": "Welcome!",
-    "headline": "Create your first Unit in just four steps ...",
+    "headline": "Create your first Unit in just four steps:",
     "hint": {
       "name": "You can always create at least two units, for example for test purposes and productive work!",
       "profile": "Profiles are always specific to at least one domain, e.g. sample data for the ISO domain!",
@@ -47,7 +47,7 @@
     "footer": "Die Anzahl möglicher Units, verfügbarer Profile und Domänen ist vom gewählten Plan abhängig. Siehe das ",
     "goto": "Zur Unit-Auswahl",
     "greeting": "Willkommen!",
-    "headline": "Erstellen Sie Ihre erste Unit in nur vier Schritten ...",
+    "headline": "Erstellen Sie Ihre erste Unit in nur vier Schritten:",
     "hint": {
       "name": "Sie können immer mindestens zwei Units anlegen, etwa für Testzwecke und produktives Arbeiten!",
       "profile": "Profile sind immer spezifisch für mindestens eine Domäne, z.B. Beispieldaten für die Domäne ISO!",

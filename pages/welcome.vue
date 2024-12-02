@@ -17,8 +17,8 @@
 -->
 <template>
   <BasePage data-test-selector="welcome-page">
-    <v-container fluid>
-      <BaseCard class="mx-12 bg-basepage" style="width: 1280px">
+    <BaseContainer>
+      <BaseCard class="bg-basepage">
         <v-card class="my-2 bg-surface">
           <div class="bg-accent" style="height: 75px">
             <v-card-title class="ml-8 small-caps">
@@ -39,7 +39,7 @@
           </v-row>
 
           <v-row dense class="ma-8 mt-4">
-            <v-col v-for="(step, index) in ['name', 'profile', 'domain', 'summary']" :key="index" cols="3">
+            <v-col v-for="(step, index) in ['name', 'profile', 'domain', 'summary']" :key="index" md="6">
               <v-card class="mx-2 fill-height bg-background">
                 <v-card-title class="pt-4 bg-accent small-caps" style="min-height: 60px">
                   <v-chip class="mr-3" label color="red">
@@ -84,27 +84,34 @@
             </BaseAlert>
           </v-row>
 
-          <v-row class="d-flex justify-center my-6">
-            <em>{{ t('footer') }}</em>
-            &nbsp;&nbsp;
-            <nuxt-link
-              class="text-decoration-none text-primary"
-              rel="noopener noreferrer"
-              target="_blank"
-              :to="links.portal[locale] ?? links.portal.en"
-            >
-              <strong>{{ t('portal') }}!</strong>
-            </nuxt-link>
+          <v-row>
+            <v-col class="text-center my-4">
+              <em>{{ t('footer') }}</em>
+              &nbsp;&nbsp;
+              <nuxt-link
+                class="text-decoration-none text-primary"
+                rel="noopener noreferrer"
+                target="_blank"
+                :to="links.portal[locale] ?? links.portal.en"
+              >
+                <strong>{{ t('portal') }}!</strong>
+              </nuxt-link>
+            </v-col>
           </v-row>
 
           <v-divider class="mx-4" />
 
           <!-- Links / Timeline -->
           <v-row dense>
-            <v-timeline align="center" class="ma-4 mt-12" density="compact" direction="horizontal">
+            <v-timeline
+              align="center"
+              class="ma-4 mt-12"
+              density="compact"
+              :direction="isMediumScreen ? 'vertical' : 'horizontal'"
+            >
               <v-timeline-item dot-color="primary" size="x-large" :icon="mdiInformationOutline">
                 <v-card-text>
-                  <v-col cols="12" class="text-justify">
+                  <v-col cols="12">
                     <i18n-t keypath="firstSteps.tutorial" tag="span" scope="global">
                       <span class="text-decoration-none">
                         <strong>{{ t('injector.tutorial') }}</strong>
@@ -116,7 +123,7 @@
 
               <v-timeline-item dot-color="primary" size="x-large" :icon="mdiHelpCircleOutline">
                 <v-card-text>
-                  <v-col cols="12" class="text-justify">
+                  <v-col cols="12">
                     <i18n-t keypath="firstSteps.documentation" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
@@ -134,10 +141,15 @@
           </v-row>
           <!-- external Links -->
           <v-row dense>
-            <v-timeline align="center" class="mx-4" density="compact" direction="horizontal">
+            <v-timeline
+              align="center"
+              class="mx-4"
+              density="compact"
+              :direction="isMediumScreen ? 'vertical' : 'horizontal'"
+            >
               <v-timeline-item dot-color="primary" size="x-large" :icon="mdiForumOutline">
                 <v-card-text>
-                  <v-col cols="12" class="text-justify">
+                  <v-col cols="12">
                     <i18n-t keypath="firstSteps.forum" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
@@ -154,7 +166,7 @@
 
               <v-timeline-item dot-color="primary" size="x-large" :icon="mdiYoutubeTv">
                 <v-card-text>
-                  <v-col cols="12" class="text-justify">
+                  <v-col cols="12">
                     <i18n-t keypath="firstSteps.channel" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
@@ -171,7 +183,7 @@
 
               <v-timeline-item dot-color="primary" size="x-large" :icon="mdiSchoolOutline">
                 <v-card-text>
-                  <v-col cols="12" class="text-justify">
+                  <v-col cols="12">
                     <i18n-t keypath="firstSteps.webinar" tag="span" scope="global">
                       <nuxt-link
                         class="text-decoration-none text-primary"
@@ -195,7 +207,7 @@
           </v-card-text>
         </v-card>
       </BaseCard>
-    </v-container>
+    </BaseContainer>
   </BasePage>
 </template>
 
@@ -207,12 +219,17 @@ import { useQuery } from '~~/composables/api/utils/query';
 
 const { userSettings } = useVeoUser();
 import { VeoAlertType } from '~/types/VeoTypes';
+import { useDisplay } from 'vuetify';
 const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
 
 const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
 
 const context = useNuxtApp();
 const { t, locale } = useI18n();
+
+// Breakpoints
+const { mdAndDown } = useDisplay();
+const isMediumScreen = computed(() => mdAndDown.value);
 
 // external links
 const links = ref({
