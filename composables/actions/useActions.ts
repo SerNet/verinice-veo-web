@@ -7,10 +7,11 @@ import type { TVeoError } from '../utils';
 export type TVeoAction = {
   id: string;
   name: { de: string; en: string };
+  affectedRessources?: string[];
 };
 
 type TVeoGetActionsParams = { domainId: string; elementType: string; elementId: string };
-type TVeoPerformActionParams = TVeoGetActionsParams & { actionId?: string };
+type TVeoPerformActionParams = TVeoGetActionsParams & { actionId?: string; affectedRessources?: string[] };
 
 export function useActions({ domainId, elementType, elementId }: TVeoGetActionsParams) {
   const { request } = useRequest();
@@ -22,7 +23,8 @@ export function useActions({ domainId, elementType, elementId }: TVeoGetActionsP
 
   async function fetchActions(url: string) {
     try {
-      data.value = await request(url, { method: 'GET' });
+      const response = await request(url, { method: 'GET' });
+      data.value = addAffectedRessourceKeys(response);
     } catch (err: unknown) {
       error.value = handleErrorMessage(err);
     } finally {
@@ -69,4 +71,21 @@ export function usePerformActions() {
     isLoading,
     error
   };
+}
+
+/* @description returns an array of query keys of resources which are affected by an action */
+function getAffectedRessources(actionId: string) {
+  switch (actionId) {
+    case 'threatOverview':
+      return ['risks'];
+    default:
+      return [];
+  }
+}
+
+function addAffectedRessourceKeys(veoActions: TVeoAction[]) {
+  return veoActions.map((action) => ({
+    ...action,
+    affectedRessources: getAffectedRessources(action.id)
+  }));
 }
