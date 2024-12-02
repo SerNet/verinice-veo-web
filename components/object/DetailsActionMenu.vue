@@ -45,8 +45,9 @@ import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
 import ObjectDeleteDialog from '~/components/object/DeleteDialog.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
-import { VeoElementTypePlurals, type IVeoEntity } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
+import type { IVeoEntity } from '~/types/VeoTypes';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 
 const props = withDefaults(
@@ -103,7 +104,8 @@ type TVeoAction = {
   name: { de: string; en: string };
 };
 
-const items = computed<(INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] })[]>(() => [
+type TActionItems = INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] };
+const items = computed<TActionItems[]>(() => [
   {
     key: 'delete',
     title: t('deleteObject').toString(),
