@@ -3,6 +3,12 @@ import { useRequest } from '~/composables/api/utils/request';
 import { handleErrorMessage } from '~/composables/utils';
 
 import type { TVeoError } from '../utils';
+
+export type TVeoAction = {
+  id: string;
+  name: { de: string; en: string };
+};
+
 type TVeoGetActionsParams = { domainId: string; elementType: string; elementId: string };
 type TVeoPerformActionParams = TVeoGetActionsParams & { actionId?: string };
 

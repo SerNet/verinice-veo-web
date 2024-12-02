@@ -49,6 +49,7 @@ import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 import type { IVeoEntity } from '~/types/VeoTypes';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
+import type { TVeoAction } from '~/composables/actions/useActions';
 
 const props = withDefaults(
   defineProps<{
@@ -98,11 +99,6 @@ const subType = computed(() => props.object?.subType);
 
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { locale } = useI18n();
-
-type TVeoAction = {
-  id: string;
-  name: { de: string; en: string };
-};
 
 type TActionItems = INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] };
 const items = computed<TActionItems[]>(() => [
