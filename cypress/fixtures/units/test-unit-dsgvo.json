@@ -52,19 +52,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_recipient": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_recipient_type": "process_recipient_type_processor" }
-        },
-        "process_dataTransfer": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataTransfer_explanation": "Die Daten werden immer nach Beendigung des Online-Meetings gelöscht",
-            "process_dataTransfer_otherLegalBasis": "Art. 6 Abs. 1 S. 1 lit. b DS-GVO"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PRO_DataTransfer", "status": "RELEASED" } },
       "id": "e2b590ef-f150-48a2-b5db-25e176bba1cf"
     },
@@ -75,12 +62,6 @@
       "abbreviation": "TOM-E",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Verschlüsselung personenbezogener Daten.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_encryption"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "fc3d4e92-b43e-4075-8c1d-3f22bacec4cf"
     },
@@ -90,21 +71,6 @@
       "designator": "CTL-509760",
       "description": "Löschvorgaben für digitale Bewerbungen müssen implementiert und kommuniziert werden",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-06-16" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -119,24 +85,6 @@
       "name": "Sicherheitskonzept SafeGuard",
       "designator": "CTL-509741",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-07-29",
-            "control_implementation_explanation": "Sicherheitskonzept muss schriftlich angefordert und bewertet werden. \n\n"
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -193,45 +141,6 @@
           }
         ]
       },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "scope_thirdCountry_status": false }
-        },
-        "scope_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_address_city": "Bonn",
-            "scope_address_state": "NRW",
-            "scope_address_country": "Deutschland",
-            "scope_address_address1": "Beethovenplatz 14",
-            "scope_address_postcode": "53115"
-          }
-        },
-        "scope_regulatoryAuthority": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_regulatoryAuthority_fax": "0211/38424-99",
-            "scope_regulatoryAuthority_city": "Düsseldorf",
-            "scope_regulatoryAuthority_name": "Landesbeauftragte für Datenschutz und Informationsfreiheit",
-            "scope_regulatoryAuthority_email": "poststelle@ldi.nrw.de",
-            "scope_regulatoryAuthority_phone": "0211/38424-0",
-            "scope_regulatoryAuthority_state": "NRW",
-            "scope_regulatoryAuthority_country": "Deutschland",
-            "scope_regulatoryAuthority_address1": "Postfach 20 04 44",
-            "scope_regulatoryAuthority_postcode": "40102"
-          }
-        },
-        "scope_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_contactInformation_fax": "049 211 884-99",
-            "scope_contactInformation_email": "info@med.de",
-            "scope_contactInformation_phone": "049 211 884-0",
-            "scope_contactInformation_website": "www.med.de"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "SCP_Controller", "status": "RELEASED" } },
       "id": "d7cb2f2a-0c98-4b4b-9295-4192fb013907"
     },
@@ -255,24 +164,6 @@
       "name": "Löschfrist 72 Stunden Videoaufzeichnungen",
       "designator": "CTL-509723",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_explanation": "Es muss eine Löschfrist von 72 Stunden für Videoaufzeichnungen festgesetzt werden.\nDas Löschkonzept ist entsprechend zu ergänzen, Fristen müssen aktiv kommuniziert werden"
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_availability"
-            ]
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "NEW" } },
       "id": "85b11054-2f94-49fb-bedf-01b6b6de430b"
     },
@@ -299,17 +190,6 @@
       "designator": "PER-212698",
       "description": "Der Geschäftsführer der MeD GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_title": "Dr.",
-            "person_generalInformation_givenName": "Alfons",
-            "person_generalInformation_familyName": "Medical",
-            "person_generalInformation_salutation": "Herr"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "FOR_REVIEW" } },
       "id": "c3b7c7f8-6e03-4418-85ca-5170a4b3e916"
     },
@@ -406,109 +286,6 @@
           }
         ]
       },
-      "customAspects": {
-        "incident_presumedMotivation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_presumedMotivation_federalState": "Berlin",
-            "incident_presumedMotivation_typeOfAttack": "incident_presumedMotivation_typeOfAttack_targetedAttack",
-            "incident_presumedMotivation_collectedData": [
-              "incident_presumedMotivation_collectedData_collectedDataOthers"
-            ],
-            "incident_presumedMotivation_policeStation": "Polizeidienststelle Nord",
-            "incident_presumedMotivation_lawEnforcement": "incident_presumedMotivation_lawEnforcement_criminalCharges",
-            "incident_presumedMotivation_referenceNumber": "XY 234512",
-            "incident_presumedMotivation_presumedMotivation": [
-              "incident_presumedMotivation_presumedMotivation_financial",
-              "incident_presumedMotivation_presumedMotivation_criminal"
-            ],
-            "incident_presumedMotivation_collectedDataOthers": "Videoaufzeichnung"
-          }
-        },
-        "incident_supervisoryAuthority": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_supervisoryAuthority_comments": "Nicht erforderlich",
-            "incident_supervisoryAuthority_withinHours": "incident_supervisoryAuthority_withinHours_within72Hours",
-            "incident_supervisoryAuthority_notificationMade": false,
-            "incident_supervisoryAuthority_otherAuthorities": false,
-            "incident_supervisoryAuthority_timeDateNotification": "2022-12-20T15:25:39+01:00"
-          }
-        },
-        "incident_crossBorder": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "incident_crossBorder_crossBorder": false }
-        },
-        "incident_involvedParticipants": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_involvedParticipants_processor": false,
-            "incident_involvedParticipants_additional": "keine",
-            "incident_involvedParticipants_jointController": false
-          }
-        },
-        "incident_description": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_description_description": "In der Zentrale der Data GmbH erfolgte ein Einbruchsdiebstahl mit der Folge, dass 10 Notebooks entwendet wurden. Diese befanden sich auf den Arbeitsplätzen bzw Arbeitstischen in einem Großraumbüro. Die Laptops sind passwortgeschützt und  die Festplatten verschlüsselt. Es existiert ein Back-Up für die Gerätschaften.",
-            "incident_description_stillContinues": false,
-            "incident_description_dateTimeOfIncident": "2022-02-01T20:35:03+01:00",
-            "incident_description_howIncidentNoticed": ["incident_description_howIncidentNoticed_others"],
-            "incident_description_locationOfIncident": "incident_description_locationOfIncident_outside",
-            "incident_description_timeOfIncidentknown": true,
-            "incident_description_affectedProtectiongoals": [
-              "incident_description_affectedProtectiongoals_integrity",
-              "incident_description_affectedProtectiongoals_confidentiality"
-            ],
-            "incident_description_reportDateTimeOfIncident": "2022-12-01T21:00:05+01:00",
-            "incident_description_discoveryDateTimeOfIncident": "2022-12-01T21:00:47+01:00"
-          }
-        },
-        "incident_potentialEffect": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_potentialEffect_valuationDataBreach": "incident_potentialEffect_valuationDataBreach_limited",
-            "incident_potentialEffect_impactOnDataSubjects": [
-              "incident_potentialEffect_impactOnDataSubjects_discrimination",
-              "incident_potentialEffect_impactOnDataSubjects_lossOfControlOverPersonalData",
-              "incident_potentialEffect_impactOnDataSubjects_identityTheftOrFraud"
-            ]
-          }
-        },
-        "incident_cause": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "incident_cause_physicalDamage": ["incident_cause_physicalDamage_theftOfEquipment"] }
-        },
-        "incident_dataConcerned": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_dataConcerned_categoriesDataSubjects": [
-              "incident_dataConcerned_categoriesDataSubjects_customers",
-              "incident_dataConcerned_categoriesDataSubjects_employees",
-              "incident_dataConcerned_categoriesDataSubjects_supplier"
-            ],
-            "incident_dataConcerned_numberOfPersonalDataRecords": "100000",
-            "incident_dataConcerned_numberOfDataSubjectsConcerned": "8000"
-          }
-        },
-        "incident_notificationAffectedPersons": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_notificationAffectedPersons_highRisk": false,
-            "incident_notificationAffectedPersons_formOfNotification": "E-Mail",
-            "incident_notificationAffectedPersons_timeOfNotification": "2022-12-22",
-            "incident_notificationAffectedPersons_dataSubjectsInformed": false,
-            "incident_notificationAffectedPersons_reasonNonNotification": "Nicht erforderlich"
-          }
-        },
-        "incident_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_generalInformation_dataBreach": true,
-            "incident_generalInformation_informationSecurityIncident": false
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "INC_DataPrivacyIncident", "status": "RELEASED" } },
       "id": "e1f9a5b7-1db0-42fc-b0b0-eee662280cdb"
     },
@@ -518,16 +295,6 @@
       "designator": "PER-212703",
       "description": "Pförtner der Data GmbH",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Karl",
-            "person_generalInformation_familyName": "Hase",
-            "person_generalInformation_salutation": "Herr"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "NEW" } },
       "id": "6c36d40f-b7e8-45b5-a25e-168085cb43d3"
     },
@@ -567,16 +334,6 @@
       "name": "Viola Seher",
       "designator": "PER-212712",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Viola",
-            "person_generalInformation_familyName": "Seher",
-            "person_generalInformation_salutation": "Frau"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "NEW" } },
       "id": "2375a1c7-4d36-420c-86f1-1f010c6a3c15"
     },
@@ -603,16 +360,6 @@
       "designator": "DOC-59687",
       "description": "Das Dokument ist die Leitlinie zur Informationssicherheit",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "document_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_details_approvalDate": "2021-12-01",
-            "document_details_classification": "document_details_classification_internalUse",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "DOC_Document", "status": "RELEASED" } },
       "id": "8558c417-5fc7-400e-90b0-19e6a9da0f73"
     },
@@ -621,15 +368,6 @@
       "name": "Videokamera",
       "designator": "AST-268394",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "asset_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "asset_details_number": 10,
-            "asset_details_operatingStage": "asset_details_operatingStage_planning"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "AST_Application", "status": "NEW" } },
       "id": "35d46f1a-2021-4f2f-8504-b60a70e9cb68"
     },
@@ -639,15 +377,6 @@
       "designator": "DOC-59685",
       "description": "Diese Richtlinie richtet sich an alle Mitarbeiter der Data GmbH, einschließlich der Auszubildenden, Praktikanten sowie externen Arbeitskräfte. Umfasst sind sämtliche Betriebsteile, d.h. auch Tele-/Heimarbeits- sowie mobile Arbeitsplätze außerhalb der Geschäftsräume. In diesem Dokument wird das Verhalten aller IT-Nutzer geregelt, um ein angemessenes Maß an Sicherheit in der IT zu gewähren. Das Verhalten eines jeden nimmt Einfluss auf die Qualität des Sicherheitsprozesses und der Informationssicherheit.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "document_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_details_classification": "document_details_classification_internalUse",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_policy"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "DOC_Document", "status": "FOR_REVIEW" } },
       "id": "97acf022-78f4-451c-b7d4-6bd5ef76f669"
     },
@@ -657,18 +386,6 @@
       "designator": "CTL-509725",
       "description": "Jährliche Schulungen mit externen Dozenten , ink. Prüfung der Teilnehmenden",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_availability"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -684,21 +401,6 @@
       "designator": "CTL-509703",
       "description": "Löschverfahren festlegen und implementieren",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-06-14" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -723,38 +425,6 @@
       "designator": "PER-212707",
       "description": "Die interne Datenschutzbeauftragte der MeD GmbH",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Justin",
-            "person_generalInformation_familyName": "Gröbel",
-            "person_generalInformation_salutation": "Herr"
-          }
-        },
-        "person_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_address_city": "Düsseldorf",
-            "person_address_state": "Nordrhein-Westfalen",
-            "person_address_country": "Deutschland",
-            "person_address_address1": "Bluemstraße 2",
-            "person_address_postcode": "40221"
-          }
-        },
-        "person_dataProtectionOfficer": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "person_dataProtectionOfficer_expertise": false }
-        },
-        "person_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_contactInformation_fax": "049 211 884-99",
-            "person_contactInformation_email": "jg@ds.de",
-            "person_contactInformation_office": "049 211 884-2"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_DataProtectionOfficer", "status": "ARCHIVED" } },
       "id": "84f035ee-eb76-4755-b8b8-ee44b040d8fc"
     },
@@ -806,28 +476,6 @@
       "name": "Bestimmung der anwendbaren Gesetzgebung und der vertraglichen Anforderungen",
       "designator": "CTL-509746",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-03-05",
-            "control_implementation_explanation": "Welche Gesetzgebung zum Datenschutz ist einschlägig? DSGVO, Bundes- oder Landesdatenschutzgesetze? \nGibt es die Verpflichtung zur Bestellung eines Datenschutzbeauftragten? \nDiese Fragen sind zu klären und zu dokumentieren."
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_effectiveness",
-              "control_dataProtection_objectives_recoverability",
-              "control_dataProtection_objectives_resilience",
-              "control_dataProtection_objectives_availability",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "e7ca3ed2-cd6d-4636-8254-172fbe8bc23d"
     },
@@ -838,40 +486,6 @@
       "abbreviation": "",
       "description": "Die Datenschutzbeauftragte der Data GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Heidi",
-            "person_generalInformation_familyName": "Kruse",
-            "person_generalInformation_salutation": "Frau"
-          }
-        },
-        "person_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_address_city": "Göttingen",
-            "person_address_state": "Niedersachsen",
-            "person_address_country": "Deutschland",
-            "person_address_address1": "Bahnhofsallee 1b",
-            "person_address_postcode": "37081"
-          }
-        },
-        "person_dataProtectionOfficer": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_dataProtectionOfficer_expertise": true,
-            "person_dataProtectionOfficer_profession": "DSB, DSB-Auditor, Compliance-Manager"
-          }
-        },
-        "person_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_contactInformation_email": "HL@data.de",
-            "person_contactInformation_office": "0551 370000-0"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_DataProtectionOfficer", "status": "RELEASED" } },
       "id": "b24e644f-39e8-41d3-afbf-b65fb9d956dc"
     },
@@ -880,16 +494,6 @@
       "name": "Paul Prüfer",
       "designator": "PER-212714",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Paul",
-            "person_generalInformation_familyName": "Prüfer",
-            "person_generalInformation_salutation": "Herr"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "NEW" } },
       "id": "1864c227-8351-4bb1-8653-aa2195d1ebed"
     },
@@ -898,15 +502,6 @@
       "name": "Peter Prüfer",
       "designator": "PER-212693",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Peter",
-            "person_generalInformation_familyName": "Prüfer"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "RELEASED" } },
       "id": "0629f226-f1f2-4c0f-9a63-9b894e26fe3a"
     },
@@ -916,15 +511,6 @@
       "designator": "PER-212701",
       "description": "Der Informationssicherheitsbeauftragte der Data GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Jürgen",
-            "person_generalInformation_familyName": "Toast"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "RELEASED" } },
       "id": "07af3fc3-ae0d-47fd-95df-2cdd0642beb7"
     },
@@ -997,68 +583,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_PIADescription": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_PIADescription_dataType": false,
-            "process_PIADescription_legalBasis": false,
-            "process_PIADescription_testObject": "Erfassung von Videodaten im Eingangs- und Zutrittsbereich des Gebäudes. Die Erfassung soll durchgehend erfolgen. Hierbei werden Teile eines öffentlichen Parkplatzes des anliegenden Einkaufszentrums mit erfasst. In den Geschäftsräumen erfolgt die Erfassung an Wochentagen nur zwischen 20.00 Uhr und 6.00 Uhr. Die Kameras sind schwenkbar und können zoomen.",
-            "process_PIADescription_dataTransfer": true,
-            "process_PIADescription_affectedPersons": false,
-            "process_PIADescription_deletionPeriods": false,
-            "process_PIADescription_intendedPurpose": false,
-            "process_PIADescription_accessAuthorisation": false,
-            "process_PIADescription_applicationsSystems": false,
-            "process_PIADescription_dataTransferAdditions": "Es findet eine Datenübertragung statt an einen Dienstleister. Rechtliche Überprüfung erforderlich",
-            "process_PIADescription_informationObligations": false
-          }
-        },
-        "process_PIADetails": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_PIADetails_date": "2022-06-30",
-            "process_PIADetails_reason": "process_PIADetails_reason_new"
-          }
-        },
-        "process_PIADPO": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_PIADPO_advice": true,
-            "process_PIADPO_comment": "Rat des Datenschutzbeauftragten bezüglich der Videoüberwachung wurde eingeholt. Dieser bat um großflächige Kennzeichnung der Videoüberwachung. Aus dieser soll zusätzlich zur verpflichtenden Angabe des Verantwortlichen hervorgehen, dass das Videoüberwachungssystem die Videos aufzeichnet, also nicht nur Echtzeitaufnahmen erfolgen. Die Tonaufzeichnung sind nach Ansicht des DSB unzulässig und müssen unterbleiben. Schriftliche DSB-Stellungnahme zum Verarbeitungsvorgang Videoüberwachung liegt vor.",
-            "process_PIADPO_document": "https://www.bfdi.bund.de/DE/DerBfDI/Dokumente/Stellungnahmen/stellungnahmen_node.html"
-          }
-        },
-        "process_PIAAssessment": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_PIAAssessment_necessity": "Zoombarkeit und Schwenkbarkeit stellen einen sehr intensiven Eingriff in das Persönlichkeitsrecht der Betroffenen dar und sind weder verhältnismäßig noch erforderlich. Dies gilt gleichermaßen für eine durchgehende Erfassung.\nSoll der Eingangsbereich eines Gebäudes überwacht werden, darf die Kamera nicht mehr als eben diesen Bereich erfassen. Öffentliche Bereiche wie die Straße vor der Eingangstür dürfen in der Regel nicht per Kamera überwacht werden.",
-            "process_PIAAssessment_rulesExisting": false
-          }
-        },
-        "process_PIAInvolvement": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_PIAInvolvement_stakeholderPOV": false,
-            "process_PIAInvolvement_affectedPersons": "Arbeitnehmer und Betriebsrat",
-            "process_PIAInvolvement_affectedPersonsPOV": true,
-            "process_PIAInvolvement_stakeholderComment": "Nicht relevant, da keine Akteure",
-            "process_PIAInvolvement_affectedPersonsComment": "Viel zu weitreichende Eingriffe in die Persönlichkeitsrechte der Arbeitnehmer. Schriftliche Anforderungen und Kritikpunkte liegen vor.",
-            "process_PIAInvolvement_stakeholderParticipation": false
-          }
-        },
-        "process_PIAResult": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_PIAResult_risk": true,
-            "process_PIAResult_comment": "Das Risiko konnte nicht reduziert werden trotz Maßnahmen.",
-            "process_PIAResult_commentsPIO": "Videoüberwachung kann noch nicht eingeführt werden. Entscheidung der Aufsichtsbehörde ist abzuwarten.",
-            "process_PIAResult_consultationRequired": true,
-            "process_PIAResult_consultationConducted": false,
-            "process_PIAResult_consultationJustification": "Konsultationsprozess muss angestoßen werden, Verantwortlichkeiten müsse noch geklärt werden"
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "PRO_DPIA",
@@ -1091,16 +615,6 @@
       "designator": "CTL-509755",
       "description": "Es muss eine 6-monatige Löschfrist für abgelehnte Bewerber festgesetzt und mit der Personalabteilung kommuniziert werden",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-06-09" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_confidentiality"] }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -1137,19 +651,6 @@
       "name": "Informationspflichten Videoüberwachung",
       "designator": "CTL-509707",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-08-17",
-            "control_implementation_explanation": "Die Informationspflichten zu den Videoüberwachungsmaßnahmen müssen erstellt und für die Betroffenen zur Verfügung gestellt werden."
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_confidentiality"] }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -1164,12 +665,6 @@
       "name": "Interne Richtlinien zum Umgang mit Datenschutzverletzungen",
       "designator": "CTL-509739",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2023-03-17" }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -1184,25 +679,6 @@
       "name": "AV Vertrag mit SafeGuard",
       "designator": "CTL-509722",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-06-30",
-            "control_implementation_explanation": "Vertrag muss abgeschlossen werden, Sicherheitskonzept ist vorab anzufordern"
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_availability",
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -1227,16 +703,6 @@
       "designator": "PER-212692",
       "description": "Der Fachverantwortliche für das Marketing der Data GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Benni",
-            "person_generalInformation_familyName": "Brunop",
-            "person_generalInformation_salutation": "Herr"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "IN_PROGRESS" } },
       "id": "dab6fc43-b6f4-4813-890f-2e3291387f40"
     },
@@ -1275,25 +741,6 @@
       "name": "AV Externe Lohnbuchhaltung AG",
       "designator": "DOC-59686",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "document_contract": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_contract_type": "AV-Vertrag",
-            "document_contract_location": "document_contract_location_germany",
-            "document_contract_subcontractor": false
-          }
-        },
-        "document_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_details_version": "1.0",
-            "document_details_approvalDate": "2022-05-02",
-            "document_details_classification": "document_details_classification_confidential",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_contract"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "DOC_Contract", "status": "IN_PROGRESS" } },
       "id": "902940aa-d559-40f6-bd4c-d103ad0caef0"
     },
@@ -1303,19 +750,6 @@
       "designator": "CTL-509704",
       "description": "Auf die Datenverarbeitung ist\ntransparent und fair nach den Vorgaben der Art. 12 ff. DS-GVO hinzuweisen\n",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-08-26",
-            "control_implementation_explanation": "Es müssen am Anfangs- und am Endbereich des überwachten Areals Hinweisschilder so angebracht werden, dass sie von den Betroffenen direkt zur Kenntnis gelangen können."
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_confidentiality"] }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -1346,12 +780,6 @@
       "name": "Einwilligungserklärungen dokumentieren",
       "designator": "CTL-509728",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-08-24" }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -1375,22 +803,6 @@
       "designator": "CTL-509717",
       "description": "Durch eine Organisationsanweisung ist sicherzustellen, wie mit mobilen Arbeitsgeräten z.B. Laptops, Handy usw. umgegangen werden soll. Hierbei soll auch der Umgang mit Datenschutzverletzungen oder vorhandene Sicherungsmöglichkeiten wie abschließbare Schränke thematisiert werden.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2023-02-28" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_availability"
-            ]
-          }
-        }
-      },
       "parts": [
         { "targetUri": "/veo/controls/1c5cf9bb-c862-49cf-ac4b-02e958350bfc" },
         { "targetUri": "/veo/controls/e3d7ab4e-5cbe-434b-92f3-1ed3ae3afc0e" }
@@ -1411,12 +823,6 @@
       "abbreviation": "TOM-REC",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der personenbezogenen Daten und den Zugang zu ihnen bei einem physischen oder technischen Zwischenfall rasch wiederherzustellen.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_recoverability"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "NEW" } },
       "id": "cd610c32-8df6-40f5-bf5c-f4bb0088a2f9"
     },
@@ -1425,12 +831,6 @@
       "name": "Tonaufzeichnungen",
       "designator": "CTL-509735",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-06-29" }
-        }
-      },
       "parts": [
         { "targetUri": "/veo/controls/aa97588d-cbb6-430a-bb25-b4fd91150fcf" },
         { "targetUri": "/veo/controls/30e3c96a-dfd3-416e-9ca3-1ce29fbdc26e" }
@@ -1450,22 +850,6 @@
       "designator": "CTL-509736",
       "description": "Löschfrist von 2 Jahren festlegen, implementieren, kommunizieren und dokumentieren.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-06-30" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_availability",
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -1506,12 +890,6 @@
       "abbreviation": "TOM-EFF",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich Verfahren zur regelmäßigen Überprüfung, Bewertung und Evaluierung der Wirksamkeit der technischen und organisatorischen Maßnahmen zur Gewährleistung der Sicherheit der Verarbeitung.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_effectiveness"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "ARCHIVED" } },
       "id": "41837c71-ed17-4465-8f3c-e58c467fa3d6"
     },
@@ -1521,16 +899,6 @@
       "designator": "PER-212700",
       "description": "Die Fachverantwortliche für das Marketing der Data GmbH",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Nina",
-            "person_generalInformation_familyName": "Fliege",
-            "person_generalInformation_salutation": "Frau"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "RELEASED" } },
       "id": "76fb440b-1783-4ba5-93a5-d17e01d1d09f"
     },
@@ -1556,12 +924,6 @@
       "abbreviation": "TOM-R",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Belastbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_resilience"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "46f36102-df32-4da0-a216-e83589a99c9c"
     },
@@ -1571,17 +933,6 @@
       "designator": "PER-212702",
       "description": "Juristin in der Rechtsabteilung",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_title": "Dr.",
-            "person_generalInformation_givenName": "Stefanie",
-            "person_generalInformation_familyName": "Bremer",
-            "person_generalInformation_salutation": "Frau"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "NEW" } },
       "id": "1a3524e6-5b7f-440a-aad9-2c46faadfc7b"
     },
@@ -1662,78 +1013,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_processing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_processing_asProcessor": true }
-        },
-        "process_processingDetails": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2021-09-27",
-            "process_processingDetails_responsibleDepartment": "Marketing"
-          }
-        },
-        "process_accessAuthorization": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_accessAuthorization_concept": false,
-            "process_accessAuthorization_description": "Kein Berechtigungskonzept"
-          }
-        },
-        "process_dataProcessing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataProcessing_legalBasis": [
-              "process_dataProcessing_legalBasis_Art6Abs1litaDSGVO",
-              "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO"
-            ]
-          }
-        },
-        "process_opinionDPO": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_opinionDPO_findings": "Verwendung der Telefonnummer problematisch.\nKein Berechtigungskonzept.",
-            "process_opinionDPO_PIAComment": "Nicht erforderlich",
-            "process_opinionDPO_PIACarriedOut": false,
-            "process_opinionDPO_recommendations": "Überprüfung durch Rechtsabteilung erforderlich.\nBerechtigungskonzept sollte erstellt werden. \n",
-            "process_opinionDPO_consultationComment": "Nicht erforderlich",
-            "process_opinionDPO_consultationRequired": false,
-            "process_opinionDPO_consultationConducted": false
-          }
-        },
-        "process_dataSubjects": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataSubjects_dataSubjects": [
-              "process_dataSubjects_dataSubjects_controllers",
-              "process_dataSubjects_dataSubjects_customers"
-            ]
-          }
-        },
-        "process_intendedPurpose": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_intendedPurpose_intendedPurpose": "Kundenzufriedenheit" }
-        },
-        "process_privacyImpactAssessment": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_neither",
-            "process_privacyImpactAssessment_voluntary": false,
-            "process_privacyImpactAssessment_otherExclusions": false,
-            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
-          }
-        },
-        "process_informationsObligations": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_informationsObligations_status": true,
-            "process_informationsObligations_explanation": "Siehe Webseite"
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "PRO_DataProcessing",
@@ -1784,34 +1063,6 @@
       "designator": "PER-212704",
       "description": "Der IT-Leiter der Data GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Hans",
-            "person_generalInformation_familyName": "Meiser",
-            "person_generalInformation_salutation": "Herr"
-          }
-        },
-        "person_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_address_city": "Göttingen",
-            "person_address_state": "Niedersachsen",
-            "person_address_country": "D",
-            "person_address_address1": "Bahnhofsallee 1b",
-            "person_address_postcode": "37081"
-          }
-        },
-        "person_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_contactInformation_email": "hm@data.de",
-            "person_contactInformation_mobile": "0551 370000-9",
-            "person_contactInformation_office": "0551 370000-0"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "IN_PROGRESS" } },
       "id": "dbb5b495-4d29-4824-a493-a32411ce1e74"
     },
@@ -1822,12 +1073,6 @@
       "abbreviation": "TOM-P",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Pseudonymisierung personenbezogener Daten.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_pseudonymization"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "67d52c8f-1b86-4ac5-b37c-3c8e8234ef3b"
     },
@@ -1872,73 +1117,6 @@
             "target": { "targetUri": "/veo/persons/a7c03a56-14e0-4bd0-b1a3-ea6288151dc0" }
           }
         ]
-      },
-      "customAspects": {
-        "document_contactDetailsOfRequester": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_contactDetailsOfRequester_city": "Berlin",
-            "document_contactDetailsOfRequester_email": "hi@gmail.com",
-            "document_contactDetailsOfRequester_phone": "130 12398764",
-            "document_contactDetailsOfRequester_state": "Berlin",
-            "document_contactDetailsOfRequester_title": "Dr. ",
-            "document_contactDetailsOfRequester_mobile": "0176 4567383",
-            "document_contactDetailsOfRequester_address": "Nonnenstieg 23",
-            "document_contactDetailsOfRequester_country": "Deutschland",
-            "document_contactDetailsOfRequester_postcode": "10235",
-            "document_contactDetailsOfRequester_givenName": "Hans ",
-            "document_contactDetailsOfRequester_familyName": "Imglück",
-            "document_contactDetailsOfRequester_salutation": "Herr "
-          }
-        },
-        "document_dataSubjectRight": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_dataSubjectRight_deadline": "2023-07-10",
-            "document_dataSubjectRight_rightType": [
-              "document_dataSubjectRight_rightType_rightToWithdrawConsent",
-              "document_dataSubjectRight_rightType_rightToErasure"
-            ],
-            "document_dataSubjectRight_dateOfReceipt": "2023-06-05",
-            "document_dataSubjectRight_formOfRequest": [
-              "document_dataSubjectRight_formOfRequest_written",
-              "document_dataSubjectRight_formOfRequest_eMail"
-            ],
-            "document_dataSubjectRight_contentRequest": "Sehr geehrte Damen und Herren, \n\ndas Arbeitsverhältnis mit der Data GmbH ist seit dem 1.5.2023 beendet und ich bin seit diesem Zeitpunkt aus dem Unternehmen ausgeschieden. Da Bilder von mir immer noch auf der Homepage zu finden sind, möchte ich Sie bitten, sämtliche Fotos von mir von der Unternehmens-Website zu entfernen. \nHiermit widerrufe ich meine Einwilligung in die Verarbeitung meiner personenbezogenen Daten. Außerdem fordere ich Sie auf, meine bei Ihnen gespeicherten personenbezogenen Daten unverzüglich zu löschen. \nDes Weiteren fordere ich Sie auf, die mich betreffenden personenbezogenen Daten, die Sie auf der Basis meiner Einwilligung verarbeitet haben, unverzüglich zu löschen (Art. 17 I b DS-GVO).\nIch bitte um unverzügliche Bestätigung, dass meine personenbezogenen Daten bei Ihnen gelöscht wurden sowie, dass Sie die weiteren Empfänger durch Zusendung einer Kopie über mein Löschungsverlangen informiert haben. \n\nAbschließend weise ich auf Folgendes hin: Sie sind gesetzlich dazu verpflichtet, mir unverzüglich mitzuteilen, welche Maßnahmen Sie in Bezug auf meinen Widerruf ergriffen haben. Dazu gehört auch, dass Sie mir, wenn Sie meine Daten nicht löschen, mitzuteilen haben, auf welcher Rechtsgrundlage Sie meinen, diese noch weiterverarbeiten zu dürfen.\n\nMit freundlichen Grüßen\nHans Imglück",
-            "document_dataSubjectRight_extensionOfDeadline": false,
-            "document_dataSubjectRight_receiptConfirmation": true,
-            "document_dataSubjectRight_categoriesDataSubjects": [
-              "document_dataSubjectRight_categoriesDataSubjects_employees"
-            ]
-          }
-        },
-        "document_identify": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_identify_dataSubject": true,
-            "document_identify_identityChecked": "2023-06-14",
-            "document_identify_methodOfIdentification": [
-              "document_identify_methodOfIdentification_matching",
-              "document_identify_methodOfIdentification_other"
-            ]
-          }
-        },
-        "document_decisionRequest": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_decisionRequest_FormOfResponse": [
-              "document_decisionRequest_FormOfResponse_email",
-              "document_decisionRequest_FormOfResponse_post"
-            ],
-            "document_decisionRequest_grantingReason": "Sehr geehrter Herr Dr. Imglück\nIhr Löschungsersuchen vom 3.6.2023. ist uns am 5.6.2023 zugegangen.\nWir bestätigen Ihnen hiermit, dass Ihrem Antrag im vollem Umfang entsprochen wurde und wir die betreffenden Daten gelöscht haben. Wunschgemäß sind nun auf unserer Homepage sämtliche Bilder, die wir von Ihnen angefertigt und veröffentlicht haben, entfernt worden.\n\nMit freundlichen Grüßen,",
-            "document_decisionRequest_negativeMessage": false,
-            "document_decisionRequest_requestAnswered": "2023-07-20",
-            "document_decisionRequest_approvaleffected": true,
-            "document_decisionRequest_requestRejection": false,
-            "document_decisionRequest_grantingOfRequest": true,
-            "document_decisionRequest_dateOfRequestVerification": "2023-07-13"
-          }
-        }
       },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "DOC_RequestDataSubject", "status": "RELEASED" } },
       "id": "d6cda4c4-5cef-4c7f-a461-8ddc1b47657e"
@@ -2010,85 +1188,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_processing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_processing_asProcessor": false }
-        },
-        "process_processingDetails": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_planning",
-            "process_processingDetails_surveyConductedOn": "2022-06-10",
-            "process_processingDetails_responsibleDepartment": "Gebäudemanagement"
-          }
-        },
-        "process_accessAuthorization": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_accessAuthorization_concept": true }
-        },
-        "process_dataProcessing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataProcessing_legalBasis": [
-              "process_dataProcessing_legalBasis_Art6Abs1litfDSGVO",
-              "process_dataProcessing_legalBasis_P26Abs1BDSG"
-            ],
-            "process_dataProcessing_explanation": "Die Data GmbH geht aufgrund wiederholter Einbruchsversuche und Sachbeschädigungen in den letzten Monaten davon aus, dass eine besondere Gefährdungslage besteht, die durch die beschriebene Videoüberwachung eingedämmt werden kann. Deswegen liegt ein berechtigtes Interesse an der Videoüberwachung vor."
-          }
-        },
-        "process_opinionDPO": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_opinionDPO_findings": "Es sind keine Hinweisschilder angebracht. \nNeben den Bilddaten werden auch Tonaufzeichnungen angefertigt.",
-            "process_opinionDPO_PIAComment": "DSFA Prozess noch nicht abgeschlossen",
-            "process_opinionDPO_PIACarriedOut": true,
-            "process_opinionDPO_recommendations": "Es sollten für die Betroffenen erkennbare Hinweisschilder auf die Videoüberwachung mit den datenschutzrechtlichen Angaben angebracht werden. Informationspflichten werden nicht erfüllt. Die Tonaufzeichnung der Betroffenen im Zuge der Videoüberwachung ist unzulässig. Es muss eine DSFA durchgeführt werden.",
-            "process_opinionDPO_consultationRequired": false,
-            "process_opinionDPO_consultationConducted": false
-          }
-        },
-        "process_dataSubjects": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataSubjects_dataSubjects": [
-              "process_dataSubjects_dataSubjects_employees",
-              "process_dataSubjects_dataSubjects_applicants",
-              "process_dataSubjects_dataSubjects_supplier",
-              "process_dataSubjects_dataSubjects_customers",
-              "process_dataSubjects_dataSubjects_externalServiceProvider"
-            ]
-          }
-        },
-        "process_intendedPurpose": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_intendedPurpose_intendedPurpose": "Zum Zwecke einer Vandalismusprävention, Diebstahlschutz"
-          }
-        },
-        "process_privacyImpactAssessment": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_positive",
-            "process_privacyImpactAssessment_voluntary": false,
-            "process_privacyImpactAssessment_otherExclusions": false,
-            "process_privacyImpactAssessment_processingCriteria": [
-              "process_privacyImpactAssessment_processingCriteria_monitoring",
-              "process_privacyImpactAssessment_processingCriteria_specialCategories",
-              "process_privacyImpactAssessment_processingCriteria_vulnerability"
-            ],
-            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
-          }
-        },
-        "process_informationsObligations": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_informationsObligations_status": false,
-            "process_informationsObligations_explanation": "Liegen noch nicht vor"
-          }
-        }
-      },
       "parts": [{ "targetUri": "/veo/processes/1c4b1520-249c-4797-b590-7c900f2819a0" }],
       "domains": {
         "{%%DOMAIN_ID%%}": {
@@ -2147,12 +1246,6 @@
       "abbreviation": "TOM-I",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Integrität der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_integrity"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "a8b9f459-f5b5-43f2-ac09-4fb55fff36f9"
     },
@@ -2226,21 +1319,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_processing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_processing_asProcessor": false }
-        },
-        "process_processingDetails": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2022-12-01",
-            "process_processingDetails_responsibleDepartment": "Personalabteilung"
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "PRO_DataProcessing",
@@ -2255,15 +1333,6 @@
       "name": "Löschverfahren Videoaufzeichnungen",
       "designator": "CTL-509708",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-08-31",
-            "control_implementation_explanation": "Löschmechanismen für Videoaufzeichnungen müssen implementiert und dokumentiert werden, d.h Art und Weise der Löschung und Nachweise"
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -2295,12 +1364,6 @@
       "designator": "SCP-124768",
       "description": "SafeGuard ist mit der Durchführung der Videoüberwachung beauftragt",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "scope_thirdCountry_status": false }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "SCP_Processor", "status": "NEW" } },
       "id": "2a760cfb-30ed-4fa5-8cdc-e3f36deb4af2"
     },
@@ -2310,21 +1373,6 @@
       "designator": "CTL-509757",
       "description": "Ein schriftliches Berechtigungskonzept ist zu erstellen",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-11-30" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "parts": [
         { "targetUri": "/veo/controls/81e88621-c38e-4e2e-91ab-e2bd53ca16ce" },
         { "targetUri": "/veo/controls/68ab05d4-4e3f-4325-b3ca-67ab8effb3d3" }
@@ -2343,18 +1391,6 @@
       "name": "Einsatz von SSL/TLS-Verschlüsselung bei Datenübertragung im Internet",
       "designator": "CTL-509710",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_encryption",
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "FOR_REVIEW" } },
       "id": "6dc4da05-3b7b-4c80-a85c-f78a6ee104fa"
     },
@@ -2363,12 +1399,6 @@
       "name": "Berechtigungskonzept verfassen",
       "designator": "CTL-509749",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-09-30" }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -2452,72 +1482,6 @@
             "target": { "targetUri": "/veo/processes/a6c2f91d-5d86-4c42-9564-d9f53da0aacc" }
           }
         ]
-      },
-      "customAspects": {
-        "process_processing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_processing_asProcessor": false }
-        },
-        "process_processingDetails": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2021-08-16",
-            "process_processingDetails_responsibleDepartment": "Personalabteilung"
-          }
-        },
-        "process_accessAuthorization": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_accessAuthorization_concept": true,
-            "process_accessAuthorization_description": "Nicht ausreichend dokumentiert"
-          }
-        },
-        "process_dataProcessing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataProcessing_legalBasis": ["process_dataProcessing_legalBasis_Art6Abs1litbDSGVO"],
-            "process_dataProcessing_explanation": "Art. 6 Abs. 1 b DS-GVO Durchführung des Arbeitsvertrags, Erfüllung vertraglicher Pflichten",
-            "process_dataProcessing_otherLegalBasis": "keine"
-          }
-        },
-        "process_opinionDPO": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_opinionDPO_findings": "Alles gut gemacht",
-            "process_opinionDPO_PIAComment": "Nicht erforderlich",
-            "process_opinionDPO_PIACarriedOut": false,
-            "process_opinionDPO_recommendations": "Nichts zu verbessern",
-            "process_opinionDPO_consultationRequired": false,
-            "process_opinionDPO_consultationConducted": false
-          }
-        },
-        "process_dataSubjects": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_dataSubjects_dataSubjects": ["process_dataSubjects_dataSubjects_employees"] }
-        },
-        "process_intendedPurpose": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_intendedPurpose_intendedPurpose": "Lohnbuchhaltung, Gehaltsabrechnung" }
-        },
-        "process_privacyImpactAssessment": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_neither",
-            "process_privacyImpactAssessment_voluntary": false,
-            "process_privacyImpactAssessment_otherExclusions": false,
-            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
-          }
-        },
-        "process_informationsObligations": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_informationsObligations_status": true,
-            "process_informationsObligations_document": "www.data.de",
-            "process_informationsObligations_explanation": "Siehe Webseite"
-          }
-        }
       },
       "domains": {
         "{%%DOMAIN_ID%%}": {
@@ -2605,15 +1569,6 @@
       "name": "Technische Dokumentation anfertigen",
       "designator": "CTL-509761",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-07-29",
-            "control_implementation_explanation": "Die technische Dokumentation ist zu vervollständigen. Zudem sind die Zwecke für jede einzelne Kamera schriftlich zu dokumentieren.\nFragebogen hierfür anhängend"
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -2720,75 +1675,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_processing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_processing_asProcessor": false }
-        },
-        "process_processingDetails": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_processingDetails_typeOfSurvey": "process_processingDetails_typeOfSurvey_new",
-            "process_processingDetails_operatingStage": "process_processingDetails_operatingStage_operation",
-            "process_processingDetails_surveyConductedOn": "2021-08-02",
-            "process_processingDetails_responsibleDepartment": "Personalabteilung"
-          }
-        },
-        "process_accessAuthorization": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_accessAuthorization_concept": true,
-            "process_accessAuthorization_description": "Zuständiger Sachbearbeiter im Personalbereich, Teamleiter, ggf. Geschäftsführer:in"
-          }
-        },
-        "process_dataProcessing": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataProcessing_explanation": "Für die Begründung eines Beschäftigungsverhältnisses",
-            "process_dataProcessing_otherLegalBasis": "§ 26 I BDSG, § 26 III BDSG"
-          }
-        },
-        "process_opinionDPO": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_opinionDPO_findings": "Keine Löschvorgaben festgesetzt.",
-            "process_opinionDPO_PIAComment": "Nicht erforderlich",
-            "process_opinionDPO_PIACarriedOut": false,
-            "process_opinionDPO_recommendations": "Löschung der Daten 6 Monate nach Vergabe der Stelle, außer der Bewerber hat der Aufnahme in Bewerberpool explizit zugestimmt.",
-            "process_opinionDPO_consultationComment": "Nicht erforderlich",
-            "process_opinionDPO_consultationRequired": false,
-            "process_opinionDPO_consultationConducted": false
-          }
-        },
-        "process_dataSubjects": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataSubjects_dataSubjects": ["process_dataSubjects_dataSubjects_applicants"],
-            "process_dataSubjects_otherDataSubjects": "Keine"
-          }
-        },
-        "process_intendedPurpose": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_intendedPurpose_intendedPurpose": "Personalbeschaffung" }
-        },
-        "process_generalInformation": { "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }] },
-        "process_privacyImpactAssessment": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_privacyImpactAssessment_listed": "process_privacyImpactAssessment_listed_neither",
-            "process_privacyImpactAssessment_voluntary": false,
-            "process_privacyImpactAssessment_otherExclusions": false,
-            "process_privacyImpactAssessment_processingOperationAccordingArt35": false
-          }
-        },
-        "process_informationsObligations": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_informationsObligations_status": true,
-            "process_informationsObligations_explanation": "Informationspflichten sind erfüllt, Vorlagen anbei"
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "PRO_DataProcessing",
@@ -2831,12 +1717,6 @@
       "designator": "CTL-509732",
       "description": "Informationspflichten müssen angepasst werden an die veränderten Bedingungen und den Betroffenen zur Kenntnis gebracht werden",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-08-04" }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -2896,16 +1776,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_recipient": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_recipient_type": "process_recipient_type_internal" }
-        },
-        "process_dataTransfer": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_dataTransfer_otherLegalBasis": "§ 26 I BDSG, § 26 III BDSG" }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PRO_DataTransfer", "status": "NEW" } },
       "id": "13cb5c4b-a90e-401f-a580-7eb7439e59fe"
     },
@@ -2932,21 +1802,6 @@
             "target": { "targetUri": "/veo/scopes/839b77f0-0058-41c6-8574-db23f1307e25" }
           }
         ]
-      },
-      "customAspects": {
-        "process_recipient": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_recipient_type": "process_recipient_type_processor" }
-        },
-        "process_dataTransfer": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataTransfer_document": "https://www.adv.de",
-            "process_dataTransfer_legalBasis": ["process_dataTransfer_legalBasis_Art9Abs2litfDSGVO"],
-            "process_dataTransfer_explanation": "Kein Steuerberater, StBerG nicht anwendbar. AV-Vertrag wurde abgeschlossen"
-          }
-        },
-        "process_generalInformation": { "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }] }
       },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PRO_DataTransfer", "status": "ARCHIVED" } },
       "id": "a6c2f91d-5d86-4c42-9564-d9f53da0aacc"
@@ -2988,18 +1843,6 @@
           }
         ]
       },
-      "customAspects": {
-        "process_recipient": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "process_recipient_type": "process_recipient_type_external" }
-        },
-        "process_dataTransfer": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "process_dataTransfer_otherLegalBasis": "§ 41a EStG, §§ 28a ff. SGB IV, § 28b Abs.1 Satz 1 Nr.1-5 SGB IV"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PRO_DataTransfer", "status": "FOR_REVIEW" } },
       "id": "04ec5395-082b-4882-84a0-5ab2c3b0a744"
     },
@@ -3009,35 +1852,6 @@
       "designator": "PER-212696",
       "description": "Der Geschäftsführer der Data GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_title": "Dr.",
-            "person_generalInformation_givenName": "Jens",
-            "person_generalInformation_familyName": "Lerche",
-            "person_generalInformation_salutation": "Herr"
-          }
-        },
-        "person_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_address_city": "Göttingen",
-            "person_address_state": "Niedersachsen",
-            "person_address_country": "D",
-            "person_address_address1": "Bahnhofsallee 1b",
-            "person_address_postcode": "37081"
-          }
-        },
-        "person_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_contactInformation_email": "jl@data.de",
-            "person_contactInformation_mobile": "0551 370000-9",
-            "person_contactInformation_office": "0551 370000-0"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "ARCHIVED" } },
       "id": "46730557-030d-4f17-9b44-4e41080473ba"
     },
@@ -3061,15 +1875,6 @@
       "name": "Clients",
       "designator": "AST-268393",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "asset_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "asset_details_number": 50,
-            "asset_details_operatingStage": "asset_details_operatingStage_operation"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "AST_IT-System", "status": "RELEASED" } },
       "id": "05070e22-4a9d-4008-8642-035fc3dd53bb"
     },
@@ -3111,21 +1916,6 @@
       "designator": "CTL-509709",
       "description": "Einwilligungserklärungen müssen datenschutzrechtlichen Anforderungen entsprechend erstellt werden",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-05-31" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -3142,12 +1932,6 @@
       "abbreviation": "TOM-C",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Vertraulichkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_confidentiality"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "dae2ab77-6c2b-4fc4-a59b-2680e703a410"
     },
@@ -3165,19 +1949,6 @@
       "name": "Geeignete Aufstellung von Druckern und Kopierern",
       "designator": "CTL-509744",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2021-08-19",
-            "control_implementation_explanation": "Drucker und Kopierer müssen in geeigneter Weise aufgestellt werden."
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_confidentiality"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "c2040e78-41ad-451e-9ced-8b6221239151"
     },
@@ -3203,33 +1974,6 @@
       "designator": "PER-212699",
       "description": "Der Datenschutzbeauftragte der FED AG",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Dieter",
-            "person_generalInformation_familyName": "Data",
-            "person_generalInformation_salutation": "Herr"
-          }
-        },
-        "person_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_address_city": "Berlin",
-            "person_address_state": "Berlin",
-            "person_address_country": "Deutschland",
-            "person_address_address1": "Helmholzweg 3",
-            "person_address_postcode": "10117"
-          }
-        },
-        "person_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_contactInformation_email": "dd@DS-Fed.de",
-            "person_contactInformation_office": "030 12345"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_DataProtectionOfficer", "status": "RELEASED" } },
       "id": "de1c35ee-5ab6-4da9-9d6c-208d1496e5bb"
     },
@@ -3239,25 +1983,6 @@
       "designator": "CTL-509748",
       "description": "Die Datenträger werden vor und nach dem Versand sicher aufbewahrt.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2021-10-23",
-            "control_implementation_explanation": "Geeigneter Prozess ist zu implementieren"
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_availability",
-              "control_dataProtection_objectives_confidentiality"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -3273,16 +1998,6 @@
       "designator": "PER-212708",
       "description": "Die Leiterin der Personalabteilung der Data GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Jule",
-            "person_generalInformation_familyName": "Penny",
-            "person_generalInformation_salutation": "Frau"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "RELEASED" } },
       "id": "127704b5-bfb7-47a5-83e7-137c4cb7b37e"
     },
@@ -3317,24 +2032,6 @@
       "name": "Rechtsgutachten Videoüberwachung",
       "designator": "CTL-509759",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-07-22",
-            "control_implementation_explanation": "Eine Stellungnahme zur datenschutzrechtlichen Zulässigkeit der Videoüberwachung insbesondere der Tonaufzeichnungen ist seitens der Rechtsabteilung anzufertigen. Weitergehende Maßnahmen, die aus dem Gutachten resultieren sind mit den Verantwortlichen zu kommunizieren und anzustoßen"
-          }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -3358,22 +2055,6 @@
       "designator": "CTL-509720",
       "description": "Die Organisationsanweisung zu mobilen Arbeitsgeräten muss intern kommuniziert werden. Hierfür soll sie im Intranet veröffentlicht werden. Die Arbeitnehmer sind per E-Mail darüber in Kenntnis zu setzen. Zudem soll sie Bestandteil der Datenschutzschulungen werden.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2023-02-28" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_availability",
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -3388,21 +2069,6 @@
       "name": "Einwilligungserklärungen ergänzen",
       "designator": "CTL-509758",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-08-31" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -3417,29 +2083,6 @@
       "name": "Bewerbungen AG",
       "designator": "SCP-124767",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "scope_thirdCountry_status": false }
-        },
-        "scope_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_address_city": "Berlin",
-            "scope_address_state": "Berlin",
-            "scope_address_country": "Deutschland",
-            "scope_address_address1": "Hallenufer 5",
-            "scope_address_postcode": "10117"
-          }
-        },
-        "scope_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_contactInformation_email": "info@bewerbungen.de",
-            "scope_contactInformation_phone": "030- 123456"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "SCP_JointController", "status": "RELEASED" } },
       "id": "af8a0986-6365-4f25-a6e7-5f37e7da99cd"
     },
@@ -3450,12 +2093,6 @@
       "abbreviation": "TOM-A",
       "description": "Technische und organisatorische Maßnahmen gem. Art. 32 Abs. 1 DS-GVO hinsichtlich der Fähigkeit, die Verfügbarkeit der Systeme und Dienste im Zusammenhang mit der Verarbeitung auf Dauer sicherzustellen.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_dataProtection_objectives": ["control_dataProtection_objectives_availability"] }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "FOR_REVIEW" } },
       "id": "cfd7ac1b-59c7-440b-9fc6-48a0d479cb26"
     },
@@ -3514,67 +2151,6 @@
           }
         ]
       },
-      "customAspects": {
-        "document_contactDetailsOfRequester": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_contactDetailsOfRequester_city": "Berlin",
-            "document_contactDetailsOfRequester_email": "st@gmx.de",
-            "document_contactDetailsOfRequester_phone": "030 - 1234567",
-            "document_contactDetailsOfRequester_state": "Berlin",
-            "document_contactDetailsOfRequester_mobile": "0177654321",
-            "document_contactDetailsOfRequester_address": "Postweg 10",
-            "document_contactDetailsOfRequester_country": "Deutschland",
-            "document_contactDetailsOfRequester_postcode": "10117",
-            "document_contactDetailsOfRequester_givenName": "Sabine",
-            "document_contactDetailsOfRequester_familyName": "Teller",
-            "document_contactDetailsOfRequester_salutation": "Frau"
-          }
-        },
-        "document_dataSubjectRight": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_dataSubjectRight_deadline": "2023-08-08",
-            "document_dataSubjectRight_rightType": [
-              "document_dataSubjectRight_rightType_rightToErasure",
-              "document_dataSubjectRight_rightType_rightToWithdrawConsent"
-            ],
-            "document_dataSubjectRight_dateOfReceipt": "2023-07-04",
-            "document_dataSubjectRight_extendedUntil": "2023-08-31",
-            "document_dataSubjectRight_formOfRequest": ["document_dataSubjectRight_formOfRequest_eMail"],
-            "document_dataSubjectRight_contentRequest": "Sehr geehrte Damen und Herren, \n\nda das Bewerberverfahren abgeschlossen ist und ich eine Absage von Ihnen erhalten habe, möchte ich hiermit von meinem Recht nach Art. 17 Abs. 1 DS-GVO Gebrauch machen und beantrage die Löschung aller meiner personenbezogenen Daten aus meiner Bewerbung – insbesondere Name, Kontaktdaten, Anschreiben, Lebenslauf, Bewerbungsfoto, Zeugnisse, Anlagen. \nHiermit widerrufe ich zudem die Verarbeitung meiner Daten nach Art. 6 Abs. 1 oder Art. 9 Abs. 2 DS-GVO. Weiterhin lege ich im Sinne des Art. 21 DS-GVO Widerspruch gegen die Verarbeitung meiner personenbezogenen Daten ein, dies gilt auch für das sog. Profiling.\nBitte bestätigen Sie mir die vollständige Löschung meiner Daten schriftlich.\n\nMit freundlichen Grüßen\nSabine Teller",
-            "document_dataSubjectRight_extensionOfDeadline": true,
-            "document_dataSubjectRight_receiptConfirmation": true,
-            "document_dataSubjectRight_categoriesDataSubjects": [
-              "document_dataSubjectRight_categoriesDataSubjects_applicants"
-            ],
-            "document_dataSubjectRight_reasonForExtensionOfDeadline": "Anfrage ist zu komplex",
-            "document_dataSubjectRight_dateOfInformationAboutExtension": "2023-08-03",
-            "document_dataSubjectRight_informationAboutExtensionOfDeadline": true
-          }
-        },
-        "document_identify": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_identify_dataSubject": true,
-            "document_identify_identityChecked": "2023-07-28",
-            "document_identify_methodOfIdentification": ["document_identify_methodOfIdentification_matching"]
-          }
-        },
-        "document_decisionRequest": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_decisionRequest_FormOfResponse": ["document_decisionRequest_FormOfResponse_email"],
-            "document_decisionRequest_grantingReason": "Sehr geehrte Frau Teller, \n\nherzlichen Dank für Ihre Anfrage zur Löschung Ihrer personenbezogenen Daten.\nDerzeit werden bei uns folgende Unterlagen gespeichert:\n\n    • Lebenslauf mit Foto \n    • Anschreiben \n    • Arbeitszeugnisse von folgenden Arbeitgebern: Audit AG, commit GmbH\n\nGerne kommen wir Ihrem Wunsch nach Löschung der Bewerberdaten nach. Ihre Daten werden in unseren Systemen am 1.12.23 gelöscht, da ein Löschantrag erst 6 Monate nach Abschluss des Stellenbesetzungsverfahrens bzw. des Verfahrens zur Besetzung der Ausbildungsplätze bearbeitet werden kann. Der Bestand Ihres Accounts bzw. Ihrer Bewerbung ist während dieses Zeitraumes für den Fall etwaiger Klagen (v.a. etwaige Geltendmachung von Ansprüchen nach dem Allgemeinen Gleichbehandlungsgesetz) aus Rechtsgründen erforderlich. \n\nMit freundlichen Grüßen",
-            "document_decisionRequest_negativeMessage": false,
-            "document_decisionRequest_requestAnswered": "2023-08-30",
-            "document_decisionRequest_approvaleffected": true,
-            "document_decisionRequest_requestRejection": false,
-            "document_decisionRequest_grantingOfRequest": true,
-            "document_decisionRequest_dateOfRequestVerification": "2023-07-20"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "DOC_RequestDataSubject", "status": "RELEASED" } },
       "id": "8e070937-790b-469a-883a-7892be37548f"
     },
@@ -3593,16 +2169,6 @@
       "designator": "PER-212694",
       "description": "Mitarbeiter im Gebäudemanagement",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Markus",
-            "person_generalInformation_familyName": "Reiter",
-            "person_generalInformation_salutation": "Herr"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "NEW" } },
       "id": "a7c03a56-14e0-4bd0-b1a3-ea6288151dc0"
     },
@@ -3659,37 +2225,6 @@
           }
         ]
       },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "scope_thirdCountry_status": false }
-        },
-        "scope_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_address_city": "Trier",
-            "scope_address_state": "Rheinland-Pfalz",
-            "scope_address_country": "Deutschland",
-            "scope_address_address1": "Karlsweg 5",
-            "scope_address_postcode": "54295"
-          }
-        },
-        "scope_regulatoryAuthority": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_regulatoryAuthority_name": "Landesbeauftragte für Datenschutz und Informationsfreiheit"
-          }
-        },
-        "scope_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_contactInformation_fax": "01234567",
-            "scope_contactInformation_email": "kontakt@FED.com",
-            "scope_contactInformation_phone": "01234567",
-            "scope_contactInformation_website": "www.FED.com"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "SCP_Controller", "status": "FOR_REVIEW" } },
       "id": "6502f8ce-044c-48ad-8542-5e2cefa01792"
     },
@@ -3699,16 +2234,6 @@
       "designator": "PER-212697",
       "description": "Risikoverantwortlicher",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "person_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "person_generalInformation_givenName": "Rudi",
-            "person_generalInformation_familyName": "Stürmer",
-            "person_generalInformation_salutation": "Herr"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "PER_Person", "status": "NEW" } },
       "id": "4b27b820-6049-4dfa-90b8-05cfa2e1160c"
     },
@@ -3773,12 +2298,6 @@
       "name": "Widerspruchsmöglichkeiten",
       "designator": "CTL-509726",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-10-29" }
-        }
-      },
       "parts": [
         { "targetUri": "/veo/controls/441000bb-5811-414f-9736-fc736271b183" },
         { "targetUri": "/veo/controls/1157a5ce-8c85-450b-9717-1562104feb09" },
@@ -3807,21 +2326,6 @@
       "name": "Berechtigungskonzept implementieren und kommunizieren",
       "designator": "CTL-509716",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-11-30" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -3883,44 +2387,6 @@
           }
         ]
       },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "scope_thirdCountry_status": false }
-        },
-        "scope_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_address_city": "Göttingen",
-            "scope_address_state": "Niedersachsen",
-            "scope_address_country": "Deutschland",
-            "scope_address_address1": "Bahnhofsplatz 1",
-            "scope_address_postcode": "56081"
-          }
-        },
-        "scope_regulatoryAuthority": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_regulatoryAuthority_fax": "0511120 45 99",
-            "scope_regulatoryAuthority_city": "Hannover",
-            "scope_regulatoryAuthority_name": "Die Landesbeauftragte für den Datenschutz Niedersachsen",
-            "scope_regulatoryAuthority_email": "poststelle@lfd.niedersachsen.de",
-            "scope_regulatoryAuthority_phone": "0511 120 45 00",
-            "scope_regulatoryAuthority_website": "https://lfd.niedersachsen.de/startseite/",
-            "scope_regulatoryAuthority_address1": "Prinzenstraße 5",
-            "scope_regulatoryAuthority_postcode": "30159",
-            "scope_regulatoryAuthority_description": "Frau Barbara Thiel"
-          }
-        },
-        "scope_contactInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_contactInformation_email": "kontakt@data.de",
-            "scope_contactInformation_phone": "0523 7006000",
-            "scope_contactInformation_website": "www.data.de"
-          }
-        }
-      },
       "members": [
         { "targetUri": "/veo/documents/d6cda4c4-5cef-4c7f-a461-8ddc1b47657e" },
         { "targetUri": "/veo/processes/327fea54-6836-4112-b9c2-8502185104cd" },
@@ -3953,18 +2419,6 @@
       "name": "E-Mail-Verschlüsselung von sensibler Kommunikation mittels S/MIME",
       "designator": "CTL-509721",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_encryption",
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality"
-            ]
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "c61a1250-03d2-4f26-bc71-1896492aa36f"
     },
@@ -3989,31 +2443,6 @@
             "target": { "targetUri": "/veo/documents/902940aa-d559-40f6-bd4c-d103ad0caef0" }
           }
         ]
-      },
-      "customAspects": {
-        "scope_generalInformation": { "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }] },
-        "scope_thirdCountry": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "scope_thirdCountry_status": false }
-        },
-        "scope_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_address_city": "Hamburg",
-            "scope_address_state": "Hamburg",
-            "scope_address_country": "Deutschland",
-            "scope_address_address1": "Sierichstraße 46",
-            "scope_address_postcode": "22301"
-          }
-        },
-        "scope_tomAssessment": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_tomAssessment_certification": true,
-            "scope_tomAssessment_securityConcept": true,
-            "scope_tomAssessment_overallAssessment": "Alles super"
-          }
-        }
       },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "SCP_Processor", "status": "FOR_REVIEW" } },
       "id": "839b77f0-0058-41c6-8574-db23f1307e25"
@@ -4076,22 +2505,6 @@
           }
         ]
       },
-      "customAspects": {
-        "scope_thirdCountry": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "scope_thirdCountry_status": true }
-        },
-        "scope_address": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "scope_address_city": "Stockton",
-            "scope_address_state": "California",
-            "scope_address_country": "USA",
-            "scope_address_address1": "1012 Freedom Lane",
-            "scope_address_postcode": "95202"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "SCP_Processor", "status": "RELEASED" } },
       "id": "cbb701c5-13c0-4146-ace2-6942f652b02f"
     },
@@ -4100,18 +2513,6 @@
       "name": "Datenschutzaspekte bei der Protokollierung",
       "designator": "CTL-509762",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": { "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }] },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_integrity",
-              "control_dataProtection_objectives_confidentiality"
-            ]
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "CTL_TOM", "status": "RELEASED" } },
       "id": "5f9bc402-00d4-4e13-ad16-d6c646dc0124"
     },
@@ -4120,21 +2521,6 @@
       "name": "Konsultation Rechtsabteilung",
       "designator": "CTL-509756",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "control_implementation_date": "2022-05-26" }
-        },
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "parts": [
         { "targetUri": "/veo/controls/be2e21f3-71e0-4994-ab29-1794438abfdb" },
         { "targetUri": "/veo/controls/aa11ea97-922d-4216-8878-284a22f3f597" },
@@ -4183,24 +2569,6 @@
       "name": "AV Zoom",
       "designator": "DOC-59688",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "document_contract": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_contract_type": "AV Vertrag",
-            "document_contract_location": "document_contract_location_thirdCountry",
-            "document_contract_thirdCountry": "USA",
-            "document_contract_subcontractor": false
-          }
-        },
-        "document_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "document_details_classification": "document_details_classification_internalUse",
-            "document_details_typeOfDocument": "document_details_typeOfDocument_contract"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "DOC_Contract", "status": "RELEASED" } },
       "id": "8d161551-c07b-424f-ac70-93a6ffa6e872"
     },
@@ -4289,104 +2657,6 @@
           }
         ]
       },
-      "customAspects": {
-        "incident_presumedMotivation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_presumedMotivation_others": "keine gezielte Motivation, vielmehr Unachtsamkeit der Verursacherin.",
-            "incident_presumedMotivation_typeOfAttack": "incident_presumedMotivation_typeOfAttack_undirectedAttack",
-            "incident_presumedMotivation_lawEnforcement": "incident_presumedMotivation_lawEnforcement_noCriminalCharges",
-            "incident_presumedMotivation_presumedMotivation": [
-              "incident_presumedMotivation_presumedMotivation_presumedMotivationOthers"
-            ]
-          }
-        },
-        "incident_supervisoryAuthority": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_supervisoryAuthority_withinHours": "incident_supervisoryAuthority_withinHours_within72Hours",
-            "incident_supervisoryAuthority_notificationMade": true,
-            "incident_supervisoryAuthority_otherAuthorities": false,
-            "incident_supervisoryAuthority_timeDateNotification": "2022-12-04T17:08:10+01:00"
-          }
-        },
-        "incident_crossBorder": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "incident_crossBorder_crossBorder": false }
-        },
-        "incident_involvedParticipants": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_involvedParticipants_processor": false,
-            "incident_involvedParticipants_jointController": false
-          }
-        },
-        "incident_description": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_description_others": "Einer der Empfänger antwortete auf das Einladungsschreiben und bezog hierbei alle weiteren Empfänger mit ein, so dass es Fr. Penny auffiel.",
-            "incident_description_description": "Fr. Penny hat am 1.12.2022 gegen 19:00 Uhr 20 Arbeitnehmer*innen der Data GmbH zu einer Veranstaltung zum Betrieblichen Eingliederungsmanagement (BEM) per E-Mail eingeladen. Hierbei hat sie versehentlich einen offenen E-Mail-Verteiler verwendet, d. h., die Empfänger sind im CC- statt im BCC-Feld angegeben. Diese Eigenschaft sorgt dafür, dass der Verteiler für alle Empfänger einsehbar ist. Die Personen in CC können nun sehen, an welche E-Mail-Adresse die BEM -Einladung versandt wurde. Darüber hinaus ist der gesamte Verlauf sichtbar.\nFr. Penny hat den Vorfall erst am nächsten Morgen zum Dienstantritt 7:30 bemerkt und hierauf die DSB telefonisch informiert.",
-            "incident_description_stillContinues": false,
-            "incident_description_dateTimeOfIncident": "2022-12-01T19:00:07+01:00",
-            "incident_description_howIncidentNoticed": ["incident_description_howIncidentNoticed_others"],
-            "incident_description_locationOfIncident": "incident_description_locationOfIncident_inside",
-            "incident_description_timeOfIncidentknown": true,
-            "incident_description_affectedProtectiongoals": [
-              "incident_description_affectedProtectiongoals_confidentiality"
-            ],
-            "incident_description_reportDateTimeOfIncident": "2022-12-02T08:00:26+01:00",
-            "incident_description_discoveryDateTimeOfIncident": "2022-12-02T07:30:57+01:00"
-          }
-        },
-        "incident_potentialEffect": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_potentialEffect_reason": "Für die betroffenen Personen können durch die unbefugte Offenbarung der Gesundheitsdaten soziale und karrieretechnische Nachteile entstehen. Es ist ist nicht auszuschließen, dass die Betroffenen aufgrund ihres Gesundheitszustandes bei Projekten, Beförderungen etc. nicht berücksichtigt werden. Hinzu kommt die Gefahr einer Missbräuchlichen Verwendung der E-Mail-Adressen.",
-            "incident_potentialEffect_valuationDataBreach": "incident_potentialEffect_valuationDataBreach_limited",
-            "incident_potentialEffect_impactOnDataSubjects": [
-              "incident_potentialEffect_impactOnDataSubjects_discrimination",
-              "incident_potentialEffect_impactOnDataSubjects_identityTheftOrFraud"
-            ]
-          }
-        },
-        "incident_cause": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_cause_organizationalCause": ["incident_cause_organizationalCause_incorrectOperation"]
-          }
-        },
-        "incident_dataConcerned": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_dataConcerned_categoriesDataSubjects": [
-              "incident_dataConcerned_categoriesDataSubjects_employees"
-            ],
-            "incident_dataConcerned_numberOfPersonalDataRecords": "20",
-            "incident_dataConcerned_numberOfDataSubjectsConcerned": "20"
-          }
-        },
-        "incident_notificationAffectedPersons": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_notificationAffectedPersons_highRisk": true,
-            "incident_notificationAffectedPersons_reasonRisk": "Bei dem offenen Verteiler für die BEM-Verantsaltung werden Gesundheitsdaten und damit besondere Kategorien personenbezogner Daten unbefugt offenbart . Aus dieser Information kann geschlossen werden, dass der Empfängerkreis innerhalb eines Jahres länger als 6 Wochen ununterbrochen oder wiederholt arbeitsunfähig war. Angescihts der Sensitivität der Daten und der damit verbundenen möglichen Nachteilen für die vom offenen BEM-Verteiler betroffenen Personen ist von einem hohen Risiko auszugehen.",
-            "incident_notificationAffectedPersons_formOfNotification": "Per E-Mail",
-            "incident_notificationAffectedPersons_timeOfNotification": "2022-12-05",
-            "incident_notificationAffectedPersons_contentNotification": "Sehr geehrte Damen und Herren, \nmit nachfolgenden Angaben informieren wir Sie gemäß Art. 33 Abs. 1 DS-GVO über die unrechtmäßige Datenübermittlung bzw. unrechtmäßige Kenntniserlangung von Daten durch Dritte. Am 2.12.2023 haben wir festgestellt, dass wir bei der Einladung zu der BEM-Veranstaltung versehentlich einen offenen Verteiler verwendet haben. \nDiese unbefugte Offenlegung personenbezogener Daten  bzw. unrechtmäßige Datenübermittlung ist als eine Datenschutzverletzung zu qualifizieren. Bei den betroffenen Datenarten handelt es sich um Gesundheitsdaten, Name und Nachname, sowie E-Mail-Adressen der Betroffenen Personen. \nFolgen aus dieser Verletzung können nach Ansicht unserer Experten Identitätsdiebstahl und Diskriminierung sein.\nEine Meldepflicht besteht, wenn besondere Kategorien personenbezogener Daten gem. Art. 9 DS-GVO offenbart werden.\nAm 4.12.2023 erfolgte eine fristgerechte Meldung an die zuständige Aufsichtsbehörde.\n\nWir bedauern diesen Vorfall und alle Unannehmlichkeiten, die Ihnen möglicherweise dadurch entstehen könnten. Seien Sie vergewissert, dass die Sicherheit unserer Systeme und Ihrer Daten für uns oberste Priorität hat.\n\nMit freundlichen Grüßen\n",
-            "incident_notificationAffectedPersons_dataSubjectsInformed": true
-          }
-        },
-        "incident_generalInformation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "incident_generalInformation_dataBreach": true,
-            "incident_generalInformation_notificationType": [
-              "incident_generalInformation_notificationType_completeNotification"
-            ],
-            "incident_generalInformation_informationSecurityIncident": false
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "INC_DataPrivacyIncident", "status": "RELEASED" } },
       "id": "72b3f08a-5f40-4e37-99cc-29853146b935"
     },
@@ -4403,15 +2673,6 @@
       "name": "Arbeitsanweisung zur Tonaufzeichnung",
       "designator": "CTL-509711",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_implementation": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_implementation_date": "2022-06-30",
-            "control_implementation_explanation": "Wird eine Videoüberwachungskamera mit Audiofunktion eingesetzt, kann dies unter den Straftatbestand des § 201I, II StGB fallen. Demnach ist das\nunbefugt heimliche Abhören oder Aufzeichnen des nicht öffentlich gesprochenen Wortes strafbar. Verfügt eine Videoüberwachungskamera über eine Audiofunktion, ist diese unumkehrbar zu deaktivieren. Hierfür ist eine Arbeitsanweisung zu erstellen und in der Organisation umzusetzen\n"
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -4426,15 +2687,6 @@
       "name": "Laptops",
       "designator": "AST-268402",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "asset_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "asset_details_number": 50,
-            "asset_details_operatingStage": "asset_details_operatingStage_operation"
-          }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "AST_IT-System", "status": "RELEASED" } },
       "id": "0f952dc0-38d2-458e-9134-9a058d5921cc"
     },
@@ -4443,17 +2695,6 @@
       "name": "Einwilligungserklärungen dokumentieren",
       "designator": "CTL-509734",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "control_dataProtection": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": {
-            "control_dataProtection_objectives": [
-              "control_dataProtection_objectives_confidentiality",
-              "control_dataProtection_objectives_integrity"
-            ]
-          }
-        }
-      },
       "domains": {
         "{%%DOMAIN_ID%%}": {
           "subType": "CTL_TOM",
@@ -4477,12 +2718,6 @@
       "designator": "AST-268405",
       "description": "Thunderbird ist eine E-Mail-Anwendung der Data GmbH.",
       "owner": { "targetUri": "/veo/units/{%%UNIT_ID%%}" },
-      "customAspects": {
-        "asset_details": {
-          "domains": [{ "targetUri": "/veo/domains/{%%DOMAIN_ID%%}" }],
-          "attributes": { "asset_details_number": 1 }
-        }
-      },
       "domains": { "{%%DOMAIN_ID%%}": { "subType": "AST_Application", "status": "RELEASED" } },
       "id": "a427eba4-8fe7-490a-95d1-58c3d748ec0e"
     }
