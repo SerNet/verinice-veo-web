@@ -121,7 +121,11 @@ const items = computed<TActionItems[]>(() => [
       title: action.name?.[locale?.value as keyof { en: string; de: string }] ?? t('noActionNameAvailable'),
       callback: () => {
         generateMessages(action.name);
-        performVeoAction({ ...actionsRequestParams, actionId: action.id });
+        performVeoAction({
+          ...actionsRequestParams,
+          actionId: action.id,
+          affectedRessources: action.affectedRessources
+        });
       }
     }))
   : []),

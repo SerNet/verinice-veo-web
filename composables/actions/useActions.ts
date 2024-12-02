@@ -1,6 +1,7 @@
 import { useQuerySync } from '~/composables/api/utils/query';
 import { useRequest } from '~/composables/api/utils/request';
 import { handleErrorMessage } from '~/composables/utils';
+import { useQueryClient } from '@tanstack/vue-query';
 
 import type { TVeoError } from '../utils';
 
@@ -42,10 +43,17 @@ export function useActions({ domainId, elementType, elementId }: TVeoGetActionsP
 }
 
 export function usePerformActions() {
+  const queryClient = useQueryClient();
   const isLoading = ref(false);
   const error = ref<TVeoError>(null);
 
-  async function performVeoAction({ domainId, elementType, elementId, actionId }: TVeoPerformActionParams) {
+  async function performVeoAction({
+    domainId,
+    elementType,
+    elementId,
+    actionId,
+    affectedRessources
+  }: TVeoPerformActionParams) {
     const url = `/api/domains/${domainId}/${elementType}/${elementId}/actions/${actionId}/execution`;
 
     const requestParams = {
@@ -59,11 +67,16 @@ export function usePerformActions() {
     try {
       isLoading.value = true;
       await useQuerySync(requestParams);
+      updateAffectedResources(affectedRessources);
     } catch (err) {
       error.value = handleErrorMessage(err);
     } finally {
       isLoading.value = false;
     }
+  }
+
+  function updateAffectedResources(queryKey: string[]) {
+    queryClient.invalidateQueries({ queryKey });
   }
 
   return {
