@@ -20,7 +20,7 @@ describe('Domain Selection Functionality', () => {
     { name: 'process', numOfElements: 2 },
     { name: 'asset', numOfElements: 7 },
     { name: 'person', numOfElements: 1 },
-    { name: 'control', numOfElements: 6 },
+    { name: 'control', numOfElements: 5 },
     { name: 'incident', numOfElements: 1 },
     { name: 'document', numOfElements: 3 },
     { name: 'scenario', numOfElements: 1 }
@@ -41,7 +41,7 @@ describe('Domain Selection Functionality', () => {
 
     cy.getCustom('[data-veo-test="domain-select"] span')
       .invoke('text')
-      .then((text) => {
+      .then((text: string) => {
         expect(text.trim()).to.equal('DS-GVO');
         cy.getCustom('[data-component-name="breadcrumbs"]').contains('DS-GVO');
         cy.testEmptyDashboard();
