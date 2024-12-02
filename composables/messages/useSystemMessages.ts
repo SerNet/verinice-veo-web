@@ -82,9 +82,6 @@ export function useSystemMessages() {
       window.addEventListener(SystemMessageEvents.SYSTEM_MESSAGE_EXPIRED, hideMessageHandler);
 
       messages.value = handleMessages(data.value);
-
-      // eslint-disable-next-line
-      if (debug.value) console.info({ systemMessages: messages.value });
     },
     { immediate: true }
   );
