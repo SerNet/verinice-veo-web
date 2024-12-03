@@ -70,7 +70,6 @@ export function getSelectedDomain(): Cypress.Chainable<string> {
  */
 export function getVeoDomains(): Cypress.Chainable<ICYVeoDomain[]> {
   if (Cypress.env('debug')) cy.log('Fetching domains...');
-  if (Cypress.env('veoDomains')) return; // do not fetch again
 
   return cy.veoRequest({ endpoint: 'domains' }).then((res) => {
     const domains: IVeoDomain[] = res.body;

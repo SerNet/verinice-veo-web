@@ -26,6 +26,7 @@ export function goToUnitSelection(): void {
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
   cy.visit('/units');
   cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
+  cy.getCustom('[data-component-name="breadcrumbs"]');
 }
 
 export function selectUnitFromDropdown(currentUnitName?: string): void {
