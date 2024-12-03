@@ -1,5 +1,5 @@
 /// <reference types="cypress" />
-
+//
 import { waitForLoadersToDisappear } from './utils';
 
 declare global {
