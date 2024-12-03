@@ -32,9 +32,21 @@
       <v-icon v-else-if="icon" :icon="icon" />
     </template>
     <template #activator="{ props: activatorProps }">
-      <v-list-item v-bind="activatorProps" :density="level > 0 ? 'compact' : 'default'" :class="activatorIntendation">
+      <v-list-item
+        v-bind="activatorProps"
+        :density="level > 0 ? 'compact' : 'default'"
+        :class="activatorIntendation"
+        @click="emit('expand-menu')"
+      >
         <template #prepend>
-          <v-icon v-if="icon" :icon="icon" class="mr-3" />
+          <v-tooltip location="end" :disabled="!miniVariant">
+            <template #activator="{ props: tooltip }">
+              <div v-bind="tooltip">
+                <v-icon v-if="icon" :icon="icon" class="mr-3" />
+              </div>
+            </template>
+            <span>{{ name }}</span>
+          </v-tooltip>
         </template>
         <template #default="{ isActive }">
           <v-list-item-title
