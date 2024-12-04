@@ -275,7 +275,7 @@ export default defineComponent({
     "risks": "risks",
     "updatedAt": "last change",
     "targets": "target objects",
-    "risksDisabledTooltip": "To enable the Risks tab, a Risk Definition must be defined.",
+    "risksDisabledTooltip": "To enable the Risks tab, a Risk Definition must be defined in this object.",
     "defaultDisabledTooltip": "The Tab is disabled.",
   },
   "de": {
@@ -290,7 +290,7 @@ export default defineComponent({
     "risks": "Risiken",
     "updatedAt": "letzte Änderung",
     "targets": "Zielobjekte",
-    "risksDisabledTooltip": "Um den Risiko-Reiter zu aktivieren, muss eine Risikodefinition hinterlegt werden.",
+    "risksDisabledTooltip": "Um den Risiko-Reiter zu aktivieren, muss eine Risikodefinition in diesem Objekt hinterlegt werden.",
     "defaultDisabledTooltip": "Der Reiter ist deaktiviert."
   }
 }
