@@ -52,15 +52,15 @@
 <script lang="ts">
 import { cloneDeep, omit, upperFirst } from 'lodash';
 
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { isObjectEqual } from '~/lib/utils';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useQuery } from '~/composables/api/utils/query';
-import { useMutation } from '~/composables/api/utils/mutation';
+import type { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -104,10 +104,17 @@ export default defineComponent({
     );
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { subTypeTranslation } = useSubTypeTranslation();
 
-    const headline = computed(
-      () => upperFirst(t('createObject').toString()) + ': ' + translations.value?.lang[locale.value]?.[props.objectType]
-    );
+    const headline = computed(() => {
+      const subType = subTypeTranslation.value === 'all' ? '' : subTypeTranslation.value;
+      return (
+        upperFirst(t('createObject').toString()) +
+        ': ' +
+        translations.value?.lang[locale.value]?.[props.objectType] +
+        (subType ? ' ' + subType : '')
+      );
+    });
 
     // Seeding of empty form
     const fetchDomainQueryParameters = computed(() => ({
