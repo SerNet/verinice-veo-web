@@ -18,7 +18,7 @@
   <BaseDialog
     :model-value="modelValue"
     v-bind="$attrs"
-    :title="t('title')"
+    :title="t('title', { object: props.objectName })"
     large
     @update:model-value="emit('update:model-value', $event)"
   >
@@ -114,11 +114,13 @@ const props = withDefaults(
     modelValue: boolean;
     objectId: string;
     objectType: string;
+    objectName: string;
   }>(),
   {
     modelValue: false,
     objectId: '',
-    objectType: ''
+    objectType: '',
+    objectName: ''
   }
 );
 
@@ -279,7 +281,7 @@ watch(
     "domainSelection": "Domain selection",
     "objectAssigned": "The object has been assigned to another domain successfully.",
     "subtype": "Subtype",
-    "title": "Assign object"
+    "title": "Assign '{object}' object"
   },
   "de": {
     "assignmentFailed": "Das Objekt konnte keiner weiteren Domäne zugewiesen werden.",
@@ -288,7 +290,7 @@ watch(
     "domainSelection": "Domänenauswahl",
     "objectAssigned": "Das Objekt wurde einer weiteren Domäne erfolgreich zugewiesen.",
     "subtype": "Subtyp",
-    "title": "Objekt zuordnen"
+    "title": "Objekt '{object}' zuordnen"
   }
 }
 </i18n>

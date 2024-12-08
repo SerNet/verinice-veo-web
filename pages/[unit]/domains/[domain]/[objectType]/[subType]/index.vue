@@ -84,6 +84,7 @@
           :model-value="objectAssignDialogVisible"
           :object-id="objectId"
           :object-type="objectType"
+          :object-name="objectName"
           @update:model-value="objectAssignDialogVisible = false"
         />
       </BaseCard>
@@ -414,9 +415,10 @@ const onCloseDeleteDialog = ({ isOpen, isCancel = false }: { isOpen: boolean; is
 };
 
 const objectAssignDialogVisible = ref(false);
+const objectName = ref<string>();
 
-const objectId = ref<string | undefined>(undefined);
-const objectType = ref<string | undefined>(undefined);
+const objectId = ref<string>();
+const objectType = ref<string>();
 
 const actions = computed(() => [
   {
@@ -464,6 +466,7 @@ const actions = computed(() => [
       objectAssignDialogVisible.value = true;
       objectId.value = item.id;
       objectType.value = item.type;
+      objectName.value = item.name;
     }
   }
 ]);
