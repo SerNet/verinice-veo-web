@@ -23,9 +23,9 @@
       <CatalogDefaultCatalog
         v-model="selectedItems"
         v-model:page="page"
-        v-model:sortBy="sortBy"
+        v-model:sort-by="sortBy"
         class="mt-2 mb-4"
-        :catalog-items="searchResults ?? catalogItems"
+        :catalog-items="catalogItems"
         :is-loading="catalogItemsAreFetching || isLoadingSearchResults"
         :is-applying-items="isApplyingItems"
         @apply-items="applyItems"
@@ -52,7 +52,7 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 
 // Types
 import type { VeoSearch } from '~/types/VeoSearch';
-import type { IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -91,7 +91,7 @@ const fetchCatalogItemsQueryParameters = computed(() => ({
   customAspects: [CustomAspect.ControlBpInformation]
 }));
 
-const { data: catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
+const { data: _catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
   catalogQueryDefinitions.queries.fetchCatalogItems,
   fetchCatalogItemsQueryParameters,
   { keepPreviousData: true }
@@ -110,6 +110,10 @@ const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
   baseQueryParameters: fetchCatalogItemsQueryParameters,
   queryDefinition: catalogQueryDefinitions.queries.fetchCatalogItems,
   search
+});
+
+const catalogItems = computed<IVeoPaginatedResponse<IVeoEntity[]>>(() => {
+  return search.value?.length && searchResults.value ? searchResults.value : _catalogItems.value;
 });
 
 /* BREADCRUMBS */
