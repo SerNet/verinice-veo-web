@@ -249,6 +249,7 @@ export default defineComponent({
           if (!mitigationId && mitigations.value.length) {
             const { resourceId } = await createObject({
               endpoint: 'controls',
+              domain: props.domainId,
               object: newMitigatingAction.value
             });
             data.value.mitigation = createLink('controls', resourceId); // Link the new mitigation to the data

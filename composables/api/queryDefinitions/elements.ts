@@ -399,8 +399,7 @@ export default {
         }
         return {
           params: {
-            // @ts-ignore TODO #3066 cannot find name
-            domain: queryParameters.domain,
+            domain: mutationParameters.domain,
             endpoint: mutationParameters.endpoint
           },
           query: { scopes: mutationParameters.parentScopes?.join(',') },
