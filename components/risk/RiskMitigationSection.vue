@@ -106,7 +106,7 @@
       return-objects
     >
       <template #header>
-        {{ t('addMitigatingActionsToRisk', [data && data.designator]).toString() }}
+        {{ t('addMitigatingActionsToRisk', [data && data.designator, data && data.scenario?.displayName]).toString() }}
       </template>
     </ObjectLinkDialog>
     <ObjectCreateDialog
@@ -344,7 +344,7 @@ export default defineComponent({
 {
   "en": {
     "addMitigation": "add mitigating action",
-    "addMitigatingActionsToRisk": "add existing mitigating actions to the risk \"{0}\"",
+    "addMitigatingActionsToRisk": "add existing mitigating actions to the risk \"{0} ({1})\"",
     "createMitigation": "create mitigating action",
     "editMitigatingActions": "add mitigating actions",
     "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions.{lineBreak} All selected mitigating actions are available under the action \"Mitigating action for {risk}\"",
@@ -358,7 +358,7 @@ export default defineComponent({
   },
   "de": {
     "addMitigation": "Mitigierende Maßnahme verknüpfen",
-    "addMitigatingActionsToRisk": "Vorhandene mitigierende Maßnahmen mit dem Risiko \"{0}\" verknüpfen",
+    "addMitigatingActionsToRisk": "Vorhandene mitigierende Maßnahmen mit dem Risiko \"{0} ({1})\" verknüpfen",
     "createMitigation": "Mitigierende Maßnahme erstellen",
     "editMitigatingActions": "Mitigierende Maßnahmen hinzufügen",
     "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg.{lineBreak} Alle hier ausgewählten Maßnahmen sind unter der Maßnahme \"Mitigierende Maßnahme für {risk}\" zu finden",
