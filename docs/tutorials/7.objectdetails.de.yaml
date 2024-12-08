@@ -38,7 +38,7 @@ steps:
   - title: 'Teil von'
     element: '[data-component-name=object-details-parentObjects-tab]'
     intro: In diesem Abschnitt sehen Sie, in welchen Objekten das gewählte Objekt enthalten ist.
-  - title: 'Links'
+  - title: 'Verknüpfungen'
     element: '[data-component-name=object-details-links-tab]'
     intro: Der Abschnitt Links zeigt alle im Formular verknüpften Objekte an.
   - title: 'Risiken'

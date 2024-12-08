@@ -155,7 +155,7 @@ export default defineComponent({
     "addLink": "Add link"
   },
   "de": {
-    "addLink": "Link hinzufügen"
+    "addLink": "Verknüpfung hinzufügen"
   }
 }
 </i18n>

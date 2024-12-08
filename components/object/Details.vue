@@ -283,7 +283,7 @@ export default defineComponent({
     "childObjects": "Teile",
     "childScopes": "Scopes",
     "createdAt": "erstellt",
-    "links": "links",
+    "links": "Verknüpfungen",
     "noDescription": "Keine Beschreibung vorhanden",
     "parentObjects": "Teil von",
     "parentScopes": "in Scope",
