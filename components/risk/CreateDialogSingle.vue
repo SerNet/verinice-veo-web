@@ -21,7 +21,11 @@
     :model-value="modelValue"
     :close-disabled="savingRisk"
     :confirm-close="!!Object.keys(dirtyFields).length && Object.values(dirtyFields).some(Boolean)"
-    :title="upperFirst(!!risk ? t('editRisk', [risk.designator]).toString() : t('createRisk').toString())"
+    :title="
+      upperFirst(
+        !!risk ? t('editRisk', [risk.designator, risk.scenario?.displayName]).toString() : t('createRisk').toString()
+      )
+    "
     x-large
     fixed-footer
     v-bind="$attrs"
@@ -427,7 +431,7 @@ const makeRiskObject = (
     "computedValues": "Some values are computed in the backend.",
     "computedValuesCTA": "Please press \"Save\" to recompute these values.",
     "createRisk": "create risk",
-    "editRisk": "edit risk \"{0}\"",
+    "editRisk": "Edit risk \"{0} ({1})\"",
     "mitigatingAction": "Mitigating action for \"{0}\"",
     "riskCreated": "the risk was created successfully",
     "riskUpdated": "the risk was edited successfully",
@@ -440,7 +444,7 @@ const makeRiskObject = (
     "computedValues": "Einige Werte werden automatisch berechnet.",
     "computedValuesCTA": "Drücken sie \"Speichern\" um diese Werte neu berechnen zu lassen.",
     "createRisk": "Risiko erstellen",
-    "editRisk": "Risiko \"{0}\" bearbeiten",
+    "editRisk": "Risiko \"{0} ({1})\"  bearbeiten",
     "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
     "riskCreated": "das Risiko wurde erfolgreich erstellt",
     "riskUpdated": "das Risiko wurde erfolgreich bearbeitet",
