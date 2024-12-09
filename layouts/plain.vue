@@ -28,7 +28,7 @@
 
       <LayoutLanguageSwitch />
 
-      <LayoutTutorialButton />
+      <LayoutTutorialButton v-if="!$route.path.startsWith('/login')" />
 
       <v-tooltip location="bottom">
         <template #activator="{ props }">
