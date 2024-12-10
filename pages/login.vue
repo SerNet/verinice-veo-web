@@ -17,6 +17,7 @@
 -->
 <template>
   <div class="wrapper">
+    <VeriniceCloudLogo />
     <BaseAlert
       :model-value="!!route.query.client_disabled"
       class="my-4"
@@ -74,6 +75,7 @@
 </template>
 
 <script setup lang="ts">
+import VeriniceCloudLogo from '~/components/layout/VeriniceCloudLogo.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 
