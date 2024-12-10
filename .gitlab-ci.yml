@@ -101,6 +101,9 @@ build_test_app:
     paths:
       - ${CI_PROJECT_DIR}/cypress/screenshots
       - ${CI_PROJECT_DIR}/cypress/videos
+    reports:
+      junit:
+        - cypress/results/*.xml
   parallel:
     matrix:
       - CI_NODE_INDEX: [0, 1]
