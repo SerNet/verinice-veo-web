@@ -31,7 +31,7 @@
     <BaseCard class="mt-2 bg-surface">
       <v-card-text class="d-flex justify-space-around">
         <div style="flex-basis: 0; flex-grow: 1">
-          <h4 class="text-h4 mb-4 cta">
+          <h4 class="text-h4 cta">
             {{ t('loginCTA') }}
           </h4>
           <div class="text-center">
@@ -42,7 +42,7 @@
         </div>
         <v-divider class="mx-7" vertical light />
         <div style="flex-basis: 0; flex-grow: 1">
-          <h4 class="text-h4 mb-4 cta">
+          <h4 class="text-h4 cta">
             {{ t('subscribeCTA') }}
           </h4>
           <div class="text-center">
@@ -52,7 +52,7 @@
               size="x-large"
               :href="context.$config.public.accountPath"
             >
-              {{ t('buy') }}
+              {{ t('subscribe') }}
             </v-btn>
           </div>
         </div>
@@ -108,25 +108,25 @@ const imprintLink = computed(() =>
 {
   "en": {
     "access": "Account disabled.",
-    "subscribeCTA": "Subscribe to\nverinice.cloud:",
-        "dataProtectionRegulations": "Data protection regulations",
+    "subscribeCTA": "Subscribe to\nverinice.cloud",
+    "dataProtectionRegulations": "Data protection regulations",
     "error-message": "Please contact your account manager.",
     "imprint": "Imprint",
     "login": "Login",
-    "loginCTA": "Enter the\nverinice.cloud:",
+    "loginCTA": "Enter the\nverinice.cloud",
     "policy": "Security policy",
-    "buy": "Buy"
+    "subscribe": "subscribe"
   },
   "de": {
     "access": "Account deaktiviert.",
-    "subscribeCTA": "Abonniere die\nverinice.cloud:",
+    "subscribeCTA": "Abonnieren Sie die\nverinice.cloud",
     "dataProtectionRegulations": "Datenschutzerklärung",
     "error-message": "Bitte kontaktieren Sie Ihren Account-Manager.",
     "imprint": "Impressum",
     "login": "Anmelden",
-    "loginCTA": "Direkt zur\nverinice.cloud:",
+    "loginCTA": "Direkt zur\nverinice.cloud",
     "policy": "Sicherheitsrichtlinie",
-    "buy": "Kaufen"
+    "subscribe": "abonnieren"
   }
 }
 </i18n>
