@@ -24,6 +24,7 @@
     :close-disabled="savingObject"
     :confirm-close="itemsSelected"
     fixed-footer
+    data-veo-test="link-dialog"
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>

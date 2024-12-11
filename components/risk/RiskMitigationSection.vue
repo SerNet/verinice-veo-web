@@ -79,7 +79,14 @@
       <div class="d-flex justify-end px-2">
         <v-menu :disabled="disabled" top offset-y>
           <template #activator="{ props }">
-            <v-btn v-bind="props" class="mt-2 mb-2" color="primary" flat :disabled="disabled">
+            <v-btn
+              v-bind="props"
+              class="mt-2 mb-2"
+              color="primary"
+              flat
+              :disabled="disabled"
+              data-veo-test="add-mitigation"
+            >
               <v-icon start :icon="mdiPencilOutline" />
               {{ t('editMitigatingActions').toString() }}
             </v-btn>
