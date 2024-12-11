@@ -106,4 +106,41 @@ describe('Risk Dialog', { testIsolation: false }, () => {
       cy.getCustom('[data-test-selector="risk-owner"]').invoke('text').should('not.equal', 'Risk owner');
     });
   });
+
+  it('should add a mitigation to a Scenario', () => {
+    cy.getCustom('[data-component-name="object-details-risks-tab"]').first().click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]').should('be.visible');
+    const selectedRiskText = Cypress.env('selectedRiskText');
+    let selectedMitigationText = '';
+    cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').contains(selectedRiskText).should('exist').click();
+
+    cy.getCustom('[data-veo-test="dialog-card"]').as('container');
+    cy.getCustom('@container').within(() => {
+      cy.getCustom('[data-veo-test="add-mitigation"]').click();
+    });
+    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('div', 'add mitigating action').click();
+    cy.getCustom('[data-veo-test="link-dialog"]').within(() => {
+      cy.getCustom('[id^="checkbox-"]')
+        .filter('[aria-disabled="false"]')
+        .first()
+        .then(($checkbox) => {
+          const $parentRow = $checkbox.closest('tr');
+          selectedMitigationText = $parentRow.find('td').eq(4).text().trim();
+          cy.wrap(selectedMitigationText).as('selectedMitigationText');
+          cy.wrap($checkbox).click();
+        });
+      cy.containsCustom('Save').should('exist').click();
+    });
+    cy.get('@selectedMitigationText').then((selectedMitigationText) => {
+      cy.getCustom('.v-data-table__tr').contains(selectedMitigationText).should('exist');
+    });
+    cy.getCustom('.v-card').contains('button', 'Save').click();
+    cy.getCustom('.v-card', { timeout: 15000 }).find('.close-button').click();
+    cy.getCustom('[data-component-name="object-details-risks-tab"]').first().click();
+    cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').contains(selectedRiskText).should('exist').click();
+
+    cy.get('@selectedMitigationText').then((selectedMitigationText) => {
+      cy.getCustom('.v-data-table__tr').contains(selectedMitigationText).should('exist');
+    });
+  });
 });
