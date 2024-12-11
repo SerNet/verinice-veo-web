@@ -28,21 +28,26 @@ export function goToUnitSelection(): void {
   cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
 }
 
-export function selectUnitFromDropdown(unitName?: string): void {
+export function selectUnitFromDropdown(currentUnitName?: string): void {
   cy.getCustom('[data-component-name="unit-select"] .v-autocomplete__menu-icon').click();
   cy.getCustom('[data-veo-test="unit-selection-nav-item"]').should('be.visible');
   cy.getCustom('[data-veo-test="unit-selection-nav-item"]').then(($els: JQuery<HTMLElement[]>) => {
-    const found = $els.toArray().find((el) => {
+    const elements = $els.toArray();
+    const found = elements.find((el) => {
       const text = Cypress.$(el).text();
-      return text.includes(unitName);
+      return text.includes(currentUnitName);
     });
 
     cy.intercept(`${Cypress.env('veoApiUrl')}/units/**`).as('getUnit');
+
     if (found) {
-      cy.wrap(found).click();
+      const filteredElements = elements.filter((el) => el !== found);
+      const randomElement = filteredElements[Math.floor(Math.random() * filteredElements.length)];
+      cy.wrap(randomElement).click();
     } else {
-      cy.wrap($els[$els.length - 1]).click();
+      cy.wrap(elements[elements.length - 1]).click();
     }
+
     cy.wait('@getUnit').its('response.statusCode').should('eq', 200);
   });
 }

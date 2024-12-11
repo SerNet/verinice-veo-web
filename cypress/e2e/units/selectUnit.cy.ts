@@ -24,7 +24,7 @@ describe('Unit Selection Functionality', () => {
         cy.getCustom('[data-component-name="breadcrumbs"]').contains(defaultUnitName);
       });
 
-    cy.selectUnitFromDropdown();
+    cy.selectUnitFromDropdown(defaultUnitName);
 
     cy.getCustom('[data-component-name="unit-select"] span')
       .invoke('text')
