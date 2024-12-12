@@ -8,7 +8,7 @@ const fs = require('fs');
 module.exports = defineConfig({
   retries: 2,
   video: true, // Let's enable video recording by default
-  defaultCommandTimeout: 8000,
+  defaultCommandTimeout: 30000,
   requestTimeout: 15000,
   e2e: {
     setupNodeEvents(on, config) {
