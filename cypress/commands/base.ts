@@ -1,6 +1,5 @@
 /// <reference types="cypress" />
 
-import { upperFirst } from 'lodash';
 import { waitForLoadersToDisappear } from './utils';
 
 declare global {
@@ -15,12 +14,12 @@ declare global {
 
 // Override the default Cypress commands
 export function getCustom(selector: string, options = {}): any {
-  waitForLoadersToDisappear();
+  waitForLoadersToDisappear(options);
   return cy.get(selector, options);
 }
 
 export function containsCustom(selector: string, content?: string | RegExp, options = {}): any {
-  waitForLoadersToDisappear();
+  waitForLoadersToDisappear(options);
 
   if (content) {
     return cy.contains(selector, content, options);

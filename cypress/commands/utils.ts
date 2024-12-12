@@ -23,10 +23,10 @@ export function waitForPageToLoad() {
 export function pluralizeElementType(elementType: string) {
   return elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 }
-export function waitForLoadersToDisappear() {
-  cy.get('.v-skeleton-loader').should('not.exist');
-  cy.get('[loading=true]').should('not.exist');
-  cy.get('[role=progressbar]:visible').should('not.exist');
-  cy.get('[data-veo-test="loadingDataTable"]').should('not.exist');
-  cy.get('[data-veo-test="loader"]').should('not.exist');
+export function waitForLoadersToDisappear(options: any = {}) {
+  cy.get('.v-skeleton-loader', options).should('not.exist');
+  cy.get('[loading=true]', options).should('not.exist');
+  cy.get('[role=progressbar]:visible', options).should('not.exist');
+  cy.get('[data-veo-test="loadingDataTable"]', options).should('not.exist');
+  cy.get('[data-veo-test="loader"]', options).should('not.exist');
 }
