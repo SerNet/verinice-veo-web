@@ -7,6 +7,10 @@ describe('Navigation Menu', () => {
     unitDetails = generateUnitDetails('NavigationMenu');
     cy.login();
     cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
+  });
+
+  beforeEach(() => {
+    cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
     cy.selectUnit(unitDetails.name);
@@ -78,9 +82,6 @@ describe('Navigation Menu', () => {
   });
 
   it('ITGS navigate to all expected menu entries', () => {
-    cy.login();
-    cy.visit(currentUnit, { failOnStatusCode: false });
-    cy.handleLanguageBug();
     cy.selectDomain('IT-Grundschutz');
 
     cy.getCustom('[data-veo-test="domain-select"] span')
