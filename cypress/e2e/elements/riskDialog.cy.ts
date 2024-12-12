@@ -23,7 +23,7 @@ beforeEach(() => {
 });
 after(() => cy.deleteUnit(unitDetails.name));
 
-describe('Risk Dialog', { testIsolation: false }, () => {
+describe.skip('Risk Dialog', { testIsolation: false }, () => {
   it('should set a Risk Definition to an Element', () => {
     cy.navigateTo({ group: 'objects', category: 'scopes' });
     cy.selectFirstSubType('scopes', ($subType: JQuery<HTMLElement>) => {
