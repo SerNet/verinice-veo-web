@@ -22,8 +22,7 @@ beforeEach(() => {
   cy.acceptAllCookies();
 });
 after(() => cy.deleteUnit(unitDetails.name));
-
-describe.skip('Risk Dialog', { testIsolation: false }, () => {
+describe('Risk Dialog', { testIsolation: false, retries: 0 }, () => {
   it('should set a Risk Definition to an Element', () => {
     cy.navigateTo({ group: 'objects', category: 'scopes' });
     cy.selectFirstSubType('scopes', ($subType: JQuery<HTMLElement>) => {
@@ -37,7 +36,6 @@ describe.skip('Risk Dialog', { testIsolation: false }, () => {
     });
     cy.getCustom('input[id="#/properties/riskDefinition"]').scrollIntoView().click();
     cy.getCustom('.v-overlay-container').contains('DSRA').click();
-    cy.containsCustom('Save').click();
     cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/domains/**`).as('editElement');
     cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
     cy.containsCustom('Save').click();
@@ -135,7 +133,7 @@ describe.skip('Risk Dialog', { testIsolation: false }, () => {
       cy.getCustom('.v-data-table__tr').contains(selectedMitigationText).should('exist');
     });
     cy.getCustom('.v-card').contains('button', 'Save').click();
-    cy.getCustom('.v-card', { timeout: 15000 }).find('.close-button').click();
+    cy.get('.v-card').find('.close-button').click();
     cy.getCustom('[data-component-name="object-details-risks-tab"]').first().click();
     cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').contains(selectedRiskText).should('exist').click();
 
