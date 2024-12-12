@@ -652,7 +652,7 @@ export default defineComponent({
         }
       ];
 
-      const createTargetHeaders = () => [
+      const createTargetHeaders = computed(() => [
         {
           value: 'responsible',
           key: 'responsible',
@@ -664,7 +664,7 @@ export default defineComponent({
           render: (data: any) =>
             h('span', { class: 'text-truncate d-inline-block' }, data.internalItem.raw.responsible || '')
         }
-      ];
+      ]);
 
       return {
         createRiskHeaders,
@@ -683,7 +683,7 @@ export default defineComponent({
         case 'controls':
           return createControlHeaders();
         case 'targets':
-          return createTargetHeaders();
+          return createTargetHeaders.value;
         default:
           return [];
       }
@@ -1102,7 +1102,7 @@ export default defineComponent({
       "risk": "Das Risiko konnte nicht gelöscht werden"
     },
     "inherentRisk": "Bruttorisiko",
-    "linkName": "Name des Links",
+    "linkName": "Verknüpfung",
     "direction": "Richtung",
     "outbound": "Ausgehend",
     "inbound": "Eingehend",
