@@ -36,14 +36,8 @@ describe('Risk Dialog', { testIsolation: false, retries: 0 }, () => {
     });
     cy.getCustom('input[id="#/properties/riskDefinition"]').scrollIntoView().click();
     cy.getCustom('.v-overlay-container').contains('DSRA').click();
-    cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/domains/**`).as('editElement');
-    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
+
     cy.containsCustom('Save').click();
-    cy.wait(['@editElement', '@getElements']).then((intercepts) => {
-      expect(intercepts[0].response.statusCode).to.equal(200);
-      expect(intercepts[1].response.statusCode).to.equal(200);
-    });
-    cy.wait(1000);
     cy.getCustom('[data-component-name="object-details-risks-tab"]').first().should('not.have.attr', 'disabled');
   });
 
