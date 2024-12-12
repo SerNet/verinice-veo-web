@@ -56,9 +56,14 @@ export interface RequestOptions extends RequestInit {
 
 function generateEtagMapKey({ requestOptions }: { requestOptions: RequestOptions }): string {
   if (typeof requestOptions.params?.id !== 'string') return '';
-  return requestOptions.params?.endpoint ?
-      `${requestOptions.params.endpoint}-${requestOptions.params.id}`
-    : requestOptions.params.id;
+  // TODO: The etag should be refactored after getting rid of objects-querydefinition
+  if (requestOptions.params?.scenarioId) {
+    return `${requestOptions.params.scenarioId}-${requestOptions.params.id}`;
+  } else if (requestOptions.params?.endpoint) {
+    return `${requestOptions.params.endpoint}-${requestOptions.params.id}`;
+  } else {
+    return requestOptions.params.id; // default case
+  }
 }
 
 export const useRequest = () => {
