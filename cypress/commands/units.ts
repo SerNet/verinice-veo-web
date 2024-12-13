@@ -153,7 +153,7 @@ export function createUnit({
   });
 }
 
-export function deleteUnit(unitName: string): void {
+export function deleteUnit(unitName = Cypress.env('dynamicTestData').unit): void {
   // Check if the cypress environment has an ID for the test unit
   if (!unitName) {
     if (Cypress.env('debug')) cy.log('Could not find test unit ID. Test unit cannot be deleted.');
