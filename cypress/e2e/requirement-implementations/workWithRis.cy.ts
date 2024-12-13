@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { generateUnitDetails } from '../../support/setupHelpers';
-import { createObject, deleteObject, getModules } from '../../requests/objects';
+import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+import { createObject, getModules } from '../../requests/objects';
 import { applyCatalogItem } from '../../requests/catalogs';
-import { addControlImplementation, fetchRequirementImplementations } from '../../requests/control-implementations';
+import { addModule, fetchRequirementImplementations } from '../../requests/control-implementations';
 import { visitRIList } from '../../commands/navigation';
 
 // Used for intercepting requests
@@ -55,38 +55,35 @@ function openModulesTab() {
 }
 
 function openAddModulesDialog() {
+  openModulesTab();
   cy.getCustom('[data-component-name="object-details-actions-button"]').click();
   cy.getCustom('[data-component-name="object-details-actions-button"]').click();
   cy.containsCustom('Model modules').click({ force: true }); // Implicit testing of the button's label!
 }
 
-// GUI setup
-function setupVeo() {
-  cy.login();
-  cy.acceptAllCookies();
+function openFirstRI() {
+  visitRIList();
+  // Open first RI in editor
+  cy.getCustom('td').first().click();
 }
 
-// Spawn a unit for testing
-before(() => {
-  const unitDetails = generateUnitDetails('workWithRis');
-  cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz'] });
-});
-
-// Delete test unit after all suites have run
-after(() => cy.deleteUnit(Cypress.env('dynamicTestData').unit));
+// GUI setup
+let unitDetails: UnitDetails;
+function setupVeo() {
+  unitDetails = generateUnitDetails('workWithRis');
+  return cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz'] }).then(() => {
+    createObject();
+    cy.login();
+    cy.acceptAllCookies();
+  });
+}
 
 describe('Object details, modules tab: Content', () => {
-  before(() => {
-    createObject();
-  });
-
   beforeEach(() => setupVeo());
-
-  after(() => deleteObject());
+  afterEach(() => cy.deleteUnit());
 
   it('checks user info (no modules were applied yet)', () => {
     // Navigate
-    openModulesTab();
     openAddModulesDialog();
 
     // Check if user info exists
@@ -106,33 +103,25 @@ describe('Object details, modules tab: Content', () => {
 });
 
 describe('Object details, compliance tab: Actions', () => {
-  /* Watch out: the following tests depend on each other:
-    1. adds a module
-    2. navigates to the RIS of that module
-    3. removes the module
-  */
-
-  before(() => {
-    createObject().then(() => {
-      // Populate the compliance tab table with exactly one item
+  beforeEach(() => {
+    setupVeo().then(() => {
+      // Populate the module tab table with one item
       applyCatalogItem().then(() => {
         // Get modules to check GUI against module properties later on:
         // this function writes module data into the cypress env `dynamicTestData`
         getModules();
       });
     });
+    cy.login();
+    cy.acceptAllCookies();
   });
 
-  beforeEach(() => {
-    setupVeo();
-    openModulesTab();
-  });
-
-  after(() => deleteObject());
+  afterEach(() => cy.deleteUnit());
 
   it('adds a module to the test object', () => {
     const module = Cypress.env('dynamicTestData').modules[0];
 
+    // Navigate
     openAddModulesDialog();
 
     // Tick the module's checkbox
@@ -158,17 +147,25 @@ describe('Object details, compliance tab: Actions', () => {
 
   it('navigates to the list of requirement implementations', () => {
     const dynamicTestData = Cypress.env('dynamicTestData');
+    const complianceListUrl = `${dynamicTestData.unit.unitId}/domains/${dynamicTestData.unit.domains[0].id}/compliance?type=${dynamicTestData.testObject.objectType}&targetObject=${dynamicTestData.testObject.id}`;
+
+    // API setup
+    addModule();
+
+    // Navigate
+    openModulesTab();
 
     cy.intercept('GET', apiRoutes.requirementImplementations).as('getRequirementImplementations');
     cy.getCustom('[data-veo-test="object-details-action-btn-implementations"]').click();
     cy.wait(['@getRequirementImplementations']).its('response.statusCode').should('eq', 200);
 
-    const complianceListUrl = `${dynamicTestData.unit.unitId}/domains/${dynamicTestData.unit.domains[0].id}/compliance?type=${dynamicTestData.testObject.objectType}&targetObject=${dynamicTestData.testObject.id}`;
-
     cy.url().then((url) => expect(url).to.contain(complianceListUrl));
   });
 
   it('removes a compliance module', () => {
+    // API setup
+    addModule();
+
     // Navigate
     openModulesTab();
 
@@ -186,11 +183,11 @@ describe('Object details, compliance tab: Actions', () => {
 });
 
 describe('Requirement Implementations:  List', () => {
-  before(() => {
+  beforeEach(() => {
     // Setup API
-    createObject().then(() => {
+    setupVeo().then(() => {
       applyCatalogItem().then(() => {
-        addControlImplementation().then(() => {
+        addModule().then(() => {
           getModules().then(() => {
             fetchRequirementImplementations();
           });
@@ -199,14 +196,10 @@ describe('Requirement Implementations:  List', () => {
     });
   });
 
-  beforeEach(() => {
-    setupVeo();
-    visitRIList();
-  });
-
-  after(() => deleteObject());
+  afterEach(() => cy.deleteUnit());
 
   it('checks if the list of requirement implementations is complete', () => {
+    visitRIList();
     cy.checkPagination(['abbreviation, name, status']);
   });
 
@@ -219,6 +212,9 @@ describe('Requirement Implementations:  List', () => {
     const subType = dynamicTestData.testObject.subTypePlural;
     const objectName = dynamicTestData.testObject.name;
     const moduleName = `${dynamicTestData.modules[0].name}`;
+
+    // Navigate
+    visitRIList();
 
     cy.getCustom('[data-veo-test="breadcrumbs"]').contains('Compliance').should('not.exist');
 
@@ -251,11 +247,11 @@ describe('Requirement Implementations:  List', () => {
 });
 
 describe('Requirement Implementations: Editor', () => {
-  before(() => {
+  beforeEach(() => {
     // Setup API
-    createObject().then(() => {
+    setupVeo().then(() => {
       applyCatalogItem();
-      addControlImplementation();
+      addModule();
       getModules().then(() => {
         fetchRequirementImplementations();
       });
@@ -270,16 +266,11 @@ describe('Requirement Implementations: Editor', () => {
     });
   });
 
-  beforeEach(() => {
-    setupVeo();
-    visitRIList();
-    // Open first RI in editor
-    cy.getCustom('td').first().click();
-  });
-
-  after(() => deleteObject());
+  afterEach(() => cy.deleteUnit());
 
   it('checks if editor shows the right information', () => {
+    // Navigate
+    openFirstRI();
     cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
     cy.get('@editor').within(() => {
       const requirementImplementation = Cypress.env('dynamicTestData').ris[0];
@@ -312,25 +303,29 @@ describe('Requirement Implementations: Editor', () => {
     });
   });
 
-  it('modifies a requirement implementation', () => {
+  it.only('modifies a requirement implementation', () => {
+    // Navigate
+    openFirstRI();
     // Add some new data
-    cy.getCustom('[data-veo-test="compliance-editor-staus-No"] input').click();
-    cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]')
-      .click()
-      .clear()
-      .type('test-person')
-      .type('{downArrow}{enter}');
-    cy.getCustom('[data-veo-test="compliance-editor-description"] textarea').click().type(testRIData.description);
+    cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
+    cy.get('@editor').within(() => {
+      cy.getCustom('[data-veo-test="compliance-editor-staus-No"] input').click();
+      cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]')
+        .click()
+        .clear()
+        .type('test-person')
+        .type('{downArrow}{enter}');
+      cy.getCustom('[data-veo-test="compliance-editor-description"] textarea').click().type(testRIData.description);
 
-    // Typing does currently not work
-    //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-implementation-date"]').click().type('11.11.2111').type("{esc}");
+      // Typing does currently not work
+      //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-implementation-date"]').click().type('11.11.2111').type("{esc}");
 
-    // Save
-    cy.intercept('GET', apiRoutes.requirementImplementations).as('getRIs');
-    cy.get('button').contains('Save').click();
-    cy.wait(['@getRIs']).its('response.statusCode').should('eq', 200);
+      // Save
+      cy.intercept('GET', apiRoutes.requirementImplementations).as('getRIs');
+      cy.get('button').contains('Save').click();
+      cy.wait(['@getRIs']).its('response.statusCode').should('eq', 200);
+    });
 
-    //cy.wait(1000);
     // Assert content of RI list
     cy.getCustom('[data-veo-test="responsible.displayName"]')
       .first()
@@ -344,21 +339,24 @@ describe('Requirement Implementations: Editor', () => {
     // Open editor again
     cy.getCustom('td').first().click();
 
-    // Assert
-    cy.getCustom('[data-veo-test="compliance-editor-staus-No"] input')
-      .invoke('val')
-      .then((status: string) => expect(status).to.eq('NO'));
+    cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
+    cy.get('@editor').within(() => {
+      // Assert
+      cy.getCustom('[data-veo-test="compliance-editor-staus-No"] input')
+        .invoke('val')
+        .then((status: string) => expect(status).to.eq('NO'));
 
-    // Currently the input field always has a value of ''
-    //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"] input').invoke('val').then((person: string) => expect(person).to.eq(testRIData.person));
-    cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]').then(($personInp: JQuery<HTMLElement>) =>
-      expect($personInp).to.contain(testRIData.person)
-    );
+      // Currently the input field always has a value of ''
+      //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"] input').invoke('val').then((person: string) => expect(person).to.eq(testRIData.person));
+      cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]').then(
+        ($personInp: JQuery<HTMLElement>) => expect($personInp).to.contain(testRIData.person)
+      );
 
-    cy.getCustom('[data-veo-test="compliance-editor-description"] textarea')
-      .invoke('val')
-      .then((description: string) => expect(description).to.eq(testRIData.description));
+      cy.getCustom('[data-veo-test="compliance-editor-description"] textarea')
+        .invoke('val')
+        .then((description: string) => expect(description).to.eq(testRIData.description));
 
-    //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-implementation-date"]').invoke('val').then(() =>{})
+      //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-implementation-date"]').invoke('val').then(() =>{})
+    });
   });
 });
