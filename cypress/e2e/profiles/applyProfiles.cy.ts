@@ -3,13 +3,13 @@ import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 let unitDetails: UnitDetails;
 
 describe('Apply Profiles', () => {
-  before(() => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('profiles');
     cy.login();
     cy.createUnit(unitDetails);
   });
 
-  after(() => cy.deleteUnit(unitDetails.name));
+  afterEach(() => cy.deleteUnit(unitDetails.name));
 
   it('applies the DS-GVO demo profile to the test unit', () => {
     const profileName = 'Beispieldaten';
