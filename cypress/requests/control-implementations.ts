@@ -19,7 +19,8 @@
 import { logStatus } from './utils';
 import { getObject, getModules } from './objects';
 
-export function addControlImplementation({
+// @description Adds a module (aka a container control which contains a list of requirement implementations)
+export function addModule({
   domainId = Cypress.env('dynamicTestData').unit.domains[0].id,
   unitId = Cypress.env('dynamicTestData').unit.unitId
 } = {}) {
