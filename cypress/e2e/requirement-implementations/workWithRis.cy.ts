@@ -303,7 +303,7 @@ describe('Requirement Implementations: Editor', () => {
     });
   });
 
-  it.only('modifies a requirement implementation', () => {
+  it('modifies a requirement implementation', () => {
     // Navigate
     openFirstRI();
     // Add some new data
@@ -326,15 +326,11 @@ describe('Requirement Implementations: Editor', () => {
       cy.wait(['@getRIs']).its('response.statusCode').should('eq', 200);
     });
 
-    // Assert content of RI list
-    cy.getCustom('[data-veo-test="responsible.displayName"]')
-      .first()
-      .then(($responsibleCol: JQuery<HTMLElement>) => expect($responsibleCol).to.contain(testPerson.name));
+    //cy.wait(1000);
 
-    cy.getCustom('[data-veo-test="translations.status"]')
-      .first()
-      .first()
-      .then(($statusCol: JQuery<HTMLElement>) => expect($statusCol).to.contain('no'));
+    // Assert content of RI list
+    cy.getCustom('[data-veo-test="responsible.displayName"]').first().contains(testPerson.name);
+    cy.getCustom('[data-veo-test="translations.status"]').first().first().contains('no');
 
     // Open editor again
     cy.getCustom('td').first().click();
