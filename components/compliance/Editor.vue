@@ -239,7 +239,6 @@ interface Props {
   item: RequirementImplementation | null;
   showDialog: boolean;
   locale: string;
-  domainId: string;
 }
 
 interface Emits {
@@ -372,7 +371,7 @@ watch(
 );
 
 // Get and translate the protection approach value of the current item
-const { data: translations } = useTranslations({ domain: props.domainId });
+const { data: translations } = useTranslations({ domain: currentDomainId.value });
 
 function translateProtectionApproach({ translations, locale, protectionApproach }): string {
   if (!translations?.lang || !locale || !protectionApproach) return '';
