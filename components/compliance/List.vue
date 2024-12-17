@@ -74,18 +74,19 @@ const showVdA = ref(false);
 watch(
   [() => currentDomain.value, () => route.query.type, () => props.containerControl?.subType],
   () => {
-    const elementTypeDefinitions = currentDomain.value?.raw?.elementTypeDefinitions?.control;
-    const customAspects = elementTypeDefinitions?.customAspects?.control_bpInformation;
-    const complianceControlSubType =
-      currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubType;
-    // Update showVdA based on the conditions
-    showVdA.value =
-      customAspects &&
-      props.containerControl?.subType === complianceControlSubType &&
-      !!currentDomain.value?.raw?.elementTypeDefinitions?.control?.customAspects?.control_bpInformation;
+    const controlConfig = currentDomain.value?.raw?.controlImplementationConfiguration;
+    const bpInformation =
+      currentDomain.value?.raw?.elementTypeDefinitions?.control?.customAspects?.control_bpInformation;
+
+    const subTypeMatches =
+      props.containerControl?.subType === controlConfig?.complianceControlSubType ||
+      props.containerControl?.subType === controlConfig?.mitigationControlSubType;
+
+    showVdA.value = bpInformation && subTypeMatches;
   },
   { immediate: true }
 );
+
 const headers: ComputedRef<TableHeader[]> = computed(() => [
   {
     text: t('thAbbreviation'),
