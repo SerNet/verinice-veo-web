@@ -25,7 +25,7 @@
       :to="item.to"
       nuxt
     >
-      <span v-if="index > 0">
+      <span v-if="index > 0 && (queryResultMap[item.param] || item.text)">
         <v-icon :icon="mdiChevronRight" size="small" />
       </span>
       <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
