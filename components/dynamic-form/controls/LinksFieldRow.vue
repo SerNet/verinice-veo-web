@@ -98,6 +98,9 @@ interface Props {
   objectCreationDisabled: boolean;
   objectSchemaPointer: string;
   errors: Map<string, string[]>;
+  elementKey: string;
+  formSchemaPointer: string;
+  valuePointer: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -109,7 +112,10 @@ const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   objectCreationDisabled: false,
   objectSchemaPointer: '',
-  errors: () => new Map()
+  errors: () => new Map(),
+  elementKey: '',
+  formSchemaPointer: '',
+  valuePointer: ''
 });
 
 const emit = defineEmits<{
