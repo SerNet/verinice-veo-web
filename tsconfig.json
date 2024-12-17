@@ -14,7 +14,8 @@
       "@@": ["."],
       "@/*": ["./*"],
       "@@/*": ["./*"],
-      "#imports": [".nuxt/imports.d.ts"]
+      "#imports": [".nuxt/imports.d.ts"],
+      "#build/mdc-image-component.mjs": [".nuxt/mdc-image-component.mjs"]
     }
   },
   "exclude": ["node_modules", "dist"]
