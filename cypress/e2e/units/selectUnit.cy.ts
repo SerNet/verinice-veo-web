@@ -3,7 +3,7 @@ import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 let unitDetails: UnitDetails;
 
 describe('Unit Selection Functionality', () => {
-  before(() => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('selectUnit');
     cy.login();
     cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
@@ -13,10 +13,11 @@ describe('Unit Selection Functionality', () => {
     cy.handleLanguageBug();
   });
 
-  after(() => cy.deleteUnit(unitDetails.name));
+  afterEach(() => cy.deleteUnit(unitDetails.name));
 
   it('should switch unit and verify unit selection', () => {
     const defaultUnitName = Cypress.env(unitDetails.name).name;
+
     cy.getCustom('[data-component-name="unit-select"] span')
       .invoke('text')
       .then((text: string) => {
