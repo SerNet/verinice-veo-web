@@ -74,6 +74,7 @@
       <LayoutCookieBanner />
     </v-main>
 
+    <!-- @vue-ignore // not assignable -->
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
   </v-app>
 </template>

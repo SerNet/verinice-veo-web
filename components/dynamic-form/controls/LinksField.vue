@@ -24,6 +24,7 @@
   >
     <v-list>
       <v-list-item v-for="(link, index) of internalValue" :key="index" class="veo-links-field-border mt-4 px-4">
+        <!-- @vue-ignore -->
         <DynamicFormControlsLinksFieldRow
           v-bind="$props"
           :model-value="link.target"
