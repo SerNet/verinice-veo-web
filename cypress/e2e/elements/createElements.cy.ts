@@ -2,8 +2,8 @@ import { getRandomElementType } from '../../commands/utils';
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
 let unitDetails: UnitDetails;
-describe('Create elements', { testIsolation: false }, () => {
-  before(() => {
+describe('Create elements', () => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('createElements');
     cy.login();
     cy.createUnit(unitDetails);
@@ -13,7 +13,7 @@ describe('Create elements', { testIsolation: false }, () => {
     cy.selectUnit(unitDetails.name);
   });
 
-  after(() => cy.deleteUnit(unitDetails.name)); // Use the name from the unitDetails object to delete);
+  afterEach(() => cy.deleteUnit(unitDetails.name)); // Use the name from the unitDetails object to delete);
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 
