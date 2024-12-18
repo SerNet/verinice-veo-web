@@ -26,7 +26,7 @@ export function pluralizeElementType(elementType: string) {
 export function waitForLoadersToDisappear(options: any = {}) {
   cy.get('.v-skeleton-loader', options).should('not.exist');
   cy.get('[loading=true]', options).should('not.exist');
-  cy.get('[role=progressbar]:visible', options).should('not.exist');
+  cy.get('[role="progressbar"]:visible:not([data-test-veo="timerInstance"])', options).should('not.exist');
   cy.get('[data-veo-test="loadingDataTable"]', options).should('not.exist');
   cy.get('[data-veo-test="loader"]', options).should('not.exist');
 }
