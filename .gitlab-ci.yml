@@ -88,7 +88,7 @@ build_test_app:
   interruptible: true
 
 .test_template:
-  image: cypress/browsers:node-22.12.0-chrome-131.0.6778.139-1-ff-133.0.3-edge-131.0.2903.99-1
+  image: cypress/base:22.12.0
   needs: ['build_test_app']
   stage: test
   rules:
@@ -117,6 +117,9 @@ build_test_app:
     - npm ci --cache .npm --prefer-offline
     - chmod +x ./setup-env.sh ./run-parallel-tests.sh
     - ./setup-env.sh
+    - apt-get update && apt-get install -y xvfb
+    - Xvfb :99 & # Start Xvfb
+    - export DISPLAY=:99 # Set the DISPLAY environment variable
     - export {http,https}_proxy="${http_proxy}"
     - npx serve .output/public/ &
   interruptible: true
@@ -125,6 +128,7 @@ test:
   extends: .test_template
   script:
     - ./run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
+    - pkill -f Xvfb # Kill Xvfb after tests
 
 docker_image:
   stage: build
