@@ -58,6 +58,7 @@ echo "Created temporary directory: $TMP_DIR"
 
 # Copy the selected test files to the temporary directory
 # This step ensures only the relevant files for this node are in the temp directory.
+# Copy the test files to the temporary directory
 for FILE in "${FILES_TO_RUN[@]}"; do
   cp "$FILE" "$TMP_DIR/"
 done
@@ -74,7 +75,7 @@ done
 # which results in missing test suite results (.json files not generated).  
 # This workaround forces Cypress-Parallel to use the correct reporter settings, ensuring test results are captured  
 # and preventing false failures due to mismatched test suite counts.  
-npx cypress-parallel -s cy:local --d "$TMP_DIR" -t 4 -m -p 'cypress/reporter-config.json'
+npx cypress-parallel-extended -s cy:local -d "$TMP_DIR" -t 8 -m -p 'cypress/reporter/reporter-config.json' -x "$CI_NODE_INDEX"
 TEST_RESULT=$? # Capture the exit code of the Cypress parallel test run
 
 # Clean up the temporary directory after the tests run to avoid leaving unnecessary files behind
