@@ -56,7 +56,7 @@ import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { TableHeader } from '../base/Table.vue';
 
 const props = defineProps<{
-  containerControl: Partial<IVeoEntity> | undefined;
+  containerControl?: Partial<IVeoEntity>;
 }>();
 
 const route = useRoute();
