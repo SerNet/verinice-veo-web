@@ -107,13 +107,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <template #footer>
       <div class="d-flex justify-space-between">
-        <v-btn v-if="step > 1" size="large" class="my-6" variant="outlined" @click="step--">{{
-          globalT('global.button.back')
-        }}</v-btn>
-        <v-btn v-if="step === 1" to="/units" size="large" class="my-6" variant="outlined">{{
-          t('goToUnitAdmin')
-        }}</v-btn>
+        <v-btn v-if="step > 1" size="large" class="my-6" variant="outlined" @click="handleBackClick">
+          {{ globalT('global.button.back') }}
+        </v-btn>
+
+        <v-btn v-if="step === 1" to="/units" size="large" class="my-6" variant="outlined" @click="blurActiveElement">
+          {{ t('goToUnitAdmin') }}
+        </v-btn>
+
         <v-spacer></v-spacer>
+
         <v-btn
           v-if="step < 4"
           data-veo-test="create-unit-next-btn"
@@ -122,9 +125,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           color="primary"
           variant="outlined"
           :disabled="!canClickNext"
-          @click="step++"
-          >{{ globalT('global.button.next') }}</v-btn
+          @click="handleNextClick"
         >
+          {{ globalT('global.button.next') }}
+        </v-btn>
+
         <v-btn
           v-if="step === 4"
           data-veo-test="create-unit-create-btn"
@@ -132,8 +137,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           class="my-6"
           color="primary"
           :prepend-icon="mdiPlus"
-          @click="createUnit"
-          >{{ t('createUnit') }}
+          @click="handleCreateClick"
+        >
+          {{ t('createUnit') }}
         </v-btn>
       </div>
     </template>
@@ -145,15 +151,15 @@ export const ROUTE_NAME = 'unit-create';
 </script>
 
 <script setup lang="ts">
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { mdiPlus } from '@mdi/js';
+import { redirectToUnits, useApplyProfile } from '~/components/unit/unit-module';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { VeoAlertType } from '~/types/VeoTypes';
-import { useApplyProfile, redirectToUnits } from '~/components/unit/unit-module';
 
 // Types
-import type { TVeoProfile } from '~/composables/profiles/useProfiles';
-import type { TVeoDomain } from '~/composables/domains/useDomains';
 import type { UnitDetails } from '~/components/unit/Details.vue';
+import type { TVeoDomain } from '~/composables/domains/useDomains';
+import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 import { TInlineComponent } from '~/types/utils';
 
 // Helper
@@ -267,6 +273,45 @@ const Description: TInlineComponent = {
     </v-card>
   `
 };
+// Event listener for Enter key
+function handleBackClick() {
+  step.value--;
+  blurActiveElement();
+}
+function handleNextClick() {
+  if (canClickNext) {
+    step.value++;
+  }
+  blurActiveElement();
+}
+function handleCreateClick() {
+  createUnit();
+  blurActiveElement();
+}
+function blurActiveElement() {
+  const activeElement = document.activeElement as HTMLElement;
+  if (activeElement) {
+    activeElement.blur();
+  }
+}
+const handleEnterPress = (event: KeyboardEvent) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    if (canClickNext.value && step.value < 4) {
+      step.value++;
+    } else if (step.value === 4) {
+      createUnit();
+    }
+  }
+};
+
+onMounted(() => {
+  window.addEventListener('keydown', handleEnterPress);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener('keydown', handleEnterPress);
+});
 </script>
 <i18n>
 {

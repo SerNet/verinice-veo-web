@@ -50,6 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     :disabled="isDisabled"
                     hide-details
                     required
+                    @keydown.enter.prevent
                   ></v-text-field>
                 </v-col>
 
