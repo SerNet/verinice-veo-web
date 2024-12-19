@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -206,6 +206,7 @@
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
             :translations="eligibleTranslations"
+            :additional-context="getRiskAdditionalContext(objectSchema.title, domain, locale, t)"
             :locale="editorLanguage"
           />
         </template>
@@ -242,7 +243,7 @@
       <EditorFormSchemaDetailsDialog
         v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
-        v-model:subType="formSchema.subType"
+        v-model:sub-type="formSchema.subType"
         v-model:sorting="formSchema.sorting"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[editorLanguage]"
@@ -274,6 +275,7 @@ import {
   mdiWrench
 } from '@mdi/js';
 import { useDisplay } from 'vuetify';
+import { getRiskAdditionalContext } from '~/components/dynamic-form/additionalContext';
 
 import { deleteFormSchemaElementTranslations, validate } from '~/lib/FormSchemaHelper';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
@@ -281,6 +283,7 @@ import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import type { LocaleObject } from '@nuxtjs/i18n';
@@ -570,7 +573,17 @@ export default defineComponent({
       }
     };
 
+    const fetchDomainQueryParameters = computed(() => ({
+      id: route.params.domain as string
+    }));
+
+    const fetchDomainQueryEnabled = computed(() => !!route.params.domain);
+    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+      enabled: fetchDomainQueryEnabled
+    });
+
     return {
+      domain,
       ability,
       creationDialogVisible,
       editorLanguage,
@@ -610,7 +623,9 @@ export default defineComponent({
       t,
       globalT,
       HELP_ROUTE,
-      xs
+      xs,
+      getRiskAdditionalContext,
+      locale
     };
   }
 });

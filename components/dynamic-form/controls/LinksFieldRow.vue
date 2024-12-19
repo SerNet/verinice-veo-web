@@ -107,7 +107,7 @@ const props = withDefaults(defineProps<Props>(), {
   otherSelectedLinks: () => [],
   modelValue: undefined,
   options: () => ({ visible: true, disabled: false, label: '' }),
-  index: undefined,
+  index: 0,
   objectSchema: {},
   disabled: false,
   objectCreationDisabled: false,
