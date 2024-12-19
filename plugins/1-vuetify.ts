@@ -60,6 +60,9 @@ const vuetify = createVuetify({
           // info: '#'
           // success: '#',
           // warning: '#'
+        },
+        variables: {
+          'disabled-opacity': 0.6
         }
       },
       dark: {
@@ -74,6 +77,9 @@ const vuetify = createVuetify({
           // info: '#'
           // success: '#',
           // warning: '#'
+        },
+        variables: {
+          'disabled-opacity': 0.6
         }
       }
     }
