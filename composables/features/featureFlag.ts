@@ -15,39 +15,57 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import featureFlagsJson from './feature-flags.json';
 
-const validFeatureFlagNames = ['cardView'] as const;
-export type FeatureFlagName = (typeof validFeatureFlagNames)[number];
-type FeatureFlags = { [key in FeatureFlagName]: boolean };
+export type FeatureFlagName = keyof typeof featureFlagsJson;
+type FeatureFlags = { [key in FeatureFlagName]?: boolean };
 
-const defaultFeatureFlags: FeatureFlags = Object.fromEntries(
-  validFeatureFlagNames.map((flag) => [flag, false])
-) as FeatureFlags;
+interface CachedFeatureFlags {
+  flags: FeatureFlags;
+}
 
-const isClient = typeof window !== 'undefined';
-const featureFlags = ref<FeatureFlags>({ ...defaultFeatureFlags });
-let isInitialized = false;
+const featureFlags = ref<FeatureFlags>({});
 
 export function useFeatureFlag() {
   const config = useRuntimeConfig();
   const isBetaMode = config.public.isBetaMode === 'true';
 
   const updateCache = () => {
-    if (!isBetaMode || !isClient) return;
+    if (!isBetaMode) return;
+    const cacheData: CachedFeatureFlags = { flags: featureFlags.value };
+    localStorage.setItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS, JSON.stringify(cacheData));
+  };
 
+  const loadEnvironmentFeatureFlags = (): FeatureFlags => {
+    return ((config.public.featureFlags as { key: string; value: boolean }[]) || []).reduce<FeatureFlags>(
+      (acc, flag) => {
+        const featureFlagKey = Object.keys(featureFlagsJson).find((jsonKey) => jsonKey === flag.key);
+        if (featureFlagKey) acc[featureFlagKey as FeatureFlagName] = flag.value;
+        return acc;
+      },
+      {} as FeatureFlags
+    );
+  };
+
+  const loadFeatureFlags = async (): Promise<FeatureFlags> => {
     try {
-      localStorage.setItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS, JSON.stringify(featureFlags.value));
+      return Object.entries(featureFlagsJson).reduce<FeatureFlags>((acc, [key, value]) => {
+        if (!(key in featureFlags.value)) acc[key as FeatureFlagName] = value as boolean;
+        return acc;
+      }, {});
     } catch (error) {
-      console.error('Failed to update feature flags cache:', error);
+      console.error('Error loading feature flags:', error);
+      return {};
     }
   };
 
-  const loadFeatureFlagsFromCache = (): Partial<FeatureFlags> => {
-    if (!isBetaMode || !isClient) return {};
-
+  const loadFeatureFlagsFromCache = (): FeatureFlags => {
+    if (!isBetaMode) return {};
+    const cachedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
+    if (!cachedData) return {};
     try {
-      const cachedData = localStorage.getItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
-      return cachedData ? JSON.parse(cachedData) : {};
+      const { flags }: CachedFeatureFlags = JSON.parse(cachedData);
+      return flags;
     } catch (error) {
       console.warn('Error loading cached feature flags:', error);
       localStorage.removeItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
@@ -55,66 +73,60 @@ export function useFeatureFlag() {
     }
   };
 
-  const resetFeatureFlags = () => {
-    if (!isBetaMode || !isClient) return;
-
-    try {
-      localStorage.removeItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
-      featureFlags.value = { ...defaultFeatureFlags };
-    } catch (error) {
-      console.error('Failed to reset feature flags:', error);
-    }
-  };
-
-  const hasFeature = (flag: FeatureFlagName): boolean => {
-    return featureFlags.value[flag];
-  };
-
-  const setFeature = (flag: FeatureFlagName, value: boolean) => {
-    if (!isBetaMode || !validFeatureFlagNames.includes(flag)) return;
-
-    featureFlags.value[flag] = value;
+  const resetFeatureFlags = async () => {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
+    featureFlags.value = {};
+    Object.assign(featureFlags.value, await loadFeatureFlags());
+    Object.assign(featureFlags.value, loadEnvironmentFeatureFlags());
     updateCache();
   };
 
-  const enableFeature = (flag: FeatureFlagName) => setFeature(flag, true);
-  const disableFeature = (flag: FeatureFlagName) => setFeature(flag, false);
+  const hasFeature = (flag: FeatureFlagName): boolean => {
+    if (!(flag in featureFlags.value)) {
+      console.warn(`Feature flag "${flag}" is not defined`);
+      return false;
+    }
+    return !!featureFlags.value[flag];
+  };
+
+  const enableFeature = (flag: FeatureFlagName) => {
+    if (!isBetaMode) return;
+    featureFlags.value[flag] = true;
+    updateCache();
+  };
+
+  const disableFeature = (flag: FeatureFlagName) => {
+    if (!isBetaMode) return;
+    featureFlags.value[flag] = false;
+    updateCache();
+  };
 
   const toggleFeature = (flag: FeatureFlagName) => {
     if (!isBetaMode) return;
-    setFeature(flag, !featureFlags.value[flag]);
+    featureFlags.value[flag] = !featureFlags.value[flag];
+    updateCache();
   };
 
-  const initializeFeatureFlags = () => {
+  const initializeFeatureFlags = async () => {
     if (!isBetaMode) {
-      if (isClient) {
-        localStorage.removeItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
-      }
-      featureFlags.value = { ...defaultFeatureFlags };
+      localStorage.removeItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
+      const jsonFlags = await loadFeatureFlags();
+      const envFlags = loadEnvironmentFeatureFlags();
+      featureFlags.value = { ...jsonFlags, ...envFlags };
       return;
     }
 
-    if (!isInitialized) {
-      const cachedFlags = loadFeatureFlagsFromCache();
-
-      // Merge cached flags with defaults, ensuring only valid flags are kept
-      const mergedFlags = { ...defaultFeatureFlags };
-      validFeatureFlagNames.forEach((flag) => {
-        if (typeof cachedFlags[flag] === 'boolean') {
-          mergedFlags[flag] = cachedFlags[flag];
-        }
-      });
-
-      featureFlags.value = mergedFlags;
-      updateCache();
-      isInitialized = true;
-    }
+    const jsonFlags = await loadFeatureFlags();
+    const envFlags = loadEnvironmentFeatureFlags();
+    const cacheFlags = loadFeatureFlagsFromCache();
+    featureFlags.value = { ...jsonFlags, ...envFlags, ...cacheFlags };
+    updateCache();
   };
 
   initializeFeatureFlags();
 
   return {
-    featureFlags: readonly(featureFlags),
+    featureFlags,
     hasFeature,
     enableFeature,
     disableFeature,

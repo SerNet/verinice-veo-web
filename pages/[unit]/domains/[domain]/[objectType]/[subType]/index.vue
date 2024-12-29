@@ -179,7 +179,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <script setup lang="ts">
-import { mdiContentCopy, mdiDotsVertical, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import { mdiContentCopy, mdiPlus, mdiPuzzleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
 import { mergeProps } from 'vue';
@@ -188,16 +188,16 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
+import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
+import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+import { useFeatureFlag } from '~/composables/features/featureFlag';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import type { VeoSearch } from '~/types/VeoSearch';
 import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
-import { useFeatureFlag } from '~/composables/features/featureFlag';
-import { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
-import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import { useCurrentDomainUtils } from '~/composables/domains/useDomains';
 
@@ -367,7 +367,6 @@ const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
 
 // items rendered in ObjectTable
 const items = computed(() => (search.value.length ? searchResults.value : _items.value) || []);
-
 const cardItems = computed(() => {
   const results = searchResults.value?.items;
   if (results) return results;
@@ -547,7 +546,7 @@ const actions = computed(() => [
     disabled: domains.value?.length <= 1,
     id: 'assign',
     label: t('assignObject'),
-    icon: mdiDotsVertical,
+    icon: mdiPuzzleOutline,
     action(item: any) {
       objectAssignDialogVisible.value = true;
       objectId.value = item.id;
@@ -645,7 +644,7 @@ const onBulkDelete = () => {
 
 <i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-index.json"></i18n>
 
-<style scoped>
+<style scoped lang="scss">
 .actions {
   position: relative;
   display: flex;
