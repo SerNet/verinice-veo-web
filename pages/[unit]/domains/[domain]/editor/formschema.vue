@@ -22,6 +22,7 @@
     :collapsable-right="schemaIsValid.valid"
   >
     <template v-if="formSchema && objectSchema" #header>
+      <!-- Toolbar -->
       <div class="ma-6 ml-4" style="width: 120px">
         <v-select
           v-model="editorLanguage"
@@ -35,6 +36,7 @@
           flat
         />
       </div>
+
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <a
@@ -52,6 +54,7 @@
           {{ globalT('editor.schema.download') }}
         </template>
       </v-tooltip>
+
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
@@ -67,6 +70,7 @@
           {{ t('formSchemaCode') }}
         </template>
       </v-tooltip>
+
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
@@ -114,6 +118,7 @@
           {{ globalT('editor.schema.properties') }}
         </template>
       </v-tooltip>
+
       <v-tooltip location="bottom">
         <template #activator="{ props }">
           <v-btn
@@ -149,6 +154,8 @@
         </template>
       </v-tooltip>
     </template>
+    <!-- Toolbar END -->
+
     <template v-if="formSchema && objectSchema && schemaIsValid.valid" #default>
       <BasePage
         heading-level="3"
@@ -156,6 +163,7 @@
         :title="t('availableControls')"
         :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
+        <!-- Search -->
         <template #header>
           <v-text-field
             v-model="searchQuery"
@@ -169,6 +177,8 @@
             :label="t('search')"
           />
         </template>
+
+        <!-- Backlog / Available Controls -->
         <template #default>
           <EditorFormSchemaBacklog
             v-if="objectSchema && formSchema"
@@ -179,7 +189,9 @@
           />
         </template>
       </BasePage>
+
       <BasePage heading-level="3" :title="t('usedControls')" :titlebar-alignment="PageHeaderAlignment.CENTER">
+        <!-- Playground / Currently used controls -->
         <template #default>
           <div class="fill-height fill-width d-flex mt-2">
             <EditorFormSchemaPlayground
@@ -191,6 +203,7 @@
           </div>
         </template>
       </BasePage>
+
       <BasePage
         v-if="!xs"
         height="100%"
@@ -198,6 +211,7 @@
         :title="t('preview')"
         :titlebar-alignment="PageHeaderAlignment.CENTER"
       >
+        <!-- Preview / Dynamic form -->
         <template #default>
           <DynamicFormEntrypoint
             v-if="formSchema && objectSchema"
@@ -212,6 +226,7 @@
         </template>
       </BasePage>
     </template>
+
     <template v-else #default>
       <BasePage>
         <UtilValidationResults
@@ -221,6 +236,7 @@
         />
       </BasePage>
     </template>
+
     <template #helpers>
       <!-- @vue-ignore TODO #3066 $route does not exist -->
       <EditorFormSchemaWizardDialog
@@ -228,7 +244,7 @@
         :domain-id="$route.params.domain as string"
         @done="onWizardFinished"
       />
-      <EditorErrorDialog v-model="errorDialogVisible" :validation="schemaIsValid" v-bind="validationActions" />
+      <EditorErrorDialog v-model="errorDialogVisible" v-bind="validationActions" :validation="schemaIsValid" />
       <EditorFormSchemaCodeEditorDialog v-model="codeEditorVisible" :code="code" />
       <EditorFormSchemaInvalidSchemaDownloadDialog
         v-model="invalidSchemaDownloadDialogVisible"
@@ -261,22 +277,25 @@ export const PROVIDE_KEYS = {
   FORMSCHEMA: 'mainFormSchema',
   OBJECTSCHEMA: 'mainObjectSchema'
 };
+</script>
 
-import { Ref } from 'vue';
+<script setup lang="ts">
 import {
   mdiAlertCircleOutline,
   mdiCodeTags,
   mdiContentSave,
   mdiDownload,
   mdiHelpCircleOutline,
-  mdiInformationOutline,
   mdiMagnify,
   mdiTranslate,
   mdiWrench
 } from '@mdi/js';
-import { useDisplay } from 'vuetify';
-import { getRiskAdditionalContext } from '~/components/dynamic-form/additionalContext';
 
+import { useDisplay } from 'vuetify';
+import { JsonPointer } from 'json-ptr';
+import { cloneDeep, isArray } from 'lodash';
+
+import { getRiskAdditionalContext } from '~/components/dynamic-form/additionalContext';
 import { deleteFormSchemaElementTranslations, validate } from '~/lib/FormSchemaHelper';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
@@ -286,348 +305,275 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import formQueryDefinitions, { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import type { LocaleObject } from '@nuxtjs/i18n';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
+import type { LocaleObject } from '@nuxtjs/i18n';
 import { PENDING_TRANSLATIONS } from '~/components/editor/formSchema/playground/EditElementDialog.vue';
-import { JsonPointer } from 'json-ptr';
-import { cloneDeep, isArray } from 'lodash';
 import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 import { editorTranslationsToFormsTranslations } from '~/components/editor/translations/util';
 
-export default defineComponent({
-  setup() {
-    const { locale, locales, t } = useI18n();
-    const { t: globalT } = useI18n({ useScope: 'global' });
-    const route = useRoute();
-    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { ability } = useVeoPermissions();
-    const { xs } = useDisplay();
+const { locale, locales, t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+const route = useRoute();
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+const { ability } = useVeoPermissions();
+const { xs } = useDisplay();
 
-    /**
-     * Layout specific stuff
-     */
-    const creationDialogVisible = computed(() => !objectSchema.value || !formSchema.value);
-    const errorDialogVisible = ref(false);
-    const detailDialogVisible = ref(false);
-    const codeEditorVisible = ref(false);
-    const searchQuery: Ref<undefined | string> = ref(undefined);
+/**
+ * Layout specific stuff
+ */
+const creationDialogVisible = computed(() => !objectSchema.value || !formSchema.value);
+const errorDialogVisible = ref(false);
+const detailDialogVisible = ref(false);
+const codeEditorVisible = ref(false);
+const searchQuery: Ref<undefined | string> = ref(undefined);
 
-    const controlItems = ref({});
+const controlItems = ref({});
 
-    const downloadButton: Ref<any> = ref(null);
-    provide('controlsItems', controlItems);
+const downloadButton: Ref<any> = ref(null);
+provide('controlsItems', controlItems);
 
-    const title = computed(() => {
-      // Name property must generally exist, but before it is created in Wizard, only headline should be visible
-      // If Name property exists and e.g. 'de' sub-property is empty then missing translation should be visible
-      if (formSchema.value?.name) {
-        const formSchemaName =
-          formSchema.value?.name[editorLanguage.value] ??
-          `Missing translation for ${editorLanguage.value.toUpperCase()}`;
-        return formSchemaName;
-      }
-    });
+/**
+ * Schema related stuff
+ */
+const objectSchema: Ref<IVeoDomainSpecificObjectSchema | undefined> = ref(undefined);
+const formSchema: Ref<IVeoFormSchema | undefined> = ref(undefined);
+provide(PROVIDE_KEYS.OBJECTSCHEMA, objectSchema);
+provide(PROVIDE_KEYS.FORMSCHEMA, formSchema);
+const objectData = ref({});
 
-    /**
-     * Schema related stuff
-     */
-    const objectSchema: Ref<IVeoDomainSpecificObjectSchema | undefined> = ref(undefined);
-    const formSchema: Ref<IVeoFormSchema | undefined> = ref(undefined);
-    provide(PROVIDE_KEYS.OBJECTSCHEMA, objectSchema);
-    provide(PROVIDE_KEYS.FORMSCHEMA, formSchema);
-    const objectData = ref({});
+const schemaIsValid = computed(() =>
+  formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }
+);
 
-    const schemaIsValid = computed(() =>
-      formSchema.value ? validate(formSchema.value, objectSchema.value) : { valid: false, errors: [], warnings: [] }
-    );
+const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
 
-    const code = computed(() => (formSchema.value ? JSON.stringify(formSchema.value, undefined, 2) : ''));
+const onWizardFinished = (payload: { formSchema: IVeoFormSchema; objectSchema: IVeoDomainSpecificObjectSchema }) => {
+  formSchema.value = payload.formSchema;
+  objectSchema.value = payload.objectSchema;
+};
 
-    const onWizardFinished = (payload: {
-      formSchema: IVeoFormSchema;
-      objectSchema: IVeoDomainSpecificObjectSchema;
-    }) => {
-      formSchema.value = payload.formSchema;
-      objectSchema.value = payload.objectSchema;
-    };
-
-    // Create/update stuff
-    const createFormSchemaQueryParameters = computed(() => ({
-      domainId: route.params.domain as string,
-      form: formSchema.value as IVeoFormSchema
-    }));
-    const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm, {
-      onSuccess: (data: any) => {
-        if (formSchema.value) {
-          formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
-        }
-      }
-    });
-    const updateFormSchemaQueryParameters = computed(() => ({
-      id: formSchema.value?.id || '',
-      domainId: route.params.domain as string,
-      form: formSchema.value as IVeoFormSchema
-    }));
-    const { mutateAsync: update } = useMutation(formQueryDefinitions.mutations.updateForm);
-
-    async function save() {
-      // control whether save new or save updated schema
-      try {
-        if (!formSchema.value) {
-          throw new Error('Formschema not defined');
-        }
-        if (formSchema.value.id) {
-          await update(updateFormSchemaQueryParameters);
-        } else {
-          await create(createFormSchemaQueryParameters);
-        }
-        displaySuccessMessage(t('saveSchemaSuccess').toString());
-      } catch (err: any) {
-        displayErrorMessage(t('error').toString(), `${t('saveSchemaError').toString()}: ${err.message}`);
-      }
+// Create/update stuff
+const createFormSchemaQueryParameters = computed(() => ({
+  domainId: route.params.domain as string,
+  form: formSchema.value as IVeoFormSchema
+}));
+const { mutateAsync: create } = useMutation(formQueryDefinitions.mutations.createForm, {
+  onSuccess: (data: any) => {
+    if (formSchema.value) {
+      formSchema.value.id = data; // For some reason the interface always returns void, even though this is a string
     }
-
-    function updateSchemaName(value: string) {
-      if (!formSchema.value) {
-        return;
-      }
-      formSchema.value.name[editorLanguage.value] = value;
-    }
-
-    const invalidSchemaDownloadDialogVisible = ref(false);
-    function downloadSchema(forceDownload = false) {
-      if (schemaIsValid.value.valid === false && !forceDownload) {
-        invalidSchemaDownloadDialogVisible.value = true;
-      } else if (downloadButton.value && downloadButton.value !== null) {
-        invalidSchemaDownloadDialogVisible.value = false;
-        const data = `data:text/json;charset=utf-8,${encodeURIComponent(
-          JSON.stringify(formSchema.value, undefined, 2)
-        )}`;
-        downloadButton.value.href = data;
-        downloadButton.value.download = `fs_${
-          formSchema.value?.name[editorLanguage.value] || 'missing_translation'
-        }.json`;
-      }
-    }
-
-    // TODO: during the refactoring process, look if controlItems here and in Backlog can be removed
-    function updateControlItems(items: any) {
-      controlItems.value = items;
-    }
-
-    /**
-     * Translations/language related stuff
-     */
-    const editorLanguage = ref(locale.value);
-    provide(PROVIDE_KEYS.EDITOR_LANGUAGE, editorLanguage);
-
-    const translationsQueryParameters = computed(() => ({
-      languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
-      domain: route.params.domain
-    }));
-    const { data: translationsQueryData } = useQuery(
-      translationQueryDefinitions.queries.fetch,
-      translationsQueryParameters
-    );
-
-    const setTranslation = (
-      translations: IEditorTranslations,
-      key: string,
-      source: TRANSLATION_SOURCE,
-      locale: string,
-      value: string
-    ) => {
-      const _translations = cloneDeep(translations);
-
-      if (!_translations[key]) {
-        _translations[key] = Object.create(null);
-      }
-      if (!_translations[key][source]) {
-        _translations[key][source] = Object.create(null);
-      }
-      _translations[key][source][locale] = value;
-      return _translations;
-    };
-
-    const translations = computed({
-      get: () => {
-        let _translations: IEditorTranslations = Object.create(null);
-
-        // If no objectschema is present, no need to iterate over all translations
-        if (objectSchema.value?.title) {
-          // Iterate over all objectschema translations that belong to this formschemas objectschema
-          for (const [locale, osLanguageTranslations] of Object.entries(translationsQueryData.value?.lang || {})) {
-            for (const [translationKey, translationValue] of Object.entries(osLanguageTranslations)) {
-              // Skip translations not belonging to a different objectschema
-              if (translationKey.includes('_') && !translationKey.startsWith(objectSchema.value.title)) {
-                continue;
-              }
-              _translations = setTranslation(
-                _translations,
-                translationKey,
-                TRANSLATION_SOURCE.OBJECTSCHEMA,
-                locale,
-                translationValue
-              );
-            }
-          }
-
-          // Iterate over all formschema translations
-          for (const [locale, fsLanguageTranslations] of Object.entries(formSchema.value?.translation || {})) {
-            for (const [translationKey, translationValue] of Object.entries(fsLanguageTranslations)) {
-              _translations = setTranslation(
-                _translations,
-                translationKey,
-                TRANSLATION_SOURCE.FORMSCHEMA,
-                locale,
-                translationValue
-              );
-            }
-          }
-        }
-
-        return _translations;
-      },
-      set: (newTranslations) => {
-        if (!formSchema.value) {
-          throw new Error('FormschemaEditor::translations:setter: Formschema not defined');
-        }
-        const newFormSchemaTranslations = Object.create(null);
-
-        // Iterate over all translations
-        for (const [translationKey, translation] of Object.entries(newTranslations)) {
-          for (const [translationSource, values] of Object.entries(translation)) {
-            // The formschema editor is only allowed to update formschema translations!!!
-            if (parseInt(translationSource, 10) !== TRANSLATION_SOURCE.FORMSCHEMA) {
-              continue;
-            }
-
-            for (const [locale, localeValue] of Object.entries(values)) {
-              if (!newFormSchemaTranslations[locale]) {
-                newFormSchemaTranslations[locale] = Object.create(null);
-              }
-              if (!newFormSchemaTranslations[locale][translationKey]) {
-                newFormSchemaTranslations[locale][translationKey] = Object.create(null);
-              }
-              newFormSchemaTranslations[locale][translationKey] = localeValue;
-            }
-          }
-        }
-        formSchema.value.translation = newFormSchemaTranslations;
-      }
-    });
-    provide(PROVIDE_KEYS.TRANSLATIONS, translations);
-
-    const eligibleTranslations = computed(() => editorTranslationsToFormsTranslations(translations.value));
-
-    const translationDialogVisible: Ref<boolean> = ref(false);
-
-    const setElementTranslation = (translations: PENDING_TRANSLATIONS) => {
-      Object.entries(translations).forEach(([translationLocale, translationsForLocale]) => {
-        Object.entries(translationsForLocale).forEach(([translationKey, translationValue]) => {
-          if (!formSchema.value) {
-            throw new Error('FormschemaEditor::setElementTranslation: Formschema not defined');
-          }
-
-          if (translationValue) {
-            if (!formSchema.value.translation[translationLocale]) {
-              formSchema.value.translation[translationLocale] = { [translationKey]: translationValue };
-            } else {
-              formSchema.value.translation[translationLocale][translationKey] = translationValue;
-            }
-          } else {
-            delete formSchema.value.translation[translationLocale][translationKey];
-          }
-        });
-      });
-    };
-
-    const validationActions: Record<string, (errorCode: string, details: Record<string, any>) => void> = {
-      onFix: (errorCode, details) => {
-        switch (errorCode) {
-          case 'E_PROPERTY_MISSING':
-            if (formSchema.value) {
-              const toModify = cloneDeep(formSchema.value);
-              const elementFormSchema = JsonPointer.get(
-                toModify.content,
-                details.formSchemaPointer
-              ) as IVeoFormSchemaItem;
-
-              formSchema.value = deleteFormSchemaElementTranslations(formSchema.value, elementFormSchema);
-              // You can't delete the root object
-              if (details.formSchemaPointer && details.formSchemaPointer !== '#') {
-                const parts = details.formSchemaPointer.split('/');
-                const lastPart = parts.pop();
-                const partToModify: any = JsonPointer.get(toModify.content, parts.join('/'));
-                if (isArray(partToModify)) {
-                  partToModify.splice(parseInt(lastPart), 1);
-                } else {
-                  delete partToModify[lastPart];
-                }
-                JsonPointer.set(toModify.content, parts.join('/'), partToModify);
-              }
-              formSchema.value = toModify;
-            }
-        }
-      }
-    };
-
-    const fetchDomainQueryParameters = computed(() => ({
-      id: route.params.domain as string
-    }));
-
-    const fetchDomainQueryEnabled = computed(() => !!route.params.domain);
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
-      enabled: fetchDomainQueryEnabled
-    });
-
-    return {
-      domain,
-      ability,
-      creationDialogVisible,
-      editorLanguage,
-      eligibleTranslations,
-      errorDialogVisible,
-      codeEditorVisible,
-      detailDialogVisible,
-      searchQuery,
-      title,
-      objectSchema,
-      formSchema,
-      objectData,
-      schemaIsValid,
-      updateSchemaName,
-      downloadSchema,
-      updateControlItems,
-      invalidSchemaDownloadDialogVisible,
-      downloadButton,
-      locales,
-      code,
-      translationDialogVisible,
-      PageHeaderAlignment,
-      save,
-      setElementTranslation,
-      onWizardFinished,
-      validationActions,
-
-      mdiAlertCircleOutline,
-      mdiCodeTags,
-      mdiContentSave,
-      mdiDownload,
-      mdiHelpCircleOutline,
-      mdiInformationOutline,
-      mdiMagnify,
-      mdiTranslate,
-      mdiWrench,
-      t,
-      globalT,
-      HELP_ROUTE,
-      xs,
-      getRiskAdditionalContext,
-      locale
-    };
   }
+});
+const updateFormSchemaQueryParameters = computed(() => ({
+  id: formSchema.value?.id || '',
+  domainId: route.params.domain as string,
+  form: formSchema.value as IVeoFormSchema
+}));
+const { mutateAsync: update } = useMutation(formQueryDefinitions.mutations.updateForm);
+
+async function save() {
+  // control whether save new or save updated schema
+  try {
+    if (!formSchema.value) {
+      throw new Error('Formschema not defined');
+    }
+    if (formSchema.value.id) {
+      await update(updateFormSchemaQueryParameters);
+    } else {
+      await create(createFormSchemaQueryParameters);
+    }
+    displaySuccessMessage(t('saveSchemaSuccess').toString());
+  } catch (err: any) {
+    displayErrorMessage(t('error').toString(), `${t('saveSchemaError').toString()}: ${err.message}`);
+  }
+}
+
+function updateSchemaName(value: string) {
+  if (!formSchema.value) {
+    return;
+  }
+  formSchema.value.name[editorLanguage.value] = value;
+}
+
+const invalidSchemaDownloadDialogVisible = ref(false);
+function downloadSchema(forceDownload = false) {
+  if (schemaIsValid.value.valid === false && !forceDownload) {
+    invalidSchemaDownloadDialogVisible.value = true;
+  } else if (downloadButton.value && downloadButton.value !== null) {
+    invalidSchemaDownloadDialogVisible.value = false;
+    const data = `data:text/json;charset=utf-8,${encodeURIComponent(JSON.stringify(formSchema.value, undefined, 2))}`;
+    downloadButton.value.href = data;
+    downloadButton.value.download = `fs_${formSchema.value?.name[editorLanguage.value] || 'missing_translation'}.json`;
+  }
+}
+
+// TODO: during the refactoring process, look if controlItems here and in Backlog can be removed
+function updateControlItems(items: any) {
+  controlItems.value = items;
+}
+
+/**
+ * Translations/language related stuff
+ */
+const editorLanguage = ref(locale.value);
+provide(PROVIDE_KEYS.EDITOR_LANGUAGE, editorLanguage);
+
+const translationsQueryParameters = computed(() => ({
+  languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
+  domain: route.params.domain
+}));
+const { data: translationsQueryData } = useQuery(
+  translationQueryDefinitions.queries.fetch,
+  translationsQueryParameters
+);
+
+const setTranslation = (
+  translations: IEditorTranslations,
+  key: string,
+  source: TRANSLATION_SOURCE,
+  locale: string,
+  value: string
+) => {
+  const _translations = cloneDeep(translations);
+
+  if (!_translations[key]) {
+    _translations[key] = Object.create(null);
+  }
+  if (!_translations[key][source]) {
+    _translations[key][source] = Object.create(null);
+  }
+  _translations[key][source][locale] = value;
+  return _translations;
+};
+
+const translations = computed({
+  get: () => {
+    let _translations: IEditorTranslations = Object.create(null);
+
+    // If no objectschema is present, no need to iterate over all translations
+    if (objectSchema.value?.title) {
+      // Iterate over all objectschema translations that belong to this formschemas objectschema
+      for (const [locale, osLanguageTranslations] of Object.entries(translationsQueryData.value?.lang || {})) {
+        for (const [translationKey, translationValue] of Object.entries(osLanguageTranslations)) {
+          // Skip translations not belonging to a different objectschema
+          if (translationKey.includes('_') && !translationKey.startsWith(objectSchema.value.title)) {
+            continue;
+          }
+          _translations = setTranslation(
+            _translations,
+            translationKey,
+            TRANSLATION_SOURCE.OBJECTSCHEMA,
+            locale,
+            translationValue
+          );
+        }
+      }
+
+      // Iterate over all formschema translations
+      for (const [locale, fsLanguageTranslations] of Object.entries(formSchema.value?.translation || {})) {
+        for (const [translationKey, translationValue] of Object.entries(fsLanguageTranslations)) {
+          _translations = setTranslation(
+            _translations,
+            translationKey,
+            TRANSLATION_SOURCE.FORMSCHEMA,
+            locale,
+            translationValue
+          );
+        }
+      }
+    }
+
+    return _translations;
+  },
+  set: (newTranslations) => {
+    if (!formSchema.value) {
+      throw new Error('FormschemaEditor::translations:setter: Formschema not defined');
+    }
+    const newFormSchemaTranslations = Object.create(null);
+
+    // Iterate over all translations
+    for (const [translationKey, translation] of Object.entries(newTranslations)) {
+      for (const [translationSource, values] of Object.entries(translation)) {
+        // The formschema editor is only allowed to update formschema translations!!!
+        if (parseInt(translationSource, 10) !== TRANSLATION_SOURCE.FORMSCHEMA) {
+          continue;
+        }
+
+        for (const [locale, localeValue] of Object.entries(values)) {
+          if (!newFormSchemaTranslations[locale]) {
+            newFormSchemaTranslations[locale] = Object.create(null);
+          }
+          if (!newFormSchemaTranslations[locale][translationKey]) {
+            newFormSchemaTranslations[locale][translationKey] = Object.create(null);
+          }
+          newFormSchemaTranslations[locale][translationKey] = localeValue;
+        }
+      }
+    }
+    formSchema.value.translation = newFormSchemaTranslations;
+  }
+});
+provide(PROVIDE_KEYS.TRANSLATIONS, translations);
+
+const eligibleTranslations = computed(() => editorTranslationsToFormsTranslations(translations.value));
+
+const translationDialogVisible: Ref<boolean> = ref(false);
+
+const setElementTranslation = (translations: PENDING_TRANSLATIONS) => {
+  Object.entries(translations).forEach(([translationLocale, translationsForLocale]) => {
+    Object.entries(translationsForLocale).forEach(([translationKey, translationValue]) => {
+      if (!formSchema.value) {
+        throw new Error('FormschemaEditor::setElementTranslation: Formschema not defined');
+      }
+
+      if (translationValue) {
+        if (!formSchema.value.translation[translationLocale]) {
+          formSchema.value.translation[translationLocale] = { [translationKey]: translationValue };
+        } else {
+          formSchema.value.translation[translationLocale][translationKey] = translationValue;
+        }
+      } else {
+        delete formSchema.value.translation[translationLocale][translationKey];
+      }
+    });
+  });
+};
+
+const validationActions: Record<string, (errorCode: string, details: Record<string, any>) => void> = {
+  onFix: (errorCode, details) => {
+    switch (errorCode) {
+      case 'E_PROPERTY_MISSING':
+        if (formSchema.value) {
+          const toModify = cloneDeep(formSchema.value);
+          const elementFormSchema = JsonPointer.get(toModify.content, details.formSchemaPointer) as IVeoFormSchemaItem;
+
+          formSchema.value = deleteFormSchemaElementTranslations(formSchema.value, elementFormSchema);
+          // You can't delete the root object
+          if (details.formSchemaPointer && details.formSchemaPointer !== '#') {
+            const parts = details.formSchemaPointer.split('/');
+            const lastPart = parts.pop();
+            const partToModify: any = JsonPointer.get(toModify.content, parts.join('/'));
+            if (isArray(partToModify)) {
+              partToModify.splice(parseInt(lastPart), 1);
+            } else {
+              delete partToModify[lastPart];
+            }
+            JsonPointer.set(toModify.content, parts.join('/'), partToModify);
+          }
+          formSchema.value = toModify;
+        }
+    }
+  }
+};
+
+const fetchDomainQueryParameters = computed(() => ({
+  id: route.params.domain as string
+}));
+
+const fetchDomainQueryEnabled = computed(() => !!route.params.domain);
+const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+  enabled: fetchDomainQueryEnabled
 });
 </script>
 
@@ -640,7 +586,7 @@ export default defineComponent({
     "formSchemaCode": "Schema code",
     "invalidFormSchema":
       "Couldn't load schema. Please resolve the following errors and try again.",
-    "search": "Search for a control...",
+    "search": "Search for a control",
     "help": "Help",
     "save": "Save",
     "saveSchemaSuccess": "Schema saved! The change will be visible to other users in less than 30 minutes.",
