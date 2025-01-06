@@ -39,8 +39,10 @@
         <v-label class="mt-4">{{ t('riskAffectedLabel') }}</v-label>
         <BaseCard border padding>
           <v-text-field
-            :label="t('riskAffected')"
-            :model-value="form?.origin?.displayName"
+            v-for="property in config.riEditor.renderedProperties.targetObject"
+            :key="property.key"
+            :label="t(`${property.label}`)"
+            :model-value="form?.origin?.[property?.key]"
             disabled
             variant="underlined"
             data-veo-test="compliance-editor-target-object"
@@ -50,30 +52,11 @@
         <!-- Control -->
         <v-label class="mt-4">{{ ciSubType }}</v-label>
         <BaseCard border padding>
-          <v-row>
-            <v-col>
-              <v-text-field
-                :label="t('abbreviation')"
-                :model-value="form?.control?.abbreviation"
-                disabled
-                variant="underlined"
-                data-veo-test="compliance-editor-ri-abbreviation"
-              />
-            </v-col>
-
-            <v-col>
-              <v-text-field
-                :label="t('protectionApproach')"
-                :model-value="additionalInfo?.protectionApproachTranslation"
-                disabled
-                variant="underlined"
-              />
-            </v-col>
-          </v-row>
-
           <v-text-field
-            :label="t('name')"
-            :model-value="form?.control?.name"
+            v-for="property in config.riEditor.renderedProperties.control"
+            :key="property.key"
+            :label="t(`${property.label}`)"
+            :model-value="form?.control?.[property?.key]"
             disabled
             variant="underlined"
             :data-veo-test="`compliance-editor-control-${property.key}`"
@@ -209,6 +192,8 @@ import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import DOMPurify from 'dompurify';
 import type { ComputedRef, Ref } from 'vue';
 import { isVeoLink, validateType } from '~/types/utils';
+
+const { data: config } = useConfiguration();
 
 const { request } = useRequest();
 const { t } = useI18n();
@@ -375,9 +360,10 @@ const { data: _persons } = useQuery(
   { enabled: isFetchingPersons.value }
 );
 
-const persons = computed(() => mapPersons(_persons?.value?.items as IVeoPersonInDomain[]));
+const persons = computed(() => mapPersons(_persons?.value?.items as IVeoPersonInDomain[]) ?? []);
 
 function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
+  if (!persons) return [];
   return persons.map((person) => ({
     name: person.name,
     targetUri: person._self
