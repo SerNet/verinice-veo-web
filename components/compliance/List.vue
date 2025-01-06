@@ -65,7 +65,7 @@ const { data: currentDomain } = useCurrentDomain();
 const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
 // Fetch RIs
-const { sortBy, page, translatedRequirementImplementations, isLoading, _refetch } = useRequirementImplementationList();
+const { sortBy, page, translatedRequirementImplementations, isLoading } = useRequirementImplementationList();
 // Open a single RI
 const { showDialog, requirementImplementation, openItem } = useRequirementImplementationQuery();
 // Table setup
