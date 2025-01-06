@@ -77,11 +77,11 @@ import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[dom
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 interface Props {
+  objectType: string;
   modelValue?: IVeoLink;
   label?: string | undefined;
-  objectType: string;
-  subType: string | undefined;
-  domainId: string | undefined;
+  subType?: string | undefined;
+  domainId?: string | undefined;
   hiddenValues?: string[];
 }
 

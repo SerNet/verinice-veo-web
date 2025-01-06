@@ -89,18 +89,18 @@ import type { IDynamicFormElementOptions, IVeoFormsElementDefinition } from '../
 import { getControlErrorMessages } from '../util';
 
 interface Props {
-  otherSelectedLinks: IVeoCustomLink[];
-  modelValue: IVeoLink | undefined;
-  options: IDynamicFormElementOptions;
-  index: number | undefined;
-  objectSchema: any;
-  disabled: boolean;
-  objectCreationDisabled: boolean;
-  objectSchemaPointer: string;
-  errors: Map<string, string[]>;
-  elementKey: string;
-  formSchemaPointer: string;
-  valuePointer: string;
+  otherSelectedLinks?: IVeoCustomLink[];
+  modelValue?: IVeoLink | undefined;
+  options?: IDynamicFormElementOptions;
+  index?: number | undefined;
+  objectSchema?: any;
+  disabled?: boolean;
+  objectCreationDisabled?: boolean;
+  objectSchemaPointer?: string;
+  errors?: Map<string, string[]>;
+  elementKey?: string;
+  formSchemaPointer?: string;
+  valuePointer?: string;
 }
 
 const props = withDefaults(defineProps<Props>(), {
