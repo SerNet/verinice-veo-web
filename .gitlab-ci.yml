@@ -91,6 +91,8 @@ build_test_app:
   image: cypress/base:22.12.0
   needs: ['build_test_app']
   stage: test
+  tags:
+    - cypress
   rules:
     - !reference [.verification, rules]
   variables:
