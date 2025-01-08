@@ -28,7 +28,7 @@
 
 import { cloneDeep, omit } from 'lodash';
 import { Slot, VNode, VNodeArrayChildren } from 'vue';
-import { VCheckbox, VProgressLinear, VTooltip } from 'vuetify/components';
+import { VCheckbox, VIcon, VProgressLinear, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
@@ -47,6 +47,7 @@ interface TableHeaderAdditionalProperties {
   truncate?: boolean;
   map?: TableFormatter;
   text?: string;
+  headerIcon?: string;
   render?: TableRenderer;
   tooltip?: TableRenderer;
   value?: keyof any | string;
@@ -288,28 +289,40 @@ const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
 /**
  * Prepare headers for v-data-table, applying classes and tooltip renderers
  */
-const _headers = computed<TableHeader[]>(() =>
-  [
-    ...Object.entries(presetHeaders)
-      .filter(
-        ([key, _header]) =>
-          props.defaultHeaders.includes(key) || (key === 'data-table-select' && 'show-select' in attrs)
-      )
-      .map(([_key, header]) => header),
-    ...props.additionalHeaders
-  ]
+const getHeaderTitle = (header: TableHeader) => {
+  if (header.headerIcon) {
+    return h('span', [
+      h(VIcon, {
+        icon: header.headerIcon,
+        size: 'small'
+      })
+    ]);
+  }
+  return header.text ?? globalT(`objectlist.${String(header.value)}`);
+};
+
+const _headers = computed<TableHeader[]>(() => {
+  const filteredHeaders = Object.entries(presetHeaders)
+    .filter(([key]) => props.defaultHeaders.includes(key) || (key === 'data-table-select' && 'show-select' in attrs))
+    .map(([, header]) => header);
+
+  const headers = [...filteredHeaders, ...props.additionalHeaders];
+
+  return headers
     .map((header) => {
-      const cellClass = defaultCellClasses.concat(
-        header.cellClass || [],
-        header.truncate ? truncateClasses : [],
-        props.enableClick ? 'cursor-pointer' : 'cusor-default'
-      );
+      const cellClass = [
+        ...defaultCellClasses,
+        ...(header.cellClass || []),
+        ...(header.truncate ? truncateClasses : []),
+        props.enableClick ? 'cursor-pointer' : 'cursor-default'
+      ];
+
       return {
         ...header,
-        title: header.text ?? globalT(`objectlist.${String(header.value)}`),
+        title: getHeaderTitle(header),
         cellClass,
         // @ts-ignore TODO #3066 class does not exist
-        class: (header.class || []).concat(header.truncate ? truncateClasses : []),
+        class: [...(header.class || []), ...(header.truncate ? truncateClasses : [])],
         render:
           header.tooltip ?
             renderTooltip(header, {
@@ -319,8 +332,8 @@ const _headers = computed<TableHeader[]>(() =>
           : header.render
       };
     })
-    .sort((a, b) => a.order - b.order)
-);
+    .sort((a, b) => a.order - b.order);
+});
 
 // Apply formatters to items:
 const mappers = _headers.value.filter((_) => !!_.map);
@@ -418,7 +431,7 @@ const onTableWidthChange = () => {
   if (tableWrapper.value) {
     const tableWrapperWidth = tableWrapper.value.$el.clientWidth;
 
-    const headers = cloneDeep(_headers.value);
+    const headers = [..._headers.value];
 
     // We use a for loop instead of a while loop to avoid creating an endless loop (normally shouldn't happen, but can't go wrong with precaution)
     for (let i = 0; i < _headers.value.length; i++) {
