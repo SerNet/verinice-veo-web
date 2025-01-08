@@ -66,8 +66,8 @@ done
 # ---------------------------------
 # Run Cypress tests with parallelism
 # ---------------------------------
-# We use 8 threads here as an optimal balance between speed and resource usage. This can be adjusted based on your system.
-# Running 8 tests in a single job using the Electron browser to speed up execution without overloading the system.
+# We use 4 threads here as an optimal balance between speed and resource usage. This can be adjusted based on your system.
+# Running 4 tests in a single job using the Electron browser to speed up execution without overloading the system.
 
 # Explicitly using the -p flag to specify the reporter-config.json file because Cypress-Parallel  
 # doesn't reliably detect reporter settings from the Cypress config file.  
@@ -75,7 +75,7 @@ done
 # which results in missing test suite results (.json files not generated).  
 # This workaround forces Cypress-Parallel to use the correct reporter settings, ensuring test results are captured  
 # and preventing false failures due to mismatched test suite counts.  
-npx cypress-parallel-extended -s cy:local -d "$TMP_DIR" -t 8 -m -p 'cypress/reporter/reporter-config.json' -x "$CI_NODE_INDEX"
+npx cypress-parallel-extended -s cy:local -d "$TMP_DIR" -t 4 -m -p 'cypress/reporter/reporter-config.json' -x "$CI_NODE_INDEX"
 TEST_RESULT=$? # Capture the exit code of the Cypress parallel test run
 
 # Clean up the temporary directory after the tests run to avoid leaving unnecessary files behind
