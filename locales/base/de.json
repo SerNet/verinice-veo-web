@@ -129,6 +129,7 @@
   "potentialImpactsEffective": "Effektiv",
   "potentialImpactReasons": "Begründung",
   "potentialImpactExplanations": "Erläuterung",
+  "potentialImpactEffectiveReasons": "Begründung",
 
   "error": {
     "additionalProperties": "Das Feld \"{field}\" besitzt nicht im Objektschema erlaubte Attribute.",

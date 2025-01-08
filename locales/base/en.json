@@ -127,6 +127,7 @@
   "potentialImpactsEffective": "Effective",
   "potentialImpactReasons": "Reason",
   "potentialImpactExplanations": "Explanation",
+  "potentialImpactEffectiveReasons": "Reason",
 
   "error": {
     "additionalProperties": "The field \"{field}\" contains attributes that aren\"t part of the object schema",
