@@ -220,6 +220,7 @@
             :object-schema="objectSchema"
             :form-schema="formSchema.content"
             :translations="eligibleTranslations"
+            :reactive-form-actions="reactiveFormActions"
             :additional-context="getRiskAdditionalContext(objectSchema.title, domain, locale, t)"
             :locale="editorLanguage"
           />
@@ -311,6 +312,8 @@ import type { LocaleObject } from '@nuxtjs/i18n';
 import { PENDING_TRANSLATIONS } from '~/components/editor/formSchema/playground/EditElementDialog.vue';
 import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 import { editorTranslationsToFormsTranslations } from '~/components/editor/translations/util';
+import { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
+import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 
 const { locale, locales, t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
@@ -318,6 +321,7 @@ const route = useRoute();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
+const { riskReactiveFormActions } = useVeoReactiveFormActions();
 
 /**
  * Layout specific stuff
@@ -407,6 +411,22 @@ function downloadSchema(forceDownload = false) {
     downloadButton.value.download = `fs_${formSchema.value?.name[editorLanguage.value] || 'missing_translation'}.json`;
   }
 }
+
+const reactiveFormActions = computed<IVeoFormsReactiveFormActions>(() => {
+  const riskDefinitionId = Object.keys(objectSchema.value?.properties?.riskValues?.properties ?? {})[0];
+
+  return {
+    ...(riskDefinitionId !== undefined && ['process', 'asset', 'scope'].includes(objectSchema.value?.title || '') ?
+      riskReactiveFormActions(
+        riskDefinitionId,
+        Object.keys(
+          objectSchema.value?.properties?.riskValues?.properties?.[riskDefinitionId]?.properties?.potentialImpacts
+            ?.properties
+        )
+      )
+    : {})
+  };
+});
 
 // TODO: during the refactoring process, look if controlItems here and in Backlog can be removed
 function updateControlItems(items: any) {
