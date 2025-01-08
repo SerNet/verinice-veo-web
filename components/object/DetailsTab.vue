@@ -83,13 +83,18 @@
 
 <script lang="ts">
 import {
+  mdiArrowCollapseRight,
   mdiArrowDown,
+  mdiArrowExpandRight,
+  mdiArrowLeftRight,
   mdiArrowRight,
   mdiCheck,
   mdiContentCopy,
+  mdiDownload,
   mdiLinkOff,
   mdiTransitDetour,
-  mdiTrashCanOutline
+  mdiTrashCanOutline,
+  mdiUpload
 } from '@mdi/js';
 import { cloneDeep, upperFirst } from 'lodash';
 import type { ComputedRef, PropType, Ref } from 'vue';
@@ -198,8 +203,18 @@ export default defineComponent({
     const createEntityFromLink = (link: IInOutLink) => {
       const { linkedElement, direction, linkType } = link;
       const { displayName: name, abbreviation, type, id, subType } = linkedElement;
-      const normalizedDirection = t(direction.toLowerCase());
-      return { id, name, type, abbreviation, direction: normalizedDirection, linkType, subType };
+      return {
+        id,
+        name,
+        type,
+        abbreviation,
+        directionIcon: direction === 'INBOUND' ? mdiDownload : mdiUpload,
+        direction,
+        from: direction === 'INBOUND' ? name : props.object?.displayName,
+        to: direction === 'INBOUND' ? props.object?.displayName : name,
+        linkType,
+        subType
+      };
     };
 
     function mapItems<IVeoControlImplementation, IVeoEntity>(
@@ -424,7 +439,7 @@ export default defineComponent({
     const defaultHeaders = computed(() => {
       switch (props.type) {
         case 'links':
-          return ['icon', 'name'];
+          return ['icon'];
         case 'controls':
           return ['icon', 'actions'];
         case 'risks':
@@ -562,16 +577,44 @@ export default defineComponent({
         return [createScenarioAbbreviationHeader(), createScenarioDisplayNameHeader(), ...createRiskCategoryHeaders()];
       };
 
+      // Helper function to create a direction icon
+      const createDirectionIcon = (direction: string) =>
+        h(VIcon, {
+          icon: direction === 'INBOUND' ? mdiArrowCollapseRight : mdiArrowExpandRight,
+          size: 'small'
+        });
+
+      // Helper function to create a styled span
+      const createStyledSpan = (content: string, isBold: boolean = false) =>
+        h('span', { style: isBold ? 'font-weight: bold;' : '' }, content);
+
       const createLinkHeaders = () => [
         {
           value: 'direction',
           key: 'direction',
           text: t('direction'),
-          width: 50,
+          headerIcon: mdiArrowLeftRight,
+          width: 20,
           truncate: false,
           priority: 100,
           order: 20,
-          render: (data: any) => h('span', data.internalItem.raw?.direction || '')
+          render: (data: any) =>
+            h('span', data.internalItem.raw?.direction ? [createDirectionIcon(data.internalItem.raw.direction)] : '')
+        },
+        {
+          value: 'from',
+          key: 'from',
+          sortable: false,
+          text: t('from'),
+          width: 150,
+          truncate: false,
+          priority: 100,
+          order: 20,
+          render: (data: any) =>
+            createStyledSpan(
+              data.internalItem.raw?.from || '',
+              data.internalItem.raw?.from === props.object?.displayName
+            )
         },
         {
           value: 'abbreviation',
@@ -579,7 +622,7 @@ export default defineComponent({
           text: t('controls.abbreviation'),
           width: 50,
           truncate: false,
-          priority: 100,
+          priority: 60,
           order: 20,
           render: (data: any) => h('span', data.internalItem.raw?.abbreviation || '')
         },
@@ -588,16 +631,27 @@ export default defineComponent({
           key: 'linkId',
           sortable: false,
           order: 30,
-          priority: 60,
+          priority: 100,
           text: t('linkName'),
           width: 150,
-          render: (data: any) => {
-            return h(
+          render: (data: any) =>
+            h(
               'span',
               translations.value?.lang?.[locale.value]?.[data.internalItem.raw.linkType] ||
                 data.internalItem.raw.linkType
-            );
-          }
+            )
+        },
+        {
+          value: 'to',
+          key: 'to',
+          sortable: false,
+          text: t('to'),
+          width: 150,
+          truncate: false,
+          priority: 100,
+          order: 30,
+          render: (data: any) =>
+            createStyledSpan(data.internalItem.raw?.to || '', data.internalItem.raw?.to === props.object?.displayName)
         }
       ];
 
@@ -1057,6 +1111,8 @@ export default defineComponent({
     "inherentRisk": "Inherent risk",
     "linkName": "Link name",
     "direction": "Direction",
+    "from": "From",
+    "to": "To",
     "outbound": "Outgoing",
     "inbound": "Ingoing",
     "no": "no",
@@ -1104,6 +1160,8 @@ export default defineComponent({
     "inherentRisk": "Bruttorisiko",
     "linkName": "Verknüpfung",
     "direction": "Richtung",
+    "from": "Von",
+    "to": "Nach",
     "outbound": "Ausgehend",
     "inbound": "Eingehend",
     "objectCloned": "Das Objekt wurde erfolgreich dupliziert",
