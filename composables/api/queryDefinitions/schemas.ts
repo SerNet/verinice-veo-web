@@ -98,6 +98,9 @@ export default {
                           potentialImpactReasons: {
                             readOnly: true
                           },
+                          potentialImpactEffectiveReasons: {
+                            readOnly: true
+                          },
                           potentialImpactExplanations: {
                             readOnly: true
                           }

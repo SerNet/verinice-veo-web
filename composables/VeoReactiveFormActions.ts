@@ -63,12 +63,17 @@ export function useVeoReactiveFormActions() {
               impacts.potentialImpactExplanations = undefined;
               // ... and provide a fallback for 'effective'
               impacts.potentialImpactsEffective = impacts.potentialImpactsCalculated;
+              impacts.potentialImpactEffectiveReasons =
+                impacts.potentialImpact ? 'impact_method_high_water_mark' : undefined;
             } else {
               // 'effective' inherits the value from user specification
               impacts.potentialImpactsEffective = newValue;
               // set the default val for the reason to 'manual' if not set yet
               if (impacts.potentialImpactReasons === undefined) {
                 impacts.potentialImpactReasons = 'impact_reason_manual';
+              }
+              if (impacts.potentialImpactEffectiveReasons === undefined) {
+                impacts.potentialImpactEffectiveReasons = impacts.potentialImpactReasons;
               }
             }
             return newObject;
