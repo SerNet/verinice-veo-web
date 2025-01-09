@@ -18,7 +18,7 @@
 <template>
   <v-tooltip v-if="miniVariant" location="bottom">
     <template #activator="{ props: toolTips }">
-      <v-icon class="ma-4" :icon="mdiDomain" v-bind="toolTips" @click="$emit('expand-menu')" />
+      <v-icon class="ma-4" :icon="mdiPuzzle" v-bind="toolTips" @click="$emit('expand-menu')" />
     </template>
 
     <template #default>
@@ -75,7 +75,7 @@ import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[do
 
 import { useFetchUnitDomains } from '~/composables/api/domains';
 
-import { mdiDomain } from '@mdi/js';
+import { mdiPuzzle } from '@mdi/js';
 
 withDefaults(
   defineProps<{
