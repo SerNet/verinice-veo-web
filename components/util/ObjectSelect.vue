@@ -73,7 +73,7 @@ import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { ROUTE_NAME as OBJECT_DETAILS_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 interface Props {
@@ -231,13 +231,18 @@ const localLabel = computed(
 
 // Object select display
 const openItem = (item: IVeoEntity) => {
+  const typeLink = item.type === 'process' ? `${item.type}es` : `${item.type}s`;
+
   const routeData = router.resolve({
-    name: OBJECT_OVERVIEW_ROUTE,
+    name: OBJECT_DETAILS_ROUTE,
     params: {
       ...route.params,
+      subType: item.subType,
+      objectType: typeLink,
       object: item.id
     }
   });
+
   window.open(routeData.href, '_blank');
 };
 </script>
