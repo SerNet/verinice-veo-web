@@ -181,8 +181,7 @@ export default defineComponent({
 .vf-markdown-editor {
   position: relative;
   z-index: 0;
-
-  @import 'node_modules/@toast-ui/editor/dist/toastui-editor';
+  @import 'node_modules/@toast-ui/editor/dist/toastui-editor.css';
   @import 'prismjs/themes/prism';
   @import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
   .toastui-editor-contents h1,
