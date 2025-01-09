@@ -33,7 +33,7 @@
   >
     <template #default>
       <BaseAlert
-        :model-value="true"
+        :model-value="!!Object.keys(dirtyFields).length"
         :type="VeoAlertType.INFO"
         :title="t('computedValues')"
         :text="t('computedValuesCTA')"
