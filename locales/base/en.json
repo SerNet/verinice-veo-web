@@ -112,10 +112,10 @@
   "compliance": {
     "status": {
       "NO": "no",
-      "PARTIAL": "partially",
+      "PARTIAL": "partial",
       "UNKNOWN": "unedited",
       "YES": "yes",
-      "N_A": "not applicable"
+      "N_A": "dispensable"
     },
     "origination": {
       "SYSTEM_SPECIFIC": "system specific"
