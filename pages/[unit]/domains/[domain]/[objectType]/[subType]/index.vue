@@ -388,7 +388,8 @@ const openItem = ({ item }: { item: any }) => {
     name: OBJECT_DETAIL_ROUTE,
     params: {
       ...route.params,
-      object: item.id
+      object: item.id,
+      subType: item.subType
     }
   });
 };
