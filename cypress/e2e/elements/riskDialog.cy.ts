@@ -12,17 +12,18 @@ before(() => {
   cy.selectDomain('DS-GVO');
 });
 
-beforeEach(() => {
-  cy.login();
-  if (currentUnit) {
-    cy.visit(currentUnit, { failOnStatusCode: false });
-  }
-  cy.handleLanguageBug();
-  cy.viewport(2000, 1320);
-  cy.acceptAllCookies();
-});
-after(() => cy.deleteUnit(unitDetails.name));
 describe('Risk Dialog', { testIsolation: false, retries: 0 }, () => {
+  beforeEach(() => {
+    cy.login();
+    if (currentUnit) {
+      cy.visit(currentUnit, { failOnStatusCode: false });
+    }
+    cy.handleLanguageBug();
+    cy.viewport(2000, 1320);
+    cy.acceptAllCookies();
+  });
+  after(() => cy.deleteUnit(unitDetails.name));
+
   it('should set a Risk Definition to an Element', () => {
     cy.navigateTo({ group: 'objects', category: 'scopes' });
     cy.selectFirstSubType('scopes', ($subType: JQuery<HTMLElement>) => {
