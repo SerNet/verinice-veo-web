@@ -1,4 +1,5 @@
 import { resolve } from 'path';
+import { camelCase } from 'lodash';
 
 // Types
 import { LOCALES } from './types/locales';
@@ -68,7 +69,13 @@ export default defineNuxtConfig({
           new Date(parseInt(process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP))
         : new Date(new Date().getFullYear() + 1, 0, 1),
       documentationUrl: process.env.VEO_DOCUMENTATION_URL || 'veo-documentation-url-example',
-      isBetaMode: process.env.VEO_BETA_MODE || 'veo-beta-mode-example'
+      isBetaMode: process.env.VEO_BETA_MODE || 'veo-beta-mode-example',
+      featureFlags: Object.keys(process?.env || {})
+        .filter((key) => key.startsWith('VEO_FEATURE_FLAG_'))
+        .map((key) => ({
+          key: camelCase(key.replace('VEO_FEATURE_FLAG_', '').toLowerCase()),
+          value: (process.env?.[key] || '') === 'true'
+        }))
     }
   },
 

@@ -1,21 +1,21 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2025 Aziz Khalledi
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
    - as published by the Free Software Foundation, either version 3 of the License,
    - or (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
    - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    - See the GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License along with this program.
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseContainer v-if="isCardViewVisible">
+  <BaseContainer v-if="isCardViewVisible" class="pt-0">
     <template v-for="object in cardItems" :key="object.value">
       <BaseListItem
         v-model:sort-by="localSortBy"
@@ -23,6 +23,7 @@
         :item-url="getObjectUrl(object)"
         title=""
         select
+        class="pt-0"
         @update:sort-by="updateSortBy"
       >
         <template #details>
@@ -180,7 +181,6 @@ type ObjectDetails = {
 
 const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
   const details: { [key: string]: string } = {};
-
   keys.forEach((key) => {
     switch (key) {
       case 'designator':
@@ -248,20 +248,25 @@ const Status = {
   computed: {
     stateColors(this: Record<string, string>) {
       return Object.fromEntries(Object.entries(this.state).map(([key, value]) => [key, statusColor(value)]));
+    },
+    formattedState(this: any): string {
+      return formatState(this.state); // Use `this` to access props
     }
   },
   template: `
+
  <div style="display: flex; justify-content: flex-end; width: 100%; gap: 4px">
-       <v-chip 
-        v-for="(value, key) in state" 
-        :key="key" 
-        data-veo-test="item-card-text-state" 
-        :style="{ color: stateColors[key] }" 
-        size="small" 
+       <v-chip
+        v-for="(value, key) in state"
+        :key="key"
+        data-veo-test="item-card-text-state"
+        :style="{ color: stateColors[key] }"
+        size="small"
         label>
         {{ key }}: {{ value }}
       </v-chip>
     </div>
+
   `
 };
 
@@ -297,16 +302,15 @@ const Details = {
   <v-card-subtitle v-if="meta" v-text="meta"></v-card-subtitle>
  <v-card-text
   v-if="description && Object.keys(description).length > 0"
-  data-veo-test="item-card-text" class="overflow-y-auto text-body-2" 
->
+  data-veo-test="item-card-text" class="overflow-y-auto text-body-2" >
   <span
-  v-if="description && Object.values(description).every((value) => typeof value === 'string')"
+    v-if="description && Object.values(description).every((value) => typeof value === 'string')"
     v-for="(value, key) in description"
     :key="key"
-    class="overflow-y-auto text-body-2 custom-pre" 
+        class="overflow-y-auto text-body-2 custom-pre"
   >
-    <pre style="white-space: pre-wrap">{{ value }}</pre>
-  </span>
+    <p style="white-space: pre-wrap">{{ value }}</p>
+      </span>
 </v-card-text>
   `
 };

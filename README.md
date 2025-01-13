@@ -59,6 +59,7 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_DEBUG` | `false` | While not exposing any critical information, this variable should only be set to true when developing. |
 | `VEO_DEBUG_CACHE` | `false` | If set to true, additional logging output gets set regarding caching and retrieving of data. |
 | `VEO_BETA_MODE` | `false` | If set to true, the toggle for beta mode gets enabled |
+| `VEO_FEATURE_FLAG_CARD_VIEW` | `false` | If set to true, the toggle for feature flag card view gets enabled |
 
 Required env variables (prod preset):
 
