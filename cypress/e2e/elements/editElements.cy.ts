@@ -20,7 +20,7 @@ describe('Edit elements', () => {
 
   it('edits an element in Scopes', () => {});
 });
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- errorneous warning due to syntax mismatch between js and cypress; func used in *cy.wait* at line 52
 function editElement({ typePlural, subTypePlural }: { typePlural: string; subTypePlural: string }) {
   const testData = {
     abbreviation: 'test-abbreviation',

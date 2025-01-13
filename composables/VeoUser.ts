@@ -62,9 +62,8 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     keycloak.value.onTokenExpired = async () => {
       try {
         await refreshKeycloakSession();
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.error('VeoUser::initialize_ Automatically refreshing keycloak session failed...');
+      } catch (e: any) {
+        console.error(`VeoUser::initialize_ Automatically refreshing keycloak session failed: ${e.message}`);
         keycloakInitialized.value = false;
         keycloakInitializationStarted.value = false;
         await initialize(context);

@@ -70,7 +70,7 @@ export default defineComponent({
     }
   },
   emits: ['update:dirty-fields'],
-  setup(props) {
+  setup() {
     const { t } = useI18n();
 
     return {

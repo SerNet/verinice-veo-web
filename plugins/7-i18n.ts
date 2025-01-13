@@ -22,7 +22,7 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   async function importMessages(locale: string, domain: string = 'base') {
     try {
       return await import(`~/locales/${domain}/${locale}.json`);
-    } catch (e) {
+    } catch (_e: any) {
       return { default: {} };
     }
   }

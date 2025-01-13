@@ -98,31 +98,31 @@ export function useVeoReactiveFormActions() {
 
     try {
       fullnameOld = oldObject?.name;
-    } catch (e) {
+    } catch (_e) {
       // If the name couldn't be found, simply do nothing
     }
     try {
       givenNameOld =
         oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
-    } catch (e) {
+    } catch (_e) {
       // If the above action fails, no further action is required
     }
     try {
       familyNameOld =
         oldObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
-    } catch (e) {
+    } catch (_e) {
       // If the above action fails, no further action is required
     }
     try {
       givenNameNew =
         newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_givenName;
-    } catch (e) {
+    } catch (_e) {
       // If the above action fails, no further action is required
     }
     try {
       familyNameNew =
         newObject?.customAspects?.person_generalInformation?.attributes?.person_generalInformation_familyName;
-    } catch (e) {
+    } catch (_e) {
       // If the above action fails, no further action is required
     }
 

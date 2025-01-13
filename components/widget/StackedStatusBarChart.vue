@@ -26,7 +26,7 @@
         </v-col>
         <v-col cols="12" sm="12" md="7" lg="5" xl="8">
           <v-skeleton-loader
-            v-if="schemasIsLoading"
+            v-if="schemasIsLoading || domainIsLoading"
             data-veo-test="loader"
             width="100%"
             type="image"

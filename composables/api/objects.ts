@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { max, omit } from 'lodash';
+import { omit } from 'lodash';
 import { Ref } from 'vue';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 import objectQueryDefinitions, { IVeoFetchObjectsParameters } from './queryDefinitions/objects';

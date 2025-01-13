@@ -41,7 +41,7 @@ export function useNavigation() {
     }
   };
 
-  const navigateToObject = (objectType: string, subType?: string) => {
+  const navigateToObject = (objectType: string) => {
     if (hasDomainId.value && hasUnitId.value) {
       router.push({
         name: OBJECT_OVERVIEW_ROUTE_NAME,

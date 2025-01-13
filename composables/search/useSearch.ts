@@ -18,7 +18,6 @@
 
 import { useQuerySync } from '~/composables/api/utils/query';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
-import { max } from 'lodash';
 import type { VeoSearch, VeoSearchQueryParameters } from '~/types/VeoSearch';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 

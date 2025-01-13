@@ -17,7 +17,7 @@
 
 /** @deprecated Use elements.ts instead. `objects.ts` uses the `useRoute` composable in global scope. This makes it unusable in other composables. */
 
-import { cloneDeep, max, omit } from 'lodash';
+import { cloneDeep, omit } from 'lodash';
 import {
   IVeoAPIMessage,
   IVeoControlImplementation,
@@ -552,14 +552,16 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
-          queryClient.invalidateQueries([
-            'risks',
-            {
-              endpoint: variables.params?.endpoint,
-              id: variables.params?.objectId
-            }
-          ]),
-            queryClient.invalidateQueries({ queryKey: ['evaluation'] });
+          queryClient.invalidateQueries({
+            queryKey: [
+              'risks',
+              {
+                endpoint: variables.params?.endpoint,
+                id: variables.params?.objectId
+              }
+            ]
+          });
+          queryClient.invalidateQueries({ queryKey: ['evaluation'] });
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteRiskParameters, void>

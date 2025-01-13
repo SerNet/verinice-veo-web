@@ -1,9 +1,7 @@
 import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 
-let unitDetails: UnitDetails;
-
 function setup() {
-  const unitDetails = generateUnitDetails('workWithRis');
+  const unitDetails: UnitDetails = generateUnitDetails('workWithRis');
   cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz'] });
   cy.login();
   cy.acceptAllCookies();

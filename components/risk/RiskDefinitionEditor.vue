@@ -89,7 +89,7 @@
                                   <v-color-picker
                                     v-model="item.htmlColor"
                                     flat
-                                    @update:model-value="() => updateColor(index + '-' + indexItems)"
+                                    @update:model-value="formIsDirty = true"
                                   />
                                 </v-card-text>
                               </v-card>
@@ -170,10 +170,6 @@ function handleMenuUpdate(id: string | number, value: boolean) {
   } else {
     colorMenuStates.value.delete(id);
   }
-}
-
-function updateColor(id: string | number) {
-  formIsDirty.value = true;
 }
 
 function saveAndClose() {

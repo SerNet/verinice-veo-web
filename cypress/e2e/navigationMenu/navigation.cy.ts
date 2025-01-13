@@ -1,7 +1,7 @@
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
 let unitDetails: UnitDetails;
-let currentUnit = '';
+
 describe('Navigation Menu', () => {
   before(() => {
     unitDetails = generateUnitDetails('NavigationMenu');
@@ -35,9 +35,6 @@ describe('Navigation Menu', () => {
     cy.getCustom('@navEntries').contains('Dashboard');
     cy.getCustom('@navEntries').contains('Editors');
 
-    cy.url().then((url) => {
-      currentUnit = url;
-    });
     const groupsDsgvo = [
       {
         name: 'catalog',

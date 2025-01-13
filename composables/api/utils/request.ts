@@ -74,7 +74,7 @@ export const useRequest = () => {
   // Get current locale, either through i18n composable or through header. Reason for try catch is use via dev plugin
   try {
     locale = useI18n().locale;
-  } catch (e) {
+  } catch (_e: any) {
     locale = ref(Cookies.get('i18n_redirected') || 'en');
   }
 
@@ -123,8 +123,7 @@ export const useRequest = () => {
           parsedResponseBody = await parseJson(res);
           break;
       }
-    } catch (e: any) {
-      // eslint-disable-next-line no-console
+    } catch (_e: any) {
       console.error(`API Plugin::parseResponse: Error while parsing response for ${res.url}`);
     }
 

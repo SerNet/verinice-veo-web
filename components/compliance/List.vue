@@ -56,7 +56,7 @@ import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { TableHeader } from '../base/Table.vue';
 
 const props = defineProps<{
-  containerControl: Partial<IVeoEntity>;
+  containerControl: Partial<IVeoEntity> | undefined;
 }>();
 
 const route = useRoute();
@@ -65,7 +65,7 @@ const { data: currentDomain } = useCurrentDomain();
 const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
 // Fetch RIs
-const { sortBy, page, translatedRequirementImplementations, isLoading, refetch } = useRequirementImplementationList();
+const { sortBy, page, translatedRequirementImplementations, isLoading, _refetch } = useRequirementImplementationList();
 // Open a single RI
 const { showDialog, requirementImplementation, openItem } = useRequirementImplementationQuery();
 // Table setup

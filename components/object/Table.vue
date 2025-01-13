@@ -174,7 +174,7 @@ const formatDate: TableFormatter = (v: any) => {
   try {
     return formatDateTime(new Date(v)).value;
   } catch (e) {
-    return '';
+    return `${e.message}`;
   }
 };
 
