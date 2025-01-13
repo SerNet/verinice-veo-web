@@ -41,74 +41,89 @@
           <SearchBar v-model:search="search" />
         </div>
       </div>
+      <FeatureFlagsFeatureSwitch feature-key="cardView" :label="{ on: t('cardViewOn'), off: t('cardViewOff') }" />
+      <v-scale-transition>
+        <template v-if="filter.objectType || endpointsLoading">
+          <!-- Card View -->
+          <ObjectCardView
+            v-if="hasFeature('cardView')"
+            :card-items="cardItems"
+            :fetched-items="_items"
+            :sort-by="sortBy"
+            :actions="actions"
+            :translations="translations"
+            :cards-page-change="cardsPageChange"
+          />
+          <!-- Table View -->
+          <BaseCard v-else>
+            <ObjectTable
+              :key="tableKey"
+              v-model="selectedItems"
+              v-model:page="page"
+              v-model:sort-by="sortBy"
+              :items="items"
+              :loading="isLoading"
+              :default-headers="[
+                'icon',
+                'designator',
+                'abbreviation',
+                'name',
+                'status',
+                'description',
+                'updatedBy',
+                'updatedAt',
+                'actions'
+              ]"
+              :additional-headers="additionalHeaders"
+              show-select
+              data-component-name="object-overview-table"
+              enable-click
+              @click="openItem"
+            >
+              <template #actions="{ item }">
+                <div class="d-flex justify-end">
+                  <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
+                    <template #activator="{ props }">
+                      <v-btn
+                        :data-component-name="`object-overview-${btn.id}-button`"
+                        :data-veo-test="`object-overview-${btn.id}-button`"
+                        :disabled="ability.cannot('manage', 'objects') || btn.disabled"
+                        :icon="btn.icon"
+                        v-bind="props"
+                        variant="text"
+                        @click="btn.action(item)"
+                      />
+                    </template>
+                    {{ btn.label }}
+                  </v-tooltip>
+                </div>
+              </template>
+            </ObjectTable>
+          </BaseCard>
+        </template>
+        <ObjectTypeError v-else>
+          <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
+            {{ t('filterObjects') }}
+          </v-btn>
+        </ObjectTypeError>
+      </v-scale-transition>
 
-      <BaseCard v-if="filter.objectType || endpointsLoading">
-        <ObjectTable
-          :key="tableKey"
-          v-model="selectedItems"
-          v-model:page="page"
-          v-model:sort-by="sortBy"
-          :items="items"
-          :loading="isLoading"
-          :default-headers="[
-            'icon',
-            'designator',
-            'abbreviation',
-            'name',
-            'status',
-            'description',
-            'updatedBy',
-            'updatedAt',
-            'actions'
-          ]"
-          :additional-headers="additionalHeaders"
-          show-select
-          data-component-name="object-overview-table"
-          enable-click
-          @click="openItem"
-        >
-          <template #actions="{ item }">
-            <div class="d-flex justify-end">
-              <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
-                <template #activator="{ props }">
-                  <v-btn
-                    :data-component-name="`object-overview-${btn.id}-button`"
-                    :data-veo-test="`object-overview-${btn.id}-button`"
-                    :disabled="ability.cannot('manage', 'objects') || btn.disabled"
-                    :icon="btn.icon"
-                    v-bind="props"
-                    variant="text"
-                    @click="btn.action(item)"
-                  />
-                </template>
-                {{ btn.label }}
-              </v-tooltip>
-            </div>
-          </template>
-        </ObjectTable>
+      <!-- Dialogs -->
+      <ObjectDeleteDialog
+        :model-value="showDeleteDialog"
+        :items="itemsToDelete"
+        @update:model-value="onCloseDeleteDialog({ isOpen: false, isCancel: true })"
+        @success="onCloseDeleteDialog({ isOpen: false }, $event)"
+        @error="showError('delete', $event)"
+      />
 
-        <!-- Dialogs -->
-        <ObjectDeleteDialog
-          :model-value="showDeleteDialog"
-          :items="itemsToDelete"
-          @update:model-value="onCloseDeleteDialog({ isOpen: false, isCancel: true })"
-          @success="onCloseDeleteDialog({ isOpen: false }, $event)"
-          @error="showError('delete', $event)"
-        />
-
-        <ObjectAssignDialog
-          :model-value="objectAssignDialogVisible"
-          :object-id="objectId"
-          :object-type="objectType"
-          :object-name="objectName"
-          @update:model-value="objectAssignDialogVisible = false"
-        />
-      </BaseCard>
-      <ObjectTypeError v-else>
-        <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
-          {{ t('filterObjects') }}
-        </v-btn>
-      </ObjectTypeError>
+      <ObjectAssignDialog
+        :model-value="objectAssignDialogVisible"
+        :object-id="objectId"
+        :object-type="objectType"
+        :object-name="objectName"
+        @update:model-value="objectAssignDialogVisible = false"
+      />
     </template>
     <template #footer>
       <ObjectCreateDialog
@@ -161,7 +176,8 @@ import translationQueryDefinitions from '~/composables/api/queryDefinitions/tran
 import { useQuery } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import type { VeoSearch } from '~/types/VeoSearch';
-import type { IVeoEntity } from '~/types/VeoTypes';
+import { type IVeoEntity } from '~/types/VeoTypes';
+import { useFeatureFlag } from '~/composables/features/featureFlag';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -186,6 +202,8 @@ const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
+
+const { hasFeature } = useFeatureFlag();
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
@@ -298,6 +316,9 @@ const filter = computed(() => {
 // table stuff
 //
 const page = ref(0);
+const cardsPageChange = (value: number) => {
+  page.value = value - 1;
+};
 const sortBy = ref([{ key: 'name', order: 'asc' }]);
 const resetQueryOptions = () => {
   page.value = 0;
@@ -332,6 +353,12 @@ const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
 
 // items rendered in ObjectTable
 const items = computed(() => (search.value.length ? searchResults.value : _items.value) || []);
+
+const cardItems = computed(() => {
+  const results = searchResults.value?.items;
+  if (results) return results;
+  return _items.value.items;
+});
 
 const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
 const formsQueryEnabled = computed(() => !!domainId.value);

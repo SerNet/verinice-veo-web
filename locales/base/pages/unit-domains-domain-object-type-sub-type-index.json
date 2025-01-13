@@ -15,7 +15,9 @@
     "objectDeleted": "Object deleted.",
     "objectsDeleted": "Objects deleted.",
     "open": "Open",
-    "VdA": "Procedure for securing"
+    "VdA": "Procedure for securing",
+    "cardViewOn": "Show items as table",
+    "cardViewOff": "Show items as cards"
   },
   "de": {
     "assignObject": "Objekt einer weiteren Domäne zuordnen",
@@ -33,6 +35,8 @@
     "objectDeleted": "Objekt wurde gelöscht.",
     "objectsDeleted": "Objekte wurden gelöscht.",
     "open": "Öffnen",
-    "VdA": "Vorgehensweise der Absicherung"
+    "VdA": "Vorgehensweise der Absicherung",
+    "cardViewOn": "Zeige Einträge als Tabelle",
+    "cardViewOff": "Zeige Einträge als Karten"
   }
 }
