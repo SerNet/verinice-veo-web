@@ -75,7 +75,7 @@ lint:
     - npm run lint
     - if [[ ${?} -ne 0 ]]; then echo "Linting errors were found"; exit 1; fi
   interruptible: true
-  allow_failure: true
+  allow_failure: false
 
 build_test_app:
   stage: test
