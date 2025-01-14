@@ -546,9 +546,9 @@ export interface IVeoFormSchemaItemDeleteEvent {
   name?: string;
 }
 
-export interface IVeoLegacyObjectHistoryEntry extends IVeoHistoryEntry<IVeoEntityLegacy> {}
+export type IVeoLegacyObjectHistoryEntry = IVeoHistoryEntry<IVeoEntityLegacy>;
 
-export interface IVeoObjectHistoryEntry extends IVeoHistoryEntry<IVeoEntity> {}
+export type IVeoObjectHistoryEntry = IVeoHistoryEntry<IVeoEntity>;
 
 interface IVeoHistoryEntry<T> {
   author: string;
