@@ -117,15 +117,13 @@ function chunkHistory(historyItems: IVeoObjectHistoryEntry[], archiveSize = 1000
   const chunkedHistory = chunks.map((chunk) => {
     const { displayName, fileName } = composeFileName(chunk);
 
-    // Account for equal names: history_2023-02-13_2023-02-05.zip, history_2023-02-13_2023-02-05_1.zip ...
-    archiveName.counter === 0 ? fileName : fileName + '_' + archiveName.counter;
-
     if (fileName === archiveName.name) {
       archiveName.counter++;
     } else {
       archiveName.counter = 0;
     }
 
+    // Account for equal names: history_2023-02-13_2023-02-05.zip, history_2023-02-13_2023-02-05_1.zip ...
     const countedName = archiveName.counter === 0 ? fileName : fileName + '_' + archiveName.counter;
     const countedDisplayName = archiveName.counter === 0 ? displayName : displayName + ` (${archiveName.counter})`;
 
