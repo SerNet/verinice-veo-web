@@ -210,11 +210,9 @@ const privacyPolicyLink = computed(() =>
     "version": {
       "header": "verinice is the open source framework for integrated management systems.",
       "paragraph": {
-        1: "The new verinice generation is completely web-based. It combines many years of experience with advanced technology. Continuous development and customer orientation remain a priority.",
-        2: "The modular approach goes beyond proven ISMS and DSMS solutions: The underlying, cross-industry expertise is a universal basis for further management systems.
-        verinice thus addresses the diverse requirements of organizations and authorities. As an efficient and adaptable tool, it is suitable for for beginners to get started in an uncomplicated way as well as
-        for the complex procedure of professionals.",
-        3: "The publisher of verinice is SerNet GmbH, with more than 25 years of experience in the in the IT security industry."
+        "1": "The new verinice generation is completely web-based. It combines many years of experience with advanced technology. Continuous development and customer orientation remain a priority.",
+        "2": "The modular approach goes beyond proven ISMS and DSMS solutions: The underlying, cross-industry expertise is a universal basis for further management systems.        verinice thus addresses the diverse requirements of organizations and authorities. As an efficient and adaptable tool, it is suitable for for beginners to get started in an uncomplicated way as well as for the complex procedure of professionals.",
+        "3": "The publisher of verinice is SerNet GmbH, with more than 25 years of experience in the in the IT security industry."
       }
     },
     "versioninfo": "Version information"
@@ -233,11 +231,9 @@ const privacyPolicyLink = computed(() =>
     "version": {
       "header": "verinice ist das Open-Source Framework für integrierte Management-Systeme.",
       "paragraph": {
-        1: "Die neue verinice-Generation ist vollständig webbasiert. Sie vereint langjährige Erfahrung mit fortschrittlicher Technologie. Kontinuierliche Entwicklung und Kundenorientierung haben weiterhin Priorität.",
-        2: "Der modulare Ansatz geht über bewährte ISMS- und DSMS-Lösungen hinaus: Die zugrundeliegende, branchenübergreifende Expertise ist universale Basis für weitere Management-Systeme.
-        verinice adressiert dadurch die vielfältigen Anforderungen an Organisationen und Behörden. Als effizientes und anpassungsfähiges Werkzeug eignet es sich zum unkomplizierten Loslegen für Einsteiger ebenso wie
-        für das komplexe Vorgehen von Profis.",
-        3: "Herausgeberin von verinice ist die SerNet GmbH mit mehr als 25 Jahren Erfahrung in der IT-Security-Branche."
+        "1": "Die neue verinice-Generation ist vollständig webbasiert. Sie vereint langjährige Erfahrung mit fortschrittlicher Technologie. Kontinuierliche Entwicklung und Kundenorientierung haben weiterhin Priorität.",
+        "2": "Der modulare Ansatz geht über bewährte ISMS- und DSMS-Lösungen hinaus: Die zugrundeliegende, branchenübergreifende Expertise ist universale Basis für weitere Management-Systeme. verinice adressiert dadurch die vielfältigen Anforderungen an Organisationen und Behörden. Als effizientes und anpassungsfähiges Werkzeug eignet es sich zum unkomplizierten Loslegen für Einsteiger ebenso wie für das komplexe Vorgehen von Profis.",
+        "3": "Herausgeberin von verinice ist die SerNet GmbH mit mehr als 25 Jahren Erfahrung in der IT-Security-Branche."
       }
     },
     "versioninfo": "Versionsinformation"

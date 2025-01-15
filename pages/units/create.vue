@@ -352,8 +352,6 @@ onBeforeUnmount(() => {
 }
 </i18n>
 
-<i18n src="./messages.json" />
-
 <style scoped lang="scss">
 #unit-create-wizard {
   :deep(.v-window-item) {
