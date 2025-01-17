@@ -638,3 +638,16 @@ export type VeoSort = {
   key: string;
   order: 'asc' | 'desc';
 };
+
+export type VeoLinkItem = {
+  id: string;
+  name: string;
+  type: string;
+  abbreviation: string;
+  directionIcon: string;
+  direction: 'INBOUND' | 'OUTBOUND';
+  from: string;
+  to: string;
+  linkType: string;
+  subType: string;
+};
