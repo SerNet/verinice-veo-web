@@ -150,24 +150,6 @@
             variant="underlined"
             data-veo-test="compliance-editor-description"
           />
-
-          <!-- Originiation -->
-
-          <!--
-            The backend currently only knows a single origination,
-            until users can actually work with this property (more than one possible origination)
-            this form field should not be rendered
-
-          <v-radio-group :model-value="form?.origination" inline>
-            <template #label>
-              <div>{{ t('origination') }}</div>
-            </template>
-
-            <template v-for="(key, value) in Origination" :key="key">
-              <v-radio :label="t(`originationValues.${value}`)" :value="`${key}`" />
-            </template>
-          </v-radio-group>
-          -->
         </BaseCard>
       </v-card-text>
       <ObjectFormSkeletonLoader v-else />
@@ -254,15 +236,6 @@ type RequirementImplementationForForm = {
   implementationStatement?: string;
   implementationUntil?: Date;
 };
-
-/** Cp. comment in template above */
-/*
-enum Origination {
-  SystemSpecific = 'SYSTEM_SPECIFIC'
-  // Inherited = 'INHERITED',
-  // Organisation = 'ORGANISATION'
-}
-*/
 
 enum Status {
   Unknown = 'UNKNOWN',
