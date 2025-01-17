@@ -120,6 +120,7 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import type {
   IInOutLink,
+  IVeoControlImplementation,
   IVeoEntity,
   IVeoLink,
   IVeoPaginatedResponse,
@@ -127,6 +128,7 @@ import type {
   IVeoRiskCategory,
   IVeoRiskDefinition,
   IVeoRiskValue,
+  VeoLinkItem,
   VeoRiskTreatment,
   VeoSort
 } from '~/types/VeoTypes';
@@ -200,7 +202,7 @@ export default defineComponent({
         cisIsFetching.value
     );
 
-    const createEntityFromLink = (link: IInOutLink) => {
+    const createEntityFromLink = (link: IInOutLink): VeoLinkItem => {
       const { linkedElement, direction, linkType } = link;
       const { displayName: name, abbreviation, type, id, subType } = linkedElement;
       return {
@@ -217,17 +219,17 @@ export default defineComponent({
       };
     };
 
-    function mapItems<IVeoControlImplementation, IVeoEntity>(
-      cis: globalThis.Ref<IVeoPaginatedResponse<IVeoControlImplementation[]>>,
-      mapFunction: (item: IVeoControlImplementation) => IVeoEntity
-    ): IVeoPaginatedResponse<IVeoEntity[]> {
+    function mapItems<T extends IVeoControlImplementation | IInOutLink, U extends IVeoEntity | VeoLinkItem>(
+      cis: globalThis.Ref<IVeoPaginatedResponse<T[]>>,
+      mapFunction: (item: T) => U
+    ): IVeoPaginatedResponse<U[]> {
       if (!Array.isArray(cis.value?.items) || cis.value.items.length === 0) {
         return {
           items: [],
           totalItemCount: 0,
           pageCount: 0,
           page: 0
-        } as IVeoPaginatedResponse<IVeoEntity[]>;
+        } as IVeoPaginatedResponse<U[]>;
       }
 
       return {
@@ -236,41 +238,43 @@ export default defineComponent({
       };
     }
     // TODO #3066 fix type (it can also return risks or control implementations)
-    const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]>>(() => {
-      switch (props.type) {
-        case 'childScopes':
-        case 'childObjects':
-          return children.value;
-        case 'parentScopes':
-          return cloneDeep(parentScopes.value || []);
-        case 'parentObjects':
-          return parentObjects.value || [];
-        case 'risks':
-          // TODO #3066 find out why on earth this even compiles
-          return risks.value || [];
-        case 'controls':
-          return mapItems(cis, (ci) => {
-            return {
-              ...ci,
-              type: ci.control.type,
-              name: ci.control.name,
-              id: ci.control.id
-            } as unknown as IVeoEntity;
-          });
-        case 'targets':
-          return mapItems(cis, (ci) => {
-            return {
-              ...ci.owner,
-              type: ci.owner.type,
-              responsible: ci.responsible?.name
-            } as unknown as IVeoEntity;
-          });
-        case 'links':
-          return links?.value?.items.map((link) => createEntityFromLink(link)) || [];
-        default:
-          return [];
+    const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]> | IVeoPaginatedResponse<VeoLinkItem[]>>(
+      () => {
+        switch (props.type) {
+          case 'childScopes':
+          case 'childObjects':
+            return children.value;
+          case 'parentScopes':
+            return cloneDeep(parentScopes.value || []);
+          case 'parentObjects':
+            return parentObjects.value || [];
+          case 'risks':
+            // TODO #3066 find out why on earth this even compiles
+            return risks.value || [];
+          case 'controls':
+            return mapItems(cis, (ci) => {
+              return {
+                ...ci,
+                type: ci.control.type,
+                name: ci.control.name,
+                id: ci.control.id
+              } as unknown as IVeoEntity;
+            });
+          case 'targets':
+            return mapItems(cis, (ci) => {
+              return {
+                ...ci.owner,
+                type: ci.owner.type,
+                responsible: ci.responsible?.name
+              } as unknown as IVeoEntity;
+            });
+          case 'links':
+            return mapItems(links, (link) => createEntityFromLink(link));
+          default:
+            return [];
+        }
       }
-    });
+    );
     /**
      * Fetch Data
      */
@@ -590,18 +594,6 @@ export default defineComponent({
 
       const createLinkHeaders = () => [
         {
-          value: 'direction',
-          key: 'direction',
-          text: t('direction'),
-          headerIcon: mdiArrowLeftRight,
-          width: 20,
-          truncate: false,
-          priority: 100,
-          order: 20,
-          render: (data: any) =>
-            h('span', data.internalItem.raw?.direction ? [createDirectionIcon(data.internalItem.raw.direction)] : '')
-        },
-        {
           value: 'from',
           key: 'from',
           sortable: false,
@@ -617,14 +609,16 @@ export default defineComponent({
             )
         },
         {
-          value: 'abbreviation',
-          key: 'abbreviation',
-          text: t('controls.abbreviation'),
-          width: 50,
+          value: 'direction',
+          key: 'direction',
+          text: t('direction'),
+          headerIcon: mdiArrowLeftRight,
+          width: 20,
           truncate: false,
-          priority: 60,
+          priority: 100,
           order: 20,
-          render: (data: any) => h('span', data.internalItem.raw?.abbreviation || '')
+          render: (data: any) =>
+            h('span', data.internalItem.raw?.direction ? [createDirectionIcon(data.internalItem.raw.direction)] : '')
         },
         {
           value: 'linkId',
