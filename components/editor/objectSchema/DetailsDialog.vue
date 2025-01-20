@@ -241,7 +241,7 @@ export default defineComponent({
       () => {
         updateForm();
         languages.value = (objectSchemaHelper?.value?.getLanguages() || []).map((key) => ({
-          title: (locales.value as LocaleObject[]).find((locale) => locale.code === key)?.name || key,
+          title: (locales as unknown as LocaleObject[]).find((locale) => locale.code === key)?.name || key,
           value: key
         }));
       },

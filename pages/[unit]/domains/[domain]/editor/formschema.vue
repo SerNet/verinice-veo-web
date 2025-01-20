@@ -440,7 +440,7 @@ const editorLanguage = ref(locale.value);
 provide(PROVIDE_KEYS.EDITOR_LANGUAGE, editorLanguage);
 
 const translationsQueryParameters = computed(() => ({
-  languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
+  languages: (locales as unknown as LocaleObject[]).map((locale) => locale.code),
   domain: route.params.domain
 }));
 const { data: translationsQueryData } = useQuery(

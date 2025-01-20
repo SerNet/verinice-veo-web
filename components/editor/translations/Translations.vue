@@ -346,7 +346,7 @@ const headers = computed<TableHeader[]>(() => [
       }
     }
   },
-  ...(locales.value as LocaleObject[]).map((locale) => ({
+  ...(locales as unknown as LocaleObject[]).map((locale) => ({
     key: locale.code,
     order: 30,
     priority: 100,

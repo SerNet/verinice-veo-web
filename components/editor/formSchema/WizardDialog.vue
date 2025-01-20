@@ -264,7 +264,7 @@ export default defineComponent({
 
     // translation stuff
     const translationQueryParameters = computed(() => ({
-      languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
+      languages: (locales as unknown as LocaleObject[]).map((locale) => locale.code),
       domain: props.domainId
     }));
     const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);

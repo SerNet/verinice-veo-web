@@ -158,7 +158,7 @@ const { locales: _locales, t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
 
-const locales = computed(() => (_locales.value as LocaleObject[]).map((locale) => locale.code));
+const locales = computed(() => (_locales as unknown as LocaleObject[]).map((locale) => locale.code));
 
 watch(
   () => props.modelValue,
