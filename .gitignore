@@ -8,6 +8,7 @@ node_modules
 .nuxt
 .output
 dist
+.data
 
 .DS_Store
 .history
