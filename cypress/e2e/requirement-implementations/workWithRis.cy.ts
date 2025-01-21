@@ -58,7 +58,7 @@ function openAddModulesDialog() {
   openModulesTab();
   cy.getCustom('[data-component-name="object-details-actions-button"]').click();
   cy.getCustom('[data-component-name="object-details-actions-button"]').click();
-  cy.containsCustom('Model modules').click({ force: true }); // Implicit testing of the button's label!
+  cy.containsCustom('Model Modules').click({ force: true }); // Implicit testing of the button's label!
 }
 
 function openFirstRI() {
@@ -271,6 +271,7 @@ describe('Requirement Implementations: Editor', () => {
   it('checks if editor shows the right information', () => {
     // Navigate
     openFirstRI();
+    cy.wait(2000); // Inputs are dynamically generated, be patient!
     cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
     cy.get('@editor').within(() => {
       const requirementImplementation = Cypress.env('dynamicTestData').ris[0];
@@ -282,22 +283,31 @@ describe('Requirement Implementations: Editor', () => {
       );
 
       // Target object
-      cy.getCustom('[data-veo-test="compliance-editor-target-object"] input')
+      cy.getCustom('[data-veo-test="compliance-editor-text-field"] input')
+        .eq(0)
         .invoke('val')
         .then((targetObjectName: string) =>
           expect(targetObjectName).to.contain(requirementImplementation.origin.displayName)
         );
 
-      // RI
+      // Control
       // abbreviation
-      cy.getCustom('[data-veo-test="compliance-editor-ri-abbreviation"] input')
+      cy.getCustom('[data-veo-test="compliance-editor-text-field"] input')
+        .eq(1)
         .invoke('val')
         .then((riAbbreviation: string) =>
           expect(riAbbreviation).to.contain(requirementImplementation.control.abbreviation)
         );
 
+      // protection approach
+      cy.getCustom('[data-veo-test="compliance-editor-text-field"] input')
+        .eq(2)
+        .invoke('val')
+        .then((riAbbreviation: string) => expect(riAbbreviation).to.contain('BASE'));
+
       // name
-      cy.getCustom('[data-veo-test="compliance-editor-ri-name"] input')
+      cy.getCustom('[data-veo-test="compliance-editor-text-field"] input')
+        .eq(3)
         .invoke('val')
         .then((riName: string) => expect(riName).to.contain(requirementImplementation.control.name));
     });

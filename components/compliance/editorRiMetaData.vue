@@ -46,8 +46,13 @@ function render() {
       return expansionPanel(t(`riEditor.${label}`), data[key]);
     case nonDefaultCases.ORIGINATION_DESCRIPTION:
       return h(VExpansionPanels, () => [
-        h(VExpansionPanel, { title: t(label) }, () => [
-          h(VExpansionPanelText, () => [h('span', { innerHTML: DOMPurify.sanitize(data[key] ?? t('na')) })])
+        h(VExpansionPanel, { title: t(`riEditor.${label}`) }, () => [
+          h(VExpansionPanelText, () => [
+            h('span', {
+              innerHTML: DOMPurify.sanitize(data[key] ?? t('na')),
+              'data-veo-test': `compliance-editor-expansion-panel`
+            })
+          ])
         ])
       ]);
     default:
@@ -60,12 +65,19 @@ function textField(label: string, value: string) {
     label,
     disabled: true,
     variant: 'underlined',
-    modelValue: value ?? t('na')
+    modelValue: value ?? t('na'),
+    'data-veo-test': `compliance-editor-text-field`
   });
 }
 
 function expansionPanel(label: string, value: string) {
-  return h(VExpansionPanels, () => [h(VExpansionPanel, { title: label, text: value ?? t('na') })]);
+  return h(VExpansionPanels, () => [
+    h(VExpansionPanel, {
+      title: label,
+      text: value ?? t('na'),
+      'data-veo-test': `compliance-editor-expansion-panel`
+    })
+  ]);
 }
 </script>
 <i18n src="~/locales/base/components/compliance-editor.json"></i18n>
