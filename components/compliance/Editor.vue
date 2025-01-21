@@ -165,7 +165,7 @@ import { format } from 'date-fns';
 import { useDate } from 'vuetify';
 import type {
   IVeoLink,
-  IVeoObjectControlCompendiumEntry,
+  IVeoEntity,
   RequirementImplementation,
   ResponsiblePerson
 } from '~/types/VeoTypes';
@@ -265,6 +265,16 @@ const { data: _personsForTotalItemCount } = useQuery(
   { enabled: isFetchingTotalItemCount.value }
 );
 
+// Fetch targetObject
+const targetObjectParameters = computed<IVeoFetchObjectParameters>(() => ({
+  id: props.item?.origin.id as string,
+  domain: currentDomainId.value as string,
+  endpoint: VeoElementTypePlurals[props.item?.origin.type]
+}));
+const { data: targetObject } = useQuery(controlQueryDefinitions.queries.fetch, targetObjectParameters, {
+  enabled: computed(() => !!props.item?.control.id)
+});
+
 // Fetch Control
 const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
   id: props.item?.control.id as string,
@@ -281,25 +291,36 @@ const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
   false
 );
 
+/**
+  * Information to be shown as meta data
+  * It does not come whith `props.item` and thus has to be fetched
+  * You will not need it to PUT a requirement implementation
+  * -> It is solely for the purpose of displaying informative data to users
+  * That is why we write it into a separate variable
+  */
 const additionalInfo = ref<{
   originationDescription?: string;
   protectionApproach?: string;
-  protectionApproachTranslation?: ComputedRef<string>;
+  targetObjectDescription?: string;
+  protectionApproachTranslation?: string;
 }>({});
 const sanitizedDescription = ref<string>('');
 
-const updateControlInfo = (control) => {
-  const customAspects = control?.customAspects as IVeoObjectControlCompendiumEntry | undefined;
+const updateAdditionalInfo = (control: IVeoEntity, targetObject: IVeoEntity) => {
+  // Target object
+  additionalInfo.value.targetObjectDescription = targetObject?.description;
 
-  if (!customAspects) return undefined;
+  // Control
+  const customAspects = control?.customAspects;
+  if(!customAspects) return;
 
   additionalInfo.value.originationDescription =
     customAspects?.control_bpCompendium?.control_bpCompendium_content ?? control?.description ?? '';
   additionalInfo.value.protectionApproach =
-    customAspects['control_bpInformation']?.control_bpInformation_protectionApproach;
+    customAspects?.['control_bpInformation']?.control_bpInformation_protectionApproach;
 };
 
-watch(control, () => updateControlInfo(control.value), { immediate: true });
+watch([control, targetObject], () => updateAdditionalInfo(control.value, targetObject.value), { immediate: true });
 
 watch(
   () => additionalInfo.value.originationDescription,

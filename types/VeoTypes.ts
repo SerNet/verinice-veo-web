@@ -147,6 +147,7 @@ interface IVeoCustomObject {
   attributes: IVeoCustomAttributes;
   domains: IVeoLink[];
   control_bpInformation_protectionApproach?: string;
+  control_bpCompendium_content?: string;
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {
