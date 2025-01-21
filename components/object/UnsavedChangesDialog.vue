@@ -65,15 +65,4 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 </script>
 
-<i18n>
-{
-  "en": {
-    "text": "The object \"{displayName}\" has been edited. The changes won't be saved. Do you really want to leave this page?",
-    "headline": "Close"
-  },
-  "de": {
-    "text": "Das Objekt \"{displayName}\" wurde bearbeitet. Die Änderungen werden nicht gespeichert. Wollen Sie die Seite wirklich verlassen?",
-    "headline": "Verlassen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-UnsavedChangesDialog.json"></i18n>

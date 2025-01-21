@@ -299,21 +299,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "create": "{type}",
-    "generateReport": "Generate report",
-    "generateReportError": "Couldn't generate report",
-    "hintMultiple": "Please select the object you want to create the report for.",
-    "hintSingle": "Please select the object you want to create the report for."
-  },
-  "de": {
-    "create": "{type}",
-    "generateReport": "Report generieren",
-    "generateReportError": "Report konnte nicht erstellt werden",
-    "hintMultiple": "Bitte wählen Sie die Objekte aus, für die Sie den Report erstellen möchten.",
-    "hintSingle": "Bitte wählen Sie das Objekt aus, für das Sie den Report erstellen möchten."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-reports-report.json"></i18n>

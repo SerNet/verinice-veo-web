@@ -206,22 +206,7 @@ function handleDelete(event: KeyboardEvent) {
 }
 </script>
 
-<i18n>
-{
-"en": {
-  "search": "Search",
-  "searchFilter_name": 'name',
-  "searchFilter_abbreviation": 'abbreviation',
-  "searchFilter_displayName": 'name & abbreviation',
-},
-"de": {
-  "search": "Suche",
-  "searchFilter_name": 'Name',
-  "searchFilter_abbreviation": 'Abkürzung',
-  "searchFilter_displayName": 'Name & Abkürzung',
-}
-}
-</i18n>
+<i18n src="~/locales/base/components/search-Bar.json"></i18n>
 
 <style scoped lang="scss">
 :deep(.v-combobox__menu-icon) {

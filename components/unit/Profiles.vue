@@ -138,20 +138,5 @@ const RadioButton: TInlineComponent = {
   `
 };
 </script>
-<i18n>
-{
-  "en": {
-    "isAssociatingDomain": "Associating Domain...",
-    "isApplyingProfile": "Applying Profile...",
-    "noProfile": "Do not apply any profile.",
-    "hasNoProfilesTitle": "No profiles available",
-    "hasNoProfilesBody": "Sorry, we cannot find any profiles.",
-  },
-  "de": {
-    "isAssociatingDomain": "Verknüpfe Domäne...",
-    "isApplyingProfile": "Wende Profil an...",
-    "noProfile": "Kein Profil anwenden.",
-    "hasNoProfilesTitle": "Keine Profile verfügbar",
-    "hasNoProfilesBody": "Wir konnten leider keine Profile finden.",
-  } }
-</i18n>
+
+<i18n src="~/locales/base/components/unit-Profiles.json"></i18n>

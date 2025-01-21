@@ -1,0 +1,14 @@
+{
+  "en": {
+    "search": "Search",
+    "searchFilter_name": "name",
+    "searchFilter_abbreviation": "abbreviation",
+    "searchFilter_displayName": "name & abbreviation"
+  },
+  "de": {
+    "search": "Suche",
+    "searchFilter_name": "Name",
+    "searchFilter_abbreviation": "Abkürzung",
+    "searchFilter_displayName": "Name & Abkürzung"
+  }
+}

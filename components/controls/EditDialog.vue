@@ -172,21 +172,4 @@ watch(props, () => {
 });
 </script>
 
-<i18n>
-  {
-    "en": {
-      "controlUpdate": "Control updated succesfully",
-      "controlUpdateFailed": "Control could not be updated",
-      "description": "Description",
-      "responsible": "Responsible person",
-      "title": "Edit control"
-    },
-    "de": {
-      "controlUpdate": "Baustein erfolgreich aktualisiert",
-      "controlUpdateFailed": "Baustein konnte nicht aktualisiert werden",
-      "description": "Beschreibung",
-      "responsible": "Verantwortliche Person",
-      "title": "Baustein bearbeiten"
-    }
-  }
-</i18n>
+<i18n src="~/locales/base/components/controls-EditDialog.json"></i18n>

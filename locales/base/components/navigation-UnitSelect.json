@@ -1,0 +1,12 @@
+{
+  "en": {
+    "management": "Manage units",
+    "select": "Select unit",
+    "unit": "Unit"
+  },
+  "de": {
+    "management": "Units verwalten",
+    "select": "Unit auswählen",
+    "unit": "Unit"
+  }
+}

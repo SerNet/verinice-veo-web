@@ -1,0 +1,20 @@
+{
+  "en": {
+    "assignmentFailed": "The object could not be assigned to another domain.",
+    "domainAssignmentHint": "Assigning an object to a further domain cannot be reversed!",
+    "domainAssignmentHintTitle": "Domain assignment",
+    "domainSelection": "Domain selection",
+    "objectAssigned": "The object has been assigned to another domain successfully.",
+    "subtype": "Subtype",
+    "title": "Assign '{object}' object"
+  },
+  "de": {
+    "assignmentFailed": "Das Objekt konnte keiner weiteren Domäne zugewiesen werden.",
+    "domainAssignmentHint": "Die Zuweisung eines Objektes zu einer weiteren Domäne kann nicht wieder rückgängig gemacht werden!",
+    "domainAssignmentHintTitle": "Domänenzuordnung",
+    "domainSelection": "Domänenauswahl",
+    "objectAssigned": "Das Objekt wurde einer weiteren Domäne erfolgreich zugewiesen.",
+    "subtype": "Subtyp",
+    "title": "Objekt '{object}' zuordnen"
+  }
+}

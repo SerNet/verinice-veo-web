@@ -173,15 +173,4 @@ const closeDialog = (ignoreConfirmDialog = false) => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "closeDialog": "Close dialog",
-    "confirmationDialogText": "Are you sure you want to close this dialog? Unsaved changes might be lost."
-  },
-  "de": {
-    "closeDialog": "Dialog schließen",
-    "confirmationDialogText": "Möchten Sie den Dialog wirklich schließen? Ungespeicherte Änderungen gehen möglicherweise verloren."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/base-Dialog.json"></i18n>

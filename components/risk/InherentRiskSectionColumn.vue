@@ -101,15 +101,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "inherentRisk": "inherent risk",
-    "saveCTA": "save to recompute"
-  },
-  "de": {
-    "inherentRisk": "Bruttorisiko",
-    "saveCTA": "Speichern zum Neuberechnen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-InherentRiskSectionColumn.json"></i18n>

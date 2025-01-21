@@ -219,19 +219,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "duplicateTranslations": "Translations already present in the object schema (not imported)",
-    "importedTranslations": "Imported translations",
-    "result": "Upload details",
-    "unusedTranslations": "Translations of controls not present in form schema (not imported)"
-  },
-  "de": {
-    "duplicateTranslations": "Bereits im Objektschema vorhandene Übersetzungen (nicht importiert)",
-    "importedTranslations": "Importierte Übersetzungen",
-    "result": "Upload-Details",
-    "unusedTranslations": "Übersetzungen von nicht im Formschema vorhandenen Controls (nicht importiert)"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-TranslationUpload.json"></i18n>

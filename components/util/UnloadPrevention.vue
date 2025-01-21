@@ -43,13 +43,4 @@ export default {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "unsavedChanges": "There are unsaved changes. Do you really want to leave this page?"
-  },
-  "de": {
-    "unsavedChanges": "Es gibt ungespeicherte Änderungen. Wollen Sie die Seite wirklich verlassen?"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/util-UnloadPrevention.json"></i18n>

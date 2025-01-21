@@ -83,19 +83,4 @@ watch(
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "error": "Error | Errors",
-    "info": "Information",
-    "messages": "Messages",
-    "warning": "Warning | Warnings"
-  },
-  "de": {
-    "error": "Fehler",
-    "info": "Information | Informationen",
-    "messages": "Meldungen",
-    "warning": "Warnung | Warnungen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-messages-Messages.json"></i18n>

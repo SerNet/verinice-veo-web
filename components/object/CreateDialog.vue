@@ -255,19 +255,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "createObject": "create object",
-    "object": "object",
-    "objectCreated": "\"{name}\" was created successfully!",
-    "objectNotCreated": "couldn't create \"{name}\""
-  },
-  "de": {
-    "createObject": "objekt erstellen",
-    "object": "objekt",
-    "objectCreated": "\"{name}\" wurde erfolgreich erstellt!",
-    "objectNotCreated": "\"{name}\" konnte nicht erstellt werden."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-CreateDialog.json"></i18n>

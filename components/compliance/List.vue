@@ -148,26 +148,7 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
 ]);
 </script>
 
-<i18n>
-{
-"de": {
-  "thAbbreviation": "Abkürzung",
-  "thName": "Anforderung",
-  "thOrigin": "Umsetzungsherkunft",
-  "thResponsibleBody": "Verantwortlich",
-  "thStatus": "Status",
-  "noRequirementImplementations": "Keine Requirement Implementations vorhanden."
-},
-"en": {
-  "thAbbreviation": "Abbreviation",
-  "thName": "Requirement",
-  "thOrigin": "Origin",
-  "thResponsibleBody": "Responsible",
-  "thStatus": "Status",
-  "noRequirementImplementations": "No requirement implementations available."
-}
-}
-</i18n>
+<i18n src="~/locales/base/components/compliance-List.json"></i18n>
 
 <style>
 /* Do not show a checkbox in table header */

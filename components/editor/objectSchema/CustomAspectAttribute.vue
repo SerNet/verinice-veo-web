@@ -356,39 +356,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "multiple": "Multiple",
-    "aspectDescription": "Description",
-    "aspectName": "attribute name",
-    "aspectType": "Attribute type",
-    "inputFormat": "Input format",
-    "values": "Available options",
-    "valuesHint": "Available options (seperate entries with Enter)",
-    "attributeTypes": {
-      "date": "Date",
-      "dateTime": "Date and Time",
-      "text": "Text",
-      "uri": "URI"
-    },
-    "requiredIfEnum": "You have to enter at least one value if selecting type \"selection\""
-  },
-  "de": {
-    "multiple": "Mehrfachauswahl",
-    "aspectDescription": "Beschreibung",
-    "aspectName": "Name des Attributs",
-    "aspectType": "Typ des Attributs",
-    "inputFormat": "Eingabeformat",
-    "values": "Auswahlmöglichkeiten",
-    "valuesHint": "Werte (mit Enter trennen)",
-    "attributeTypes": {
-      "date": "Datum",
-      "dateTime": "Datum und Uhrzeit",
-      "text": "Text",
-      "uri": "URI"
-    },
-    "requiredIfEnum": "Sie müssen mindestens einen Wert angeben, wenn Sie den Typ \"Auswahl\" auswählen."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-CustomAspectAttribute.json"></i18n>

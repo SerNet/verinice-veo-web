@@ -76,13 +76,5 @@ onBeforeUnmount(() => {
   stop();
 });
 </script>
-<i18n>
-{
-  "en": {
-    "remainingTime": "Remaining time: ",
-  },
-  "de": {
-    "remainingTime": "Verbleibende Zeit: ",
-  }
-}
-</i18n>
+
+<i18n src="~/locales/base/components/system-message-Timer.json"></i18n>

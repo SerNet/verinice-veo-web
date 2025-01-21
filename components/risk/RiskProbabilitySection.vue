@@ -174,26 +174,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "effectiveProbability": "effective probability",
-    "explanation": "explanation",
-    "potentialProbability": "potential probability",
-    "probability": "probability",
-    "saveCTA": "save to recompute",
-    "specificProbability": "specific probability"
-  },
-  "de": {
-    "effectiveProbability": "Effektive Wahrscheinlichkeit",
-    "explanation": "Erklärung",
-    "potentialProbability": "potentielle Wahrscheinlichkeit",
-    "probability": "Eintrittswahrscheinlichkeit",
-    "saveCTA": "Speichern zum Neuberechnen",
-    "specificProbability": "spezifische Wahrscheinlichkeit"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-RiskProbabilitySection.json"></i18n>
 
 <style lang="scss" scoped>
 .v-small-dialog__activator :v-deep(*) {

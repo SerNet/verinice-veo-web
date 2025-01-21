@@ -274,46 +274,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "createObject": "Create {0}",
-    "createRisk": "Create risk",
-    "createScope": "Create scope",
-    "linkScope": "Select scope",
-    "linkAsset": "Select asset",
-    "linkProcess": "Select process",
-    "object": "object",
-    "objectLinked": "The links were successfully updated.",
-    "objectNotLinked": "The links could not be updated.",
-    "create_entity": "Please specify the type of the new object.",
-    "select_entity": "Please specify the type of the object to add.",
-    "headline_create": "Create new object",
-    "headline_select": "Select object type",
-    "select": "Select",
-    "create": "Create",
-
-  },
-  "de": {
-    "createObject": "{0} erstellen",
-    "createRisk": "Risiko hinzufügen",
-    "createScope": "Scope erstellen",
-    "linkScope": "Scope auswählen",
-    "linkAsset": "Asset auswählen",
-    "linkProcess": "Prozess auswählen",
-    "object": "Objekt",
-    "objectLinked": "Die Verknüpfungen wurden erfolgreich aktualisiert.",
-    "objectNotLinked": "Die Verknüpfungen konnten nicht aktualisiert werden.",
-    "create_entity": "Bitte wählen Sie den Typ des neuen Objektes.",
-    "select_entity": "Bitte wählen Sie den Typ des Objekts, das Sie hinzufügen wollen.",
-    "headline": "Objekt erstellen",
-    "headline_create": "Objekt erstellen",
-    "headline_select": "Objektstyp auswählen",
-    "select": "Auswählen",
-    "create": "Erstellen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-ActionMenu.json"></i18n>
 
 <style lang="scss" scoped>
 :deep(.v-speed-dial__list) {

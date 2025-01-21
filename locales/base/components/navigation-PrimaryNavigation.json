@@ -1,0 +1,18 @@
+{
+  "en": {
+    "collapse": "Collapse menu",
+    "fix": "Fix menu",
+    "all": "All",
+    "backToVeo": "Go to verinice.veo",
+    "scenario": "Scenario",
+    "control": "TOM"
+  },
+  "de": {
+    "collapse": "Menü verstecken",
+    "fix": "Menü fixieren",
+    "all": "Alle",
+    "backToVeo": "Zu verinice.veo",
+    "scenario": "Gefährdung",
+    "control": "TOM"
+  }
+}

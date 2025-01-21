@@ -1,0 +1,28 @@
+{
+  "en": {
+    "displayedAs": "Displayed as \"{0}\" (source: {1})",
+    "label": "Label",
+    "noLabel": "No label",
+    "noText": "No text",
+    "source": {
+      "formSchema": "form schema",
+      "formSchemaTranslations": "form schema translations",
+      "objectSchema": "object schema translations",
+      "objectSchemaKey": "attribute key"
+    },
+    "text": "Text"
+  },
+  "de": {
+    "displayedAs": "Angezeigt als \"{0}\" (Quelle: {1})",
+    "label": "Beschriftung",
+    "noLabel": "Keine Beschriftung",
+    "noText": "Kein Text",
+    "source": {
+      "formSchema": "Formschema",
+      "formSchemaTranslations": "Formschema Übersetzungen",
+      "objectSchema": "Objektschema Übersetzungen",
+      "objectSchemaKey": "Attribut-Key"
+    },
+    "text": "Text"
+  }
+}

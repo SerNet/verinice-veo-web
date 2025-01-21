@@ -177,39 +177,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "customFormSchema": "Custom form schema",
-    "forceOwnSchema": "Don't load existing object schemas from the server",
-    "forceProceed": "Proceed regardless",
-    "format": "(.json)",
-    "formSchema": "Form schema",
-    "formSchemaType": "Type of the form schema",
-    "importFormSchema": "Import form schema",
-    "importObjectSchema": "Import object schema",
-    "formSchemaUploadLabel": "Form schema upload @:format",
-    "objectschema": "Objectschema",
-    "objectSchemaIncompatible": "The object schema is not compatible with the form schema",
-    "objectSchemaUploadLabel": "Object schema upload @:format",
-    "objectTypeMissing": "The object schema belonging to the form schema couldn't be found",
-    "uploadObjectSchemaHint": "Please upload the object schema belonging to the form schema"
-  },
-  "de": {
-    "customFormSchema": "Eigenes Formschema",
-    "forceOwnSchema": "Existierendes Objektschema selbst hochladen.",
-    "forceProceed": "Trotzdem fortfahren",
-    "format": "(.json)",
-    "formSchema": "Formschema",
-    "formSchemaType": "Typ des Formschemas",
-    "importFormSchema": "Formschema importieren",
-    "importObjectSchema": "Objektschema importieren",
-    "formSchemaUploadLabel": "Formschema hochladen @:format",
-    "objectschema": "Objektschema",
-    "objectSchemaIncompatible": "Das Objektschema ist nicht mit dem Formschema kompatibel",
-    "objectSchemaUploadLabel": "Objektschema hochladen @:format",
-    "objectTypeMissing": "Das zum Formschema gehörende Objektschema konnte nicht gefunden werden",
-    "uploadObjectSchemaHint": "Bitte laden Sie das zum Formschema gehörende Objektschema hoch"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-WizardStateImport.json"></i18n>

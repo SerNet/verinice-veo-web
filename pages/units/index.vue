@@ -91,23 +91,4 @@ useHead({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "active": "active",
-    "createUnit": "Create Unit",
-    "deleteUnit": "Delete Unit",
-    "editUnit": "Edit Unit",
-    "exceeded": "You have reached the maximum amount of Units",
-    "of": "of"
-  },
-  "de": {
-    "active": "aktiv",
-    "createUnit": "Unit erstellen",
-    "deleteUnit": "Unit löschen",
-    "editUnit": "Unit bearbeiten",
-    "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
-    "of": "von"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/units-index.json"></i18n>

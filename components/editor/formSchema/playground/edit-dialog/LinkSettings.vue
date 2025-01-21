@@ -135,15 +135,4 @@ const usedLinkAttributes = computed<string[]>({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "changesVisibleImmediately": "Changes in the order of custom link attributes are visible immediately without clicking \"Save\"",
-    "displayedAttributes": "Displayed attributes"
-  },
-  "de": {
-    "changesVisibleImmediately": "Änderungen in der Reihenfolge sind sofort ohne Klick auf \"Speichern\" sichtbar.",
-    "displayedAttributes": "Angezeigte Felder"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-LinkSettings.json"></i18n>

@@ -88,17 +88,4 @@ const isMessageFallback = computed<boolean>(
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "genericText": "This action only removes the link from its parent.",
-    "text": "Unlinking \"{displayName}\" only removes the object from \"{parentDisplayName}\".",
-    "unlinkObject": "Unlink object"
-  },
-  "de": {
-    "genericText": "Diese Aktion entfernt nur die Verknüpfung zum Objekt.",
-    "text": "Es wird nur die Verknüpfung von \"{displayName}\" zu \"{parentDisplayName}\" entfernt.",
-    "unlinkObject": "Verknüpfung entfernen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-UnlinkDialog.json"></i18n>

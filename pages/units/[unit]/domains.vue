@@ -76,20 +76,6 @@ const messages = computed(() => ({
   error: { text: t('associateDomainsErrorText') }
 }));
 </script>
-<i18n>
-{
-  "en": {
-    "isAssociatingDomains": "Associating domains...",
-    "associateDomainsErrorText": "Domains could not be associated.",
-    "associateDomainsSuccess": "Domains successfully associated.",
-    "associateDomains": "Associate domains"
-  },
-  "de": {
-    "isAssociatingDomains": "Assoziiere Domänen...",
-    "associateDomainsErrorText": "Domänen konnten nicht assoziiert werden.",
-    "associateDomainsSuccess": "Domänen erfolgreich assoziert.",
-    "associateDomains": "Domänen hinzufügen"
-  }
-}
-</i18n>
+
+<i18n src="~/locales/base/pages/units-unit-domains.json"></i18n>
 <style scoped lang="scss"></style>

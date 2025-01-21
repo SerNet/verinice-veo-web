@@ -1,0 +1,16 @@
+{
+  "en": {
+    "createFormSchema": "Create form schema",
+    "createFormSchemaDescription": "Create a new form schema",
+    "importFormSchema": "Import form schema",
+    "importFormSchemaDescription": "Import an existing form schema and modify it.",
+    "start": "How do you want to start?"
+  },
+  "de": {
+    "createFormSchema": "Formschema erstellen",
+    "createFormSchemaDescription": "Neues Formschema erstellen",
+    "importFormSchema": "Formschema importieren",
+    "importFormSchemaDescription": "Existierendes Formschema importieren und modifizieren",
+    "start": "Wie möchten Sie starten?"
+  }
+}

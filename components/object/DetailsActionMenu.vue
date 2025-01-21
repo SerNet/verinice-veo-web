@@ -210,29 +210,4 @@ watch(
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "createDPIA": "create DPIA",
-    "deleteObject": "delete object",
-    "deleteObjectFailed": "Deleting the object failed",
-    "dpia": "DPIA",
-    "linkDPIA": "link DPIA",
-    "performActionsErrorTitle": "Error",
-    "performActionsErrorBody": "\"{actionName}\" was not successful.",
-    "performActionsSuccess": "\"{actionName}\" was successful.",
-    "isPerformingActions": "{actionName}..."
-  },
-  "de": {
-    "createDPIA": "DSFA erstellen",
-    "deleteObject": "Objekt löschen",
-    "deleteObjectFailed": "Das Objekt konnte nicht gelöscht werden",
-    "dpia": "DSFA",
-    "linkDPIA": "DSFA auswählen",
-    "performActionsErrorTitle": "Fehler",
-    "performActionsErrorBody": "\"{actionName}\" war nicht erfolgreich.",
-    "performActionsSuccess": "\"{actionName}\" war erfolgreich.",
-    "isPerformingActions": "{actionName}..."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-DetailsActionMenu.json"></i18n>

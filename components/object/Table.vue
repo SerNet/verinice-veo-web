@@ -283,19 +283,4 @@ const mergedAdditionalHeaders = computed(() => [
 ]);
 </script>
 
-<i18n>
-{
-  "en": {
-    "by": "by",
-    "createdAt": "Created",
-    "loadingData": "Loading data...",
-    "updatedAt": "Updated"
-  },
-  "de": {
-    "by": "von",
-    "createdAt": "Erstellt",
-    "loadingData": "Daten werden geladen",
-    "updatedAt": "Aktualisiert"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-Table.json"></i18n>

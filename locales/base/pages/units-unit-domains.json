@@ -1,0 +1,14 @@
+{
+  "en": {
+    "isAssociatingDomains": "Associating domains...",
+    "associateDomainsErrorText": "Domains could not be associated.",
+    "associateDomainsSuccess": "Domains successfully associated.",
+    "associateDomains": "Associate domains"
+  },
+  "de": {
+    "isAssociatingDomains": "Assoziiere Domänen...",
+    "associateDomainsErrorText": "Domänen konnten nicht assoziiert werden.",
+    "associateDomainsSuccess": "Domänen erfolgreich assoziert.",
+    "associateDomains": "Domänen hinzufügen"
+  }
+}

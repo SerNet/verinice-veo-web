@@ -1,0 +1,10 @@
+{
+  "en": {
+    "schemaDetailsHeadline": "Formschema details",
+    "schemaName": "Name of the form schema"
+  },
+  "de": {
+    "schemaDetailsHeadline": "Formschema Eigenschaften",
+    "schemaName": "Name des Formschemas"
+  }
+}

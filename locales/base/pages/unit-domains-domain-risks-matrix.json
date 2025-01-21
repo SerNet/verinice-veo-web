@@ -1,0 +1,24 @@
+{
+  "en": {
+    "impact": "impact",
+    "noData": "no data",
+    "probability": "probability",
+    "riskValues": "Risk categories",
+    "Newcriterion": "New criterion",
+    "criterion": "Criterion",
+    "error": "Updating risk definitions failed.",
+    "success": "Successfully updaded risk definitions.",
+    "potentialImpacts": "Impact"
+  },
+  "de": {
+    "impact": "auswirkung",
+    "noData": "keine Daten",
+    "Newcriterion": "Neues Kriterium",
+    "criterion": "Kriterium",
+    "riskValues": "Risikokategorien",
+    "probability": "Eintrittswahrscheinlichkeit",
+    "error": "Riskodefinitionen konnten nicht aktualisert werden.",
+    "success": "Riskodefinitionen wurden erfolgreich aktualisiert.",
+    "potentialImpacts": "Auswirkung"
+  }
+}

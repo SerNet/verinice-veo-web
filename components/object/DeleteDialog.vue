@@ -101,15 +101,4 @@ const deleteObject = async () => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "text": "Do you really want to delete the object \"{displayName}\"?",
-    "headline": "Delete object"
-  },
-  "de": {
-    "text": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen?",
-    "headline": "Objekt löschen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-DeleteDialog.json"></i18n>

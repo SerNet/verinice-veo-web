@@ -469,23 +469,4 @@ const primaryNavList = ref();
 provide(PROVIDE_KEYS.navigation, primaryNavList);
 </script>
 
-<i18n>
-{
-  "en": {
-    "collapse": "Collapse menu",
-    "fix": "Fix menu",
-    "all": "All",
-    "backToVeo": "Go to verinice.veo",
-    "scenario": "Scenario",
-    "control": "TOM"
-  },
-  "de": {
-    "collapse": "Menü verstecken",
-    "fix": "Menü fixieren",
-    "all": "Alle",
-    "backToVeo": "Zu verinice.veo",
-    "scenario": "Gefährdung",
-    "control": "TOM"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/navigation-PrimaryNavigation.json"></i18n>

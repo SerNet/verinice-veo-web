@@ -1,0 +1,10 @@
+{
+  "en": {
+    "deleteStatus": "delete status",
+    "translation": "translation"
+  },
+  "de": {
+    "translation": "übersetzung",
+    "deleteStatus": "status löschen"
+  }
+}

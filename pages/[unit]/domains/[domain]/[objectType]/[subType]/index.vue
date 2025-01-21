@@ -523,41 +523,4 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "assignObject": "Assign object to another domain",
-    "filterObjects": "filter objects",
-    "createObject": "create {0}",
-    "clone": "duplicated",
-    "cloneObject": "clone object",
-    "cloneSuccess": "Object cloned successfully.",
-    "deleteObject": "delete object",
-    "dpiaMandatory": "Privacy impact assessment required",
-    "errors": {
-      "clone": "Could not clone object",
-      "delete": "Could not delete object"
-    },
-    "objectDeleted": "Object deleted.",
-    "open": "Open",
-    "VdA": "Procedure for securing"
-  },
-  "de": {
-    "assignObject": "Objekt einer weiteren Domäne zuordnen",
-    "filterObjects": "Objekte filtern",
-    "createObject": "{0} erstellen",
-    "clone": "dupliziert",
-    "cloneObject": "objekt duplizieren",
-    "cloneSuccess": "Objekt wurde erfolgreich dupliziert.",
-    "deleteObject": "objekt löschen",
-    "dpiaMandatory": "DSFA verpflichtend",
-    "errors": {
-      "clone": "Das Objekt konnte nicht dupliziert werden",
-      "delete": "Das Objekt konnte nicht gelöscht werden"
-    },
-    "objectDeleted": "Objekt wurde gelöscht.",
-    "open": "Öffnen",
-    "VdA": "Vorgehensweise der Absicherung"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-objectType-subType-index.json"></i18n>

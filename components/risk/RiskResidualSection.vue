@@ -95,13 +95,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "residualRisk": "residual risk"
-  },
-  "de": {
-    "residualRisk": "Nettorisiko"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-RiskResidualSection.json"></i18n>

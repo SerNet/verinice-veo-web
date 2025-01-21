@@ -53,13 +53,4 @@ const _switch = () => {
 };
 </script>
 
-<i18n>
-  {
-    "de": {
-      "mode": "Hell/Dunkel-Modus"
-    },
-    "en": {
-      "mode": "Light/dark mode"
-    }
-  }
-</i18n>
+<i18n src="~/locales/base/components/layout-ThemeSwitch.json"></i18n>

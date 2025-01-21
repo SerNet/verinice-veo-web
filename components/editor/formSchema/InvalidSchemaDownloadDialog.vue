@@ -39,15 +39,4 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 </script>
 
-<i18n>
-{
-  "en": {
-    "downloadSchema": "Download schema",
-    "invalidSchemaConfirmation": "The form schema is not compatible with current object schemas. Please don't upload it to production. Do you really want to download the schema?"
-  },
-  "de": {
-    "downloadSchema": "Schema herunterladen",
-    "invalidSchemaConfirmation": "Das Formschema ist nicht mit keinem aktuellen Objektschema kompatibel. Bitte laden Sie es nicht in der Live-Umgebung hoch. Möchten Sie das Schema trotzdem herunterladen?"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-InvalidSchemaDownloadDialog.json"></i18n>

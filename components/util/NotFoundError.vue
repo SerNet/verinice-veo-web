@@ -46,17 +46,4 @@ const goBackToPreviousPage = () => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "notFoundCode": "404 Not found",
-    "notFound": "The object that you requested could not be found.",
-    "backToPrevious": "back to previous page"
-  },
-  "de": {
-    "notFoundCode": "404 Not found",
-    "notFound": "Das von Ihnen angeforderte Objekt konnte nicht gefunden werden.",
-    "backToPrevious": "zurück zur vorherigen Seite"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/util-NotFoundError.json"></i18n>

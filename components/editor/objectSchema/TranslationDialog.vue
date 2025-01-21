@@ -263,19 +263,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "displayLanguage": "Languages",
-    "displayLanguageDescription": "Display language in object schema editor",
-    "supportedLanguages": "Supported Languages",
-    "updateTranslationsError": "Couldn't update translations"
-  },
-  "de": {
-    "displayLanguage": "Sprache",
-    "displayLanguageDescription": "Anzeigesprache im Objektschema Editor",
-    "supportedLanguages": "Sprachen",
-    "updateTranslationsError": "Übersetzungen konnten nicht aktualisiert werden"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-TranslationDialog.json"></i18n>

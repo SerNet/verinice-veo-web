@@ -68,15 +68,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "schemaValidationErrors": "errors",
-    "schemaValidationWarnings": "warnings"
-  },
-  "de": {
-    "schemaValidationErrors": "fehler",
-    "schemaValidationWarnings": "warnungen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-ErrorDialog.json"></i18n>

@@ -180,13 +180,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "hint": "DD.MM.YYYY e.g. {0}"
-  },
-  "de": {
-    "hint": "DD.MM.YYYY z.B. {0}"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-InputDate.json"></i18n>

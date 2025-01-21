@@ -1,0 +1,8 @@
+{
+  "en": {
+    "componentNotFound": "The type of \"{0}\" isn't supported: {1}."
+  },
+  "de": {
+    "componentNotFound": "\"{0}\" mit dem Typ {1} wird nicht unterstützt."
+  }
+}

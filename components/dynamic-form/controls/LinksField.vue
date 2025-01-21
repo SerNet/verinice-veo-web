@@ -150,16 +150,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "addLink": "Add link"
-  },
-  "de": {
-    "addLink": "Verknüpfung hinzufügen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-LinksField.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-links-field-border {

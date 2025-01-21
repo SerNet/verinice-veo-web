@@ -75,13 +75,4 @@ const idWithTitle = computed(() =>
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "attributecount": "No attributes | one attribute | {n} attributes"
-  },
-  "de": {
-    "attributecount": "Keine Attribute | Ein Attribut | {n} Attribute"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-ListHeader.json"></i18n>

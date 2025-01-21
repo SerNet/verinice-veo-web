@@ -76,22 +76,4 @@ const { data: allUnitDomains, isFetching: domainsFetching } = useFetchUnitDomain
 const { t } = useI18n();
 </script>
 
-<i18n>
-  {
-    "en": {
-      "domainpicker": "Please choose a domain",
-      "domainpickerPlaceholder": "Search for a domain...",
-      "domainselector": "Domain selection",
-      "furtherDomainInformation": "The verinice.TEAM will successively provide further domains for verinice.veo click {here} for further information.",
-      "linkMoreInfo": "here"
-    },
-    "de": {
-      "domainpicker": "Bitte wählen Sie eine Domäne",
-      "domainpickerPlaceholder": "Nach einer Domäne suchen...",
-      "domainselector": "Domänenauswahl",
-      "furtherDomainInformation": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen, klicken Sie {here} für mehr Informationen.",
-      "linkMoreInfo": "hier"
-
-    }
-  }
-  </i18n>
+<i18n src="~/locales/base/pages/unit-domains-index.json"></i18n>

@@ -230,31 +230,4 @@ const onSave = () => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "click": "Click here",
-    "editTranslations": "Edit formschema translations",
-    "expertMode": "Expert mode",
-    "formSchemaTitle": "Formschema title",
-    "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations.",
-    "formSchemaTranslationsOnly": "Only show form schema translations",
-    "import": "Import",
-    "noTranslationsFound": "No translations found for \"{0}\"",
-    "title": "Formschema title ({0})",
-    "translations": "Translations"
-  },
-  "de": {
-    "click": "Klicken Sie hier",
-    "editTranslations": "Formschema-Übersetzungen bearbeiten",
-    "expertMode": "Expertenmodus",
-    "formSchemaTitle": "Formschema-Titel",
-    "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen.",
-    "formSchemaTranslationsOnly": "Nur Formschema Übersetzungen anzeigen",
-    "import": "Importieren",
-    "noTranslationsFound": "Keine Übersetzungen für \"{0}\" gefunden",
-    "title": "Formschema-Titel ({0})",
-    "translations": "Übersetzungen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-TranslationDialog.json"></i18n>

@@ -152,16 +152,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "downloadDetails": "Download details"
-  },
-  "de": {
-    "downloadDetails": "Details herunterladen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-GlobalAlert.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-global-alert {

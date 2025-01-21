@@ -167,42 +167,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "acceptAllCookies": "Accept all cookies",
-    "configure": "Configure",
-    "cookieBannerText": "This website uses cookies to ensure the best experience possible.",
-    "cookie": {
-      "i18n": "Language settings",
-      "keycloak": "Keycloak SSO",
-      "navigation": "Navigation"
-    },
-    "cookieSettings": "Cookie-Settings",
-    "declineOptionalCookies": "Decline optional cookies",
-    "moreInformation": "More information...",
-    "optionalCookies": "Optional cookies",
-    "requiredCookies": "Required cookies",
-    "save": "save"
-  },
-  "de": {
-    "acceptAllCookies": "Alle Cookies akzeptieren",
-    "configure": "Konfigurieren",
-    "cookieBannerText": "Diese Website verwendet Cookies, um eine bestmögliche Erfahrung bieten zu können.",
-    "cookieSettings": "Cookie-Voreinstellungen",
-    "cookie": {
-      "i18n": "Anwendungssprache",
-      "keycloak": "Keycloak SSO",
-      "navigation": "Navigation"
-    },
-    "declineOptionalCookies": "Optionale Cookies ablehnen",
-    "moreInformation": "Mehr Informationen...",
-    "optionalCookies": "Optional",
-    "requiredCookies": "Technisch erforderlich",
-    "save": "speichern"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-CookieBanner.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-cookie-banner {

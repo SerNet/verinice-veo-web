@@ -59,15 +59,4 @@ const { load, stop, tutorialsForRoute, visible } = useTutorials();
 const { t } = useI18n();
 </script>
 
-<i18n>
-{
-  "de": {
-    "showHelp": "Kontext-Hilfe anzeigen",
-    "hideHelp": "Kontext-Hilfe ausblenden"
-  },
-  "en": {
-    "showHelp": "Show contextual help",
-    "hideHelp": "Hide contextual help"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-TutorialButton.json"></i18n>

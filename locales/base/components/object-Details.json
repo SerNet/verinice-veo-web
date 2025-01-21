@@ -1,0 +1,32 @@
+{
+  "en": {
+    "by": "by",
+    "childObjects": "Parts",
+    "childScopes": "Scopes",
+    "createdAt": "created",
+    "links": "links",
+    "noDescription": "No description provided",
+    "parentObjects": "Part of",
+    "parentScopes": "in Scope",
+    "risks": "risks",
+    "updatedAt": "last change",
+    "targets": "target objects",
+    "risksDisabledTooltip": "To enable the Risks tab, a Risk Definition must be defined in this object.",
+    "defaultDisabledTooltip": "The Tab is disabled."
+  },
+  "de": {
+    "by": "von",
+    "childObjects": "Teile",
+    "childScopes": "Scopes",
+    "createdAt": "erstellt",
+    "links": "Verknüpfungen",
+    "noDescription": "Keine Beschreibung vorhanden",
+    "parentObjects": "Teil von",
+    "parentScopes": "in Scope",
+    "risks": "Risiken",
+    "updatedAt": "letzte Änderung",
+    "targets": "Zielobjekte",
+    "risksDisabledTooltip": "Um den Risiko-Reiter zu aktivieren, muss eine Risikodefinition in diesem Objekt hinterlegt werden.",
+    "defaultDisabledTooltip": "Der Reiter ist deaktiviert."
+  }
+}

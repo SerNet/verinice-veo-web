@@ -1,0 +1,14 @@
+{
+  "en": {
+    "error": "Error | Errors",
+    "info": "Information",
+    "messages": "Messages",
+    "warning": "Warning | Warnings"
+  },
+  "de": {
+    "error": "Fehler",
+    "info": "Information | Informationen",
+    "messages": "Meldungen",
+    "warning": "Warnung | Warnungen"
+  }
+}

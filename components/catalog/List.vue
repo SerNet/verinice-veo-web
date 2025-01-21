@@ -57,16 +57,7 @@ const generateRoute = (catalogId: string) =>
   `/${route.params.unit}/domains/${route.params.domain}/catalogs/${catalogId}`;
 </script>
 
-<i18n>
-{
-  "en": {
-    "applicableItems": "applicable items"
-  },
-  "de": {
-    "applicableItems": "anwendbare Einträge"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/catalog-List.json"></i18n>
 
 <style lang="scss" scoped>
 span,

@@ -113,17 +113,4 @@ const sendSchema = (schema: IVeoObjectSchema | IVeoFormSchema) => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "importCode": "Paste code",
-    "importFile": "Upload file",
-    "uploadError": "Error while uploading file"
-  },
-  "de": {
-    "importCode": "Code einfügen",
-    "importFile": "Datei hochladen",
-    "uploadError": "Fehler beim Dateiupload"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-FileUpload.json"></i18n>

@@ -1,0 +1,30 @@
+{
+  "en": {
+    "by": "by",
+    "dataIncompatible": "This revision is incompatible with the schema and cannot be displayed.",
+    "history": "History",
+    "noPriorVersions": "There are no prior versions for this object.",
+    "restoreRevision": "Restore version",
+    "revisionType": {
+      "CREATION": "Object created",
+      "MODIFICATION": "Object modified",
+      "SOFT_DELETION": "Object soft deleted"
+    },
+    "type": "Type",
+    "version": "Version"
+  },
+  "de": {
+    "by": "by",
+    "dataIncompatible": "Diese Version ist inkompatibel mit dem Schema und kann nicht angezeigt werden.",
+    "history": "Verlauf",
+    "noPriorVersions": "Für dieses Objekt gibt es keine Vorgängeversionen.",
+    "restoreRevision": "Version wiederherstellen",
+    "revisionType": {
+      "CREATION": "Objekt erstellt",
+      "MODIFICATION": "Objekt bearbeitet",
+      "SOFT_DELETION": "Objekt als gelöscht markiert"
+    },
+    "type": "Art",
+    "version": "Version"
+  }
+}

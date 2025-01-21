@@ -127,16 +127,5 @@ const getMostContrastyColor = (backgroundColor: string) => {
   }
 };
 </script>
-<i18n>
-  {
-    "en": {
-      "categories": "Categories:",
-      "noMatrix": "No risk matrix defined."
 
-    },
-    "de": {
-      "categories": "Kategorien:",
-      "noMatrix": "Keine Risikomatrix definiert."
-    }
-  }
-  </i18n>
+<i18n src="~/locales/base/components/risk-riskElements-RiskCriterion.json"></i18n>

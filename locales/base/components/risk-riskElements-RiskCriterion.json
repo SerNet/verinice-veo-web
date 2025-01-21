@@ -1,0 +1,10 @@
+{
+  "en": {
+    "categories": "Categories:",
+    "noMatrix": "No risk matrix defined."
+  },
+  "de": {
+    "categories": "Kategorien:",
+    "noMatrix": "Keine Risikomatrix definiert."
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "en": {
+    "domainNotFoundText": "The requested domain couldn't be found."
+  },
+  "de": {
+    "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden."
+  }
+}

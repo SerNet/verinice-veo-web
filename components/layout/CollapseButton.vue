@@ -78,22 +78,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "collapse": "Collapse {elementName}",
-    "control": "Ctrl",
-    "expand": "Expand {elementName}",
-    "page": "page"
-  },
-  "de": {
-    "collapse": "{elementName} verstecken",
-    "control": "Strg",
-    "expand": "{elementName} anzeigen",
-    "page": "Seite"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-CollapseButton.json"></i18n>
 
 <style lang="scss" scoped>
 .collapse-button {

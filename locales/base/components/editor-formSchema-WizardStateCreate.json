@@ -1,0 +1,16 @@
+{
+  "en": {
+    "createFormSchema": "Create form schema",
+    "customObjectSchema": "Custom",
+    "format": "(.json)",
+    "importObjectSchema": "Import object schema",
+    "objectSchemaUploadLabel": "Object schema upload @:format"
+  },
+  "de": {
+    "createFormSchema": "Formschema erstellen",
+    "customObjectSchema": "Eigenes",
+    "format": "(.json)",
+    "importObjectSchema": "Objektschema importieren",
+    "objectSchemaUploadLabel": "Objektschema hochladen @:format"
+  }
+}

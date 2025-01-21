@@ -1,0 +1,14 @@
+{
+  "en": {
+    "by": "by",
+    "createdAt": "Created",
+    "loadingData": "Loading data...",
+    "updatedAt": "Updated"
+  },
+  "de": {
+    "by": "von",
+    "createdAt": "Erstellt",
+    "loadingData": "Daten werden geladen",
+    "updatedAt": "Aktualisiert"
+  }
+}

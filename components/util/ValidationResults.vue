@@ -96,31 +96,4 @@ const levels = computed(() =>
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "level": {
-      "errors": "errors",
-      "information": "information",
-      "warnings": "warnings"
-    },
-    "noValidationErrors": "No validation errors",
-    "validationErrors": "{0} validation errors",
-    "validationErrorsText": "Das Formschema kann aufgrund von Fehlern nicht dargestellt werden.",
-    "validationErrorsAutoFixHint": "Some errors can be fixed by using the fix button, if the button doesn't appear they have to be fixed manually.",
-    "warningInformationHint": "While warnings and informations don't prevent the schema from getting applied, it is still recommended to fix them."
-  },
-  "de": {
-    "level": {
-      "errors": "Fehler",
-      "information": "Informationen",
-      "warnings": "Warnungen"
-    },
-    "noValidationErrors": "Keine Validierungsfehler",
-    "validationErrors": "{0} Validierungsfehler",
-    "validationErrorsText": "Das Formschema kann aufgrund von Fehlern nicht dargestellt werden.",
-    "validationErrorsAutoFixHint": "Einige Fehler können mithilfe des Beheben-Buttons automatisch behoben werden. Wenn dieser nicht sichtbar ist, muss das Problem manuell gelöst werden.",
-    "warningInformationHint": "Warnungen und Informationen müssen nicht behoben werden, damit das Formschema dargestellt werden kann, es wird jedoch empfohlen, diese zu beheben."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/util-ValidationResults.json"></i18n>

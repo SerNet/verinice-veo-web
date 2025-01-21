@@ -108,13 +108,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "impact": "impact"
-  },
-  "de": {
-    "impact": "Auswirkung"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-RiskImpactSection.json"></i18n>

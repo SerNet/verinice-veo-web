@@ -91,20 +91,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "saveSchema": "Apply code changes",
-    "saveSchemaError": "Couldn't update schema",
-    "saveSchemaSuccess": "Schema updated!"
-  },
-  "de": {
-    "saveSchema": "Codeänderungen übernehmen",
-    "saveSchemaError": "Das Schema konnte nicht aktualisiert werden",
-    "saveSchemaSuccess": "Schema wurde aktualisiert!"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-SchemaCodeEditor.json"></i18n>
 
 <style scoped>
 .veo-editor-save-button {

@@ -50,13 +50,4 @@ const selectedLocale = ref([locale.value]);
 watch(selectedLocale, () => setLocale(selectedLocale.value[0]));
 </script>
 
-<i18n>
-{
-  "de": {
-    "showHelp": "Sprache wechseln"
-  },
-  "en": {
-    "showHelp": "Switch language"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-LanguageSwitch.json"></i18n>

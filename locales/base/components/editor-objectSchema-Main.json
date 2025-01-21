@@ -1,0 +1,10 @@
+{
+  "en": {
+    "createCustomPropertyError": "Couldn't create link/aspect",
+    "addCustomLink": "Add link"
+  },
+  "de": {
+    "createCustomPropertyError": "Der Link/Aspekt konnte nicht erstellt werden",
+    "addCustomLink": "Link hinzufügen"
+  }
+}

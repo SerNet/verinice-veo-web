@@ -230,26 +230,7 @@ const onRowClicked = (_event: PointerEvent, context: any) => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "noReports": "There are no reports",
-    "noDescriptionAvailable": "N/A",
-    "outputTypes": "Output format",
-    "reportDescription": "Description",
-    "reportName": "Report type",
-    "targetTypes": "Available for"
-  },
-  "de": {
-    "noReports": "Es existieren keine Reports",
-    "noDescriptionAvailable": "N/A",
-    "outputTypes": "Ausgabeformat",
-    "reportDescription": "Beschreibung",
-    "reportName": "Reporttyp",
-    "targetTypes": "Gültig für"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/report-List.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-report-list__description {

@@ -1,0 +1,10 @@
+{
+  "en": {
+    "changesVisibleImmediately": "Changes in the order of custom link attributes are visible immediately without clicking \"Save\"",
+    "displayedAttributes": "Displayed attributes"
+  },
+  "de": {
+    "changesVisibleImmediately": "Änderungen in der Reihenfolge sind sofort ohne Klick auf \"Speichern\" sichtbar.",
+    "displayedAttributes": "Angezeigte Felder"
+  }
+}

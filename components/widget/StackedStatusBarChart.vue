@@ -244,13 +244,4 @@ const objectOveriewLink = (subTypeIndex: number) =>
   `/${route.params.unit}/domains/${route.params.domain}/${objectTypePlural.value}/${sortedSubTypes.value[subTypeIndex][0]}`;
 </script>
 
-<i18n>
-{
-  "en": {
-    "noObjects": "No objects available",
-  },
-  "de": {
-    "noObjects": "Keine Objekte vorhanden",
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/widget-StackedStatusBarChart.json"></i18n>

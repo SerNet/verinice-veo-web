@@ -1,0 +1,98 @@
+{
+  "en": {
+    "cloneObject": "clone object",
+    "controlDeleted": "The control implementation has been removed",
+    "controls": {
+      "abbreviation": "Abbreviation",
+      "description": "Description",
+      "responsible": "Responsible",
+      "status": "Implementation status"
+    },
+    "deleteDialogText": "Only the control implementation of \"{ name }\" will be removed!",
+    "deleteDialogTitle": "Remove control implementation",
+    "deleteRisk": "delete risk",
+    "errors": {
+      "clone": "Could not clone object",
+      "control": "Could not remove control implementation link",
+      "link": "Could not link new object",
+      "risk": "Could not delete risk"
+    },
+    "inherentRisk": "Inherent risk",
+    "linkName": "Link name",
+    "direction": "Direction",
+    "from": "From",
+    "to": "To",
+    "outbound": "Outgoing",
+    "inbound": "Ingoing",
+    "no": "no",
+    "objectCloned": "Object successfully cloned",
+    "partial": "partially",
+    "parentType": "parent type",
+    "removeFromObject": "Remove from object",
+    "removeFromScope": "Remove from scope",
+    "removeObjectFromObjectError": "Couldn't remove object",
+    "removeObjectFromObjectSuccess": "Object was removed successfully",
+    "removeObjectFromScopeError": "Couldn't remove object from scope",
+    "removeObjectFromScopeSuccess": "Object was removed from scope",
+    "removeScopeFromScopeError": "Couldn't remove scope",
+    "removeScopeFromScopeSuccess": "Scope was removed successfully",
+    "residualRisk": "Residual risk",
+    "riskDeleted": "The risk was removed",
+    "riskTreatments": {
+      "RISK_TREATMENT_ACCEPTANCE": "risk retention",
+      "RISK_TREATMENT_AVOIDANCE": "risk avoidance",
+      "RISK_TREATMENT_REDUCTION": "risk reduction",
+      "RISK_TREATMENT_TRANSFER": "risk transfer"
+    },
+    "scenario": "Scenario",
+    "implementations": "Show implementations",
+    "noImplementations": "No mitigating controls"
+  },
+  "de": {
+    "cloneObject": "Objekt duplizieren",
+    "controlDeleted": "Die Bausteinmodellierung wurde entfernt",
+    "controls": {
+      "abbreviation": "Abkürzung",
+      "description": "Beschreibung",
+      "responsible": "Verantwortlich",
+      "status": "Umsetzungsstatus"
+    },
+    "deleteDialogText": "Es wird nur die Modellierung von Baustein \"{ name }\" entfernt!",
+    "deleteDialogTitle": "Bausteinmodellierung entfernen",
+    "deleteRisk": "Risiko löschen",
+    "errors": {
+      "clone": "Das Objekt konnte nicht dupliziert werden",
+      "control": "Die Bausteinverknüpfung konnte nicht gelöscht werden",
+      "link": "Das neue Objekt konnte nicht verknüpft werden",
+      "risk": "Das Risiko konnte nicht gelöscht werden"
+    },
+    "inherentRisk": "Bruttorisiko",
+    "linkName": "Verknüpfung",
+    "direction": "Richtung",
+    "from": "Von",
+    "to": "Nach",
+    "outbound": "Ausgehend",
+    "inbound": "Eingehend",
+    "objectCloned": "Das Objekt wurde erfolgreich dupliziert",
+    "parentType": "Elterntyp",
+    "removeFromObject": "Aus Objekt entfernen",
+    "removeFromScope": "Aus Scope entfernen",
+    "removeObjectFromObjectError": "Objekt konnte nicht entfernt werden",
+    "removeObjectFromObjectSuccess": "Objekt wurde entfernt",
+    "removeObjectFromScopeError": "Objekt konnte nicht aus Scope entfernt werden",
+    "removeObjectFromScopeSuccess": "Objekt wurde aus Scope entfernt",
+    "removeScopeFromScopeError": "Scope konnte nicht entfernt werden",
+    "removeScopeFromScopeSuccess": "Scope wurde entfernt",
+    "residualRisk": "NettoUmsetzungsrisiko",
+    "riskDeleted": "Das Risiko wurde entfernt",
+    "riskTreatments": {
+      "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",
+      "RISK_TREATMENT_AVOIDANCE": "Risikovermeidung",
+      "RISK_TREATMENT_REDUCTION": "Risikoreduktion",
+      "RISK_TREATMENT_TRANSFER": "Risikotransfer"
+    },
+    "scenario": "Szenario",
+    "implementations": "Umsetzung anzeigen",
+    "noImplementations": "Keine mitigierenden Maßnahmen"
+  }
+}

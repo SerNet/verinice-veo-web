@@ -1,0 +1,18 @@
+{
+  "en": {
+    "noReports": "There are no reports",
+    "noDescriptionAvailable": "N/A",
+    "outputTypes": "Output format",
+    "reportDescription": "Description",
+    "reportName": "Report type",
+    "targetTypes": "Available for"
+  },
+  "de": {
+    "noReports": "Es existieren keine Reports",
+    "noDescriptionAvailable": "N/A",
+    "outputTypes": "Ausgabeformat",
+    "reportDescription": "Beschreibung",
+    "reportName": "Reporttyp",
+    "targetTypes": "Gültig für"
+  }
+}

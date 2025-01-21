@@ -507,26 +507,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-  {
-    "en": {
-      "collapse": "collapse all",
-      "expand": "expand all",
-      "formElements": "Form elements",
-      "formWidgets": "form widgets",
-      "searchNoMatch": "no matching controls",
-      "widget": "widget"
-    },
-    "de": {
-      "collapse": "Alle einklappen",
-      "expand": "Alle ausklappen",
-      "formElements": "Steuerelemente",
-      "formWidgets": "Formular-Widgets",
-      "searchNoMatch": "Keine passenden Steuerelemente vorhanden",
-      "widget": "Widget"
-    }
-  }
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-Backlog.json"></i18n>
 
 <style lang="scss" scoped>
 .v-expansion-panel-text:deep(.v-expansion-panel-text__wrap) {

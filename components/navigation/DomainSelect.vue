@@ -134,15 +134,4 @@ const domainId = computed({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "domain": "Domain",
-    "select": "Select domain"
-  },
-  "de": {
-    "domain": "Domäne",
-    "select": "Domäne auswählen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/navigation-DomainSelect.json"></i18n>

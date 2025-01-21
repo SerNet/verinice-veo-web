@@ -1,0 +1,8 @@
+{
+  "en": {
+    "hint": "DD.MM.YYYY e.g. {0}"
+  },
+  "de": {
+    "hint": "DD.MM.YYYY z.B. {0}"
+  }
+}

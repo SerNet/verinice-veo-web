@@ -70,17 +70,4 @@ const direction = computed({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "direction": "Direction",
-    "horizontal": "Horizontal",
-    "vertical": "Vertical"
-  },
-  "de": {
-    "direction": "Ausrichtung",
-    "horizontal": "Horizontal",
-    "vertical": "Vertikal"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-ElementDirectionOptions.json"></i18n>

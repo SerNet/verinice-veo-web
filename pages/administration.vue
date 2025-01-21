@@ -222,37 +222,4 @@ const additionalTableHeaders = ref<TableHeader[]>([
 ]);
 </script>
 
-<i18n>
-{
-   "en": {
-    "access": "Access",
-    "accounts": "Accounts",
-    "accountAdministrationHint": "Every account has access to all units and objects in this client.",
-    "activeAccounts": "active",
-    "createAccount": "Create account",
-    "edit": "Edit",
-    "email": "Email address",
-    "enabled": "Enabled",
-    "firstName": "First name",
-    "groups": "Assigned groups",
-    "lastName": "Last name",
-    "of": "of",
-    "username": "Username"
-   },
-   "de": {
-    "access": "Zugriff",
-    "accounts": "Benutzer",
-    "accountAdministrationHint": "Jeder Benutzer hat Zugriff auf alle Units und Objekte in diesem Client.",
-    "activeAccounts": "aktiv",
-    "createAccount": "Benutzer erstellen",
-    "edit": "Bearbeiten",
-    "email": "E-Mail-Adresse",
-    "enabled": "Aktiv",
-    "firstName": "Vorname",
-    "groups": "Zugehörige Gruppen",
-    "lastName": "Nachname",
-    "of": "von",
-    "username": "Benutzername"
-   }
-}
-</i18n>
+<i18n src="~/locales/base/pages/administration.json"></i18n>

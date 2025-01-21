@@ -1,0 +1,10 @@
+{
+  "de": {
+    "showHelp": "Kontext-Hilfe anzeigen",
+    "hideHelp": "Kontext-Hilfe ausblenden"
+  },
+  "en": {
+    "showHelp": "Show contextual help",
+    "hideHelp": "Hide contextual help"
+  }
+}

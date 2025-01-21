@@ -71,13 +71,4 @@ const emit = defineEmits<{
 const { t } = useI18n();
 </script>
 
-<i18n>
-{
-  "en": {
-    "common": "Common"
-  },
-  "de": {
-    "common": "Allgemein"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-LayoutElementSettings.json"></i18n>

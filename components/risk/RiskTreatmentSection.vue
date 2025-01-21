@@ -105,13 +105,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "riskTreatment": "risk treatment"
-  },
-  "de": {
-    "riskTreatment": "Risikobehandlung"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-RiskTreatmentSection.json"></i18n>

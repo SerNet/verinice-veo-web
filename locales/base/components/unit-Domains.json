@@ -1,0 +1,14 @@
+{
+  "en": {
+    "associateDomainsErrorTitle": "Error!",
+    "associateDomainsErrorBody": "Domains could not be associated.",
+    "associateDomainsSuccess": "Domains successfully associated.",
+    "isAssociatingDomains": "Associating domains..."
+  },
+  "de": {
+    "associateDomainsErrorTitle": "Fehler!",
+    "associateDomainsErrorBody": "Domänen konnten nicht assoziiert werden.",
+    "associateDomainsSuccess": "Domänen erfolgreich assoziert.",
+    "isAssociatingDomains": "Assoziiere Domänen..."
+  }
+}

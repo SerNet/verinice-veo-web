@@ -1,0 +1,10 @@
+{
+  "en": {
+    "notFoundCode": "404 Not found",
+    "notFound": "The object type could not be found."
+  },
+  "de": {
+    "notFoundCode": "404 Not found",
+    "notFound": "Der von Ihnen angeforderte Objekttyp konnte nicht gefunden werden."
+  }
+}

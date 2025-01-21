@@ -1,0 +1,10 @@
+{
+  "de": {
+    "targetModule": "{subType} \"{currentModule}\" bearbeiten",
+    "implementation": "Umsetzung"
+  },
+  "en": {
+    "targetModule": "Edit module \"{currentModule}\"",
+    "implementation": "Implementation"
+  }
+}

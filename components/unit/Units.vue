@@ -274,29 +274,7 @@ const ApplyProfiles: TInlineComponent = {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "addProfiles": "Apply Profiles",
-    "editDomains": "Edit Domains",
-    "editUnit": "Edit unit",
-    "deleteUnit": "Delete unit",
-    "bookmarkTooltip": "Favorite (open the dashboard of this unit at the next login)",
-    "createdBy": "Created by",
-    "createdAt": "Created at",
-    "noDescription": "No description available",
-  },
-  "de": {
-    "addProfiles": "Profile anwenden",
-    "editDomains": "Domänen bearbeiten",
-    "editUnit": "Unit bearbeiten",
-    "deleteUnit": "Unit löschen",
-    "bookmarkTooltip": "Favorit (Beim nächsten Login das Dashboard dieser Unit öffnen)",
-    "createdBy": "Erstellt von",
-    "createdAt": "Erstellt am",
-    "noDescription": "Keine Beschreibung vorhanden",
-  } }
-</i18n>
+<i18n src="~/locales/base/components/unit-Units.json"></i18n>
 
 <style scoped lang="scss">
 :deep(.domain-btn) {

@@ -60,22 +60,7 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 </script>
 
-<i18n>
-{
-  "en": {
-    "calltoaction": "What do you want to do?",
-    "editors": "Editors",
-    "formSchemaDescription": "Create, edit, import or export form schemas",
-    "objectSchemaDescription": "Create, edit, import or export object schemas"
-  },
-  "de": {
-    "calltoaction": "Was möchten Sie tun?",
-    "editors": "Editoren",
-    "formSchemaDescription": "Formschemas erstellen, bearbeiten, importieren und exportieren",
-    "objectSchemaDescription": "Objektschemas erstellen, bearbeiten, importieren und exportieren"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-editor-index.json"></i18n>
 
 <style lang="scss" scoped>
 .v-list-item__subtitle {

@@ -1,0 +1,10 @@
+{
+  "en": {
+    "domain": "Domain",
+    "select": "Select domain"
+  },
+  "de": {
+    "domain": "Domäne",
+    "select": "Domäne auswählen"
+  }
+}

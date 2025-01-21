@@ -138,17 +138,4 @@ const unitId = computed({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "management": "Manage units",
-    "select": "Select unit",
-    "unit": "Unit"
-  },
-  "de": {
-    "management": "Units verwalten",
-    "select": "Unit auswählen",
-    "unit": "Unit"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/navigation-UnitSelect.json"></i18n>

@@ -50,16 +50,7 @@ defineProps<{
 const { t } = useI18n();
 </script>
 
-<i18n>
-{
-  "en": {
-    "fix": "Fix"
-  },
-  "de": {
-    "fix": "Beheben"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-messages-Message.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-object-message {

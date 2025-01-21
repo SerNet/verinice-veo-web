@@ -1,0 +1,16 @@
+{
+  "en": {
+    "about": "About verinice.",
+    "logout": "Logout",
+    "editAccount": "Edit account",
+    "firststeps": "First steps",
+    "notAvailable": "Not available"
+  },
+  "de": {
+    "about": "Über verinice.",
+    "logout": "Abmelden",
+    "editAccount": "Benutzerkonto bearbeiten",
+    "firststeps": "Erste Schritte",
+    "notAvailable": "Keine Angabe"
+  }
+}

@@ -65,27 +65,4 @@ const onConfirm = () => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "delete": "delete {0}",
-    "deleteText": "Do you really want to delete the element \"{0}\"? This action cannot be undone.",
-    "type": {
-      "control": "control",
-      "label": "label",
-      "layout": "layout",
-      "widget": "widget"
-    }
-  },
-  "de": {
-    "delete": "{0} löschen",
-    "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "type": {
-      "control": "Control",
-      "label": "Label",
-      "layout": "Layout",
-      "widget": "Widget"
-    }
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-DeleteElementDialog.json"></i18n>

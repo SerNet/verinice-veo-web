@@ -1,0 +1,16 @@
+{
+  "en": {
+    "deleteCustomAspect": "Delete custom aspect",
+    "delete": {
+      "aspect": "Do you really want to delete the aspect \"{title}\"?",
+      "link": "Do you really want to delete the link \"{title}\"?"
+    }
+  },
+  "de": {
+    "deleteCustomAspect": "Custom aspect löschen",
+    "delete": {
+      "aspect": "Möchten Sie den Aspekt \"{title}\" wirklich löschen?",
+      "link": "Möchten Sie den Link \"{title}\" wirklich löschen?"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "en": {
+    "all": "All",
+    "applyEntries": "apply scenarios",
+    "applyScenariosError": "Couldn't apply scenarios",
+    "applyTOMs": "apply TOMs",
+    "applyTOMsError": "Couldn't apply TOMs",
+    "catalog": "{name}",
+    "scenariosApplied": "Scenarios were applied successfully",
+    "selectScenariosCTA": "Please select the scenarios you want to apply.",
+    "selectTOMsCTA": "Please choose one or more technical organizational measures to apply.",
+    "TOMsApplied": "TOMs were applied",
+    "itemsApplied": "Successfully applied catalog elements.",
+    "applyItemsError": "Could not apply catalog elements.",
+    "itemsAlreadyApplied": "Catalog elements have already been applied. No new elements have been created."
+  },
+  "de": {
+    "all": "Alle",
+    "applyEntries": "Gefährdungen anwenden",
+    "applyScenariosError": "Gefährdungen konnten nicht angewandt werden",
+    "applyTOMs": "TOMs anwenden",
+    "applyTOMsError": "Die TOMs konnten nicht angewendet werden",
+    "catalog": "{name}",
+    "scenariosApplied": "Gefährdungen wurden erfolgreich angewandt",
+    "selectScenariosCTA": "Bitte wählen Sie die Gefährdungen aus, die Sie anwenden möchten.",
+    "selectTOMsCTA": "Wählen Sie eine oder mehrere technische und organisatorische Maßnahmen aus, die angewendet werden sollen.",
+    "TOMsApplied": "TOM wurden angewendet",
+    "itemsApplied": "Katalogelemente wurden erfolgreich angewendet.",
+    "applyItemsError": "Katalogelemente konnten nicht angewandt werden.",
+    "itemsAlreadyApplied": "Katalogelemente wurden bereits angewandt. Es wurden keinen neuen Elemente erzeugt."
+  }
+}

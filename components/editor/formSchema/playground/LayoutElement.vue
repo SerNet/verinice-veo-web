@@ -74,24 +74,7 @@ const emit = defineEmits(['edit', 'delete']);
 const { t } = useI18n();
 </script>
 
-<i18n>
-{
-  "en": {
-    "addElementToGroup": "Add an element to this layout",
-    "layout": "layout",
-    "layoutType": {
-      "group": "group"
-    }
-  },
-  "de": {
-    "addElementToGroup": "Fügen Sie diesem Layout ein Element hinzu!",
-    "layout": "Layout",
-    "layoutType": {
-      "group": "Gruppe"
-    }
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-LayoutElement.json"></i18n>
 
 <style lang="scss" module>
 .child-layout-wrapper {

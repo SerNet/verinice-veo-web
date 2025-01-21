@@ -1,0 +1,28 @@
+{
+  "en": {
+    "common": "common",
+    "computedValues": "Some values are computed in the backend.",
+    "computedValuesCTA": "Please press \"Save\" to recompute these values.",
+    "createRisk": "create risk",
+    "editRisk": "Edit risk \"{0} ({1})\"",
+    "mitigatingAction": "Mitigating action for \"{0}\"",
+    "riskCreated": "the risk was created successfully",
+    "riskUpdated": "the risk was edited successfully",
+    "riskNotSaved": "the risk couldn't be saved",
+    "riskOwner": "risk owner",
+    "scenarioRequired": "A risk scenario has to be selected"
+  },
+  "de": {
+    "common": "allgemein",
+    "computedValues": "Einige Werte werden automatisch berechnet.",
+    "computedValuesCTA": "Drücken sie \"Speichern\" um diese Werte neu berechnen zu lassen.",
+    "createRisk": "Risiko erstellen",
+    "editRisk": "Risiko \"{0} ({1})\"  bearbeiten",
+    "mitigatingAction": "Mitigierende Maßnahme für \"{0}\"",
+    "riskCreated": "das Risiko wurde erfolgreich erstellt",
+    "riskUpdated": "das Risiko wurde erfolgreich bearbeitet",
+    "riskNotSaved": "das Risiko konnte nicht gespeichert werden",
+    "riskOwner": "Verantwortlicher",
+    "scenarioRequired": "Es muss ein Szenario ausgewählt werden"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "en": {
+    "closeDialog": "Close dialog",
+    "confirmationDialogText": "Are you sure you want to close this dialog? Unsaved changes might be lost."
+  },
+  "de": {
+    "closeDialog": "Dialog schließen",
+    "confirmationDialogText": "Möchten Sie den Dialog wirklich schließen? Ungespeicherte Änderungen gehen möglicherweise verloren."
+  }
+}

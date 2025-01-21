@@ -93,19 +93,5 @@ const messages = computed(() => ({
   error: { title: t('unitUpdateErrorTitle'), body: t('unitUpdateErrorBody') }
 }));
 </script>
-<i18n>
-{
-  "en": {
-    "updateUnitDetails": "Update unit details",
-    "unitUpdateSuccess": "Updated unit successfully.",
-    "unitUpdateErrorTitle": "An Error occurred.",
-    "unitUpdateErrorBody": "Could not update unit details."
-  },
-  "de": {
-    "updateUnitDetails": "Unit-Details aktualisieren",
-    "unitSuccessfullyUpdated": "Unit wurde erfolgreich aktualisiert.",
-    "unitUpdateErrorTitle": "Ein Fehler ist passiert.",
-    "unitUpdateErrorBody": "Unit konnte nicht aktualisiert werden"
-  }
-}
-</i18n>
+
+<i18n src="~/locales/base/pages/units-unit-details.json"></i18n>

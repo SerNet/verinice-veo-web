@@ -1,0 +1,32 @@
+{
+  "en": {
+    "availableControls": "Available controls",
+    "usedControls": "Currently used controls",
+    "preview": "Preview",
+    "formSchemaCode": "Schema code",
+    "invalidFormSchema": "Couldn't load schema. Please resolve the following errors and try again.",
+    "search": "Search for a control",
+    "help": "Help",
+    "save": "Save",
+    "saveSchemaSuccess": "Schema saved! The change will be visible to other users in less than 30 minutes.",
+    "saveSchemaError": "Couldn't save schema!",
+    "error": "Error",
+    "saveContentCreator": "You need the role \"Content Creator\" to save the formschema.",
+    "viewIn": "View in"
+  },
+  "de": {
+    "availableControls": "Verfügbare Steuerelemente",
+    "usedControls": "Verwendete Steuerelemente",
+    "preview": "Vorschau",
+    "formSchemaCode": "Schema code",
+    "invalidFormSchema": "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
+    "search": "Nach einem Steuerelement suchen",
+    "help": "Hilfe",
+    "save": "Speichern",
+    "saveSchemaSuccess": "Schema wurde gespeichert! Andere User werden die Änderung in spätestens 30 Minuten sehen.",
+    "saveSchemaError": "Schema konnte nicht gespeichert werden",
+    "error": "Fehler",
+    "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Formschema zu speichern.",
+    "viewIn": "Ansehen in"
+  }
+}

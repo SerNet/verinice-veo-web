@@ -149,13 +149,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "nothing": "Nothing"
-  },
-  "de": {
-    "nothing": "Keine/Keins"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-Select.json"></i18n>

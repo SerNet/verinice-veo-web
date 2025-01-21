@@ -156,15 +156,4 @@ function doSave() {
 }
 </script>
 
-<i18n>
-{
-  "en": {
-    "schemaDetailsHeadline": "Formschema details",
-    "schemaName": "Name of the form schema"
-  },
-  "de": {
-    "schemaDetailsHeadline": "Formschema Eigenschaften",
-    "schemaName": "Name des Formschemas"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-SchemaDetailsDialog.json"></i18n>

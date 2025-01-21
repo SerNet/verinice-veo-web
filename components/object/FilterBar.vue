@@ -171,13 +171,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "filter": "filter"
-  },
-  "de": {
-    "filter": "filter"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-FilterBar.json"></i18n>

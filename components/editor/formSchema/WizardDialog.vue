@@ -372,13 +372,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "formSchemaEditor": "Form schema editor"
-  },
-  "de": {
-    "formSchemaEditor": "Formschema Editor"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-WizardDialog.json"></i18n>

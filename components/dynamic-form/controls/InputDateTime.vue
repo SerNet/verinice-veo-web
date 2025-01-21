@@ -281,13 +281,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "hint": "DD.MM.YYYY HH:MM e.g. {0}"
-  },
-  "de": {
-    "hint": "TT.MM.JJJJ SS:MM z.B. {0}"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-InputDateTime.json"></i18n>

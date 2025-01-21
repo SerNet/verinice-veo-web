@@ -75,13 +75,4 @@ const onTranslationsUpdated = (newTranslations: string) => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "pleaseFixError": "Please fix the following error to save the translations:"
-  },
-  "de": {
-    "pleaseFixError": "Bitte beheben Sie den folgenden Fehler, um die Übersetzungen zu speichern:"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-translations-TranslationsCodeEditor.json"></i18n>

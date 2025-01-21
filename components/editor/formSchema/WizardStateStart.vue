@@ -66,24 +66,7 @@ const actions = [
 ];
 </script>
 
-<i18n>
-{
-  "en": {
-    "createFormSchema": "Create form schema",
-    "createFormSchemaDescription": "Create a new form schema",
-    "importFormSchema": "Import form schema",
-    "importFormSchemaDescription": "Import an existing form schema and modify it.",
-    "start": "How do you want to start?"
-  },
-  "de": {
-    "createFormSchema": "Formschema erstellen",
-    "createFormSchemaDescription": "Neues Formschema erstellen",
-    "importFormSchema": "Formschema importieren",
-    "importFormSchemaDescription": "Existierendes Formschema importieren und modifizieren",
-    "start": "Wie möchten Sie starten?"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-WizardStateStart.json"></i18n>
 
 <style lang="scss" scoped>
 .v-list-item__subtitle {

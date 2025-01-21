@@ -230,32 +230,8 @@ function updateRiskDefinition({ riskDefinitionPart: newRiskDefinitionPart }) {
   }
 }
 </script>
-<i18n>
-  {
-    "en": {
-      "impact": "impact",
-      "noData": "no data",
-      "probability": "probability",
-      "riskValues": "Risk categories",
-      "Newcriterion": "New criterion",
-      "criterion": "Criterion",
-      "error": "Updating risk definitions failed.",
-      "success":"Successfully updaded risk definitions.",
-      "potentialImpacts": "Impact"
-    },
-    "de": {
-      "impact": "auswirkung",
-      "noData": "keine Daten",
-      "Newcriterion": "Neues Kriterium",
-      "criterion": "Kriterium",
-      "riskValues": "Risikokategorien",
-      "probability": "Eintrittswahrscheinlichkeit",
-      "error": "Riskodefinitionen konnten nicht aktualisert werden.",
-      "success":"Riskodefinitionen wurden erfolgreich aktualisiert.",
-      "potentialImpacts": "Auswirkung"
-    }
-  }
-  </i18n>
+
+<i18n src="~/locales/base/pages/unit-domains-domain-risks-matrix.json"></i18n>
 <style scoped>
 .mb-6 {
   margin-bottom: 24px;

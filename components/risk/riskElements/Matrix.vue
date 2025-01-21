@@ -209,22 +209,7 @@ function translate<T>(translations: { [lang: string]: T }): T {
 }
 </script>
 
-<i18n>
-  {
-    "en": {
-      "impact": "impact",
-      "noData": "no data",
-      "probability": "probability",
-      "riskMatrix": "Risk matrix:",
-    },
-    "de": {
-      "impact": "auswirkung",
-      "noData": "keine Daten",
-      "probability": "eintrittswahrscheinlichkeit",
-      "riskMatrix": "Risikomatrix:",
-    }
-  }
-</i18n>
+<i18n src="~/locales/base/components/risk-riskElements-Matrix.json"></i18n>
 
 <style scoped>
 .veo-risk-matrix {

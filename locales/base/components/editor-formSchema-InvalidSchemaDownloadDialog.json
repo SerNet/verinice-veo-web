@@ -1,0 +1,10 @@
+{
+  "en": {
+    "downloadSchema": "Download schema",
+    "invalidSchemaConfirmation": "The form schema is not compatible with current object schemas. Please don't upload it to production. Do you really want to download the schema?"
+  },
+  "de": {
+    "downloadSchema": "Schema herunterladen",
+    "invalidSchemaConfirmation": "Das Formschema ist nicht mit keinem aktuellen Objektschema kompatibel. Bitte laden Sie es nicht in der Live-Umgebung hoch. Möchten Sie das Schema trotzdem herunterladen?"
+  }
+}

@@ -592,36 +592,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "editChildObjects": "Edit parts of \"{0}\"",
-    "editChildScopes": "Edit scopes of \"{0}\"",
-    "editParentObjects": "Edit parent parts of \"{0}\"",
-    "editParentScopes": "Edit parent scopes of \"{0}\"",
-    "object": "object",
-    "controlNoDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
-    "nonControlNoDataText": "There is currently no {subType}. Please {correspondingObject}",
-    "correspondingObject": "create a corresponding object.",
-    "noSearchResults": "Your search did not match any results",
-    "catalog": "catalog",
-    "addTarget": "Add {0}"
-        },
-  "de": {
-    "editChildObjects": "Teile von \"{0}\" bearbeiten",
-    "editChildScopes": "Scopes von \"{0}\" bearbeiten",
-    "editParentObjects": "Teile über \"{0}\" bearbeiten",
-    "editParentScopes": "Scopes über \"{0}\" bearbeiten",
-    "object": "Objekt",
-    "controlNoDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
-    "nonControlNoDataText": "Es gibt aktuell keine {subType}. Bitte {correspondingObject}",
-    "correspondingObject": "legen Sie ein entsprechendes Objekt an.",
-    "noSearchResults": "Ihre Suche ergab keine Treffer",
-    "catalog": "Katalog",
-    "addTarget": "{0} hinzufügen"
-    }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-LinkDialog.json"></i18n>
 
 <style>
 #link-dialog-select-all .v-data-table__thead .v-selection-control__input {

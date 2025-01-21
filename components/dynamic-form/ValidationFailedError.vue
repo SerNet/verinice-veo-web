@@ -42,15 +42,4 @@ defineProps({
 const { t } = useI18n();
 </script>
 
-<i18n>
-{
-  "en": {
-    "details": "details",
-    "formInvalid": "The form is invalid and couldn't be displayed."
-  },
-  "de": {
-    "details": "details",
-    "formInvalid": "Das Formular ist korrupt und kann nicht angezeigt werden."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/dynamic-form-ValidationFailedError.json"></i18n>

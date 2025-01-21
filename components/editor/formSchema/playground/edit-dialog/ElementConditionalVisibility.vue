@@ -260,29 +260,4 @@ watch(() => props.formSchemaElement, onFormSchemaItemModified, {
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "conditionalVisibility": "Conditional visibility",
-    "deleteRule": "Delete rule",
-    "effect": "Effect",
-    "false": "False",
-    "hasValue": "has value",
-    "hide": "Hide if rule applies",
-    "linkedElement": "Linked element",
-    "show": "Show if rule applies",
-    "true": "True"
-  },
-  "de": {
-    "conditionalVisibility": "Bedingte Sichtbarkeit",
-    "deleteRule": "Regel löschen",
-    "effect": "Effekt",
-    "false": "Falsch",
-    "hasValue": "hat Wert",
-    "hide": "Ausblenden falls Regel zutrifft",
-    "linkedElement": "Verknüpftes Element",
-    "show": "Anzeigen falls Regel zutrifft",
-    "true": "Wahr"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-ElementConditionalVisibility.json"></i18n>

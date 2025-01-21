@@ -59,21 +59,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "deleteCustomAspect": "Delete custom aspect",
-    "delete": {
-      "aspect": "Do you really want to delete the aspect \"{title}\"?",
-      "link": "Do you really want to delete the link \"{title}\"?"
-    }
-  },
-  "de": {
-    "deleteCustomAspect": "Custom aspect löschen",
-    "delete": {
-      "aspect": "Möchten Sie den Aspekt \"{title}\" wirklich löschen?",
-      "link": "Möchten Sie den Link \"{title}\" wirklich löschen?"
-    }
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-DeleteCustomPropertyDialog.json"></i18n>

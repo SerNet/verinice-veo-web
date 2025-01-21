@@ -1,0 +1,12 @@
+{
+  "en": {
+    "display": "View",
+    "objectView": "object view",
+    "viewAs": "view as"
+  },
+  "de": {
+    "display": "Ansicht",
+    "objectView": "Objektansicht",
+    "viewAs": "darstellen als"
+  }
+}

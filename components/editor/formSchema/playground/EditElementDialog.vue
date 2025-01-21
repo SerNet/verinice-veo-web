@@ -142,25 +142,4 @@ const onSave = () => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "edit": "edit {0}",
-    "type": {
-      "control": "control",
-      "label": "label",
-      "layout": "layout",
-      "widget": "widget"
-    }
-  },
-  "de": {
-    "edit": "{0} bearbeiten",
-    "type": {
-      "control": "Control",
-      "label": "Label",
-      "layout": "Layout",
-      "widget": "Widget"
-    }
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-EditElementDialog.json"></i18n>

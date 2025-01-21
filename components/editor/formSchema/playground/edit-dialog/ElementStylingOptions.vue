@@ -65,31 +65,4 @@ const activeOptions = computed({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "options": {
-      "border": "Bordered",
-      "bg-error": "Highlighted (Warning - critical)",
-      "bg-info": "Highlighted (Information)",
-      "bg-warning": "Highlighted (Warning - medium)",
-      "text-error": "Colored text (Warning - critical)",
-      "text-info": "Colored text (Information)",
-      "text-warning": "Colored text (Warning - medium)"
-    },
-    "stylingOptions": "Styling options"
-  },
-  "de": {
-    "options": {
-      "border": "Umrandet",
-      "bg-error": "Hervorgehoben (Warnung - schwer)",
-      "bg-info": "Hervorgehoben (Information)",
-      "bg-warning": "Hervorgehoben (Warnung - mittel)",
-      "text-error": "Farbige Schrift (Warnung - schwer)",
-      "text-info": "Farbige Schrift (Information)",
-      "text-warning": "Farbige Schrift (Warnung - mittel)"
-    },
-    "stylingOptions": "Optionen zum Hervorheben des Elementes"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-ElementStylingOptions.json"></i18n>

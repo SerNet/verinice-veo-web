@@ -113,13 +113,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "selectRiskMatrixToView": "Please select the risk definition you want to view."
-  },
-  "de": {
-    "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>

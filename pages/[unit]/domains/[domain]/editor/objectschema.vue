@@ -484,38 +484,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "description": "Description",
-    "hideemptyaspects": "Hide empty aspects",
-    "objectschema": "Object schema",
-    "invalidObjectSchema":
-      "Couldn't load schema. Please resolve the following errors and try again.",
-    "search": "Search for a property",
-    "translations": "Translations",
-    "help": "Help",
-    "save": "save",
-    "saveSchemaSuccess": "Schema saved! The change will be visible to other users in less than 30 minutes.",
-    "saveSchemaError": "Couldn't save schema!",
-    "saveContentCreator": "You need the role \"Content Creator\" to save the objectschema."
-  },
-  "de": {
-    "description": "Beschreibung",
-    "hideemptyaspects": "Leere Aspekte ausblenden",
-    "objectschema": "Objektschema",
-    "invalidObjectSchema":
-      "Das Schema konnte nicht geladen werden. Bitte beheben Sie die Fehler und versuchen Sie es erneut.",
-    "search": "Nach einer Eigenschaft suchen...",
-    "translations": "Übersetzungen",
-    "help": "Hilfe",
-    "save": "speichern",
-    "saveSchemaSuccess": "Schema wurde gespeichert! Andere User werden die Änderung in spätestens 30 Minuten sehen.",
-    "saveSchemaError": "Schema konnte nicht gespeichert werden",
-    "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Objektschema zu speichern."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-editor-objectschema.json"></i18n>
 
 <style lang="scss" scoped>
 .ose__code-editor {

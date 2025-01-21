@@ -1,0 +1,10 @@
+{
+  "en": {
+    "text": "The object \"{displayName}\" has been edited. The changes won't be saved. Do you really want to leave this page?",
+    "headline": "Close"
+  },
+  "de": {
+    "text": "Das Objekt \"{displayName}\" wurde bearbeitet. Die Änderungen werden nicht gespeichert. Wollen Sie die Seite wirklich verlassen?",
+    "headline": "Verlassen"
+  }
+}

@@ -48,15 +48,4 @@ const icon = computed(() =>
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "hideRule": "This element gets hidden based on a rule.",
-    "showRule": "This element gets displayed based on a rule."
-  },
-  "de": {
-    "hideRule": "Dieses Element wird basierend auf einer Regel ausgeblendet.",
-    "showRule": "Dieses Element wird basierend auf einer Regel angezeigt."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-RuleIcon.json"></i18n>

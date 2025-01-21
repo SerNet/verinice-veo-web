@@ -1,0 +1,56 @@
+{
+  "en": {
+    "attributes": "attributes",
+    "addAttribute": "Add attribute",
+    "common": "common",
+    "delete": {
+      "aspect": "Delete aspect",
+      "link": "Delete link"
+    },
+    "duplicateAttributes": "Attribute titles have to be unique in an aspect or link",
+    "headlineCreate": {
+      "aspect": "Create custom aspect",
+      "link": "Create custom link"
+    },
+    "headlineEdit": {
+      "aspect": "Edit aspect \"{title}\"",
+      "link": "Edit custom link \"{title}\""
+    },
+    "noProperties": {
+      "aspect": "This aspect has no attributes",
+      "link": "This link has no attributes"
+    },
+    "no_subtype": "No subtype",
+    "linkName": "Link name",
+    "linkSubType": "Link Subtype",
+    "linkType": "Link type",
+    "technicalId": "Technical id"
+  },
+  "de": {
+    "attributes": "attribute",
+    "addAttribute": "Attribut hinzufügen",
+    "common": "allgemein",
+    "delete": {
+      "aspect": "Aspekt löschen",
+      "link": "Link löschen"
+    },
+    "duplicateAttributes": "Es kann immer nur ein Attribut mit den folgende(n) Titel(n) existieren",
+    "headlineCreate": {
+      "aspect": "Individuellen Aspekt erstellen",
+      "link": "Individuellen Link erstellen"
+    },
+    "headlineEdit": {
+      "aspect": "Aspekt \"{title}\" bearbeiten",
+      "link": "Link \"{title}\" bearbeiten"
+    },
+    "noProperties": {
+      "aspect": "Dieser Aspekt besitzt keine Attribute",
+      "link": "Dieser Link besitzt keine Attribute"
+    },
+    "no_subtype": "Kein Subtyp",
+    "linkName": "Linkname",
+    "linkSubType": "Link Subtyp",
+    "linkType": "Linktyp",
+    "technicalId": "Technischer Bezeichner"
+  }
+}

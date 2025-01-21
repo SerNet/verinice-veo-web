@@ -81,13 +81,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "inherentRisk": "inherent risk"
-  },
-  "de": {
-    "inherentRisk": "Bruttorisiko"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-InherentRiskSection.json"></i18n>

@@ -136,20 +136,7 @@ const riskValues = computed(() =>
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "explanation": "explanation",
-    "residualRisk": "residual risk",
-    "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value"
-  },
-  "de": {
-    "explanation": "Erklärung",
-    "residualRisk": "Nettorisiko",
-    "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-RiskResidualSectionColumn.json"></i18n>
 
 <style lang="scss" scoped>
 :deep(.v-small-dialog__activator__content) {

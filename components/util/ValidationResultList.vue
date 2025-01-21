@@ -92,18 +92,7 @@ const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INest
   }));
 </script>
 
-<i18n>
-{
-  "en": {
-    "fix": "Fix",
-    "noErrors": "No errors found!"
-  },
-  "de": {
-    "fix": "Beheben",
-    "noErrors": "Keine Fehler gefunden!"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/util-ValidationResultList.json"></i18n>
 
 <style lang="scss" scoped>
 .v-list {

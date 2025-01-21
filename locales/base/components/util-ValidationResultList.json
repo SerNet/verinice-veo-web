@@ -1,0 +1,10 @@
+{
+  "en": {
+    "fix": "Fix",
+    "noErrors": "No errors found!"
+  },
+  "de": {
+    "fix": "Beheben",
+    "noErrors": "Keine Fehler gefunden!"
+  }
+}

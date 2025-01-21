@@ -247,21 +247,4 @@ const openItem = (item: IVeoEntity) => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "beMoreSpecific": "Please be more specific to show additional objects",
-    "errorWhileFetching": "Error while fetching objects",
-    "noObjects": "No objects found",
-    "objectNotFound": "object not found",
-    "objectNotFoundExplanation": "The object for the link \"{0}\" with the ID \"{1}\" couldn't be found."
-  },
-  "de": {
-    "beMoreSpecific": "Bitte geben Sie weitere Zeichen ein, um die Auswahl einzuschränken",
-    "errorWhileFetching": "Beim Laden der Objekte ist ein Fehler aufgetreten",
-    "noObjects": "Keine Objekte vorhanden",
-    "objectNotFound": "Objekt nicht gefunden",
-    "objectNotFoundExplanation": "Das Objekt für die Verlinkung \"{0}\" mit der ID \"{1}\" konnte nicht gefunden werden."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/util-ObjectSelect.json"></i18n>

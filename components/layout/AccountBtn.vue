@@ -132,24 +132,7 @@ const onMenuClosed = () => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "about": "About verinice.",
-    "logout": "Logout",
-    "editAccount": "Edit account",
-    "firststeps": "First steps",
-    "notAvailable": "Not available",
-  },
-  "de": {
-    "about": "Über verinice.",
-    "logout": "Abmelden",
-    "editAccount": "Benutzerkonto bearbeiten",
-    "firststeps": "Erste Schritte",
-    "notAvailable": "Keine Angabe",
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-AccountBtn.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-account-menu > .v-card {

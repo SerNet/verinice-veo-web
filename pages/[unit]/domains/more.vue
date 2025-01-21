@@ -41,17 +41,4 @@ export const ROUTE_NAME = 'unit-domains-more';
 const { t, locale } = useI18n();
 </script>
 
-<i18n>
-{
-  "en": {
-    "furtherInformation": "An overview of further functions and domains can be found on the",
-    "linkName": "verinice website",
-    "moreModulesInfo": "The verinice.TEAM will successively provide further domains for verinice.veo."
-  },
-  "de": {
-    "furtherInformation": "Eine Übersicht über weitere Funktionen und Domänen finden Sie auf der",
-    "linkName": "verinice Webseite",
-    "moreModulesInfo": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-more.json"></i18n>

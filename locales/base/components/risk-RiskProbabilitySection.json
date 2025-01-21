@@ -1,0 +1,18 @@
+{
+  "en": {
+    "effectiveProbability": "effective probability",
+    "explanation": "explanation",
+    "potentialProbability": "potential probability",
+    "probability": "probability",
+    "saveCTA": "save to recompute",
+    "specificProbability": "specific probability"
+  },
+  "de": {
+    "effectiveProbability": "Effektive Wahrscheinlichkeit",
+    "explanation": "Erklärung",
+    "potentialProbability": "potentielle Wahrscheinlichkeit",
+    "probability": "Eintrittswahrscheinlichkeit",
+    "saveCTA": "Speichern zum Neuberechnen",
+    "specificProbability": "spezifische Wahrscheinlichkeit"
+  }
+}

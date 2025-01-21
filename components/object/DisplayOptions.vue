@@ -77,17 +77,4 @@ const displayOptions = computed<{ title: string; value: string | undefined }[]>(
 });
 </script>
 
-<i18n>
-{
-    "en": {
-      "display": "View",
-      "objectView": "object view",
-      "viewAs": "view as"
-    },
-    "de": {
-      "display": "Ansicht",
-      "objectView": "Objektansicht",
-      "viewAs": "darstellen als"
-    }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-DisplayOptions.json"></i18n>

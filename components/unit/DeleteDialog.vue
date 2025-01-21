@@ -157,23 +157,4 @@ function navigateToUserData() {
 }
 </script>
 
-<i18n>
-  {
-    "en": {
-      "dialogTitle": "Delete unit",
-      "hint": "This action cannot be undone.",
-      "placeholder": "Please enter the name of the unit to be deleted",
-      "question": "Do you really want to irrevocably delete the unit \"{name}\"?",
-      "request": "It is recommended to create a local backup of all data before deletion.",
-      "unitDeleted": "The unit was deleted successfully."
-    },
-    "de": {
-      "dialogTitle": "Unit löschen",
-      "hint": "Diese Aktion kann nicht rückgängig gemacht werden.",
-      "placeholder": "Bitte geben Sie den Namen der zu löschenden Unit ein",
-      "question": "Möchten Sie die Unit \"{name}\" wirklich löschen?",
-      "request": "Es wird empfohlen, vor der Löschung ein lokales Backup aller Daten anzulegen.",
-      "unitDeleted": "Die Unit wurde erfolgreich gelöscht."
-    }
-  }
-  </i18n>
+<i18n src="~/locales/base/components/unit-DeleteDialog.json"></i18n>

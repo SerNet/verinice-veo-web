@@ -250,29 +250,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "column": "Column",
-    "fileUploadFailed": "Couldn't upload language file",
-    "idColumn": "ID column",
-    "import": "Import",
-    "langColumn": "Column for language {0}",
-    "languageFile": "Language file",
-    "replaceTranslations": "Delete and replace existing translations",
-    "sheet": "Sheet",
-    "uploadLanguageFile": "Upload language file (.xlsx)"
-  },
-  "de": {
-    "column": "Spalte",
-    "fileUploadFailed": "Sprachdatei konnte nicht hochgeladen werden",
-    "idColumn": "ID-Spalte",
-    "import": "Importieren",
-    "langColumn": "Spalte für Sprache {0}",
-    "languageFile": "Sprachdatei",
-    "replaceTranslations": "Vorhandene Übersetzungen löschen und ersetzen",
-    "sheet": "Tabellenblatt",
-    "uploadLanguageFile": "Sprachdatei hochladen (.xlsx)"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-TranslationUpload.json"></i18n>

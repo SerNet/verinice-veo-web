@@ -1,0 +1,12 @@
+{
+  "en": {
+    "common": "Common",
+    "formElement": "Form element",
+    "formElementOptions": "Form element specific options"
+  },
+  "de": {
+    "common": "Allgemein",
+    "formElement": "Eingabeelement",
+    "formElementOptions": "Elementspezifische Optionen"
+  }
+}

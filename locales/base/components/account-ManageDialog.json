@@ -1,0 +1,48 @@
+{
+  "en": {
+    "createAccount": "Create account",
+    "creatingAccountFailed": "Couldn't create account",
+    "creatingAccountSuccess": "Account was created successfully",
+    "email": "Email address",
+    "emailAddressAlreadyTaken": "The email address is already in use. Please choose another one.",
+    "emailAddressWrongFormat": "Please enter a valid email address.",
+    "enabled": "Account is enabled?",
+    "firstName": "First name",
+    "groups": "Assigned groups",
+    "lastName": "Last name",
+    "noPassword": "The password can be set by the user after verifying his email address.",
+    "password": "Password",
+    "permissions": {
+      "veo-write": "Write access"
+    },
+    "updateAccount": "Update account",
+    "updatingAccountFailed": "Couldn't update account",
+    "updatingAccountSuccess": "Account was updated successfully",
+    "updatingOwnAccount": "You are updating your own account. For your own safety, editing your permissions is disabled.",
+    "username": "Username",
+    "usernameAlreadyTaken": "The username is already in use. Please choose another one."
+  },
+  "de": {
+    "createAccount": "Account erstellen",
+    "creatingAccountFailed": "Account konnte nicht erstellt werden",
+    "creatingAccountSuccess": "Account wurde erstellt",
+    "email": "E-Mail-Adresse",
+    "emailAddressAlreadyTaken": "Die E-Mail Adresse wird bereits verwendet. Bitte wählen Sie eine andere.",
+    "emailAddressWrongFormat": "Bitte gebe eine gültige E-Mail-Adresse ein.",
+    "enabled": "Account ist aktiv?",
+    "firstName": "Vorname",
+    "groups": "Zugehörige Gruppen",
+    "lastName": "Nachname",
+    "noPassword": "Das Passwort kann vom Benutzer nach dem Verifizieren der E-Mail-Adresse gesetzt werden.",
+    "password": "Passwort",
+    "permissions": {
+      "veo-write": "Schreibzugriff"
+    },
+    "updateAccount": "Account aktualisieren",
+    "updatingAccountFailed": "Account konnte nicht aktualisiert werden",
+    "updatingAccountSuccess": "Account wurde aktualisiert",
+    "updatingOwnAccount": "Sie bearbeiten Ihren eigenen Account. Aus Sicherheitsgründen wurde das Bearbeiten von Berechtigungen deaktiviert.",
+    "username": "Benutzername",
+    "usernameAlreadyTaken": "Der Benutzername wird bereits verwendet. Bitte wählen Sie einen anderen."
+  }
+}

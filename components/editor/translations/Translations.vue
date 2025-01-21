@@ -379,27 +379,4 @@ const transformedTranslations = computed(() => {
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "createEditableTranslation": "Create an editable translation based on this translation",
-    "formschema": "Form schema",
-    "key": "Key",
-    "objectschema": "Object schema",
-    "searchTranslations": "Search translations",
-    "source": "Source",
-    "unknown": "Unknown",
-    "value": "Value ({0})"
-  },
-  "de": {
-    "createEditableTranslation": "Editierbare Übersetzung basierend auf dieser Übersetzung erstellen",
-    "formschema": "Formschema",
-    "key": "Schlüssel",
-    "objectschema": "Objektschema",
-    "searchTranslations": "Übersetzungen durchsuchen",
-    "source": "Quelle",
-    "unknown": "Unbekannt",
-    "value": "Wert ({0})"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-translations-Translations.json"></i18n>

@@ -106,27 +106,4 @@ const cardTitle = computed(() => {
 const hasUnitName = computed(() => !(unitDetails.value?.name?.trim() === ''));
 </script>
 
-<i18n>
-{
-  "en": {
-    "genericHeading": "Details",
-    "unitName": "Name",
-    "noUnitName": "Please name your unit.",
-    "unitDescription": "Description",
-    "changeDetailsSuccess": "Successfully updated unit details.",
-    "isUpdatingDetails": "Updating unit details...",
-    "changeDetailsErrorTitle": "Warning!",
-    "changeDetailsErrorBody": "Unit details could not be updated.",
-  },
-  "de": {
-    "genericHeading": "Details",
-    "unitName": "Name",
-    "noUnitName": "Bitte geben Sie Ihrer Unit einen Namen.",
-    "unitDescription": "Beschreibung",
-    "changeDetailsSuccess": "Unitdetails erfolgreich aktualisiert.",
-    "isUpdatingDetails": "Aktualisiere Unitdetails...",
-    "changeDetailsErrorTitle": "Warnung!",
-    "changeDetailsErrorBody": "Unitdetails konnten nicht aktualisiert werden.",
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/unit-Details.json"></i18n>

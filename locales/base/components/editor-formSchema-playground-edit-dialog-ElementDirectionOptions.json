@@ -1,0 +1,12 @@
+{
+  "en": {
+    "direction": "Direction",
+    "horizontal": "Horizontal",
+    "vertical": "Vertical"
+  },
+  "de": {
+    "direction": "Ausrichtung",
+    "horizontal": "Horizontal",
+    "vertical": "Vertikal"
+  }
+}

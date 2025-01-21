@@ -104,32 +104,7 @@ const imprintLink = computed(() =>
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "access": "Account disabled.",
-    "subscribeCTA": "Subscribe to\nverinice.cloud",
-    "dataProtectionRegulations": "Data protection regulations",
-    "error-message": "Please contact your account manager.",
-    "imprint": "Imprint",
-    "login": "Login",
-    "loginCTA": "Enter the\nverinice.cloud",
-    "policy": "Security policy",
-    "subscribe": "subscribe"
-  },
-  "de": {
-    "access": "Account deaktiviert.",
-    "subscribeCTA": "Abonnieren Sie die\nverinice.cloud",
-    "dataProtectionRegulations": "Datenschutzerklärung",
-    "error-message": "Bitte kontaktieren Sie Ihren Account-Manager.",
-    "imprint": "Impressum",
-    "login": "Anmelden",
-    "loginCTA": "Direkt zur\nverinice.cloud",
-    "policy": "Sicherheitsrichtlinie",
-    "subscribe": "abonnieren"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/login.json"></i18n>
 
 <style lang="scss" scoped>
 .wrapper {

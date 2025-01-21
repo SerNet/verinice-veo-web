@@ -313,44 +313,8 @@ onBeforeUnmount(() => {
   window.removeEventListener('keydown', handleEnterPress);
 });
 </script>
-<i18n>
-{
-  "en": {
-    "createUnit": "Create unit",
-    "createUnitSuccess": "Unit was successfully created.",
-    "createUnitErrorBody": "Could not create unit.",
-    "enterUnitDetails": "Enter name and description",
-    "chooseProfile": "Choose profile (optional)",
-    "chooseDomains": "Choose domains",
-    "goToUnitAdmin": "Back to Unit administration",
-    "summary": "Summary",
-    "isCreatingUnit": "Creating unit...",
-    "applyProfiles": "Apply Profiles",
-    "isApplyingProfile": "Applying profile...",
-    "applyProfileSuccess": "Profile successfully applied.",
-    "applyProfileErrorText": "Could not apply profile.",
-    "preSelectedDomainTitle": "Pre-selected Domain",
-    "preSelectedDomainBody": "Because you are importing objects from the profile { profile }, the domain { domain } is preselected."
-  },
-  "de": {
-    "createUnit": "Unit anlegen",
-    "createUnitSuccess": "Unit wurde erfolgreich angelegt.",
-    "createUnitErrorBody": "Unit konnte nicht angelegt werden.",
-    "enterUnitDetails": "Namen und Beschreibung eingeben",
-    "chooseProfile": "Profil auswählen (optional)",
-    "chooseDomains": "Domänen auswählen",
-    "goToUnitAdmin": "Zurück zur Unit-Verwaltung",
-    "summary": "Zusammenfassung",
-    "isCreatingUnit": "Erstelle Unit...",
-    "applyProfiles": "Profile anwenden",
-    "isApplyingProfile": "Wende Profil an...",
-    "applyProfileSuccess": "Das Profil wurde erfolgreich angewendet.",
-    "applyProfileErrorText": " Das Profil konnte nicht angewendet werden.",
-    "preSelectedDomainTitle": "Pre-selected Domain",
-    "preSelectedDomainBody": "Weil Sie Objekte aus dem Profil { profile } importieren, ist die Domäne { domain } vorausgewählt."
-  }
-}
-</i18n>
+
+<i18n src="~/locales/base/pages/units-create.json"></i18n>
 
 <style scoped lang="scss">
 #unit-create-wizard {

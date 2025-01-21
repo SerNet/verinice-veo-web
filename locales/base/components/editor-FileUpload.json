@@ -1,0 +1,12 @@
+{
+  "en": {
+    "importCode": "Paste code",
+    "importFile": "Upload file",
+    "uploadError": "Error while uploading file"
+  },
+  "de": {
+    "importCode": "Code einfügen",
+    "importFile": "Datei hochladen",
+    "uploadError": "Fehler beim Dateiupload"
+  }
+}

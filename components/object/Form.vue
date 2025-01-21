@@ -569,30 +569,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "createDPIA": "create DPIA",
-    "display": "view as",
-    "history": "history",
-    "linkDPIA": "link DPIA",
-    "messages": "messages",
-    "objects": "objects",
-    "tableOfContents": "contents",
-    "unknown": "unknown"
-  },
-  "de": {
-    "createDPIA": "DSFA erstellen",
-    "display": "Ansicht",
-    "history": "Verlauf",
-    "linkDPIA": "DSFA auswählen",
-    "messages": "Meldungen",
-    "objects": "Objekte",
-    "tableOfContents": "Inhalt",
-    "unknown": "unbestimmt"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-Form.json"></i18n>
 
 <style lang="scss" module>
 .object-side-container-select {

@@ -1,0 +1,14 @@
+{
+  "en": {
+    "displayLanguage": "Languages",
+    "displayLanguageDescription": "Display language in object schema editor",
+    "supportedLanguages": "Supported Languages",
+    "updateTranslationsError": "Couldn't update translations"
+  },
+  "de": {
+    "displayLanguage": "Sprache",
+    "displayLanguageDescription": "Anzeigesprache im Objektschema Editor",
+    "supportedLanguages": "Sprachen",
+    "updateTranslationsError": "Übersetzungen konnten nicht aktualisiert werden"
+  }
+}

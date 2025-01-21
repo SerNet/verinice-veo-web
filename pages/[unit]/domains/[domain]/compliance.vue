@@ -201,15 +201,4 @@ watch([locale, customCrumbs], () => {
 });
 </script>
 
-<i18n>
-{
-"de": {
-  "targetModule": "{subType} \"{currentModule}\" bearbeiten",
-  "implementation": "Umsetzung",
-},
-"en": {
-  "targetModule": "Edit module \"{currentModule}\"",
-  "implementation": "Implementation"
-}
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-compliance.json"></i18n>

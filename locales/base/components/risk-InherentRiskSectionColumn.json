@@ -1,0 +1,10 @@
+{
+  "en": {
+    "inherentRisk": "inherent risk",
+    "saveCTA": "save to recompute"
+  },
+  "de": {
+    "inherentRisk": "Bruttorisiko",
+    "saveCTA": "Speichern zum Neuberechnen"
+  }
+}

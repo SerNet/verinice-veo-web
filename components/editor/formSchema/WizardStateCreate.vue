@@ -197,24 +197,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "createFormSchema": "Create form schema",
-    "customObjectSchema": "Custom",
-    "format": "(.json)",
-    "importObjectSchema": "Import object schema",
-    "objectSchemaUploadLabel": "Object schema upload @:format"
-  },
-  "de": {
-    "createFormSchema": "Formschema erstellen",
-    "customObjectSchema": "Eigenes",
-    "format": "(.json)",
-    "importObjectSchema": "Objektschema importieren",
-    "objectSchemaUploadLabel": "Objektschema hochladen @:format"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-WizardStateCreate.json"></i18n>
 
 <style lang="scss" scoped>
 span {

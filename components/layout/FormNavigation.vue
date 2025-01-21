@@ -175,13 +175,4 @@ const items = computed(
 );
 </script>
 
-<i18n>
-{
-  "en": {
-    "tableOfContents": "Contents"
-  },
-  "de": {
-    "tableOfContents": "Inhalt"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-FormNavigation.json"></i18n>

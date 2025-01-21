@@ -106,18 +106,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "deleteStatus": "delete status",
-    "translation": "translation"
-  },
-  "de": {
-    "translation": "übersetzung",
-    "deleteStatus": "status löschen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-StatusListItem.json"></i18n>
 
 <style lang="scss" scoped>
 .schema-details__status-list-item {

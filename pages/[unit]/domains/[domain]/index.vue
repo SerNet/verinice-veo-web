@@ -168,16 +168,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "domainNotFoundText": "The requested domain couldn't be found."
-  },
-  "de": {
-    "domainNotFoundText": "Die gewünschte Domain konnte nicht gefunden werden."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-index.json"></i18n>
 
 <style lang="scss" scoped>
 .skeleton-subtitle {

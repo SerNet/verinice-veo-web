@@ -48,19 +48,4 @@ withDefaults(defineProps<Props>(), {
 const selected = defineModel<string[]>();
 </script>
 
-<i18n>
-{
-  "en": {
-    "associateDomainsErrorTitle": "Error!",
-    "associateDomainsErrorBody": "Domains could not be associated.",
-    "associateDomainsSuccess": "Domains successfully associated.",
-    "isAssociatingDomains": "Associating domains...",
-  },
-  "de": {
-    "associateDomainsErrorTitle": "Fehler!",
-    "associateDomainsErrorBody": "Domänen konnten nicht assoziiert werden.",
-    "associateDomainsSuccess": "Domänen erfolgreich assoziert.",
-    "isAssociatingDomains": "Assoziiere Domänen..."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/unit-Domains.json"></i18n>

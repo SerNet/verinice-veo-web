@@ -171,24 +171,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "effectiveImpact": "effective impact",
-    "explanation": "explanation",
-    "potentialImpact": "potential impact",
-    "saveCTA": "save to recompute",
-    "specificImpact": "specific impact"
-  },
-  "de": {
-    "effectiveImpact": "Effektive Auswirkung",
-    "explanation": "Erklärung",
-    "potentialImpact": "potentielle Auswirkung",
-    "saveCTA": "Speichern zum Neuberechnen",
-    "specificImpact": "spezifische Auswirkungen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-RiskImpactSectionColumn.json"></i18n>
 
 <style lang="scss" scoped>
 :deep(.v-small-dialog__activator__content) {

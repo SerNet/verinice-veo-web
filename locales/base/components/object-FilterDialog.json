@@ -1,0 +1,16 @@
+{
+  "en": {
+    "collapseOptions": "less options",
+    "expandOptions": "more options",
+    "filterList": "filter list",
+    "resetFilter": "reset filter",
+    "submitFilter": "apply filter"
+  },
+  "de": {
+    "collapseOptions": "weniger Optionen",
+    "expandOptions": "weitere Optionen",
+    "filterList": "Liste filtern",
+    "resetFilter": "Filter zurücksetzen",
+    "submitFilter": "Filter anwenden"
+  }
+}

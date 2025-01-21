@@ -32,15 +32,4 @@
 const { t } = useI18n();
 </script>
 
-<i18n>
-{
-  "en": {
-    "notFoundCode": "404 Not found",
-    "notFound": "The object type could not be found."
-  },
-  "de": {
-    "notFoundCode": "404 Not found",
-    "notFound": "Der von Ihnen angeforderte Objekttyp konnte nicht gefunden werden."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-ObjectTypeError.json"></i18n>

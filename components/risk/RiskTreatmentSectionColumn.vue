@@ -133,32 +133,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "explanation": "explanation",
-    "more": "more",
-    "riskTreatment": "risk treatment",
-    "riskTreatments": {
-      "RISK_TREATMENT_ACCEPTANCE": "risk retention",
-      "RISK_TREATMENT_AVOIDANCE": "risk avoidance",
-      "RISK_TREATMENT_REDUCTION": "risk reduction",
-      "RISK_TREATMENT_TRANSFER": "risk transfer"
-    }
-  },
-  "de": {
-    "explanation": "Erklärung",
-    "more": "weitere",
-    "riskTreatment": "Risikobehandlung",
-    "riskTreatments": {
-      "RISK_TREATMENT_ACCEPTANCE": "Risikoakzeptanz",
-      "RISK_TREATMENT_AVOIDANCE": "Risikovermeidung",
-      "RISK_TREATMENT_REDUCTION": "Risikoreduktion",
-      "RISK_TREATMENT_TRANSFER": "Risikotransfer"
-    }
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/risk-RiskTreatmentSectionColumn.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-risk-dialog__risk-treatment-selection :deep(.v-select__selections) {

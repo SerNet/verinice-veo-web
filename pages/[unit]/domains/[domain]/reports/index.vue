@@ -49,13 +49,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "hint": "Choose the report type for which you want to generate a report."
-  },
-  "de": {
-    "hint": "Wählen Sie den Reporttyp aus der Liste aus, für den Sie einen Report erstellen möchten."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-reports-index.json"></i18n>

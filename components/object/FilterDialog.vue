@@ -393,21 +393,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "collapseOptions": "less options",
-    "expandOptions": "more options",
-    "filterList": "filter list",
-    "resetFilter": "reset filter",
-    "submitFilter": "apply filter"
-  },
-  "de": {
-    "collapseOptions": "weniger Optionen",
-    "expandOptions": "weitere Optionen",
-    "filterList": "Liste filtern",
-    "resetFilter": "Filter zurücksetzen",
-    "submitFilter": "Filter anwenden"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-FilterDialog.json"></i18n>

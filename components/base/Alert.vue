@@ -247,16 +247,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "clickToDismiss": "Click to dismiss"
-  },
-  "de": {
-    "clickToDismiss": "Zum Schließen klicken"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/base-Alert.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-alert :deep(i) {

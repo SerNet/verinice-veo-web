@@ -1,0 +1,16 @@
+{
+  "en": {
+    "domainpicker": "Please choose a domain",
+    "domainpickerPlaceholder": "Search for a domain...",
+    "domainselector": "Domain selection",
+    "furtherDomainInformation": "The verinice.TEAM will successively provide further domains for verinice.veo click {here} for further information.",
+    "linkMoreInfo": "here"
+  },
+  "de": {
+    "domainpicker": "Bitte wählen Sie eine Domäne",
+    "domainpickerPlaceholder": "Nach einer Domäne suchen...",
+    "domainselector": "Domänenauswahl",
+    "furtherDomainInformation": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen, klicken Sie {here} für mehr Informationen.",
+    "linkMoreInfo": "hier"
+  }
+}

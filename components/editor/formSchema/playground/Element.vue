@@ -168,16 +168,7 @@ const editElementDialogVisible = ref(false);
 const deleteElementDialogVisible = ref(false);
 </script>
 
-<i18n>
-{
-  "en": {
-    "componentNotFound": "The type of \"{0}\" isn't supported: {1}."
-  },
-  "de": {
-    "componentNotFound": "\"{0}\" mit dem Typ {1} wird nicht unterstützt."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-Element.json"></i18n>
 
 <style module lang="scss">
 .dragarea {

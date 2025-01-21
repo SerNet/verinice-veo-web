@@ -1,0 +1,10 @@
+{
+  "en": {
+    "hideRule": "This element gets hidden based on a rule.",
+    "showRule": "This element gets displayed based on a rule."
+  },
+  "de": {
+    "hideRule": "Dieses Element wird basierend auf einer Regel ausgeblendet.",
+    "showRule": "Dieses Element wird basierend auf einer Regel angezeigt."
+  }
+}

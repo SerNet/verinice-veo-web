@@ -432,37 +432,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "add": "Add",
-    "addSubtype": "Add subtype",
-    "availableStatus": "Available status",
-    "deleteSubtype": "Delete subtype",
-    "language": "Language",
-    "status": "Status",
-    "statusAlphaNumericUnderscore": "The status may only contain capital alphanumeric symbols and underscores",
-    "subtype": "Subtype",
-    "subtypesForDomain": "Subtypes for domain {domain}",
-    "translation": {
-      "singular": "Name singular",
-      "plural": "Name plural"
-    }
-  },
-  "de": {
-    "add": "Hinzufügen",
-    "addSubtype": "Subtyp hinzufügen",
-    "availableStatus": "Verfügbare Status",
-    "deleteSubtype": "Subtyp löschen",
-    "language": "Sprache",
-    "status": "Status",
-    "statusAlphaNumericUnderscore": "Der Status darf nur großgeschriebene alphanummerische Zeichen und Unterstriche enthalten",
-    "subtype": "Subtyp",
-    "subtypesForDomain": "Subtypen für die Domäne {domain}",
-    "translation": {
-      "singular": "Name singular",
-      "plural": "Name plural"
-    }
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-DetailsDialog.json"></i18n>

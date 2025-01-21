@@ -359,18 +359,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "createCustomPropertyError": "Couldn't create link/aspect",
-    "addCustomLink": "Add link"
-  },
-  "de": {
-    "createCustomPropertyError": "Der Link/Aspekt konnte nicht erstellt werden",
-    "addCustomLink": "Link hinzufügen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-Main.json"></i18n>
 
 <style lang="scss" scoped>
 .v-expansion-panel-title {

@@ -1,0 +1,18 @@
+{
+  "en": {
+    "collapse": "collapse all",
+    "expand": "expand all",
+    "formElements": "Form elements",
+    "formWidgets": "form widgets",
+    "searchNoMatch": "no matching controls",
+    "widget": "widget"
+  },
+  "de": {
+    "collapse": "Alle einklappen",
+    "expand": "Alle ausklappen",
+    "formElements": "Steuerelemente",
+    "formWidgets": "Formular-Widgets",
+    "searchNoMatch": "Keine passenden Steuerelemente vorhanden",
+    "widget": "Widget"
+  }
+}

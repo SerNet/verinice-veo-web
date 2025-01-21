@@ -66,19 +66,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "piaMandatory": "Privacy impact assessment required",
-    "piaMandatoryText": "Based on the data of this object, a privacy impact assessment is required.{0}Please create one using the button in the warnings tab on the right.",
-    "piaNotMandatory": "Privacy impact assessment not required",
-    "piaNotMandatoryText": "A privacy impact assessment is not required for this object."
-  },
-  "de": {
-    "piaMandatory": "Datenschutz-Folgeabschätzung verpflichtend",
-    "piaMandatoryText": "Basierend auf Daten in diesem Objekt ist eine Datenschutz-Folgeabschätzung verpflichtend.{0}Bitte erstellen Sie diese über die Warnungsleiste rechts.",
-    "piaNotMandatory": "Datenschutz-Folgeabschätzung nicht verpflichtend",
-    "piaNotMandatoryText": "Für dieses Objekt ist keine Datenschutz-Folgeabschätzung notwendig."
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/dynamic-form-widgets-DPIAMandatory.json"></i18n>

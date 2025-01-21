@@ -95,22 +95,4 @@ const deleteAccount = async () => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "cannotDeleteOwnAccount": "You can't delete your own account!",
-    "deleteAccount": "Delete account",
-    "deleteAccountHint": "Do you really want to delete this account? This action is not reversible.",
-    "deletingAccountFailed": "Couldn't delete account",
-    "deletingAccountSuccess": "Account was deleted"
-
-  },
-  "de": {
-    "cannotDeleteOwnAccount": "Sie können Ihren eigenen Account nicht löschen!",
-    "deleteAccount": "Account löschen",
-    "deleteAccountHint": "Möchten Sie diesen Account wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
-    "deletingAccountFailed": "Account konnte nicht gelöscht werden",
-    "deletingAccountSuccess": "Account wurde gelöscht"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/account-DeleteDialog.json"></i18n>

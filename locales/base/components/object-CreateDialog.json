@@ -1,0 +1,14 @@
+{
+  "en": {
+    "createObject": "create object",
+    "object": "object",
+    "objectCreated": "\"{name}\" was created successfully!",
+    "objectNotCreated": "couldn't create \"{name}\""
+  },
+  "de": {
+    "createObject": "objekt erstellen",
+    "object": "objekt",
+    "objectCreated": "\"{name}\" wurde erfolgreich erstellt!",
+    "objectNotCreated": "\"{name}\" konnte nicht erstellt werden."
+  }
+}
