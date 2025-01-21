@@ -103,7 +103,7 @@
           <v-date-input
             v-model="form.implementationUntil"
             :label="t('implementationUntil')"
-            :placeholder="globalT('inputPlaceholders.date')"
+            :placeholder="t('inputPlaceholders.date')"
             data-veo-test="compliance-editor-ri-implementation-date"
             prepend-icon=""
             prepend-inner-icon="$calendar"
@@ -139,7 +139,7 @@
     </BaseCard>
     <template #dialog-options>
       <v-btn flat variant="plain" :disabled="view.isLoading" @click="emit('update:show-dialog', false)">
-        {{ globalT('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn
@@ -162,7 +162,7 @@
             )
         "
       >
-        {{ globalT('global.button.save') }}
+        {{ t('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -196,8 +196,7 @@ import { isVeoLink, validateType } from '~/types/utils';
 const { data: config } = useConfiguration();
 
 const { request } = useRequest();
-const { t } = useI18n();
-const { t: globalT } = useI18n({ useScope: 'global' });
+const { t } = useVeoI18n();
 const adapter = useDate();
 const route = useRoute();
 const { updateItem } = useRequirementImplementationQuery();
