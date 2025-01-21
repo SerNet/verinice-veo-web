@@ -36,7 +36,7 @@
         <!-- Read only text fields -->
 
         <!-- Target object  -->
-        <v-label class="mt-4">{{ t('riskAffectedLabel') }}</v-label>
+        <v-label class="mt-4">{{ t('targetObject') }}</v-label>
         <BaseCard border padding>
           <v-text-field
             v-for="property in config.riEditor.renderedProperties.targetObject"
@@ -66,11 +66,11 @@
           <v-expansion-panels>
             <v-expansion-panel>
               <template #title>
-                {{ t('requirementDescription') }}
+                {{ t('originationDescription') }}
               </template>
               <template #text>
                 <!-- eslint-disable-next-line vue/no-v-html -- input sanitized -->
-                <div v-if="additionalInfo.requirementDescription" v-html="sanitizedDescription"></div>
+                <div v-if="additionalInfo.originationDescription" v-html="sanitizedDescription"></div>
                 <div v-else>{{ t('noRequirementDescriptionAvailable') }}</div>
               </template>
             </v-expansion-panel>
@@ -300,7 +300,7 @@ const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
 );
 
 const additionalInfo = ref<{
-  requirementDescription?: string;
+  originationDescription?: string;
   protectionApproach?: string;
   protectionApproachTranslation?: ComputedRef<string>;
 }>({});
@@ -311,7 +311,7 @@ const updateControlInfo = (control) => {
 
   if (!customAspects) return undefined;
 
-  additionalInfo.value.requirementDescription =
+  additionalInfo.value.originationDescription =
     customAspects?.control_bpCompendium?.control_bpCompendium_content ?? control?.description ?? '';
   additionalInfo.value.protectionApproach =
     customAspects['control_bpInformation']?.control_bpInformation_protectionApproach;
@@ -320,7 +320,7 @@ const updateControlInfo = (control) => {
 watch(control, () => updateControlInfo(control.value), { immediate: true });
 
 watch(
-  () => additionalInfo.value.requirementDescription,
+  () => additionalInfo.value.originationDescription,
   (newDescription) => {
     sanitizedDescription.value = DOMPurify.sanitize(newDescription);
   },
