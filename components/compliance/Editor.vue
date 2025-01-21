@@ -163,15 +163,9 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 import { useRequest } from '@/composables/api/utils/request';
 import { format } from 'date-fns';
 import { useDate } from 'vuetify';
-import type {
-  IVeoLink,
-  IVeoEntity,
-  RequirementImplementation,
-  ResponsiblePerson
-} from '~/types/VeoTypes';
+import type { IVeoLink, IVeoEntity, RequirementImplementation, ResponsiblePerson } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-import DOMPurify from 'dompurify';
 import type { ComputedRef, Ref } from 'vue';
 import { isVeoLink, validateType } from '~/types/utils';
 
@@ -225,7 +219,7 @@ const initialForm: RequirementImplementationForForm = {
   origination: 'SYSTEM_SPECIFIC'
 };
 
-const form: Ref<RequirementImplementationForForm> = ref(initialForm);
+const form = ref<RequirementImplementationForForm>(initialForm);
 
 // React on changing props, e.g. if a new item is passed
 const _item = computed(() => props.item);
@@ -285,52 +279,7 @@ const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, contro
   enabled: computed(() => !!props.item?.control.id)
 });
 
-const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
-  toRef(() => control.value?.type),
-  toRef(() => control.value?.subType),
-  false
-);
-
-/**
-  * Information to be shown as meta data
-  * It does not come whith `props.item` and thus has to be fetched
-  * You will not need it to PUT a requirement implementation
-  * -> It is solely for the purpose of displaying informative data to users
-  * That is why we write it into a separate variable
-  */
-const additionalInfo = ref<{
-  originationDescription?: string;
-  protectionApproach?: string;
-  targetObjectDescription?: string;
-  protectionApproachTranslation?: string;
-}>({});
-const sanitizedDescription = ref<string>('');
-
-const updateAdditionalInfo = (control: IVeoEntity, targetObject: IVeoEntity) => {
-  // Target object
-  additionalInfo.value.targetObjectDescription = targetObject?.description;
-
-  // Control
-  const customAspects = control?.customAspects;
-  if(!customAspects) return;
-
-  additionalInfo.value.originationDescription =
-    customAspects?.control_bpCompendium?.control_bpCompendium_content ?? control?.description ?? '';
-  additionalInfo.value.protectionApproach =
-    customAspects?.['control_bpInformation']?.control_bpInformation_protectionApproach;
-};
-
-watch([control, targetObject], () => updateAdditionalInfo(control.value, targetObject.value), { immediate: true });
-
-watch(
-  () => additionalInfo.value.originationDescription,
-  (newDescription) => {
-    sanitizedDescription.value = DOMPurify.sanitize(newDescription);
-  },
-  { immediate: true }
-);
-
-// Get and translate the protection approach value of the current item
+// Translate the current item's `protection approach`
 const { data: translations } = useTranslations({ domain: currentDomainId.value });
 
 function translateProtectionApproach({ translations, locale, protectionApproach }): string {
@@ -339,7 +288,7 @@ function translateProtectionApproach({ translations, locale, protectionApproach 
 }
 
 // @ts-ignore TODO #3066 ComputedRef<string> is not assignable to type string
-additionalInfo.value.protectionApproachTranslation = computed(() =>
+const protectionApproachTranslation = computed(() =>
   translateProtectionApproach({
     translations: translations.value,
     locale: props.locale,
