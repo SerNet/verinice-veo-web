@@ -47,7 +47,7 @@
           />
         </BaseCard>
 
-        <!-- Requirement -->
+        <!-- Control -->
         <v-label class="mt-4">{{ ciSubType }}</v-label>
         <BaseCard border padding>
           <v-row>
@@ -76,7 +76,7 @@
             :model-value="form?.control?.name"
             disabled
             variant="underlined"
-            data-veo-test="compliance-editor-ri-name"
+            :data-veo-test="`compliance-editor-control-${property.key}`"
           />
 
           <!-- Foldable Requirement Description -->
