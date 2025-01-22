@@ -13,6 +13,7 @@
       "delete": "Could not delete object"
     },
     "objectDeleted": "Object deleted.",
+    "objectsDeleted": "Objects deleted.",
     "open": "Open",
     "VdA": "Procedure for securing"
   },
@@ -30,6 +31,7 @@
       "delete": "Das Objekt konnte nicht gelöscht werden"
     },
     "objectDeleted": "Objekt wurde gelöscht.",
+    "objectsDeleted": "Objekte wurden gelöscht.",
     "open": "Öffnen",
     "VdA": "Vorgehensweise der Absicherung"
   }

@@ -1,10 +1,12 @@
 {
   "en": {
-    "text": "Do you really want to delete the object \"{displayName}\"?",
+    "singleItem": "Do you really want to delete the object \"{displayName}\"?",
+    "multipleItems": "Do you really want to delete the selected objects?",
     "headline": "Delete object"
   },
   "de": {
-    "text": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen?",
+    "singleItem": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen?",
+    "multipleItems": "Möchten Sie die gewählten Objekte wirklich löschen?",
     "headline": "Objekt löschen"
   }
 }

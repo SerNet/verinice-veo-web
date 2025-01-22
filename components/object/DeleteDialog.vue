@@ -18,18 +18,24 @@
 <template>
   <BaseDialog v-bind="$attrs" :title="t('headline')" @update:model-value="emit('update:model-value', $event)">
     <template #default>
-      <span class="text-body-1">{{ t('text', { displayName }) }}</span>
+      <span class="text-body-1">
+        {{ props.items.length === 1 ? t('singleItem', { displayName }) : t('multipleItems') }}
+      </span>
+      <div v-if="deletingMultiple" class="progress-container">
+        <v-progress-linear :model-value="progress" height="6" color="primary" />
+        <span class="progress-text">{{ progress }}%</span>
+      </div>
     </template>
     <template #dialog-options>
-      <v-btn variant="text" @click="$emit('update:model-value', false)">
+      <v-btn variant="text" :disabled="deleting" @click="$emit('update:model-value', false)">
         {{ globalT('global.button.no') }}
       </v-btn>
       <v-spacer />
       <v-btn
         variant="text"
         color="primary"
-        :disabled="!deleteButtonEnabled || ability.cannot('manage', 'objects')"
-        @click="deleteObject"
+        :disabled="!deleteButtonEnabled || ability.cannot('manage', 'objects') || deleting"
+        @click="deleteObjects"
       >
         {{ globalT('global.button.delete') }}
       </v-btn>
@@ -38,31 +44,32 @@
 </template>
 
 <script setup lang="ts">
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-
-import { IVeoEntity } from '~/types/VeoTypes';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import { IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
-    item: IVeoEntity | undefined;
+    items?: IVeoEntity[];
   }>(),
   {
-    item: undefined
+    item: undefined,
+    items: undefined
   }
 );
 
 const emit = defineEmits<{
   (event: 'update:model-value', value: boolean): void;
   (event: 'error', error: Error): void;
-  (event: 'success'): void;
+  (event: 'success', multiple: boolean): void;
 }>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const route = useRoute();
+const { ability } = useVeoPermissions();
 
 const { mutateAsync: doDelete } = useMutation(objectQueryDefinitions.mutations.deleteObject);
 const { mutateAsync: deleteWithoutInvalidating } = useMutation(
@@ -72,33 +79,80 @@ const { mutateAsync: deleteWithoutInvalidating } = useMutation(
 );
 
 const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-const { ability } = useVeoPermissions();
+const displayName = computed(() => props.items[0]?.displayName ?? '');
+const deleteButtonEnabled = computed(() => !!props.items?.length);
 
-const displayName = computed(() => props.item?.displayName ?? '');
+const deleting = ref(false);
+const deletingMultiple = ref(false);
+const progress = ref(0);
 
-const deleteButtonEnabled = computed(() => !props.item || !!endpoints.value?.[props.item.type]);
-
-const deleteObject = async () => {
-  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || !props.item) {
-    return;
-  }
+const deleteObjects = async () => {
   try {
-    if (route.params.object) {
-      await deleteWithoutInvalidating({
-        endpoint: endpoints.value?.[props.item.type],
-        id: props.item.id
-      });
-    } else {
-      await doDelete({
-        endpoint: endpoints.value?.[props.item.type],
-        id: props.item.id
-      });
+    deleting.value = true;
+    progress.value = 0;
+
+    if (props.items.length === 1) {
+      await deleteSingleObject();
+      emit('success', false);
+    } else if (props.items.length > 1) {
+      deletingMultiple.value = true;
+      await deleteMultipleObjects();
+      emit('success', true);
     }
-    emit('success');
   } catch (error: any) {
     emit('error', error);
+  } finally {
+    deleting.value = false;
+    deletingMultiple.value = false;
+  }
+};
+const deleteSingleObject = async () => {
+  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || props.items.length !== 1) return;
+
+  const { type, id } = props.items[0];
+  const endpoint = endpoints.value?.[type];
+
+  if (!endpoint) return;
+
+  if (route.params.object) {
+    await deleteWithoutInvalidating({ endpoint, id });
+  } else {
+    await doDelete({ endpoint, id });
+  }
+
+  progress.value = 100;
+};
+
+const deleteMultipleObjects = async () => {
+  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || !props.items) return;
+
+  const totalItems = props.items.length;
+  let deletedItems = 0;
+
+  for (const item of props.items) {
+    const { type, id } = item;
+    const endpoint = endpoints.value?.[type];
+
+    if (endpoint) {
+      await doDelete({ endpoint, id });
+      deletedItems++;
+      progress.value = Math.round((deletedItems / totalItems) * 100);
+    }
   }
 };
 </script>
-
 <i18n src="~/locales/base/components/object-delete-dialog.json"></i18n>
+
+<style scoped>
+.progress-container {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.progress-text {
+  margin-left: 8px;
+  font-size: 14px;
+  color: var(--v-theme-primary);
+}
+</style>
