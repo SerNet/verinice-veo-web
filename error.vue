@@ -80,37 +80,4 @@ const errorIsCustomized = computed(() => CUSTOMIZED_ERROR_PAGES.includes(props.e
 const image = computed(() => `/images/${props.error.statusCode === 404 ? 'pageNotFound' : 'defaultError'}.svg`);
 </script>
 
-<i18n>
-{
-  "en": {
-    "goToHomepage": "go to homepage",
-    "texts": {
-      "401": "Please come back later",
-      "403": "You don't have the required permissions to enter this page.",
-      "404": "The page you are looking for could not be found.",
-      "default": "An unknown error occurred."
-    },
-    "titles": {
-      "401": "login unavailable",
-      "403": "access forbidden",
-      "404": "404 not found",
-      "default": "unknown error"
-    }
-  },
-  "de": {
-    "goToHomepage": "Zur Startseite",
-    "texts": {
-      "401": "Bitte versuchen Sie es zu einem späteren Zeitpunkt erneut",
-      "403": "Sie besitzen nicht die notwendigen Berechtigungen, um diese Seite aufzurufen.",
-      "404": "Die gesuchte Seite konnte leider nicht gefunden werden.",
-      "default": "An unknown error occurred."
-    },
-    "titles": {
-      "401": "login nicht verfügbar",
-      "403": "zugriff verweigert",
-      "404": "nicht gefunden",
-      "default": "unbekannter Fehler"
-    }
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/error.json"></i18n>

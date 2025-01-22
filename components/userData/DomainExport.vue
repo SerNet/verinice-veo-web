@@ -69,4 +69,5 @@ function handleError(error: unknown) {
   state.showAlert = true;
 }
 </script>
-<i18n src="./messages.json"></i18n>
+
+<i18n src="~/locales/base/components/userData-messages.json"></i18n>

@@ -127,16 +127,7 @@ onBeforeMount(() => {
 });
 </script>
 
-<i18n>
-{
-  "en": {
-    "openDocumentationInNewTab": "Open documentation in new tab"
-  },
-  "de": {
-    "openDocumentationInNewTab": "Dokumentation in neuem Tab öffnen"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/layout-default.json"></i18n>
 
 <style lang="scss" module>
 .app-bar {
