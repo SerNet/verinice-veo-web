@@ -27,10 +27,25 @@
         @update:filter="updateRoute"
       />
 
-      <SearchBar v-model:search="search" />
+      <div class="actions">
+        <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
+          <v-btn
+            v-if="selectedItems.length > 0"
+            :icon="mdiTrashCanOutline"
+            variant="text"
+            class="trash-btn ma-3"
+            @click="onBulkDelete"
+          />
+        </div>
+        <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
+          <SearchBar v-model:search="search" />
+        </div>
+      </div>
 
       <BaseCard v-if="filter.objectType || endpointsLoading">
         <ObjectTable
+          :key="tableKey"
+          v-model="selectedItems"
           v-model:page="page"
           v-model:sort-by="sortBy"
           :items="items"
@@ -47,6 +62,7 @@
             'actions'
           ]"
           :additional-headers="additionalHeaders"
+          show-select
           data-component-name="object-overview-table"
           enable-click
           @click="openItem"
@@ -73,11 +89,11 @@
 
         <!-- Dialogs -->
         <ObjectDeleteDialog
-          :model-value="!!itemToDelete"
-          :item="itemToDelete"
+          :model-value="showDeleteDialog"
+          :items="itemsToDelete"
           @update:model-value="onCloseDeleteDialog({ isOpen: false, isCancel: true })"
-          @success="onCloseDeleteDialog({ isOpen: false })"
-          @error="showError('delete', itemToDelete, $event)"
+          @success="onCloseDeleteDialog({ isOpen: false }, $event)"
+          @error="showError('delete', $event)"
         />
 
         <ObjectAssignDialog
@@ -379,7 +395,7 @@ const createObjectLabel = computed(() =>
   : formatObjectLabel('objectType', filter.value.objectType)
 );
 
-const showError = (messageKey: 'clone' | 'delete', _item: IVeoEntity | undefined, error: Error) => {
+const showError = (messageKey: 'clone' | 'delete', error: Error) => {
   displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
 };
 
@@ -402,16 +418,23 @@ const openItem = ({ item }: { item: any }) => {
 const createObjectDialogVisible = ref(false);
 
 // Delete object
-const itemToDelete = ref<IVeoEntity>();
-const resetItemToDelete = () => (itemToDelete.value = undefined);
-
-const onCloseDeleteDialog = ({ isOpen, isCancel = false }: { isOpen: boolean; isCancel?: boolean }) => {
+const itemsToDelete = ref<IVeoEntity[]>([]);
+const resetItemsToDelete = () => {
+  showDeleteDialog.value = false;
+  itemsToDelete.value = [];
+};
+const onCloseDeleteDialog = (
+  { isOpen, isCancel = false }: { isOpen: boolean; isCancel?: boolean },
+  multiple?: boolean
+) => {
   if (!isOpen && isCancel) {
-    return resetItemToDelete();
+    return resetItemsToDelete();
   }
   if (!isOpen && !isCancel) {
-    displaySuccessMessage(t('objectDeleted'));
-    return resetItemToDelete();
+    displaySuccessMessage(multiple ? t('objectsDeleted') : t('objectDeleted'));
+    selectedItems.value = [];
+    tableKey.value += 1;
+    return resetItemsToDelete();
   }
 };
 
@@ -446,7 +469,7 @@ const actions = computed(() => [
           ]
         });
       } catch (e: any) {
-        showError('clone', item, e);
+        showError('clone', e);
       }
     }
   },
@@ -455,7 +478,8 @@ const actions = computed(() => [
     label: upperFirst(t('deleteObject')),
     icon: mdiTrashCanOutline,
     action(item: any) {
-      itemToDelete.value = item;
+      itemsToDelete.value = [item];
+      showDeleteDialog.value = true;
     }
   },
   {
@@ -521,6 +545,48 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
     ]
   : []
 );
+const tableKey = ref(0);
+const selectedItems = ref<IVeoEntity[]>([]);
+const showDeleteDialog = ref(false);
+const onBulkDelete = () => {
+  itemsToDelete.value = selectedItems.value;
+  showDeleteDialog.value = true;
+};
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-index.json"></i18n>
+
+<style scoped>
+.actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-items: center;
+}
+
+.actions__bulk__wrapper {
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  margin-bottom: 22px;
+}
+
+.actions__bulk__wrapper.visible {
+  opacity: 1;
+}
+
+.search-wrapper {
+  width: 100%;
+  margin-left: 0;
+  transition:
+    margin-left 0.2s ease,
+    width 0.2s ease;
+}
+
+.search-shrunk {
+  width: calc(100% - 72px);
+  margin-left: 72px;
+}
+</style>

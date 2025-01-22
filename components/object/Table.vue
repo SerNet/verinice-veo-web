@@ -17,9 +17,11 @@
 -->
 <template>
   <BaseTable
+    v-model="toRef(modelValue).value"
     v-bind="mergeProps(props, attrs)"
     :additional-headers="mergedAdditionalHeaders"
     :default-headers="unmatchedDefaultHeaders"
+    :show-select="showSelect"
     @update:model-value="emit('update:model-value', $event)"
     @update:items-per-page="emit('update:items-per-page', $event)"
     @update:page="emit('update:page', $event)"
@@ -35,11 +37,12 @@
 <script setup lang="ts">
 import { mergeProps } from 'vue';
 
+import type { SortItem, TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
 import ObjectIcon from '~/components/object/Icon.vue';
-import { useFormatters } from '~/composables/utils';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import type { SortItem, TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
+import { useFormatters } from '~/composables/utils';
+import { IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
@@ -82,6 +85,7 @@ const props = withDefaults(
      * This text will be shown in place of the table when `items` array is empty.
      */
     noDataText?: () => any;
+    showSelect?: boolean;
   }>(),
   {
     items: () => [],
@@ -92,7 +96,8 @@ const props = withDefaults(
     additionalHeaders: () => [],
     showAllColumns: false,
     enableClick: false,
-    noDataText: () => ''
+    noDataText: () => '',
+    showSelect: false
   }
 );
 
@@ -173,7 +178,7 @@ const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
 const formatDate: TableFormatter = (v: any) => {
   try {
     return formatDateTime(new Date(v)).value;
-  } catch (e) {
+  } catch (e: any) {
     return `${e.message}`;
   }
 };
@@ -188,10 +193,10 @@ const renderStatus: TableRenderer = ({ item }: { item: any }) => {
     `${translations.value?.lang?.[locale.value]?.[key] || item?.status || ''}`
   ]);
 };
-
 /**
  * Headers that are used by multiple tables, thus it makes sense to define them in one place
  */
+
 const recurringHeaders: { [key: string]: TableHeader } = {
   icon: {
     value: 'icon',

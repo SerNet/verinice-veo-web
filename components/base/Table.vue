@@ -496,44 +496,70 @@ const itemsPerPageOptions = [
   { value: 50, title: '50' },
   { value: 100, title: '100' }
 ];
+const hasShowSelect = computed(() => 'show-select' in attrs);
 
-const sharedProps = computed(() => ({
-  ...attrs,
-  id: `veo-object-table-${vm?.uid}`,
-  items: items.value,
-  itemsPerPage: tablePageSize.value,
-  itemsPerPageOptions: itemsPerPageOptions,
-  modelValue: internalModelValue.value,
-  mustSort: true,
-  headers: normalizedDisplayHeaders.value,
-  page: localPage.value,
-  sortBy: localSortBy.value,
-  ...(props.enableClick || 'show-select' in attrs ?
-    {
-      'onClick:row': (_event: PointerEvent, context: any) => {
-        if ('show-select' in attrs) {
-          toggleSelection(context);
-        } else {
-          emit('click', context);
-        }
-      }
+const sharedProps = computed(() => {
+  function handleRowClick(event: PointerEvent, context: any) {
+    if (props.enableClick && !isCheckboxClick(event)) {
+      handleRowEvent(event, context);
+    } else if (hasShowSelect.value) {
+      toggleSelection(context);
     }
-  : {}),
-  'onUpdate:modelValue': (newValue: string[]) => (internalModelValue.value = newValue),
-  'onUpdate:page': (newValue: number) => {
-    localPage.value = newValue;
-  },
-  'onUpdate:itemsPerPage': (newValue: number) => {
-    tablePageSize.value = newValue;
-    emit('update:items-per-page', newValue);
-  },
-  'onUpdate:sortBy': (newValue: SortItem[]) => {
-    localSortBy.value = newValue;
-  },
-  ref: tableWrapper,
-  'data-table-sorted-column-name': localSortBy.value[0].key,
-  'data-table-sort-order': localSortBy.value[0].order
-}));
+
+    function isCheckboxClick(event: PointerEvent) {
+      return (event.target as Element)?.closest('.v-checkbox');
+    }
+
+    function handleRowEvent(event: PointerEvent, context: any) {
+      event.stopImmediatePropagation();
+      emit('click', context);
+    }
+  }
+  // Extract complex event handlers into separate variables
+  const onClickRowHandler =
+    props.enableClick || hasShowSelect.value ?
+      {
+        'onClick:row': handleRowClick
+      }
+    : {};
+
+  return {
+    // Spread attributes first to allow overrides
+    ...attrs,
+    id: `veo-object-table-${vm?.uid}`,
+    items: items.value,
+    itemsPerPage: tablePageSize.value,
+    itemsPerPageOptions: itemsPerPageOptions,
+    modelValue: internalModelValue.value,
+    mustSort: true,
+    headers: normalizedDisplayHeaders.value,
+    page: localPage.value,
+    sortBy: localSortBy.value,
+
+    // Spread conditional event handlers
+    ...onClickRowHandler,
+
+    // Update handlers
+    'onUpdate:modelValue': (newValue: string[]) => {
+      internalModelValue.value = newValue;
+    },
+    'onUpdate:page': (newValue: number) => {
+      localPage.value = newValue;
+    },
+    'onUpdate:itemsPerPage': (newValue: number) => {
+      tablePageSize.value = newValue;
+      emit('update:items-per-page', newValue);
+    },
+    'onUpdate:sortBy': (newValue: SortItem[]) => {
+      localSortBy.value = newValue;
+    },
+
+    // References and data attributes
+    ref: tableWrapper,
+    'data-table-sorted-column-name': localSortBy.value[0]?.key,
+    'data-table-sort-order': localSortBy.value[0]?.order
+  };
+});
 
 const render = () => {
   const dataTableProps = {
