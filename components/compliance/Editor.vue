@@ -166,7 +166,6 @@ import { useDate } from 'vuetify';
 import type { IVeoLink, IVeoEntity, RequirementImplementation, ResponsiblePerson } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-import type { ComputedRef, Ref } from 'vue';
 import { isVeoLink, validateType } from '~/types/utils';
 
 const { data: config } = useConfiguration();
