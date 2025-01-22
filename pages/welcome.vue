@@ -250,4 +250,4 @@ function navigateToUnits() {
 }
 </script>
 
-<i18n src="./units/messages.json" />
+<i18n src="~/locales/base/pages/units-create.json"></i18n>
