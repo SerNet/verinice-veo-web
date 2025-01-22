@@ -48,20 +48,19 @@ describe('Copy elements', () => {
             texts.push(Cypress.$(cell).text());
           });
 
-          const abb = texts[2];
-          const name = texts[3];
-          const status = texts[4];
+          const abb = texts[3];
+          const name = texts[4];
+          const status = texts[5];
 
           cy.wait('@cloneElement').its('response.statusCode').should('eq', 201);
           cy.wait('@getClonedElement').its('response.statusCode').should('eq', 200);
-
           verifyElementCopy(abb, name, status);
         });
       });
     });
 
     function verifyElementCopy(abb: string, name: string, status: string) {
-      cy.getCustom('tr')
+      cy.getCustom('.v-data-table__tr')
         .filter((index, row) => {
           const rowText = Cypress.$(row).text();
           return rowText.includes(abb) && rowText.includes(`${name} (duplicated)`) && rowText.includes(status);
