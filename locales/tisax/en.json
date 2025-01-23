@@ -3,7 +3,7 @@
   "control": "Criteria catalog",
   "addControls": "Add criteria catalog",
   "linkControl": "Select {0}",
-  "riEdtior": {
+  "riEditor": {
     "targetObject": "Information Security Assessment",
     "description": "Description",
     "abbreviation": "Abbreviation",

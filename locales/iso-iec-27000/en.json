@@ -3,7 +3,7 @@
   "control": "Requirement catalog",
   "addControls": "Add requirement catalog",
   "linkControl": "Select {0}",
-  "riEdtior": {
+  "riEditor": {
     "targetObject": "ISMS scope",
     "description": "Description",
     "abbreviation": "Abbreviation",

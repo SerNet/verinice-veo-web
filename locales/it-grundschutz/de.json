@@ -3,7 +3,7 @@
   "control": "Baustein",
   "addControls": "Baustein hinzufügen",
   "linkControl": "{0} modellieren",
-  "riEdtior": {
+  "riEditor": {
     "targetObject": "Zielobjekt",
     "description": "Beschreibung",
     "abbreviation": "Abkürzung",

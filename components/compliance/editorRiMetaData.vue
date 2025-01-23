@@ -56,7 +56,7 @@ function render() {
         ])
       ]);
     default:
-      return textField(t(label), data[key]);
+      return textField(t(`riEditor.${label}`), data[key]);
   }
 }
 

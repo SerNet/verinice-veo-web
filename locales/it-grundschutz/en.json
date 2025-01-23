@@ -1,9 +1,9 @@
 {
   "controls": "Modules",
   "control": "Modul",
-  "addControls": "Baustein hinzufügen",
+  "addControls": "Add controls",
   "linkControl": "Model {0}",
-  "riEdtior": {
+  "riEditor": {
     "targetObject": "Target object",
     "description": "Description",
     "abbreviation": "Abbreviation",

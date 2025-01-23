@@ -1,70 +1,74 @@
 {
   "de": {
-    "requirement": "Anforderung",
-    "requirementDescription": "Anforderungsbeschreibung",
-    "noRequirementDescriptionAvailable": "Kein Inhalt verfügbar.",
-    "targetObject": "Zielobjekt",
-    "description": "Beschreibung",
-    "originationDescription": "Umsetzungsbeschreibung",
-    "origination": "Umsetzungsherkunft",
-    "originationValues": {
-      "SystemSpecific": "Systemspezifisch",
-      "Inherited": "Vererbung",
-      "Organisation": "Organisation"
-    },
-    "status": "Status",
-    "statusValues": {
-      "Unknown": "Unbearbeitet",
-      "Yes": "Ja",
-      "Partial": "Teilweise",
-      "No": "Nein",
-      "NA": "Entbehrlich"
-    },
-    "responsible": "Verantwortlich",
-    "editRequirementImplementation": "Umsetzung bearbeiten",
-    "requirementImplementationNotUpdated": "Umsetzung konnte nicht aktualisiert werden.",
-    "requirementImplementationUpdated": "Umsetzung wurde erfolgreich aktualisiert.",
-    "name": "Name",
-    "protectionApproach": "Vorgehensweise",
-    "implementationUntil": "Umsetzung bis",
-    "abbreviation": "Abkürzung",
-    "implementation": "Umsetzung",
-    "targetObjectLabel": "Zuordnung",
-    "id": "ID",
-    "designator": "Designator"
+    "riEditor": {
+      "requirement": "Anforderung",
+      "requirementDescription": "Anforderungsbeschreibung",
+      "noRequirementDescriptionAvailable": "Kein Inhalt verfügbar.",
+      "targetObject": "Zielobjekt",
+      "description": "Beschreibung",
+      "originationDescription": "Umsetzungsbeschreibung",
+      "origination": "Umsetzungsherkunft",
+      "originationValues": {
+        "SystemSpecific": "Systemspezifisch",
+        "Inherited": "Vererbung",
+        "Organisation": "Organisation"
+      },
+      "status": "Status",
+      "statusValues": {
+        "Unknown": "Unbearbeitet",
+        "Yes": "Ja",
+        "Partial": "Teilweise",
+        "No": "Nein",
+        "NA": "Entbehrlich"
+      },
+      "responsible": "Verantwortlich",
+      "editRequirementImplementation": "Umsetzung bearbeiten",
+      "requirementImplementationNotUpdated": "Umsetzung konnte nicht aktualisiert werden.",
+      "requirementImplementationUpdated": "Umsetzung wurde erfolgreich aktualisiert.",
+      "name": "Name",
+      "protectionApproach": "Vorgehensweise",
+      "implementationUntil": "Umsetzung bis",
+      "abbreviation": "Abkürzung",
+      "implementation": "Umsetzung",
+      "targetObjectLabel": "Zuordnung",
+      "id": "ID",
+      "designator": "Designator"
+    }
   },
   "en": {
-    "requirement": "Requirement",
-    "requirementDescription": "Description",
-    "noRequirementDescriptionAvailable": "No content available.",
-    "targetObject": "Target object",
-    "description": "Description",
-    "origination": "Origination",
-    "originationDescription": "Implementation description",
-    "originationValues": {
-      "SystemSpecific": "System specific",
-      "Inherited": "Inheritance",
-      "Organisation": "Organization"
-    },
-    "status": "Status",
-    "statusValues": {
-      "Unknown": "unedited",
-      "Yes": "yes",
-      "Partial": "partial",
-      "No": "no",
-      "NA": "dispensable"
-    },
-    "responsible": "Responsible",
-    "editRequirementImplementation": "Edit implementation",
-    "requirementImplementationNotUpdated": "Implementation could not be updated.",
-    "requirementImplementationUpdated": "Implementation successfully updated.",
-    "name": "Name",
-    "protectionApproach": "Protection approach",
-    "implementationUntil": "Implementation by",
-    "abbreviation": "Abbreviation",
-    "implementation": "Implementation",
-    "targetObjectLabel": "Assignment",
-    "id": "ID",
-    "designator": "Designator"
+    "riEditor": {
+      "requirement": "Requirement",
+      "requirementDescription": "Description",
+      "noRequirementDescriptionAvailable": "No content available.",
+      "targetObject": "Target object",
+      "description": "Description",
+      "origination": "Origination",
+      "originationDescription": "Implementation description",
+      "originationValues": {
+        "SystemSpecific": "System specific",
+        "Inherited": "Inheritance",
+        "Organisation": "Organization"
+      },
+      "status": "Status",
+      "statusValues": {
+        "Unknown": "unedited",
+        "Yes": "yes",
+        "Partial": "partial",
+        "No": "no",
+        "NA": "dispensable"
+      },
+      "responsible": "Responsible",
+      "editRequirementImplementation": "Edit implementation",
+      "requirementImplementationNotUpdated": "Implementation could not be updated.",
+      "requirementImplementationUpdated": "Implementation successfully updated.",
+      "name": "Name",
+      "protectionApproach": "Protection approach",
+      "implementationUntil": "Implementation by",
+      "abbreviation": "Abbreviation",
+      "implementation": "Implementation",
+      "targetObjectLabel": "Assignment",
+      "id": "ID",
+      "designator": "Designator"
+    }
   }
 }

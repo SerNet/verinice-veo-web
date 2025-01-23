@@ -17,7 +17,7 @@
 <template>
   <BaseDialog
     :model-value="showDialog"
-    :title="t('editRequirementImplementation')"
+    :title="t('riEditor.editRequirementImplementation')"
     :close-disabled="view.isLoading || view.formIsDirty"
     large
     fixed-footer
@@ -36,7 +36,7 @@
         <!-- Read only text fields -->
 
         <!-- Target object  -->
-        <v-label class="mt-4">{{ t('targetObject') }}</v-label>
+        <v-label class="mt-4">{{ t('riEditor.targetObject') }}</v-label>
         <BaseCard border padding>
           <ComplianceEditorRiMetaData
             v-for="property in config.riEditor.renderedProperties.targetObject"
@@ -60,13 +60,13 @@
         </BaseCard>
 
         <!-- Editable implementation details -->
-        <v-label class="mt-4">{{ t('implementation') }}</v-label>
+        <v-label class="mt-4">{{ t('riEditor.implementation') }}</v-label>
 
         <BaseCard border padding margin-bottom>
           <!-- Responsible person -->
           <v-autocomplete
             v-model="form.responsible"
-            :label="t('responsible')"
+            :label="t('riEditor.responsible')"
             :items="persons"
             clearable
             item-title="name"
@@ -84,8 +84,8 @@
         -->
           <v-date-input
             v-model="form.implementationUntil"
-            :label="t('implementationUntil')"
-            :placeholder="t('inputPlaceholders.date')"
+            :label="t('riEditor.implementationUntil')"
+            :placeholder="t('riEditor.inputPlaceholders.date')"
             data-veo-test="compliance-editor-ri-implementation-date"
             prepend-icon=""
             prepend-inner-icon="$calendar"
@@ -97,11 +97,11 @@
           <!-- Status -->
           <v-radio-group v-model="form.status" inline>
             <template #label>
-              <div>{{ t('status') }}</div>
+              <div>{{ t('riEditor.status') }}</div>
             </template>
             <template v-for="(key, value) in Status" :key="key">
               <v-radio
-                :label="t(`statusValues.${value}`)"
+                :label="t(`riEditor.statusValues.${value}`)"
                 :value="`${key}`"
                 :data-veo-test="`compliance-editor-staus-${value}`"
               />
@@ -111,7 +111,7 @@
           <!-- Description -->
           <v-textarea
             v-model="form.implementationStatement"
-            :label="t('description')"
+            :label="t('riEditor.description')"
             variant="underlined"
             data-veo-test="compliance-editor-description"
           />
@@ -396,9 +396,9 @@ async function submitForm({
       requirementId: item?.control?.id,
       requirementImplementation: requirementImplementation
     });
-    displaySuccessMessage(t('requirementImplementationUpdated'));
+    displaySuccessMessage(t('riEditor.requirementImplementationUpdated'));
   } catch (error: any) {
-    displayErrorMessage(t('requirementImplementationNotUpdated'), error.message);
+    displayErrorMessage(t('riEditor.requirementImplementationNotUpdated'), error.message);
   } finally {
     view.isLoading = false;
     emit('update:show-dialog', false);
