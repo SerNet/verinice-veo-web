@@ -1,1 +1,14 @@
-{ "control": "Module", "controls": "Modules", "addControls": "Add modules", "linkControl": "Model modules" }
+{
+  "controls": "Modules",
+  "control": "Modul",
+  "addControls": "Baustein hinzufügen",
+  "linkControl": "Model {0}",
+  "riEdtior": {
+    "targetObject": "Target object",
+    "description": "Description",
+    "abbreviation": "Abbreviation",
+    "protectionApproach": "Protection approach",
+    "name": "Name",
+    "originationDescription": "Requirement description"
+  }
+}

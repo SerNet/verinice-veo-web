@@ -2,5 +2,13 @@
   "controls": "Bausteine",
   "control": "Baustein",
   "addControls": "Baustein hinzufügen",
-  "linkControl": "{0} modellieren"
+  "linkControl": "{0} modellieren",
+  "riEdtior": {
+    "targetObject": "Zielobjekt",
+    "description": "Beschreibung",
+    "abbreviation": "Abkürzung",
+    "protectionApproach": "Vorgehensweise",
+    "name": "Name",
+    "originationDescription": "Anforderungsbeschreibung"
+  }
 }

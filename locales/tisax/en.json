@@ -1,0 +1,15 @@
+{
+  "controls": "Criteria catalogs",
+  "control": "Criteria catalog",
+  "addControls": "Add criteria catalog",
+  "linkControl": "Select {0}",
+  "riEdtior": {
+    "targetObject": "Information Security Assessment",
+    "description": "Description",
+    "abbreviation": "Abbreviation",
+    "control_isaControl_headingLevel1": "Top category",
+    "control_isaControl_headingLevel2": "Subcategory",
+    "name": "Name",
+    "originationDescription": "Requirement description"
+  }
+}

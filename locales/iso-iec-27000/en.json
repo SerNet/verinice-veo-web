@@ -1,0 +1,13 @@
+{
+  "controls": "Requirement catalogs",
+  "control": "Requirement catalog",
+  "addControls": "Add requirement catalog",
+  "linkControl": "Select {0}",
+  "riEdtior": {
+    "targetObject": "ISMS scope",
+    "description": "Description",
+    "abbreviation": "Abbreviation",
+    "name": "Name",
+    "originationDescription": "Requirement description"
+  }
+}

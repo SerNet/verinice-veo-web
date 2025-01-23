@@ -1,0 +1,15 @@
+{
+  "controls": "Kriterienkataloge",
+  "control": "Kriterienkatalog",
+  "addControls": "Kriterienkatalog hinzufügen",
+  "linkControl": "{0} auswählen",
+  "riEdtior": {
+    "targetObject": "Information Security Assessment",
+    "description": "Beschreibung",
+    "abbreviation": "Abkürzung",
+    "control_isaControl_headingLevel1": "Oberkategorie",
+    "control_isaControl_headingLevel2": "Unterkategorie",
+    "name": "Name",
+    "originationDescription": "Anforderungsbeschreibung"
+  }
+}

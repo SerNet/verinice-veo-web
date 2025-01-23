@@ -1,0 +1,13 @@
+{
+  "controls": "Anforderungskataloge",
+  "control": "Anforderungskatalog",
+  "addControls": "Anforderungskatalog hinzufügen",
+  "linkControl": "{0} auswählen",
+  "riEdtior": {
+    "targetObject": "ISMS Anwendungsbereich",
+    "description": "Beschreibung",
+    "abbreviation": "Abkürzung",
+    "name": "Name",
+    "originationDescription": "Anforderungsbeschreibung"
+  }
+}
