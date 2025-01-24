@@ -38,43 +38,25 @@
         <!-- Target object  -->
         <v-label class="mt-4">{{ t('targetObject') }}</v-label>
         <BaseCard border padding>
-          <v-text-field
+          <ComplianceEditorRiMetaData
             v-for="property in config.riEditor.renderedProperties.targetObject"
             :key="property.key"
-            :label="t(`${property.label}`)"
-            :model-value="form?.origin?.[property?.key]"
-            disabled
-            variant="underlined"
-            data-veo-test="compliance-editor-target-object"
+            :property="property"
+            :data="form.origin"
+            :additional-info="additionalInfo"
           />
         </BaseCard>
 
         <!-- Control -->
         <v-label class="mt-4">{{ ciSubType }}</v-label>
         <BaseCard border padding>
-          <v-text-field
+          <ComplianceEditorRiMetaData
             v-for="property in config.riEditor.renderedProperties.control"
             :key="property.key"
-            :label="t(`${property.label}`)"
-            :model-value="form?.control?.[property?.key]"
-            disabled
-            variant="underlined"
-            :data-veo-test="`compliance-editor-control-${property.key}`"
+            :property="property"
+            :data="form.control"
+            :additional-info="additionalInfo"
           />
-
-          <!-- Foldable Requirement Description -->
-          <v-expansion-panels>
-            <v-expansion-panel>
-              <template #title>
-                {{ t('originationDescription') }}
-              </template>
-              <template #text>
-                <!-- eslint-disable-next-line vue/no-v-html -- input sanitized -->
-                <div v-if="additionalInfo.originationDescription" v-html="sanitizedDescription"></div>
-                <div v-else>{{ t('noRequirementDescriptionAvailable') }}</div>
-              </template>
-            </v-expansion-panel>
-          </v-expansion-panels>
         </BaseCard>
 
         <!-- Editable implementation details -->
@@ -342,6 +324,48 @@ additionalInfo.value.protectionApproachTranslation = computed(() =>
     locale: props.locale,
     protectionApproach: additionalInfo.value.protectionApproach
   })
+);
+
+/**
+ * Information to be shown as meta data
+ * It does not come whith `props.item` and thus has to be fetched
+ * You will not need it to PUT a requirement implementation
+ * -> It is solely for the purpose of displaying informative data to users
+ * That is why we write it into a separate variable
+ */
+export type TAdditionalInfo = {
+  originationDescription?: string;
+  protectionApproach?: string;
+  targetObjectDescription?: string;
+  protectionApproachTranslation?: string;
+};
+const additionalInfo = ref<TAdditionalInfo>({});
+
+const updateAdditionalInfo = (control: IVeoEntity, targetObject: IVeoEntity, protectionApproachTranslation: string) => {
+  // Target object
+  additionalInfo.value.targetObjectDescription = targetObject?.description;
+
+  // Control
+  const customAspects = control?.customAspects;
+  if (!customAspects) return;
+
+  additionalInfo.value.originationDescription =
+    customAspects?.control_bpCompendium?.control_bpCompendium_content ?? control?.description ?? '';
+  additionalInfo.value.protectionApproach =
+    customAspects?.['control_bpInformation']?.control_bpInformation_protectionApproach;
+  additionalInfo.value.protectionApproachTranslation = protectionApproachTranslation;
+};
+
+watch(
+  [control, targetObject, protectionApproachTranslation],
+  () => updateAdditionalInfo(control.value, targetObject.value, protectionApproachTranslation.value),
+  { immediate: true }
+);
+
+const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
+  toRef(() => control.value?.type),
+  toRef(() => control.value?.subType),
+  false
 );
 
 // Fetch again to get all persons in current domain + unit

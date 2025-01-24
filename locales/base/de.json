@@ -188,5 +188,6 @@
     "name": "Name",
     "description": "Beschreibung"
   },
-  "VdA": "Vorgehensweise"
+  "VdA": "Vorgehensweise",
+  "na": "N/A"
 }
