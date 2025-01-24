@@ -3,8 +3,9 @@
     "requirement": "Anforderung",
     "requirementDescription": "Anforderungsbeschreibung",
     "noRequirementDescriptionAvailable": "Kein Inhalt verfügbar.",
-    "riskAffected": "Zielobjekt",
-    "description": "Umsetzungsbeschreibung",
+    "targetObject": "Zielobjekt",
+    "description": "Beschreibung",
+    "originationDescription": "Umsetzungsbeschreibung",
     "origination": "Umsetzungsherkunft",
     "originationValues": {
       "SystemSpecific": "Systemspezifisch",
@@ -28,17 +29,20 @@
     "implementationUntil": "Umsetzung bis",
     "abbreviation": "Abkürzung",
     "implementation": "Umsetzung",
-    "riskAffectedLabel": "Zuordnung"
+    "targetObjectLabel": "Zuordnung",
+    "id": "ID",
+    "designator": "Designator"
   },
   "en": {
     "requirement": "Requirement",
     "requirementDescription": "Description",
     "noRequirementDescriptionAvailable": "No content available.",
-    "riskAffected": "Target object",
-    "description": "Beschreibung",
-    "origination": "Herkunft",
+    "targetObject": "Target object",
+    "description": "Description",
+    "origination": "Origination",
+    "originationDescription": "Implementation description",
     "originationValues": {
-      "SystemSpecific": "system specific",
+      "SystemSpecific": "System specific",
       "Inherited": "Inheritance",
       "Organisation": "Organization"
     },
@@ -50,7 +54,7 @@
       "No": "no",
       "NA": "dispensable"
     },
-    "responsible": "responsible",
+    "responsible": "Responsible",
     "editRequirementImplementation": "Edit implementation",
     "requirementImplementationNotUpdated": "Implementation could not be updated.",
     "requirementImplementationUpdated": "Implementation successfully updated.",
@@ -59,6 +63,8 @@
     "implementationUntil": "Implementation by",
     "abbreviation": "Abbreviation",
     "implementation": "Implementation",
-    "riskAffectedLabel": "Assignment"
+    "targetObjectLabel": "Assignment",
+    "id": "ID",
+    "designator": "Designator"
   }
 }
