@@ -48,7 +48,9 @@ export default defineNuxtPlugin(async (nuxtApp) => {
   watch(
     () => [currentDomain.value, $i18n.locale.value, authenticated.value],
     async () => {
-      await setMessages($i18n.locale?.value, authenticated.value, currentDomain.value?.abbreviation);
+      if (!currentDomain.value?.name) return;
+      const domainName = currentDomain.value.name.replace(/[^a-zA-Z\d]/g, '-').toLowerCase();
+      await setMessages($i18n.locale?.value, authenticated.value, domainName);
     },
     { immediate: true }
   );
