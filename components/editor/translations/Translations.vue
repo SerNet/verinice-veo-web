@@ -379,4 +379,4 @@ const transformedTranslations = computed(() => {
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-translations-Translations.json"></i18n>
+<i18n src="~/locales/base/components/editor-translations-translations.json"></i18n>

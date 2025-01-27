@@ -197,7 +197,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-WizardStateCreate.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-wizard-state-create.json"></i18n>
 
 <style lang="scss" scoped>
 span {

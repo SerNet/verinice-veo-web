@@ -174,7 +174,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/risk-RiskProbabilitySection.json"></i18n>
+<i18n src="~/locales/base/components/risk-risk-probability-section.json"></i18n>
 
 <style lang="scss" scoped>
 .v-small-dialog__activator :v-deep(*) {

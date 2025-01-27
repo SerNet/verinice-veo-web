@@ -569,7 +569,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/object-Form.json"></i18n>
+<i18n src="~/locales/base/components/object-form.json"></i18n>
 
 <style lang="scss" module>
 .object-side-container-select {

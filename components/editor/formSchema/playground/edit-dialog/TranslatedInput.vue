@@ -165,4 +165,4 @@ const onInput = (newValue: string) => {
 };
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-TranslatedInput.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-playground-edit-dialog-translated-input.json"></i18n>

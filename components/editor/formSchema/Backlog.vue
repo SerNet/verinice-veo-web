@@ -507,7 +507,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-Backlog.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-backlog.json"></i18n>
 
 <style lang="scss" scoped>
 .v-expansion-panel-text:deep(.v-expansion-panel-text__wrap) {

@@ -60,7 +60,7 @@ const createUrl = (revision: IVeoLegacyObjectHistoryEntry, schemas: IVeoSchemaEn
 };
 </script>
 
-<i18n src="~/locales/base/components/widget-MyLatestRevisions.json"></i18n>
+<i18n src="~/locales/base/components/widget-my-latest-revisions.json"></i18n>
 
 <style lang="scss" scoped>
 a {

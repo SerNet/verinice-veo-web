@@ -88,4 +88,4 @@ const isMessageFallback = computed<boolean>(
 );
 </script>
 
-<i18n src="~/locales/base/components/object-UnlinkDialog.json"></i18n>
+<i18n src="~/locales/base/components/object-unlink-dialog.json"></i18n>

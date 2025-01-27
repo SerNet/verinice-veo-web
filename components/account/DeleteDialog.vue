@@ -95,4 +95,4 @@ const deleteAccount = async () => {
 };
 </script>
 
-<i18n src="~/locales/base/components/account-DeleteDialog.json"></i18n>
+<i18n src="~/locales/base/components/account-delete-dialog.json"></i18n>

@@ -304,4 +304,4 @@ watch(
 );
 </script>
 
-<i18n src="~/locales/base/components/editor-objectSchema-WizardDialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-object-schema-wizard-dialog.json"></i18n>

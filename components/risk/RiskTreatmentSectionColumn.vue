@@ -133,7 +133,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/risk-RiskTreatmentSectionColumn.json"></i18n>
+<i18n src="~/locales/base/components/risk-risk-treatment-section-column.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-risk-dialog__risk-treatment-selection :deep(.v-select__selections) {

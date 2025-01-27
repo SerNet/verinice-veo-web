@@ -592,7 +592,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/object-LinkDialog.json"></i18n>
+<i18n src="~/locales/base/components/object-link-dialog.json"></i18n>
 
 <style>
 #link-dialog-select-all .v-data-table__thead .v-selection-control__input {

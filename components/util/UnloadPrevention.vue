@@ -43,4 +43,4 @@ export default {
 };
 </script>
 
-<i18n src="~/locales/base/components/util-UnloadPrevention.json"></i18n>
+<i18n src="~/locales/base/components/util-unload-prevention.json"></i18n>

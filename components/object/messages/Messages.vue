@@ -83,4 +83,4 @@ watch(
 );
 </script>
 
-<i18n src="~/locales/base/components/object-messages-Messages.json"></i18n>
+<i18n src="~/locales/base/components/object-messages-messages.json"></i18n>

@@ -430,7 +430,7 @@ watch(() => queryResultMap, updateTitle, { deep: true, immediate: true });
 watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 </script>
 
-<i18n src="~/locales/base/components/layout-Breadcrumbs.json"></i18n>
+<i18n src="~/locales/base/components/layout-breadcrumbs.json"></i18n>
 
 <style lang="scss" scoped>
 :deep(.capitalize) {

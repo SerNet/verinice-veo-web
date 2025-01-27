@@ -162,4 +162,4 @@ const elementTypeModelValue = computed({
 const elementsWithOptions = ['Radio', 'LinksField'];
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-ControlElementSettings.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-playground-edit-dialog-control-element-settings.json"></i18n>

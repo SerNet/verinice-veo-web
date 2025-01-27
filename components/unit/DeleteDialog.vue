@@ -157,4 +157,4 @@ function navigateToUserData() {
 }
 </script>
 
-<i18n src="~/locales/base/components/unit-DeleteDialog.json"></i18n>
+<i18n src="~/locales/base/components/unit-delete-dialog.json"></i18n>

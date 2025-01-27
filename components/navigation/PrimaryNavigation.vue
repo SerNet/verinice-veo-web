@@ -469,4 +469,4 @@ const primaryNavList = ref();
 provide(PROVIDE_KEYS.navigation, primaryNavList);
 </script>
 
-<i18n src="~/locales/base/components/navigation-PrimaryNavigation.json"></i18n>
+<i18n src="~/locales/base/components/navigation-primary-navigation.json"></i18n>

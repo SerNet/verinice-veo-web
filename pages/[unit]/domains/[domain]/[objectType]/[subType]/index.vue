@@ -523,4 +523,4 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() =>
 );
 </script>
 
-<i18n src="~/locales/base/pages/unit-domains-domain-objectType-subType-index.json"></i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-index.json"></i18n>

@@ -42,4 +42,4 @@ defineProps({
 const { t } = useI18n();
 </script>
 
-<i18n src="~/locales/base/components/dynamic-form-ValidationFailedError.json"></i18n>
+<i18n src="~/locales/base/components/dynamic-form-validation-failed-error.json"></i18n>

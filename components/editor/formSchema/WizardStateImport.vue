@@ -177,4 +177,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-WizardStateImport.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-wizard-state-import.json"></i18n>

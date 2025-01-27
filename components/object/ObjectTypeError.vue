@@ -32,4 +32,4 @@
 const { t } = useI18n();
 </script>
 
-<i18n src="~/locales/base/components/object-ObjectTypeError.json"></i18n>
+<i18n src="~/locales/base/components/object-object-type-error.json"></i18n>

@@ -425,7 +425,7 @@ const makeRiskObject = (
 };
 </script>
 
-<i18n src="~/locales/base/components/risk-CreateDialogSingle.json"></i18n>
+<i18n src="~/locales/base/components/risk-create-dialog-single.json"></i18n>
 
 <style lang="scss" scoped>
 :deep .text-h2 {

@@ -101,4 +101,4 @@ const deleteObject = async () => {
 };
 </script>
 
-<i18n src="~/locales/base/components/object-DeleteDialog.json"></i18n>
+<i18n src="~/locales/base/components/object-delete-dialog.json"></i18n>

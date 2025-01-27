@@ -139,4 +139,4 @@ const RadioButton: TInlineComponent = {
 };
 </script>
 
-<i18n src="~/locales/base/components/unit-Profiles.json"></i18n>
+<i18n src="~/locales/base/components/unit-profiles.json"></i18n>

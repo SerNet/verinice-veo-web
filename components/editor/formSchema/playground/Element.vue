@@ -168,7 +168,7 @@ const editElementDialogVisible = ref(false);
 const deleteElementDialogVisible = ref(false);
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-playground-Element.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-playground-element.json"></i18n>
 
 <style module lang="scss">
 .dragarea {
