@@ -230,4 +230,4 @@ const onSave = () => {
 };
 </script>
 
-<i18n src="~/locales/base/components/editor-form-schema-translation-dialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-TranslationDialog.json"></i18n>

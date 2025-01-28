@@ -56,4 +56,4 @@ const emit = defineEmits(['edit', 'delete']);
 const { t } = useI18n();
 </script>
 
-<i18n src="~/locales/base/components/editor-form-schema-playground-label-element.json"></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-LabelElement.json"></i18n>

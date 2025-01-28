@@ -65,4 +65,4 @@ const activeOptions = computed({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-form-schema-playground-edit-dialog-element-styling-options.json"></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-ElementStylingOptions.json"></i18n>

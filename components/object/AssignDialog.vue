@@ -272,4 +272,4 @@ watch(
 );
 </script>
 
-<i18n src="~/locales/base/components/object-assign-dialog.json"></i18n>
+<i18n src="~/locales/base/components/object-AssignDialog.json"></i18n>

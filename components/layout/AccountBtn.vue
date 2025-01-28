@@ -132,7 +132,7 @@ const onMenuClosed = () => {
 };
 </script>
 
-<i18n src="~/locales/base/components/layout-account-btn.json"></i18n>
+<i18n src="~/locales/base/components/layout-AccountBtn.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-account-menu > .v-card {

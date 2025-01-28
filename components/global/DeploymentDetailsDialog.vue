@@ -194,7 +194,7 @@ const privacyPolicyLink = computed(() =>
 );
 </script>
 
-<i18n src="~/locales/base/components/global-deployment-details-dialog.json"></i18n>
+<i18n src="~/locales/base/components/global-DeploymentDetailsDialog.json"></i18n>
 
 <style lang="scss" scoped>
 .logo-size {

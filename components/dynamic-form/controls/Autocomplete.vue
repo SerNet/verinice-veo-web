@@ -160,4 +160,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/dynamic-form-controls-autocomplete.json"></i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-Autocomplete.json"></i18n>

@@ -247,4 +247,4 @@ const openItem = (item: IVeoEntity) => {
 };
 </script>
 
-<i18n src="~/locales/base/components/util-object-select.json"></i18n>
+<i18n src="~/locales/base/components/util-ObjectSelect.json"></i18n>

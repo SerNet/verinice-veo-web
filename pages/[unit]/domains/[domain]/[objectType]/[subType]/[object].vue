@@ -457,4 +457,4 @@ watch(() => () => domainId.value, getAdditionalContext, {
 });
 </script>
 
-<i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-object.json"></i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-objectType-subType-object.json"></i18n>

@@ -186,4 +186,4 @@ watch(
 );
 </script>
 
-<i18n src="~/locales/base/components/catalog-default-catalog.json"></i18n>
+<i18n src="~/locales/base/components/catalog-DefaultCatalog.json"></i18n>

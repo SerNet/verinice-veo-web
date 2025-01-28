@@ -162,7 +162,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/dynamic-form-controls-markdown-editor.json"></i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-MarkdownEditor.json"></i18n>
 
 <style lang="scss">
 // Good resource how to include external .css as inline in scss

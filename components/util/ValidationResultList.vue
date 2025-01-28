@@ -92,7 +92,7 @@ const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INest
   }));
 </script>
 
-<i18n src="~/locales/base/components/util-validation-result-list.json"></i18n>
+<i18n src="~/locales/base/components/util-ValidationResultList.json"></i18n>
 
 <style lang="scss" scoped>
 .v-list {

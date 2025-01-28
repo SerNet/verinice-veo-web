@@ -106,7 +106,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-object-schema-status-list-item.json"></i18n>
+<i18n src="~/locales/base/components/editor-objectSchema-StatusListItem.json"></i18n>
 
 <style lang="scss" scoped>
 .schema-details__status-list-item {

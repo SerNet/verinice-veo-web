@@ -106,4 +106,4 @@ const cardTitle = computed(() => {
 const hasUnitName = computed(() => !(unitDetails.value?.name?.trim() === ''));
 </script>
 
-<i18n src="~/locales/base/components/unit-details.json"></i18n>
+<i18n src="~/locales/base/components/unit-Details.json"></i18n>

@@ -173,4 +173,4 @@ const closeDialog = (ignoreConfirmDialog = false) => {
 };
 </script>
 
-<i18n src="~/locales/base/components/base-dialog.json"></i18n>
+<i18n src="~/locales/base/components/base-Dialog.json"></i18n>

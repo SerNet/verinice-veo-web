@@ -206,7 +206,7 @@ function handleDelete(event: KeyboardEvent) {
 }
 </script>
 
-<i18n src="~/locales/base/components/search-bar.json"></i18n>
+<i18n src="~/locales/base/components/search-Bar.json"></i18n>
 
 <style scoped lang="scss">
 :deep(.v-combobox__menu-icon) {

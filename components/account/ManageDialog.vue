@@ -298,4 +298,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/account-manage-dialog.json"></i18n>
+<i18n src="~/locales/base/components/account-ManageDialog.json"></i18n>

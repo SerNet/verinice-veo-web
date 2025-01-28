@@ -261,7 +261,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/object-details.json"></i18n>
+<i18n src="~/locales/base/components/object-Details.json"></i18n>
 
 <style lang="scss" scoped>
 .object-details {

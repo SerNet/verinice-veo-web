@@ -78,7 +78,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/layout-collapse-button.json"></i18n>
+<i18n src="~/locales/base/components/layout-CollapseButton.json"></i18n>
 
 <style lang="scss" scoped>
 .collapse-button {

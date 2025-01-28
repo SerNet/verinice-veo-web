@@ -209,7 +209,7 @@ function translate<T>(translations: { [lang: string]: T }): T {
 }
 </script>
 
-<i18n src="~/locales/base/components/risk-risk-elements-matrix.json"></i18n>
+<i18n src="~/locales/base/components/risk-riskElements-Matrix.json"></i18n>
 
 <style scoped>
 .veo-risk-matrix {

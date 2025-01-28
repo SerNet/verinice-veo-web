@@ -91,7 +91,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-schema-code-editor.json"></i18n>
+<i18n src="~/locales/base/components/editor-SchemaCodeEditor.json"></i18n>
 
 <style scoped>
 .veo-editor-save-button {

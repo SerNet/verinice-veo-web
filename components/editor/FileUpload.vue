@@ -113,4 +113,4 @@ const sendSchema = (schema: IVeoObjectSchema | IVeoFormSchema) => {
 };
 </script>
 
-<i18n src="~/locales/base/components/editor-file-upload.json"></i18n>
+<i18n src="~/locales/base/components/editor-FileUpload.json"></i18n>

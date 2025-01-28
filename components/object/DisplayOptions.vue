@@ -77,4 +77,4 @@ const displayOptions = computed<{ title: string; value: string | undefined }[]>(
 });
 </script>
 
-<i18n src="~/locales/base/components/object-display-options.json"></i18n>
+<i18n src="~/locales/base/components/object-DisplayOptions.json"></i18n>

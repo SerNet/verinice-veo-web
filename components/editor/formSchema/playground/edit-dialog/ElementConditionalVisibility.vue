@@ -260,6 +260,4 @@ watch(() => props.formSchemaElement, onFormSchemaItemModified, {
 });
 </script>
 
-<i18n
-  src="~/locales/base/components/editor-form-schema-playground-edit-dialog-element-conditional-visibility.json"
-></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-ElementConditionalVisibility.json"></i18n>

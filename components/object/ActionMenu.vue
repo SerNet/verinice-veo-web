@@ -274,7 +274,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/object-action-menu.json"></i18n>
+<i18n src="~/locales/base/components/object-ActionMenu.json"></i18n>
 
 <style lang="scss" scoped>
 :deep(.v-speed-dial__list) {

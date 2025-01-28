@@ -65,4 +65,4 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 </script>
 
-<i18n src="~/locales/base/components/object-unsaved-changes-dialog.json"></i18n>
+<i18n src="~/locales/base/components/object-UnsavedChangesDialog.json"></i18n>

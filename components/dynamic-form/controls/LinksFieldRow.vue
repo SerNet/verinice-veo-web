@@ -167,4 +167,4 @@ const hiddenValues = computed(() =>
 );
 </script>
 
-<i18n src="~/locales/base/components/dynamic-form-controls-links-field-row.json"></i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-LinksFieldRow.json"></i18n>

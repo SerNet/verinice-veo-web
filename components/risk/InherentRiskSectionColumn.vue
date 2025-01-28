@@ -101,4 +101,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/risk-inherent-risk-section-column.json"></i18n>
+<i18n src="~/locales/base/components/risk-InherentRiskSectionColumn.json"></i18n>

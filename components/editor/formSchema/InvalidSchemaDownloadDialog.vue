@@ -39,4 +39,4 @@ const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 </script>
 
-<i18n src="~/locales/base/components/editor-form-schema-invalid-schema-download-dialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-InvalidSchemaDownloadDialog.json"></i18n>

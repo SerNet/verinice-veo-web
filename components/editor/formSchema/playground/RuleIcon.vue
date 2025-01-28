@@ -48,4 +48,4 @@ const icon = computed(() =>
 );
 </script>
 
-<i18n src="~/locales/base/components/editor-form-schema-playground-rule-icon.json"></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-RuleIcon.json"></i18n>

@@ -148,7 +148,7 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
 ]);
 </script>
 
-<i18n src="~/locales/base/components/compliance-list.json"></i18n>
+<i18n src="~/locales/base/components/compliance-List.json"></i18n>
 
 <style>
 /* Do not show a checkbox in table header */

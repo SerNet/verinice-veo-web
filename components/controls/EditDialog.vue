@@ -172,4 +172,4 @@ watch(props, () => {
 });
 </script>
 
-<i18n src="~/locales/base/components/controls-edit-dialog.json"></i18n>
+<i18n src="~/locales/base/components/controls-EditDialog.json"></i18n>

@@ -167,7 +167,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/layout-cookie-banner.json"></i18n>
+<i18n src="~/locales/base/components/layout-CookieBanner.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-cookie-banner {

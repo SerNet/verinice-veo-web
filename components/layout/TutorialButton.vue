@@ -59,4 +59,4 @@ const { load, stop, tutorialsForRoute, visible } = useTutorials();
 const { t } = useI18n();
 </script>
 
-<i18n src="~/locales/base/components/layout-tutorial-button.json"></i18n>
+<i18n src="~/locales/base/components/layout-TutorialButton.json"></i18n>

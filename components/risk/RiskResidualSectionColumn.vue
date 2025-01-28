@@ -136,7 +136,7 @@ const riskValues = computed(() =>
 );
 </script>
 
-<i18n src="~/locales/base/components/risk-risk-residual-section-column.json"></i18n>
+<i18n src="~/locales/base/components/risk-RiskResidualSectionColumn.json"></i18n>
 
 <style lang="scss" scoped>
 :deep(.v-small-dialog__activator__content) {

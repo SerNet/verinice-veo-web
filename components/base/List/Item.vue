@@ -104,7 +104,7 @@ const ItemDetails: TInlineComponent = {
 };
 </script>
 
-<i18n src="~/locales/base/components/base-list-item.json"></i18n>
+<i18n src="~/locales/base/components/base-List-Item.json"></i18n>
 
 <style scoped lang="scss">
 .v-card {

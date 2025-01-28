@@ -75,4 +75,4 @@ const onTranslationsUpdated = (newTranslations: string) => {
 };
 </script>
 
-<i18n src="~/locales/base/components/editor-translations-translations-code-editor.json"></i18n>
+<i18n src="~/locales/base/components/editor-translations-TranslationsCodeEditor.json"></i18n>

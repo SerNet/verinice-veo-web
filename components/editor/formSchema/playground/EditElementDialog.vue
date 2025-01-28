@@ -142,4 +142,4 @@ const onSave = () => {
 };
 </script>
 
-<i18n src="~/locales/base/components/editor-form-schema-playground-edit-element-dialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-EditElementDialog.json"></i18n>

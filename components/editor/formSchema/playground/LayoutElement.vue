@@ -74,7 +74,7 @@ const emit = defineEmits(['edit', 'delete']);
 const { t } = useI18n();
 </script>
 
-<i18n src="~/locales/base/components/editor-form-schema-playground-layout-element.json"></i18n>
+<i18n src="~/locales/base/components/editor-formSchema-playground-LayoutElement.json"></i18n>
 
 <style lang="scss" module>
 .child-layout-wrapper {

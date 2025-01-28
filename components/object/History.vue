@@ -151,4 +151,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/object-history.json"></i18n>
+<i18n src="~/locales/base/components/object-History.json"></i18n>

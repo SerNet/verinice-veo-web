@@ -149,4 +149,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/dynamic-form-controls-select.json"></i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-Select.json"></i18n>

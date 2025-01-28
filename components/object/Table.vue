@@ -283,4 +283,4 @@ const mergedAdditionalHeaders = computed(() => [
 ]);
 </script>
 
-<i18n src="~/locales/base/components/object-table.json"></i18n>
+<i18n src="~/locales/base/components/object-Table.json"></i18n>
