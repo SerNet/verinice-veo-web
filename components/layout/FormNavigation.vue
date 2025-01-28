@@ -175,4 +175,4 @@ const items = computed(
 );
 </script>
 
-<i18n src="~/locales/base/components/layout-FormNavigation.json"></i18n>
+<i18n src="~/locales/base/components/layout-form-navigation.json"></i18n>

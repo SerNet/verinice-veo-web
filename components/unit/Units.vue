@@ -274,7 +274,7 @@ const ApplyProfiles: TInlineComponent = {
 };
 </script>
 
-<i18n src="~/locales/base/components/unit-Units.json"></i18n>
+<i18n src="~/locales/base/components/unit-units.json"></i18n>
 
 <style scoped lang="scss">
 :deep(.domain-btn) {

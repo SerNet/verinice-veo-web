@@ -105,4 +105,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/risk-RiskTreatmentSection.json"></i18n>
+<i18n src="~/locales/base/components/risk-risk-treatment-section.json"></i18n>

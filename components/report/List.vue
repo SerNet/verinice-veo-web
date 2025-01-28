@@ -230,7 +230,7 @@ const onRowClicked = (_event: PointerEvent, context: any) => {
 };
 </script>
 
-<i18n src="~/locales/base/components/report-List.json"></i18n>
+<i18n src="~/locales/base/components/report-list.json"></i18n>
 
 <style lang="scss" scoped>
 .veo-report-list__description {

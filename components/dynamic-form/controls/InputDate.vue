@@ -180,4 +180,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/dynamic-form-controls-InputDate.json"></i18n>
+<i18n src="~/locales/base/components/dynamic-form-controls-input-date.json"></i18n>

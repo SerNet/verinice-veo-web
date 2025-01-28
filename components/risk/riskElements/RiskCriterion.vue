@@ -128,4 +128,4 @@ const getMostContrastyColor = (backgroundColor: string) => {
 };
 </script>
 
-<i18n src="~/locales/base/components/risk-riskElements-RiskCriterion.json"></i18n>
+<i18n src="~/locales/base/components/risk-risk-elements-risk-criterion.json"></i18n>

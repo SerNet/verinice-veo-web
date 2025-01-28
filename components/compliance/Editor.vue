@@ -455,4 +455,4 @@ async function submitForm({
 }
 </script>
 
-<i18n src="~/locales/base/components/compliance-Editor.json"></i18n>
+<i18n src="~/locales/base/components/compliance-editor.json"></i18n>

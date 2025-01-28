@@ -134,4 +134,4 @@ const domainId = computed({
 });
 </script>
 
-<i18n src="~/locales/base/components/navigation-DomainSelect.json"></i18n>
+<i18n src="~/locales/base/components/navigation-domain-select.json"></i18n>

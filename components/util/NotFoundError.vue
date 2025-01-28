@@ -46,4 +46,4 @@ const goBackToPreviousPage = () => {
 };
 </script>
 
-<i18n src="~/locales/base/components/util-NotFoundError.json"></i18n>
+<i18n src="~/locales/base/components/util-not-found-error.json"></i18n>

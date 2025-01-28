@@ -54,4 +54,4 @@ const emit = defineEmits(['update:model-value']);
 const { t } = useI18n();
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-CodeEditorDialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-code-editor-dialog.json"></i18n>

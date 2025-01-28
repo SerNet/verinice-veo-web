@@ -96,4 +96,4 @@ const levels = computed(() =>
 );
 </script>
 
-<i18n src="~/locales/base/components/util-ValidationResults.json"></i18n>
+<i18n src="~/locales/base/components/util-validation-results.json"></i18n>

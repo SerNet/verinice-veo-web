@@ -1082,7 +1082,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/object-DetailsTab.json"></i18n>
+<i18n src="~/locales/base/components/object-details-tab.json"></i18n>
 <style>
 .custom-readonly-btn .v-icon {
   opacity: 0.5;

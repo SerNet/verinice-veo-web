@@ -347,7 +347,7 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/risk-RiskMitigationSection.json"></i18n>
+<i18n src="~/locales/base/components/risk-risk-mitigation-section.json"></i18n>
 <style scoped>
 .headline-link {
   text-decoration: none;

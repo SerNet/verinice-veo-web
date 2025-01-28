@@ -156,4 +156,4 @@ function doSave() {
 }
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-SchemaDetailsDialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-schema-details-dialog.json"></i18n>

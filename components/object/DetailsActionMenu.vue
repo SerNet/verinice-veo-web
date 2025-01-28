@@ -210,4 +210,4 @@ watch(
 );
 </script>
 
-<i18n src="~/locales/base/components/object-DetailsActionMenu.json"></i18n>
+<i18n src="~/locales/base/components/object-details-action-menu.json"></i18n>

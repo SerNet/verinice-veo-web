@@ -48,4 +48,4 @@ withDefaults(defineProps<Props>(), {
 const selected = defineModel<string[]>();
 </script>
 
-<i18n src="~/locales/base/components/unit-Domains.json"></i18n>
+<i18n src="~/locales/base/components/unit-domains.json"></i18n>

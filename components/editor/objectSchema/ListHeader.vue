@@ -75,4 +75,4 @@ const idWithTitle = computed(() =>
 );
 </script>
 
-<i18n src="~/locales/base/components/editor-objectSchema-ListHeader.json"></i18n>
+<i18n src="~/locales/base/components/editor-object-schema-list-header.json"></i18n>

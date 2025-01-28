@@ -66,7 +66,7 @@ const actions = [
 ];
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-WizardStateStart.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-wizard-state-start.json"></i18n>
 
 <style lang="scss" scoped>
 .v-list-item__subtitle {

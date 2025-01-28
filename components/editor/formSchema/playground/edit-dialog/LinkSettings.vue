@@ -135,4 +135,4 @@ const usedLinkAttributes = computed<string[]>({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-playground-edit-dialog-LinkSettings.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-playground-edit-dialog-link-settings.json"></i18n>

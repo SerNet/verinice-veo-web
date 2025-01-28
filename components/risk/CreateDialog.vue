@@ -277,4 +277,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/risk-CreateDialog.json"></i18n>
+<i18n src="~/locales/base/components/risk-create-dialog.json"></i18n>

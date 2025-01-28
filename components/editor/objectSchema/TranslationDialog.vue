@@ -263,4 +263,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-objectSchema-TranslationDialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-object-schema-translation-dialog.json"></i18n>

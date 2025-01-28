@@ -65,4 +65,4 @@ const onConfirm = () => {
 };
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-playground-DeleteElementDialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-playground-delete-element-dialog.json"></i18n>

@@ -432,4 +432,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-objectSchema-DetailsDialog.json"></i18n>
+<i18n src="~/locales/base/components/editor-object-schema-details-dialog.json"></i18n>

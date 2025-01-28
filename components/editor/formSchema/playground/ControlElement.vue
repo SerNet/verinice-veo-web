@@ -90,4 +90,4 @@ const handleColor = computed(() => CONTROL_APPEARANCE_DEFINITIONS[controlType.va
 const attributeKey = computed(() => last(props.formSchemaElement.scope?.split('/')));
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-playground-ControlElement.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-playground-control-element.json"></i18n>

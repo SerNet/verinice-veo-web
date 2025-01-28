@@ -213,4 +213,4 @@ onBeforeRouteLeave((to, from, next) => {
 });
 </script>
 
-<i18n src="~/locales/base/components/userData-messages.json"></i18n>
+<i18n src="~/locales/base/components/user-data-messages.json"></i18n>

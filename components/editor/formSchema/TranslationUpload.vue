@@ -219,4 +219,4 @@ export default defineComponent({
 });
 </script>
 
-<i18n src="~/locales/base/components/editor-formSchema-TranslationUpload.json"></i18n>
+<i18n src="~/locales/base/components/editor-form-schema-translation-upload.json"></i18n>

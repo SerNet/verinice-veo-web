@@ -77,4 +77,4 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<i18n src="~/locales/base/components/system-message-Timer.json"></i18n>
+<i18n src="~/locales/base/components/system-message-timer.json"></i18n>
