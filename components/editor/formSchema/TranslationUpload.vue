@@ -112,7 +112,7 @@ export default defineComponent({
 
     const formSchema = inject<Ref<IVeoFormSchema | undefined>>('mainFormSchema');
 
-    const availableLanguages = computed(() => (locales as unknown as LocaleObject[]).map((locale) => locale.code));
+    const availableLanguages = computed(() => (locales.value as LocaleObject[]).map((locale) => locale.code));
 
     const translationsQueryParameters = computed(() => ({
       languages: availableLanguages.value,
@@ -127,7 +127,7 @@ export default defineComponent({
     const resultExpansionPanel = ref();
 
     const localeDetailsMap = computed(() =>
-      (locales as unknown as LocaleObject[]).reduce((previousValue, currentValue) => {
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
         previousValue[currentValue.code] = currentValue;
         return previousValue;
       }, Object.create(null))

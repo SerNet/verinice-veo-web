@@ -132,7 +132,7 @@ export default defineComponent({
     const requiredRule = computed(() => [(v: any) => (Array.isArray(v) ? v.length > 0 : !!v)]);
 
     const languageDetails = computed(() =>
-      (locales as unknown as LocaleObject[]).reduce(
+      (locales.value as LocaleObject[]).reduce(
         (previousValue, currentValue) => {
           previousValue[currentValue.code] = currentValue.name;
           return previousValue;
