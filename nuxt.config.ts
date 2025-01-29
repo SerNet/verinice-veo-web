@@ -99,6 +99,11 @@ export default defineNuxtConfig({
 
   vite: {
     plugins: vitePlugins,
+    resolve: {
+      alias: {
+        '@toast-ui': resolve(__dirname, 'node_modules/@toast-ui')
+      }
+    },
     css: {
       preprocessorOptions: {
         scss: {
