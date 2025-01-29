@@ -24,7 +24,10 @@
         </v-card-title>
         <v-list lines="two" class="overflow-hidden">
           <!-- @vue-ignore TODO #3066 $route does not exist -->
-          <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`">
+          <v-list-item
+            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/objectschema`"
+            data-veo-test="objectschema-item"
+          >
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.objectschema.headline') }}
             </v-list-item-title>
@@ -34,7 +37,10 @@
             </template>
           </v-list-item>
           <!-- @vue-ignore TODO #3066 $route does not exist -->
-          <v-list-item :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`">
+          <v-list-item
+            :to="`/${$route.params.unit}/domains/${$route.params.domain}/editor/formschema`"
+            data-veo-test="formschema-item"
+          >
             <v-list-item-title class="font-weight-bold">
               {{ $t('editor.formschema.headline') }}
             </v-list-item-title>

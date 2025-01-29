@@ -39,6 +39,7 @@
                 :rules="[requiredRule]"
                 required
                 variant="underlined"
+                data-veo-test="form-schema-name"
                 @update:model-value="$emit('update:name', $event)"
               />
             </v-col>
@@ -52,6 +53,7 @@
                 :model-value="sorting"
                 :label="t('editor.formschema.sorting')"
                 variant="underlined"
+                data-veo-test="form-schema-sorting"
                 @update:model-value="$emit('update:sorting', $event)"
               />
             </v-col>
@@ -72,6 +74,7 @@
                 :items="objectTypes"
                 required
                 variant="underlined"
+                data-veo-test="form-schema-type-select"
                 @update:model-value="$emit('update:object-type', $event)"
               />
             </v-col>
@@ -99,6 +102,7 @@
                 :label="t('editor.formschema.subtype')"
                 :rules="[requiredRule]"
                 variant="underlined"
+                data-veo-test="form-schema-subtype-select"
                 @update:model-value="$emit('update:sub-type', $event)"
               />
             </v-col>

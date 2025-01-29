@@ -32,6 +32,7 @@
           :items="formSchemaOptions"
           required
           variant="underlined"
+          data-veo-test="form-schema-select"
           @update:model-value="$emit('update:form-schema-id', $event)"
         />
         <EditorFileUpload

@@ -66,6 +66,7 @@
       <v-btn
         variant="text"
         color="primary"
+        data-veo-test="form-schema-next-btn"
         :disabled="
           (state === WIZARD_STATES.CREATE && createFormValid === false) ||
           (state === WIZARD_STATES.IMPORT && (!objectSchema || !formSchema || !schemasCompatible))

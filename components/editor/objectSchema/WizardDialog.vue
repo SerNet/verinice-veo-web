@@ -31,7 +31,7 @@
             {{ t('start') }}
           </h3>
           <v-list class="px-0 overflow-hidden" color="transparent">
-            <v-list-item lines="two" @click="state = 'create'">
+            <v-list-item lines="two" data-veo-test="create-object-schema" @click="state = 'create'">
               <v-list-item-title class="font-weight-bold">
                 {{ t('createObjectSchema') }}
               </v-list-item-title>
@@ -40,7 +40,7 @@
                 <v-icon size="x-large" :icon="mdiChevronRight" />
               </template>
             </v-list-item>
-            <v-list-item lines="two" @click="state = 'import'">
+            <v-list-item lines="two" data-veo-test="import-object-schema" @click="state = 'import'">
               <v-list-item-title class="font-weight-bold">
                 {{ t('importObjectSchema') }}
               </v-list-item-title>
@@ -67,6 +67,7 @@
                   :rules="[requiredRule]"
                   required
                   variant="underlined"
+                  data-veo-test="object-schema-type"
                 />
               </v-col>
             </v-row>
@@ -81,6 +82,7 @@
                   :rules="[requiredRule]"
                   required
                   variant="underlined"
+                  data-veo-test="object-schema-description"
                 />
               </v-col>
             </v-row>
@@ -101,6 +103,7 @@
                 :label="t('type')"
                 :items="availableObjectSchemas"
                 required
+                data-veo-test="object-schema-select"
                 variant="underlined"
               />
             </v-col>
@@ -131,6 +134,7 @@
         role="submit"
         type="submit"
         :disabled="createFormIsValid === false"
+        data-veo-test="create-object-schema-button"
         @click="createSchema()"
       >
         {{ $t('global.button.next') }}
@@ -141,6 +145,7 @@
         variant="text"
         role="submit"
         type="submit"
+        data-veo-test="import-object-schema-button"
         :disabled="importNextDisabled"
         @click="importSchema()"
       >

@@ -21,7 +21,13 @@
       {{ t('start') }}
     </h2>
     <v-list lines="two" color="transparent">
-      <v-list-item v-for="action of actions" :key="action.title" lines="two" @click="action.onClick()">
+      <v-list-item
+        v-for="action of actions"
+        :key="action.title"
+        lines="two"
+        :data-veo-test="action.testAttributeName"
+        @click="action.onClick()"
+      >
         <v-list-item-title class="font-weight-bold">
           {{ action.title }}
         </v-list-item-title>
@@ -56,11 +62,13 @@ const actions = [
   {
     title: t('createFormSchema'),
     text: t('createFormSchemaDescription'),
+    testAttributeName: 'create-form-schema',
     onClick: () => emit('create')
   },
   {
     title: t('importFormSchema'),
     text: t('importFormSchemaDescription'),
+    testAttributeName: 'import-form-schema',
     onClick: () => emit('import')
   }
 ];
