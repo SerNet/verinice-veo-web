@@ -50,6 +50,7 @@ const testPerson = {
 // Navigation helpers
 function openModulesTab() {
   cy.visitObject();
+  cy.handleLanguageBug();
   cy.getCustom('[data-component-name="object-details-controls-tab"]').click();
   cy.getCustom('[data-component-name="object-details-controls-tab"]').click();
 }
@@ -63,6 +64,7 @@ function openAddModulesDialog() {
 
 function openFirstRI() {
   visitRIList();
+  cy.handleLanguageBug();
   // Open first RI in editor
   cy.getCustom('td').first().click();
 }
@@ -200,6 +202,7 @@ describe('Requirement Implementations:  List', () => {
 
   it('checks if the list of requirement implementations is complete', () => {
     visitRIList();
+    cy.handleLanguageBug();
     cy.checkPagination(['abbreviation, name, status']);
   });
 
@@ -215,6 +218,7 @@ describe('Requirement Implementations:  List', () => {
 
     // Navigate
     visitRIList();
+    cy.handleLanguageBug();
 
     cy.getCustom('[data-veo-test="breadcrumbs"]').contains('Compliance').should('not.exist');
 
