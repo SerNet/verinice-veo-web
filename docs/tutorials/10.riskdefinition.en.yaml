@@ -9,14 +9,11 @@ steps:
   - title: 'Risk definition DSRA'
     element: '[data-component-name=risk-definition-DSRA]'
     intro: The risk definition for the Risk Analysis is currently available.
-  - title: 'Risk definition GSRA'
-    element: '[data-component-name=risk-definition-GSRA]'
-    intro: The risk definition for the Risk Analysis is currently available.
   - title: 'Protection goals'
     element: '[data-component-name=risk-matrix-wrapper]'
     intro: The associated risk matrix is shown for each available protection target.
   - title: 'Risk matrix'
-    element: '[data-component-name=risk-matrix-wrapper] .veo-card'
+    element: '[data-component-name=risk-matrix-wrapper] .veo-risk-matrix'
     intro: The risk matrix represents the assignment of the combination of probability of occurrence and potential impact to the risk categories.
   - title: 'Done'
     intro: Further information can also be found in the documentation.

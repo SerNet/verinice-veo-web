@@ -17,9 +17,6 @@ steps:
   # - title: 'Hide/display object-details' element: '[data-component-name=object-details
   # element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
   # intro: The object details can be hidden or displayed via button or shortcut Alt/STRG + 1.
-  - title: 'Object name'
-    element: '[data-component-name=object-details-page] h1'
-    intro: The object name contains the designer, the abbreviation and the name of the object.
   - title: 'Change details'
     element: '[data-component-name=object-details-date-time]'
     intro: Identify at a glance who created or last modified the object and when.

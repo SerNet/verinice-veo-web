@@ -15,9 +15,6 @@ steps:
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: Auf dem Dashboard sehen Sie auf einen Blick alle Objekte je Subtyp und Status (Lebenszyklus) und können direkt zu diesen navigieren.
-  - title: 'Profile'
-    element: '[data-component-name=profiles-nav-item]'
-    intro: Wenden Sie Profile mit Beispieldaten auf bestehende Units an.
   - title: 'Objekte'
     element: '[data-component-name=objects-nav-item]'
     intro: Im Bereich Objekte navigieren Sie direkt zu den Übersichtsseiten der Objekttypen <i>Scopes</i>, <i>Prozesse</i>, <i>Assets</i>, <i>Personen</i>, <i>Incidents</i>, <i>Dokumente</i>, <i>Szenarien</i> und <i>Controls</i>.

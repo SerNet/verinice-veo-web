@@ -8,16 +8,13 @@ steps:
     intro: Use the menu to navigate to the various detail pages.
   - title: 'Unit Selector'
     element: '[data-component-name=unit-select]'
-    intro: Use the Unit Selector to select one of the available units
+    intro: Use the Unit Selector to select one of the available units.
   - title: 'Domain Selector'
     element: '[data-component-name=domain-select]'
     intro: Use the Domain Selector to select one of the available domains.
   - title: 'Dashboard'
     element: '[data-component-name=domain-dashboard-nav-item]'
     intro: On the Dashboard you can see all objects per subtype and status (life cycle) at a glance and navigate directly to them.
-  - title: 'Profiles'
-    element: '[data-component-name=profiles-nav-item]'
-    intro: Apply profiles providing sample data on existing units.
   - title: 'Objects'
     element: '[data-component-name=objects-nav-item]'
     intro: In the Objects section, you navigate directly to the overview pages of the object types <i>Scopes</i>, <i>Processes</i>, <i>Assets</i>, <i>People</i>, <i>Incidents</i>, <i>Documents</i>, <i>Scenarios</i> and <i>Controls</i>.

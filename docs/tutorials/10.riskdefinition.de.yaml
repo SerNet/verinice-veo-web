@@ -9,14 +9,11 @@ steps:
   - title: 'Risikodefinition DSRA'
     element: '[data-component-name=risk-definition-DSRA]'
     intro: Aktuell steht die Risikodefinition für die Risikoanalyse zur Verfügung.
-  - title: 'Risikodefinition GSRA'
-    element: '[data-component-name=risk-definition-GSRA]'
-    intro: Aktuell steht die Risikodefinition für die Risikoanalyse zur Verfügung.
   - title: 'Schutzziele'
     element: '[data-component-name=risk-matrix-wrapper]'
     intro: Für jedes verfügbare Schutzziel wird die zugehörige Risikomatrix dargestellt.
   - title: 'Risikomatrix'
-    element: '[data-component-name=risk-matrix-wrapper] .veo-card'
+    element: '[data-component-name=risk-matrix-wrapper] .veo-risk-matrix'
     intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.
   - title: 'Geschafft'
     intro: Weitere Informationen finden Sie auch in der Dokumentation.
