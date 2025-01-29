@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 import { createObject, getModules } from '../../requests/objects';
 import { applyCatalogItem } from '../../requests/catalogs';
 import { addModule, fetchRequirementImplementations } from '../../requests/control-implementations';
 import { visitRIList } from '../../commands/navigation';
+import { setupVeo } from '../../commands/setup';
 
 // Used for intercepting requests
 const apiRoutes = {
@@ -68,18 +68,8 @@ function openFirstRI() {
 }
 
 // GUI setup
-let unitDetails: UnitDetails;
-function setupVeo() {
-  unitDetails = generateUnitDetails('workWithRis');
-  return cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz'] }).then(() => {
-    createObject();
-    cy.login();
-    cy.acceptAllCookies();
-  });
-}
-
 describe('Object details, modules tab: Content', () => {
-  beforeEach(() => setupVeo());
+  beforeEach(() => setupVeo('workWithRis'));
   afterEach(() => cy.deleteUnit());
 
   it('checks user info (no modules were applied yet)', () => {
@@ -104,7 +94,7 @@ describe('Object details, modules tab: Content', () => {
 
 describe('Object details, compliance tab: Actions', () => {
   beforeEach(() => {
-    setupVeo().then(() => {
+    setupVeo('workWithRis').then(() => {
       // Populate the module tab table with one item
       applyCatalogItem().then(() => {
         // Get modules to check GUI against module properties later on:
@@ -185,7 +175,7 @@ describe('Object details, compliance tab: Actions', () => {
 describe('Requirement Implementations:  List', () => {
   beforeEach(() => {
     // Setup API
-    setupVeo().then(() => {
+    setupVeo('workWithRis').then(() => {
       applyCatalogItem().then(() => {
         addModule().then(() => {
           getModules().then(() => {
@@ -249,7 +239,7 @@ describe('Requirement Implementations:  List', () => {
 describe('Requirement Implementations: Editor', () => {
   beforeEach(() => {
     // Setup API
-    setupVeo().then(() => {
+    setupVeo('workWithRis').then(() => {
       applyCatalogItem();
       addModule();
       getModules().then(() => {
