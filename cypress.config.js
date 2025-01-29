@@ -1,9 +1,11 @@
 // import { defineConfig } from 'cypress';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- use *require* to prevent issues in cypress docker (Gitlab)
+/* eslint-disable @typescript-eslint/no-require-imports -- use *require* to prevent issues in cypress docker (Gitlab) */
 const { defineConfig } = require('cypress');
-// eslint-disable-next-line @typescript-eslint/no-require-imports -- use *require* to prevent issues in cypress docker (Gitlab)
 const fs = require('fs');
+const path = require('path');
+const yaml = require('js-yaml');
+/* eslint-enable @typescript-eslint/no-require-imports */
 
 module.exports = defineConfig({
   retries: 2,
@@ -12,6 +14,16 @@ module.exports = defineConfig({
   requestTimeout: 15000,
   e2e: {
     setupNodeEvents(on, config) {
+      on('task', {
+        readTutorialYaml(fileName) {
+          const filePath = path.join(__dirname, '/docs/tutorials', fileName);
+          if (!fs.existsSync(filePath)) {
+            throw new Error(`YAML file not found: ${filePath}`);
+          }
+          const fileContent = fs.readFileSync(filePath, 'utf8');
+          return yaml.load(fileContent);
+        }
+      });
       // Load cypress.env.[environment].json files for different environments
       // if version not defined, use local
       on('before:browser:launch', (browser, launchOptions) => {
