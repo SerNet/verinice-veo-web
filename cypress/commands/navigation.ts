@@ -93,3 +93,14 @@ export function visitRIList(
   );
   cy.get('[data-component-name="breadcrumbs"]', { timeout: 30000 }); // loading an list of requirement implementations might take a long time...
 }
+
+export function visitEditor(
+  { unitId, domainId } = {
+    unitId: Cypress.env('dynamicTestData').unit.unitId,
+    domainId: Cypress.env('dynamicTestData').unit.domains[0].id
+  }
+) {
+  cy.visit(`/${unitId}/domains/${domainId}/editor`, { failOnStatusCode: false });
+  cy.get('[data-component-name="breadcrumbs"]', { timeout: 30000 }); // loading an editor might take a long time...
+  cy.handleLanguageBug();
+}
