@@ -82,7 +82,7 @@ const inputType = computed(() =>
     eligibleInputElements(controlType.value, {
       ...props.formSchemaElement,
       schema: objectSchemaElement.value
-    })[0].code
+    })[0]?.code
   : undefined
 );
 

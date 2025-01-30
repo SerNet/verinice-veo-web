@@ -185,12 +185,13 @@
     </v-expansion-panels>
   </div>
 </template>
-<script lang="ts">
-import { mdiArrowCollapseVertical, mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
+
+<script setup lang="ts">
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, pick, upperFirst } from 'lodash';
 import { v4 as uuid } from 'uuid';
-import { ComputedRef, PropType, Ref } from 'vue';
+import { mdiAutoFix, mdiFormatText, mdiFormSelect, mdiArrowCollapseVertical } from '@mdi/js';
+
 import Draggable from 'vuedraggable';
 
 import type { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
@@ -224,39 +225,22 @@ export interface IControlItemMap {
 
 const WIDGETS: IVeoFormsElementDefinition[] = [];
 
-export default defineComponent({
-  components: {
-    Draggable
-  },
-  props: {
-    searchQuery: {
-      type: String,
-      default: undefined
-    },
-    formSchema: {
-      type: Object as PropType<IVeoFormSchema>,
-      required: true
-    },
-    objectSchema: {
-      type: Object as PropType<IVeoDomainSpecificObjectSchema>,
-      required: true
-    },
-    domain: {
-      type: Object as PropType<IVeoDomain>,
-      required: true
-    }
-  },
-  emits: ['control-items'],
-  setup(props, context) {
-    const { locale, t } = useI18n();
-    const { t: globalT, locales } = useI18n({ useScope: 'global' });
+const props = defineProps<{
+  domain: IVeoDomain,
+  formSchema: IVeoFormSchema;
+  objectSchema: IVeoDomainSpecificObjectSchema;
+  searchQuery?: string;
+}>();
+
+const emit = defineEmits<{
+  (event: 'control-items', value: any): void;
+}>();
+
+const { locale, t } = useI18n();
+const { t: globalT, locales } = useI18n({ useScope: 'global' });
 
     const typeMap = ref(INPUT_TYPES);
-    const riskDefinitionName = computed(() => Object.keys(props.domain.riskDefinitions)[0]);
 
-    const riskDefinitionCategories = computed(
-      () => props.domain.riskDefinitions[riskDefinitionName.value]?.categories || []
-    );
     const getTranslations = (category: IVeoRiskCategory) => {
       return locales.value.reduce(
         (acc, locale) => {
@@ -318,171 +302,162 @@ export default defineComponent({
       }
     ];
 
-    const controls: Ref<IControl[]> = ref([]);
+const controls = ref<IControl[]>([]);
 
-    // Nested Control items in a Control element, e.g. LinksField and its attributes
-    const nestedControls: Ref<IControlItemMap> = ref({});
+// Nested Control items in a Control element, e.g. LinksField and its attributes
+const nestedControls = ref<IControlItemMap>({});
 
-    // We want to group links but show each custom aspect attribute on their own, thus we use two different regex
-    const objectSchemaPropertiesPatterns = {
-      regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
-      regexLinks: /^#\/properties\/links\/properties\/\w+/
+// We want to group links but show each custom aspect attribute on their own, thus we use two different regex
+const objectSchemaPropertiesPatterns = {
+  regexAspectsAttributes: /^#\/properties\/customAspects\/properties\/\w+\/properties\/\w+$/,
+  regexLinks: /^#\/properties\/links\/properties\/\w+/
+};
+
+// When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
+function initializeControls() {
+  const createControl = (key: string, value: Record<string, any>, mode: Mode): IControl => {
+    const propertyName = key.split('/').slice(-1)[0];
+    const label = propertyName.split('_').pop() || '';
+    let backlogTitle = propertyName;
+    let category: IControl['category'] = 'basics';
+    if (objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
+      category = 'aspects';
+    } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
+      category = 'links';
+      const attributes = value.items?.properties?.attributes?.properties || [];
+
+      for (const [attributeKey, attributeValue] of Object.entries<Record<string, any>>(attributes)) {
+        if (!nestedControls.value[key]) {
+          nestedControls.value[key] = [];
+        }
+        nestedControls.value[key].push(
+          createControl(`#/properties/attributes/properties/${attributeKey}`, attributeValue, mode)
+        );
+      }
+    }
+
+    if (category !== 'basics') {
+      backlogTitle = backlogTitle.replace(`${props.formSchema.modelType}_`, '');
+      backlogTitle = backlogTitle.replace('_', ' / ');
+    }
+    return {
+      scope: decodeURIComponent(key), // We use decodeURIComponent, as JSONPointer.flatten() encodes keys, turning {CURRENT_DOMAIN_ID} into %7BCURRENT_DOMAIN_ID%7D
+      type: Array.isArray(value.enum) ? 'enum' : value.type,
+      label,
+      backlogTitle,
+      propertyName,
+      category
     };
+  };
 
-    // When ObjectSchema is loaded, controls and controlsItems should be initialized to use them in other functions
-    function initializeControls() {
-      const createControl = (key: string, value: Record<string, any>, mode: Mode): IControl => {
-        const propertyName = key.split('/').slice(-1)[0];
-        const label = propertyName.split('_').pop() || '';
-        let backlogTitle = propertyName;
-        let category: IControl['category'] = 'basics';
-        if (objectSchemaPropertiesPatterns.regexAspectsAttributes.test(key)) {
-          category = 'aspects';
-        } else if (objectSchemaPropertiesPatterns.regexLinks.test(key)) {
-          category = 'links';
-          const attributes = value.items?.properties?.attributes?.properties || [];
+  controls.value = generateFormSchema(
+    props.objectSchema,
+    {
+      generateControlFunction: createControl,
+      generateGroupFunction: (children) => children,
+      excludedProperties: [
+        '/id$',
+        '/type$',
+        '/owner$',
+        '/updatedAt$',
+        '/updatedBy$',
+        '/createdAt$',
+        '/createdBy$',
+        '/parts$',
+        '/members$',
+        '/designator$',
+        '_self',
+        '/risks$',
+        '/decisionResults$'
+      ]
+    },
+    Mode.VEO
+  );
 
-          for (const [attributeKey, attributeValue] of Object.entries<Record<string, any>>(attributes)) {
-            if (!nestedControls.value[key]) {
-              nestedControls.value[key] = [];
-            }
-            nestedControls.value[key].push(
-              createControl(`#/properties/attributes/properties/${attributeKey}`, attributeValue, mode)
-            );
-          }
-        }
+  emit('control-items', nestedControls.value as any);
+}
+initializeControls();
 
-        if (category !== 'basics') {
-          backlogTitle = backlogTitle.replace(`${props.formSchema.modelType}_`, '');
-          backlogTitle = backlogTitle.replace('_', ' / ');
-        }
-        return {
-          scope: decodeURIComponent(key), // We use decodeURIComponent, as JSONPointer.flatten() encodes keys, turning {CURRENT_DOMAIN_ID} into %7BCURRENT_DOMAIN_ID%7D
-          type: Array.isArray(value.enum) ? 'enum' : value.type,
-          label,
-          backlogTitle,
-          propertyName,
-          category
-        };
-      };
+const nonLayoutFormSchemaElements = computed<{ type: string; name?: string; scope?: string }[]>(
+  () =>
+    Object.values(JsonPointer.flatten(props.formSchema.content, true))
+      .filter((element: any) => typeof element === 'object' && element.type && element.type !== 'Layout')
+      .map((element: any) => pick(element, 'type', 'scope', 'name')) as any
+);
 
-      controls.value = generateFormSchema(
-        props.objectSchema,
-        {
-          generateControlFunction: createControl,
-          generateGroupFunction: (children) => children,
-          excludedProperties: [
-            '/id$',
-            '/type$',
-            '/owner$',
-            '/updatedAt$',
-            '/updatedBy$',
-            '/createdAt$',
-            '/createdBy$',
-            '/parts$',
-            '/members$',
-            '/designator$',
-            '_self',
-            '/risks$',
-            '/decisionResults$'
-          ]
-        },
-        Mode.VEO
-      );
+/**
+ * Computed refs that are displayed in the expansion panels.
+ */
+const expansionPanels = ref<number[]>([0, 1, 2, 3, 4]);
 
-      context.emit('control-items', nestedControls.value);
-    }
-    initializeControls();
-    const nonLayoutFormSchemaElements = computed<{ type: string; name?: string; scope?: string }[]>(
-      () =>
-        Object.values(JsonPointer.flatten(props.formSchema.content, true))
-          .filter((element: any) => typeof element === 'object' && element.type && element.type !== 'Layout')
-          .map((element: any) => pick(element, 'type', 'scope', 'name')) as any
-    );
+function onExpandAll() {
+  expansionPanels.value = [0, 1, 2, 3, 4];
+}
 
-    /**
-     * Computed refs that are displayed in the expansion panels.
-     */
-    const expansionPanels: Ref<number[]> = ref([0, 1, 2, 3, 4]);
+function onCollapseAll() {
+  expansionPanels.value = [];
+}
 
-    function onExpandAll() {
-      expansionPanels.value = [0, 1, 2, 3, 4];
-    }
+const unused = computed<IUnused>(() => {
+  return {
+    basics: controls.value.filter(
+      (obj) =>
+        obj.category === 'basics' &&
+        !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+    ),
+    aspects: controls.value.filter(
+      (obj) =>
+        obj.category === 'aspects' &&
+        !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+    ),
+    links: controls.value.filter(
+      (obj) =>
+        obj.category === 'links' &&
+        !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Control' && element.scope === obj.scope)
+    ),
+    widgets: WIDGETS.filter(
+      (widget) =>
+        !nonLayoutFormSchemaElements.value.find((element) => element.type === 'Widget' && element.name === widget.code)
+    )
+  };
+});
 
-    function onCollapseAll() {
-      expansionPanels.value = [];
-    }
+const filteredBasics = computed<IControl[]>(() => {
+  return unused.value.basics.filter(
+    (b: any) => !props.searchQuery || b.label?.toLowerCase().includes(props.searchQuery)
+  );
+});
 
-    const unused: ComputedRef<IUnused> = computed(() => {
-      return {
-        basics: controls.value.filter(
-          (obj) =>
-            obj.category === 'basics' &&
-            !nonLayoutFormSchemaElements.value.find(
-              (element) => element.type === 'Control' && element.scope === obj.scope
-            )
-        ),
-        aspects: controls.value.filter(
-          (obj) =>
-            obj.category === 'aspects' &&
-            !nonLayoutFormSchemaElements.value.find(
-              (element) => element.type === 'Control' && element.scope === obj.scope
-            )
-        ),
-        links: controls.value.filter(
-          (obj) =>
-            obj.category === 'links' &&
-            !nonLayoutFormSchemaElements.value.find(
-              (element) => element.type === 'Control' && element.scope === obj.scope
-            )
-        ),
-        widgets: WIDGETS.filter(
-          (widget) =>
-            !nonLayoutFormSchemaElements.value.find(
-              (element) => element.type === 'Widget' && element.name === widget.code
-            )
-        )
-      };
-    });
+const filteredAspects = computed<IControl[]>(() => {
+  return unused.value.aspects.filter(
+    (a: any) => !props.searchQuery || a.label?.toLowerCase().includes(props.searchQuery)
+  );
+});
 
-    const filteredBasics: ComputedRef<IControl[]> = computed(() => {
-      return unused.value.basics.filter(
-        (b: any) => !props.searchQuery || b.label?.toLowerCase().includes(props.searchQuery)
-      );
-    });
+const filteredLinks = computed<IControl[]>(() => {
+  return unused.value.links.filter(
+    (l: any) => !props.searchQuery || l.label?.toLowerCase().includes(props.searchQuery)
+  );
+});
 
-    const filteredAspects: ComputedRef<IControl[]> = computed(() => {
-      return unused.value.aspects.filter(
-        (a: any) => !props.searchQuery || a.label?.toLowerCase().includes(props.searchQuery)
-      );
-    });
+const filteredFormElements = computed<any>(() => {
+  return formElements.filter(
+    (f: any) => !props.searchQuery || f.description.title?.toLowerCase().includes(props.searchQuery)
+  );
+});
 
-    const filteredLinks: ComputedRef<IControl[]> = computed(() => {
-      return unused.value.links.filter(
-        (l: any) => !props.searchQuery || l.label?.toLowerCase().includes(props.searchQuery)
-      );
-    });
+const filteredWidgets = computed(() =>
+  unused.value.widgets.filter((widget) => !props.searchQuery || widget.code.toLowerCase().includes(props.searchQuery))
+);
 
-    const filteredFormElements: ComputedRef<any> = computed(() => {
-      return formElements.filter(
-        (f: any) => !props.searchQuery || f.description.title?.toLowerCase().includes(props.searchQuery)
-      );
-    });
-
-    const filteredWidgets = computed(() =>
-      unused.value.widgets.filter(
-        (widget) => !props.searchQuery || widget.code.toLowerCase().includes(props.searchQuery)
-      )
-    );
-
-    const controlElementsVisible: ComputedRef<boolean> = computed(() => {
-      return !!(
-        filteredFormElements.value.length +
-        filteredBasics.value.length +
-        filteredAspects.value.length +
-        filteredLinks.value.length
-      );
-    });
+const controlElementsVisible = computed<boolean>(() => {
+  return !!(
+    filteredFormElements.value.length +
+    filteredBasics.value.length +
+    filteredAspects.value.length +
+    filteredLinks.value.length
+  );
+});
 
     /**
      * Interactive things (triggered by the user)
@@ -518,33 +493,9 @@ export default defineComponent({
       };
     }
 
-    const onCloneWidget = (widget: IVeoFormsElementDefinition) => ({
-      type: 'Widget',
-      name: widget.name[locale.value] || Object.values(widget.name)[0]
-    });
-
-    return {
-      filteredBasics,
-      filteredAspects,
-      filteredLinks,
-      filteredFormElements,
-      filteredWidgets,
-      expansionPanels,
-      locale,
-      controlElementsVisible,
-      onExpandAll,
-      onCollapseAll,
-      onCloneFormElement,
-      onCloneControl,
-      onCloneWidget,
-      typeMap,
-
-      mdiAutoFix,
-      t,
-      globalT,
-      upperFirst
-    };
-  }
+const onCloneWidget = (widget: IVeoFormsElementDefinition) => ({
+  type: 'Widget',
+  name: widget.name[locale.value] || Object.values(widget.name)[0]
 });
 </script>
 
