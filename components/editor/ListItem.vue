@@ -41,39 +41,25 @@
     </template>
   </v-list-item>
 </template>
-<script lang="ts">
-import { PropType } from 'vue';
 
+<script setup lang="ts">
 import { IInputType } from '~/types/VeoEditor';
 
-export default defineComponent({
-  props: {
-    scope: {
-      type: String,
-      default: undefined
-    },
-    title: {
-      type: String,
-      default: undefined
-    },
-    lines: {
-      type: String as PropType<'one' | 'two' | 'three'>,
-      default: 'one'
-    },
-    styling: {
-      type: Object as PropType<IInputType>,
-      default: () => ({})
-    },
-    translate: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup() {
-    const { t } = useI18n();
-    return {
-      t
-    };
-  }
+interface Props {
+  scope?: string;
+  title: string;
+  lines?: 'one' | 'two' | 'three';
+  styling: IInputType;
+  translate?: boolean;
+}
+
+const _props = withDefaults(defineProps<Props>(), {
+  scope: undefined,
+  title: undefined,
+  lines: 'one',
+  styling: () => ({}) as IInputType,
+  translate: false
 });
+
+const { t } = useI18n();
 </script>
