@@ -185,7 +185,7 @@ export default defineComponent({
 
     // Submitting form
     const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject, {
-      onSuccess: (queryClient, data: IVeoAPIMessage) => {
+      onSuccess: async (queryClient, data: IVeoAPIMessage) => {
         // Invalidate parent scopes (should always be only one), if set directly as a parent via parentScopeIds.
         if (props.parentScopeIds) {
           for (const scope of props.parentScopeIds) {
@@ -211,9 +211,12 @@ export default defineComponent({
             ]);
           }
         }
-        emit('success', data.resourceId);
-        displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
         emit('update:model-value', false);
+        emit('success', data.resourceId);
+        await nextTick(); // Wait for dialog begin closing
+        setTimeout(() => {
+          displaySuccessMessage(upperFirst(t('objectCreated', { name: objectData.value.name }).toString()));
+        }, 100); // Need to wait for dialog closing animation
       }
     });
     const onSubmit = async () => {
