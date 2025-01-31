@@ -45,7 +45,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </v-col>
 
       <template v-for="profile in profiles" :key="profile.id">
-        <BaseListItem :item="profile" :data-veo-test="`profile-${profile.name}`">
+        <BaseListItem :item="profile" :data-veo-test="`profile-${profile.productId}`">
           <template #center-aside="{ item: p }">
             <LanguageChip :lang="p.language" />
           </template>
@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           </template>
 
           <template #prepend="{ item: p }">
-            <RadioButton :data-veo-test="`profile-radio-btn-${p.name}`" :profile="p" :is-disabled="isDisabled" />
+            <RadioButton :data-veo-test="`profile-radio-btn-${p.productId}`" :profile="p" :is-disabled="isDisabled" />
           </template>
         </BaseListItem>
       </template>

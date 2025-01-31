@@ -43,6 +43,7 @@ export interface TVeoProfile {
   domainName: string;
   domainId: string;
   raw: IVeoAPIProfile;
+  productId: string;
 }
 
 export function useProfiles() {
