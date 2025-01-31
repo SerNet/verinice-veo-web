@@ -88,7 +88,6 @@ withDefaults(defineProps<Props>(), {
 
 // Helper
 const { t } = useI18n();
-const { domainColorsByName } = useDomainColors();
 
 // State
 const selectedProfile = defineModel<TVeoProfile>();
@@ -110,14 +109,14 @@ const LanguageChip: TInlineComponent = {
 
 const DomainChip: TInlineComponent = {
   props: ['domainName'],
-  data: () => ({ mdiPuzzle, domainColorsByName }),
+  data: () => ({ mdiPuzzle, useDomainColor }),
   template: `
     <v-chip
       label
       :prepend-icon="mdiPuzzle"
       variant="outlined"
       size="small"
-      :color="domainColorsByName[domainName]"
+      :color="useDomainColor(domainName)"
     >
       {{ domainName }}
     </v-chip>

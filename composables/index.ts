@@ -17,7 +17,7 @@
  */
 
 /** Auto import nested exports */
-export { useDomains, useDomainColors, useCurrentDomain } from '~/composables/domains/useDomains';
+export { useDomains, useDomainColor, useCurrentDomain } from '~/composables/domains/useDomains';
 export { useProfiles } from '~/composables/profiles/useProfiles';
 export { useUnits, useCurrentUnit } from '~/composables/units/useUnits';
 export { useMutation } from '~/composables/api/utils/mutation';

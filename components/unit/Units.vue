@@ -193,14 +193,14 @@ const UnitActions: TInlineComponent = {
 
 const DomainActions: TInlineComponent = {
   props: ['domains', 'domainsUrl'],
-  data: () => ({ mdiPuzzle, mdiPlus, t }),
+  data: () => ({ mdiPuzzle, mdiPlus, t, useDomainColor }),
   template: `
     <v-chip v-for="(domain, index) in this.domains"
       label
       :key="index"
       :prepend-icon="mdiPuzzle"
       variant="outlined"
-      :color="domain.color"
+      :color="useDomainColor(domain.name)"
       class="domain-btn"
       size="x-small"
     >

@@ -21,7 +21,6 @@ import { useQueryClient } from '@tanstack/vue-query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { Colors as VeoDomainColors, getColorByDomainAbbreviation } from '~/composables/domains/useDomains';
 
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
@@ -43,7 +42,7 @@ export type TVeoUnit = {
     id: string;
     name: string;
     abbreviation: string;
-    color: VeoDomainColors;
+    color: string;
     targetUri: string;
   }>;
   raw: IVeoUnit;
@@ -118,7 +117,7 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
       id: d.id!,
       name: d.name ?? '',
       abbreviation: d.abbreviation ?? '',
-      color: getColorByDomainAbbreviation(d.abbreviation),
+      color: useDomainColor(d.name),
       targetUri: d.targetUri
     })),
     raw: toRaw(unit)

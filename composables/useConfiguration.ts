@@ -15,12 +15,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { config as baseConfig } from '~/configuration/base/config';
-const runtimeConfig = useRuntimeConfig();
+import { kebabCase } from 'lodash';
 
 interface IVeoConfiguration {
   readonly riskAffectedObjectTypes: string[];
   readonly objectDetails?: {
     readonly hasRisks: string[];
+  };
+  readonly domains?: {
+    readonly colors: Record<string, string>;
   };
   readonly riEditor?: {
     readonly renderedProperties: {
@@ -39,20 +42,21 @@ interface IVeoConfiguration {
 export function useConfiguration() {
   const data = ref<IVeoConfiguration>();
   const isLoading = ref(true);
+  const runtimeConfig = useRuntimeConfig();
 
   const { data: currentDomain } = useCurrentDomain();
   watch(currentDomain, () => setConfig(), { immediate: true });
 
   async function setConfig() {
-    if (!currentDomain.value?.name) return;
+    if (!currentDomain.value?.name) return (data.value = { ...baseConfig });
     isLoading.value = true;
 
     try {
-      const domainName = currentDomain.value.name.replace(/[^a-zA-Z\d]/g, '-').toLowerCase();
+      const domainName = kebabCase(currentDomain.value.name);
       const domainSpecificConfig = await getDomainSpecificConfig(domainName);
       data.value = { ...baseConfig, ...domainSpecificConfig.config };
     } catch (e) {
-      if (runtimeConfig.public.debug) console.warn('Could not set configuration:', e);
+      if (runtimeConfig.public.debug) console.info('Could not set configuration:', e);
     } finally {
       isLoading.value = false;
     }
@@ -65,12 +69,13 @@ export function useConfiguration() {
 }
 
 async function getDomainSpecificConfig(domainName: string) {
+  const runtimeConfig = useRuntimeConfig();
   if (!domainName) return;
 
   try {
     return await import(`~/configuration/${domainName}/config.ts`);
   } catch (e) {
-    if (runtimeConfig.public.debug) console.warn('Could not load domain specific config:', e);
+    if (runtimeConfig.public.debug) console.info('Could not load domain specific config:', e);
     return {};
   }
 }

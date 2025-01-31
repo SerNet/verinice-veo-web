@@ -19,6 +19,7 @@
 import { useQuerySync } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import { kebabCase } from 'lodash';
 
 export type TVeoDomain = {
   name: string;
@@ -29,12 +30,6 @@ export type TVeoDomain = {
   raw: IVeoDomain;
 };
 
-export enum Colors {
-  ITGS = 'green',
-  DSGVO = 'primary',
-  NIS2 = 'purple',
-  DEFAULT = ''
-}
 export function useCurrentDomainUtils() {
   const { data: currentDomain } = useCurrentDomain();
   const { locale } = useI18n();
@@ -76,7 +71,7 @@ export function useCurrentDomain() {
           abbreviation: result.abbreviation,
           id: result.id,
           description: result.description,
-          color: getColorByDomainName(result.name)!,
+          color: useDomainColor(result.name)!,
           raw: result
         };
       }
@@ -130,35 +125,13 @@ export function useDomains() {
   };
 }
 
-const domainColorsByAbbreviation: Record<string, Colors> = {
-  ITGS: Colors.ITGS,
-  'DS-GVO': Colors.DSGVO,
-  NIS2: Colors.NIS2,
-  DEFAULT: Colors.DEFAULT
-};
-
-export function getColorByDomainAbbreviation(abbreviation?: string): Colors {
-  if (!abbreviation) return Colors.DEFAULT;
-  return domainColorsByAbbreviation[abbreviation] ?? Colors.DEFAULT;
-}
-
-const domainColorsByName: Record<string, Colors> = {
-  'IT-Grundschutz': Colors.ITGS,
-  'DS-GVO': Colors.DSGVO,
-  NIS2: Colors.NIS2,
-  DEFAULT: Colors.DEFAULT
-};
-
-export function getColorByDomainName(name?: string): Colors {
-  if (!name) return Colors.DEFAULT;
-  return domainColorsByName[name] ?? Colors.DEFAULT;
-}
-
-export function useDomainColors() {
-  return {
-    domainColorsByName,
-    domainColorsByAbbreviation
-  };
+const colors = ref();
+export function useDomainColor(domainName: string): string {
+  if (!colors.value) {
+    const { data: config } = useConfiguration();
+    colors.value = config.value?.domains?.colors;
+  }
+  return colors.value?.[kebabCase(domainName)] ?? colors.value.default;
 }
 
 function map(domains: IVeoDomain[]): TVeoDomain[] {
@@ -167,7 +140,7 @@ function map(domains: IVeoDomain[]): TVeoDomain[] {
     abbreviation: domain.abbreviation,
     id: domain.id,
     description: domain.description,
-    color: getColorByDomainName(domain?.name)!,
+    color: useDomainColor(domain?.name)!,
     raw: domain
   }));
 }
