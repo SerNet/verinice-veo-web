@@ -27,9 +27,9 @@
           <template #default>
             <v-list
               v-model:selected="selectedLocale"
+              :items="locales"
               color="primary"
               mandatory
-              :items="locales"
               item-title="name"
               item-value="code"
             />
@@ -43,11 +43,17 @@
 
 <script setup lang="ts">
 import { mdiTranslate } from '@mdi/js';
-
+import { useLocale } from 'vuetify';
 const { t, locale, locales, setLocale } = useI18n();
-const selectedLocale = ref([locale.value]);
+const { current } = useLocale();
 
-watch(selectedLocale, () => setLocale(selectedLocale.value[0]));
+const selectedLocale = computed({
+  get: () => [locale.value],
+  set: (newValue) => {
+    setLocale(newValue[0]);
+    current.value = newValue[0];
+  }
+});
 </script>
 
 <i18n src="~/locales/base/components/layout-language-switch.json"></i18n>
