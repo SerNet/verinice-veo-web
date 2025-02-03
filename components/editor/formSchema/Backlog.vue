@@ -20,11 +20,11 @@
     <div v-show="!controlElementsVisible && searchQuery" class="text-center mt-1">
       <span class="text--disabled">{{ t('searchNoMatch') }}</span>
     </div>
-    <div v-show="controlElementsVisible" class="pt-4 text-center">
-      <v-btn variant="text" size="small" @click="onExpandAll">
+    <div v-show="controlElementsVisible" class="ma-4 text-center">
+      <v-btn class="mx-1" variant="elevated" size="small" @click="onExpandAll">
         {{ t('expand') }}
       </v-btn>
-      <v-btn variant="text" size="small" @click="onCollapseAll">
+      <v-btn class="mx-1" variant="elevated" size="small" @click="onCollapseAll">
         {{ t('collapse') }}
       </v-btn>
     </div>
@@ -48,7 +48,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="element.description.title"
+                    :title="upperFirst(element.description.title)"
                     :styling="element.description"
                     translate
                   />
@@ -79,7 +79,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="element.propertyName"
+                    :title="t(`${element.propertyName}`)"
                     :styling="typeMap[element.type]"
                     translate
                   />

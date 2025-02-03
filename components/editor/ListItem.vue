@@ -24,7 +24,7 @@
     </template>
     <v-list-item-title class="caption">{{ title }}</v-list-item-title>
     <v-list-item-subtitle v-if="scope">
-      {{ scope }}
+      {{ pointer }}
     </v-list-item-subtitle>
     <slot name="description" />
     <template #append>
@@ -43,6 +43,7 @@
 </template>
 
 <script setup lang="ts">
+import { last } from 'lodash';
 import { IInputType } from '~/types/VeoEditor';
 
 interface Props {
@@ -53,12 +54,21 @@ interface Props {
   translate?: boolean;
 }
 
-const _props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   scope: undefined,
   title: undefined,
   lines: 'one',
   styling: () => ({}) as IInputType,
   translate: false
+});
+
+const pointer: ComputedRef<string> = computed(() => {
+  const result = props.scope.split('/');
+  const match = props.scope.match('/[A-Z]{1,2}/');
+
+  return match ?
+      `${result[4]} > ${result[8]} > ${last(props.scope.split('/'))}` // index [8] stores the risk category, e.g. "A" | "C" | "I"
+    : last(props.scope.split('/'));
 });
 
 const { t } = useI18n();
