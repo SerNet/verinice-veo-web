@@ -104,7 +104,7 @@ export default defineComponent({
     const resultExpansionPanel = ref();
 
     const localeDetailsMap = computed(() =>
-      (locales as unknown as LocaleObject[]).reduce((previousValue, currentValue) => {
+      (locales.value as LocaleObject[]).reduce((previousValue, currentValue) => {
         previousValue[currentValue.code] = currentValue;
         return previousValue;
       }, Object.create(null))
