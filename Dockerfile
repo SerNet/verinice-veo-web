@@ -31,6 +31,7 @@ ENV VEO_OIDC_CLIENT=
 ENV VEO_OIDC_ACCOUNT_APPLICATION=
 ENV VEO_DEBUG ${VEO_DEBUG}
 ENV NODE_ENV=$NODE_ENV
+ENV VEO_BETA_MODE=
 
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/VERSION && echo ${CI_COMMIT_SHORT_SHA} > BUILD && echo ${CI_COMMIT_SHORT_SHA} > public/BUILD
 
@@ -55,8 +56,8 @@ ENV VEO_ACCOUNT_PATH=https://account.veo.example
 ENV VEO_OIDC_URL=https://auth.veo.example/auth
 ENV VEO_OIDC_REALM=veo-oidcrealm-example
 ENV VEO_OIDC_CLIENT=veo-oidcclient-example
-ENV VEO_OIDC_CLIENT=veo-oidcclient-example
 ENV VEO_OIDC_ACCOUNT_APPLICATION=https://auth.veo.example/auth/realms/veo-oidcrealm-example/account
+ENV VEO_BETA_MODE=veo-beta-mode-example
 
 EXPOSE 80
 

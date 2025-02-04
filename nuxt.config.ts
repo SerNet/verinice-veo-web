@@ -2,8 +2,8 @@ import { resolve } from 'path';
 import DocsModule from './modules/docs/module.mjs';
 
 // Types
-import { LOCALES } from './types/locales';
 import { PluginOption } from 'vite';
+import { LOCALES } from './types/locales';
 
 /** UNIT TESTING
  * When testing the application, vue + vuetify are not available,
@@ -80,7 +80,8 @@ export default defineNuxtConfig({
         process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP ?
           new Date(parseInt(process.env.VEO_SECURITY_POLICY_INVALIDATION_DATE_TIMESTAMP))
         : new Date(new Date().getFullYear() + 1, 0, 1),
-      documentationUrl: process.env.VEO_DOCUMENTATION_URL || 'veo-documentation-url-example'
+      documentationUrl: process.env.VEO_DOCUMENTATION_URL || 'veo-documentation-url-example',
+      isBetaMode: process.env.VEO_BETA_MODE || 'veo-beta-mode-example'
     }
   },
 
