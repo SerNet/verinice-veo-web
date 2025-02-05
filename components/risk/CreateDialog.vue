@@ -88,6 +88,7 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
+import { useTableSort } from '~/composables/tableSort/useTableSort';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -114,7 +115,7 @@ export default defineComponent({
     const { t: globalT } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
     const { ability } = useVeoPermissions();
-
+    const { sortBy } = useTableSort();
     const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
@@ -167,11 +168,10 @@ export default defineComponent({
     };
 
     const page = ref(0);
-    const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const combinedQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: sortBy.value[0].key,
-      sortOrder: sortBy.value[0].order,
+      sortBy: sortBy.value.key,
+      sortOrder: sortBy.value.order,
       page: page.value,
       unit: route.params.unit,
       ...omit(filter.value, 'objectType'),

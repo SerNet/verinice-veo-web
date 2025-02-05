@@ -177,6 +177,7 @@ import { useQuery } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import type { VeoSearch } from '~/types/VeoSearch';
 import { type IVeoEntity } from '~/types/VeoTypes';
+import { useTableSort } from '~/composables/tableSort/useTableSort';
 import { useFeatureFlag } from '~/composables/features/featureFlag';
 
 enum FILTER_SOURCE {
@@ -197,6 +198,7 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 
 const { tablePageSize } = useVeoUser();
 const { ability } = useVeoPermissions();
+const { sortBy } = useTableSort();
 
 const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
@@ -319,16 +321,14 @@ const page = ref(0);
 const cardsPageChange = (value: number) => {
   page.value = value - 1;
 };
-const sortBy = ref([{ key: 'name', order: 'asc' }]);
 const resetQueryOptions = () => {
   page.value = 0;
-  sortBy.value = [{ key: 'name', order: 'asc' }];
 };
 
 const combinedQueryParameters = computed<any>(() => ({
   size: tablePageSize.value,
-  sortBy: sortBy.value[0].key,
-  sortOrder: sortBy.value[0].order,
+  sortBy: sortBy.value?.key,
+  sortOrder: sortBy.value?.order,
   page: page.value,
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),

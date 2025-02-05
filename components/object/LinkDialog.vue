@@ -104,6 +104,7 @@ import type { VeoSearch } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { TableHeader } from '../base/Table.vue';
+import { useTableSort } from '~/composables/tableSort/useTableSort';
 
 export default defineComponent({
   props: {
@@ -179,6 +180,7 @@ export default defineComponent({
     const { data: translations } = useTranslations({ domain: route.params.domain as string });
     const { data: currentDomain } = useCurrentDomain();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
+    const { sortBy } = useTableSort();
     const title = computed(() => {
       const { object, editParents } = props;
       const displayName = [object?.displayName];
@@ -212,17 +214,15 @@ export default defineComponent({
     const filter = ref<Record<string, any>>({});
 
     const page = ref(0);
-    const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const resetQueryOptions = () => {
       page.value = 0;
-      sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
     const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: sortBy.value[0]?.key,
-      sortOrder: sortBy.value[0]?.order,
+      sortBy: sortBy.value?.key,
+      sortOrder: sortBy.value?.order,
       page: page.value,
       unit: route.params.unit as string,
       domain: route.params.domain as string,

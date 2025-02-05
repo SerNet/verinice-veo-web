@@ -33,7 +33,7 @@ import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 import { useVeoUser } from '~/composables/VeoUser';
-import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { IVeoPaginatedResponse, VeoSort } from '~/types/VeoTypes';
 
 export type TableFormatter = (value: any) => string;
 export type TableRenderer = (
@@ -64,11 +64,6 @@ export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K exte
 </script>
 
 <script setup lang="ts">
-export interface SortItem {
-  key: string;
-  order: string;
-}
-
 const props = withDefaults(
   defineProps<{
     /**
@@ -91,7 +86,7 @@ const props = withDefaults(
      * Defines how the table should be sorted.
      * NOTE: Paginated data can only be sorted by one column, all entries besides [0] will be ignored.
      */
-    sortBy?: SortItem[];
+    sortBy?: VeoSort;
     /**
      * Array containing the keys of commonly shown headers so that they don't have to get redefined every time.
      */
@@ -118,7 +113,7 @@ const props = withDefaults(
     items: () => [],
     loading: false,
     modelValue: () => [],
-    sortBy: () => [{ key: 'name', order: 'asc' }],
+    sortBy: () => ({ key: 'name', order: 'asc' }),
     defaultHeaders: () => [],
     additionalHeaders: () => [],
     showAllColumns: false,
@@ -128,7 +123,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: 'update:sort-by', newSorting: SortItem[]): void;
+  (e: 'update:sort-by', newSorting: VeoSort): void;
   (e: 'update:items-per-page', newItemsPerPage: number): void;
   (e: 'click', event: any): void;
   (e: 'update:model-value', newValue: any[]): void;
@@ -534,7 +529,7 @@ const sharedProps = computed(() => {
     mustSort: true,
     headers: normalizedDisplayHeaders.value,
     page: localPage.value,
-    sortBy: localSortBy.value,
+    sortBy: [localSortBy.value],
 
     // Spread conditional event handlers
     ...onClickRowHandler,
@@ -550,14 +545,14 @@ const sharedProps = computed(() => {
       tablePageSize.value = newValue;
       emit('update:items-per-page', newValue);
     },
-    'onUpdate:sortBy': (newValue: SortItem[]) => {
-      localSortBy.value = newValue;
+    'onUpdate:sortBy': (newValue: VeoSort[]) => {
+      localSortBy.value = newValue[0];
     },
 
     // References and data attributes
     ref: tableWrapper,
-    'data-table-sorted-column-name': localSortBy.value[0]?.key,
-    'data-table-sort-order': localSortBy.value[0]?.order
+    'data-table-sorted-column-name': localSortBy.value?.key,
+    'data-table-sort-order': localSortBy.value?.order
   };
 });
 

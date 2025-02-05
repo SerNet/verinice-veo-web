@@ -49,6 +49,7 @@ import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDe
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { useTableSort } from '~/composables/tableSort/useTableSort';
 
 // Types
 import type { VeoSearch } from '~/types/VeoSearch';
@@ -59,7 +60,7 @@ const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { t } = useI18n();
 const route = useRoute();
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
-
+const { sortBy } = useTableSort({ key: 'abbreviation', order: 'asc' });
 // State
 const currentDomainId = computed(() => route.params.domain as string);
 const currentSubType = computed(() => (route.query.subType === 'all' ? undefined : (route.query.subType as string)));
@@ -78,7 +79,6 @@ if (!currentSubType.value) {
 
 const { tablePageSize } = useVeoUser();
 const page = ref<number>(0);
-const sortBy = ref([{ key: 'abbreviation', order: 'asc' }]);
 
 // Fetch catalog items
 const fetchCatalogItemsQueryParameters = computed(() => ({
@@ -86,8 +86,8 @@ const fetchCatalogItemsQueryParameters = computed(() => ({
   subType: currentSubType?.value,
   size: tablePageSize.value,
   page: page.value,
-  sortBy: sortBy.value[0]?.key,
-  sortOrder: sortBy.value[0]?.order,
+  sortBy: sortBy.value?.key,
+  sortOrder: sortBy.value?.order,
   customAspects: [CustomAspect.ControlBpInformation]
 }));
 
