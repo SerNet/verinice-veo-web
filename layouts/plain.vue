@@ -41,7 +41,7 @@
             v-bind="props"
             data-component-name="docs-nav-item"
           >
-            <v-icon :icon="mdiBookOpenBlankVariant" />
+            <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>
         </template>
         <template #default>
@@ -75,20 +75,20 @@
 </template>
 
 <script setup lang="ts">
-import { mdiAccountCircleOutline, mdiBookOpenBlankVariant } from '@mdi/js';
+import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 
 const { t } = useI18n();
 const { logout: _logout, profile } = useVeoUser();
 const context = useNuxtApp();
-
+//test
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
 }));
 
 const logout = () => _logout('/');
 </script>
-
+<i18n src="~/locales/base/components/layout-default.json"></i18n>
 <style lang="scss" module>
 .app-bar {
   :deep(.v-toolbar__content) {
