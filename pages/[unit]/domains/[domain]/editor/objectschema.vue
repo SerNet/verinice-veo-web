@@ -407,10 +407,6 @@ export default defineComponent({
       };
     };
 
-    const onDisplayLanguageUpdate = (newLanguage: 'de' | 'en') => {
-      displayLanguage.value = newLanguage;
-    };
-
     const onPageCollapsed = (collapsedPages: boolean[]) => {
       if (collapsedPages[1]) {
         pageWidths.value = [12, 0];

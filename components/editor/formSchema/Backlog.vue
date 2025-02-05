@@ -226,7 +226,7 @@ export interface IControlItemMap {
 const WIDGETS: IVeoFormsElementDefinition[] = [];
 
 const props = defineProps<{
-  domain: IVeoDomain,
+  domain: IVeoDomain;
   formSchema: IVeoFormSchema;
   objectSchema: IVeoDomainSpecificObjectSchema;
   searchQuery?: string;
@@ -239,68 +239,68 @@ const emit = defineEmits<{
 const { locale, t } = useI18n();
 const { t: globalT, locales } = useI18n({ useScope: 'global' });
 
-    const typeMap = ref(INPUT_TYPES);
+const typeMap = ref(INPUT_TYPES);
 
-    const getTranslations = (category: IVeoRiskCategory) => {
-      return locales.value.reduce(
-        (acc, locale) => {
-          acc[locale.code] = category.translations[locale.code]?.name || Object.values(category.translations)[0].name;
-          return acc;
-        },
-        {} as Record<string, string>
-      );
-    };
+const getTranslations = (category: IVeoRiskCategory) => {
+  return locales.value.reduce(
+    (acc, locale) => {
+      acc[locale.code] = category.translations[locale.code]?.name || Object.values(category.translations)[0].name;
+      return acc;
+    },
+    {} as Record<string, string>
+  );
+};
 
-    const formElements = [
-      {
-        type: 'Layout',
-        options: {
-          format: 'impactGroup'
-        },
-        elements: [],
-        description: {
-          title: 'impacts',
-          icon: mdiFormSelect,
-          name: 'composite',
-          color: 'purple darken-2'
-        }
-      },
-      {
-        type: 'Layout',
-        options: {
-          format: 'group'
-        },
-        elements: [],
-        description: {
-          title: 'group',
-          icon: mdiFormSelect,
-          name: 'layout',
-          color: 'grey darken-2'
-        }
-      },
-      {
-        type: 'Layout',
-        options: {
-          format: 'accordion'
-        },
-        elements: [],
-        description: {
-          title: 'accordion',
-          icon: mdiArrowCollapseVertical,
-          name: 'layout',
-          color: 'grey darken-2'
-        }
-      },
-      {
-        type: 'Label',
-        description: {
-          title: 'text',
-          icon: mdiFormatText,
-          name: 'label',
-          color: 'grey darken-2'
-        }
-      }
-    ];
+const formElements = [
+  {
+    type: 'Layout',
+    options: {
+      format: 'impactGroup'
+    },
+    elements: [],
+    description: {
+      title: 'impacts',
+      icon: mdiFormSelect,
+      name: 'composite',
+      color: 'purple darken-2'
+    }
+  },
+  {
+    type: 'Layout',
+    options: {
+      format: 'group'
+    },
+    elements: [],
+    description: {
+      title: 'group',
+      icon: mdiFormSelect,
+      name: 'layout',
+      color: 'grey darken-2'
+    }
+  },
+  {
+    type: 'Layout',
+    options: {
+      format: 'accordion'
+    },
+    elements: [],
+    description: {
+      title: 'accordion',
+      icon: mdiArrowCollapseVertical,
+      name: 'layout',
+      color: 'grey darken-2'
+    }
+  },
+  {
+    type: 'Label',
+    description: {
+      title: 'text',
+      icon: mdiFormatText,
+      name: 'label',
+      color: 'grey darken-2'
+    }
+  }
+];
 
 const controls = ref<IControl[]>([]);
 
@@ -459,39 +459,39 @@ const controlElementsVisible = computed<boolean>(() => {
   );
 });
 
-    /**
-     * Interactive things (triggered by the user)
-     */
-    function onCloneFormElement(original: any) {
-      const element = cloneDeep(original);
+/**
+ * Interactive things (triggered by the user)
+ */
+function onCloneFormElement(original: any) {
+  const element = cloneDeep(original);
 
-      if (element?.options?.format !== 'impactGroup') {
-        JsonPointer.unset(element, '#/description');
-      }
+  if (element?.options?.format !== 'impactGroup') {
+    JsonPointer.unset(element, '#/description');
+  }
 
-      if (element?.type?.toLowerCase() === 'label') {
-        element.text = `#lang/text_${uuid()}`;
-      }
+  if (element?.type?.toLowerCase() === 'label') {
+    element.text = `#lang/text_${uuid()}`;
+  }
 
-      if (element?.description?.title === 'impacts') {
-        element.options ??= {};
-        element.options.format = 'impactGroup';
-      }
+  if (element?.description?.title === 'impacts') {
+    element.options ??= {};
+    element.options.format = 'impactGroup';
+  }
 
-      return element;
-    }
+  return element;
+}
 
-    function onCloneControl(original: IControl) {
-      const dataToClone: IControl = cloneDeep(original);
-      return {
-        type: 'Control',
-        scope: dataToClone.scope,
-        options: {
-          label: `#lang/${dataToClone.propertyName}`
-        },
-        ...(dataToClone.category === 'links' && { elements: [] })
-      };
-    }
+function onCloneControl(original: IControl) {
+  const dataToClone: IControl = cloneDeep(original);
+  return {
+    type: 'Control',
+    scope: dataToClone.scope,
+    options: {
+      label: `#lang/${dataToClone.propertyName}`
+    },
+    ...(dataToClone.category === 'links' && { elements: [] })
+  };
+}
 
 const onCloneWidget = (widget: IVeoFormsElementDefinition) => ({
   type: 'Widget',

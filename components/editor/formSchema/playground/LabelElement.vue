@@ -35,23 +35,19 @@
 
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
-import { PropType } from 'vue';
 
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
 
-defineProps({
-  playgroundElement: {
-    type: Object as PropType<IPlaygroundElement>,
-    required: true
-  },
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
-});
+defineProps<{
+  playgroundElement: IPlaygroundElement;
+  formSchemaElement: IVeoFormSchemaItem;
+}>();
 
-const emit = defineEmits(['edit', 'delete']);
+const emit = defineEmits<{
+  (event: 'edit'): void;
+  (event: 'delete'): void;
+}>();
 
 const { t } = useI18n();
 </script>

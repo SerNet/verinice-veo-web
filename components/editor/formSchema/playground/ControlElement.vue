@@ -22,24 +22,13 @@
     </div>
     <div class="overflow-hidden" style="flex-grow: 1">
       <v-card-actions class="d-flex py-0">
+        <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" tag="b" />
         <EditorFormSchemaPlaygroundRuleIcon :rule="formSchemaElement.rule" class="mr-1" />
-        {{ t('control') }} ({{ inputType }})
+        <span class="text-grey text--darken-4">{{ inputType }}</span>
         <v-spacer />
         <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
         <v-btn :icon="mdiTrashCanOutline" size="small" @click="emit('delete')" />
       </v-card-actions>
-      <div class="mx-2 mb-1">
-        <EditorTranslationsTranslatedElementTitle :form-schema-element="formSchemaElement" tag="b">
-          <template #default="{ translatedValue }">
-            <span v-if="translatedValue" class="text-body-2" style="overflow-wrap: break-word">
-              ({{ attributeKey }})
-            </span>
-            <span v-else style="overflow-wrap: break-word">
-              <b>{{ attributeKey }}</b>
-            </span>
-          </template>
-        </EditorTranslationsTranslatedElementTitle>
-      </div>
     </div>
   </v-sheet>
 </template>
@@ -48,7 +37,6 @@
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
-import { last } from 'lodash';
 
 import { IPlaygroundElement } from './Element.vue';
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
@@ -69,8 +57,6 @@ const emit = defineEmits<{
   (e: 'delete'): void;
 }>();
 
-const { t } = useI18n();
-
 const objectSchema = inject<Ref<JSONSchema7>>(FORMSCHEMA_PROVIDE_KEYS.OBJECTSCHEMA);
 const objectSchemaElement = computed(
   () => JsonPointer.get(objectSchema?.value, props.formSchemaElement.scope as string) as JSONSchema7
@@ -87,7 +73,6 @@ const inputType = computed(() =>
 );
 
 const handleColor = computed(() => CONTROL_APPEARANCE_DEFINITIONS[controlType.value].color);
-const attributeKey = computed(() => last(props.formSchemaElement.scope?.split('/')));
 </script>
 
 <i18n src="~/locales/base/components/editor-form-schema-playground-control-element.json"></i18n>

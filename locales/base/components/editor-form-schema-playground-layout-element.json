@@ -1,16 +1,20 @@
 {
   "en": {
     "addElementToGroup": "Add an element to this layout",
-    "layout": "layout",
+    "layout": "Layout",
     "layoutType": {
-      "group": "group"
+      "group": "Group",
+      "accordion": "Accordion",
+      "text": "Text"
     }
   },
   "de": {
     "addElementToGroup": "Fügen Sie diesem Layout ein Element hinzu!",
     "layout": "Layout",
     "layoutType": {
-      "group": "Gruppe"
+      "group": "Gruppe",
+      "accordion": "Akkordeon",
+      "text": "Text"
     }
   }
 }

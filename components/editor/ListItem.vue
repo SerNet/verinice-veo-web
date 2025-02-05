@@ -63,8 +63,10 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const pointer: ComputedRef<string> = computed(() => {
+  if (!props.scope) return '';
+
   const result = props.scope.split('/');
-  const match = props.scope.match('/[A-Z]{1,2}/');
+  const match = props.scope.match(/[A-Z]{1,2}/);
 
   return match ?
       `${result[4]} > ${result[8]} > ${last(props.scope.split('/'))}` // index [8] stores the risk category, e.g. "A" | "C" | "I"

@@ -181,7 +181,7 @@ const deleteElementDialogVisible = ref(false);
 
 <style module lang="scss">
 .dragarea {
-  min-height: 100px;
+  min-height: 50px;
   position: relative;
   z-index: 2;
 }

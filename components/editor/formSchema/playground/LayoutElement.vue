@@ -22,7 +22,7 @@
         <v-icon :icon="mdiDrag" />
       </div>
       <EditorFormSchemaPlaygroundRuleIcon :rule="formSchemaElement.rule" class="mr-1" />
-      {{ t('layout') }} ({{ upperFirst(t(`layoutType.${formSchemaElement.options.format}`)) }})
+      {{ t('layout') }} ({{ t(`layoutType.${formSchemaElement.options.format}`) }})
       <v-spacer />
       <v-btn :icon="mdiPencilOutline" size="small" @click="emit('edit')" />
       <v-btn :icon="mdiTrashCanOutline" size="small" @click="emit('delete')" />
@@ -52,24 +52,19 @@
 
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
-import { upperFirst } from 'lodash';
-import { PropType } from 'vue';
 
 import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { IPlaygroundElement } from './Element.vue';
 
-defineProps({
-  playgroundElement: {
-    type: Object as PropType<IPlaygroundElement>,
-    required: true
-  },
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  }
-});
+defineProps<{
+  playgroundElement: IPlaygroundElement;
+  formSchemaElement: IVeoFormSchemaItem;
+}>();
 
-const emit = defineEmits(['edit', 'delete']);
+const emit = defineEmits<{
+  (event: 'edit'): void;
+  (event: 'delete'): void;
+}>();
 
 const { t } = useI18n();
 </script>
