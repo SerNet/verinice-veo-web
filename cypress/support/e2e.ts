@@ -6,7 +6,7 @@ import { checkSubTypePage } from '../commands/elements';
 import { importUnit } from '../commands/importUnit';
 import { handleLanguageBug, languageTo } from '../commands/language';
 import { login } from '../commands/login';
-import { navigateTo, selectFirstSubType, visitObject } from '../commands/navigation';
+import { navigateTo, selectFirstSubType, visitObject, visitDashboard } from '../commands/navigation';
 import { veoRequest } from '../commands/requests';
 import { checkPagination } from '../commands/table/pagination';
 import {
@@ -18,7 +18,8 @@ import {
   goToUnitDashboard,
   goToUnitSelection,
   selectUnit,
-  selectUnitFromDropdown
+  selectUnitFromDropdown,
+  deleteTestUnits
 } from '../commands/units';
 
 Cypress.Commands.addAll({
@@ -50,7 +51,9 @@ Cypress.Commands.addAll({
   checkPagination,
   getCustom,
   containsCustom,
-  visitObject
+  visitObject,
+  deleteTestUnits,
+  visitDashboard
 });
 
 // Uncaught exeptions make cypress test runs fail
