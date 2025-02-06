@@ -3,6 +3,9 @@
 import { upperFirst } from 'lodash';
 import { waitForLoadersToDisappear } from './utils';
 
+import type { UnitDetails } from '../support/setupHelpers';
+import type { ICYVeoDomain } from './domains';
+
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
@@ -10,6 +13,7 @@ declare global {
       navigateTo: typeof navigateTo;
       selectFirstSubType: typeof selectFirstSubType;
       visitObject: typeof visitObject;
+      visitDashboard: typeof visitDashboard;
     }
   }
 }
@@ -103,4 +107,19 @@ export function visitEditor(
   cy.visit(`/${unitId}/domains/${domainId}/editor`, { failOnStatusCode: false });
   cy.get('[data-component-name="breadcrumbs"]', { timeout: 30000 }); // loading an editor might take a long time...
   cy.handleLanguageBug();
+}
+
+export function visitDashboard({
+  unitName = Cypress.env('dynamicTestData').testUnits[0].name,
+  domainName = Cypress.env('dynamicTestData').testUnits[0].domains[0].name
+} = {}) {
+  const unit = Cypress.env('dynamicTestData').testUnits.find((u: UnitDetails) => u.name == unitName);
+  const unitId = unit.unitId;
+  const domainId = unit.domains.find((d: ICYVeoDomain) => (d.name = domainName)).id;
+
+  // Go to dashboard
+  cy.visit(`/${unitId}/domains/${domainId}`, { failOnStatusCode: false });
+
+  // Wait for dashboard to render
+  cy.getCustom('[data-component-name="breadcrumbs"]');
 }
