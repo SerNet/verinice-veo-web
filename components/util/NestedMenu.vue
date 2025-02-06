@@ -79,9 +79,10 @@ export interface INestedMenuEntries {
   key: string;
   title: string | ComposerTranslation;
   icon?: string;
+  subType?: string;
   component?: any;
   componentProps?: Record<string, any>;
-  callback?: CallableFunction; // Currently unused, but might make sense in the future to trigger a programmatic action not requiring user input
+  callback?: (item?: INestedMenuEntries) => void;
   children?: INestedMenuEntries[];
   color?: string;
 }
@@ -111,7 +112,7 @@ const onItemClicked = (itemKey: string, item: INestedMenuEntries) => {
     componentIsVisible.value[itemKey] = true;
   }
   if (item.callback) {
-    item.callback();
+    item.callback(item);
     closeMenu();
   }
 };
