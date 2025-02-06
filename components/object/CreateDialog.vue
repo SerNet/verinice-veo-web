@@ -104,7 +104,11 @@ export default defineComponent({
     );
 
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const { subTypeTranslation } = useSubTypeTranslation();
+    const { subTypeTranslation } = useSubTypeTranslation(
+      toRef(() => props.objectType),
+      toRef(() => props.subType),
+      false
+    );
 
     const headline = computed(() => {
       const subType = subTypeTranslation.value === 'all' ? '' : subTypeTranslation.value;
