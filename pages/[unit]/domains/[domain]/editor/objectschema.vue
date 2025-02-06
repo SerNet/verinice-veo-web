@@ -402,10 +402,6 @@ export default defineComponent({
       };
     };
 
-    const onDisplayLanguageUpdate = (newLanguage: string) => {
-      displayLanguage.value = newLanguage;
-    };
-
     const onPageCollapsed = (collapsedPages: boolean[]) => {
       if (collapsedPages[1]) {
         pageWidths.value = [12, 0];
@@ -451,7 +447,6 @@ export default defineComponent({
       errorDialogVisible,
       hideEmptyAspects,
       objectSchemaHelper,
-      onDisplayLanguageUpdate,
       onPageCollapsed,
       pageWidths,
       saveSchema,
