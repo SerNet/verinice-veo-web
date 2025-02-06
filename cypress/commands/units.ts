@@ -147,9 +147,25 @@ export function createUnit({
       };
 
       if (Cypress.env('debug')) cy.log(unitDetails.name);
+
+      // @deprecated - use `Cypress.env('dynamicTestData').units` instead
       Cypress.env(unitDetails.name, unitDetails);
-      Cypress.env('dynamicTestData').unit = unitDetails;
+
+      Cypress.env('dynamicTestData').testUnits.push(unitDetails);
+      if (!Cypress.env('dynamicTestData').unit) {
+        Cypress.env('dynamicTestData').unit = unitDetails;
+      }
     });
+  });
+}
+
+export function deleteTestUnits() {
+  const { testUnits } = Cypress.env('dynamicTestData');
+  testUnits.forEach((unit: UnitDetails & { unitId: string }) => {
+    cy.veoRequest({
+      endpoint: `units/${unit.unitId}`,
+      method: 'DELETE'
+    }).then((response) => expect(response.status).to.equal(204));
   });
 }
 

@@ -19,7 +19,7 @@ export function generateUnitDetails(nodeName: string) {
   };
 
   // Initialize env var to share test data between tests
-  Cypress.env('dynamicTestData', {});
+  Cypress.env('dynamicTestData', { unitDetails, testUnits: [] });
 
   return unitDetails;
 }
