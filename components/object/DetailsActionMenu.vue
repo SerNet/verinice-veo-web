@@ -109,7 +109,7 @@ const items = computed<TActionItems[]>(() => [
     color: 'primary',
     component: ObjectDeleteDialog,
     componentProps: {
-      item: props.object,
+      items: [props.object],
       onSuccess: navigateToObjectOverview,
       onError: (error: any) => displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
     }
