@@ -12,10 +12,10 @@ declare global {
       createUnit: typeof createUnit;
       deleteUnitGUI: typeof deleteUnit;
       deleteUnit: typeof deleteUnit;
+      deleteTestUnits: typeof deleteTestUnits;
       editUnit: typeof editUnit;
       goToUnitDashboard: typeof goToUnitDashboard;
       getVeoTestUnitCard: typeof getVeoTestUnitCard;
-      selectUnitFromDropdown: typeof selectUnitFromDropdown;
     }
   }
 }
@@ -27,30 +27,6 @@ export function goToUnitSelection(): void {
   cy.visit('/units');
   cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
   cy.getCustom('[data-component-name="breadcrumbs"]');
-}
-
-export function selectUnitFromDropdown(currentUnitName?: string): void {
-  cy.getCustom('[data-component-name="unit-select"] .v-autocomplete__menu-icon').click();
-  cy.getCustom('[data-veo-test="unit-selection-nav-item"]').should('be.visible');
-  cy.getCustom('[data-veo-test="unit-selection-nav-item"]').then(($els: JQuery<HTMLElement[]>) => {
-    const elements = $els.toArray();
-    const found = elements.find((el) => {
-      const text = Cypress.$(el).text();
-      return text.includes(currentUnitName);
-    });
-
-    cy.intercept(`${Cypress.env('veoApiUrl')}/units/**`).as('getUnit');
-
-    if (found) {
-      const filteredElements = elements.filter((el) => el !== found);
-      const randomElement = filteredElements[Math.floor(Math.random() * filteredElements.length)];
-      cy.wrap(randomElement).click();
-    } else {
-      cy.wrap(elements[elements.length - 1]).click();
-    }
-
-    cy.wait('@getUnit').its('response.statusCode').should('eq', 200);
-  });
 }
 
 export function selectUnit(unitName: string): void {
