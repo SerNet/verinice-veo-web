@@ -26,6 +26,7 @@ interface IVeoAPIProfile {
   name: string;
   description: string;
   language: string;
+  productId: string;
 }
 
 interface IVeoProfilesPerDomain {
@@ -35,15 +36,10 @@ interface IVeoProfilesPerDomain {
 }
 
 // Internally this FE uses:
-export interface TVeoProfile {
-  name: string;
-  description: string;
-  language: string;
-  id: string;
+export interface TVeoProfile extends IVeoAPIProfile {
   domainName: string;
   domainId: string;
   raw: IVeoAPIProfile;
-  productId: string;
 }
 
 export function useProfiles() {
