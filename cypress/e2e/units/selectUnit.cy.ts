@@ -1,37 +1,42 @@
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
-let unitDetails: UnitDetails;
+let unitDetails_0: UnitDetails;
+let unitDetails_1: UnitDetails;
 
 describe('Unit Selection Functionality', () => {
   beforeEach(() => {
-    unitDetails = generateUnitDetails('selectUnit');
+    unitDetails_0 = generateUnitDetails('selectUnit-0');
+    unitDetails_1 = generateUnitDetails('selectUnit-1');
+    cy.createUnit({ name: unitDetails_0.name, desc: unitDetails_0.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
+    cy.createUnit(unitDetails_1);
     cy.login();
-    cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
-    cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit(unitDetails.name);
-    cy.handleLanguageBug();
+    cy.visitDashboard();
   });
 
-  afterEach(() => cy.deleteUnit(unitDetails.name));
+  afterEach(() => cy.deleteTestUnits());
 
   it('should switch unit and verify unit selection', () => {
-    const defaultUnitName = Cypress.env(unitDetails.name).name;
+    const { testUnits } = Cypress.env('dynamicTestData');
 
     cy.getCustom('[data-component-name="unit-select"] span')
       .invoke('text')
       .then((text: string) => {
-        expect(text.trim()).to.equal(defaultUnitName);
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains(defaultUnitName);
+        expect(text.trim()).to.equal(testUnits[0].name);
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(testUnits[0].name);
       });
 
-    cy.selectUnitFromDropdown(defaultUnitName);
+    // Select the second test unit
+    cy.getCustom('[data-component-name="unit-select"]')
+      .click()
+      .type(`{selectall}{backspace}${testUnits[1].name}{downArrow}{enter}`);
 
     cy.getCustom('[data-component-name="unit-select"] span')
       .invoke('text')
       .then((newUnitText: string) => {
-        expect(newUnitText.trim()).to.not.equal(defaultUnitName);
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains(newUnitText);
+        expect(newUnitText.trim()).to.equal(testUnits[1].name);
+        expect(newUnitText.trim()).to.not.equal(testUnits[0].name);
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(testUnits[1].name);
       });
   });
 });
