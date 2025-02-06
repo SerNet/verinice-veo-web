@@ -24,6 +24,7 @@
         :domain-id="domainId"
         :filter="filter"
         :required-fields="['objectType']"
+        :available-object-types="availableSubTypes"
         @update:filter="updateRoute"
       />
 
@@ -131,11 +132,26 @@
         v-model="createObjectDialogVisible"
         :domain-id="domainId"
         :object-type="filter.objectType"
-        :sub-type="filter.subType"
+        :sub-type="filter.subType || selectedSubtypeForCreateDialog"
       />
       <v-tooltip v-if="filter.objectType" location="start">
         <template #activator="{ props }">
+          <UtilNestedMenu v-if="!filter.subType" location="bottom right" :items="nestedActions">
+            <template #activator="{ props: menuProps }">
+              <v-btn
+                v-bind="mergeProps($attrs, menuProps, props)"
+                color="primary"
+                flat
+                class="veo-primary-action-fab"
+                data-component-name="create-object-button"
+                size="large"
+                :disabled="!nestedActions.length || ability.cannot('manage', 'objects')"
+                :icon="mdiPlus"
+              />
+            </template>
+          </UtilNestedMenu>
           <v-btn
+            v-else
             color="primary"
             flat
             :disabled="ability.cannot('manage', 'objects')"
@@ -164,6 +180,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 import { mdiContentCopy, mdiDotsVertical, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchUnitDomains } from '~/composables/api/domains';
+import { mergeProps } from 'vue';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
@@ -178,6 +195,10 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 import type { VeoSearch } from '~/types/VeoSearch';
 import { type IVeoEntity } from '~/types/VeoTypes';
 import { useFeatureFlag } from '~/composables/features/featureFlag';
+import { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
+import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
+import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
+import { useCurrentDomainUtils } from '~/composables/domains/useDomains';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -200,6 +221,7 @@ const { ability } = useVeoPermissions();
 
 const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
+const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
 
@@ -311,7 +333,6 @@ const filter = computed(() => {
     })
   ) as Record<string, string | undefined>;
 });
-
 //
 // table stuff
 //
@@ -365,6 +386,26 @@ const formsQueryEnabled = computed(() => !!domainId.value);
 const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
   enabled: formsQueryEnabled,
   placeholderData: []
+});
+
+const selectedSubtypeForCreateDialog = ref<string>('');
+
+const availableSubTypes = computed(() => {
+  return getSubType(filter.value.objectType).value;
+});
+const nestedActions = computed<INestedMenuEntries[]>(() => {
+  return formSchemas.value
+    ?.filter((formschema) => formschema.modelType === filter.value.objectType)
+    .map((f) => ({
+      key: f.id,
+      title: f.name[locale.value],
+      icon: OBJECT_TYPE_ICONS.get(filter.value.objectType)?.icon as string,
+      subType: f.subType,
+      callback: (entry: INestedMenuEntries) => {
+        selectedSubtypeForCreateDialog.value = entry.subType;
+        createObjectDialogVisible.value = true;
+      }
+    }));
 });
 
 const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value || isLoadingSearchResults.value);
