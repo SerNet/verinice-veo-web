@@ -97,7 +97,7 @@ export default defineComponent({
     );
 
     const formsQueryParameters = computed(() => ({ domainId: props.domainId }));
-    const formsQueryEnabled = computed(() => !!props.domainId);
+    const formsQueryEnabled = computed(() => !!props.domainId && !props.availableSubTypes.length);
     const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
       enabled: formsQueryEnabled,
       placeholderData: []
