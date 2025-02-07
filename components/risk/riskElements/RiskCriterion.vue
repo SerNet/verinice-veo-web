@@ -62,8 +62,7 @@
         <v-btn :icon="mdiPencil" variant="plain" size="small" @click="emit('edit')" />
       </div>
 
-      <!-- Risk Matrix -->
-      <Matrix
+      <RiskRiskElementsMatrix
         v-if="value.length > 0"
         :probabilities="probabilities"
         :value="value"
@@ -81,33 +80,25 @@
 
 <script setup lang="ts">
 import { mdiDelete, mdiPencil } from '@mdi/js';
-import { defineProps } from 'vue';
-import { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValueLevel } from '~/types/VeoTypes';
-import Matrix from './Matrix.vue';
 const { locale, t } = useI18n();
+import type { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValueLevel } from '~/types/VeoTypes';
 
-defineProps({
-  value: {
-    type: Array as PropType<IVeoRiskValueLevel[][]>,
-    default: () => []
-  },
-  probabilities: {
-    type: Array as PropType<IVeoRiskProbabilityLevel[]>,
-    default: () => []
-  },
-  impacts: {
-    type: Array as PropType<IVeoRiskPotentialImpact[]>,
-    default: () => []
-  },
-  riskValues: {
-    type: Array as PropType<IVeoRiskValueLevel[]>,
-    default: () => []
-  },
-  title: {
-    type: String,
-    default: ''
+withDefaults(
+  defineProps<{
+    value?: IVeoRiskValueLevel[][];
+    probabilities?: IVeoRiskProbabilityLevel[];
+    impacts: IVeoRiskPotentialImpact[];
+    riskValues: IVeoRiskValueLevel[];
+    title: string;
+  }>(),
+  {
+    value: () => [],
+    probabilities: () => [],
+    impacts: () => [],
+    riskValues: () => [],
+    title: ''
   }
-});
+);
 
 const emit = defineEmits<{
   (e: 'edit'): void;
