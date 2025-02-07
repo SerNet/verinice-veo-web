@@ -27,7 +27,7 @@
     @update:model-value="closeDialog"
   >
     <v-card class="d-flex flex-column" tile>
-      <v-card-title class="d-flex align-center bg-accent small-caps text-h4">
+      <v-card-title class="d-flex align-center bg-accent small-caps text-h4" data-veo-test="dialog-title">
         <LayoutAppLogoMobile v-if="fullscreen" style="height: 36px" />
         <span>{{ title }}</span>
         <v-spacer />

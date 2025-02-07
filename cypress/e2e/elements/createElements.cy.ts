@@ -1,3 +1,4 @@
+import { upperFirst } from 'lodash';
 import { getRandomElementType } from '../../commands/utils';
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
@@ -11,6 +12,7 @@ describe('Create elements', () => {
     cy.acceptAllCookies();
     cy.goToUnitSelection();
     cy.selectUnit(unitDetails.name);
+    cy.handleLanguageBug();
   });
 
   afterEach(() => cy.deleteUnit(unitDetails.name)); // Use the name from the unitDetails object to delete);
@@ -19,6 +21,29 @@ describe('Create elements', () => {
 
   // number of elements to be created in each sub type
   const numOfElements = 1;
+
+  it('should verify actions in all scope tabs', () => {
+    cy.visit(
+      `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${Cypress.env('dynamicTestData').unit.domains[0].id}/scopes/-`,
+      { failOnStatusCode: false }
+    );
+    cy.getCustom('button[data-component-name="create-object-button"]').click();
+    cy.get('[data-veo-test="action-selection-nav-item"]').then(($items) => {
+      const availableActions = $items.toArray().map((item) => item.innerText.trim());
+
+      const actionsToTest = availableActions.slice(0, 2);
+
+      cy.getCustom('button[data-component-name="create-object-button"]').click();
+
+      actionsToTest.forEach((action) => {
+        cy.getCustom('button[data-component-name="create-object-button"]').click();
+        cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action).click();
+        cy.getCustom('[data-veo-test="dialog-card"]').as('container');
+        cy.getCustom('@container').getCustom('[data-veo-test="dialog-title"]').invoke('text').should('contain', action);
+        cy.getCustom('.v-card').find('.close-button').click();
+      });
+    });
+  });
 
   for (const elementType of elementTypeList) {
     it('creates elements in ' + elementType, () => {

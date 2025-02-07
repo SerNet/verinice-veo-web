@@ -32,7 +32,12 @@
             @close="closeMenu"
           >
             <template #activator="{ props: activatorProps }">
-              <v-list-item v-bind="activatorProps" :key="`0_${item.key}`" @click.stop="() => {}">
+              <v-list-item
+                v-bind="activatorProps"
+                :key="`0_${item.key}`"
+                data-veo-test="action-selection-nav-item"
+                @click.stop="() => {}"
+              >
                 <template v-if="anyItemHasIcon" #prepend>
                   <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
                   <div v-else style="width: 54px" />
@@ -46,7 +51,12 @@
               </v-list-item>
             </template>
           </UtilNestedMenu>
-          <v-list-item v-else :key="`1_${item.key}`" @click="onItemClicked(`1_${item.key}`, item)">
+          <v-list-item
+            v-else
+            :key="`1_${item.key}`"
+            data-veo-test="action-selection-nav-item"
+            @click="onItemClicked(`1_${item.key}`, item)"
+          >
             <template v-if="anyItemHasIcon" #prepend>
               <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
               <div v-else style="width: 54px" />
