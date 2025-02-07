@@ -24,6 +24,7 @@
           <v-row v-for="(protectionGoal, index) in protectionGoals" :key="index">
             <RiskCriterion
               v-bind="getMatrixData(protectionGoal.id)"
+              :protection-goal-id="protectionGoal.id"
               :title="protectionGoal.text"
               @edit="
                 () =>

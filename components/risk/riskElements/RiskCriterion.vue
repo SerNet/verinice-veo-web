@@ -65,6 +65,7 @@
       <RiskRiskElementsMatrix
         v-if="value.length > 0"
         :probabilities="probabilities"
+        :protection-goal-id="protectionGoalId"
         :value="value"
         :risk-values="riskValues"
         :get-most-contrasty-color="getMostContrastyColor"
@@ -90,13 +91,15 @@ withDefaults(
     impacts: IVeoRiskPotentialImpact[];
     riskValues: IVeoRiskValueLevel[];
     title: string;
+    protectionGoalId: string;
   }>(),
   {
     value: () => [],
     probabilities: () => [],
     impacts: () => [],
     riskValues: () => [],
-    title: ''
+    title: '',
+    protectionGoalId: ''
   }
 );
 
