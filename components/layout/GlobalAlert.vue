@@ -161,6 +161,9 @@ export default defineComponent({
   max-width: 400px;
   position: fixed;
   width: 100%;
-  z-index: 2401;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow-wrap: break-word;
+  z-index: 9999;
 }
 </style>

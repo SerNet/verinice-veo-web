@@ -22,7 +22,7 @@
     :color="alertColor"
     border="start"
     :elevation="flat ? undefined : 2"
-    class="overflow-hidden bg-basepage centered-alert"
+    class="overflow-hidden bg-basepage"
     :class="{
       'veo-pseudo-hover': dismissOnClick,
       'cursor-pointer': dismissOnClick
@@ -261,11 +261,5 @@ export default defineComponent({
 
 .veo-alert-timeout-bar {
   left: 0;
-}
-.centered-alert {
-  position: fixed;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  overflow: hidden !important; 
 }
 </style>
