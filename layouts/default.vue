@@ -17,6 +17,7 @@
 -->
 <template>
   <v-app>
+    <LayoutLoadingWrapper v-if="isLoading" :text="loadingInfo ? loadingInfo : t('isLoading')" />
     <v-app-bar :class="$style['app-bar']" data-component-name="app-bar" flat>
       <v-app-bar-nav-icon v-if="xs" @click="drawer = !drawer" />
       <nuxt-link
@@ -98,6 +99,8 @@ const { t } = useI18n();
 const theme = useTheme();
 const context = useNuxtApp();
 const { data: messages } = useSystemMessages();
+
+const { isLoading, loadingInfo } = useGlobalLoadingState();
 
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'

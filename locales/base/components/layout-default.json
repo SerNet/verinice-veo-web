@@ -1,8 +1,10 @@
 {
   "en": {
-    "openDocumentationInNewTab": "Open documentation in new tab"
+    "openDocumentationInNewTab": "Open documentation in new tab",
+    "isLoading": "Please wait..."
   },
   "de": {
-    "openDocumentationInNewTab": "Dokumentation in neuem Tab öffnen"
+    "openDocumentationInNewTab": "Dokumentation in neuem Tab öffnen",
+    "isLoading": "Bitte warten..."
   }
 }
