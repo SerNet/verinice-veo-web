@@ -19,7 +19,7 @@
 import { useQuerySync } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { kebabCase } from 'lodash';
+import { customKebabCase } from '~/composables/useConfiguration';
 
 export type TVeoDomain = {
   name: string;
@@ -131,7 +131,8 @@ export function useDomainColor(domainName: string): string {
     const { data: config } = useConfiguration();
     colors.value = config.value?.domains?.colors;
   }
-  return colors.value?.[kebabCase(domainName)] ?? colors.value.default;
+
+  return colors.value?.[customKebabCase(domainName)] ?? colors.value.default;
 }
 
 function map(domains: IVeoDomain[]): TVeoDomain[] {

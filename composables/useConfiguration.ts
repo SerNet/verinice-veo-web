@@ -15,7 +15,13 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { config as baseConfig } from '~/configuration/base/config';
-import { kebabCase } from 'lodash';
+import { words } from 'lodash';
+
+export function customKebabCase(str) {
+  return words(str, /[a-zA-Z0-9+]+/g)
+    .join('-')
+    .toLowerCase();
+}
 
 interface IVeoConfiguration {
   readonly riskAffectedObjectTypes: string[];
@@ -52,7 +58,7 @@ export function useConfiguration() {
     isLoading.value = true;
 
     try {
-      const domainName = kebabCase(currentDomain.value.name);
+      const domainName = customKebabCase(currentDomain.value.name);
       const domainSpecificConfig = await getDomainSpecificConfig(domainName);
       data.value = { ...baseConfig, ...domainSpecificConfig.config };
     } catch (e) {
