@@ -18,7 +18,6 @@ import {
   goToUnitDashboard,
   goToUnitSelection,
   selectUnit,
-  selectUnitFromDropdown,
   deleteTestUnits
 } from '../commands/units';
 
@@ -47,7 +46,6 @@ Cypress.Commands.addAll({
   handleLanguageBug,
   checkSubTypePage,
   selectFirstSubType,
-  selectUnitFromDropdown,
   checkPagination,
   getCustom,
   containsCustom,
