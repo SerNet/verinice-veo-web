@@ -210,16 +210,6 @@ export default defineComponent({
 
     const subType = computed(() => props.object?.subType);
 
-    // If the user accessed the object in the risks tab but the object doesn't have the subType data processing, force another tab
-    watch(
-      () => props.loading,
-      (newValue, previousValue) => {
-        if (previousValue && !newValue && subType.value !== 'PRO_DataProcessing' && props.activeTab === 'risks') {
-          emit('update:activeTab', 'childObjects');
-        }
-      }
-    );
-
     const internalActiveTab = computed({
       get() {
         return Math.max(
