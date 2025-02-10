@@ -25,8 +25,8 @@
         <div>
           <!-- Item details are a link -->
           <NuxtLink
-            v-if="item.link"
-            :to="item.link"
+            v-if="item.link || itemUrl"
+            :to="itemUrl ? itemUrl : item.link"
             class="veo-base-card__slot-center__main"
             data-veo-test="item-card-slot-center-link"
             data-component-name="item-card-slot-center-link"
@@ -50,7 +50,7 @@
 
           <!-- Item details are text -->
           <div
-            v-if="!item.link && !hasLabel"
+            v-if="!item.link && !hasLabel && !itemUrl"
             class="veo-base-card__slot-center__main"
             data-veo-test="item-card-slot-center-link"
             data-component-name="item-card-slot-center-link"
@@ -83,9 +83,11 @@ import type { TInlineComponent } from '~/types/utils';
 interface Props {
   item: any;
   hasLabel?: boolean;
+  itemUrl?: string;
 }
 withDefaults(defineProps<Props>(), {
-  hasLabel: false
+  hasLabel: false,
+  itemUrl: undefined
 });
 
 const slots = useSlots();
