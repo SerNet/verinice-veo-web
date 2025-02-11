@@ -103,7 +103,7 @@ build_test_app:
   interruptible: true
 
 .test_template:
-  image: cypress/base:22.13.1
+  image: cypress/base:22.14.0
   needs: ['build_test_app']
   stage: test
   tags:
