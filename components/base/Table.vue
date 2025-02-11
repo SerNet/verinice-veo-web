@@ -108,6 +108,11 @@ const props = withDefaults(
      * This text will be shown in place of the table when `items` array is empty.
      */
     noDataText?: Slot;
+    /**
+     * Boolean to show the select checkbox column.
+     * @default false
+     */
+    showSelect?: boolean;
   }>(),
   {
     items: () => [],
@@ -118,7 +123,8 @@ const props = withDefaults(
     additionalHeaders: () => [],
     showAllColumns: false,
     enableClick: false,
-    noDataText: undefined
+    noDataText: undefined,
+    showSelect: false
   }
 );
 
@@ -298,7 +304,7 @@ const getHeaderTitle = (header: TableHeader) => {
 
 const _headers = computed<TableHeader[]>(() => {
   const filteredHeaders = Object.entries(presetHeaders)
-    .filter(([key]) => props.defaultHeaders.includes(key) || (key === 'data-table-select' && 'show-select' in attrs))
+    .filter(([key]) => props.defaultHeaders.includes(key) || (key === 'data-table-select' && props.showSelect))
     .map(([, header]) => header);
 
   const headers = [...filteredHeaders, ...props.additionalHeaders];
@@ -491,13 +497,12 @@ const itemsPerPageOptions = [
   { value: 50, title: '50' },
   { value: 100, title: '100' }
 ];
-const hasShowSelect = computed(() => 'show-select' in attrs);
 
 const sharedProps = computed(() => {
   function handleRowClick(event: PointerEvent, context: any) {
     if (props.enableClick && !isCheckboxClick(event)) {
       handleRowEvent(event, context);
-    } else if (hasShowSelect.value) {
+    } else if (props.showSelect) {
       toggleSelection(context);
     }
 
@@ -512,7 +517,7 @@ const sharedProps = computed(() => {
   }
   // Extract complex event handlers into separate variables
   const onClickRowHandler =
-    props.enableClick || hasShowSelect.value ?
+    props.enableClick || props.showSelect ?
       {
         'onClick:row': handleRowClick
       }
