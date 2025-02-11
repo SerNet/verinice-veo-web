@@ -30,3 +30,26 @@ export function waitForLoadersToDisappear(options: any = {}) {
   cy.get('[data-veo-test="loadingDataTable"]', options).should('not.exist');
   cy.get('[data-veo-test="loader"]', options).should('not.exist');
 }
+
+export function getTestUnits() {
+  const { dynamicTestData } = Cypress.env('dynamicTestData');
+  return dynamicTestData.units;
+}
+
+export function getTestUnit() {
+  return Cypress.env('dynamicTestData').testUnits[0];
+}
+
+export function getTestUnitId() {
+  return Cypress.env('dynamicTestData').testUnits[0].unitId;
+}
+
+export function getTestDomain(domainName = 'DS-GVO') {
+  return Cypress.env('dynamicTestData').testUnits[0].domains.find(
+    (d: { name: string; id: string }) => d.name == domainName
+  );
+}
+
+export function getTestDomainId(domainName = 'DS-GVO') {
+  return getTestDomain(domainName).id;
+}
