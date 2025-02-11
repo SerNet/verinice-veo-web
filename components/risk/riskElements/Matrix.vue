@@ -17,7 +17,7 @@
 <template>
   <div class="d-flex align-center px-4">
     <v-card-subtitle class="pr-0 px-0">{{ t('riskMatrix') }} </v-card-subtitle>
-    <v-btn :icon="mdiPencil" variant="plain" size="small" class="d-none" />
+    <v-btn :icon="mdiPencil" variant="plain" size="small" @click="editRiskMatrix" />
   </div>
   <v-card-text class="pd-0 overflow-x-auto">
     <div class="table-container">
@@ -75,7 +75,7 @@
             </th>
           </tr>
           <tr
-            v-for="(_row, rowIndex) in reversedValue"
+            v-for="(_row, rowIndex) in reversedOrdinalValues"
             :key="rowIndex"
             :style="{
               height: '100%',
@@ -103,11 +103,12 @@
               </template>
             </v-tooltip>
             <v-tooltip
-              v-for="(cell, cellIndex) in getImpactValues(rowIndex)"
+              v-for="(cell, cellIndex) in reversedOrdinalValues[rowIndex]"
               :key="cellIndex"
+              :text="getCellTooltipText(riskValues, locale, cell)"
+              :disabled="isEditMode"
               max-width="400px"
               top
-              :text="getCellTooltipText(cell)"
             >
               <template #activator="{ props }">
                 <td
@@ -126,11 +127,22 @@
                       alignItems: 'center',
                       height: '100%',
                       flex: 1,
-                      backgroundColor: riskValues[cell.ordinalValue].htmlColor,
-                      color: getMostContrastyColor(cell.htmlColor)
+                      backgroundColor: riskValues[cell].htmlColor,
+                      color: getMostContrastyColor(riskValues[cell].htmlColor)
                     }"
                   >
-                    {{ getCellName(cell) }}
+                    <v-row v-if="isEditMode">
+                      <v-autocomplete
+                        v-model="reversedOrdinalValues[rowIndex][cellIndex]"
+                        :items="rawRiskValues"
+                        :item-title="`translations.${locale}.name`"
+                        item-value="ordinalValue"
+                        density="compact"
+                      />
+                    </v-row>
+                    <span v-else>
+                      {{ getRiskValueName(riskValues, locale, cell) }}
+                    </span>
                   </div>
                 </td>
               </template>
@@ -139,14 +151,29 @@
         </tbody>
       </v-table>
     </div>
+
+    <!-- RISK MATRIX ACTIONS -->
+    <v-container v-if="isEditMode" class="px-0 d-flex justify-end ga-2">
+      <v-btn :append-icon="mdiCancel" size="small" variant="outlined" @click="editRiskMatrix">{{ t('cancel') }}</v-btn>
+      <v-btn
+        :append-icon="mdiFloppy"
+        size="small"
+        color="primary"
+        @click="() => saveRiskValues()"
+        >{{ t('save') }}</v-btn
+      >
+    </v-container>
   </v-card-text>
 </template>
 
 <script setup lang="ts">
-import { mdiPencil } from '@mdi/js';
+import { mdiPencil, mdiCancel, mdiFloppy } from '@mdi/js';
 import { cloneDeep, reverse, upperFirst } from 'lodash';
 import { defineProps } from 'vue';
+import riskQueryDefinitions from '~/composables/api/queryDefinitions/risks';
+
 import type { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel, IVeoRiskValueLevel } from '~/types/VeoTypes';
+
 const props = defineProps({
   probabilities: {
     type: Array as PropType<IVeoRiskProbabilityLevel[]>,
@@ -167,14 +194,15 @@ const props = defineProps({
   getMostContrastyColor: {
     type: Function,
     required: true
+  },
+  protectionGoalId: {
+    type: String,
+    required: true
   }
 });
 
 const { t, locale } = useI18n();
-
-const getImpactValues = (rowIndex: number) => {
-  return reversedValue.value[rowIndex];
-};
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 const impactRows = ref(['vernachlässigbar', 'begrenzt', 'beträchtlich', 'existenzbedrohend']);
 
@@ -182,7 +210,7 @@ const impactRows = ref(['vernachlässigbar', 'begrenzt', 'beträchtlich', 'exist
  * Values are reversed to correctly render the matrix:
  * severity levels should increase from bottom to top
  */
-const reversedValue = computed(() => reverse(cloneDeep(props.value)));
+const reversedOrdinalValues = ref<number[][]>(reverse(props.value.map((value) => value.map((v) => v.ordinalValue))));
 const reversedImpacts = computed(() => reverse(cloneDeep(props.impacts)));
 
 // Probability levels
@@ -196,16 +224,75 @@ const getImpactTooltipText = (rowIndex: number) =>
 const getImpactName = (rowIndex: number) => translate(reversedImpacts.value[rowIndex].translations)['name'];
 
 // Risk values
-const getCellTranslation = (cell: IVeoRiskValueLevel, key: 'description' | 'name') => {
-  const matchingRiskValue = props.riskValues.find((value) => value.ordinalValue === cell.ordinalValue);
-  return translate(matchingRiskValue.translations)[key];
-};
-
-const getCellTooltipText = (cell: IVeoRiskValueLevel) => getCellTranslation(cell, 'description');
-const getCellName = (cell: IVeoRiskValueLevel) => getCellTranslation(cell, 'name');
-
 function translate<T>(translations: { [lang: string]: T }): T {
   return translations[locale.value] || Object.values(translations)[0];
+}
+
+const isEditMode = ref(false);
+function editRiskMatrix() {
+  isEditMode.value = !isEditMode.value;
+}
+
+// Render risk values
+const { data: currentDomain } = useCurrentDomain();
+
+const { mutateAsync: updateRiskMatrixValues } = useMutation(riskQueryDefinitions.queries.mutations.update);
+
+const { isLoading, isLoadingInfo } = useGlobalLoadingState();
+isLoadingInfo.value = t('messages.isUpdatingRiskMatrix');
+
+const config = useRuntimeConfig();
+const route = useRoute();
+const riskDefinitionId = computed(() => route.params?.matrix as string);
+const rawRiskValues = computed(() => toRaw(props.riskValues));
+
+function getCellTooltipText(riskValues: IVeoRiskProbabilityLevel[], locale: string, ordinalValue: number) {
+  const riskValue = riskValues?.find((rv) => rv.ordinalValue == ordinalValue);
+  return riskValue ? riskValue.translations[locale]?.description : '';
+}
+
+function getRiskValueName(riskValues: IVeoRiskProbabilityLevel[], locale: string, ordinalValue: number) {
+  const riskValue = riskValues.find((rv) => rv.ordinalValue == ordinalValue);
+  return riskValue ? riskValue.translations[locale]?.name : '';
+}
+
+// Mutate risk values
+function prepareRiskValues(reversedOrdinalValues: number[][], _rawRiskValues = rawRiskValues.value) {
+  const ordinalValues = reverse(toRaw(reversedOrdinalValues));
+  const newRiskValues = ordinalValues.map((ova: number[]) =>
+    ova.map((ov) => _rawRiskValues.find((rw) => rw.ordinalValue == ov))
+  );
+  return newRiskValues;
+}
+
+async function saveRiskValues(
+  reversedOrdinals = reversedOrdinalValues.value,
+  definitionId = riskDefinitionId.value,
+  categoryId = props.protectionGoalId,
+  domainId = currentDomain.value.id
+) {
+  try {
+    const riskDefinition = cloneDeep(currentDomain.value.raw.riskDefinitions[definitionId]);
+    const categoryIndex = riskDefinition.categories.findIndex((category) => category.id == categoryId);
+    if (categoryIndex === -1) {
+      throw new Error(`Category with ID ${categoryId} not found`);
+    }
+    const newRiskValues = prepareRiskValues(cloneDeep(reversedOrdinals));
+    riskDefinition.categories[categoryIndex].valueMatrix = newRiskValues;
+
+    isLoading.value = true;
+    await updateRiskMatrixValues({ json: riskDefinition, domainId, riskDefinitionId: definitionId });
+    displaySuccessMessage(t('messages.success'));
+  } catch (err) {
+    handleError(err);
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+function handleError(error: unknown) {
+  displayErrorMessage(t('messages.error'));
+  if (config.public.debug) console.error(error);
 }
 </script>
 

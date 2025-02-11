@@ -3,12 +3,22 @@
     "impact": "impact",
     "noData": "no data",
     "probability": "probability",
-    "riskMatrix": "Risk matrix:"
+    "riskMatrix": "Risk matrix:",
+    "messages": {
+      "isUpdatingRiskMatrix": "Risk matrix is being updated...",
+      "success": "Successfully updated risk matrix.",
+      "error": "Could not update risk matrix."
+    }
   },
   "de": {
     "impact": "auswirkung",
     "noData": "keine Daten",
     "probability": "eintrittswahrscheinlichkeit",
-    "riskMatrix": "Risikomatrix:"
+    "riskMatrix": "Risikomatrix:",
+    "messages": {
+      "isUpdatingRiskMatrix": "Risikomatrix wird aktualisiert...",
+      "success": "Risikomatrix erfolgreich aktualisiert.",
+      "error": "Risikomatrix konnte nicht aktualisiert werden"
+    }
   }
 }
