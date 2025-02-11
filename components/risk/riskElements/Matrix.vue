@@ -299,12 +299,31 @@ function handleError(error: unknown) {
 <i18n src="~/locales/base/components/risk-risk-elements-matrix.json"></i18n>
 
 <style scoped>
+th,
+td,
+td > div {
+  border-radius: 4px;
+}
+
+:deep(.v-input__details) {
+  display: none;
+}
+
 .veo-risk-matrix {
   --veo-risk-matrix-border: 1px solid white;
+
+  /* Remove input borders from vuetify component */
+  :deep(.v-field__outline) {
+    --v-field-border-width: 0;
+  }
 }
 
 .no-borders {
   border: none !important;
+}
+
+th {
+  margin-bottom: 8px;
 }
 
 .title-cell {
