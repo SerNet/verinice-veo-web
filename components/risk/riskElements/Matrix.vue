@@ -238,8 +238,8 @@ const { data: currentDomain } = useCurrentDomain();
 
 const { mutateAsync: updateRiskMatrixValues } = useMutation(riskQueryDefinitions.queries.mutations.update);
 
-const { isLoading, isLoadingInfo } = useGlobalLoadingState();
-isLoadingInfo.value = t('messages.isUpdatingRiskMatrix');
+const { isLoading, loadingInfo } = useGlobalLoadingState();
+loadingInfo.value = t('messages.isUpdatingRiskMatrix');
 
 const config = useRuntimeConfig();
 const route = useRoute();
