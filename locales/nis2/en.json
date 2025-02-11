@@ -1,0 +1,13 @@
+{
+  "controls": "Requirement",
+  "control": "Requirement",
+  "addControls": "Add requirement",
+  "linkControl": "Select {0}",
+  "riEdtior": {
+    "targetObject": "Scope",
+    "description": "Description",
+    "abbreviation": "Abbreviation",
+    "name": "Name",
+    "originationDescription": "Requirement description"
+  }
+}

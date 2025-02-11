@@ -1,0 +1,13 @@
+{
+  "controls": "Anforderungen",
+  "control": "Anforderung",
+  "addControls": "Anforderung hinzufügen",
+  "linkControl": "{0} auswählen",
+  "riEditor": {
+    "targetObject": "Scope",
+    "description": "Beschreibung",
+    "abbreviation": "Abkürzung",
+    "name": "Name",
+    "originationDescription": "Anforderungsbeschreibung"
+  }
+}
