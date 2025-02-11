@@ -15,16 +15,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import type { ComposerTranslation } from 'vue-i18n';
+import type { ComposerTranslation, LocaleMessages, VueMessageType } from 'vue-i18n';
 import { isArray, isObject } from 'lodash';
 import ObjectSchemaHelper from './ObjectSchemaHelper2';
+
 export interface VeoSchemaValidatorMessage {
   code: string;
   message: string;
   params?: Record<string, any>;
   actions?: {
     key: string;
-    title: string | ((t: ComposerTranslation) => string);
+    title:
+      | string
+      | ((
+          t: ComposerTranslation<
+            { de: LocaleMessages<VueMessageType>; en: LocaleMessages<VueMessageType> },
+            'de' | 'en'
+          >
+        ) => string);
     callback: CallableFunction;
   }[];
 }
