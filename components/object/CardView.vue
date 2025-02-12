@@ -22,10 +22,11 @@
         :item="object"
         :item-url="getObjectUrl(object)"
         title=""
+        select
         @update:sort-by="updateSortBy"
       >
         <template #details>
-          <Details :name="object.displayName" :description="setObjectDetails(object, ['updatedBy', 'updatedAt'])" />
+          <Details :name="object.displayName" :description="setObjectDetails(object, ['description'])" />
         </template>
         <template #prepend>
           <div class="d-flex justify-center prepend-icon">
@@ -49,7 +50,11 @@
           </div>
         </template>
         <template #bottom-left>
-          <Status :state="setObjectDetails(object, ['status', 'updatedBy'])" />
+          <Status :state="setObjectDetails(object, ['designator', 'abbreviation', 'status'])" />
+        </template>
+
+        <template #bottom-right>
+          <Status :state="setObjectDetails(object, ['updatedBy', 'updatedAt'])" />
         </template>
       </BaseListItem>
     </template>
@@ -143,7 +148,7 @@ const renderIcon = (object: any) => {
 /**
  * Render translated status
  */
-const renderStatus: any = (item: any) => {
+const renderStatus = (item: any): string => {
   const key = `${item.type}_${item.subType}_status_${item.status}`;
   return props.translations?.lang?.[locale.value]?.[key] || item?.status || '';
 };
@@ -169,10 +174,11 @@ type ObjectDetails = {
   abbreviation?: string;
   updatedBy: string;
   updatedAt: string;
+  description?: string;
 };
 
 const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
-  const details: { [key: string]: any } = {};
+  const details: { [key: string]: string } = {};
 
   keys.forEach((key) => {
     switch (key) {
@@ -185,6 +191,9 @@ const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
       case 'abbreviation':
         details[globalT('objectlist.abbreviation')] = object.abbreviation;
         break;
+      case 'description':
+        details[globalT('objectlist.description')] = object.description;
+        break;
       case 'updatedBy':
         details[globalT('objectlist.updatedBy')] = object.updatedBy;
         break;
@@ -192,7 +201,7 @@ const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
         details[globalT('objectlist.updatedAt')] = renderDate(object);
         break;
       default:
-        console.warn(`Unknown key: ${key}`);
+        console.warn(`Unexpected updated key: ${key}`);
     }
   });
 
@@ -226,7 +235,7 @@ const formatState = (state: object) => {
 const Status = {
   props: {
     state: {
-      type: Object as PropType<Record<string, any>>, // Define the type of `state`
+      type: Object as PropType<Record<string, string>>,
       required: true
     }
   },
@@ -236,18 +245,22 @@ const Status = {
     };
   },
   computed: {
-    formattedState(this: any): string {
-      return formatState(this.state); // Use `this` to access props
-    },
-    stateColor(this: any): string {
-      const status = this.state[Object.keys(this.state)[0]]; // Use `this` to access props
-      return statusColor(status);
+    stateColors(this: Record<string, string>) {
+      return Object.fromEntries(Object.entries(this.state).map(([key, value]) => [key, statusColor(value)]));
     }
   },
   template: `
-    <v-chip data-veo-test="item-card-text-state" :style="{ color: stateColor }" size="small" label>
-      {{ formattedState }}
-    </v-chip>
+ <div style="display: flex; justify-content: flex-end; width: 100%; gap: 4px">
+       <v-chip 
+        v-for="(value, key) in state" 
+        :key="key" 
+        data-veo-test="item-card-text-state" 
+        :style="{ color: stateColors[key] }" 
+        size="small" 
+        label>
+        {{ key }}: {{ value }}
+      </v-chip>
+    </div>
   `
 };
 
@@ -283,13 +296,15 @@ const Details = {
   <v-card-subtitle v-if="meta" v-text="meta"></v-card-subtitle>
  <v-card-text
   v-if="description && Object.keys(description).length > 0"
-  data-veo-test="item-card-text"
+  data-veo-test="item-card-text" class="overflow-y-auto text-body-2" 
 >
   <span
+  v-if="description && Object.values(description).every((value) => typeof value === 'string')"
     v-for="(value, key) in description"
     :key="key"
+    class="overflow-y-auto text-body-2 custom-pre" 
   >
-    <pre>{{ key }}: {{ value }}</pre>
+    <pre style="white-space: pre-wrap">{{ value }}</pre>
   </span>
 </v-card-text>
   `
