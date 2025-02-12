@@ -16,10 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
+  <label>{{ t('search') }}</label>
   <v-combobox
     ref="searchInput"
     v-model="select"
-    :label="t('search')"
     data-component-name="veo-search"
     :items="selectionItems"
     :item-title="(item) => translateItem(item)"
