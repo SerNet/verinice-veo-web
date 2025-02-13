@@ -76,6 +76,7 @@ describe('Catalogs', { testIsolation: false }, () => {
 
     // Check if all items were created and are rendered
     cy.intercept('GET', api.scenarios).as('getScenarios');
+    cy.get('.v-card').find('.close-button').click();
     cy.navigateTo({ group: 'objects', category: 'scenarios', entry: 'all' });
     cy.wait('@getScenarios').its('response.statusCode').should('eq', 200);
 
