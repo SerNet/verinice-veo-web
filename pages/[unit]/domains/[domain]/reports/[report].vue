@@ -101,7 +101,6 @@ import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import { IVeoEntity } from '~/types/VeoTypes';
-import { useTableSort } from '~/composables/tableSort/useTableSort';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -113,7 +112,7 @@ export default defineComponent({
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
     const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const { sortBy } = useTableSort();
+
     const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
 
     const title = computed(() =>
@@ -142,8 +141,10 @@ export default defineComponent({
     const selectedObjects = ref<{ id: string; type: string }[]>([]);
 
     const page = ref(0);
+    const sortBy = ref([{ key: 'name', order: 'asc' }]);
     const resetQueryOptions = () => {
       page.value = 0;
+      sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
     const requiredFields = computed(() =>
@@ -192,8 +193,8 @@ export default defineComponent({
     const endpoint = computed(() => endpoints.value?.[filter.value.objectType as string]);
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
-      sortBy: sortBy.value.key,
-      sortOrder: sortBy.value.order,
+      sortBy: sortBy.value[0].key,
+      sortOrder: sortBy.value[0].order,
       page: page.value,
       unit: route.params.unit as string,
       ...omit(filter.value, 'objectType'),

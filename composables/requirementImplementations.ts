@@ -21,7 +21,6 @@ import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements
 import { useQuery } from '~/composables/api/utils/query';
 import { VeoElementTypePlurals, type RequirementImplementation } from '~/types/VeoTypes';
 import { CustomAspect } from './api/queryDefinitions/catalogs';
-import { useTableSort } from './tableSort/useTableSort';
 
 interface QueryParameters {
   domain: string;
@@ -74,7 +73,8 @@ export function useRequirementImplementationList() {
   const route = useRoute();
   const { data: currentDomain } = useCurrentDomain();
   const isLoadingTranslations = ref(true);
-  const { sortBy } = useTableSort({ key: 'control.abbreviation', order: 'asc' });
+
+  const sortBy = ref([{ key: 'control.abbreviation', order: 'asc' }]);
   const page = ref(0);
 
   const requirementImplementationsQueryParameters = computed<QueryParameters>(() => ({
@@ -82,8 +82,8 @@ export function useRequirementImplementationList() {
     endpoint: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
     id: route.query.targetObject as string,
     requirementId: route.query.control as string,
-    sortBy: mapSortingKey(sortBy.value.key),
-    sortOrder: sortBy.value.order as 'asc' | 'desc',
+    sortBy: mapSortingKey(sortBy.value[0].key),
+    sortOrder: sortBy.value[0].order as 'asc' | 'desc',
     size: tablePageSize.value,
     page: page.value,
     customAspects:

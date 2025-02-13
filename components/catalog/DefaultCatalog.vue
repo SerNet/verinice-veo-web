@@ -58,10 +58,10 @@
 </template>
 
 <script setup lang="ts">
+import type { SortItem } from '~/components/base/Table.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { TableHeader } from '../base/Table.vue';
-import { useTableSort } from '~/composables/tableSort/useTableSort';
 
 const props = withDefaults(
   defineProps<{
@@ -90,7 +90,7 @@ const { ability } = useVeoPermissions();
 const { data: currentDomain } = useCurrentDomain();
 const route = useRoute();
 const { data: translations } = useTranslations({ domain: route.params.domain as string });
-const { sortBy } = useTableSort({ key: 'abbreviation', order: 'asc' });
+
 const elementType = computed(() => {
   // Since all catalog items are of the same type, we can just use the first one
   const firstItem = props.catalogItems.items?.[0];
@@ -154,6 +154,10 @@ const headers = computed<TableHeader[]>(() => [
 ]);
 
 const page = defineModel<number>('page', { default: 0 });
+const sortBy = defineModel<SortItem[]>('sortBy', {
+  default: [{ key: 'abbreviation', order: 'asc' }]
+});
+
 const selectedItems = computed({
   get() {
     return props.modelValue;

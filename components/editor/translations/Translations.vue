@@ -32,7 +32,12 @@
   </v-row>
   <BaseCard>
     <div ref="tableWrapper">
-      <BaseTable :additional-headers="headers" :items="transformedTranslations" :search="searchQuery" :sort-by="sortBy">
+      <BaseTable
+        :additional-headers="headers"
+        :items="transformedTranslations"
+        :search="searchQuery"
+        :sort-by="[{ key: 'key', order: 'asc' }]"
+      >
         <template #no-data>
           <slot name="no-data" v-bind="{ searchQuery }" />
         </template>
@@ -49,7 +54,6 @@ import { TableHeader } from '~/components/base/Table.vue';
 import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
 import { mdiContentCopy, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep } from 'lodash';
-import { useTableSort } from '~/composables/tableSort/useTableSort';
 
 interface ITranslationsItem {
   key: string;
@@ -77,7 +81,7 @@ const emit = defineEmits<{
 
 const { t, locales } = useI18n();
 const { requiredRule } = useRules();
-const { sortBy } = useTableSort({ key: 'key', order: 'asc' });
+
 const searchQuery = ref('');
 
 const editedLanguageItem = ref<{ key: string; source: string; locale: string } | undefined>(undefined);

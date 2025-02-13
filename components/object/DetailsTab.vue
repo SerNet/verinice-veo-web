@@ -133,7 +133,6 @@ import type {
   VeoSort
 } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import { useTableSort } from '~/composables/tableSort/useTableSort';
 export default defineComponent({
   props: {
     type: {
@@ -173,15 +172,16 @@ export default defineComponent({
     const queryClient = useQueryClient();
     // State
     const page = ref(0);
-    const getDefaultSortBy = (tab: string): VeoSort => {
+    const getDefaultSortBy = (tab: string): VeoSort[] => {
       if (tab === 'controls') {
-        return { key: 'abbreviation', order: 'asc' };
+        return [{ key: 'abbreviation', order: 'asc' }];
       }
-      return { key: 'name', order: 'asc' };
+      return [{ key: 'name', order: 'asc' }];
     };
-    const { sortBy } = useTableSort(getDefaultSortBy(props.type));
+    const sortBy = ref<VeoSort[]>(getDefaultSortBy(props.type));
     const resetQueryOptions = () => {
       page.value = 0;
+      sortBy.value = [{ key: 'name', order: 'asc' }];
     };
     watch(() => props.type, resetQueryOptions);
 
@@ -285,8 +285,8 @@ export default defineComponent({
       parentEndpoint: 'scopes',
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
-      sortBy: sortBy.value?.key,
-      sortOrder: sortBy.value?.order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value
     }));
     const parentScopesQueryEnabled = computed(() => props.type === 'parentScopes');
@@ -301,8 +301,8 @@ export default defineComponent({
       id: props.object?.id || '',
       endpoint: schemas.value?.[props.object?.type || ''] || '',
       domain: (route.params.domain as string) || '',
-      sortBy: mapLinkSortKey(sortBy.value?.key),
-      sortOrder: sortBy.value?.order as 'asc' | 'desc',
+      sortBy: mapLinkSortKey(sortBy.value[0]?.key),
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,
       size: tableSize.value
     }));
@@ -332,8 +332,8 @@ export default defineComponent({
       endpoint: route.params.objectType as string,
       id: route.params.object as string,
       purpose: 'COMPLIANCE',
-      sortBy: mapCisSortingKey(sortBy.value?.key),
-      sortOrder: sortBy.value?.order as 'asc' | 'desc',
+      sortBy: mapCisSortingKey(sortBy.value[0]?.key),
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,
       size: tableSize.value
     }));
@@ -369,8 +369,8 @@ export default defineComponent({
       parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
-      sortBy: sortBy.value?.key,
-      sortOrder: sortBy.value?.order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value
     }));
     const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects');
@@ -387,8 +387,8 @@ export default defineComponent({
         props.type === 'childObjects' ?
           ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
         : ['scope'],
-      sortBy: sortBy.value?.key,
-      sortOrder: sortBy.value?.order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,
       size: tableSize.value
     }));
@@ -408,8 +408,8 @@ export default defineComponent({
         props.type === 'childObjects' ?
           ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
         : ['scope'],
-      sortBy: sortBy.value?.key,
-      sortOrder: sortBy.value?.order as 'asc' | 'desc',
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,
       size: tableSize.value
     }));

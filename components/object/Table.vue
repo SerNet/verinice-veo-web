@@ -37,12 +37,12 @@
 <script setup lang="ts">
 import { mergeProps } from 'vue';
 
-import type { TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
+import type { SortItem, TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
 import ObjectIcon from '~/components/object/Icon.vue';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { useFormatters } from '~/composables/utils';
-import type { VeoSort } from '~/types/VeoTypes';
+import { IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
@@ -63,7 +63,7 @@ const props = withDefaults(
      * Defines how the table should be sorted.
      * NOTE: Paginated data can only be sorted by one column, all entries besides [0] will be ignored.
      */
-    sortBy?: VeoSort;
+    sortBy?: SortItem[];
     /**
      * Array containing the keys of commonly shown headers so that they don't have to get redefined every time.
      */
@@ -91,7 +91,7 @@ const props = withDefaults(
     items: () => [],
     loading: false,
     modelValue: () => [],
-    sortBy: () => ({ key: 'name', order: 'asc' }),
+    sortBy: () => [{ key: 'name', order: 'asc' }],
     defaultHeaders: () => [],
     additionalHeaders: () => [],
     showAllColumns: false,
@@ -102,7 +102,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: 'update:sort-by', newSorting: VeoSort): void;
+  (e: 'update:sort-by', newSorting: SortItem[]): void;
   (e: 'update:page', newPage: number): void;
   (e: 'update:items-per-page', newItemsPerPage: number): void;
   (e: 'click', event: any): void;
