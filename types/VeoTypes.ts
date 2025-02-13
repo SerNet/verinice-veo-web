@@ -148,6 +148,8 @@ interface IVeoCustomObject {
   domains: IVeoLink[];
   control_bpInformation_protectionApproach?: string;
   control_bpCompendium_content?: string;
+  control_nis2Article_content?: string;
+  control_bcmRequirement_content?: string;
 }
 
 export interface IVeoCustomLink extends IVeoCustomObject {

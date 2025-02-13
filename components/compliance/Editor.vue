@@ -317,8 +317,14 @@ const updateAdditionalInfo = (control: IVeoEntity, targetObject: IVeoEntity, pro
   const customAspects = control?.customAspects;
   if (!customAspects) return;
 
+  // TODO: make it configurable:
   additionalInfo.value.originationDescription =
-    customAspects?.control_bpCompendium?.control_bpCompendium_content ?? control?.description ?? '';
+    customAspects?.control_bpCompendium?.control_bpCompendium_content ??
+    customAspects?.control_nis2Article?.control_nis2Article_content ??
+    customAspects?.control_bcmRequirement?.control_bcmRequirement_content ??
+    control?.description ??
+    '';
+
   additionalInfo.value.protectionApproach =
     customAspects?.['control_bpInformation']?.control_bpInformation_protectionApproach;
   additionalInfo.value.protectionApproachTranslation = protectionApproachTranslation;
