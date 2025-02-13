@@ -18,82 +18,68 @@
 
 import { useQuerySync } from '~/composables/api/utils/query';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
-import type { VeoSearch } from '~/types/VeoSearch';
-import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { VeoSearch, VeoSearchQueryParameters } from '~/types/VeoSearch';
+import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 type UseSearchParams<T> = {
   baseQueryParameters: Ref<T & { endpoint?: string; page?: number }>;
   search: Ref<VeoSearch[]>;
   queryDefinition?: any;
 };
-export const SEARCH_PREFIX = 'q_'; // Add search parameter prefix
-export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: UseSearchParams<T>) {
+
+type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
+
+export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: UseSearchParams<T>): {
+  data: Ref<VeoSearchResponse>;
+  isLoading: Ref<boolean>;
+} {
   const config = useRuntimeConfig();
-  const route = useRoute();
-  const router = useRouter();
-  const data = ref<IVeoPaginatedResponse<IVeoEntity[]> | undefined>();
+  const data = ref<VeoSearchResponse>();
   const isLoading = ref(false);
-  const queryDef = queryDefinition || elementQueryDefinitions.queries.fetchAll;
-  const requiresEndpoint = !queryDefinition;
+  const _queryDefinition = queryDefinition ? queryDefinition : elementQueryDefinitions.queries.fetchAll;
+  const isObjectSearch = !queryDefinition;
 
-  const routeSearch = computed(() => {
-    const q = route.query.q as string;
-    if (!q) return [];
-
-    return q.split(/\s+/).map((part) => {
-      const [searchFilter, ...termParts] = part.split('+');
-      const term = decodeURIComponent(termParts.join('+') || '');
-      return { searchFilter, term, operator: '=' } as VeoSearch;
-    });
-  });
-
-  const updateQueryParams = async (searchParams: VeoSearch[]) => {
-    const q = searchParams
-      .filter((item) => item.searchFilter && item.term)
-      .map((item) => `${item.searchFilter}+${encodeURIComponent(item.term)}`)
-      .join(' ');
-
-    const newQuery = { ...route.query, q: q || undefined };
-
-    if (newQuery.q !== route.query.q) {
-      await router.replace({ query: newQuery });
-    }
-  };
-
-  const getApiParams = () =>
-    Object.fromEntries(
-      search.value.filter((item) => item.searchFilter && item.term).map((item) => [item.searchFilter, item.term])
-    );
-
-  watch(
-    [baseQueryParameters, search],
-    async () => {
-      if (requiresEndpoint && !baseQueryParameters.value.endpoint) return;
-
-      await updateQueryParams(search.value);
-
-      try {
-        isLoading.value = true;
-        data.value = await useQuerySync(queryDef, {
+  async function getSearchResults() {
+    watch(
+      [baseQueryParameters, search],
+      async () => {
+        if (!search.value.length) return;
+        if (isObjectSearch && !baseQueryParameters.value?.endpoint) return;
+        const parameters = ref({
           ...baseQueryParameters.value,
-          ...getApiParams()
+          ...getSearchQueryParameters(search.value)
         });
-      } catch (error) {
-        if (config.public.debug) console.error('Search error:', error);
-      } finally {
-        isLoading.value = false;
-      }
-    },
-    { deep: true, immediate: true }
-  );
 
-  watch(
-    routeSearch,
-    (newSearch) => {
-      if (newSearch.length) search.value = newSearch;
-    },
-    { immediate: true }
-  );
+        try {
+          isLoading.value = true;
+          data.value = await useQuerySync(_queryDefinition, {
+            ...parameters.value
+          });
+        } catch (err) {
+          if (config.public.debug) console.error(err);
+        } finally {
+          isLoading.value = false;
+        }
+      },
+      { deep: true }
+    );
+  }
 
-  return { data, isLoading };
+  getSearchResults();
+
+  return {
+    data,
+    isLoading
+  };
+}
+
+function getSearchQueryParameters(search: VeoSearch[]): VeoSearchQueryParameters {
+  if (!search.length) return {};
+  return search.reduce(
+    (queries, query) => ({
+      ...queries,
+      ...(query.searchFilter && query.term && query.operator == '=' ? { [query.searchFilter]: query.term } : {})
+    }),
+    {}
+  ) as VeoSearchQueryParameters;
 }
