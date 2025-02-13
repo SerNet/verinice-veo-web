@@ -1,0 +1,13 @@
+{
+  "controls": "Requirements",
+  "control": "Requirement",
+  "addControls": "Add requirements",
+  "linkControl": "Select {0}",
+  "riEditor": {
+    "targetObject": "Object",
+    "description": "Description",
+    "abbreviation": "Abbreviation",
+    "name": "Name",
+    "originationDescription": "Requirement description"
+  }
+}
