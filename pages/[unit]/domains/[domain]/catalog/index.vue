@@ -32,6 +32,25 @@
       >
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
+      <BaseDialog :model-value="showDialog" :title="t('CatalogItemsApplied')" large :close-function="() => (showDialog = false)">
+        <template #default>
+          <BaseCard>
+            <ObjectTable
+              :key="tableDialogKey"
+              :default-headers="['type', 'abbreviation', 'name']"
+              :items="catalogSelectedItems"
+              enable-click
+               @click="generateRoute"
+            >
+            </ObjectTable>
+          </BaseCard>
+          <v-row class="my-2">
+            <v-col cols="auto">
+              <v-btn color="primary" @click="showDialog = false">{{ t('close') }}</v-btn>
+            </v-col>
+          </v-row>
+        </template>
+      </BaseDialog>
     </template>
   </BasePage>
 </template>
@@ -49,10 +68,12 @@ import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDe
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+
 
 // Types
 import type { VeoSearch } from '~/types/VeoSearch';
-import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -78,6 +99,8 @@ if (!currentSubType.value) {
 
 const { tablePageSize } = useVeoUser();
 const page = ref<number>(0);
+const tableDialogKey = ref(0);
+const showDialog = ref(false);
 const sortBy = ref([{ key: 'abbreviation', order: 'asc' }]);
 
 // Fetch catalog items
@@ -128,8 +151,23 @@ const customBreadcrumbArgs = computed(() => ({
   disabled: true
 }));
 
+// Actions
+
 onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value));
 
+
+const generateRoute = ({ item }: { item: any }) => {
+  return navigateTo({
+    name: OBJECT_DETAIL_ROUTE,
+    params: {
+      ...route.params,
+      object: item.id,
+      objectType: VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals],
+      subType: item.type
+    }
+  });
+  
+};
 // Update breadcrumb if a filter is changed
 watch(
   () => route.fullPath,
@@ -148,6 +186,7 @@ onBeforeRouteLeave(async (_to, _from) => {
 const { mutateAsync: incarnate } = useMutation(unitQueryDefinitions.mutations.updateIncarnations);
 const selectedItems = ref<IVeoEntity[]>([]);
 const isApplyingItems = ref(false);
+const catalogSelectedItems = ref([]);
 
 async function applyItems() {
   isApplyingItems.value = true;
@@ -160,7 +199,7 @@ async function applyItems() {
     };
 
     const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnationDescriptions, fetchParameters);
-
+   
     // API sends back an array of catalog elements, which can be incarnated in the following
     // If this array is empty, there is nothing to incarnate and we return from the function
     if (!incarnations.parameters.length) {
@@ -169,8 +208,12 @@ async function applyItems() {
     }
 
     // Apply incarnations
-    await incarnate({ incarnations, unitId: route.params.unit });
+    const response = await incarnate({ incarnations, unitId: route.params.unit });
     displaySuccessMessage(t('itemsApplied'));
+    const itemsToAdd = Array.isArray(response) ? response : [response];
+    catalogSelectedItems.value = [];
+    catalogSelectedItems.value.push(...itemsToAdd);
+    showDialog.value = true;
     selectedItems.value = [];
   } catch (e: any) {
     displayErrorMessage(t('applyItemsError'), e.message);
@@ -181,3 +224,4 @@ async function applyItems() {
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-domain-catalog-index.json"></i18n>
+

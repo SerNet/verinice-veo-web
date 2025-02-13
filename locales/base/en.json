@@ -81,7 +81,8 @@
     "status": "Status",
     "subType": "Subtype",
     "updatedAt": "Last change",
-    "updatedBy": "Editor"
+    "updatedBy": "Editor",
+        "type":"type"
   },
 
   "domain.index.title": "Dashboard",
@@ -187,5 +188,6 @@
     "description": "Description"
   },
   "VdA": "Protection\u00a0approach",
-  "na": "N/A"
+  "na": "N/A",
+  "CatalogItemsApplied":"catalog items applied"
 }

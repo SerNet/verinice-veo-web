@@ -83,7 +83,8 @@
     "status": "Status",
     "subType": "Subtyp",
     "updatedAt": "Letzte Änderung",
-    "updatedBy": "Bearbeiter"
+    "updatedBy": "Bearbeiter",
+    "type":"type"
   },
 
   "domain.index.title": "Dashboard",
@@ -189,5 +190,6 @@
     "description": "Beschreibung"
   },
   "VdA": "Vorgehensweise",
-  "na": "N/A"
+  "na": "N/A", 
+  "CatalogItemsApplied":"Katalogartikel angewendet"
 }
