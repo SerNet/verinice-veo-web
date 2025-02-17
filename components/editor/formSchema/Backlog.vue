@@ -194,10 +194,11 @@ import { cloneDeep, pick, upperFirst } from 'lodash';
 import { mdiAutoFix, mdiFormatText, mdiFormSelect, mdiArrowCollapseVertical } from '@mdi/js';
 
 import { INPUT_TYPES } from '~/types/VeoEditor';
-import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema, IVeoRiskCategory } from '~/types/VeoTypes';
 import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
-import { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
+import type { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 export interface IControl {
   scope: string;
@@ -239,16 +240,113 @@ export default defineComponent({
     objectSchema: {
       type: Object as PropType<IVeoDomainSpecificObjectSchema>,
       required: true
+    },
+    domain: {
+      type: Object as PropType<IVeoDomain>,
+      required: true
     }
   },
   emits: ['control-items'],
   setup(props, context) {
     const { locale, t } = useI18n();
-    const { t: globalT } = useI18n({ useScope: 'global' });
+    const { t: globalT, locales } = useI18n({ useScope: 'global' });
 
     const typeMap = ref(INPUT_TYPES);
+    const riskDefinitionName = computed(() => Object.keys(props.domain.riskDefinitions)[0]);
+
+    const riskDefinitionCategories = computed(
+      () => props.domain.riskDefinitions[riskDefinitionName.value]?.categories || []
+    );
+    const getTranslations = (category: IVeoRiskCategory) => {
+      return locales.value.reduce(
+        (acc, locale) => {
+          acc[locale.code] = category.translations[locale.code]?.name || Object.values(category.translations)[0].name;
+          return acc;
+        },
+        {} as Record<string, string>
+      );
+    };
+
+    const impacts = riskDefinitionCategories.value.map((category) => ({
+      type: 'Layout',
+      options: {
+        format: 'accordion',
+        translation: getTranslations(category)
+      },
+      elements: [
+        {
+          scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactsCalculated`,
+          type: 'Control',
+          options: {
+            label: '#lang/potentialImpactsCalculated'
+          }
+        },
+        {
+          type: 'Layout',
+          options: {
+            format: 'group',
+            direction: 'horizontal'
+          },
+          elements: [
+            {
+              scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpacts`,
+              type: 'Control',
+              options: {
+                label: '#lang/potentialImpacts'
+              }
+            },
+            {
+              type: 'Control',
+              scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactEffectiveReasons`,
+              options: {
+                label: '#lang/potentialImpactEffectiveReasons'
+              }
+            }
+          ],
+          description: {
+            title: 'group',
+            icon: mdiFormSelect,
+            name: 'layout',
+            color: 'grey darken-2'
+          }
+        },
+        {
+          scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactsEffective`,
+          type: 'Control',
+          options: {
+            label: '#lang/potentialImpactsEffective'
+          }
+        },
+        {
+          scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactExplanations`,
+          type: 'Control',
+          options: {
+            label: '#lang/potentialImpactExplanations'
+          }
+        }
+      ],
+      description: {
+        title: 'Composite',
+        icon: mdiFormSelect,
+        name: 'confidentiality',
+        color: 'purple darken-2'
+      }
+    }));
 
     const formElements = [
+      {
+        type: 'Layout',
+        options: {
+          format: 'group'
+        },
+        elements: impacts,
+        description: {
+          title: 'impacts',
+          icon: mdiFormSelect,
+          name: 'composite',
+          color: 'purple darken-2'
+        }
+      },
       {
         type: 'Layout',
         options: {
@@ -361,7 +459,6 @@ export default defineComponent({
       context.emit('control-items', nestedControls.value);
     }
     initializeControls();
-
     const nonLayoutFormSchemaElements = computed<{ type: string; name?: string; scope?: string }[]>(
       () =>
         Object.values(JsonPointer.flatten(props.formSchema.content, true))

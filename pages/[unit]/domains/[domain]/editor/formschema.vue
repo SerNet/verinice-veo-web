@@ -185,6 +185,7 @@
             :object-schema="objectSchema"
             :form-schema="formSchema"
             :search-query="searchQuery"
+            :domain="domain"
             @control-items="updateControlItems"
           />
         </template>
@@ -312,7 +313,7 @@ import type { LocaleObject } from '@nuxtjs/i18n';
 import { PENDING_TRANSLATIONS } from '~/components/editor/formSchema/playground/EditElementDialog.vue';
 import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 import { editorTranslationsToFormsTranslations } from '~/components/editor/translations/util';
-import { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
+import type { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 
 const { locale, locales, t } = useI18n();
@@ -391,13 +392,6 @@ async function save() {
   } catch (err: any) {
     displayErrorMessage(t('error').toString(), `${t('saveSchemaError').toString()}: ${err.message}`);
   }
-}
-
-function updateSchemaName(value: string) {
-  if (!formSchema.value) {
-    return;
-  }
-  formSchema.value.name[editorLanguage.value] = value;
 }
 
 const invalidSchemaDownloadDialogVisible = ref(false);
@@ -553,7 +547,10 @@ const setElementTranslation = (translations: PENDING_TRANSLATIONS) => {
         } else {
           formSchema.value.translation[translationLocale][translationKey] = translationValue;
         }
-      } else {
+      } else if (
+        formSchema.value.translation[translationLocale] &&
+        formSchema.value.translation[translationLocale][translationKey]
+      ) {
         delete formSchema.value.translation[translationLocale][translationKey];
       }
     });
