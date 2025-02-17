@@ -43,9 +43,9 @@ import { cloneDeep } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 import { v5 as UUIDv5, v4 as UUIDv4 } from 'uuid';
 
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
-import { IPlaygroundElement } from './Element.vue';
-import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IPlaygroundElement } from './Element.vue';
+import type { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -100,27 +100,53 @@ const addElementToMap = (
   pointer: string,
   parent: IVeoFormSchemaItem | undefined
 ) => {
-  // Turn relative custom link attribute scopes into absolute scopes. This is undone in buildFormSchemaItem
-  if (isCustomLinkAttribute(formSchemaElement, parent) && !formSchemaElement?.scope?.startsWith('#/properties/links')) {
-    formSchemaElement.scope = `${parent?.scope}/items/${formSchemaElement.scope?.replace('#/', '')}`;
-  }
-
   const uuid = UUIDv5(getFormSchemaElementName(formSchemaElement, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
-  formSchemaElementMap.set(uuid, cloneDeep(formSchemaElement)); // Add formSchema element to uuid map
+  formSchemaElementMap.set(uuid, cloneDeep(formSchemaElement));
+
+  // Add children recursively
+  const addChildren = (element: IVeoFormSchemaItem, parentPointer: string) => {
+    element.elements?.forEach((child, index) => {
+      const childUuid = UUIDv5(
+        getFormSchemaElementName(child, `${parentPointer}/children/${index}`),
+        FORMSCHEMA_PLAYGROUND_NAMESPACE
+      );
+      formSchemaElementMap.set(childUuid, cloneDeep(child));
+      JsonPointer.set(
+        playgroundElements.value,
+        `${parentPointer}/children/${index}`,
+        {
+          id: childUuid,
+          children: []
+        },
+        true
+      );
+
+      if (child.elements) {
+        addChildren(child, `${parentPointer}/children/${index}`);
+      }
+    });
+  };
+
   if (pointer === '#') {
     playgroundElements.value = { id: uuid, children: [], readonly: true };
+    addChildren(formSchemaElement, '#');
   } else {
-    JsonPointer.set(playgroundElements.value, pointer, { id: uuid, children: [] }, true); // Add to playground elements to be displayed
+    JsonPointer.set(playgroundElements.value, pointer, { id: uuid, children: [] }, true);
+    addChildren(formSchemaElement, pointer);
   }
-
-  (formSchemaElement.elements || []).forEach((child, childIndex) => {
-    addElementToMap(child, `${pointer}/children/${childIndex}`, formSchemaElement);
-  });
 };
 
 const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
   formSchemaElementMap.clear();
-  addElementToMap(formSchemaRoot, '#', undefined);
+
+  const processNestedElements = (element: IVeoFormSchemaItem, pointer: string, parent?: IVeoFormSchemaItem) => {
+    addElementToMap(element, pointer, parent);
+    element.elements?.forEach((child, index) => {
+      processNestedElements(child, `${pointer}/children/${index}`, element);
+    });
+  };
+
+  processNestedElements(formSchemaRoot, '#', undefined);
 };
 initPlayground(cloneDeep(props.modelValue)); // Call once as soon as the component gets initialized to create the map
 
@@ -163,20 +189,48 @@ const getParentPointer = (childPointer: string) => {
 const isFormElement = (element: IPlaygroundElement | IVeoFormSchemaItem): element is IVeoFormSchemaItem =>
   'type' in element;
 
+const updateTranslation = (key: string, item: IVeoFormSchemaItem) => {
+  emit('set-translations', {
+    de: { ['group_' + key]: item.options.translation?.de || '' },
+    en: { ['group_' + key]: item.options.translation?.en || '' }
+  } as Record<string, Record<string, string | undefined>>);
+};
+
 const onAddElement = (elementPointer: string, element: IPlaygroundElement | IVeoFormSchemaItem) => {
-  // onAddElement can either be called from within the playground or if the user drags a backlog item to the playground, so we have to check which object we got
   if (isFormElement(element)) {
-    // We use v4 as a fallback here, as there is no pointer yet, as this elements gets added
+    // Generate UUID for the new element
     const uuid = UUIDv5(getFormSchemaElementName(element, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
-    formSchemaElementMap.set(uuid, cloneDeep(element)); // Add formSchema element to uuid map
+    formSchemaElementMap.set(uuid, cloneDeep(element));
     element = { id: uuid, children: [] };
+
+    // Recursively add predefined children
+    const addChildrenRecursively = (parentElement: IPlaygroundElement, formSchemaItem: IVeoFormSchemaItem) => {
+      formSchemaItem.elements?.forEach((child, index) => {
+        const childUuid = UUIDv5(getFormSchemaElementName(child, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
+        if (child.options.translation) {
+          child.options.label = '#lang/group_' + childUuid;
+          updateTranslation(childUuid, child);
+        }
+        formSchemaElementMap.set(childUuid, cloneDeep(child));
+        const childElement: IPlaygroundElement = { id: childUuid, children: [] };
+        parentElement.children.push(childElement);
+
+        // Recursive call for nested elements
+        if (child.elements) {
+          addChildrenRecursively(childElement, child);
+        }
+      });
+    };
+
+    // If the element has predefined children, add them
+    const formSchemaItem = formSchemaElementMap.get(uuid) as IVeoFormSchemaItem;
+    addChildrenRecursively(element, formSchemaItem);
   }
 
   const newIndex = parseInt(elementPointer.split('/').pop() as string);
 
   const parent = JsonPointer.get(playgroundElements.value, getParentPointer(elementPointer)) as IPlaygroundElement;
-
-  // Add at new position
+  // Insert the element into the parent at the specified position
   parent.children.splice(newIndex, 0, element);
 };
 
