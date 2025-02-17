@@ -16,6 +16,7 @@
   "editor.inputtypes.string": "Text",
   "editor.inputtypes.label": "Text",
   "editor.inputtypes.unknown": "Unbekannt",
+  "editor.inputtypes.composite": "Composite",
   "editor.formschema.create.title": "Name des Formschemas",
   "editor.formschema.create.title.text": "Name des neuen Formschemas",
   "editor.formschema.create.type": "Objektschematyp",
@@ -84,7 +85,7 @@
     "subType": "Subtyp",
     "updatedAt": "Letzte Änderung",
     "updatedBy": "Bearbeiter",
-    "type":"type"
+    "type": "type"
   },
 
   "domain.index.title": "Dashboard",
@@ -190,6 +191,6 @@
     "description": "Beschreibung"
   },
   "VdA": "Vorgehensweise",
-  "na": "N/A", 
-  "CatalogItemsApplied":"Katalogartikel angewendet"
+  "na": "N/A",
+  "CatalogItemsApplied": "Katalogartikel angewendet"
 }

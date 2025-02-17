@@ -16,6 +16,7 @@
   "editor.inputtypes.string": "Text",
   "editor.inputtypes.label": "Text",
   "editor.inputtypes.unknown": "Unknown",
+  "editor.inputtypes.composite": "Composite",
   "editor.formschema.create.title": "Form schema name",
   "editor.formschema.create.title.text": "Name of the new form schema",
   "editor.formschema.create.type": "Object schema type",
@@ -82,7 +83,7 @@
     "subType": "Subtype",
     "updatedAt": "Last change",
     "updatedBy": "Editor",
-        "type":"type"
+    "type": "type"
   },
 
   "domain.index.title": "Dashboard",
@@ -189,5 +190,5 @@
   },
   "VdA": "Protection\u00a0approach",
   "na": "N/A",
-  "CatalogItemsApplied":"catalog items applied"
+  "CatalogItemsApplied": "catalog items applied"
 }
