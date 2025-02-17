@@ -33,6 +33,7 @@ export interface IVeoFormSchemaItemOptions {
   format?: string;
   direction?: string;
   class?: string;
+  translation?: IVeoTranslationCollection;
 }
 
 export interface IVeoFormSchemaItemRule {
