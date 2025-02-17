@@ -39,7 +39,7 @@
                   <ObjectDetailsActionMenu
                     :disabled="ability.cannot('manage', 'objects')"
                     :object="object"
-                    @reload="$emit('reload')"
+                    @reload="emit('reload')"
                   />
                 </v-col>
               </v-row>
@@ -70,14 +70,14 @@
             <template #activator="{ props: tooltipProps }">
               <div v-bind="tooltipProps">
                 <v-tab :disabled="tab.disabled" :data-component-name="`object-details-${tab.key}-tab`">
-                  {{ tab.key === 'controls' ? controlsTabLabel : t(tab.key) }}
+                  {{ t(tab.key) }}
                 </v-tab>
               </div>
             </template>
             <span>{{ tab.tooltip ?? t('defaultDisabledTooltip') }}</span>
           </v-tooltip>
           <v-tab v-else :data-component-name="`object-details-${tab.key}-tab`">
-            {{ tab.key === 'controls' ? controlsTabLabel : t(tab.key) }}
+            {{ t(tab.key) }}
           </v-tab>
         </div>
       </template>
@@ -90,7 +90,7 @@
               :object="object"
               :dense="dense"
               :domain-id="domainId"
-              @reload="$emit('reload')"
+              @reload="emit('reload')"
             />
           </BaseCard>
         </v-window-item>
@@ -99,156 +99,113 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { upperFirst } from 'lodash';
-import { PropType } from 'vue';
-
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { useQuery } from '~/composables/api/utils/query';
-
 import { useFormatters } from '~/composables/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { IVeoEntity } from '~/types/VeoTypes';
 
-export default defineComponent({
-  props: {
-    object: {
-      type: Object as PropType<IVeoEntity>,
-      default: undefined
-    },
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    activeTab: {
-      type: String,
-      default: 'childObjects'
-    },
-    domainId: {
-      type: String,
-      required: true
-    },
-    dense: {
-      type: Boolean,
-      default: false
-    }
+import type { IVeoEntity } from '~/types/VeoTypes';
+
+const props = withDefaults(
+  defineProps<{
+    domainId: string;
+    object?: IVeoEntity;
+    loading?: boolean;
+    activeTab?: string;
+    dense?: boolean;
+  }>(),
+  {
+    object: undefined,
+    loading: false,
+    activeTab: 'childObjects',
+    dense: false
+  }
+);
+
+const emit = defineEmits<{
+  'update:activeTab': [value: string];
+  reload: [value: void];
+}>();
+
+const { data: config } = useConfiguration();
+const { data: currentDomain } = useCurrentDomain();
+
+const { t } = useI18n();
+const { formatDateTime } = useFormatters();
+const { ability } = useVeoPermissions();
+
+// Display logic for tabs
+
+// SCOPES are special, so they come with their own set of tabs
+const isScope = computed(() => props.object?.type === 'scope');
+
+// RISKS
+const isRiskAffected = computed(() => config.value?.riskAffectedObjectTypes?.includes(props.object?.type) || false);
+
+const hasRiskTab = computed(
+  () => Object.keys(currentDomain.value?.riskDefinitions || {}).length > 0 && isRiskAffected.value
+);
+
+const isRiskTabDisabled = computed(() => isScope.value && !props.object?.riskDefinition);
+
+// CONTROlS
+const hasComplianceControlSubType = computed(() => !!currentDomain.value?.complianceControlSubType);
+
+const hasControlsTab = computed(() => hasComplianceControlSubType && isRiskAffected.value);
+
+const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; tooltip?: string }[]>(() => [
+  {
+    key: 'childScopes',
+    hidden: !isScope.value
   },
-  emits: ['reload', 'update:activeTab'],
-  setup(props, { emit }) {
-    const { t, locale } = useI18n();
-    const { formatDateTime } = useFormatters();
-    const { ability } = useVeoPermissions();
-    // Hide tabs
+  {
+    key: 'childObjects'
+  },
+  {
+    key: 'parentScopes'
+  },
+  {
+    key: 'parentObjects',
+    hidden: isScope.value
+  },
+  {
+    key: 'links'
+  },
+  {
+    key: 'controls', // is also called `modules` in the UI
+    hidden: !hasControlsTab.value
+  },
+  {
+    key: 'targets',
+    hidden:
+      props.object?.subType !== currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubType
+  },
+  {
+    key: 'risks',
+    disabled: isRiskTabDisabled.value,
+    tooltip: t('risksDisabledTooltip'),
+    hidden: !hasRiskTab.value
+  }
+]);
 
-    /**
-     * VEO-2602 will introduce domain specific configuration data.
-     * This makes the hard coded solution below obsolete.
-     * @todo Replace and use the new domain specific config instead.
-     */
-
-    /** Fetch current domain: veo hides some tabs according to the current domain, type and subtype */
-    const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string
-    }));
-    const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
-      enabled: fetchDomainQueryEnabled
-    });
-
-    const isRiskAffected = computed(() =>
-      (['asset', 'process', 'scope'] as (string | undefined)[]).includes(props.object?.type)
+const internalActiveTab = computed({
+  get() {
+    return Math.max(
+      0,
+      tabs.value.findIndex((tab) => tab.key === props.activeTab)
     );
-
-    const hasRiskTab: ComputedRef<boolean> = computed(() => {
-      if (!domain.value || !subType.value || !props.object?.type) return false;
-
-      if (domain.value.name === 'DS-GVO') {
-        return ['scope', 'process'].includes(props.object.type);
-      }
-
-      return Object.keys(domain.value.riskDefinitions || {}).length > 0 && isRiskAffected.value;
-    });
-
-    const isControlsTabHidden = computed(() => {
-      const complianceControlSubType = domain.value?.controlImplementationConfiguration?.complianceControlSubType;
-      return !complianceControlSubType || !isRiskAffected.value;
-    });
-
-    const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; tooltip?: string }[]>(() => [
-      {
-        key: 'childScopes',
-        hidden: props.object?.type !== 'scope'
-      },
-      {
-        key: 'childObjects'
-      },
-      {
-        key: 'parentScopes'
-      },
-      {
-        key: 'parentObjects',
-        hidden: props.object?.type === 'scope'
-      },
-      {
-        key: 'links'
-      },
-      {
-        key: 'controls',
-        hidden: isControlsTabHidden.value
-      },
-      {
-        key: 'targets',
-        hidden: props.object?.subType !== domain.value?.controlImplementationConfiguration?.complianceControlSubType
-      },
-      {
-        key: 'risks',
-        disabled: props.object?.type === 'scope' && !props.object?.riskDefinition,
-        tooltip: t('risksDisabledTooltip'),
-        hidden: !hasRiskTab.value
-      }
-    ]);
-
-    const subType = computed(() => props.object?.subType);
-
-    const internalActiveTab = computed({
-      get() {
-        return Math.max(
-          0,
-          tabs.value.findIndex((tab) => tab.key === props.activeTab)
-        );
-      },
-      set(newValue: number) {
-        emit('update:activeTab', tabs.value[newValue].key || 'childObjects');
-      }
-    });
-
-    const createdAtFormatted = computed(() =>
-      props.object ? formatDateTime(new Date(props.object.createdAt)).value : undefined
-    );
-    const updatedAtFormatted = computed(() =>
-      props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined
-    );
-    const controlsTabLabel = computed(() => {
-      if (!domain.value) {
-        return t('controls');
-      }
-      const subType = domain.value.controlImplementationConfiguration.complianceControlSubType;
-      return domain.value.elementTypeDefinitions.control.translations[locale.value][`control_${subType}_plural`];
-    });
-
-    return {
-      ability,
-      createdAtFormatted,
-      internalActiveTab,
-      subType,
-      tabs,
-      updatedAtFormatted,
-      controlsTabLabel,
-      upperFirst,
-      t
-    };
+  },
+  set(newValue: number) {
+    emit('update:activeTab', tabs.value[newValue].key || 'childObjects');
   }
 });
+
+const createdAtFormatted = computed(() =>
+  props.object ? formatDateTime(new Date(props.object.createdAt)).value : undefined
+);
+const updatedAtFormatted = computed(() =>
+  props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined
+);
 </script>
 
 <i18n src="~/locales/base/components/object-details.json"></i18n>

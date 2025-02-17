@@ -18,14 +18,18 @@
 
 import { useQuerySync } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { customKebabCase } from '~/composables/useConfiguration';
+
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import type { IVeoDomainRiskDefinition } from '~/types/VeoTypes';
 
 export type TVeoDomain = {
   name: string;
   id: string;
   abbreviation: string;
   description: string;
+  riskDefinitions: { [key: string]: IVeoDomainRiskDefinition };
+  complianceControlSubType: string;
   color: string;
   raw: IVeoDomain;
 };
@@ -69,8 +73,10 @@ export function useCurrentDomain() {
         data.value = {
           name: result.name,
           abbreviation: result.abbreviation,
+          riskDefinitions: result.riskDefinitions,
           id: result.id,
           description: result.description,
+          complianceControlSubType: result.controlImplementationConfiguration?.complianceControlSubType,
           color: useDomainColor(result.name)!,
           raw: result
         };
@@ -140,6 +146,8 @@ function map(domains: IVeoDomain[]): TVeoDomain[] {
     name: domain.name,
     abbreviation: domain.abbreviation,
     id: domain.id,
+    riskDefinitions: domain.riskDefinitions,
+    complianceControlSubType: domain.controlImplementationConfiguration?.complianceControlSubType,
     description: domain.description,
     color: useDomainColor(domain?.name)!,
     raw: domain
