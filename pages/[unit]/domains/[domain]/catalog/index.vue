@@ -32,7 +32,12 @@
       >
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
-      <BaseDialog :model-value="showDialog" :title="t('CatalogItemsApplied')" large :close-function="() => (showDialog = false)">
+      <BaseDialog
+        :model-value="showDialog"
+        :title="t('CatalogItemsApplied')"
+        large
+        :close-function="() => (showDialog = false)"
+      >
         <template #default>
           <BaseCard>
             <ObjectTable
@@ -40,7 +45,7 @@
               :default-headers="['type', 'abbreviation', 'name']"
               :items="catalogSelectedItems"
               enable-click
-               @click="generateRoute"
+              @click="generateRoute"
             >
             </ObjectTable>
           </BaseCard>
@@ -69,7 +74,6 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-
 
 // Types
 import type { VeoSearch } from '~/types/VeoSearch';
@@ -155,7 +159,6 @@ const customBreadcrumbArgs = computed(() => ({
 
 onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value));
 
-
 const generateRoute = ({ item }: { item: any }) => {
   return navigateTo({
     name: OBJECT_DETAIL_ROUTE,
@@ -166,7 +169,6 @@ const generateRoute = ({ item }: { item: any }) => {
       subType: item.type
     }
   });
-  
 };
 // Update breadcrumb if a filter is changed
 watch(
@@ -199,7 +201,7 @@ async function applyItems() {
     };
 
     const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnationDescriptions, fetchParameters);
-   
+
     // API sends back an array of catalog elements, which can be incarnated in the following
     // If this array is empty, there is nothing to incarnate and we return from the function
     if (!incarnations.parameters.length) {
@@ -224,4 +226,3 @@ async function applyItems() {
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-domain-catalog-index.json"></i18n>
-

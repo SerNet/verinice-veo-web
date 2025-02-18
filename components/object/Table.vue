@@ -275,7 +275,8 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     width: 80,
     priority: 40,
     order: 80
-  },type: {
+  },
+  type: {
     value: 'type',
     key: 'type',
     sortable: true,
