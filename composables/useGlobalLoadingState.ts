@@ -16,11 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-const isLoading = ref(false);
-const loadingInfo = ref('');
+const loadingProcesses = ref([]);
+
 export function useGlobalLoadingState() {
+  function setLoading(message = '') {
+    const id = Symbol();
+    loadingProcesses.value.push({ id, message });
+    return id;
+  }
+
+  function clearLoading(id: symbol) {
+    loadingProcesses.value = loadingProcesses.value.filter((item) => item.id !== id);
+  }
+
   return {
-    isLoading,
-    loadingInfo
+    isLoading: computed(() => loadingProcesses.value.length > 0),
+    loadingInfo: computed(() => loadingProcesses.value.map((item) => item.message).join(', ')),
+    setLoading,
+    clearLoading
   };
 }

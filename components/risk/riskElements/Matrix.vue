@@ -155,13 +155,9 @@
     <!-- RISK MATRIX ACTIONS -->
     <v-container v-if="isEditMode" class="px-0 d-flex justify-end ga-2">
       <v-btn :append-icon="mdiCancel" size="small" variant="outlined" @click="editRiskMatrix">{{ t('cancel') }}</v-btn>
-      <v-btn
-        :append-icon="mdiFloppy"
-        size="small"
-        color="primary"
-        @click="() => saveRiskValues()"
-        >{{ t('save') }}</v-btn
-      >
+      <v-btn :append-icon="mdiFloppy" size="small" color="primary" @click="() => saveRiskValues()">{{
+        t('save')
+      }}</v-btn>
     </v-container>
   </v-card-text>
 </template>
@@ -238,8 +234,7 @@ const { data: currentDomain } = useCurrentDomain();
 
 const { mutateAsync: updateRiskMatrixValues } = useMutation(riskQueryDefinitions.queries.mutations.update);
 
-const { isLoading, loadingInfo } = useGlobalLoadingState();
-loadingInfo.value = t('messages.isUpdatingRiskMatrix');
+const { setLoading, clearLoading } = useGlobalLoadingState();
 
 const config = useRuntimeConfig();
 const route = useRoute();
@@ -271,6 +266,7 @@ async function saveRiskValues(
   categoryId = props.protectionGoalId,
   domainId = currentDomain.value.id
 ) {
+  let loadingId: symbol;
   try {
     const riskDefinition = cloneDeep(currentDomain.value.raw.riskDefinitions[definitionId]);
     const categoryIndex = riskDefinition.categories.findIndex((category) => category.id == categoryId);
@@ -280,13 +276,13 @@ async function saveRiskValues(
     const newRiskValues = prepareRiskValues(cloneDeep(reversedOrdinals));
     riskDefinition.categories[categoryIndex].valueMatrix = newRiskValues;
 
-    isLoading.value = true;
+    loadingId = setLoading(t('messages.isUpdatingRiskMatrix'));
     await updateRiskMatrixValues({ json: riskDefinition, domainId, riskDefinitionId: definitionId });
     displaySuccessMessage(t('messages.success'));
   } catch (err) {
     handleError(err);
   } finally {
-    isLoading.value = false;
+    clearLoading(loadingId);
   }
 }
 
