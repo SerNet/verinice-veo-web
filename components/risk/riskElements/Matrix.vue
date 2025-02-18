@@ -17,7 +17,7 @@
 <template>
   <div class="d-flex align-center px-4">
     <v-card-subtitle class="pr-0 px-0">{{ t('riskMatrix') }} </v-card-subtitle>
-    <v-btn :icon="mdiPencil" variant="plain" size="small" @click="editRiskMatrix" />
+    <v-btn :icon="mdiPencil" variant="plain" size="small" @click="toggleEditMode" />
   </div>
   <v-card-text class="pd-0 overflow-x-auto">
     <div class="table-container">
@@ -154,7 +154,7 @@
 
     <!-- RISK MATRIX ACTIONS -->
     <v-container v-if="isEditMode" class="px-0 d-flex justify-end ga-2">
-      <v-btn :append-icon="mdiCancel" size="small" variant="outlined" @click="editRiskMatrix">{{ t('cancel') }}</v-btn>
+      <v-btn :append-icon="mdiCancel" size="small" variant="outlined" @click="toggleEditMode">{{ t('cancel') }}</v-btn>
       <v-btn :append-icon="mdiFloppy" size="small" color="primary" @click="() => saveRiskValues()">{{
         t('save')
       }}</v-btn>
@@ -225,7 +225,7 @@ function translate<T>(translations: { [lang: string]: T }): T {
 }
 
 const isEditMode = ref(false);
-function editRiskMatrix() {
+function toggleEditMode() {
   isEditMode.value = !isEditMode.value;
 }
 
