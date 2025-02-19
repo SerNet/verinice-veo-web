@@ -32,12 +32,7 @@
       >
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
-      <BaseDialog
-        :model-value="showDialog"
-        :title="t('CatalogItemsApplied')"
-        large
-        :close-function="() => (showDialog = false)"
-      >
+      <BaseDialog :model-value="showDialog" data-veo-test="catalog-dialog" :title="t('CatalogItemsApplied')" large :close-function="() => (showDialog = false)">
         <template #default>
           <BaseCard>
             <ObjectTable
