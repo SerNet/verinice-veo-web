@@ -212,8 +212,8 @@ export interface IVeoPaginatedResponse<T> extends IVeoPaginatedResponseMeta {
 
 export interface IVeoPaginationOptions {
   displayName?: string;
-  page?: number;
-  size?: number;
+  page?: number | string;
+  size?: number | string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   [key: string]: any;
