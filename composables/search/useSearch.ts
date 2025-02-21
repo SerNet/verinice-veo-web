@@ -73,7 +73,7 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
   };
 }
 
-function getSearchQueryParameters(search: VeoSearch[]): VeoSearchQueryParameters {
+export function getSearchQueryParameters(search: VeoSearch[]): VeoSearchQueryParameters {
   if (!search.length) return {};
   return search.reduce(
     (queries, query) => ({

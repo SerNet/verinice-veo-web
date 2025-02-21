@@ -22,6 +22,6 @@ export { useProfiles } from '~/composables/profiles/useProfiles';
 export { useUnits, useCurrentUnit } from '~/composables/units/useUnits';
 export { useMutation } from '~/composables/api/utils/mutation';
 export { useActions, usePerformActions } from '~/composables/actions/useActions';
-export { useSearch } from '~/composables/search/useSearch';
+export { useSearch, getSearchQueryParameters } from '~/composables/search/useSearch';
 export { useSystemMessages } from '~/composables/messages/useSystemMessages';
 export { useSettings } from '~/composables/api/useSettings';
