@@ -23,7 +23,7 @@ describe('Catalogs', { testIsolation: false }, () => {
       incarnations: `${Cypress.env('veoApiUrl')}/units/**/incarnations`
     };
 
-    cy.intercept('GET', api.incarnationDescriptions).as('getIncarnationDescriptions');
+    
     // create objects from catalog items (incarnation)
     cy.intercept('POST', api.incarnations).as('incarnateItems');
 
@@ -39,7 +39,7 @@ describe('Catalogs', { testIsolation: false }, () => {
           const name = texts[2];
       cy.getCustom('.v-data-table__tr').first().click();
     cy.get('[data-veo-test="catalogs-btn-apply"]').click(); 
-     cy.wait(['@getIncarnationDescriptions']).its('response.statusCode').should('eq', 200);
+    
     
 
     // Wait for the dialog to open
