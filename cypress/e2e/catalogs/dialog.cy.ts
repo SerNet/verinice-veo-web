@@ -50,8 +50,10 @@ describe('Catalogs', { testIsolation: false }, () => {
           texts.push(Cypress.$(cell).text());
         });
 
-        const subType = texts[2];
-        cy.log('subType:', subType);
+        const subType = texts[2].replace(/\s?\(\d+\)/, '').trim();
+
+        // Log the result for debugging
+        cy.log('Cleaned subType:', subType);
         cy.getCustom('[data-component-name="breadcrumbs"]').contains(subType.toUpperCase(), { matchCase: false });
       });
   });
