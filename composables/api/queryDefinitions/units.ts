@@ -188,6 +188,6 @@ export default {
           queryClient.invalidateQueries(['incarnations']);
         }
       }
-    } as IVeoMutationDefinition<IVeoUpdateIncarnationParameters, IVeoUnitIncarnationDescriptions>
+    } as IVeoMutationDefinition<IVeoUpdateIncarnationParameters, IVeoLink[]>
   }
 };
