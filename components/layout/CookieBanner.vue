@@ -180,4 +180,12 @@ export default defineComponent({
   right: 0;
   z-index: 6;
 }
+body:has(.v-navigation-drawer--active) .veo-cookie-banner {
+  margin-left: 20% !important;
+}
+
+
+body:not(:has(.v-navigation-drawer--active)) .veo-cookie-banner {
+  margin-left: 0;
+}
 </style>
