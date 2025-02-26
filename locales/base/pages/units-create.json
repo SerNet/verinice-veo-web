@@ -54,7 +54,7 @@
     "isApplyingProfile": "Wende Profil an...",
     "applyProfileSuccess": "Das Profil wurde erfolgreich angewendet.",
     "applyProfileErrorText": " Das Profil konnte nicht angewendet werden.",
-    "preSelectedDomainTitle": "Pre-selected Domain",
+    "preSelectedDomainTitle": "Pre-selected Domäne",
     "preSelectedDomainBody": "Weil Sie Objekte aus dem Profil { profile } importieren, ist die Domäne { domain } vorausgewählt."
   }
 }
