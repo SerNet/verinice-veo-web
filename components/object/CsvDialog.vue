@@ -28,7 +28,7 @@
     <template #default>
       <div>
         <div>
-          <v-list v-if="unmappedRequiredFields.length > 0 && localData.length" class="required-fields-list">
+          <v-list v-if="unmappedRequiredFields.length > 0 && items.length" class="required-fields-list">
             <v-list-item>
               <v-list-item-title>
                 <span class="text-error">
@@ -40,9 +40,9 @@
             </v-list-item>
           </v-list>
 
-          <v-divider v-if="unmappedRequiredFields.length > 0 && localData.length" class="mt-4 mb-6" />
+          <v-divider v-if="unmappedRequiredFields.length > 0 && items.length" class="mt-4 mb-6" />
           <div v-else class="mb-4"></div>
-          <div v-if="localData.length" class="global-selection">
+          <div v-if="items.length" class="global-selection">
             <v-select
               v-model="globalObjectType"
               :items="typesOptions"
@@ -100,17 +100,9 @@
             </v-expand-transition>
           </v-alert>
 
-          <v-card-text v-if="localData.length" class="px-0 py-0 mt-2">
+          <v-card-text v-if="items.length" class="px-0 py-0 mt-2">
             <div class="table-wrapper">
-              <v-data-table
-                ref="dataTableRef"
-                :headers="mappedHeaders"
-                :items="localData"
-                dense
-                fixed-header
-                height="600"
-                class="elevation-1 editable-table"
-              >
+              <objectCsvTable ref="csvTableRef" :headers="localHeaders" :items="items">
                 <template #headers>
                   <tr>
                     <th v-for="header in headers" :key="header">
@@ -128,8 +120,8 @@
                     </th>
                   </tr>
                 </template>
-                <template v-for="header in mappedHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
-                  <div @click="startEditing(item, header.value)">
+                <template v-for="header in localHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
+                  <div :key="header.value" @click="startEditing(item, header.value)">
                     <v-text-field
                       v-if="editingItem === item && editingKey === header.value"
                       v-model="item[header.value]"
@@ -145,7 +137,7 @@
                     </span>
                   </div>
                 </template>
-              </v-data-table>
+              </objectCsvTable>
             </div>
           </v-card-text>
         </div>
@@ -156,13 +148,7 @@
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        v-if="localData.length"
-        variant="text"
-        color="primary"
-        :disabled="!hasAllRequiredFields"
-        @click="handleImport"
-      >
+      <v-btn v-if="items.length" variant="text" color="primary" :disabled="!hasAllRequiredFields" @click="handleImport">
         {{ globalT('global.button.import') }}
       </v-btn>
     </template>
@@ -201,6 +187,7 @@ interface MappedHeader {
 }
 
 /** Props & Emits **/
+defineSlots();
 const props = defineProps({
   headers: { type: Array as () => string[], required: true },
   data: { type: Array as () => Record<string, any>[], required: true },
@@ -227,7 +214,7 @@ const { createLink } = useCreateLink();
 const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject);
 
 /** Reactive Variables **/
-const localData = ref<Record<string, any>[]>();
+const items = ref<Record<string, any>[]>();
 const globalObjectType = ref<string>(props.preselectedType);
 const globalSubType = ref<string>(props.preselectedSubType);
 const isImporting = ref<boolean>(false);
@@ -238,7 +225,7 @@ const importedItems = ref<number>(0);
 const totalItems = ref<number>(0);
 const showFailedItems = ref<boolean>(false);
 const headerMappings = ref<Record<string, string>>({});
-const dataTableRef = ref();
+const csvTableRef = ref();
 const editingItem = ref<any>(null);
 const editingKey = ref<string>('');
 
@@ -273,7 +260,7 @@ const unmappedRequiredFields = computed(() => props.requiredFields.filter((field
 
 const objectProps = computed(() => [...props.requiredFields, 'abbreviation', 'description']);
 
-const mappedHeaders = computed<MappedHeader[]>(() =>
+const localHeaders = computed<MappedHeader[]>(() =>
   props.headers.map((header) => ({
     title: header,
     value: header,
@@ -298,7 +285,7 @@ props.headers.forEach((header) => {
 
 /** Watchers **/
 watchEffect(() => {
-  localData.value = props.data.map((item) => ({ ...item })); // Shallow copy
+  items.value = props.data.map((item) => ({ ...item })); // Shallow copy
 });
 
 watch(globalObjectType, (newType) => {
@@ -310,14 +297,14 @@ watch(globalObjectType, (newType) => {
 
 // Apply global type to all items
 const applyType = (value: any) => {
-  localData.value = localData.value.map((item) => ({
+  items.value = items.value.map((item) => ({
     ...item,
     objectType: value
   }));
 };
 // Apply global subtype to all items
 const applySubType = (value: any) => {
-  localData.value = localData.value.map((item) => ({
+  items.value = items.value.map((item) => ({
     ...item,
     subType: value
   }));
@@ -404,7 +391,7 @@ const onSubmit = async (data: any[], originalData: any[]) => {
   // Rest of your logic remains the same
   const unmappedOrFailedItems = originalData.filter((_, index) => !successfullyImported.has(data[index]));
 
-  localData.value = [...unmappedOrFailedItems];
+  items.value = [...unmappedOrFailedItems];
 
   if (failedImports.value.length > 0) {
     displayErrorMessage(
@@ -434,8 +421,8 @@ const handleImport = async () => {
       .map(([header, field]) => [field, header])
   );
 
-  // Transform each row in localData to include only the required fields and global properties
-  const transformedData = localData.value.map((row) => {
+  // Transform each row in items to include only the required fields and global properties
+  const transformedData = items.value.map((row) => {
     const newItem = {
       objectType: globalObjectType.value,
       subType: globalSubType.value,
@@ -452,8 +439,9 @@ const handleImport = async () => {
 
     return newItem;
   });
-  // Call onSubmit with transformed data and original data (localData)
-  onSubmit(transformedData, localData.value);
+  transformedData[2].status = 'fewd';
+  // Call onSubmit with transformed data and original data (items)
+  onSubmit(transformedData, items.value);
 };
 
 const cancelImport = () => {
@@ -479,14 +467,14 @@ const updateView = (value: boolean) => {
 // Add some design because why not
 function highlightAllFailedItems(highlight: boolean) {
   nextTick(() => {
-    const tableEl = dataTableRef.value?.$el;
+    const tableEl = csvTableRef.value?.$el;
     if (!tableEl) return;
     const tbody = tableEl.querySelector('tbody');
     if (!tbody) return;
     const rows = tbody.querySelectorAll('tr');
 
     failedImports.value.forEach((error) => {
-      const index = localData.value.findIndex((item) => item === error.item);
+      const index = items.value.findIndex((item) => item === error.item);
       if (index === -1 || index >= rows.length) return;
       const rowEl = rows[index];
 
