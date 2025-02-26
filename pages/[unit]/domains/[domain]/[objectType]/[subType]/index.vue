@@ -125,6 +125,9 @@
         :object-name="objectName"
         @update:model-value="objectAssignDialogVisible = false"
       />
+      <div>
+        <CsvImportCard :object-type="filter.objectType" :sub-type="filter.subType" @navigate="handleNavigate" />
+      </div>
     </template>
     <template #footer>
       <ObjectCreateDialog
@@ -181,25 +184,28 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 <script setup lang="ts">
 import { mdiContentCopy, mdiPlus, mdiPuzzleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
-import { useFetchUnitDomains } from '~/composables/api/domains';
 import { mergeProps } from 'vue';
+import { useFetchUnitDomains } from '~/composables/api/domains';
 
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useCloneObject } from '~/composables/VeoObjectUtilities';
-import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useVeoUser } from '~/composables/VeoUser';
-import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
+import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { useFeatureFlag } from '~/composables/features/featureFlag';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import type { VeoSearch } from '~/types/VeoSearch';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useCloneObject } from '~/composables/VeoObjectUtilities';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useVeoUser } from '~/composables/VeoUser';
 import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
+
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
+import CsvImportCard from '~/components/object/CsvImportCard.vue';
 import { useCurrentDomainUtils } from '~/composables/domains/useDomains';
+import type { VeoSearch } from '~/types/VeoSearch';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -640,6 +646,27 @@ const onBulkDelete = () => {
   itemsToDelete.value = selectedItems.value;
   showDeleteDialog.value = true;
 };
+
+const handleNavigate = async (objectType: string, subType: string) => {
+  try {
+    await navigateTo({
+      name: ROUTE_NAME,
+      params: {
+        domain: route.params.domain,
+        unit: route.params.unit,
+        objectType: VeoElementTypePlurals[objectType as keyof typeof VeoElementTypePlurals],
+        subType: subType || ''
+      }
+    });
+  } catch (err: unknown) {
+    handleError('Failed to navigate to object overview', err);
+  }
+};
+
+const handleError = (message: string, error: unknown) => {
+  const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+  displayErrorMessage(message, errorMessage);
+};
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-index.json"></i18n>
@@ -676,5 +703,52 @@ const onBulkDelete = () => {
 .search-shrunk {
   width: calc(100% - 72px);
   margin-left: 72px;
+}
+</style>
+<style>
+/* Hidden File Input */
+.hidden {
+  display: none;
+}
+
+/* Drop Zone Styles */
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  margin: 20px 0;
+  color: #777;
+  background-color: #f9f9f9;
+  cursor: pointer;
+}
+
+.drop-zone:hover {
+  background-color: #e6e6e6;
+}
+
+.error {
+  color: red;
+}
+
+.import-container {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.upload-card {
+  padding: 2rem;
+  text-align: center;
+}
+
+.drop-zone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.drag-active {
+  border-color: #1976d2;
+  background-color: rgba(25, 118, 210, 0.05);
 }
 </style>
