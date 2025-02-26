@@ -36,7 +36,7 @@
       <v-col cols="auto" class="d-flex justify-center flex-column">
         <h3 class="text-h3 small-caps mb-3" v-text="title" />
         <slot />
-        <p v-if="text" class="mb-0 text-body-2" v-text="text" />
+        <p v-if="text" class="mb-0 text-body-2" style="white-space: pre-line" v-text="text" />
         <p v-if="dismissOnClick" class="caption mt-2">
           {{ t('clickToDismiss') }}
         </p>
