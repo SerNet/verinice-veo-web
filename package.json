@@ -58,6 +58,7 @@
     "prismjs": "^1.29.0",
     "serve": "^14.2.0",
     "uuid": "^11.0.0",
+    "papaparse": "^5.5.1",
     "vite-plugin-vuetify": "^2.0.1",
     "vue-chartjs": "^5.0.1",
     "vue-codemirror": "^6.1.1",
