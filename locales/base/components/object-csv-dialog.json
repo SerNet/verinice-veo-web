@@ -1,0 +1,46 @@
+{
+  "en": {
+    "importObjects": {
+      "title": "Import Objects",
+      "requiredFieldsNotMapped": "Required fields not mapped:",
+      "objectType": "Object Type",
+      "subType": "Sub Type",
+      "importCompletedWithErrors": "Import completed with errors: {imported}/{total} items imported.",
+      "importSuccessful": "Import successful: {imported}/{total} items imported.",
+      "showingRemaining": "Showing {count} remaining.",
+      "showFailedItems": "Show failed items ({count})",
+      "selectMapping": "Select mapping",
+      "importingTitle": "Importing",
+      "importing": "Importing...",
+      "importedProgress": "Imported {progress}% of your data",
+      "importCancelled": "Import cancelled",
+      "importCancelledMessage": "{imported}/{total} items were imported successfully. Remaining items: {remaining}",
+      "importErrorMessageTitle": "Import completed with errors",
+      "importErrorMessage": "{imported}/{total} items were imported successfully. Failed items: {failed}",
+      "importSuccessTitle": "Import Successful",
+      "importSuccessMessage": "{imported}/{total} items were imported successfully."
+    }
+  },
+  "de": {
+    "importObjects": {
+      "title": "Objekte importieren",
+      "requiredFieldsNotMapped": "Erforderliche Felder nicht zugeordnet:",
+      "objectType": "Objekttyp",
+      "subType": "Untertyp",
+      "importCompletedWithErrors": "Import mit Fehlern abgeschlossen: {imported}/{total} Elemente importiert.",
+      "importSuccessful": "Import erfolgreich: {imported}/{total} Elemente importiert.",
+      "showingRemaining": "Es werden {count} verbleibende angezeigt.",
+      "showFailedItems": "Fehlgeschlagene Elemente anzeigen ({count})",
+      "selectMapping": "Zuordnung auswählen",
+      "importingTitle": "Wird importiert",
+      "importing": "Wird importiert...",
+      "importedProgress": "{progress}% Ihrer Daten wurden importiert",
+      "importCancelled": "Import abgebrochen",
+      "importCancelledMessage": "{imported}/{total} Elemente wurden erfolgreich importiert. Verbleibende Elemente: {remaining}",
+      "importErrorMessageTitle": "Import mit Fehlern abgeschlossen",
+      "importErrorMessage": "{imported}/{total} Elemente wurden erfolgreich importiert. Fehlgeschlagene Elemente: {failed}",
+      "importSuccessTitle": "Erfolgreicher Import",
+      "importSuccessMessage": "{imported}/{total} Elemente wurden erfolgreich importiert."
+    }
+  }
+}

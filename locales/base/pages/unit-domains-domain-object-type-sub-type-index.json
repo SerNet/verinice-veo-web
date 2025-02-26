@@ -1,5 +1,8 @@
 {
   "en": {
+    "import.title": "Import Elements",
+    "import.dropzone.label": "Drag and drop CSV file here",
+    "import.button.browse": "Browse Files",
     "assignObject": "Assign object to another domain",
     "filterObjects": "filter objects",
     "createObject": "create {0}",
@@ -20,6 +23,9 @@
     "cardViewOff": "Show items as cards"
   },
   "de": {
+    "import.title": "Elemente importieren",
+    "import.dropzone.label": "Ziehen Sie die CSV-Datei hierher",
+    "import.button.browse": "Dateien durchsuchen",
     "assignObject": "Objekt einer weiteren Domäne zuordnen",
     "filterObjects": "Objekte filtern",
     "createObject": "{0} erstellen",

@@ -52,6 +52,7 @@
   "global.button.ok": "Okay",
   "global.button.previous": "Previous",
   "global.button.save": "Save",
+  "global.button.import": "Import",
   "global.button.save_quit": "Save and exit",
   "global.button.apply": "Apply",
   "global.button.yes": "Yes",
