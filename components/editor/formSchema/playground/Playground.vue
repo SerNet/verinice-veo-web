@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2023  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -26,6 +26,7 @@
     @form-schema-elements-modified="onFormSchemaModified(playgroundElements)"
     @set-translations="emit('set-translations', $event)"
   />
+  <EditorErrorDialog v-model="isErrorDialogVisible" :validation="validationResult" />
 </template>
 
 <script lang="ts">
@@ -46,10 +47,14 @@ import { v5 as UUIDv5, v4 as UUIDv4 } from 'uuid';
 import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import type { IPlaygroundElement } from './Element.vue';
 import type { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
+import FormSchemaValidator from '~/lib/FormSchemaValidator';
+import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
     modelValue?: IVeoFormSchemaItem;
+    objectSchema: IVeoDomainSpecificObjectSchema | undefined;
   }>(),
   {
     modelValue: () => ({
@@ -59,7 +64,8 @@ const props = withDefaults(
         direction: 'vertical'
       },
       elements: []
-    })
+    }),
+    objectSchema: undefined
   }
 );
 
@@ -67,6 +73,10 @@ const emit = defineEmits<{
   (event: 'update:model-value', formSchema: IVeoFormSchemaItem): void;
   (event: 'set-translations', translations: PENDING_TRANSLATIONS): void;
 }>();
+
+const formSchemaValidator = new FormSchemaValidator();
+const validationResult = ref<VeoSchemaValidatorValidationResult>();
+const isErrorDialogVisible = ref(false);
 
 // UUID Map stuff
 const formSchemaElementMap = reactive<FormSchemaElementMap>(new Map<string, IVeoFormSchemaItem>());
@@ -197,41 +207,53 @@ const updateTranslation = (key: string, item: IVeoFormSchemaItem) => {
 };
 
 const onAddElement = (elementPointer: string, element: IPlaygroundElement | IVeoFormSchemaItem) => {
-  if (isFormElement(element)) {
-    // Generate UUID for the new element
-    const uuid = UUIDv5(getFormSchemaElementName(element, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
-    formSchemaElementMap.set(uuid, cloneDeep(element));
-    element = { id: uuid, children: [] };
+  if (element) {
+    if (isFormElement(element)) {
+      if (!props.objectSchema) return;
 
-    // Recursively add predefined children
-    const addChildrenRecursively = (parentElement: IPlaygroundElement, formSchemaItem: IVeoFormSchemaItem) => {
-      formSchemaItem.elements?.forEach((child, index) => {
-        const childUuid = UUIDv5(getFormSchemaElementName(child, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
-        if (child.options.translation) {
-          child.options.label = '#lang/group_' + childUuid;
-          updateTranslation(childUuid, child);
-        }
-        formSchemaElementMap.set(childUuid, cloneDeep(child));
-        const childElement: IPlaygroundElement = { id: childUuid, children: [] };
-        parentElement.children.push(childElement);
+      const isSchemaValid = formSchemaValidator.validate(element, props.objectSchema);
 
-        // Recursive call for nested elements
-        if (child.elements) {
-          addChildrenRecursively(childElement, child);
-        }
-      });
-    };
+      if (!isSchemaValid.valid) {
+        validationResult.value = isSchemaValid;
+        isErrorDialogVisible.value = true;
+        return;
+      }
 
-    // If the element has predefined children, add them
-    const formSchemaItem = formSchemaElementMap.get(uuid) as IVeoFormSchemaItem;
-    addChildrenRecursively(element, formSchemaItem);
+      // Generate UUID for the new element
+      const uuid = UUIDv5(getFormSchemaElementName(element, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
+      formSchemaElementMap.set(uuid, cloneDeep(element));
+      element = { id: uuid, children: [] };
+
+      // Recursively add predefined children
+      const addChildrenRecursively = (parentElement: IPlaygroundElement, formSchemaItem: IVeoFormSchemaItem) => {
+        formSchemaItem.elements?.forEach((child, index) => {
+          const childUuid = UUIDv5(getFormSchemaElementName(child, UUIDv4()), FORMSCHEMA_PLAYGROUND_NAMESPACE);
+          if (child.options.translation) {
+            child.options.label = '#lang/group_' + childUuid;
+            updateTranslation(childUuid, child);
+          }
+          formSchemaElementMap.set(childUuid, cloneDeep(child));
+          const childElement: IPlaygroundElement = { id: childUuid, children: [] };
+          parentElement.children.push(childElement);
+
+          // Recursive call for nested elements
+          if (child.elements) {
+            addChildrenRecursively(childElement, child);
+          }
+        });
+      };
+
+      // If the element has predefined children, add them
+      const formSchemaItem = formSchemaElementMap.get(uuid) as IVeoFormSchemaItem;
+      addChildrenRecursively(element, formSchemaItem);
+    }
+
+    const newIndex = parseInt(elementPointer.split('/').pop() as string);
+
+    const parent = JsonPointer.get(playgroundElements.value, getParentPointer(elementPointer)) as IPlaygroundElement;
+    // Insert the element into the parent at the specified position
+    parent.children.splice(newIndex, 0, element);
   }
-
-  const newIndex = parseInt(elementPointer.split('/').pop() as string);
-
-  const parent = JsonPointer.get(playgroundElements.value, getParentPointer(elementPointer)) as IPlaygroundElement;
-  // Insert the element into the parent at the specified position
-  parent.children.splice(newIndex, 0, element);
 };
 
 const onRemoveElement = (elementPointer: string, removeFromSchemaElementMap = false) => {
@@ -262,4 +284,10 @@ const onMoveElement = (oldElementPointer: string, newElementPointer: string) => 
   onRemoveElement(oldElementPointer);
   onAddElement(newElementPointer, element);
 };
+
+watch(isErrorDialogVisible, (value) => {
+  if (!value) {
+    validationResult.value = undefined;
+  }
+});
 </script>

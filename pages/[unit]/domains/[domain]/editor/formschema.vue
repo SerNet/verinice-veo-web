@@ -198,6 +198,7 @@
             <EditorFormSchemaPlayground
               v-if="formSchema"
               v-model="formSchema.content"
+              :object-schema="objectSchema"
               @set-translations="setElementTranslation"
             />
             <v-progress-circular v-else size="64" indeterminate />
