@@ -1,5 +1,5 @@
 export const config = {
-  riskAffectedObjectTypes: ['process', 'scope', 'asset'],
+  riskAffectedObjectTypes: ['process', 'scope'],
   riEditor: {
     renderedProperties: {
       targetObject: [
