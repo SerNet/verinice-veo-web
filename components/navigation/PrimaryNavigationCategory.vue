@@ -36,6 +36,7 @@
         v-bind="activatorProps"
         :density="level > 0 ? 'compact' : 'default'"
         :class="activatorIntendation"
+        tabindex="0" autofocus
         @click="emit('expand-menu')"
       >
         <template #prepend>

@@ -8,7 +8,7 @@
 
 <script setup>
 import { addHolidayTheme } from '~/components/holidayThemes';
-
+const { locale } = useI18n();
 useHead({
   meta: [
     {
@@ -23,6 +23,11 @@ useHead({
       content: 'IE=edge'
     }
   ],
+ 
+      htmlAttrs: {
+        lang: locale.value 
+      },
+    
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
 });
 addHolidayTheme();

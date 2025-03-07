@@ -65,6 +65,7 @@
           class="pl-4"
           data-component-name="toggle-navigation"
           density="compact"
+          tabindex="0" autofocus
           @click="miniVariant = !miniVariant"
         >
           <template #prepend>

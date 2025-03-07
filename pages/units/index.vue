@@ -32,7 +32,7 @@
     </BaseContainer>
 
     <template #footer>
-      <v-tooltip location="start">
+      <v-tooltip location="start" :aria-label="t('createUnit')">
         <template #activator="{ props }">
           <div class="d-flex">
             <div class="ml-auto my-6" v-bind="props">
