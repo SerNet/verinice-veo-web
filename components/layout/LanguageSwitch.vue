@@ -16,12 +16,18 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="bottom">
+  <v-tooltip location="bottom" :aria-label="t('showHelp')">
     <template #activator="{ props: tooltip }">
       <div v-bind="tooltip">
         <v-menu offset-y bottom left nudge-bottom="2">
           <template #activator="{ props: menu }">
-            <v-btn v-bind="menu" data-component-name="language-select" :icon="mdiTranslate" />
+            <v-btn
+            v-bind="{ ...tooltip, ...menu }" 
+              data-component-name="language-select"
+              :aria-label="t('showHelp')"
+              :title="t('showHelp')"
+              :icon="mdiTranslate"
+            />
           </template>
 
           <template #default>

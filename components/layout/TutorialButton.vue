@@ -16,40 +16,50 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="bottom">
-    <template #activator="{ props: tooltipProps }">
-      <div v-bind="tooltipProps">
-        <v-btn
-          v-if="tutorialsForRoute.length <= 1"
-          icon
-          role="submit"
-          type="submit"
-          :disabled="!tutorialsForRoute.length"
-          data-component-name="tutorial-select"
-          @click="visible ? stop() : load()"
-        >
-          <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
-        </v-btn>
-        <v-menu v-else offset-y bottom left nudge-bottom="2">
-          <template #activator="{ props: menu }">
-            <v-btn icon data-component-name="tutorial-select" v-bind="menu">
-              <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
-            </v-btn>
-          </template>
-          <template #default>
-            <v-list dense>
-              <v-list-item v-for="tutorial of tutorialsForRoute" :key="tutorial._id" @click="load(tutorial._path)">
-                <v-list-item-title>
-                  {{ tutorial.title }}
-                </v-list-item-title>
-              </v-list-item>
-            </v-list>
-          </template>
-        </v-menu>
-      </div>
-    </template>
-    <span v-text="t(visible ? 'hideHelp' : 'showHelp')" />
-  </v-tooltip>
+<v-tooltip location="bottom" :aria-label="t('showHelp')" open-on-hover>
+  <template #activator="{ props: tooltipProps }">
+    <div>
+      <v-btn
+        v-if="tutorialsForRoute.length <= 1"
+        icon
+        type="submit"
+        :disabled="!tutorialsForRoute.length"
+        data-component-name="tutorial-select"
+        v-bind="tooltipProps"
+        :aria-label="t('showHelp')"
+        :title="t('showHelp')"
+        @click="visible ? stop() : load()"
+      >
+        <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
+      </v-btn>
+      <v-menu v-else offset-y bottom left nudge-bottom="2">
+        <template #activator="{ props: menuProps }">
+          <v-btn
+            icon
+            data-component-name="tutorial-select"
+            v-bind="{ ...tooltipProps, ...menuProps }" 
+          >
+            <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
+          </v-btn>
+        </template>
+        <template #default>
+          <v-list dense>
+            <v-list-item
+              v-for="tutorial in tutorialsForRoute"
+              :key="tutorial._id"
+              @click="load(tutorial._path)"
+            >
+              <v-list-item-title>
+                {{ tutorial.title }}
+              </v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </template>
+      </v-menu>
+    </div>
+  </template>
+  <span v-text="t(visible ? 'hideHelp' : 'showHelp')" />
+</v-tooltip>
 </template>
 
 <script setup lang="ts">

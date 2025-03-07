@@ -16,10 +16,18 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="bottom">
+  <v-tooltip location="bottom" :aria-label="t('mode')">
     <template #activator="{ props }">
       <div v-bind="props">
-        <v-btn data-component-name="theme-switch" :icon="mdiThemeLightDark" @click="_switch" />
+        <v-btn
+          data-component-name="theme-switch"
+          exact
+          v-bind="props"
+          :aria-label="t('mode')"
+          :title="t('mode')"
+          :icon="mdiThemeLightDark"
+          @click="_switch"
+        />
       </div>
     </template>
 

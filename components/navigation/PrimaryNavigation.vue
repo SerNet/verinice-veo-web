@@ -38,7 +38,7 @@
       </div>
     </template>
     <template #default>
-      <v-list ref="primaryNavList" class="mt-4" :rounded="miniVariant">
+      <v-list ref="primaryNavList" class="mt-4" :rounded="miniVariant" role="list">
         <template v-for="item in items" :key="item.id">
           <NavigationPrimaryNavigationCategory
             v-if="item.children"
@@ -58,8 +58,8 @@
       </v-list>
     </template>
     <template #append>
-      <v-list density="compact" class="pa-0">
-        <v-divider style="background: rgba(255, 255, 255, 0.2)" />
+      <v-divider style="background: rgba(255, 255, 255, 0.2)" />
+      <v-list density="compact" class="pa-0" role="none"  >
         <v-list-item
           v-if="!xs"
           class="pl-4"

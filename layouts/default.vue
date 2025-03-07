@@ -24,6 +24,7 @@
         to="/units"
         class="text-decoration-none ml-4"
         data-component-name="logo"
+        aria-label="logo"
         data-veo-test="unit-page-link"
       >
         <LayoutAppBarLogo style="height: 60px" class="d-flex align-center" />
@@ -37,7 +38,7 @@
 
       <LayoutTutorialButton v-if="!$route.path.startsWith('/login')" />
 
-      <v-tooltip v-if="ability.can('view', 'documentation')" location="bottom">
+      <v-tooltip v-if="ability.can('view', 'documentation')" location="bottom"  :aria-label="t('openDocumentationInNewTab')">
         <template #activator="{ props }">
           <v-btn
             class="mr-3"
@@ -47,6 +48,7 @@
             exact
             v-bind="props"
             data-component-name="docs-nav-item"
+           :aria-label="t('openDocumentationInNewTab')"
           >
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>

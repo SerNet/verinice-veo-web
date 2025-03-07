@@ -17,6 +17,7 @@
 -->
 <template>
   <div class="text-h3" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
+    <v-breadcrumbs>
     <v-breadcrumbs-item
       v-for="(item, index) of displayedBreadcrumbs"
       :key="item.key"
@@ -81,6 +82,7 @@
         </v-menu>
       </template>
     </v-breadcrumbs-item>
+  </v-breadcrumbs>
   </div>
 </template>
 
