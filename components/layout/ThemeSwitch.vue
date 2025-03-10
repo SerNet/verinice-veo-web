@@ -18,7 +18,7 @@
 <template>
   <v-tooltip location="bottom" :aria-label="t('mode')">
     <template #activator="{ props }">
-      <div v-bind="props">
+      <div>
         <v-btn
           data-component-name="theme-switch"
           exact

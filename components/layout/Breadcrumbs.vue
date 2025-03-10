@@ -16,8 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="text-h3" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
-    <v-breadcrumbs>
+  <v-breadcrumbs
+    class="text-h3"
+    data-component-name="breadcrumbs"
+    data-veo-test="breadcrumbs"
+  >
     <v-breadcrumbs-item
       v-for="(item, index) of displayedBreadcrumbs"
       :key="item.key"
@@ -83,7 +86,6 @@
       </template>
     </v-breadcrumbs-item>
   </v-breadcrumbs>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -444,5 +446,8 @@ watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 
 .breadcrumbs-item-height {
   height: 2rem;
+}
+.v-breadcrumbs {
+  padding: 0;
 }
 </style>

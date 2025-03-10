@@ -8,7 +8,9 @@
 
 <script setup>
 import { addHolidayTheme } from '~/components/holidayThemes';
-const { locale } = useI18n();
+import { useLocale } from 'vuetify';
+const { current } = useLocale();
+const lang = computed(() => current.value);
 useHead({
   meta: [
     {
@@ -25,7 +27,7 @@ useHead({
   ],
  
       htmlAttrs: {
-        lang: locale.value 
+         lang
       },
     
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
