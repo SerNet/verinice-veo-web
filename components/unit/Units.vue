@@ -1,3 +1,4 @@
+
 <!--
 verinice.veo web
 Copyright (C) 2024 jae
@@ -162,26 +163,28 @@ const UnitActions: TInlineComponent = {
     }
   },
   template: `
-    <v-tooltip :text="t('editUnit')">
+    <v-tooltip :text="t('editUnit')" :aria-label="t('editUnit')">
       <template #activator="{ props }">
         <v-btn
           v-bind="props"
           :to="detailsUrl"
           :icon="mdiPencilOutline"
           variant="text"
+          :aria-label="t('editUnit')"
           data-veo-test="units-edit-unit-button"
           data-component-name="units-edit-unit-button"
         >
         </v-btn>
       </template>
     </v-tooltip>
-    <v-tooltip :text="t('deleteUnit')">
+    <v-tooltip :text="t('deleteUnit')" :aria-label="t('deleteUnit')">
       <template #activator="{ props }">
         <v-btn
           v-bind="props"
           @click="emitDeleteUnit"
           :icon="mdiDeleteOutline"
           variant="text"
+          :aria-label="t('deleteUnit')"
           data-veo-test="units-delete-unit-button"
           data-component-name="units-delete-unit-button"
         >
@@ -207,7 +210,7 @@ const DomainActions: TInlineComponent = {
       {{ domain.name }}
     </v-chip>
 
-    <v-tooltip :text="t('editDomains')">
+    <v-tooltip :text="t('editDomains')" :aria-label="t('editDomains')">
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
@@ -235,13 +238,14 @@ const BookmarkFavorite: TInlineComponent = {
     }
   },
   template: `
-    <v-tooltip :text="t('bookmarkTooltip')">
+    <v-tooltip :text="t('bookmarkTooltip')" :aria-label="t('bookmarkTooltip')">
       <template #activator={props}>
         <v-btn
           data-component-name="unit-favorite-button"
           v-bind="props"
           :icon="this.isFavorite ? mdiBookmark : mdiBookmarkOutline"
           variant="text"
+          :aria-label="t('bookmarkTooltip')"
           @click="emitBookmark"
         />
       </template>
@@ -254,7 +258,7 @@ const ApplyProfiles: TInlineComponent = {
   data: () => ({ mdiShapeOutline, t }),
 
   template: `
-    <v-tooltip :text="t('addProfiles')">
+    <v-tooltip :text="t('addProfiles')" :aria-label="t('addProfiles')">
       <template #activator={props}>
         <v-btn
           v-bind="props"
@@ -284,3 +288,4 @@ const ApplyProfiles: TInlineComponent = {
   overflow-wrap: anywhere;
 }
 </style>
+
