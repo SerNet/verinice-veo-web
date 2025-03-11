@@ -50,6 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     :disabled="isDisabled"
                     hide-details
                     required
+                    :aria-label="t('unitName')"
                     @keydown.enter.prevent
                   ></v-text-field>
                 </v-col>
@@ -61,6 +62,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     :label="t('unitDescription')"
                     :disabled="isDisabled"
                     counter
+                    :aria-label="t('unitDescription')"
                     maxlength="5000"
                   ></v-textarea>
                 </v-col>
