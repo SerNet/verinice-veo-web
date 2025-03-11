@@ -5,7 +5,7 @@ export const config = {
       'ds-gvo': '#c90000',
       'iso-iec-27000': '#003f63',
       nis2: '#9c26af',
-      'it-grundschutz': '#4baf50',
+      'it-grundschutz': '#2E7D32',
       'it-grundschutz++': '#009192',
       tisax: '#f48e19',
       'business-continuity-management': '#cc338b',
