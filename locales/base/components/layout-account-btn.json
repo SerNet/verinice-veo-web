@@ -4,13 +4,15 @@
     "logout": "Logout",
     "editAccount": "Edit account",
     "firststeps": "First steps",
-    "notAvailable": "Not available"
+    "notAvailable": "Not available",
+     "myProfile": "My Profile"
   },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
     "firststeps": "Erste Schritte",
-    "notAvailable": "Keine Angabe"
+    "notAvailable": "Keine Angabe",
+     "myProfile": "Mein Profil"
   }
 }

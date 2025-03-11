@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <v-radio-group v-if="profiles.length" v-model="selectedProfile">
       <v-col v-if="hasNoneOption" cols="12" class="flex-1-1-100">
-        <RadioButton data-veo-test="profile-radio-btn-none" :profile="null" :label="t('noProfile')" />
+        <RadioButton data-veo-test="profile-radio-btn-none" :profile="null" :label="t('noProfile')"  :aria-label="t('noProfile')" />
       </v-col>
 
       <template v-for="profile in profiles" :key="profile.id">
@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           </template>
 
           <template #prepend="{ item: p }">
-            <RadioButton :data-veo-test="`profile-radio-btn-${p.productId}`" :profile="p" :is-disabled="isDisabled" />
+            <RadioButton :data-veo-test="`profile-radio-btn-${p.productId}`" :profile="p" :is-disabled="isDisabled"  :aria-label="`${p.domainName}`"/>
           </template>
         </BaseListItem>
       </template>

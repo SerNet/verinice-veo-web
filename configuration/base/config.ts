@@ -12,6 +12,7 @@ export const config = {
       default: ''
     }
   },
+
   riEditor: {
     renderedProperties: {
       targetObject: [

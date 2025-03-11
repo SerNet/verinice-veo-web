@@ -23,17 +23,22 @@
     @update:model-value="onMenuClosed"
   >
     <template #activator="{ props }">
-      <v-btn
-        class="mr-0"
-        data-component-name="account-menu-button"
-        color="primary"
-        v-bind="mergeProps(props, $attrs)"
-        icon
-      >
-        <v-avatar color="primary" size="48">
-          {{ initials }}
-        </v-avatar>
-      </v-btn>
+      <v-tooltip location="bottom"   :aria-label="t('myProfile')">
+        <template #activator="{ props: tooltipProps  }">
+          <v-btn
+            class="mr-0"
+            data-component-name="account-menu-button"
+            color="primary"
+            v-bind="{ ...mergeProps(props, $attrs), ...tooltipProps }"
+            icon
+          >
+            <v-avatar color="primary" size="48">
+              {{ initials }}
+            </v-avatar>
+          </v-btn>
+        </template>
+        <span>{{ t('myProfile') }}</span>
+      </v-tooltip>
     </template>
     <v-card flat>
       <v-list density="compact" class="pb-0">
