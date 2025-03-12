@@ -77,7 +77,8 @@ import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDe
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { useSubTypeTranslation } from '~/composables/Translations';
+import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import {  useSubTypeTranslation } from '~/composables/Translations';
 // Types
 import type { VeoSearch } from '~/types/VeoSearch';
 import { IVeoLink, VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
