@@ -23,7 +23,7 @@
     @update:model-value="onMenuClosed"
   >
     <template #activator="{ props }">
-      <v-tooltip location="bottom"   :aria-label="t('myProfile')">
+      <v-tooltip location="bottom"   :aria-label="t('OpenPreferences')">
         <template #activator="{ props: tooltipProps  }">
           <v-btn
             class="mr-0"
@@ -37,7 +37,7 @@
             </v-avatar>
           </v-btn>
         </template>
-        <span>{{ t('myProfile') }}</span>
+        <span>{{ t('OpenPreferences') }}</span>
       </v-tooltip>
     </template>
     <v-card flat>
