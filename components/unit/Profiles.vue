@@ -38,7 +38,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     >
       {{ t('hasNoProfilesBody') }}
     </BaseAlert>
-
     <v-radio-group v-if="profiles.length" v-model="selectedProfile">
       <v-col v-if="hasNoneOption" cols="12" class="flex-1-1-100">
         <RadioButton
