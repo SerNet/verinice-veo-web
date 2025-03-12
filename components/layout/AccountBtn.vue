@@ -29,7 +29,7 @@
             class="mr-0"
             data-component-name="account-menu-button"
             color="primary"
-            v-bind="{ ...mergeProps(props, $attrs), ...tooltipProps }"
+            v-bind="{ ...tooltipProps, ...props }" 
             icon
           >
             <v-avatar color="primary" size="48">
