@@ -32,17 +32,26 @@
       >
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
-      <BaseDialog :model-value="showDialog" data-veo-test="catalog-dialog" :title="t('CatalogItemsApplied')" large :close-function="() => (showDialog = false)">
+      <BaseDialog
+        :model-value="showDialog"
+        :title="t('CatalogItemsApplied')"
+        data-veo-test="catalog-dialog"
+        :close-function="() => (showDialog = false)"
+      >
         <template #default>
           <BaseCard>
-            <ObjectTable
-              :key="tableDialogKey"
-              :default-headers="['type', 'abbreviation', 'name']"
-              :items="catalogSelectedItems"
-              enable-click
-              @click="generateRoute"
-            >
-            </ObjectTable>
+            <v-list>
+              <v-list-item
+                v-for="(subtypeGroup, index) in createdObjectsBySubtype"
+                :key="index"
+                class="catalog-items-applied"
+                :to="generateRoute({ item: subtypeGroup })"
+              >
+                <v-list-item-title class="font-weight-bold d-flex align-center">
+                  {{ subtypeGroup.name }} ({{ subtypeGroup.items.length }})
+                </v-list-item-title>
+              </v-list-item>
+            </v-list>
           </BaseCard>
           <v-row class="my-2">
             <v-col cols="auto">
@@ -68,11 +77,10 @@ import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDe
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-
+import { useSubTypeTranslation } from '~/composables/Translations';
 // Types
 import type { VeoSearch } from '~/types/VeoSearch';
-import { VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoLink, VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -83,6 +91,8 @@ const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 // State
 const currentDomainId = computed(() => route.params.domain as string);
 const currentSubType = computed(() => (route.query.subType === 'all' ? undefined : (route.query.subType as string)));
+const { data: currentDomain } = useCurrentDomain();
+const { locale } = useI18n();
 
 // Always show query params in url
 // This ensures an active state in the navbar (e.g. after a reload)
@@ -98,7 +108,6 @@ if (!currentSubType.value) {
 
 const { tablePageSize } = useVeoUser();
 const page = ref<number>(0);
-const tableDialogKey = ref(0);
 const showDialog = ref(false);
 const sortBy = ref([{ key: 'abbreviation', order: 'asc' }]);
 
@@ -153,18 +162,9 @@ const customBreadcrumbArgs = computed(() => ({
 // Actions
 
 onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value));
+const generateRoute = ({ item }: { item: any }) =>
+  `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.items[0].type as keyof typeof VeoElementTypePlurals]}/${item.items[0].subType}`;
 
-const generateRoute = ({ item }: { item: any }) => {
-  return navigateTo({
-    name: OBJECT_DETAIL_ROUTE,
-    params: {
-      ...route.params,
-      object: item.id,
-      objectType: VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals],
-      subType: item.type
-    }
-  });
-};
 // Update breadcrumb if a filter is changed
 watch(
   () => route.fullPath,
@@ -183,7 +183,7 @@ onBeforeRouteLeave(async (_to, _from) => {
 const { mutateAsync: incarnate } = useMutation(unitQueryDefinitions.mutations.updateIncarnations);
 const selectedItems = ref<IVeoEntity[]>([]);
 const isApplyingItems = ref(false);
-const catalogSelectedItems = ref([]);
+const createdObjectsBySubtype = ref<Array<{ name: string; items: IVeoLink[] }>>([]);
 
 async function applyItems() {
   isApplyingItems.value = true;
@@ -207,9 +207,30 @@ async function applyItems() {
     // Apply incarnations
     const response = await incarnate({ incarnations, unitId: route.params.unit });
     displaySuccessMessage(t('itemsApplied'));
-    const itemsToAdd = Array.isArray(response) ? response : [response];
-    catalogSelectedItems.value = [];
-    catalogSelectedItems.value.push(...itemsToAdd);
+    const itemsToAdd: IVeoLink[] = response;
+
+    // Group items based on subType and assign translated names to each group
+    createdObjectsBySubtype.value = Object.values(
+      itemsToAdd.reduce(
+        (groups, item) => {
+          // Get the translated name for the subtype
+          const subType =
+            currentDomain.value.raw.elementTypeDefinitions[item.type]?.translations[locale.value]?.[
+              `${item.type}_${item.subType}_plural`
+            ];
+
+          // If the group for this subtype doesn't exist, create it
+          if (!groups[subType]) {
+            groups[subType] = { name: subType, items: [] };
+          }
+          groups[subType].items.push(item);
+
+          return groups;
+        },
+        {} as Record<string, { name: string; items: IVeoLink[] }>
+      )
+    );
+
     showDialog.value = true;
     selectedItems.value = [];
   } catch (e: any) {

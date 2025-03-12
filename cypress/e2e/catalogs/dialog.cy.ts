@@ -6,7 +6,7 @@ describe('Catalogs', { testIsolation: false }, () => {
   before(() => {
     unitDetails = generateUnitDetails('catalogs');
     cy.login();
-    cy.createUnit(unitDetails); 
+    cy.createUnit(unitDetails);
     cy.acceptAllCookies();
   });
 
@@ -23,40 +23,36 @@ describe('Catalogs', { testIsolation: false }, () => {
       incarnations: `${Cypress.env('veoApiUrl')}/units/**/incarnations`
     };
 
-    
     // create objects from catalog items (incarnation)
     cy.intercept('POST', api.incarnations).as('incarnateItems');
 
-   // Get the text of the first item 
-    
-    cy.getCustom('.v-data-table__tr').first().then(($row) => {
-      const cells = $row.children();
-          const texts = [];
-          cells.each((_index, cell) => {
-            texts.push(Cypress.$(cell).text());
-          });
+    // Get the text of the first item
 
-          const name = texts[2];
-      cy.getCustom('.v-data-table__tr').first().click();
-    cy.get('[data-veo-test="catalogs-btn-apply"]').click(); 
-    
-    
+    cy.getCustom('.v-data-table__tr').first().click();
+    cy.get('[data-veo-test="catalogs-btn-apply"]').click();
 
     // Wait for the dialog to open
     cy.get('[data-veo-test="catalog-dialog"]').should('be.visible');
 
     // Check if the items from the catalog are displayed in the dialog
-    cy.get('[data-veo-test="catalog-dialog"]').find('.v-data-table__tr--clickable').should('have.length', 1); 
+    cy.get('[data-veo-test="catalog-dialog"]').find('.catalog-items-applied').should('have.length', 1);
 
     // Click on the first item in the dialog
-    cy.get('[data-veo-test="catalog-dialog"]').find('.v-data-table__tr--clickable').first().click(); 
+    cy.get('[data-veo-test="catalog-dialog"]')
+      .find('.catalog-items-applied')
+      .first()
+      .click()
+      .then(($row) => {
+        const cells = $row.children();
+        const texts = [];
 
-    
-      cy.getCustom('[data-component-name="breadcrumbs"]').contains(name.toUpperCase(), { matchCase: false });
-      
-    });
+        cells.each((_index, cell) => {
+          texts.push(Cypress.$(cell).text());
+        });
+
+        const subType = texts[2];
+        cy.log('subType:', subType);
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(subType.toUpperCase(), { matchCase: false });
+      });
   });
-
-   
-  });
-
+});
