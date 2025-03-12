@@ -35,6 +35,7 @@
     density="compact"
     :disabled="disabled"
     :items="itemSelection"
+    :aria-label="t('unit')"
     :label="items.length ? t('unit') : t('select')"
   >
     <template #item="{ props, item }">

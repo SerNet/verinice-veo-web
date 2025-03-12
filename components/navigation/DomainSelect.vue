@@ -36,6 +36,7 @@
     :disabled="disabled"
     :items="itemSelection"
     :label="items.length ? t('domain') : t('select')"
+    :aria-label="t('domain')"
     data-veo-test="domain-select"
   >
     <template #item="{ props, item }">
