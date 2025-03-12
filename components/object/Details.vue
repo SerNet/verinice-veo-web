@@ -150,8 +150,7 @@ const isRiskTabDisabled = computed(() => isScope.value && !props.object?.riskDef
 
 // CONTROlS
 const hasComplianceControlSubType = computed(() => !!currentDomain.value?.complianceControlSubType);
-
-const hasControlsTab = computed(() => hasComplianceControlSubType && isRiskAffected.value);
+const hasControlsTab = computed(() => hasComplianceControlSubType.value && isRiskAffected.value);
 
 const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; tooltip?: string }[]>(() => [
   {
