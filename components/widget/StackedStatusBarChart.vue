@@ -38,6 +38,7 @@
             v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
             :data="chart"
+            aria-label="{{ chart.labels[0] }} data"
             :options="options[index] as any"
             :plugins="[ChartDataLabels]"
             :style="{

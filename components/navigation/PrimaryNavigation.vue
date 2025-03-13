@@ -38,7 +38,7 @@
       </div>
     </template>
     <template #default>
-      <v-list ref="primaryNavList" class="mt-4" :rounded="miniVariant" role="list">
+      <v-list ref="primaryNavList" class="mt-4" :rounded="miniVariant" role="menu">
         <template v-for="item in items" :key="item.id">
           <NavigationPrimaryNavigationCategory
             v-if="item.children"

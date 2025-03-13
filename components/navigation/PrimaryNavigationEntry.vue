@@ -27,12 +27,12 @@
     :data-veo-test="componentName"
     density="compact"
     :target="openInNewtab ? '_blank' : undefined"
-    tabindex="0"
-    autofocus
+    tabindex="0" autofocus 
+   role="menuitem"
     @click.stop="onClick"
   >
     <template v-if="icon" #prepend>
-      <v-tooltip location="end" :disabled="!miniVariant">
+      <v-tooltip location="end" :disabled="!miniVariant" :aria-label="`${name}`">
         <template #activator="{ props: tooltip }">
           <div v-bind="tooltip">
             <v-icon v-if="icon" :icon="icon" start />

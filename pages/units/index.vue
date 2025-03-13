@@ -19,7 +19,7 @@
   <BasePage data-component-name="unit-selection-page" sticky-footer>
     <BaseContainer>
       <h2 class="text-h5 d-flex flex-grow-1 justify-end my-4" data-component-name="number-available-units">
-        <h1 style="font-size: initial;">Units:&nbsp;</h1>
+        <span><h1 style="font-size: initial;">Units:&nbsp;</h1></span> 
         <span>
           {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }}
           {{ t('active') }}

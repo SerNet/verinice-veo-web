@@ -25,7 +25,7 @@
     :target="openInNewtab ? '_blank' : undefined"
     :value="id"
     :aria-label="`Expand ${name}`"
-    role="menuitem"
+    role="menu"
     @click.stop="onClick"
   >
     <!-- @vue-ignore TODO #3066 does not exist -->
@@ -39,11 +39,13 @@
         :density="level > 0 ? 'compact' : 'default'"
         :class="activatorIntendation"
         tabindex="0"
+        tabindex="0"
         autofocus
+        role="menuitem"
         @click="emit('expand-menu')"
       >
         <template #prepend>
-          <v-tooltip location="end" :disabled="!miniVariant">
+          <v-tooltip location="end" :disabled="!miniVariant"  :aria-label="`${name}`">
             <template #activator="{ props: tooltip }">
               <div v-bind="tooltip">
                 <v-icon v-if="icon" :icon="icon" class="mr-3" />
