@@ -25,7 +25,7 @@
     :target="openInNewtab ? '_blank' : undefined"
     :value="id"
     :aria-label="`Expand ${name}`"
-    role="menu"
+    role="group"
     @click.stop="onClick"
   >
     <!-- @vue-ignore TODO #3066 does not exist -->
@@ -39,7 +39,8 @@
         :density="level > 0 ? 'compact' : 'default'"
         :class="activatorIntendation"
         tabindex="0"
-        role="menuitem"
+       role="menuitem"
+       :aria-selected="undefined"
         @click="emit('expand-menu')"
       >
         <template #prepend>
