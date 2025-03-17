@@ -15,7 +15,7 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage class="pt-6" data-component-name="unit-selection-page" sticky-footer>
+  <BasePage :title="t('unit-selection')" class="pt-6" data-component-name="unit-selection-page" sticky-footer>
     <BaseContainer>
       <UnitDomains v-model="selectedDomains" :domains="domains" :is-associating-domains="isAssociatingDomains" />
     </BaseContainer>

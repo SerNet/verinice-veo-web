@@ -28,7 +28,7 @@
     </template>
     <template v-else>
       <v-card-title v-if="title" class="bg-accent mb-2">
-        <h3 class="text-h3 small-caps" v-text="title" />
+        <h2 class="text-h2 small-caps" v-text="title" />
       </v-card-title>
       <v-card-text>
         <slot />
