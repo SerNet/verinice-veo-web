@@ -31,7 +31,12 @@
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
-      <BasePage sticky-footer data-component-name="object-details-details" no-padding>
+      <BasePage
+        :title="`${object?.abbreviation ? object.abbreviation + ' ' : ''}${object?.name}`"
+        sticky-footer
+        data-component-name="object-details-details"
+        no-padding
+      >
         <template #default>
           <ObjectDetails
             v-model:active-tab="activeTab"
