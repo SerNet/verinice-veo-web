@@ -39,8 +39,6 @@
         :density="level > 0 ? 'compact' : 'default'"
         :class="activatorIntendation"
         tabindex="0"
-        tabindex="0"
-        autofocus
         role="menuitem"
         @click="emit('expand-menu')"
       >

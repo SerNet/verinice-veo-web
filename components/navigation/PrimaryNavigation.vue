@@ -59,7 +59,7 @@
     </template>
     <template #append>
       <v-divider style="background: rgba(255, 255, 255, 0.2)" />
-      <v-list density="compact" class="pa-0" role="none">
+      <v-list density="compact" class="pa-0" role="menu">
         <v-list-item
           v-if="!xs"
           class="pl-4"
@@ -67,6 +67,7 @@
           density="compact"
           tabindex="0"
           autofocus
+          role="menuitem"
           @click="miniVariant = !miniVariant"
         >
           <template #prepend>

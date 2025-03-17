@@ -20,6 +20,7 @@
   <BaseDialog
     v-bind="$attrs"
     data-veo-test="units-delete-dialog"
+    :aria-label="t('dialogTitle')"
     :title="t('dialogTitle')"
     :close-disabled="deletionInProgress"
     :close-function="closeDeleteDialog"
@@ -29,10 +30,9 @@
     <template #default>
       <div>{{ t('question', { name: unit?.name }) }}</div
       ><br />
-      <div style="color: red">
+      <h2 style="color: #c00000; font-size: unset;">
         {{ t('hint') }}
-      </div>
-
+      </h2>
       <BaseAlert
         :model-value="true"
         :buttons="[{ text: 'backup', onClick: navigateToUserData }]"
@@ -43,7 +43,7 @@
         no-close-button
         to="/user-data"
       >
-        {{ t('request') }}
+     {{ t('request') }}
       </BaseAlert>
 
       <BaseCard class="mt-4">
@@ -55,6 +55,7 @@
             :placeholder="t('placeholder')"
             :rules="nameRules"
             required
+            :aria-label="t('unitName')"
             type="input"
           />
         </v-form>

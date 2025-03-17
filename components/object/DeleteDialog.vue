@@ -22,7 +22,7 @@
         {{ props.items.length === 1 ? t('singleItem', { displayName }) : t('multipleItems') }}
       </span>
       <div v-if="deletingMultiple" class="progress-container">
-        <v-progress-linear :model-value="progress" height="6" color="primary" />
+        <v-progress-linear :model-value="progress" height="6" color="primary"  :aria-label="`${progress}`" />
         <span class="progress-text">{{ progress }}%</span>
       </div>
     </template>

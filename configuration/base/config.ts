@@ -7,7 +7,7 @@ export const config = {
       nis2: '#9c26af',
       'it-grundschutz': '#2E7D32',
       'it-grundschutz++': '#009192',
-      tisax: '#f48e19',
+      tisax: '#AF6108',
       'business-continuity-management': '#cc338b',
       default: ''
     }

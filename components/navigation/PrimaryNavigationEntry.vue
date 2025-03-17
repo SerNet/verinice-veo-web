@@ -27,7 +27,7 @@
     :data-veo-test="componentName"
     density="compact"
     :target="openInNewtab ? '_blank' : undefined"
-    tabindex="0" autofocus 
+    tabindex="0"  
    role="menuitem"
     @click.stop="onClick"
   >
