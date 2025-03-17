@@ -56,7 +56,7 @@
         </template>
       </BasePage>
 
-      <BasePage content-class="fill-height" no-padding data-component-name="object-details-form">
+      <BasePage no-padding-top content-class="fill-height" no-padding data-component-name="object-details-form">
         <template #default>
           <ObjectForm
             v-if="objectType"
