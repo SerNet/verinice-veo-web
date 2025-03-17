@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage class="pt-2" :loading="!domain" data-component-name="domain-dashboard-page" padding>
+  <BasePage :loading="!domain" data-component-name="domain-dashboard-page" padding>
     <UtilNotFoundError v-if="domainNotFound" :text="t('domainNotFoundText')" />
 
     <template v-else>

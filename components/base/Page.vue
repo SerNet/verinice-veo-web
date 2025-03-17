@@ -16,7 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-col class="veo-page bg-basepage py-0" cols="12" :class="noPadding ? 'px-0' : 'px-2'">
+  <v-col
+    class="veo-page bg-basepage py-0"
+    cols="12"
+    :class="`${noPaddingTop ? '' : 'pt-2'} ${noPadding ? 'px-0' : 'px-2'}`"
+  >
     <LayoutPageHeader v-bind="omit(props, 'contentClass', 'stickyFooter', 'height', 'noPadding')">
       <template v-if="$slots.title" #title>
         <slot name="title" />
@@ -76,6 +80,10 @@ const props = defineProps({
     default: false
   },
   noPadding: {
+    type: Boolean,
+    default: false
+  },
+  noPaddingTop: {
     type: Boolean,
     default: false
   },
