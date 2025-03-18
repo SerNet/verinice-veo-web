@@ -34,9 +34,9 @@
 </template>
 
 <script setup lang="ts">
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const props = defineProps({
   title: {
@@ -80,12 +80,10 @@ const fetchTranslationsQueryParameters = computed(() => ({
 }));
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
 const type = ref<string | undefined>();
 
 const options = computed<{ title: string; value: string }[]>(() => {
-  const objectSchemaNames = Object.keys(schemas.value || {}).filter((item) =>
+  const objectSchemaNames = Object.keys(VeoElementTypePlurals).filter((item) =>
     props.targetElementType ? item !== props.targetElementType : true
   );
 

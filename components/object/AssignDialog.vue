@@ -102,12 +102,11 @@ import { isEqual } from 'lodash';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 
-import { IVeoEntityLegacy, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntityLegacy, VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
@@ -137,7 +136,6 @@ const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { requiredRule } = useRules();
 
 const { data: domains } = useQuery(domainQueryDefinitions.queries.fetchDomains);
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
 const { mutateAsync: assign } = useMutation(objectQueryDefinitions.mutations.assignObject);
 
@@ -145,9 +143,9 @@ const selectedSubType = ref<Record<string, string | undefined>>({});
 const selectedStatus = ref<Record<string, string | undefined>>({});
 const selectedDomains = ref<string[]>([]);
 
-const schemaParametersEnabled = computed(() => !!Object.keys(schemas.value || {}).length && !!props.objectId);
+const schemaParametersEnabled = computed(() => !!props.objectId);
 const fetchLegacyObjectQueryParameters = computed(
-  () => ({ endpoint: schemas.value?.[props.objectType], id: props.objectId }) as any
+  () => ({ endpoint: VeoElementTypePlurals[props.objectType], id: props.objectId }) as any
 );
 
 const formIsValid = ref(undefined);

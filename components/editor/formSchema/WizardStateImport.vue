@@ -89,8 +89,7 @@ import { PropType } from 'vue';
 import { isObject } from 'lodash';
 
 import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { VeoAlertType } from '~/types/VeoTypes';
+import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
@@ -154,15 +153,12 @@ export default defineComponent({
       }))
     ]);
 
-    // objectschema stuff
-    const { data: objectTypes } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
     // If the object schema belonging to the form schema doesn't exist, the user has to upload it themself
     const objectTypeMissing = computed(
       () =>
         props.formSchema &&
-        !Object.keys(objectTypes.value || {}).some(
-          (schemaName) => schemaName === (props.formSchema?.modelType as string)
+        !Object.keys(VeoElementTypePlurals).some(
+          (elementType) => elementType === (props.formSchema?.modelType as string)
         )
     );
 

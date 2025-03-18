@@ -21,7 +21,7 @@
       <tbody>
         <tr v-for="(revision, key) in revisions || []" :key="key" class="text-no-wrap overflow-x-hidden fill-width">
           <td>
-            <nuxt-link :to="createUrl(revision, schemas || {})" class="text-body-2 text-color">
+            <nuxt-link :to="createUrl(revision)" class="text-body-2 text-color">
               {{ revision.content.designator }}
               <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>
@@ -37,8 +37,7 @@
 
 <script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import schemaQueryDefinitions, { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
-import { IVeoLegacyObjectHistoryEntry } from '~/types/VeoTypes';
+import { IVeoLegacyObjectHistoryEntry, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 const { t, locale } = useI18n();
@@ -49,12 +48,9 @@ const latestChangesQueryParameters = computed(() => ({
 }));
 const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
 
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
-const createUrl = (revision: IVeoLegacyObjectHistoryEntry, schemas: IVeoSchemaEndpoints) => {
+const createUrl = (revision: IVeoLegacyObjectHistoryEntry) => {
   const subType = revision.content.domains[route.params.domain as string]?.subType || '-';
-
-  return `/${route.params.unit}/domains/${route.params.domain}/${schemas[revision.content.type]}/${subType}/${
+  return `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[revision.content.type]}/${subType}/${
     revision.content.id
   }/`;
 };

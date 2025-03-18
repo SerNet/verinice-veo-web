@@ -97,7 +97,6 @@ import { useLinkObject, useUnlinkObject } from '~/composables/VeoObjectUtilities
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useNavigation } from '~/composables/navigation';
 import type { VeoSearch } from '~/types/VeoSearch';
@@ -178,7 +177,6 @@ export default defineComponent({
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const { data: translations } = useTranslations({ domain: route.params.domain as string });
     const { data: currentDomain } = useCurrentDomain();
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const title = computed(() => {
       const { object, editParents } = props;
       const displayName = [object?.displayName];
@@ -218,7 +216,7 @@ export default defineComponent({
       sortBy.value = [{ key: 'name', order: 'asc' }];
     };
 
-    const objectListEndpoint = computed(() => endpoints.value?.[filter.value.objectType] || '');
+    const objectListEndpoint = computed(() => VeoElementTypePlurals[filter.value.objectType] || '');
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
       sortBy: sortBy.value[0]?.key,
@@ -276,7 +274,7 @@ export default defineComponent({
 
     // get allowed filter-objectTypes for current parent and child type
     const availableObjectTypes = computed<string[]>(() => {
-      const objectSchemaNames = Object.keys(endpoints.value || {});
+      const objectSchemaNames = Object.keys(VeoElementTypePlurals);
       if (props.editRelationship) {
         return objectSchemaNames.filter((item) => item === props.editRelationship);
       } else if (props.object?.type === 'scope') {
@@ -308,7 +306,7 @@ export default defineComponent({
     );
 
     // Selectable and selected objects
-    const objectEndpoint = computed(() => endpoints.value?.[props.object?.type || ''] || '');
+    const objectEndpoint = computed(() => VeoElementTypePlurals[props.object?.type || ''] || '');
     const parentsQueryParameters = computed(() => ({
       size: tablePageSize.value,
       page: 0,
@@ -395,7 +393,7 @@ export default defineComponent({
       } else {
         savingObject.value = true;
         try {
-          if (props.object && endpoints.value) {
+          if (props.object) {
             await handleObjectLinking();
           }
           emit('success');
@@ -441,7 +439,7 @@ export default defineComponent({
         objectQueryDefinitions.queries.fetch,
         {
           domain: route.params.domain as string,
-          endpoint: endpoints.value?.[element.type] || '',
+          endpoint: VeoElementTypePlurals[element.type] || '',
           id: element.id
         },
         queryClient
@@ -451,7 +449,7 @@ export default defineComponent({
       });
       await updateObject({
         domain: route.params.domain,
-        endpoint: endpoints.value?.[element.type] || [],
+        endpoint: VeoElementTypePlurals[element.type] || [],
         id: clonedObject.id,
         object: clonedObject
       });
@@ -485,7 +483,7 @@ export default defineComponent({
         objectQueryDefinitions.queries.fetch,
         {
           domain: route.params.domain as string,
-          endpoint: endpoints.value?.[parent.type],
+          endpoint: VeoElementTypePlurals[parent.type],
           id: parent.id
         },
         queryClient

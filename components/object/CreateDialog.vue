@@ -54,13 +54,13 @@ import { cloneDeep, omit, upperFirst } from 'lodash';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { isObjectEqual } from '~/lib/utils';
 import type { IVeoAPIMessage, IVeoEntity } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -103,7 +103,6 @@ export default defineComponent({
       fetchTranslationsQueryParameters
     );
 
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const { subTypeTranslation } = useSubTypeTranslation(
       toRef(() => props.objectType),
       toRef(() => props.subType),
@@ -233,7 +232,7 @@ export default defineComponent({
       }
       try {
         await create({
-          endpoint: endpoints.value?.[props.objectType],
+          endpoint: VeoElementTypePlurals[props.objectType],
           object: objectData.value,
           parentScopes: props.parentScopeIds
         });

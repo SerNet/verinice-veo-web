@@ -161,10 +161,9 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
-import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType, VeoElementTypesSingular } from '~/types/VeoTypes';
 
 onBeforeRouteLeave((to, _from, next) => {
   // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
@@ -262,11 +261,7 @@ const onPageCollapsed = (collapsedPages: boolean[]) => {
   }
 };
 
-// Forms part specific stuff
-const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-const objectType = computed(
-  () => Object.entries(endpoints.value || {}).find(([, endpoint]) => endpoint === route.params.objectType)?.[0]
-);
+const objectType = computed(() => VeoElementTypesSingular[route.params.objectType as string]);
 
 const isFormDirty = computed(
   () => !isEqual(object.value as IVeoEntity, modifiedObject.value as IVeoEntity) && !formDataIsRevision.value

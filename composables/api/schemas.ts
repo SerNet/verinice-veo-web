@@ -19,6 +19,7 @@ import { QueryOptions, useQueries, useQuery } from './utils/query';
 
 import schemaQueryDefinitions from './queryDefinitions/schemas';
 import type { MaybeRef } from 'vue';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export interface IVeoFetchSchemasDetailedParameters {
   domainId: string;
@@ -28,14 +29,11 @@ export const useFetchSchemasDetailed = (
   queryParameters: MaybeRef<IVeoFetchSchemasDetailedParameters>,
   queryOptions?: QueryOptions
 ) => {
-  // Query useQueries depends on
-  const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
   // Parameters for the depending queries. As this function only gets called once, we have to add reactivity under the hood to make the magic happen
   const dependentQueryParameters = computed(() =>
-    Object.values(schemas.value || {}).map((schemaName) => ({
+    Object.values(VeoElementTypePlurals).map((elementTypePlural) => ({
       domainId: unref(queryParameters).domainId,
-      type: schemaName
+      type: elementTypePlural
     }))
   );
 

@@ -96,10 +96,10 @@ import { computed, ref } from 'vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useMutation } from '~/composables/api/utils/mutation';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { useQuerySync } from '~/composables/api/utils/query';
 import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -123,7 +123,6 @@ export default defineComponent({
     const { createLink } = useCreateLink();
     const { link } = useLinkObject();
     const queryClient = useQueryClient();
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const speedDialIsOpen = ref(false);
@@ -226,7 +225,7 @@ export default defineComponent({
           objectQueryDefinitions.queries.fetch,
           {
             domain: route.params.domain as string,
-            endpoint: endpoints.value?.[createObjectDialog?.objectType || ''] || '',
+            endpoint: VeoElementTypePlurals[createObjectDialog?.objectType || ''] || '',
             id: newObjectId
           },
           queryClient

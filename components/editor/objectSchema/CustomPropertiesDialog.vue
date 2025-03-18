@@ -136,7 +136,7 @@
 import { cloneDeep, isEqual, trim, upperFirst } from 'lodash';
 import { mdiPlus } from '@mdi/js';
 
-import { IVeoSchemaEndpoints } from '~/composables/api/queryDefinitions/schemas';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import ObjectSchemaHelper, {
   IVeoOSHCustomAspect,
   IVeoOSHCustomLink,
@@ -164,10 +164,6 @@ export default {
     domainId: {
       type: String,
       required: true
-    },
-    objectTypes: {
-      type: Object as PropType<IVeoSchemaEndpoints>,
-      default: undefined
     },
     formSchemas: {
       type: Array as PropType<IVeoFormSchemaMeta[]>,
@@ -257,9 +253,9 @@ export default {
       return `${this.prefix}${this.form.data.title}`;
     },
     formattedObjectTypes(): { title: string; value: string }[] {
-      return Object.keys(this.objectTypes || {}).map((schemaName) => ({
-        title: upperFirst(schemaName),
-        value: schemaName
+      return Object.keys(VeoElementTypePlurals).map((elementType) => ({
+        title: upperFirst(elementType),
+        value: elementType
       }));
     },
     filteredFormSchemas(): { title: string; value: string }[] {

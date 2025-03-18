@@ -86,6 +86,7 @@ import { JsonPointer } from 'json-ptr';
 import type { LocaleObject } from '@nuxtjs/i18n';
 
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
 import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
@@ -207,13 +208,12 @@ export default defineComponent({
       }
       return schema;
     });
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const forceOwnObjectSchema = ref(false);
     const objectSchemaId = ref<string>();
     const uploadedObjectSchema = ref<IVeoDomainSpecificObjectSchema>();
 
-    const objectTypePlural = computed(() => endpoints.value?.[objectSchemaId.value || '']);
+    const objectTypePlural = computed(() => VeoElementTypePlurals[objectSchemaId.value || '']);
     const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({
       type: objectTypePlural.value || '',
       domainId: props.domainId

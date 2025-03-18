@@ -102,7 +102,13 @@ import {
 } from '~/components/dynamic-form/additionalContext';
 import { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { IVeoDecisionResults, IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import {
+  IVeoDecisionResults,
+  IVeoEntity,
+  IVeoInspectionResult,
+  IVeoObjectHistoryEntry,
+  VeoElementTypePlurals
+} from '~/types/VeoTypes';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
@@ -185,10 +191,7 @@ export default defineComponent({
       }
     });
     const subType = computed(() => objectData.value?.subType);
-
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-    const objectTypePlural = computed(() => endpoints.value?.[props.objectType]);
-
+    const objectTypePlural = computed(() => VeoElementTypePlurals[props.objectType]);
     // Formschema/display stuff
     // Fetching object schema
     const fetchSchemaQueryParameters = computed(() => ({

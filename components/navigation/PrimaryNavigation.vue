@@ -123,6 +123,7 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import { useDisplay } from 'vuetify';
 
 import { extractSubTypesFromObjectSchema, OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -139,7 +140,6 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -179,8 +179,6 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 // objects specific stuff
 const objectSchemas = ref<IVeoDomainSpecificObjectSchema[]>([]);
 const schemasLoading = ref(false);
-
-const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas, undefined, { placeholderData: {} });
 
 const fetchSchemasDetailedQueryParameters = computed(() => ({
   domainId: props.domainId as string
@@ -223,7 +221,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
               params: {
                 unit: props.unitId,
                 domain: props.domainId,
-                objectType: endpoints.value?.[modelType],
+                objectType: VeoElementTypePlurals[modelType],
                 subType: '-'
               }
             }
@@ -247,7 +245,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                   params: {
                     unit: props.unitId,
                     domain: props.domainId,
-                    objectType: endpoints.value?.[modelType],
+                    objectType: VeoElementTypePlurals[modelType],
                     subType: subType
                   }
                 },

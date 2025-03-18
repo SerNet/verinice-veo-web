@@ -18,11 +18,9 @@
 import { cloneDeep, isString } from 'lodash';
 
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useMutation } from './api/utils/mutation';
-import { useQuery } from './api/utils/query';
 
 const route = useRoute();
 
@@ -44,7 +42,6 @@ export const useCreateLink = () => {
 
 export const useCloneObject = () => {
   const { t } = useI18n();
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
   const { mutateAsync: createObject } = useMutation(objectQueryDefinitions.mutations.createObject);
 
   const clone = (object: IVeoEntity, parentScopes?: string[]) => {
@@ -61,7 +58,7 @@ export const useCloneObject = () => {
 
     return createObject({
       domain: route.params.domain,
-      endpoint: endpoints.value?.[newObject.type],
+      endpoint: VeoElementTypePlurals[newObject.type],
       object: newObject,
       parentScopes
     });
@@ -71,8 +68,6 @@ export const useCloneObject = () => {
 };
 
 export const useUnlinkObject = () => {
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
   const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
   const unlink = (objectToModify: IVeoEntity, objectToRemove: IVeoEntity | string) => {
@@ -87,7 +82,7 @@ export const useUnlinkObject = () => {
     }
     return updateObject({
       domain: route.params.domain,
-      endpoint: endpoints.value?.[object.type],
+      endpoint: VeoElementTypePlurals[object.type],
       object
     });
   };
@@ -97,7 +92,6 @@ export const useUnlinkObject = () => {
 
 export const useLinkObject = () => {
   const { createLink } = useCreateLink();
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
   const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
@@ -115,12 +109,12 @@ export const useLinkObject = () => {
       object[property] = [];
     }
     _objectsToAdd.forEach((_objectToAdd) => {
-      object[property].push(createLink(endpoints.value?.[_objectToAdd.type] as string, _objectToAdd.id));
+      object[property].push(createLink(VeoElementTypePlurals[_objectToAdd.type] as string, _objectToAdd.id));
     });
 
     return updateObject({
       domain: route.params.domain,
-      endpoint: endpoints.value?.[object.type],
+      endpoint: VeoElementTypePlurals[object.type],
       object
     });
   };

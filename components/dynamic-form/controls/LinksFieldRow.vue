@@ -80,8 +80,8 @@ import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 import type { IVeoCustomLink, IVeoLink } from '~/types/VeoTypes';
 import type { IDynamicFormElementOptions, IVeoFormsElementDefinition } from '../types';
@@ -152,13 +152,13 @@ const createButtonLabel = computed(() =>
 // Object creation dialog visibility
 const createObjectDialogVisible = ref(false);
 
-// Schema query for object creation
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
 // Emits the newly created target ID
 const { createLink } = useCreateLink();
 const onTargetCreated = (newElementId: string) => {
-  emit('update:model-value', newElementId ? createLink(schemas.value?.[objectType.value], newElementId) : undefined);
+  emit(
+    'update:model-value',
+    newElementId ? createLink(VeoElementTypePlurals[objectType.value], newElementId) : undefined
+  );
 };
 
 // Hidden values: exclude already selected items in the selector

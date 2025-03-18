@@ -45,10 +45,9 @@
 
 <script setup lang="ts">
 import { useMutation } from '~/composables/api/utils/mutation';
-import { useQuery } from '~/composables/api/utils/query';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
@@ -78,7 +77,6 @@ const { mutateAsync: deleteWithoutInvalidating } = useMutation(
   { isInvalidating: false }
 );
 
-const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const displayName = computed(() => props.items[0]?.displayName ?? '');
 const deleteButtonEnabled = computed(() => !!props.items?.length);
 
@@ -110,7 +108,7 @@ const deleteSingleObject = async () => {
   if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || props.items.length !== 1) return;
 
   const { type, id } = props.items[0];
-  const endpoint = endpoints.value?.[type];
+  const endpoint = VeoElementTypePlurals[type];
 
   if (!endpoint) return;
 
@@ -131,7 +129,7 @@ const deleteMultipleObjects = async () => {
 
   for (const item of props.items) {
     const { type, id } = item;
-    const endpoint = endpoints.value?.[type];
+    const endpoint = VeoElementTypePlurals[type];
 
     if (endpoint) {
       await doDelete({ endpoint, id });

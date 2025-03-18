@@ -118,9 +118,7 @@
 import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
-import { useQuery } from '~/composables/api/utils/query';
+import { IVeoDomainSpecificObjectSchema, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -173,13 +171,10 @@ export default defineComponent({
       return !!value || t('global.input.required').toString();
     }
 
-    // Select options
-    const { data: objectSchemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
     const objectTypes = computed(() => {
-      const objectSchemaOptions = Object.keys(objectSchemas.value || {}).map((schemaName) => ({
-        title: upperFirst(schemaName) as string,
-        value: schemaName
+      const objectSchemaOptions = Object.keys(VeoElementTypePlurals).map((elementType) => ({
+        title: upperFirst(elementType) as string,
+        value: elementType
       }));
       objectSchemaOptions.unshift({
         title: t('customObjectSchema').toString(),

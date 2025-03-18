@@ -95,12 +95,11 @@ import { QueryClient } from '@tanstack/vue-query';
 import { RouteRecordName } from 'vue-router';
 import { useFetchObjects } from '~/composables/api/objects';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
-import { IVeoEntity } from '~/types/VeoTypes';
+import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 
@@ -111,7 +110,6 @@ export default defineComponent({
     const route = useRoute();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
-    const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
 
@@ -190,7 +188,7 @@ export default defineComponent({
 
     watch(() => filter.value, resetQueryOptions, { deep: true });
 
-    const endpoint = computed(() => endpoints.value?.[filter.value.objectType as string]);
+    const endpoint = computed(() => VeoElementTypePlurals[filter.value.objectType as string]);
     const combinedObjectsQueryParameters = computed<any>(() => ({
       size: tablePageSize.value,
       sortBy: sortBy.value[0].key,

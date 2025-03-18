@@ -18,20 +18,6 @@
 import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchema } from '~/types/VeoTypes';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
-export interface IVeoEntityMetaInfo {
-  collectionUri: string;
-  searchUri: string;
-  schemaUri: string;
-}
-
-export interface IVeoEntitiesMetaInfo {
-  [key: string]: IVeoEntityMetaInfo;
-}
-
-export interface IVeoSchemaEndpoints {
-  [schemaName: string]: string;
-}
-
 export interface IVeoFetchSchemaParameters {
   type: string;
   domainId: string;
@@ -39,23 +25,6 @@ export interface IVeoFetchSchemaParameters {
 
 export default {
   queries: {
-    fetchSchemas: {
-      primaryQueryKey: 'schemas',
-      url: '/api/types',
-      // Is of type IVeoEntitiesMetaInfo here, but gets returned as IVeoSchemaEndpoints
-      onDataFetched: (result: any) =>
-        Object.fromEntries(
-          Object.entries(result as IVeoEntitiesMetaInfo).map(([key, value]) => [
-            key,
-            /([a-z]*){(.+)$/.exec(value.collectionUri)?.[1] || value.collectionUri
-          ])
-        ),
-      queryParameterTransformationFn: () => ({}),
-      staticQueryOptions: {
-        staleTime: STALE_TIME.INFINITY,
-        placeholderData: {}
-      }
-    } as IVeoQueryDefinition<Record<string, never>, IVeoSchemaEndpoints>,
     fetchSchema: {
       primaryQueryKey: 'schema',
       url: '/api/domains/:domainId/:type/json-schema',

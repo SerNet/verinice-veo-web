@@ -163,6 +163,7 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const props = defineProps({
   modelValue: {
@@ -206,7 +207,6 @@ const createFormIsValid = ref(false);
 const code = ref();
 const modelType = ref();
 
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
@@ -214,7 +214,7 @@ const fetchTranslationsQueryParameters = computed(() => ({
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const availableObjectSchemas = computed(() =>
-  Object.keys(schemas.value || {})
+  Object.keys(VeoElementTypePlurals)
     .map((objectType) => ({
       title: translations.value?.lang[locale.value]?.[objectType] || '',
       value: objectType

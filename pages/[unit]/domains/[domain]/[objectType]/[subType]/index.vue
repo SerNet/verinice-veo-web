@@ -44,7 +44,7 @@
       </div>
       <FeatureFlagsFeatureSwitch feature-key="cardView" :label="{ on: t('cardViewOn'), off: t('cardViewOff') }" />
       <v-scale-transition>
-        <template v-if="filter.objectType || endpointsLoading">
+        <template v-if="filter.objectType">
           <!-- Card View -->
           <ObjectCardView
             v-if="hasFeature('cardView')"
@@ -188,12 +188,11 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 import type { VeoSearch } from '~/types/VeoSearch';
-import { type IVeoEntity } from '~/types/VeoTypes';
+import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
 import { useFeatureFlag } from '~/composables/features/featureFlag';
 import { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
@@ -299,13 +298,6 @@ const stringOrFirstValue = (v: string | null | (string | null)[]) => {
   return v;
 };
 
-// filter built from URL query parameters
-const { data: endpoints, isFetching: endpointsLoading } = useQuery(
-  schemaQueryDefinitions.queries.fetchSchemas,
-  undefined,
-  { placeholderData: {} }
-);
-
 const filter = computed(() => {
   return Object.fromEntries(
     Object.entries(filterDefinitions).map(([filterKey, filterDefinition]) => {
@@ -326,7 +318,7 @@ const filter = computed(() => {
 
       // Special handling
       if (filterKey === 'objectType') {
-        filterValue = Object.entries(endpoints.value || {}).find(([_, endpoint]) => endpoint === filterValue)?.[0];
+        filterValue = VeoElementTypesSingular[filterValue];
       }
 
       return [filterKey, filterValue];
@@ -353,10 +345,10 @@ const combinedQueryParameters = computed<any>(() => ({
   page: page.value,
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),
-  endpoint: endpoints.value?.[filter.value.objectType as string],
+  endpoint: VeoElementTypePlurals[filter.value.objectType as string],
   domain: route.params.domain
 }));
-const queryEnabled = computed(() => !!endpoints.value?.[filter.value.objectType as string]);
+const queryEnabled = computed(() => !!VeoElementTypePlurals[filter.value.objectType as string]);
 const { data: _items, isFetching: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
   enabled: queryEnabled,
   keepPreviousData: true
@@ -422,7 +414,7 @@ const updateRoute = async (newValue: Record<string, string | undefined | null | 
   Object.entries(newValue).forEach(([filterKey, filterValue]) => {
     // Special handling
     if (filterKey === 'objectType') {
-      filterValue = endpoints.value?.[filterValue as string];
+      filterValue = VeoElementTypePlurals[filterValue as string];
     }
 
     if (filterValue === undefined && filterDefinitions[filterKey].nullValue !== undefined) {

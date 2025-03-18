@@ -71,10 +71,9 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAILS_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink, IVeoPaginatedResponse, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 interface Props {
   objectType: string;
@@ -102,7 +101,6 @@ const { displayErrorMessage } = useVeoAlerts();
 const router = useRouter();
 const route = useRoute();
 
-const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 const { createLink } = useCreateLink();
 
 const internalValue = computed<string | undefined>({
@@ -114,7 +112,7 @@ const internalValue = computed<string | undefined>({
     }
   },
   set: (newValue: string | undefined | null) => {
-    emit('update:model-value', newValue ? createLink(endpoints.value?.[props.objectType], newValue) : undefined);
+    emit('update:model-value', newValue ? createLink(VeoElementTypePlurals[props.objectType], newValue) : undefined);
   }
 });
 
@@ -122,7 +120,7 @@ const internalValue = computed<string | undefined>({
 const searchQuery = ref();
 
 const fetchObjectsData = ref<IVeoPaginatedResponse<IVeoEntity[]>>();
-const endpoint = computed(() => endpoints.value?.[props.objectType]);
+const endpoint = computed(() => VeoElementTypePlurals[props.objectType]);
 const searchQueryNotStale = computed(
   () => !fetchObjectsData?.value?.items?.find((item) => item.displayName === searchQuery.value) && !!endpoint.value
 );
@@ -169,11 +167,11 @@ const moreItemsAvailable = computed(() => (fetchObjectsData.value?.pageCount || 
 const fetchObjectQueryParameters = computed(
   () =>
     ({
-      endpoint: endpoints.value?.[props.objectType],
+      endpoint: VeoElementTypePlurals[props.objectType],
       id: internalValue.value
     }) as any
 );
-const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!endpoints.value?.[props.objectType]);
+const fetchObjectQueryEnabled = computed(() => !!unref(internalValue) && !!VeoElementTypePlurals[props.objectType]);
 const {
   data: fetchObjectData,
   isFetching: isLoadingObject,

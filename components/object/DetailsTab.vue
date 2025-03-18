@@ -114,7 +114,6 @@ import objectQueryDefinitions, {
   IVeoFetchRisksParameters,
   IVeoFetchScopeChildrenParameters
 } from '~/composables/api/queryDefinitions/objects';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
@@ -279,7 +278,6 @@ export default defineComponent({
      * Fetch Data
      */
     const { data: translations } = useTranslations({ domain: props.domainId });
-    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
 
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
@@ -299,7 +297,7 @@ export default defineComponent({
 
     const linksQueryParameters = computed(() => ({
       id: props.object?.id || '',
-      endpoint: schemas.value?.[props.object?.type || ''] || '',
+      endpoint: VeoElementTypePlurals[props.object?.type || ''] || '',
       domain: (route.params.domain as string) || '',
       sortBy: mapLinkSortKey(sortBy.value[0]?.key),
       sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
@@ -366,7 +364,7 @@ export default defineComponent({
     }
 
     const parentObjectsQueryParameters = computed(() => ({
-      parentEndpoint: schemas.value?.[props.object?.type || ''] || '',
+      parentEndpoint: VeoElementTypePlurals[props.object?.type || ''] || '',
       childObjectId: props.object?.id || '',
       unitId: route.params.unit as string,
       sortBy: sortBy.value[0]?.key,
@@ -402,7 +400,7 @@ export default defineComponent({
 
     const childObjectsQueryParameters = computed(() => ({
       id: props.object?.id || '',
-      endpoint: schemas.value?.[props.object?.type || ''] || '',
+      endpoint: VeoElementTypePlurals[props.object?.type || ''] || '',
       domain: (route.params.domain as string) || '',
       elementType:
         props.type === 'childObjects' ?
@@ -421,7 +419,7 @@ export default defineComponent({
     );
     const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
       id: props.object?.id || '',
-      endpoint: schemas.value?.[props.object?.type || ''] || ''
+      endpoint: VeoElementTypePlurals[props.object?.type || ''] || ''
     }));
     const risksQueryEnabled = computed(() => props.type === 'risks');
     const { data: risks, isFetching: risksIsFetching } = useQuery(
@@ -812,7 +810,7 @@ export default defineComponent({
                 try {
                   await deleteRisk({
                     objectId: props.object?.id,
-                    endpoint: schemas.value?.[props.object?.type || ''] || '',
+                    endpoint: VeoElementTypePlurals[props.object?.type || ''] || '',
                     scenarioId: item.scenario.id
                   });
                   displaySuccessMessage(upperFirst(t('riskDeleted').toString()));
@@ -876,7 +874,7 @@ export default defineComponent({
                     objectQueryDefinitions.queries.fetch,
                     {
                       domain: route.params.domain as string,
-                      endpoint: schemas.value?.[item.type] || '',
+                      endpoint: VeoElementTypePlurals[item.type] || '',
                       id: clonedObjectId
                     },
                     queryClient
@@ -912,7 +910,7 @@ export default defineComponent({
                   objectQueryDefinitions.queries.fetch,
                   {
                     domain: route.params.domain as string,
-                    endpoint: schemas.value?.[item.type] || '',
+                    endpoint: VeoElementTypePlurals[item.type] || '',
                     id: item.id
                   },
                   queryClient

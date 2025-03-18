@@ -17,8 +17,8 @@
  */
 import { Ref } from 'vue';
 import { QueryOptions, useQuery } from './utils/query';
-import schemaQueryDefinitions from './queryDefinitions/schemas';
 import historyQueryDefinitions from './queryDefinitions/history';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export interface IVeoFetchVersionsParameters {
   id: string;
@@ -27,9 +27,7 @@ export interface IVeoFetchVersionsParameters {
 }
 
 export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
-  const { data: endpoints } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-
-  const endpoint = computed(() => endpoints.value?.[queryParameters.value.objectType]);
+  const endpoint = computed(() => VeoElementTypePlurals[queryParameters.value.objectType]);
   const queryEnabled = computed(() =>
     // @ts-ignore TODO #3066 not assignable
     !!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true

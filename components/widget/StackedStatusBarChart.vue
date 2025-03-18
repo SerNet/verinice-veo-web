@@ -76,6 +76,7 @@ import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { IVeoDomainStatusCount } from '~/composables/api/queryDefinitions/domains';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);
 
@@ -114,8 +115,7 @@ const route = useRoute();
 const barChartRef = ref([]);
 const statusBarTitle = computed(() => translations.value?.lang?.[locale.value]?.[`${props.objectType}_plural`] || ' ');
 
-const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
-const objectTypePlural = computed(() => schemas.value?.[props.objectType]);
+const objectTypePlural = computed(() => VeoElementTypePlurals[props.objectType]);
 
 const fetchSchemaQueryEnabled = computed(() => !!props.domainId && !!objectTypePlural.value);
 const fetchSchemaQueryParameters = computed(() => ({
@@ -214,11 +214,13 @@ const options = computed<ChartOptions[]>(() =>
 );
 
 const handleClickEvent = (clickedBarIndex: number, event: any) => {
-  if (!schemas.value) {
-    return;
-  }
   const subType = sortedSubTypes.value[clickedBarIndex][0];
-  emit('click', schemas.value[props.objectType], subType, sortedStatusBySubType.value[subType][event[0].datasetIndex]);
+  emit(
+    'click',
+    VeoElementTypePlurals[props.objectType],
+    subType,
+    sortedStatusBySubType.value[subType][event[0].datasetIndex]
+  );
 };
 
 const chartData = computed<IChartValue[]>(() =>

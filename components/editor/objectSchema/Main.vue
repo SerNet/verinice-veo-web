@@ -133,7 +133,6 @@
       v-bind="objectSchemaDialog"
       :domain-id="domainId"
       :form-schemas="forms"
-      :object-types="schemas"
       @success="onEditPropertySuccess"
       @error="onEditPropertyError"
       @delete="showDeleteDialog(objectSchemaDialog.propertyId, objectSchemaDialog.type)"
@@ -156,7 +155,6 @@ import ObjectSchemaHelper, {
   IVeoOSHCustomProperty
 } from '~/lib/ObjectSchemaHelper2';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { IInputType, INPUT_TYPES } from '~/types/VeoEditor';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -325,7 +323,6 @@ export default defineComponent({
     }
 
     // Stuff needed by CustomPropertiesDialog
-    const { data: schemas } = useQuery(schemaQueryDefinitions.queries.fetchSchemas);
     const fetchFormsQueryParameters = computed(() => ({
       domainId: props.domainId
     }));
@@ -349,7 +346,6 @@ export default defineComponent({
       doDeleteItem,
       formattedLinkHeader,
       forms,
-      schemas,
 
       mdiPlus,
       t,
