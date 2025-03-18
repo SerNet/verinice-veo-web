@@ -329,7 +329,10 @@ export default defineComponent({
       const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_` || '';
 
       for (const language of availableLanguages.value) {
-        translationsToReturn[language] = pickBy(translations[language], (_value, key) => key.startsWith(schemaTitle));
+        translationsToReturn[language] = pickBy(
+          translations[language],
+          (_value, key) => key.startsWith(schemaTitle) && key !== `${schemaTitle}plural`
+        );
       }
 
       return translationsToReturn;
