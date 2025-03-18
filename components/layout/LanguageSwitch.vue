@@ -22,7 +22,7 @@
         <v-menu offset-y bottom left nudge-bottom="2">
           <template #activator="{ props: menu }">
             <v-btn
-            v-bind="{ ...tooltip, ...menu }" 
+              v-bind="{ ...tooltip, ...menu }"
               data-component-name="language-select"
               :aria-label="t('showHelp')"
               :title="t('showHelp')"

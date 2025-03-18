@@ -16,11 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-breadcrumbs
-    class="text-h3"
-    data-component-name="breadcrumbs"
-    data-veo-test="breadcrumbs"
-  >
+  <v-breadcrumbs class="text-h3" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
     <v-breadcrumbs-item
       v-for="(item, index) of displayedBreadcrumbs"
       :key="item.key"

@@ -23,13 +23,13 @@
     @update:model-value="onMenuClosed"
   >
     <template #activator="{ props }">
-      <v-tooltip location="bottom"   :aria-label="t('OpenPreferences')">
-        <template #activator="{ props: tooltipProps  }">
+      <v-tooltip location="bottom" :aria-label="t('OpenPreferences')">
+        <template #activator="{ props: tooltipProps }">
           <v-btn
             class="mr-0"
             data-component-name="account-menu-button"
             color="primary"
-            v-bind="{ ...tooltipProps, ...props }" 
+            v-bind="{ ...tooltipProps, ...props }"
             icon
           >
             <v-avatar color="primary" size="48">

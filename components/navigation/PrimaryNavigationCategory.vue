@@ -24,8 +24,8 @@
     :class="[{ 'border-top': level === 0 }, 'veo-list-nav-item']"
     :target="openInNewtab ? '_blank' : undefined"
     :value="id"
-     :aria-label="`Expand ${name}`"
-     role="menuitem"
+    :aria-label="`Expand ${name}`"
+    role="menuitem"
     @click.stop="onClick"
   >
     <!-- @vue-ignore TODO #3066 does not exist -->
@@ -38,7 +38,7 @@
         v-bind="activatorProps"
         :density="level > 0 ? 'compact' : 'default'"
         :class="activatorIntendation"
-        tabindex="0" 
+        tabindex="0"
         autofocus
         @click="emit('expand-menu')"
       >

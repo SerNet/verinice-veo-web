@@ -59,13 +59,14 @@
     </template>
     <template #append>
       <v-divider style="background: rgba(255, 255, 255, 0.2)" />
-      <v-list density="compact" class="pa-0" role="none"  >
+      <v-list density="compact" class="pa-0" role="none">
         <v-list-item
           v-if="!xs"
           class="pl-4"
           data-component-name="toggle-navigation"
           density="compact"
-          tabindex="0" autofocus
+          tabindex="0"
+          autofocus
           @click="miniVariant = !miniVariant"
         >
           <template #prepend>

@@ -22,7 +22,7 @@
         <v-card class="my-2 bg-surface">
           <div class="bg-accent" style="height: 75px">
             <v-card-title class="ml-8 small-caps">
-              <h1 style="font-size: large;">{{ t('greeting') }}</h1>
+              <h1 style="font-size: large">{{ t('greeting') }}</h1>
             </v-card-title>
 
             <v-card-subtitle class="ml-8">

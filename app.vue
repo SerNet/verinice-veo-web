@@ -25,11 +25,11 @@ useHead({
       content: 'IE=edge'
     }
   ],
- 
-      htmlAttrs: {
-         lang
-      },
-    
+
+  htmlAttrs: {
+    lang
+  },
+
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
 });
 addHolidayTheme();

@@ -38,7 +38,11 @@
 
       <LayoutTutorialButton v-if="!$route.path.startsWith('/login')" />
 
-      <v-tooltip v-if="ability.can('view', 'documentation')" location="bottom"  :aria-label="t('openDocumentationInNewTab')">
+      <v-tooltip
+        v-if="ability.can('view', 'documentation')"
+        location="bottom"
+        :aria-label="t('openDocumentationInNewTab')"
+      >
         <template #activator="{ props }">
           <v-btn
             class="mr-3"
@@ -48,7 +52,7 @@
             exact
             v-bind="props"
             data-component-name="docs-nav-item"
-           :aria-label="t('openDocumentationInNewTab')"
+            :aria-label="t('openDocumentationInNewTab')"
           >
             <v-icon :icon="mdiHelpCircleOutline" />
           </v-btn>

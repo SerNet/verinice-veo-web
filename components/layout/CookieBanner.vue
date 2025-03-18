@@ -189,7 +189,6 @@ body:has(.v-navigation-drawer--active) .veo-cookie-banner {
   padding-bottom: var(--v-layout-bottom);
 }
 
-
 body:not(:has(.v-navigation-drawer--active)) .veo-cookie-banner {
   margin-left: 0;
 }

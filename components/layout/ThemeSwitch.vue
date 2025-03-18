@@ -18,17 +18,15 @@
 <template>
   <v-tooltip location="bottom" :aria-label="t('mode')">
     <template #activator="{ props }">
-    
-        <v-btn
-          data-component-name="theme-switch"
-          exact
-          v-bind="props"
-          :aria-label="t('mode')"
-          :title="t('mode')"
-          :icon="mdiThemeLightDark"
-          @click="_switch"
-        />
-     
+      <v-btn
+        data-component-name="theme-switch"
+        exact
+        v-bind="props"
+        :aria-label="t('mode')"
+        :title="t('mode')"
+        :icon="mdiThemeLightDark"
+        @click="_switch"
+      />
     </template>
 
     <template #default>
