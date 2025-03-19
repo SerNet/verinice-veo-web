@@ -38,7 +38,7 @@
           :prepend-icon="mdiShapeOutline"
           size="large"
           class="my-6"
-          @click="initApplyProfile()"
+          @click="initApplyProfile"
         >
           {{ t('applyProfiles') }}
         </v-btn>
@@ -95,6 +95,8 @@ const { applyProfile, isLoading: isApplyingProfile } = useApplyProfile();
 const { update: updateUnit } = useUpdateUnit();
 const { createLink } = useCreateLink();
 
+const { setLoading, clearLoading } = useGlobalLoadingState();
+
 // Data
 const { data: currentUnit } = useCurrentUnit();
 const { profiles } = useProfiles();
@@ -128,6 +130,7 @@ async function closeDialog() {
 
 async function initApplyProfile() {
   if (!currentUnit.value?.domains) return;
+
   const unitKnowsDomain = currentUnit.value.domains.map((d) => d.id).includes(selectedProfile.value?.domainId ?? '');
 
   if (!unitKnowsDomain) {
@@ -140,11 +143,16 @@ async function initApplyProfile() {
         ...currentUnit.value?.raw,
         domains: [...(currentUnit.value?.raw.domains ?? []), createLink('domains', domainId)]
       };
+      const loadingId = setLoading(t('unit.isAssociatingDomain'));
       await updateUnit(unit, unitMessages.value);
+      clearLoading(loadingId);
     }
   }
+
+  const loadingId = setLoading(t('unit.isApplyingProfile'));
   // @ts-ignore TODO #3066 not assignable
   await applyProfile(applyProfileParams.value, messages.value);
+  clearLoading(loadingId);
 }
 
 const messages = computed(() => ({

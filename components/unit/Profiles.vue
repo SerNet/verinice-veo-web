@@ -16,10 +16,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <LayoutLoadingWrapper
-    v-if="isApplyingProfile || isAssociatingDomain"
-    :text="isApplyingProfile ? t('isApplyingProfile') : t('isAssociatingDomain')"
-  />
   <v-row align="center" justify="center">
     <template v-if="isLoadingProfiles">
       <v-col cols="12">

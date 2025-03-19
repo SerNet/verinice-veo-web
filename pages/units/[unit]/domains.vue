@@ -32,7 +32,7 @@
           class="my-6"
           :prepend-icon="mdiPlus"
           :disabled="canAssociateDomains"
-          @click="() => update(unit as IVeoUnit, messages)"
+          @click="() => handleClick(unit as IVeoUnit, messages)"
         >
           {{ t('associateDomains') }}
         </v-btn>
@@ -55,6 +55,8 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { update, isLoading: isAssociatingDomains } = useUpdateUnit();
 
+const { setLoading, clearLoading } = useGlobalLoadingState();
+
 // Data
 const { data: domains } = useDomains();
 const { data: currentUnit } = useCurrentUnit();
@@ -73,8 +75,19 @@ const unit = computed(() => ({
 
 const messages = computed(() => ({
   success: t('associateDomainsSuccess'),
-  error: { text: t('associateDomainsErrorText') }
+  error: { text: t('associateDomainsErrorText') },
+  loading: t('unit.isAssociatingDomains')
 }));
+
+async function handleClick(unit, messages) {
+  let loadId;
+  try {
+    loadId = setLoading(messages.loading);
+    await update(unit as IVeoUnit, messages);
+  } finally {
+    clearLoading(loadId);
+  }
+}
 </script>
 
 <i18n src="~/locales/base/pages/units-unit-domains.json"></i18n>

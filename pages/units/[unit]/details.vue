@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           class="my-6"
           :disabled="canUpdate"
           :prepend-icon="mdiUpdate"
-          @click="() => update(unit as IVeoUnit, messages)"
+          @click="() => handleClick(unit as IVeoUnit, messages)"
         >
           {{ t('updateUnitDetails') }}
         </v-btn>
@@ -65,6 +65,8 @@ const { update, isLoading: isUpdatingUnit } = useUpdateUnit();
 // State
 const { data: currentUnit, isLoading: isLoadingCurrentUnit } = useCurrentUnit();
 
+const { setLoading, clearLoading } = useGlobalLoadingState();
+
 // Component state
 const unitDetails = ref<UnitDetails>();
 watch(isLoadingCurrentUnit, (): void => {
@@ -90,8 +92,20 @@ const canUpdate = computed(() => {
 
 const messages = computed(() => ({
   success: t('unitUpdateSuccess'),
-  error: { title: t('unitUpdateErrorTitle'), body: t('unitUpdateErrorBody') }
+  error: { title: t('unitUpdateErrorTitle'), body: t('unitUpdateErrorBody') },
+  loading: t('unit.isUpdatingDetails')
 }));
+
+//handel updateUnit and the loadingscreen
+async function handleClick(unit, messages) {
+  let loadId;
+  try {
+    loadId = setLoading(messages.loading);
+    await update(unit as IVeoUnit, messages);
+  } finally {
+    clearLoading(loadId);
+  }
+}
 </script>
 
 <i18n src="~/locales/base/pages/units-unit-details.json"></i18n>

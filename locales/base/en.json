@@ -197,5 +197,13 @@
   },
   "VdA": "Protection\u00a0approach",
   "na": "N/A",
-  "CatalogItemsApplied": "catalog items applied"
+  "CatalogItemsApplied": "catalog items applied",
+
+  "unit": {
+    "isAssociatingDomain": "Associating domain...",
+    "isApplyingProfile": "Applying profile...",
+    "isUpdatingDetails": "Updating unit details...",
+    "isAssociatingDomains": "Associating domains...",
+    "isCreatingUnit": "Creating unit..."
+  }
 }

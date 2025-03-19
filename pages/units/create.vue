@@ -24,11 +24,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     sticky-footer
   >
     <BaseContainer>
-      <LayoutLoadingWrapper
-        v-if="isCreatingUnit || isApplyingProfile"
-        :text="isCreatingUnit ? t('isCreatingUnit') : t('isApplyingProfile')"
-      />
-
       <v-stepper v-model="step" style="width: 100%">
         <v-stepper-header>
           <v-stepper-item :title="t('enterUnitDetails')" :value="1"></v-stepper-item>
@@ -223,13 +218,19 @@ const {
   data: createResponse
 } = useMutation(unitQueryDefinitions.mutations.create);
 
+const { setLoading, clearLoading } = useGlobalLoadingState();
+
 async function createUnit() {
   if (!canClickNext) {
     return;
   }
 
   try {
+    let loadingId = setLoading(t('unit.isCreatingUnit'));
+
     await create(unitParameters);
+
+    clearLoading(loadingId);
 
     if (selectedProfile.value && createResponse.value?.success) {
       const profileParams = {
@@ -239,8 +240,12 @@ async function createUnit() {
       };
 
       // New unit with a profile
-      displaySuccessMessage(t('createUnitSuccess'));
+      loadingId = setLoading(t('unit.isApplyingProfile'));
+
       await applyProfile(profileParams, messages.value);
+
+      clearLoading(loadingId);
+
       return;
     }
 

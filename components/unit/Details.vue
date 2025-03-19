@@ -17,8 +17,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
 <template>
-  <LayoutLoadingWrapper v-if="isUpdatingUnit" :text="t('isUpdatingDetails')" />
-
   <v-row v-if="unitDetails" align="center" justify="center">
     <v-col>
       <BaseCard style="width: 100%" data-veo-test="unit-details-card">

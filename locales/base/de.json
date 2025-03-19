@@ -200,5 +200,13 @@
   },
   "VdA": "Vorgehensweise",
   "na": "N/A",
-  "CatalogItemsApplied": "Katalogartikel angewendet"
+  "CatalogItemsApplied": "Katalogartikel angewendet",
+
+  "unit": {
+    "isAssociatingDomain": "Verknüpfe Domäne...",
+    "isApplyingProfile": "Wende Profil an...",
+    "isUpdatingDetails": "Aktualisiere Unitdetails...",
+    "isAssociatingDomains": "Assoziiere Domänen...",
+    "isCreatingUnit": "Erstelle Unit..."
+  }
 }
