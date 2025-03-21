@@ -84,8 +84,12 @@ const height = computed(() => {
 
 <style lang="scss">
 .pulse {
-  background:
-    linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 100%),
+  background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.5) 50%,
+      rgba(255, 255, 255, 0) 100%
+    ),
     lightgray;
   background-repeat: repeat-y;
   background-size: 50px 500px;
