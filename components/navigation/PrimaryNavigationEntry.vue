@@ -27,8 +27,8 @@
     :data-veo-test="componentName"
     density="compact"
     :target="openInNewtab ? '_blank' : undefined"
-    tabindex="0"  
-   role="menuitem"
+    tabindex="0"
+    role="menuitem"
     @click.stop="onClick"
   >
     <template v-if="icon" #prepend>

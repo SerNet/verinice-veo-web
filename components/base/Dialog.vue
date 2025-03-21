@@ -31,7 +31,14 @@
         <LayoutAppLogoMobile v-if="fullscreen" style="height: 36px" />
         <span>{{ title }}</span>
         <v-spacer />
-        <v-btn :disabled="closeDisabled" :aria-label="t('closeDialog')" :icon="mdiClose" flat class="close-button bg-accent" @click="closeDialog" />
+        <v-btn
+          :disabled="closeDisabled"
+          :aria-label="t('closeDialog')"
+          :icon="mdiClose"
+          flat
+          class="close-button bg-accent"
+          @click="closeDialog"
+        />
       </v-card-title>
       <v-card-text
         class="pa-4 overflow-x-hidden overflow-y-auto flex-grow-1"

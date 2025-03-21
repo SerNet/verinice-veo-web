@@ -30,7 +30,7 @@
     <template #default>
       <div>{{ t('question', { name: unit?.name }) }}</div
       ><br />
-      <h2 style="color: #c00000; font-size: unset;">
+      <h2 style="color: #c00000; font-size: unset">
         {{ t('hint') }}
       </h2>
       <BaseAlert
@@ -43,7 +43,7 @@
         no-close-button
         to="/user-data"
       >
-     {{ t('request') }}
+        {{ t('request') }}
       </BaseAlert>
 
       <BaseCard class="mt-4">

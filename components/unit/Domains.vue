@@ -1,4 +1,3 @@
-
 <template>
   <LayoutLoadingWrapper v-if="isAssociatingDomains" :text="t('isAssociatingDomains')" />
   <v-row align="center" justify="center">
@@ -19,7 +18,7 @@
             :data-veo-test="`domain-card-checkbox-${d?.abbreviation ? d.abbreviation.toLowerCase() : ''}`"
             color="primary"
             :value="d"
-             :aria-label="`domain-${domain.name}`"
+            :aria-label="`domain-${domain.name}`"
             :disabled="isDisabled || d.id === mandatoryDomain?.id"
           ></v-checkbox>
         </template>

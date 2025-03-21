@@ -1,4 +1,3 @@
-
 <!--
 verinice.veo web
 Copyright (C) 2024 jae
@@ -288,4 +287,3 @@ const ApplyProfiles: TInlineComponent = {
   overflow-wrap: anywhere;
 }
 </style>
-

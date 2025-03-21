@@ -39,12 +39,12 @@
         :density="level > 0 ? 'compact' : 'default'"
         :class="activatorIntendation"
         tabindex="0"
-       role="menuitem"
-       :aria-selected="undefined"
+        role="menuitem"
+        :aria-selected="undefined"
         @click="emit('expand-menu')"
       >
         <template #prepend>
-          <v-tooltip location="end" :disabled="!miniVariant"  :aria-label="`${name}`">
+          <v-tooltip location="end" :disabled="!miniVariant" :aria-label="`${name}`">
             <template #activator="{ props: tooltip }">
               <div v-bind="tooltip">
                 <v-icon v-if="icon" :icon="icon" class="mr-3" />

@@ -89,8 +89,8 @@
   },
 
   "domain.index.title": "Dashboard",
-  "unit-selection":" Auswahl der Unit",
- 
+  "unit-selection": " Auswahl der Unit",
+
   "breadcrumbs": {
     "administration": "Benutzerverwaltung",
     "catalog": "Katalog",

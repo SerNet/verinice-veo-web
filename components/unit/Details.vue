@@ -23,7 +23,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <v-col>
       <BaseCard style="width: 100%" data-veo-test="unit-details-card">
         <v-card-title :class="`bg-accent ${hasUnitName ? '' : 'text-primary'}`">
-          <h1 style="font-size: large;">{{ cardTitle }}</h1> 
+          <h1 style="font-size: large">{{ cardTitle }}</h1>
         </v-card-title>
         <v-card-text>
           <template v-if="isLoadingCurrentUnit">

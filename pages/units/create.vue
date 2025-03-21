@@ -108,7 +108,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <template #footer>
       <div class="d-flex justify-space-between">
         <v-btn v-if="step > 1" size="large" class="my-6" variant="outlined" @click="handleBackClick">
-          <h1 style="font-size: unset;">{{ globalT('global.button.back') }}</h1>
+          <h1 style="font-size: unset">{{ globalT('global.button.back') }}</h1>
         </v-btn>
 
         <v-btn v-if="step === 1" to="/units" size="large" class="my-6" variant="outlined" @click="blurActiveElement">

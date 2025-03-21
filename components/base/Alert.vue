@@ -62,7 +62,7 @@
       class="veo-alert-timeout-bar"
       :color="alertColor"
       height="4"
-      aria-label="timeout bar" 
+      aria-label="timeout bar"
       :model-value="(remainingTime / timeout) * 100"
     />
   </v-alert>
