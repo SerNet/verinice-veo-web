@@ -21,7 +21,7 @@
     <template #default>
       <BasePage
         :id="scrollWrapperId"
-        :title="t('createObject').toString()"
+        :title="t('createObject')"
         data-component-name="object-form-form"
         sticky-footer
         no-padding

@@ -31,7 +31,7 @@
     :multiple="multiple"
     autocomplete="off"
     variant="underlined"
-    :aria-label="options && options.label"
+    :aria-label="options.label"
     @click:clear="$emit('update:model-value', undefined)"
   >
     <template v-if="multiple" #item="{ props, item }">
