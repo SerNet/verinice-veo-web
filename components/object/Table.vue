@@ -134,7 +134,18 @@ const renderIcon: TableRenderer = ({ item }) => {
  * Render date column using date formatter
  */
 const renderDate: TableRenderer = ({ internalItem: item }) =>
-  h('span', { 'data-veo-test': 'updatedAt' }, `${item.raw.updatedAt ? formatDate(item.raw.updatedAt) : ''}`);
+  h(
+    'a',
+    {
+      'data-veo-test': 'updatedAt',
+      style: {
+        color: 'inherit',
+        textDecoration: 'none',
+        cursor: 'pointer'
+      }
+    },
+    `${item.raw.updatedAt ? formatDate(item.raw.updatedAt) : ''}`
+  );
 
 /**
  * Render created at / updated at tooltip
@@ -189,9 +200,18 @@ const formatDate: TableFormatter = (v: any) => {
 const renderStatus: TableRenderer = ({ item }: { item: any }) => {
   const key = `${item.type}_${item.subType}_status_${item.status}`;
   //return translations.value?.lang?.[locale.value]?.[key] || item?.status || '';
-  return h('div', { 'data-veo-test': 'status' }, [
-    `${translations.value?.lang?.[locale.value]?.[key] || item?.status || ''}`
-  ]);
+  return h(
+    'a',
+    {
+      'data-veo-test': 'status',
+      style: {
+        color: 'inherit',
+        textDecoration: 'none',
+        cursor: 'pointer'
+      }
+    },
+    [`${translations.value?.lang?.[locale.value]?.[key] || item?.status || ''}`]
+  );
 };
 /**
  * Headers that are used by multiple tables, thus it makes sense to define them in one place
@@ -202,7 +222,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     value: 'icon',
     key: 'icon',
     sortable: false,
-    text: '',
+    text: 'type',
     // @ts-ignore TODO #3066 does not exist
     class: ['pr-0'],
     cellClass: ['pr-0'],

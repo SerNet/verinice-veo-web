@@ -85,7 +85,8 @@
     "subType": "Subtyp",
     "updatedAt": "Letzte Änderung",
     "updatedBy": "Bearbeiter",
-    "type": "type"
+    "type": "type",
+    "actions": "Aktionen"
   },
 
   "domain.index.title": "Dashboard",

@@ -248,7 +248,7 @@ const presetHeaders: { [key: string]: TableHeader } = {
   actions: {
     value: 'actions',
     key: 'actions',
-    text: '',
+    text: 'actions',
     sortable: false,
     width: 80,
     render: renderActions,
@@ -285,7 +285,8 @@ const renderTooltip = (header: TableHeader, data?: any): TableRenderer => {
       VTooltip,
       {
         location: 'bottom',
-        width: 350
+        width: 350,
+        title: header.tooltip ? header.tooltip(props) : header.text || 'cell'
       },
       {
         activator: ({ attrs: slotAttrs, props: slotProps }: { attrs: any; props: any }) =>
@@ -369,7 +370,7 @@ const items = computed(() => {
 const defaultRenderer: TableRenderer = (context: any, header) => {
   const column = context.column;
   return h(
-    'div',
+    'a',
     {
       class: [
         ...column.cellClass,
@@ -377,7 +378,10 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
         ...(context.internalItem.raw.disabled ? ['v-list-item--disabled'] : [])
       ],
       style: {
-        width: `${column.width}px`
+        width: `${column.width}px`,
+        color: 'inherit',
+        textDecoration: 'none',
+        cursor: 'pointer'
       },
       'data-veo-test': column.key
     },

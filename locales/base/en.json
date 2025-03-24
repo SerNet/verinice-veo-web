@@ -83,7 +83,8 @@
     "subType": "Subtype",
     "updatedAt": "Last change",
     "updatedBy": "Editor",
-    "type": "type"
+    "type": "type",
+    "actions": "actions"
   },
 
   "domain.index.title": "Dashboard",
