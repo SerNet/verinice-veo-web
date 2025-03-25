@@ -83,7 +83,7 @@
             >
               <template #actions="{ item }">
                 <div class="d-flex justify-end">
-                  <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
+                  <v-tooltip v-for="btn in actions" :key="btn.id" location="start" :aria-label="btn.label">
                     <template #activator="{ props }">
                       <v-btn
                         :data-component-name="`object-overview-${btn.id}-button`"
