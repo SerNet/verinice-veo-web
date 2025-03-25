@@ -55,7 +55,7 @@
           </BaseCard>
           <v-row class="my-2">
             <v-col cols="auto">
-              <v-btn color="primary" @click="showDialog = false">{{ t('close') }}</v-btn>
+              <v-btn color="primary" @click="showDialog = false">{{ t('global.button.close') }}</v-btn>
             </v-col>
           </v-row>
         </template>
@@ -218,18 +218,20 @@ async function applyItems() {
             currentDomain.value.raw.elementTypeDefinitions[item.type]?.translations[locale.value]?.[
               `${item.type}_${item.subType}_plural`
             ];
+          const sortKey =
+            currentDomain.value.raw.elementTypeDefinitions[item.type]?.subTypes[item.subType]?.sortKey ?? 0;
 
           // If the group for this subtype doesn't exist, create it
           if (!groups[subType]) {
-            groups[subType] = { name: subType, items: [] };
+            groups[subType] = { name: subType, items: [], sortKey };
           }
           groups[subType].items.push(item);
 
           return groups;
         },
-        {} as Record<string, { name: string; items: IVeoLink[] }>
+        {} as Record<string, { name: string; items: IVeoLink[]; sortKey: number }>
       )
-    );
+    ).sort((a, b) => a.sortKey - b.sortKey);
 
     showDialog.value = true;
     selectedItems.value = [];
