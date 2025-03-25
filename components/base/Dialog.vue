@@ -30,7 +30,7 @@
     <v-card class="d-flex flex-column" tile>
       <v-card-title class="d-flex align-center bg-accent small-caps text-h4" data-veo-test="dialog-title">
         <LayoutAppLogoMobile v-if="fullscreen" style="height: 36px" />
-        <h2 v-if="isheadline" style="font-size: x-large">{{ title }}</h2>
+        <h2 v-if="isheadline" style="font-size: large">{{ title }}</h2>
         <span v-else>{{ title }}</span>
         <v-spacer />
         <v-btn
