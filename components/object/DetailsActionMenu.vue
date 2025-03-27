@@ -25,6 +25,7 @@
           size="small"
           :loading="isLoadingActions"
           :disabled="!visibleItems.length || $props.disabled"
+          :aria-label="t('expandOptions')"
           :icon="mdiDotsVertical"
         />
       </template>

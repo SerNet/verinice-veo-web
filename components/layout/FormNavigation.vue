@@ -20,13 +20,14 @@
     <h2 class="text-h2 px-4 pt-1">
       {{ t('tableOfContents').toString() }}
     </h2>
-    <v-list density="compact">
+    <v-list density="compact" role="listbox" :aria-label="t('tableOfContents')">
       <template v-for="item in items" :key="item.initialId + '0'">
         <v-list-item
           density="compact"
           color="primary"
           :value="item.initialId"
           :active="selectedItem === item.initialId"
+          role="option"
           @click="onClick(item.initialId)"
         >
           <v-list-item-title :class="currentLevelLeftMargin">

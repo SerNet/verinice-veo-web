@@ -25,11 +25,11 @@
       :items="items"
       :loading="tableIsLoading"
       enable-click
-      @click="openItem"
+      @click="openItem" 
     >
       <template #actions="{ item }">
         <div class="d-flex justify-end">
-          <v-tooltip v-for="btn in actions" :key="btn.id" location="bottom">
+          <v-tooltip v-for="btn in actions" :key="btn.id" location="bottom"  :aria-label="btn.label(item)">
             <template #activator="{ props }">
               <div v-bind="props">
                 <v-btn
@@ -40,7 +40,8 @@
                   :readonly="btn.isDisabled(item)"
                   :disabled="ability.cannot('manage', 'objects')"
                   :data-veo-test="`object-details-action-btn-${btn.id}`"
-                  @click="btn.action(item)"
+                  :aria-label="btn.label(item)"
+                  @click="btn.action(item)" 
                 />
               </div>
             </template>

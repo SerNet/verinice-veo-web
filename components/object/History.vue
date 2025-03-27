@@ -27,32 +27,32 @@
         <v-skeleton-loader data-veo-test="loader" type="text" />
       </div>
     </div>
-    <v-list v-else class="py-0" mandatory>
+    <v-list v-else class="py-0" mandatory role="listbox" :aria-label="t('history')">
       <div v-for="(version, index) of historyEntriesWithCompability" :key="version.changeNumber">
-        <v-divider v-if="index > 0" />
-        <v-tooltip location="bottom" :disabled="version.compability.valid">
+        <v-divider v-if="index > 0" aria-hidden="true" />
+        <v-tooltip location="bottom" :disabled="version.compability.valid" :aria-label="t('dataIncompatible')">
           <template #activator="{ props }">
-            <div v-bind="props">
-              <v-list-item
-                lines="three"
-                :disabled="!version.compability.valid"
-                :value="index"
-                :active="selectedRevision === index"
-                color="primary"
-                @click="selectedRevision = index"
-              >
-                <v-list-item-title>
-                  {{ t('version') }}
-                  <b>{{ version.changeNumber + 1 }}</b>
-                  : {{ new Date(version.time).toLocaleString(locale) }}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ t('by') }}
-                  <b>{{ version.author }}</b>
-                </v-list-item-subtitle>
-                <v-list-item-subtitle>{{ t('type') }}: {{ t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
-              </v-list-item>
-            </div>
+            <v-list-item
+              lines="three"
+              :disabled="!version.compability.valid"
+              :value="index"
+              :active="selectedRevision === index"
+              color="primary"
+              role="option"
+              v-bind="props"
+              @click="selectedRevision = index"
+            >
+              <v-list-item-title>
+                {{ t('version') }}
+                <b>{{ version.changeNumber + 1 }}</b>
+                : {{ new Date(version.time).toLocaleString(locale) }}
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{ t('by') }}
+                <b>{{ version.author }}</b>
+              </v-list-item-subtitle>
+              <v-list-item-subtitle>{{ t('type') }}: {{ t(`revisionType.${version.type}`) }}</v-list-item-subtitle>
+            </v-list-item>
           </template>
           <template #default>
             {{ t('dataIncompatible') }}

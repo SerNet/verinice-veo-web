@@ -36,6 +36,7 @@
               class="veo-primary-action-fab mr-2"
               color="primary"
               data-component-name="object-details-actions-button"
+              :aria-label="t('add')"
               v-bind="menuProps"
             />
           </template>

@@ -31,6 +31,7 @@
     auto-grow
     rows="3"
     variant="underlined"
+    :aria-label="options && options.label"
     @update:model-value="$emit('update:model-value', $event)"
     @click:clear="$emit('update:model-value', undefined)"
   />

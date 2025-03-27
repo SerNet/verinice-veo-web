@@ -16,7 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="bottom">
+  <v-tooltip
+    location="bottom"
+    :aria-label="
+      t(modelValue ? 'expand' : 'collapse', {
+        elementName: elementName || t('page')
+      })
+    "
+  >
     <template #activator="{ props }">
       <v-btn
         v-bind="props"
@@ -25,6 +32,11 @@
         elevation="1"
         :icon="chevron"
         size="small"
+        :aria-label="
+          t(modelValue ? 'expand' : 'collapse', {
+            elementName: elementName || t('page')
+          })
+        "
         @click="$emit('update:model-value', !modelValue)"
       />
     </template>

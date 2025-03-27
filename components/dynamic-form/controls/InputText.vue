@@ -28,6 +28,8 @@
     :clearable="!options.required"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
     variant="underlined"
+    :title="options && options.label"
+    :aria-label="options && options.label"
     @update:model-value="$emit('update:model-value', $event)"
     @click:clear="$emit('update:model-value', undefined)"
   />

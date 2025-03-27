@@ -66,13 +66,15 @@
     <BaseTabs v-model="internalActiveTab">
       <template #tabs>
         <div v-for="tab in tabs" v-show="!tab.hidden" :key="tab.key">
-          <v-tooltip v-if="tab.disabled" location="top">
+          <v-tooltip v-if="tab.disabled" location="top" :aria-label="t(tab.key)">
             <template #activator="{ props: tooltipProps }">
-              <div v-bind="tooltipProps">
-                <v-tab :disabled="tab.disabled" :data-component-name="`object-details-${tab.key}-tab`">
-                  {{ t(tab.key) }}
-                </v-tab>
-              </div>
+              <v-tab
+                v-bind="tooltipProps"
+                :disabled="tab.disabled"
+                :data-component-name="`object-details-${tab.key}-tab`"
+              >
+                {{ t(tab.key) }}
+              </v-tab>
             </template>
             <span>{{ tab.tooltip ?? t('defaultDisabledTooltip') }}</span>
           </v-tooltip>
