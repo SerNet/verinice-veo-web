@@ -84,7 +84,9 @@
     "updatedAt": "Last change",
     "updatedBy": "Editor",
     "type": "type",
-    "actions": "actions"
+    "actions": "actions",
+    "DeselectRow":"Zeile abswählen",
+    "SelectRow":"Zeile auswählen"
   },
 
   "domain.index.title": "Dashboard",

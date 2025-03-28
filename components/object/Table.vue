@@ -222,7 +222,7 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     value: 'icon',
     key: 'icon',
     sortable: false,
-    text: 'type',
+    text: t('type'),
     // @ts-ignore TODO #3066 does not exist
     class: ['pr-0'],
     cellClass: ['pr-0'],

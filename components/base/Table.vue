@@ -240,7 +240,7 @@ const presetHeaders: { [key: string]: TableHeader } = {
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
         'aria-checked': isSelected.toString(),
-        'aria-label': isSelected ? 'Deselect row' : 'Select row',
+        'aria-label': isSelected ? t('DeselectRow') : t('SelectRow'),
         'onUpdate:model-value': () => toggleSelection(context)
       });
     }
@@ -248,7 +248,6 @@ const presetHeaders: { [key: string]: TableHeader } = {
   actions: {
     value: 'actions',
     key: 'actions',
-    text: 'actions',
     sortable: false,
     width: 80,
     render: renderActions,
