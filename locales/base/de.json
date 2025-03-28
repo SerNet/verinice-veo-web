@@ -87,8 +87,8 @@
     "updatedBy": "Bearbeiter",
     "type": "type",
     "actions": "Aktionen",
-    "DeselectRow": "DeselectRow",
-    "SelectRow": "Select Row"
+    "deselectRow": "Deselect Row",
+    "selectRow": "Select Row"
   },
 
   "domain.index.title": "Dashboard",

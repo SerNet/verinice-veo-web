@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog v-bind="$attrs" :title="title" @update:model-value="$emit('update:model-value', $event)">
+  <BaseDialog v-bind="$attrs" :title="title" aria-label="ddd" @update:model-value="$emit('update:model-value', $event)">
     <template #default>
       {{ descriptionText }}
       <v-select v-model="type" data-veo-test="select-object-type" :items="options" variant="underlined" />

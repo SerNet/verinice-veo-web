@@ -240,7 +240,7 @@ const presetHeaders: { [key: string]: TableHeader } = {
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
         'aria-checked': isSelected.toString(),
-        'aria-label': isSelected ? t('DeselectRow') : t('SelectRow'),
+        'aria-label': isSelected ? t('deselectRow') : t('selectRow'),
         'onUpdate:model-value': () => toggleSelection(context)
       });
     }
@@ -379,8 +379,7 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
       style: {
         width: `${column.width}px`,
         color: 'inherit',
-        textDecoration: 'none',
-        cursor: 'pointer'
+        textDecoration: 'none'
       },
       'data-veo-test': column.key
     },
