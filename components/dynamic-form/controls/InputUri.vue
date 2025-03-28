@@ -36,7 +36,7 @@
         :disabled="!!errors.get(objectSchemaPointer)?.length || !modelValue"
         :icon="mdiOpenInNew"
         :href="<string>modelValue"
-        :aria-label="options.label"
+        :aria-label="options && options.label"
         target="_blank"
         color="primary"
         variant="text"

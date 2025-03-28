@@ -30,8 +30,9 @@
     <v-card class="d-flex flex-column" tile>
       <v-card-title class="d-flex align-center bg-accent small-caps text-h4" data-veo-test="dialog-title">
         <LayoutAppLogoMobile v-if="fullscreen" style="height: 36px" />
-        <h2 v-if="isheadline" style="font-size: large">{{ title }}</h2>
+        <Heading v-if="headingLevel" :heading-level="headingLevel" :text="title" />
         <span v-else>{{ title }}</span>
+
         <v-spacer />
         <v-btn
           :disabled="closeDisabled"
@@ -102,7 +103,7 @@ const props = withDefaults(
     fixedFooter?: boolean;
     innerClass?: string;
     dataVeoTest?: string;
-    isheadline?: boolean;
+    headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   }>(),
   {
     modelValue: false,
@@ -113,7 +114,8 @@ const props = withDefaults(
     closeFunction: () => () => true,
     fixedFooter: false,
     innerClass: '',
-    dataVeoTest: 'base-dialog'
+    dataVeoTest: 'base-dialog',
+    headingLevel: undefined
   }
 );
 
@@ -132,6 +134,11 @@ const width = computed(() => {
   if (props.xLarge) return '1350px';
   return '450px';
 });
+
+const Heading = {
+  props: ['headingLevel', 'text'],
+  render: (props: { headingLevel: string; text: string }) => h(props.headingLevel, { class: 'text-h4' }, props.text)
+};
 
 const dialogClasses = computed(() => {
   const classes = {

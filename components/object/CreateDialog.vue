@@ -24,7 +24,7 @@
     fixed-footer
     inner-class="d-flex flex-column"
     v-bind="$attrs"
-    :isheadline="true"
+    heading-level="h2"
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>

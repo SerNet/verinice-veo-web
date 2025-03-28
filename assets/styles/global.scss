@@ -82,8 +82,8 @@ a:not([class^='v-']) {
     top: 0;
   }
 }
-.v-label.v-field-label {
-  opacity: var(--v-high-emphasis-opacity, 0.8);
+.v-label {
+  --v-medium-emphasis-opacity: 0.8;
 }
 .veo-primary-navigation-title {
   font-size: 0.75rem;

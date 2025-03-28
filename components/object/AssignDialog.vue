@@ -19,7 +19,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :title="t('title', { object: props.objectName })"
-    :isheadline="true"
+    heading-level="h2"
     large
     @update:model-value="emit('update:model-value', $event)"
   >
