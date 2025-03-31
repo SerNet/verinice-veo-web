@@ -68,7 +68,6 @@
                 'icon',
                 'designator',
                 'abbreviation',
-                'name',
                 'status',
                 'description',
                 'updatedBy',
@@ -561,7 +560,36 @@ const actions = computed(() => [
 // Additional headers
 const SUBTYPES_WITH_VDA = ['CTL_Requirement', 'CTL_PartialRequirement', 'CTL_Safeguard', '-'];
 // @ts-ignore TODO #3066 cannot find name
-const additionalHeaders = computed<ObjectTableHeader[]>(() =>
+const additionalHeaders = computed<ObjectTableHeader[]>(
+  () => [
+    {
+      value: 'name',
+      key: 'name',
+      cellClass: ['font-weight-bold'],
+      width: 300,
+      truncate: true,
+      sortable: true,
+      priority: 100,
+      order: 20,
+      render: ({ item }: any) => {
+        const href = `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${
+          item.id
+        }/`;
+        console.log('ccc', item.name);
+        return h(
+          resolveComponent('router-link'),
+          {
+            to: href,
+            style: {
+              color: 'inherit',
+              textDecoration: 'none'
+            }
+          },
+          item.name
+        );
+      }
+    }
+  ],
   filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing' ?
     [
       {

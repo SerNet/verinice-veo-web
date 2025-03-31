@@ -43,7 +43,7 @@
       </div>
     </template>
     <template #append-inner>
-      <v-icon class="mr-4" :icon="mdiCloseCircle" :aria-label="t('global.button.close')" @click="resetSearch" />
+      <v-icon class="mr-4" :icon="mdiCloseCircle" :aria-label="t('reset')" @click="resetSearch" />
     </template>
   </v-combobox>
 </template>

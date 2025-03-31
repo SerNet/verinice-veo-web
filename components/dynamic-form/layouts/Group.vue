@@ -17,7 +17,7 @@
 -->
 <template>
   <div v-if="options.visible" :id="formSchemaPointer" class="vf-layout vf-group my-2 py-1 px-2 pb-2" :class="classes">
-    <h2 v-if="options && options.label" class="text-h2">
+    <h2 v-if="options && options.label" class="text-h3">
       {{ options.label }}
     </h2>
     <div dense class="d-flex" :class="isHorizontal ? 'flex-row' : 'flex-column'">

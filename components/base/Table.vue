@@ -370,26 +370,14 @@ const items = computed(() => {
 
 const defaultRenderer: TableRenderer = (context: any, header) => {
   const column = context.column;
-  const item = context.internalItem.raw;
-
-  // Constructing the dynamic href
-  const href = `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${
-    item.id
-  }/`;
   return h(
-    resolveComponent('router-link'),
+    'div',
     {
-      to: href,
       class: [
         ...column.cellClass,
         ...column.class,
         ...(context.internalItem.raw.disabled ? ['v-list-item--disabled'] : [])
       ],
-      style: {
-        width: `${column.width}px`,
-        color: 'inherit',
-        textDecoration: 'none'
-      },
       'data-veo-test': column.key,
       'aria-label': header?.key ? `Navigate to ${context.internalItem.columns[header.key]}` : 'Navigation link'
     },

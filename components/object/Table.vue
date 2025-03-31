@@ -42,7 +42,6 @@ import ObjectIcon from '~/components/object/Icon.vue';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { useFormatters } from '~/composables/utils';
-import { IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
