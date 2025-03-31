@@ -219,7 +219,7 @@ async function applyItems() {
               `${item.type}_${item.subType}_plural`
             ];
           const sortKey =
-            currentDomain.value.raw.elementTypeDefinitions[item.type]?.subTypes[item.subType]?.sortKey ?? 0;
+            currentDomain.value.raw.elementTypeDefinitions[item.type].subTypes[item.subType].sortKey ?? 0;
 
           // If the group for this subtype doesn't exist, create it
           if (!groups[subType]) {
