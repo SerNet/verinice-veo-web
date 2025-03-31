@@ -22,7 +22,7 @@
     </h2>
     <div v-for="(messagesBySeverity, severity) of categorizedMessages" :key="severity">
       <span class="font-weight-medium text-body-1 px-4"> Information ({{ messagesBySeverity.length }}) </span>
-      <v-list>
+      <v-list role="listbox" :aria-label="t('messages')">
         <ObjectMessagesMessage v-for="message of messagesBySeverity" :key="message.key" :message="message" />
       </v-list>
     </div>

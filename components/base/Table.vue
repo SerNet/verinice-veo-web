@@ -33,7 +33,7 @@ import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 import { useVeoUser } from '~/composables/VeoUser';
-import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { VeoElementTypePlurals, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export type TableFormatter = (value: any) => string;
 export type TableRenderer = (
@@ -146,6 +146,7 @@ const { tablePageSize } = useVeoUser();
 const vm = getCurrentInstance();
 const slots = useSlots();
 const attrs = useAttrs();
+const route = useRoute();
 
 /** @description Synchronizes the current API page parameter with the parent component, 0-indexed */
 const page = defineModel<number>('page', { default: 0 });
@@ -366,11 +367,19 @@ const items = computed(() => {
 /**
  * Create slots to apply renderers. If none exists, use a default one in order to display disabled table entries
  */
-const defaultRenderer: TableRenderer = (context: any, header) => {
+
+ const defaultRenderer: TableRenderer = (context: any, header) => {
   const column = context.column;
+  const item = context.internalItem.raw;
+
+  // Constructing the dynamic href
+  const href = `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${
+    item.id
+  }/`;
   return h(
-    'a',
+    resolveComponent("router-link"),
     {
+      to: href,
       class: [
         ...column.cellClass,
         ...column.class,
@@ -381,7 +390,10 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
         color: 'inherit',
         textDecoration: 'none'
       },
-      'data-veo-test': column.key
+      'data-veo-test': column.key,
+      'aria-label': header?.key
+      ? `Navigate to ${context.internalItem.columns[header.key]}`
+      : 'Navigation link'
     },
     header?.key ? context.internalItem.columns[header.key] : undefined
   );

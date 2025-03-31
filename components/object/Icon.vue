@@ -19,17 +19,16 @@
   <div class="veo-object-icon__outer">
     <v-tooltip location="top" :aria-label="`${translatedObjectType}`">
       <template #activator="{ props: tooltipProps }">
-        <a
+        <div
           v-bind="tooltipProps"
           :style="{
             color: 'inherit',
-            textDecoration: 'none',
-            cursor: 'pointer'
+            textDecoration: 'none'
           }"
         >
           <v-icon v-if="icon && icon.library === 'mdi'" v-bind="$attrs" :icon="icon.icon" />
           <v-icon v-if="isComposite" class="veo-object-icon--composite" color="primary" :icon="mdiDotsHorizontal" />
-        </a>
+        </div>
       </template>
       <template #default>
         {{ translatedObjectType }}

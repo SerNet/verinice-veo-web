@@ -164,7 +164,7 @@ const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
             ' ',
             t('by').toString(),
             ' ',
-            h('strong', item.raw.updatedBy)
+            h('strong', item.raw.updatedBy )
           ])
         ])
       ]
@@ -202,7 +202,6 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     value: 'icon',
     key: 'icon',
     sortable: false,
-    text: t('type'),
     // @ts-ignore TODO #3066 does not exist
     class: ['pr-0'],
     cellClass: ['pr-0'],

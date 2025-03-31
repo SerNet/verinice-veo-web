@@ -83,8 +83,8 @@
     "subType": "Subtype",
     "updatedAt": "Last change",
     "updatedBy": "Editor",
-    "type": "type",
-    "actions": "actions",
+    "icon": "Type",
+    "actions": "Actions",
     "deselectRow": "Zeile abswählen",
     "selectRow": "Zeile auswählen"
   },

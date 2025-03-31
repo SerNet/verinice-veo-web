@@ -86,7 +86,7 @@ export default defineComponent({
                     })
                 : () => [
                     h(`h${props.headingLevel}`, {
-                      class: `d-inline flex-grow-0 text-h${props.headingLevel} page-title`,
+                      class: `d-inline flex-grow-0 text-h${props.headingLevel} page-title text-uppercase`,
                       innerText: props.title
                     }),
                     ...(slots.title ? [slots.title()] : [])

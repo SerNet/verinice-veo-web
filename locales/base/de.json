@@ -85,7 +85,7 @@
     "subType": "Subtyp",
     "updatedAt": "Letzte Änderung",
     "updatedBy": "Bearbeiter",
-    "type": "type",
+    "type": "Type",
     "actions": "Aktionen",
     "deselectRow": "Deselect Row",
     "selectRow": "Select Row"

@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item :class="`veo-object-message--${message.type}`">
+  <v-list-item :class="`veo-object-message--${message.type}`" role="option">
     <v-list-item-title class="text-wrap">
       {{ message.text }}
     </v-list-item-title>
