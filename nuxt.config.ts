@@ -1,5 +1,4 @@
 import { resolve } from 'path';
-import DocsModule from './modules/docs/module.mjs';
 
 // Types
 import { LOCALES } from './types/locales';
@@ -75,7 +74,6 @@ export default defineNuxtConfig({
 
   // Modules are buildtime only. Can be used to modify build behaviour
   modules: [
-    DocsModule as any,
     '@nuxt/content',
     '@nuxtjs/i18n',
     './modules/vuetify-sass-variables.ts',
@@ -107,21 +105,27 @@ export default defineNuxtConfig({
   //==============================================================
   // Nuxt content configuration
   content: {
-    sources: {
-      // overwrite default source AKA `content` directory
-      content: {
-        driver: 'fs',
-        base: resolve(__dirname, 'docs')
+    build: {
+      markdown: {
+        toc: {
+          depth: 5 // include h3 headings
+        },
+        // Object syntax can be used to override default options
+        remarkPlugins: {
+          // Override remark-emoji options
+          'remark-emoji': {
+            options: {
+              emoticon: true
+            }
+          },
+          // Disable remark-gfm
+          'remark-gfm': false,
+          // Add remark-oembed
+          'remark-oembed': {
+            // Options
+          }
+        }
       }
-    },
-    experimental: {
-      clientDB: true
-    },
-    locales: LOCALES.map((locale) => locale.code),
-    defaultLocale: 'de',
-    // @ts-ignore TODO #3066 does not exist
-    toc: {
-      depth: 5
     }
   },
 

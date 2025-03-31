@@ -16,7 +16,7 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       on('task', {
         readTutorialYaml(fileName) {
-          const filePath = path.join(__dirname, '/docs/tutorials', fileName);
+          const filePath = path.join(__dirname, '/content/tutorials', fileName);
           if (!fs.existsSync(filePath)) {
             throw new Error(`YAML file not found: ${filePath}`);
           }
