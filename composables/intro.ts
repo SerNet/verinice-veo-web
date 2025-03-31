@@ -18,9 +18,9 @@
 import { Ref, WatchStopHandle } from 'vue';
 // @ts-ignore TODO #3066 has no exported member
 import introJs, { Hint, IntroJs } from 'intro.js';
-import type { ParsedContent } from '@nuxt/content';
 import { useIsFetching } from '@tanstack/vue-query';
 import { last } from 'lodash';
+import { TutorialsCollectionItem } from '@nuxt/content';
 
 // @ts-ignore TODO #3066 cannot find namespace
 interface ITutorialDocument extends introJs.Options {
@@ -376,36 +376,50 @@ export function useTutorials() {
   const route = useRoute();
   const i18n = useI18n();
 
-  const docs = ref<ParsedContent[]>();
+  const docs = ref<TutorialsCollectionItem[]>();
+
   const fetchDocs = async () => {
-    docs.value = await queryContent()
-      .where({
-        _extension: 'yaml',
-        language: { $in: [i18n.locale.value, undefined] }
-      })
-      .find();
+    try {
+      const { data: page } = await useAsyncData(route.path, () => {
+        return queryCollection('tutorials').path(route.path).first();
+      });
+      console.log(page);
+      const locale = i18n.locale.value || 'en';
+      docs.value = await queryCollection('tutorials').where('id', 'LIKE', `%.${locale}.yaml`).all();
+      console.log('THIS IS A TEST');
+      console.log(await queryCollection('tutorials').all());
+
+      console.log(docs.value);
+    } catch (e: any) {
+      if (e instanceof Error) {
+        console.error('Message:', e.message);
+        console.error('Stack:', e.stack);
+      } else {
+        console.error('Unknown error:', JSON.stringify(e, null, 2));
+      }
+    }
   };
 
-  watch(
-    () => i18n.locale.value,
-    async () => {
-      fetchDocs();
-    },
-    { immediate: true, deep: true }
-  );
+  // Watch locale changes and fetch docs immediately
+  watch(i18n.locale, fetchDocs, { immediate: true });
 
   // Make sure tutorials is always present
-  const tutorials = computed(
-    () =>
+  const tutorials = computed(() => {
+    return (
       (docs.value || [])?.map((tutorial) => {
-        // We always match the last entry as this is the most specific one. The array would contain two entries if for example a page containing <nuxt-page /> gets matched (for example /pages/[unit]/domains/[domain]/risks.vue)
         const routeToMatch = last(route.matched)?.path || '';
+        // Use the content's path directly for matching
         return {
           ...tutorial,
-          applicable: tutorial.exact ? routeToMatch === tutorial.route : routeToMatch.startsWith(tutorial.route)
+          // Implement a new logic based on path comparison
+          applicable:
+            tutorial.body['exact'] ?
+              routeToMatch === tutorial.body['route']
+            : routeToMatch.startsWith(tutorial.body['route'])
         };
       }) || []
-  );
+    );
+  });
 
   type Tutorial = typeof tutorials.value extends Array<infer U> ? U : never;
   const tutorialsForRoute = computed(() => tutorials.value?.filter((tutorial) => tutorial.applicable));
@@ -422,10 +436,11 @@ export function useTutorials() {
      * @example `load('/tutorials/tutorial-test-steps')`
      */
     load(predicate?: string | TutorialPredicate, autoplay = true) {
-      const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _._path === predicate;
+      const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _.path === predicate;
+
       const tutorial = computed(() => (predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]));
       // @ts-ignore Some sort of type error, however intro js seems to work
-      intro.configure(tutorial);
+      intro.configure(tutorial.value.body);
       if (autoplay) {
         stepsVisible.value = true;
       }
