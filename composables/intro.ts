@@ -380,20 +380,11 @@ export function useTutorials() {
 
   const fetchDocs = async () => {
     try {
-      const { data: page } = await useAsyncData(route.path, () => {
-        return queryCollection('tutorials').path(route.path).first();
-      });
-      console.log(page);
       const locale = i18n.locale.value || 'en';
       docs.value = await queryCollection('tutorials').where('id', 'LIKE', `%.${locale}.yaml`).all();
-      console.log('THIS IS A TEST');
-      console.log(await queryCollection('tutorials').all());
-
-      console.log(docs.value);
     } catch (e: any) {
       if (e instanceof Error) {
         console.error('Message:', e.message);
-        console.error('Stack:', e.stack);
       } else {
         console.error('Unknown error:', JSON.stringify(e, null, 2));
       }
