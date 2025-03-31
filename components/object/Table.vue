@@ -164,7 +164,7 @@ const renderUpdatedAtTooltip: TableRenderer = ({ internalItem: item }) => {
             ' ',
             t('by').toString(),
             ' ',
-            h('strong', item.raw.updatedBy )
+            h('strong', item.raw.updatedBy)
           ])
         ])
       ]

@@ -368,7 +368,7 @@ const items = computed(() => {
  * Create slots to apply renderers. If none exists, use a default one in order to display disabled table entries
  */
 
- const defaultRenderer: TableRenderer = (context: any, header) => {
+const defaultRenderer: TableRenderer = (context: any, header) => {
   const column = context.column;
   const item = context.internalItem.raw;
 
@@ -377,7 +377,7 @@ const items = computed(() => {
     item.id
   }/`;
   return h(
-    resolveComponent("router-link"),
+    resolveComponent('router-link'),
     {
       to: href,
       class: [
@@ -391,9 +391,7 @@ const items = computed(() => {
         textDecoration: 'none'
       },
       'data-veo-test': column.key,
-      'aria-label': header?.key
-      ? `Navigate to ${context.internalItem.columns[header.key]}`
-      : 'Navigation link'
+      'aria-label': header?.key ? `Navigate to ${context.internalItem.columns[header.key]}` : 'Navigation link'
     },
     header?.key ? context.internalItem.columns[header.key] : undefined
   );
