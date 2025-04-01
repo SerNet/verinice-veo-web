@@ -584,7 +584,7 @@ const additionalHeaders = computed<ObjectTableHeader[]>(() => {
               fontWeight: 'bold'
             }
           },
-          item.name
+          { default: () => item.name ?? '' }
         );
       }
     }
