@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="object-overview-page" sticky-footer>
+  <BasePage data-component-name="object-overview-page" :title="`${route.params.objectType}`" sticky-footer>
     <template #default>
       <ObjectFilterBar
         ref="filterBar"
@@ -92,6 +92,7 @@
                         :icon="btn.icon"
                         v-bind="props"
                         variant="text"
+                        :aria-label="btn.label"
                         @click="btn.action(item)"
                       />
                     </template>
@@ -134,7 +135,7 @@
         :object-type="filter.objectType"
         :sub-type="filter.subType || selectedSubtypeForCreateDialog"
       />
-      <v-tooltip v-if="filter.objectType" location="start">
+      <v-tooltip v-if="filter.objectType" location="start" :aria-label="t('createObject', [createObjectLabel])">
         <template #activator="{ props }">
           <UtilNestedMenu v-if="!filter.subType" location="bottom right" :items="nestedActions">
             <template #activator="{ props: menuProps }">
@@ -146,6 +147,7 @@
                 data-component-name="create-object-button"
                 size="large"
                 :disabled="!nestedActions.length || ability.cannot('manage', 'objects')"
+                :aria-label="t('createObject', [createObjectLabel])"
                 :icon="mdiPlus"
               />
             </template>
@@ -159,6 +161,7 @@
             class="veo-primary-action-fab"
             data-component-name="create-object-button"
             v-bind="props"
+            :aria-label="t('createObject', [createObjectLabel])"
             size="large"
             @click="createObjectDialogVisible = true"
           />
@@ -223,7 +226,6 @@ const { data: currentDomain } = useCurrentDomain();
 const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
-
 const { hasFeature } = useFeatureFlag();
 
 const fetchTranslationsQueryParameters = computed(() => ({

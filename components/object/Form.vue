@@ -19,7 +19,13 @@
   <!-- @vue-ignore TODO #3066 not assignable -->
   <LayoutPageWrapper unresponsive-page-widths :page-widths="[{ width: '100%', minWidth: 0 }, 'auto']">
     <template #default>
-      <BasePage :id="scrollWrapperId" data-component-name="object-form-form" sticky-footer no-padding>
+      <BasePage
+        :id="scrollWrapperId"
+        :title="t('createObject').toString()"
+        data-component-name="object-form-form"
+        sticky-footer
+        no-padding
+      >
         <template #default>
           <slot name="prepend-form" />
           <BaseCard>
@@ -76,6 +82,7 @@
                         :disabled="actionProps.disabled"
                         :icon="actionProps.icon"
                         :value="actionProps.value"
+                        :aria-label="`${actionName}`"
                       />
                     </v-badge>
                   </div>

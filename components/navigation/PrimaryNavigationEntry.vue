@@ -28,6 +28,7 @@
     density="compact"
     :target="openInNewtab ? '_blank' : undefined"
     tabindex="0"
+    autofocus
     role="menuitem"
     @click.stop="onClick"
   >

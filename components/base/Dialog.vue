@@ -24,6 +24,7 @@
     :content-class="dialogClasses"
     v-bind="$attrs"
     :data-veo-test="dataVeoTest"
+    :aria-label="title"
     @update:model-value="closeDialog"
   >
     <v-card class="d-flex flex-column" tile>

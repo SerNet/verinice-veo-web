@@ -102,6 +102,7 @@
                   :to="HELP_ROUTE"
                   class="help-button bg-accent"
                   variant="text"
+                  :aria-label="t('help')"
                   v-bind="props"
                 />
               </template>
@@ -119,6 +120,7 @@
                     large
                     class="bg-accent"
                     variant="text"
+                    :aria-label="t('save').toString()"
                     @click="saveSchema"
                   />
                 </div>

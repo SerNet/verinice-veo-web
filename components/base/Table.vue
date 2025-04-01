@@ -234,10 +234,13 @@ const presetHeaders: { [key: string]: TableHeader } = {
     render: (context) => {
       const isSelected = internalModelValue.value.includes(context.internalItem.value);
       return h(VCheckbox, {
+        id: `checkbox-${context.internalItem.value}`,
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
+        'aria-checked': isSelected.toString(),
+        'aria-label': isSelected ? 'Deselect row' : 'Select row',
         'onUpdate:model-value': () => toggleSelection(context)
       });
     }

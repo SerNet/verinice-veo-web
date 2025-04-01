@@ -32,6 +32,7 @@
     color="primary"
     role="checkbox"
     :aria-checked="!!modelValue"
+    :aria-label="options && options.label"
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template v-if="modelValue !== undefined" #append>

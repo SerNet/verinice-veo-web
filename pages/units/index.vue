@@ -44,6 +44,7 @@
                 :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
                 color="primary"
                 size="large"
+                :aria-label="t('createUnit')"
                 >{{ t('createUnit') }}</v-btn
               >
             </div>

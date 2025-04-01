@@ -63,7 +63,7 @@
       </v-tooltip>
 
       <LayoutAccountBtn v-if="authenticated" class="mr-3" />
-      <v-btn v-else color="primary" icon to="/login">
+      <v-btn v-else color="primary" icon to="/login" :aria-label="t('login')">
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
     </v-app-bar>

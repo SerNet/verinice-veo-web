@@ -20,13 +20,14 @@
     v-model="dialog"
     v-bind="$attrs"
     :title="upperFirst(t('filterList').toString())"
+    :aria-label="t('filterList').toString()"
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
       <v-form v-model="filterFormValid">
         <BaseCard>
           <v-card-text>
-            <v-list>
+            <v-list :aria-label="t('filterList').toString()" role="list">
               <!-- TODO #3066 the divider biz is hideous -->
               <ObjectFilter
                 v-for="(option, index) of defaultFilterOptions"

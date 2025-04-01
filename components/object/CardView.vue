@@ -42,6 +42,7 @@
                   :icon="btn.icon"
                   v-bind="props"
                   variant="text"
+                  :aria-label="btn.label"
                   @click="btn.action(object)"
                 />
               </template>

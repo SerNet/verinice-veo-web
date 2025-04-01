@@ -54,6 +54,7 @@
                     :disabled="action.isDisabled && action.isDisabled(item)"
                     :icon="action.icon"
                     variant="text"
+                    :aria-label="action.label"
                     @click="action.action(item)"
                   />
                 </template>
@@ -74,6 +75,7 @@
             size="large"
             class="veo-primary-action-fab"
             :icon="mdiPlus"
+            :aria-label="t('createAccount')"
             @click="createAccountDialogVisible = true"
           />
           <div style="height: 76px" />

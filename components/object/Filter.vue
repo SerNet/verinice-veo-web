@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item v-bind="$attrs" class="px-0" density="compact">
+  <v-list-item v-bind="$attrs" class="px-0" density="compact" role="listitem">
     <v-divider v-if="type === IVeoFilterOptionType.DIVIDER" />
     <v-text-field
       v-else-if="type === IVeoFilterOptionType.TEXT"

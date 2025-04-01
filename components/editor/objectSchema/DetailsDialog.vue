@@ -71,6 +71,7 @@
                               :icon="mdiTrashCanOutline"
                               color="primary"
                               variant="tonal"
+                              :aria-label="t('deleteSubtype').toString()"
                               @click="deleteSubType(subTypeIndex)"
                             />
                           </template>

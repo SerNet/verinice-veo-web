@@ -27,6 +27,7 @@
     chips
     hide-selected
     auto-select-first="exact"
+    :aria-label="t('search')"
     @click:clear="resetSearch"
     @click:append-inner="runSearch"
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
@@ -42,7 +43,7 @@
       </div>
     </template>
     <template #append-inner>
-      <v-icon class="mr-4" :icon="mdiCloseCircle" @click="resetSearch" />
+      <v-icon class="mr-4" :icon="mdiCloseCircle" :aria-label="t('global.button.close')" @click="resetSearch" />
     </template>
   </v-combobox>
 </template>

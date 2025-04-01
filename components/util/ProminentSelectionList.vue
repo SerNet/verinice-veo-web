@@ -16,7 +16,7 @@
    - along with this program. If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list class="mt-2" v-bind="$attrs">
+  <v-list class="mt-2" v-bind="$attrs" role="list">
     <v-list-item
       v-for="item of items"
       :key="item.value"
@@ -25,6 +25,7 @@
       :subtitle="item.subtitle"
       :title="item.title"
       class="rounded mb-2 py-2 bg-accent"
+      role="listitem"
       two-line
       @click="checkBoxSelectionOnly ? undefined : onItemSelected(item)"
     >
@@ -35,6 +36,7 @@
       <template #prepend>
         <v-icon
           :color="isActive(item) ? 'primary' : undefined"
+          :aria-label="item.value"
           :icon="
             isActive(item) ?
               multiple ? mdiCheckboxMarked

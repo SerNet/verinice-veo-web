@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="start">
+  <v-tooltip location="start" :aria-label="name">
     <template #activator="{ props: activatorProps }">
       <slot v-bind="{ props, activatorProps }">
         <v-btn
@@ -26,6 +26,7 @@
           :icon="icon"
           :value="value"
           :disabled="disabled"
+          :aria-label="`${name}`"
         />
       </slot>
     </template>

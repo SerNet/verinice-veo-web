@@ -40,6 +40,7 @@
                   :disabled="!formSchemaElement.rule"
                   :icon="mdiTrashCanOutline"
                   v-bind="tooltipProps"
+                  :aria-label="t('deleteRule')"
                   @click="deleteRule"
                 />
               </template>

@@ -18,7 +18,13 @@
 <template>
   <v-tooltip v-if="miniVariant" location="bottom">
     <template #activator="{ props: toolTips }">
-      <v-icon class="ma-4" :icon="mdiPuzzle" v-bind="toolTips" @click="$emit('expand-menu')" />
+      <v-icon
+        class="ma-4"
+        :aria-label="t('select')"
+        :icon="mdiPuzzle"
+        v-bind="toolTips"
+        @click="$emit('expand-menu')"
+      />
     </template>
 
     <template #default>
