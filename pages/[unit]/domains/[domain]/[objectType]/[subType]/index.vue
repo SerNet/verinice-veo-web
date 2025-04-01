@@ -559,82 +559,81 @@ const actions = computed(() => [
 
 // Additional headers
 const SUBTYPES_WITH_VDA = ['CTL_Requirement', 'CTL_PartialRequirement', 'CTL_Safeguard', '-'];
+
 // @ts-ignore TODO #3066 cannot find name
-const additionalHeaders = computed<ObjectTableHeader[]>(
-  () => [
+const additionalHeaders = computed<ObjectTableHeader[]>(() => {
+  const baseHeader: any = [
     {
       value: 'name',
       key: 'name',
       cellClass: ['font-weight-bold'],
-      width: 300,
+      width: 100,
       truncate: true,
       sortable: true,
       priority: 100,
       order: 20,
       render: ({ item }: any) => {
-        const href = `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${
-          item.id
-        }/`;
-        console.log('ccc', item.name);
+        const href = `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${item.id}/`;
         return h(
           resolveComponent('router-link'),
           {
             to: href,
             style: {
               color: 'inherit',
-              textDecoration: 'none'
+              textDecoration: 'none',
+              fontWeight: 'bold'
             }
           },
           item.name
         );
       }
     }
-  ],
-  filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing' ?
-    [
-      {
-        priority: 31,
-        order: 51,
-        key: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-        value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
-        render: ({ item }: any) =>
-          h(
-            'div',
-            item.raw?.decisionResults?.piaMandatory?.value ?
-              globalT('global.button.yes').toString()
-            : globalT('global.button.no').toString()
-          ),
-        text: t('dpiaMandatory').toString(),
-        sortable: false,
-        width: 210
-      }
-    ]
-  : (
+  ];
+
+  if (filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing') {
+    baseHeader.push({
+      priority: 100,
+      order: 51,
+      key: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
+      value: `domains.${domainId.value}.decisionResults.piaMandatory.value`,
+      render: ({ item }: any) =>
+        h(
+          'div',
+          item.raw?.decisionResults?.piaMandatory?.value ?
+            globalT('global.button.yes').toString()
+          : globalT('global.button.no').toString()
+        ),
+      text: t('dpiaMandatory').toString(),
+      sortable: false,
+      width: 210
+    });
+  } else if (
     (!filter.value.subType || SUBTYPES_WITH_VDA.includes(filter.value.subType as string)) &&
     currentDomain.value?.raw?.elementTypeDefinitions?.[filter.value.objectType as string]?.customAspects
       ?.control_bpInformation
-  ) ?
-    [
-      {
-        priority: 100,
-        order: 31,
-        key: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
-        value: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
-        render: ({ item }: any) => {
-          return h(
-            'div',
-            translations.value?.lang?.[locale.value]?.[
-              item.customAspects?.control_bpInformation?.control_bpInformation_protectionApproach
-            ] ?? ''
-          );
-        },
-        text: t('VdA').toString(),
-        sortable: false,
-        width: 80
-      }
-    ]
-  : []
-);
+  ) {
+    baseHeader.push({
+      priority: 100,
+      order: 31,
+      key: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+      value: `customAspects.control_bpInformation.control_bpInformation_protectionApproach`,
+      render: ({ item }: any) => {
+        return h(
+          'div',
+          translations.value?.lang?.[locale.value]?.[
+            item.customAspects?.control_bpInformation?.control_bpInformation_protectionApproach
+          ] ?? ''
+        );
+      },
+      text: t('VdA').toString(),
+      sortable: false,
+      width: 80
+    });
+  }
+
+  return baseHeader;
+});
+
 const tableKey = ref(0);
 const selectedItems = ref<IVeoEntity[]>([]);
 const showDeleteDialog = ref(false);

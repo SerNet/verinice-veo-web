@@ -378,8 +378,7 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
         ...column.class,
         ...(context.internalItem.raw.disabled ? ['v-list-item--disabled'] : [])
       ],
-      'data-veo-test': column.key,
-      'aria-label': header?.key ? `Navigate to ${context.internalItem.columns[header.key]}` : 'Navigation link'
+      'data-veo-test': column.key
     },
     header?.key ? context.internalItem.columns[header.key] : undefined
   );
