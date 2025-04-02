@@ -70,6 +70,7 @@
       :prepend-icon="mdiCalendar"
       :hint="t('hint', [DATE_HINT])"
       variant="underlined"
+      :aria-label="options && options.label"
       @update:model-value="onDateInput"
       @click:clear="$emit('update:model-value', undefined)"
     />

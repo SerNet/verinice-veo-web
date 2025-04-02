@@ -36,7 +36,7 @@
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template v-if="modelValue !== undefined" #append>
-      <v-icon :icon="mdiClose" @click="$emit('update:model-value', undefined)" />
+      <v-icon :icon="mdiClose" aria-label="close" @click="$emit('update:model-value', undefined)" />
     </template>
   </v-checkbox>
 </template>

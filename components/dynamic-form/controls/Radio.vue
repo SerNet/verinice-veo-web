@@ -35,7 +35,7 @@
         <v-radio v-for="(item, i) in items" :key="i" :value="item.value" :label="item.title" color="primary" />
       </template>
       <template v-if="modelValue !== undefined" #append>
-        <v-btn :icon="mdiClose" variant="text" @click="$emit('update:model-value', undefined)" />
+        <v-btn :icon="mdiClose" variant="text" aria-label="close" @click="$emit('update:model-value', undefined)" />
       </template>
     </v-radio-group>
   </div>

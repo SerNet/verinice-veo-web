@@ -22,8 +22,13 @@
     class="vf-links-field vf-form-element"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
-    <v-list>
-      <v-list-item v-for="(link, index) of internalValue" :key="index" class="veo-links-field-border mt-4 px-4">
+    <v-list role="list" :aria-label="t('links')">
+      <v-list-item
+        v-for="(link, index) of internalValue"
+        :key="index"
+        role="listitem"
+        class="veo-links-field-border mt-4 px-4"
+      >
         <!-- @vue-ignore -->
         <DynamicFormControlsLinksFieldRow
           v-bind="$props"
@@ -35,16 +40,15 @@
         >
           <slot name="default" />
         </DynamicFormControlsLinksFieldRow>
-        <template #append>
-          <v-list-item-action>
-            <v-btn
-              :icon="mdiTrashCanOutline"
-              :disabled="disabled || options.disabled"
-              variant="text"
-              @click="removeLink(index)"
-            />
-          </v-list-item-action>
-        </template>
+        <div class="d-flex justify-end mt-2">
+          <v-btn
+            :icon="mdiTrashCanOutline"
+            :disabled="disabled || options.disabled"
+            variant="text"
+            :aria-label="t('global.button.delete')"
+            @click="removeLink(index)"
+          />
+        </div>
       </v-list-item>
     </v-list>
     <v-btn
