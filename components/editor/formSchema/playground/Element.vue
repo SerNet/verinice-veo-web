@@ -23,9 +23,10 @@
       :form-schema-element="formSchemaElement"
       style="min-width: 300px"
       @delete="deleteElementDialogVisible = true"
-      @edit="editElementDialogVisible = true"
+      @edit="!isImpactGroupElement && (editElementDialogVisible = true)"
     >
       <Draggable
+        v-if="!isImpactGroupElement"
         :model-value="props.playgroundElement.children"
         handle=".handle"
         item-key="id"
@@ -101,15 +102,16 @@ export interface IPlaygroundElement {
 </script>
 
 <script setup lang="ts">
-import Draggable from 'vuedraggable';
 import { cloneDeep } from 'lodash';
+import Draggable from 'vuedraggable';
 
-import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import ControlElement from './ControlElement.vue';
+import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
+import ImpactGroupElement from './ImpactGroupElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
-import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
+import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
 
 const props = withDefaults(
   defineProps<{
@@ -134,6 +136,9 @@ const formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEY
 const formSchemaElement = computed(() => formSchemaElementMap?.get(props.playgroundElement.id));
 
 const fittingComponent = computed(() => {
+  if (isImpactGroupElement.value) {
+    return ImpactGroupElement;
+  }
   switch (formSchemaElement.value?.type) {
     case 'Control':
       return ControlElement;
@@ -146,6 +151,13 @@ const fittingComponent = computed(() => {
     default:
       return h('div', t('componentNotFound', [props.playgroundElement.id, formSchemaElement.value?.type]));
   }
+});
+
+const isImpactGroupElement = computed(() => {
+  return (
+    formSchemaElement.value?.type === 'Layout' &&
+    (formSchemaElement.value?.options?.format === 'composite' ||
+      formSchemaElement.value?.options?.format === 'impactGroup'));
 });
 
 /* Manipulation

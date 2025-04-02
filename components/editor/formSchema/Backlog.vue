@@ -186,19 +186,19 @@
   </div>
 </template>
 <script lang="ts">
-import { ComputedRef, PropType, Ref } from 'vue';
+import { mdiArrowCollapseVertical, mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
-import Draggable from 'vuedraggable';
-import { v4 as uuid } from 'uuid';
 import { cloneDeep, pick, upperFirst } from 'lodash';
-import { mdiAutoFix, mdiFormatText, mdiFormSelect, mdiArrowCollapseVertical } from '@mdi/js';
+import { v4 as uuid } from 'uuid';
+import { ComputedRef, PropType, Ref } from 'vue';
+import Draggable from 'vuedraggable';
 
+import type { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
+import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import type { IVeoDomainSpecificObjectSchema, IVeoRiskCategory } from '~/types/VeoTypes';
-import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
-import type { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
-import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 export interface IControl {
   scope: string;
@@ -337,7 +337,7 @@ export default defineComponent({
       {
         type: 'Layout',
         options: {
-          format: 'group'
+          format: 'impactGroup'
         },
         elements: impacts,
         description: {
@@ -555,13 +555,23 @@ export default defineComponent({
      */
     function onCloneFormElement(original: any) {
       const element = cloneDeep(original);
-      JsonPointer.unset(element, '#/description');
-      if (element?.type?.toLowerCase() === 'label') {
-        const elementName = `text_${uuid()}`;
-        element.text = `#lang/${elementName}`;
+
+      if (element?.options?.format !== 'impactGroup') {
+        JsonPointer.unset(element, '#/description');
       }
+
+      if (element?.type?.toLowerCase() === 'label') {
+        element.text = `#lang/text_${uuid()}`;
+      }
+
+      if (element?.description?.title === 'impacts') {
+        element.options ??= {};
+        element.options.format = 'impactGroup';
+      }
+
       return element;
     }
+
     function onCloneControl(original: IControl) {
       const dataToClone: IControl = cloneDeep(original);
       return {
