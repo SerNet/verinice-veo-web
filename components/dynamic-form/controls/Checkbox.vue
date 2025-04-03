@@ -36,7 +36,7 @@
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template v-if="modelValue !== undefined" #append>
-      <v-icon :icon="mdiClose" aria-label="close" @click="$emit('update:model-value', undefined)" />
+      <v-icon :icon="mdiClose" :aria-label="t('global.button.close')" @click="$emit('update:model-value', undefined)" />
     </template>
   </v-checkbox>
 </template>
@@ -60,15 +60,16 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   },
   conditions: (props) => [props.objectSchema.type === 'boolean']
 };
-
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
   props: VeoFormsControlProps,
   emits: ['update:model-value'],
   setup() {
+    const { t } = useI18n();
     return {
       getControlErrorMessages,
       last,
+      t,
       mdiClose
     };
   }

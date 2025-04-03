@@ -35,7 +35,12 @@
         <v-radio v-for="(item, i) in items" :key="i" :value="item.value" :label="item.title" color="primary" />
       </template>
       <template v-if="modelValue !== undefined" #append>
-        <v-btn :icon="mdiClose" variant="text" aria-label="close" @click="$emit('update:model-value', undefined)" />
+        <v-btn
+          :icon="mdiClose"
+          variant="text"
+          :aria-label="t('global.button.close')"
+          @click="$emit('update:model-value', undefined)"
+        />
       </template>
     </v-radio-group>
   </div>
@@ -71,10 +76,10 @@ export default defineComponent({
   emits: ['update:model-value'],
   setup(props) {
     const isVertical = computed(() => props.options.direction === 'vertical');
-
+    const { t } = useI18n();
     return {
       isVertical,
-
+      t,
       getControlErrorMessages,
       mdiClose,
       last
