@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :loading="reportsFetching" data-component-name="report-page" :title="t('reports')">
+  <BasePage :loading="reportsFetching" data-component-name="report-page" :title="t('breadcrumbs.reports')">
     <template #header>
       <v-row dense class="justify-space-between mt-6">
         <v-col cols="auto">
