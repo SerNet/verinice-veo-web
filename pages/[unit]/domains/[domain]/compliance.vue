@@ -17,7 +17,7 @@
 -->
 ‚
 <template>
-  <BasePage style="height: 100vh">
+  <BasePage style="height: 100vh" :title="t('compliance')">
     <template #header>
       <div class="mt-8 mb-4 text-body-1">
         <v-btn

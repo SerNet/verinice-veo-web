@@ -63,9 +63,11 @@ function render() {
 function textField(label: string, value: string) {
   return h(VTextField, {
     label,
+    title: label,
     disabled: true,
     variant: 'underlined',
     modelValue: value ?? t('na'),
+    'aria-label': label,
     'data-veo-test': `compliance-editor-text-field`
   });
 }

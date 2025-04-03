@@ -85,6 +85,7 @@
           <v-date-input
             v-model="form.implementationUntil"
             :label="t('riEditor.implementationUntil')"
+            :aria-label="t('riEditor.implementationUntil')"
             data-veo-test="compliance-editor-ri-implementation-date"
             prepend-icon=""
             prepend-inner-icon="$calendar"

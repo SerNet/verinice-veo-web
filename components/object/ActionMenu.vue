@@ -63,6 +63,7 @@
       :disabled="true"
       class="veo-primary-action-fab mr-2"
       color="primary"
+      :aria-label="t('add')"
       data-component-name="object-details-actions-button"
     />
 
