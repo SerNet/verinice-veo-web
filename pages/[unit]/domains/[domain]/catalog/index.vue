@@ -36,14 +36,16 @@
         :model-value="showDialog"
         :title="t('CatalogItemsApplied')"
         data-veo-test="catalog-dialog"
+        :aria-label="t('CatalogItemsApplied')"
         :close-function="() => (showDialog = false)"
       >
         <template #default>
           <BaseCard>
-            <v-list>
+            <v-list role="menu" :aria-label="t('CatalogItemsApplied')">
               <v-list-item
                 v-for="(subtypeGroup, index) in createdObjectsBySubtype"
                 :key="index"
+                role="menuitem"
                 class="catalog-items-applied"
                 :to="generateRoute({ item: subtypeGroup })"
               >
