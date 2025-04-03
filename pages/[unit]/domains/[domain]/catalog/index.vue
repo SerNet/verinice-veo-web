@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="catalog-page">
+  <BasePage data-component-name="catalog-page" :title="t('breadcrumbs.catalog')">
     <template #default>
       <v-spacer class="mt-8" />
       <SearchBar v-model:search="search" :filters="searchFilters" />
