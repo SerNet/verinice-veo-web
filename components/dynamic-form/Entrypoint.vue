@@ -16,73 +16,50 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { ComputedRef, PropType } from 'vue';
-import { cloneDeep, debounce, merge, take, takeRight } from 'lodash';
+import { ErrorObject } from 'ajv';
 import { JsonPointer } from 'json-ptr';
 import { JSONSchema7 } from 'json-schema';
-import { ErrorObject } from 'ajv';
+import { cloneDeep, debounce, merge, take, takeRight } from 'lodash';
+import { ComputedRef, PropType } from 'vue';
 
 import {
-  IVeoFormsAdditionalContext,
-  IVeoFormsReactiveFormActions,
-  IVeoFormsTranslations,
-  IVeoFormElementFormSchema,
-  IVeoFormControlFormSchema,
-  IVeoFormLabelFormSchema,
-  IVeoFormWidgetFormSchema
-} from './types';
-import {
-  evaluateRule,
-  removePropertiesKeywordFromPath,
-  addConditionalSchemaPropertiesToControlSchema,
-  ajv,
   generateFormSchema,
   generateFormSchemaControl,
   generateFormSchemaGroup,
   Mode
-} from './util';
-import Control from './controls/Control';
-import Widget from './widgets/Widget';
-import Layout from './layouts/Layout';
-import Label from './labels/Label.vue';
-import ValidationFailedError from './ValidationFailedError.vue';
-import type { IVeoFormSchemaGeneratorOptions, IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
+} from '~/components/dynamic-form/util';
+import { updateRiskDefinitionsFormSchema } from '~/components/risk/Utils';
+import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import { useVeoErrorFormatter } from '~/composables/VeoErrorFormatter';
+import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
-import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import { useVeoErrorFormatter } from '~/composables/VeoErrorFormatter';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
+import Control from './controls/Control';
+import Label from './labels/Label.vue';
+import Layout from './layouts/Layout';
+import {
+  IVeoFormControlFormSchema,
+  IVeoFormElementFormSchema,
+  IVeoFormLabelFormSchema,
+  IVeoFormsAdditionalContext,
+  IVeoFormsReactiveFormActions,
+  IVeoFormsTranslations,
+  IVeoFormWidgetFormSchema
+} from './types';
+import {
+  addConditionalSchemaPropertiesToControlSchema,
+  ajv,
+  evaluateRule,
+  removePropertiesKeywordFromPath
+} from './util';
+import ValidationFailedError from './ValidationFailedError.vue';
+import Widget from './widgets/Widget';
 
 const DEBUG_MAP = new Map<string, string>();
 // @ts-ignore We add a new property to the window to debug veo forms
 window.VEO_FORMS_DEBUG_MAP = DEBUG_MAP;
-
-const GENERATOR_OPTIONS = (props: any) =>
-  ({
-    excludedProperties: [
-      '/id$',
-      '/type$',
-      '/owner$',
-      '^#/properties/links',
-      '/updatedAt$',
-      '/updatedBy$',
-      '/createdAt$',
-      '/createdBy$',
-      '/parts$',
-      '/members$',
-      '/risks$',
-      '/designator$',
-      '/decisionResults',
-      '(\\w+)/properties/domains$',
-      '_self'
-    ],
-    groupedNamespaces: Object.keys(props.objectSchema.properties?.customAspects?.properties || {}).map((key) => ({
-      namespace: `#/properties/customAspects/properties/${key}`,
-      label: key
-    })),
-    generateControlFunction: generateFormSchemaControl,
-    generateGroupFunction: generateFormSchemaGroup
-  }) as IVeoFormSchemaGeneratorOptions;
 
 export default defineComponent({
   props: {
@@ -159,6 +136,10 @@ export default defineComponent({
     debug: {
       type: Boolean,
       default: false
+    },
+    domain: {
+      type: Object as PropType<IVeoDomain>,
+      default: undefined
     }
   },
   emits: ['update:model-value', 'update:messages', 'update:valid'],
@@ -171,10 +152,58 @@ export default defineComponent({
     const localTranslations = computed(() => props.translations?.[props.locale || locale.value] || {});
     const localAdditionalContext = computed(() => props.additionalContext || {});
     const localObjectSchema = computed(() => props.objectSchema);
-    const localFormSchema = computed(
-      () =>
-        cloneDeep(props.formSchema) || generateFormSchema(localObjectSchema.value, GENERATOR_OPTIONS(props), Mode.VEO)
-    );
+
+    const localFormSchema = computed(() => {
+      try {
+        // Wenn kein formSchema direkt übergeben wurde, generiere eines
+        const formSchema =
+          props.formSchema ||
+          generateFormSchema(
+            localObjectSchema.value,
+            {
+              excludedProperties: [
+                '/id$',
+                '/type$',
+                '/owner$',
+                '^#/properties/links',
+                '/updatedAt$',
+                '/updatedBy$',
+                '/createdAt$',
+                '/createdBy$',
+                '/parts$',
+                '/members$',
+                '/risks$',
+                '/designator$',
+                '/decisionResults',
+                '(\\w+)/properties/domains$',
+                '_self'
+              ],
+              groupedNamespaces: Object.keys(props.objectSchema.properties?.customAspects?.properties || {}).map(
+                (key) => ({
+                  namespace: `#/properties/customAspects/properties/${key}`,
+                  label: key
+                })
+              ),
+              generateControlFunction: generateFormSchemaControl,
+              generateGroupFunction: generateFormSchemaGroup
+            },
+            Mode.VEO
+          );
+
+        if (!formSchema) {
+          return null;
+        }
+        const clonedSchema = cloneDeep(formSchema);
+        if (props.reactiveFormActions) {
+          return updateRiskDefinitionsFormSchema(props.domain, clonedSchema, locale.value);
+        }
+
+        return clonedSchema;
+      } catch (error) {
+        console.error('Error in localFormSchema:', error);
+        return props.formSchema || null;
+      }
+    });
     const localReactiveFormActions = computed(() => {
       const toReturn = defaultReactiveFormActions();
       if (props.reactiveFormActions !== undefined) {

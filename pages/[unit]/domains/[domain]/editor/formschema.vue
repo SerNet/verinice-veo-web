@@ -224,6 +224,7 @@
             :translations="eligibleTranslations"
             :reactive-form-actions="reactiveFormActions"
             :additional-context="getRiskAdditionalContext(objectSchema.title, domain, locale, t)"
+            :domain="domain"
             :locale="editorLanguage"
           />
         </template>

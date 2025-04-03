@@ -35,6 +35,7 @@
                 :reactive-form-actions="reactiveFormActions"
                 :object-creation-disabled="objectCreationDisabled"
                 :translations="mergedTranslations"
+                :domain="domain"
                 @update:messages="formErrors = $event"
               />
               <ObjectFormSkeletonLoader v-else />
@@ -561,13 +562,13 @@ export default defineComponent({
       selectedSideBarAction,
       sideBarActions,
       subType,
-
       mdiEyeOutline,
       mdiHistory,
       mdiInformationOutline,
       mdiTableOfContents,
       upperFirst,
-      t
+      t,
+      domain
     };
   }
 });
