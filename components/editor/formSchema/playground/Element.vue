@@ -154,10 +154,7 @@ const fittingComponent = computed(() => {
 });
 
 const isImpactGroupElement = computed(() => {
-  return (
-    formSchemaElement.value?.type === 'Layout' &&
-    (formSchemaElement.value?.options?.format === 'composite' ||
-      formSchemaElement.value?.options?.format === 'impactGroup'));
+  return formSchemaElement.value?.type === 'Layout' && formSchemaElement.value?.options?.format === 'impactGroup';
 });
 
 /* Manipulation

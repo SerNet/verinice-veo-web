@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Davit Svandize, Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -267,79 +267,13 @@ export default defineComponent({
       );
     };
 
-    const impacts = riskDefinitionCategories.value.map((category) => ({
-      type: 'Layout',
-      options: {
-        format: 'accordion',
-        translation: getTranslations(category)
-      },
-      elements: [
-        {
-          scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactsCalculated`,
-          type: 'Control',
-          options: {
-            label: '#lang/potentialImpactsCalculated'
-          }
-        },
-        {
-          type: 'Layout',
-          options: {
-            format: 'group',
-            direction: 'horizontal'
-          },
-          elements: [
-            {
-              scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpacts`,
-              type: 'Control',
-              options: {
-                label: '#lang/potentialImpacts'
-              }
-            },
-            {
-              type: 'Control',
-              scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactEffectiveReasons`,
-              options: {
-                label: '#lang/potentialImpactEffectiveReasons'
-              }
-            }
-          ],
-          description: {
-            title: 'group',
-            icon: mdiFormSelect,
-            name: 'layout',
-            color: 'grey darken-2'
-          }
-        },
-        {
-          scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactsEffective`,
-          type: 'Control',
-          options: {
-            label: '#lang/potentialImpactsEffective'
-          }
-        },
-        {
-          scope: `#/properties/riskValues/properties/${riskDefinitionName.value}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactExplanations`,
-          type: 'Control',
-          options: {
-            label: '#lang/potentialImpactExplanations'
-          }
-        }
-      ],
-      description: {
-        title: 'Composite',
-        icon: mdiFormSelect,
-        name: 'confidentiality',
-        color: 'purple darken-2'
-      }
-    }));
-
     const formElements = [
       {
         type: 'Layout',
         options: {
           format: 'impactGroup'
         },
-        elements: impacts,
+        elements: [],
         description: {
           title: 'impacts',
           icon: mdiFormSelect,
