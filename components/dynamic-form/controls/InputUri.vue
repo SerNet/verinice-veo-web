@@ -23,6 +23,7 @@
     :disabled="disabled || options.disabled"
     :error-messages="getControlErrorMessages($props)"
     :label="options && options.label"
+    :aria-label="options && options.label"
     :class="options && options.class"
     class="vf-form-element vf-input-uri"
     :clearable="!options.required"
