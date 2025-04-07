@@ -16,9 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip v-if="miniVariant" location="bottom">
+  <v-tooltip v-if="miniVariant" location="bottom" :aria-label="t('select')">
     <template #activator="{ props: toolTips }">
-      <v-icon class="ma-4" :icon="mdiUnity" v-bind="toolTips" @click="$emit('expand-menu')" />
+      <v-icon class="ma-4" :aria-label="t('select')" :icon="mdiUnity" v-bind="toolTips" @click="$emit('expand-menu')" />
     </template>
 
     <template #default>
