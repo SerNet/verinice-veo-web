@@ -90,6 +90,7 @@
     "updatedAt": "Letzte Änderung",
     "updatedBy": "Bearbeiter",
     "type": "Type",
+    "icon": "Type",
     "actions": "Aktionen",
     "deselectRow": "Deselect Row",
     "selectRow": "Select Row"

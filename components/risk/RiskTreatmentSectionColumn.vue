@@ -26,7 +26,8 @@
       multiple
       color="primary"
       :disabled="disabled"
-      :label="upperFirst(t('riskTreatment').toString())"
+      :label="upperFirst(t('riskTreatment'))"
+      :aria-label="upperFirst(t('riskTreatment'))"
       :items="treatmentOptions"
       class="veo-risk-dialog__risk-treatment-selection"
       hide-details
@@ -48,9 +49,11 @@
           :model-value="riskTreatmentExplanation"
           :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
+          :aria-label="upperFirst(t('explanation'))"
           hide-details
           variant="underlined"
           v-bind="dialogProps"
+          :aria-expanded="null"
           @update:model-value="$emit('update:risk-treatment-explanation', $event)"
         />
       </template>

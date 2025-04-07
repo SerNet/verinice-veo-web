@@ -25,6 +25,7 @@
       :model-value="inherentRisk"
       color="primary"
       :label="upperFirst(t('inherentRisk').toString())"
+      :aria-label="upperFirst(t('inherentRisk'))"
       :items="riskValues"
       disabled
       variant="underlined"

@@ -25,6 +25,7 @@
       :model-value="potentialImpact"
       color="primary"
       :label="upperFirst(t('potentialImpact').toString())"
+      :aria-label="upperFirst(t('potentialImpact'))"
       :items="impacts[protectionGoal.id]"
       disabled
       variant="underlined"
@@ -36,6 +37,7 @@
       :disabled="disabled"
       color="primary"
       :label="upperFirst(t('specificImpact').toString())"
+      :aria-label="upperFirst(t('specificImpact'))"
       :items="impacts[protectionGoal.id]"
       clearable
       hide-details
@@ -48,10 +50,12 @@
           data-test-selector="specific-impact-explanation-text-field"
           :model-value="specificImpactExplanation"
           :label="upperFirst(t('explanation').toString())"
+          :aria-label="upperFirst(t('explanation'))"
           :disabled="disabled"
           hide-details
           variant="underlined"
           v-bind="dialogProps"
+          :aria-expanded="null"
           @update:model-value="$emit('update:specific-impact-explanation', $event)"
         />
       </template>
@@ -61,6 +65,7 @@
           :model-value="specificImpactExplanation"
           :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
+          :aria-label="upperFirst(t('explanation'))"
           clearable
           auto-grow
           autofocus
@@ -76,6 +81,7 @@
       :model-value="effectiveImpact"
       color="primary"
       :label="upperFirst(t('effectiveImpact').toString())"
+      :aria-label="upperFirst(t('effectiveImpact'))"
       :items="impacts[protectionGoal.id]"
       disabled
       variant="underlined"

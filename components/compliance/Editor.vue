@@ -90,6 +90,7 @@
             prepend-icon=""
             prepend-inner-icon="$calendar"
             clearable
+            role="combobox"
             @click:clear="form.implementationUntil = undefined"
           >
           </v-date-input>

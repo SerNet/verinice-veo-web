@@ -581,4 +581,7 @@ export default defineComponent({
   height: auto !important;
   width: 60px;
 }
+.v-messages {
+  opacity: var(0.8) !important;
+}
 </style>

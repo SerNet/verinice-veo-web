@@ -25,6 +25,7 @@
     :loading="isLoading"
     no-filter
     :label="localLabel"
+    :aria-label="localLabel"
     v-bind="$attrs"
     variant="underlined"
     @input="onSearchInput"

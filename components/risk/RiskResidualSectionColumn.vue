@@ -58,6 +58,7 @@
           hide-details
           variant="underlined"
           v-bind="dialogProps"
+          :aria-expanded="null"
           @update:model-value="$emit('update:residual-risk-explanation', $event)"
         />
       </template>

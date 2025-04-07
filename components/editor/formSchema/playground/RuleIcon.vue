@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip v-if="icon" location="top">
+  <v-tooltip v-if="icon" location="top" :aria-label="t(rule?.effect === 'SHOW' ? 'showRule' : 'hideRule')">
     <template #activator="{ props: tooltipProps }">
       <v-icon :icon="icon" class="mr-1" size="small" v-bind="tooltipProps" />
     </template>

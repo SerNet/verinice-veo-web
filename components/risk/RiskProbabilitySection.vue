@@ -82,6 +82,7 @@
                 hide-details
                 variant="underlined"
                 v-bind="dialogProps"
+                :aria-expanded="null"
                 @update:model-value="onSpecificProbabilityExplanationChanged"
               />
             </template>

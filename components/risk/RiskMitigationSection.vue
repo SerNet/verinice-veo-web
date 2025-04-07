@@ -29,7 +29,7 @@
 
       {{ upperFirst(t('mitigationSection').toString()) }}
 
-      <v-tooltip location="bottom">
+      <v-tooltip location="bottom" :aria-label="data?.scenario?.displayName">
         <template #activator="{ props }">
           <v-icon v-bind="props" :icon="mdiInformationOutline" />
         </template>
@@ -53,7 +53,7 @@
       >
         <template #actions="{ item }">
           <div class="d-flex justify-end">
-            <v-tooltip location="start">
+            <v-tooltip location="start" :aria-label="data?.mitigation ? t('navigateToPart') : t('saveFirst')">
               <template #activator="{ props }">
                 <div v-bind="props">
                   <v-btn
@@ -61,15 +61,22 @@
                     :to="partHref(item)"
                     :icon="mdiArrowRightCircleOutline"
                     variant="text"
+                    :aria-label="data?.mitigation ? t('navigateToPart') : t('saveFirst')"
                     @click.capture.prevent="(e: MouseEvent) => showNavigationDialog(e, item)"
                   />
                 </div>
               </template>
               {{ data?.mitigation ? t('navigateToPart') : t('saveFirst') }}
             </v-tooltip>
-            <v-tooltip location="start">
+            <v-tooltip location="start" :aria-label="t('unlinkPart')">
               <template #activator="{ props }">
-                <v-btn v-bind="props" :icon="mdiLinkOff" variant="text" @click="removeMitigationPart(item)" />
+                <v-btn
+                  v-bind="props"
+                  :icon="mdiLinkOff"
+                  :aria-label="data?.mitigation ? t('navigateToPart') : t('saveFirst')"
+                  variant="text"
+                  @click="removeMitigationPart(item)"
+                />
               </template>
               {{ t('unlinkPart') }}
             </v-tooltip>
