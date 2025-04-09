@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-text-field
+  <v-number-input
     v-if="options.visible"
     :id="objectSchemaPointer"
     :model-value="modelValue"
@@ -28,9 +28,13 @@
     type="number"
     :clearable="!options.required"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
+    control-variant="stacked"
     variant="underlined"
+    inset
     @update:model-value="onInput"
     @click:clear="$emit('update:model-value', undefined)"
+    @wheel.prevent
+    @wheel.stop
   />
 </template>
 

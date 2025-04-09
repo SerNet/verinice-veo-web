@@ -1,5 +1,5 @@
-import { resolve } from 'path';
 import { camelCase } from 'lodash';
+import { resolve } from 'path';
 
 // Types
 import { LOCALES } from './types/locales';
