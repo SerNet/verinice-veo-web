@@ -1,5 +1,6 @@
 {
   "en": {
+    "all": "All",
     "createFormSchema": "Create form schema",
     "customObjectSchema": "Custom",
     "format": "(.json)",
@@ -7,6 +8,7 @@
     "objectSchemaUploadLabel": "Object schema upload @:format"
   },
   "de": {
+    "all": "Alle",
     "createFormSchema": "Formschema erstellen",
     "customObjectSchema": "Eigenes",
     "format": "(.json)",
