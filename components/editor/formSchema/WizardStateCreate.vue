@@ -64,11 +64,29 @@
         <v-card-text>
           <v-row no-gutters class="align-center">
             <v-col cols="12" md="5">
+              <span>{{ t('editor.formschema.create.context.text') }}*:</span>
+            </v-col>
+            <v-col cols="12" md="7">
+              <v-select
+                :model-value="context"
+                :label="t('editor.formschema.create.context')"
+                :rules="[requiredRule]"
+                :items="contexts"
+                required
+                variant="underlined"
+                data-veo-test="form-schema-type-select"
+                @update:model-value="$emit('update:context', $event)"
+              />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="align-center">
+            <v-col cols="12" md="5">
               <span>{{ t('editor.formschema.create.type.text') }}*:</span>
             </v-col>
             <v-col cols="12" md="7">
               <v-select
                 :model-value="objectType"
+                :disabled="!context"
                 :label="t('editor.formschema.create.type')"
                 :rules="[requiredRule]"
                 :items="objectTypes"
@@ -98,7 +116,7 @@
                 :model-value="subType"
                 :disabled="!objectType || (objectType === 'custom' && !objectSchema)"
                 :items="subTypes"
-                :loading="!!objectType && !objectSchema"
+                :loading="!!objectType && !objectSchema && objectType !== 'custom' && objectType !== 'all'"
                 :label="t('editor.formschema.subtype')"
                 :rules="[requiredRule]"
                 variant="underlined"
@@ -115,10 +133,14 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
-import { IVeoDomainSpecificObjectSchema, VeoElementTypePlurals } from '~/types/VeoTypes';
+import {
+  contextKeys,
+  type IVeoDomainSpecificObjectSchema,
+  RiContextTypes,
+  VeoElementTypePlurals
+} from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -146,6 +168,10 @@ export default defineComponent({
       type: String,
       default: undefined
     },
+    context: {
+      type: String,
+      default: undefined
+    },
     subType: {
       type: String,
       default: undefined
@@ -156,6 +182,7 @@ export default defineComponent({
     }
   },
   emits: [
+    'update:context',
     'update:sub-type',
     'update:object-schema',
     'update:object-type',
@@ -165,31 +192,65 @@ export default defineComponent({
     'update:valid'
   ],
   setup(props) {
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
+    const route = useRoute();
+    const { data: currentDomain } = useCurrentDomain();
+    const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
     function requiredRule(value: string) {
       return !!value || t('global.input.required').toString();
     }
 
+    const contexts = computed(() => {
+      return contextKeys.map((value) => ({
+        title: t(`editor.formschema.create.context.${value}`),
+        value
+      }));
+    });
+
     const objectTypes = computed(() => {
+      const lang = translations.value.lang[locale.value];
+
+      if (props.context === 'requirementImplementationControlView') {
+        return RiContextTypes.map((type) => ({
+          title: lang[type] ?? t(type) ?? upperFirst(type),
+          value: type
+        }));
+      }
+
       const objectSchemaOptions = Object.keys(VeoElementTypePlurals).map((elementType) => ({
-        title: upperFirst(elementType) as string,
+        title: lang[elementType] ?? upperFirst(elementType),
         value: elementType
       }));
+
       objectSchemaOptions.unshift({
         title: t('customObjectSchema').toString(),
         value: 'custom'
       });
+
       return objectSchemaOptions;
     });
 
-    const subTypes = computed(() => props.objectSchema?.properties?.subType?.enum || []);
+    const subTypes = computed(() => {
+      if (props.objectType === 'all') {
+        return [{ title: t('all'), value: 'all' }];
+      }
+
+      const subTypeEnum = props.objectSchema?.properties?.subType?.enum || [];
+      const elementTypeTranslations =
+        currentDomain.value?.raw?.elementTypeDefinitions[props.objectType]?.translations[locale.value] || {};
+
+      return subTypeEnum.map((subType) => ({
+        title: elementTypeTranslations[`${props.objectType}_${subType}_singular`] || subType,
+        value: subType
+      }));
+    });
 
     return {
       objectTypes,
       requiredRule,
       subTypes,
-
+      contexts,
       t
     };
   }

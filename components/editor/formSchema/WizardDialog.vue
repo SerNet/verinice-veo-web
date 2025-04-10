@@ -34,16 +34,20 @@
           @import="state = WIZARD_STATES.IMPORT"
         />
         <EditorFormSchemaWizardStateCreate
-          v-bind="mergeProps(formSchemaDetails, createFormListeners)"
           v-model:valid="createFormValid"
           v-model:object-type="objectSchemaId"
+          v-model:context="formSchemaDetails.context"
           v-model:sub-type="formSchemaDetails.subType"
           v-model:name="formSchemaDetails.name"
           v-model:sorting="formSchemaDetails.sorting"
           :model-value="WIZARD_STATES.CREATE"
           :domain-id="domainId"
           :object-schema="objectSchema"
+          @update:context="handlecontextChange"
+          @update:object-type="handleObjectTypeChange"
+          @update:sub-type="handleSubTypeChange"
           @update:object-schema="uploadedObjectSchema = $event"
+          @submit="createFormValid ? createFormSchema() : () => {}"
         />
         <EditorFormSchemaWizardStateImport
           v-model:force-own-schema="forceOwnObjectSchema"
@@ -68,7 +72,8 @@
         color="primary"
         data-veo-test="form-schema-next-btn"
         :disabled="
-          (state === WIZARD_STATES.CREATE && createFormValid === false) ||
+          (state === WIZARD_STATES.CREATE &&
+            (!createFormValid || !formSchemaDetails.subType || !formSchemaDetails.name)) ||
           (state === WIZARD_STATES.IMPORT && (!objectSchema || !formSchema || !schemasCompatible))
         "
         @click="state === WIZARD_STATES.CREATE ? createFormSchema() : importFormSchema()"
@@ -80,18 +85,17 @@
 </template>
 
 <script lang="ts">
-import { mergeProps } from 'vue';
-import { Dictionary, isEqual, merge, pick } from 'lodash';
-import { JsonPointer } from 'json-ptr';
 import type { LocaleObject } from '@nuxtjs/i18n';
+import { JsonPointer } from 'json-ptr';
+import { Dictionary, isEqual, merge, pick } from 'lodash';
 
-import { generateSchema, validate } from '~/lib/FormSchemaHelper';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
 import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import schemaQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+import { generateSchema, validate } from '~/lib/FormSchemaHelper';
+import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 enum WIZARD_STATES {
   START,
@@ -182,6 +186,7 @@ export default defineComponent({
     // form and objectschema stuff
     const formSchemaDetails = ref<{
       name?: string;
+      context?: string;
       subType?: string;
       sorting?: string;
     }>({});
@@ -213,7 +218,11 @@ export default defineComponent({
     const objectSchemaId = ref<string>();
     const uploadedObjectSchema = ref<IVeoDomainSpecificObjectSchema>();
 
-    const objectTypePlural = computed(() => VeoElementTypePlurals[objectSchemaId.value || '']);
+    const objectTypePlural = computed(() =>
+      formSchemaDetails?.value?.context === 'requirementImplementationControlView' ?
+        'controls'
+      : VeoElementTypePlurals[objectSchemaId.value || '']
+    );
     const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({
       type: objectTypePlural.value || '',
       domainId: props.domainId
@@ -263,6 +272,37 @@ export default defineComponent({
       }
     );
 
+    function handlecontextChange(newType: string) {
+      formSchemaDetails.value.context = newType;
+      formSchemaDetails.value.subType = undefined;
+      objectSchemaId.value = undefined;
+      createFormValid.value = false;
+    }
+
+    function handleObjectTypeChange(newType: string) {
+      objectSchemaId.value = newType;
+      formSchemaDetails.value.subType = undefined;
+
+      nextTick(() => {
+        createFormValid.value = false;
+      });
+    }
+
+    function handleSubTypeChange(newType: string) {
+      formSchemaDetails.value.subType = newType;
+
+      nextTick(() => {
+        if (newType) {
+          const allRequiredFieldsFilled =
+            !!formSchemaDetails.value.name && !!formSchemaDetails.value.context && !!objectSchemaId.value;
+
+          createFormValid.value = allRequiredFieldsFilled;
+        } else {
+          createFormValid.value = false;
+        }
+      });
+    }
+
     // translation stuff
     const translationQueryParameters = computed(() => ({
       languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
@@ -283,8 +323,9 @@ export default defineComponent({
       // we typecast in the following function call, as the form validation makes sure, that all values have been set
       uploadedFormSchema.value = generateSchema(
         formSchemaDetails.value.name as string,
-        objectSchema.value?.title as string,
-        formSchemaDetails.value.subType as string,
+        formSchemaDetails.value.context as string,
+        objectSchemaId.value === 'all' ? null : (objectSchema.value?.title as string),
+        formSchemaDetails.value.subType === 'all' ? null : (formSchemaDetails.value.subType as string),
         formSchemaDetails.value.sorting || null,
         locale.value
       );
@@ -298,14 +339,6 @@ export default defineComponent({
       }
       emitSchemas();
     }
-
-    const createFormListeners = {
-      'update:name': (newValue: string) => (formSchemaDetails.value['name'] = newValue),
-      'update:sorting': (newValue: string) => (formSchemaDetails.value['sorting'] = newValue),
-      'update:sub-type': (newValue: string) => (formSchemaDetails.value['subType'] = newValue),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      submit: () => (createFormValid.value ? createFormSchema() : () => {})
-    };
 
     // import stuff
 
@@ -346,13 +379,15 @@ export default defineComponent({
     );
 
     return {
-      createFormListeners,
       createFormSchema,
       createFormValid,
       forceOwnObjectSchema,
       formSchema,
       formSchemaDetails,
       formSchemaId,
+      handlecontextChange,
+      handleObjectTypeChange,
+      handleSubTypeChange,
       importFormSchema,
       loadingFormSchema,
       loadingObjectSchema,
@@ -363,11 +398,9 @@ export default defineComponent({
       state,
       uploadedFormSchema,
       uploadedObjectSchema,
-
       t,
       globalT,
-      WIZARD_STATES,
-      mergeProps
+      WIZARD_STATES
     };
   }
 });

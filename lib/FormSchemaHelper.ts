@@ -23,6 +23,7 @@ import { cloneDeep } from 'lodash';
 
 export function generateSchema(
   name: string,
+  context: string,
   modelType: string,
   subType: string,
   sorting: string | null,
@@ -31,6 +32,7 @@ export function generateSchema(
 ): IVeoFormSchema {
   return {
     name: { [defaultLocale]: name },
+    context,
     modelType,
     subType,
     translation: translation ?? { [defaultLocale]: {} },
