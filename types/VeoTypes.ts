@@ -654,3 +654,7 @@ export type VeoLinkItem = {
   linkType: string;
   subType: string;
 };
+
+export const contextKeys = ['elementDetails', 'requirementImplementationControlView'];
+
+export const RiContextTypes = ['all', 'scope', 'process', 'asset'] as const;
