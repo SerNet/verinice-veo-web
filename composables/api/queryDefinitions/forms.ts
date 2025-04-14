@@ -20,13 +20,13 @@ import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
 export interface IVeoFormSchemaMeta {
-  context: string;
   modelType: string;
   subType: string;
   name: { [key: string]: string };
   id?: string;
   domainId?: string;
   sorting: string | null;
+  context?: string;
 }
 
 export interface IVeoFormSchemaItemOptions {
