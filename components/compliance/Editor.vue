@@ -186,7 +186,7 @@ import { useQuery } from '~/composables/api/utils/query';
 
 // ===== Types and interfaces =====
 import type { IVeoEntity, IVeoLink, RequirementImplementation, ResponsiblePerson } from '~/types/VeoTypes';
-import { contextKeys, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { RI_CONTROL_VIEW_CONTEXT, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { isVeoLink, validateType } from '~/types/utils';
 
 // ===== Type definitions =====
@@ -238,8 +238,6 @@ enum Status {
   No = 'NO',
   NA = 'N_A'
 }
-
-const RI_CONTROL_VIEW_CONTEXT = contextKeys[1];
 
 // ===== State management =====
 // Form state

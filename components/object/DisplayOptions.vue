@@ -35,9 +35,7 @@
 <script setup lang="ts">
 import { upperFirst } from 'lodash';
 import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import { contextKeys, IVeoObjectSchema } from '~/types/VeoTypes';
-
-const ELEMENT_DETAILS_CONTEXT = contextKeys[0];
+import { ELEMENT_DETAILS_CONTEXT, IVeoObjectSchema } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
@@ -48,6 +46,7 @@ const props = withDefaults(
     objectSchema: IVeoObjectSchema;
   }>(),
   {
+    displayOption: 'objectschema',
     objectData: undefined,
     objectSchema: undefined,
     formSchemas: () => []
@@ -67,7 +66,7 @@ const displayOptions = computed<{ title: string; value: string | undefined }[]>(
       (formSchema) =>
         formSchema.modelType === props.objectSchema?.title &&
         (!currentSubType || currentSubType === formSchema.subType) &&
-        formSchema.context !== ELEMENT_DETAILS_CONTEXT
+        formSchema.context === ELEMENT_DETAILS_CONTEXT
     )
     .map((formSchema) => ({
       title: formSchema.name[locale.value] || formSchema.subType,

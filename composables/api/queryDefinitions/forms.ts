@@ -26,7 +26,7 @@ export interface IVeoFormSchemaMeta {
   id?: string;
   domainId?: string;
   sorting: string | null;
-  context?: string;
+  context: string;
 }
 
 export interface IVeoFormSchemaItemOptions {
