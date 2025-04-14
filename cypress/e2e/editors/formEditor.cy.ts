@@ -22,8 +22,10 @@ describe('Form Editor', () => {
           cy.get('input').type('test');
         });
     });
+    cy.get('[data-veo-test="form-schema-context-select"]').click();
+    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('Object view').click();
     cy.get('[data-veo-test="form-schema-type-select"]').click();
-    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('Scope').click();
+    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('scope').click();
     cy.get('[data-veo-test="dialog-card"]').within(() => {
       cy.get('[data-veo-test="form-schema-subtype-select"]').click();
     });

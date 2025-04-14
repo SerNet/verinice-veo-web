@@ -74,7 +74,7 @@
                 :items="contexts"
                 required
                 variant="underlined"
-                data-veo-test="form-schema-type-select"
+                data-veo-test="form-schema-context-select"
                 @update:model-value="$emit('update:context', $event)"
               />
             </v-col>
