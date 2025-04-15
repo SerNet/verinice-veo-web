@@ -324,7 +324,7 @@ export default defineComponent({
       uploadedFormSchema.value = generateSchema(
         formSchemaDetails.value.name as string,
         formSchemaDetails.value.context as string,
-        objectSchemaId.value === 'all' ? null : (objectSchema.value?.title as string),
+        objectSchemaId.value === 'all' ? null : objectSchemaId.value,
         formSchemaDetails.value.subType === 'all' ? null : (formSchemaDetails.value.subType as string),
         formSchemaDetails.value.sorting || null,
         locale.value

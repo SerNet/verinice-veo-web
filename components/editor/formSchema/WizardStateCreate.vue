@@ -236,11 +236,19 @@ export default defineComponent({
         return [{ title: t('all'), value: 'all' }];
       }
 
-      const subTypeEnum = props.objectSchema?.properties?.subType?.enum || [];
-      const elementTypeTranslations =
-        currentDomain.value?.raw?.elementTypeDefinitions[props.objectType]?.translations[locale.value] || {};
+      if (!props.objectType) {
+        return [];
+      }
 
-      return subTypeEnum.map((subType) => ({
+      const elementTypeDef = currentDomain.value?.raw?.elementTypeDefinitions?.[props.objectType];
+      if (!elementTypeDef) {
+        return [];
+      }
+
+      const elementTypeTranslations = elementTypeDef.translations[locale.value] || {};
+      const subTypeKeys = Object.keys(elementTypeDef.subTypes || {});
+
+      return subTypeKeys.map((subType) => ({
         title: elementTypeTranslations[`${props.objectType}_${subType}_singular`] || subType,
         value: subType
       }));
