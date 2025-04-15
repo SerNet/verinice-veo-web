@@ -46,18 +46,17 @@
                 v-for="(subtypeGroup, index) in createdObjectsBySubtype"
                 :key="index"
                 role="menuitem"
-                class="catalog-items-applied"
+                class="catalog-items-applied text-primary text-decoration-underline"
+                tabindex="0"
                 :to="generateRoute({ item: subtypeGroup })"
               >
-                <v-list-item-title class="font-weight-bold d-flex align-center">
-                  {{ subtypeGroup.name }} ({{ subtypeGroup.items.length }})
-                </v-list-item-title>
+                {{ subtypeGroup.name }} ({{ subtypeGroup.items.length }})
               </v-list-item>
             </v-list>
           </BaseCard>
           <v-row class="my-2">
             <v-col cols="auto">
-              <v-btn color="primary" @click="showDialog = false">{{ t('global.button.close') }}</v-btn>
+              <v-btn variant="text" @click="showDialog = false">{{ t('global.button.cancel') }}</v-btn>
             </v-col>
           </v-row>
         </template>
