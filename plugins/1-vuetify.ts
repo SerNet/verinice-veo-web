@@ -15,21 +15,23 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import Cookies from 'js-cookie';
 import { createVuetify } from 'vuetify';
 import * as components from 'vuetify/components';
 import * as directives from 'vuetify/directives';
 import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import { de, en } from 'vuetify/locale';
 import 'vuetify/styles';
-import Cookies from 'js-cookie';
 
 // Vuetify Lab components
 import { VDateInput } from 'vuetify/labs/VDateInput';
+import { VFileUpload } from 'vuetify/labs/VFileUpload';
 
 const vuetify = createVuetify({
   components: {
     ...components,
-    VDateInput
+    VDateInput,
+    VFileUpload
   },
   directives,
   ssr: true,

@@ -35,7 +35,7 @@
                   <v-icon :icon="mdiAlert"></v-icon>
                   {{ $t('importObjects.requiredFieldsNotMapped') }}
                 </span>
-                <span>{{ unmappedRequiredFields.join(', ') }}</span>
+                <span> {{ unmappedRequiredFields.join(', ') }}</span>
               </v-list-item-title>
             </v-list-item>
           </v-list>

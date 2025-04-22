@@ -17,23 +17,36 @@
 <template>
   <div>
     <div class="import-container">
-      <v-card class="upload-card">
-        <v-card-title class="text-h6">{{ t('import.title') }}</v-card-title>
-
-        <div
-          class="drop-zone pa-8"
-          :class="{ 'drag-active': isDragging }"
-          @dragover.prevent="isDragging = true"
-          @dragleave="isDragging = false"
-          @drop.prevent="handleFileDrop"
+      <v-card class="upload-card" flat>
+        <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>
+        <v-file-upload
+          :browse-text="t('import.button.browse')"
+          :divider-text="t('import.or.text')"
+          :icon="mdiUpload"
+          :title="t('import.dropzone.label')"
+          density="default"
+          scrim="primary"
+          accept=".csv"
+          show-selection="false"
+          :multiple="false"
+          class="custom-file-upload drop-zone"
+          :class="{ 'drop-zone-active': isDragging }"
+          @dragenter.prevent="isDragging = true"
+          @dragleave.prevent="isDragging = false"
+          @update:model-value="handleFileChange"
           @click="triggerFileUpload"
         >
-          <v-icon large class="mb-2">mdi-file-import</v-icon>
-          <div class="text-body-1 mb-4">{{ t('import.dropzone.label') }}</div>
-          <v-btn color="primary" @click.stop="triggerFileUpload">{{ t('import.button.browse') }}</v-btn>
-        </div>
+          <template #browse="{ props }">
+            <v-btn color="primary" class="browse-button" size="large" flat @click="props.onClick">
+              {{ t('import.button.browse') }}
+            </v-btn>
+          </template>
+          <template #item="{ props: itemProps }">
+            <v-file-upload-item v-bind="itemProps" lines="one" nav> </v-file-upload-item>
+          </template>
+        </v-file-upload>
 
-        <input ref="fileInput" type="file" accept=".csv" class="hidden" @change="handleFileChange" />
+        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleFileChange" />
       </v-card>
     </div>
 
@@ -51,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import { mdiUpload } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
@@ -72,19 +86,18 @@ const props = defineProps({
     default: () => ['name']
   }
 });
-
 const emit = defineEmits<{
   (event: 'navigate', objectType: string, subType: string): void;
 }>();
 
-const fileInput = ref<HTMLInputElement | null>(null);
-const isDragging = ref(false);
 const isCsvDialogOpen = ref(false);
 const headers = ref<string[]>([]);
 const parsedData = ref<Record<string, any>[]>([]);
+const isDragging = ref(false);
+const fileInputRef = ref<HTMLInputElement | null>(null);
 
 const triggerFileUpload = () => {
-  fileInput.value?.click();
+  fileInputRef.value?.click();
 };
 
 const processFile = async (file: File) => {
@@ -101,19 +114,17 @@ const processFile = async (file: File) => {
   }
 };
 
-const handleFileDrop = (event: DragEvent) => {
-  isDragging.value = false;
-  const files = event.dataTransfer?.files;
-  if (files && files.length > 0) {
-    processFile(files[0]);
-  }
-};
-
-const handleFileChange = (event: Event) => {
-  const target = event.target as HTMLInputElement;
-  const files = target.files;
-  if (files && files.length > 0) {
-    processFile(files[0]);
+// Upload is returning a list even though multiple is false. This should be in vuetify fixed in newer verions
+// Using any as a workaround
+const handleFileChange = (input: any) => {
+  if (input instanceof File) {
+    processFile(input);
+  } else if (input instanceof Event) {
+    const target = input.target as HTMLInputElement;
+    const file = target.files?.[0];
+    if (file) {
+      processFile(file);
+    }
   }
 };
 
@@ -125,14 +136,16 @@ const handleNavigate = (objectType: string, subType: string) => {
 <i18n>
 {
   "en": {
-    "import.title": "Import Elements",
-    "import.dropzone.label": "Drag and drop CSV file here",
-    "import.button.browse": "Browse Files"
+    "import.title": "Import Items",
+    "import.dropzone.label": "Drag and drop a CSV file here",
+    "import.button.browse": "Browse Files",
+    "import.or.text": "or select from your device"
   },
   "de": {
     "import.title": "Elemente importieren",
-    "import.dropzone.label": "Ziehen Sie die CSV-Datei hierher",
-    "import.button.browse": "Dateien durchsuchen"
+    "import.dropzone.label": "CSV-Datei hierher ziehen und ablegen",
+    "import.button.browse": "Dateien auswählen",
+    "import.or.text": "oder von Ihrem Gerät auswählen"
   }
 }
 </i18n>
@@ -143,24 +156,40 @@ const handleNavigate = (objectType: string, subType: string) => {
 }
 
 .upload-card {
-  max-width: 500px;
+  max-width: 700px;
   margin: 0 auto;
+  padding: 2rem;
+  background: white;
 }
 
 .drop-zone {
   border: 2px dashed #ccc;
   border-radius: 4px;
   text-align: center;
+
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-.drag-active {
-  border-color: #1976d2;
-  background-color: rgba(25, 118, 210, 0.05);
+.drop-zone-active {
+  border-color: #c62828;
+  background-color: rgba(198, 40, 40, 0.05);
 }
 
-.hidden {
-  display: none;
+.drop-text {
+  color: #888;
+  font-size: 18px;
+}
+
+.hidden-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>
