@@ -78,7 +78,7 @@
             </template>
             <span>{{ tab.tooltip ?? t('defaultDisabledTooltip') }}</span>
           </v-tooltip>
-          <v-tab v-else :data-component-name="`object-details-${tab.key}-tab`">
+          <v-tab v-else :data-component-name="`object-details-${tab.key}-tab`"  tabindex="0">
             {{ t(tab.key) }}
           </v-tab>
         </div>
