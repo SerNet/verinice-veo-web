@@ -42,7 +42,7 @@ export interface IVeoUserComposable {
 const keycloak = ref<Keycloak | undefined>(undefined);
 const keycloakInitializationStarted = ref(false);
 const keycloakInitialized = ref(false);
-const tablePageSize = ref<number>(20);
+const tablePageSize = ref<number>(25);
 
 export const useVeoUser: () => IVeoUserComposable = () => {
   const { updatePermissions } = useVeoPermissions();

@@ -22,7 +22,7 @@ describe('Catalogs', { testIsolation: false }, () => {
       method: 'GET'
     }).then((response: any) => {
       // Get number of table rows, which should be rendered
-      const expectedDataTableRows = response.body.totalItemCount > 20 ? 20 : response.body.totalItemCount;
+      const expectedDataTableRows = response.body.totalItemCount > 25 ? 25 : response.body.totalItemCount;
 
       cy.navigateTo({ group: 'catalog', entry: 'all' });
 
