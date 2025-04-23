@@ -122,7 +122,16 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
     cellClass: ['font-weight-bold'],
     sortable: true,
     priority: 60,
-    order: 30
+    order: 30,
+    render: ({ item }: any) => {
+      return h(
+        'button',
+        {
+          class: 'font-weight-bold'
+        },
+        item.control?.name
+      );
+    }
   },
   {
     text: t('thResponsibleBody'),
