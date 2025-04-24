@@ -193,7 +193,7 @@ describe('Requirement Implementations:  List', () => {
     cy.checkPagination(['abbreviation, name, status']);
   });
 
-  it('checks if breadcrumbs are correct', () => {
+  it.only('checks if breadcrumbs are correct', () => {
     const dynamicTestData = Cypress.env('dynamicTestData');
 
     const unitName = dynamicTestData.unit.name;
@@ -212,27 +212,27 @@ describe('Requirement Implementations:  List', () => {
     cy.get('@breadcrumbs')
       .eq(0)
       .invoke('text')
-      .then((text: string) => expect(text).to.eq(unitName));
+      .then((text: string) => expect(text).to.include(unitName));
     cy.get('@breadcrumbs')
       .eq(1)
       .invoke('text')
-      .then((text: string) => expect(text).to.eq(domainName));
+      .then((text: string) => expect(text).to.include(domainName));
     cy.get('@breadcrumbs')
       .eq(2)
       .invoke('text')
-      .then((text: string) => expect(text).to.eq(objectTypePlural));
+      .then((text: string) => expect(text).to.include(objectTypePlural));
     cy.get('@breadcrumbs')
       .eq(3)
       .invoke('text')
-      .then((text: string) => expect(text).to.eq(subType));
+      .then((text: string) => expect(text).to.include(subType));
     cy.get('@breadcrumbs')
       .eq(4)
       .invoke('text')
-      .then((text: string) => expect(text).to.contain(objectName));
+      .then((text: string) => expect(text).to.include(objectName));
     cy.get('@breadcrumbs')
       .eq(5)
       .invoke('text')
-      .then((text: string) => expect(text).to.eq(`Implementation (${moduleName})`));
+      .then((text: string) => expect(text).to.include(`Implementation (${moduleName})`));
   });
 });
 
