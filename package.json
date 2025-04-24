@@ -98,6 +98,6 @@
     "sass": "1.77.6",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.5",
-    "vue-tsc": "2.2.8"
+    "vue-tsc": "2.2.10"
   }
 }
