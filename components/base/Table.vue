@@ -66,8 +66,8 @@ export type ExtractProperty<V extends ReadonlyArray<Record<string, any>>, K exte
 
 <script setup lang="ts">
 export interface SortItem {
-  key: string;
-  order: string;
+  key: string | string[];
+  order?: string | string[] | boolean;
 }
 
 const props = withDefaults(

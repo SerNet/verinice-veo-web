@@ -3,7 +3,8 @@ const flagNames = {
   cardView: 'VEO_FEATURE_FLAG_CARD_VIEW',
   riskDefinitionEvaluation: 'VEO_FEATURE_FLAG_RISK_DEFINITION_EVALUATION',
   shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS',
-  urlParams: 'VEO_FEATURE_FLAG_URL_PARAMS'
+  urlParams: 'VEO_FEATURE_FLAG_URL_PARAMS',
+  veoFeatureFlagAccessGroups: 'VEO_FEATURE_FLAG_ACCESS_GROUPS'
 };
 
 type FlagNames = keyof typeof flagNames;
