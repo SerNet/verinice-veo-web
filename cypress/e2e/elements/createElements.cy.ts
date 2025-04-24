@@ -22,26 +22,28 @@ describe('Create elements', () => {
   // number of elements to be created in each sub type
   const numOfElements = 1;
 
-  it('should verify actions in all scope tabs', () => {
+  it('verifies actions available in `all scope`', () => {
     cy.visit(
       `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${Cypress.env('dynamicTestData').unit.domains[0].id}/scopes/-`,
       { failOnStatusCode: false }
     );
+
+    // Get possible actions on this page
     cy.getCustom('button[data-component-name="create-object-button"]').click();
-    cy.get('[data-veo-test="action-selection-nav-item"]').then(($items) => {
-      const availableActions = $items.toArray().map((item) => item.innerText.trim());
+    cy.get('[data-veo-test="action-selection-nav-item"]').as('availableActions');
+    cy.getCustom('button[data-component-name="create-object-button"]').click();
 
-      const actionsToTest = availableActions.slice(0, 2);
-
+    cy.get('@availableActions').each((action) => {
       cy.getCustom('button[data-component-name="create-object-button"]').click();
+      cy.get('[data-veo-test="action-selection-nav-item"]'); // wait for menu to be open
 
-      actionsToTest.forEach((action) => {
-        cy.getCustom('button[data-component-name="create-object-button"]').click();
-        cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action).click();
-        cy.getCustom('[data-veo-test="dialog-card"]').as('container');
-        cy.getCustom('@container').getCustom('[data-veo-test="dialog-title"]').invoke('text').should('contain', action);
-        cy.getCustom('.v-card').find('.close-button').click();
-      });
+      cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action.text()).click();
+      cy.getCustom('[data-veo-test="dialog-card"]').as('container');
+      cy.getCustom('@container')
+        .getCustom('[data-veo-test="dialog-title"]')
+        .invoke('text')
+        .should('contain', action.text());
+      cy.getCustom('.v-card').find('.close-button').click();
     });
   });
 
