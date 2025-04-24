@@ -127,7 +127,9 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
       return h(
         'button',
         {
-          class: 'font-weight-bold'
+          class: 'font-weight-bold',
+          style: { textAlign: 'start' },
+          'aria-label': t('edit', [item.control?.name])
         },
         item.control?.name
       );

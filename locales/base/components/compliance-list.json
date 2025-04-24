@@ -5,7 +5,8 @@
     "thOrigin": "Umsetzungsherkunft",
     "thResponsibleBody": "Verantwortlich",
     "thStatus": "Status",
-    "noRequirementImplementations": "Keine Requirement Implementations vorhanden."
+    "noRequirementImplementations": "Keine Requirement Implementations vorhanden.",
+    "edit": "{0} bearbeiten"
   },
   "en": {
     "thAbbreviation": "Abbreviation",
@@ -13,6 +14,7 @@
     "thOrigin": "Origin",
     "thResponsibleBody": "Responsible",
     "thStatus": "Status",
-    "noRequirementImplementations": "No requirement implementations available."
+    "noRequirementImplementations": "No requirement implementations available.",
+    "edit": "edit {0}"
   }
 }
