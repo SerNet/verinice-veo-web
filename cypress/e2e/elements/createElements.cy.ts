@@ -77,7 +77,7 @@ describe('Create elements', () => {
 
           cy.containsCustom(elements.name).closest('tr').as('createdElement');
 
-          cy.getCustom('@createdElement').then(($row) => {
+          cy.getCustom('@createdElement').then(($row: JQuery<HTMLElement>) => {
             cy.wrap($row).containsCustom(elements.abb).should('be.visible');
             cy.wrap($row).containsCustom(elements.status).should('be.visible');
           });
