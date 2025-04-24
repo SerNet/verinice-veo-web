@@ -16,75 +16,44 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <nav aria-label="breadcrumb">
-    <v-breadcrumbs class="text-h3" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
-      <v-breadcrumbs-item
-        v-for="(item, index) of displayedBreadcrumbs"
-        :key="item.key"
-        :data-veo-test="item.dataVeoTest ?? 'breadcrumb-item'"
-        :disabled="item.disabled || (item.to === route.fullPath && item.index < BREADCRUMB_BREAKOFF)"
-        :to="item.to"
-        nuxt
-      >
-        <span v-if="index > 0 && (queryResultMap[item.param] || item.text)">
-          <v-icon :icon="mdiChevronRight" size="small" />
-        </span>
-        <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
-        <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
-          <v-icon v-if="item.icon" class="text-primary" :icon="item.icon" size="large" />
-          <span
-            v-else-if="Object.keys(queryResultMap).includes(item.param)"
-            class="breadcrumbs-item-height small-caps capitalize"
-          >
-            <template v-if="queryResultMap[item.param]">
-              {{ queryResultMap[item.param] }}
-            </template>
-            <v-skeleton-loader v-else data-veo-test="loader" type="text" />
-          </span>
-          <span v-else-if="item.text" class="breadcrumbs-item-height small-caps capitalize">
-            {{ item.text }}
-          </span>
-        </template>
-        <!-- Display the button with the list instead of the last item -->
-        <template v-else-if="item.index === BREADCRUMB_BREAKOFF">
-          <v-menu>
+  <div class="crumbs" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
+    <v-breadcrumbs>
+      <!-- Breadcrumbs hidden in a ... menu -->
+      <template v-if="menuCrumbs">
+        <li class="crumb__menu">
+          <v-menu v-if="true">
             <template #activator="{ props }">
-              <v-btn v-bind="props" color="primary" :icon="mdiDotsHorizontal" small @click.stop.prevent />
+              <v-btn
+                v-bind="props"
+                color="primary"
+                :icon="mdiDotsHorizontal"
+                small
+                @click.stop.prevent
+                :aria-label="t('showBreadcrumbs')"
+              />
             </template>
             <template #default>
-              <v-list dense>
-                <v-list-item v-for="menuItem of slicedBreadcrumbs" :key="menuItem.key" nuxt>
-                  <v-breadcrumbs-item
-                    :key="menuItem.key"
-                    :disabled="menuItem.disabled || menuItem.to === route.fullPath"
-                    :to="menuItem.to"
-                    nuxt
-                    :aria-current="index === displayedBreadcrumbs.length - 1 ? 'page' : false"
-                  >
-                    <!-- @vue-ignore TODO #3099 property does not exist-->
-                    <template v-if="menuItem.icon" #prepend>
-                      <v-icon :icon="menuItem.icon" color="primary" size="large" />
-                    </template>
-                    <v-list-item-title v-if="!menuItem.icon">
-                      <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
-                        <template v-if="queryResultMap[menuItem.param]">
-                          {{ queryResultMap[menuItem.param] }}
-                        </template>
-                        <v-skeleton-loader v-else data-veo-test="loader" type="text" />
-                      </template>
-                      <template v-if="menuItem.text">
-                        {{ menuItem.text }}
-                      </template>
-                    </v-list-item-title>
-                  </v-breadcrumbs-item>
-                </v-list-item>
-              </v-list>
+              <ul class="crumb__menu__list v-list">
+                <template v-for="item in menuCrumbs" :key="item.key">
+                  <Crumb :item="item" />
+                </template>
+              </ul>
             </template>
           </v-menu>
+          <span>
+            <v-icon :icon="mdiChevronRight" size="small" />
+          </span>
+        </li>
+      </template>
+
+      <!-- Always visible crumbs -->
+      <template v-if="visibleCrumbs">
+        <template v-for="(item, index) in visibleCrumbs" :key="item.index">
+          <Crumb :item="item" :has-chevron="index != visibleCrumbs.length - 1" />
         </template>
-      </v-breadcrumbs-item>
+      </template>
     </v-breadcrumbs>
-  </nav>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -99,6 +68,9 @@ import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects'
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useSubTypeTranslation, useTranslations } from '~/composables/Translations';
+import { truncate } from 'lodash';
+import { useDisplay } from 'vuetify';
+import type { TInlineComponent } from '~/types/utils';
 
 type SupportedQuery = ':unit' | ':domain' | ':report' | ':objectType' | ':object';
 
@@ -128,6 +100,27 @@ const route = useRoute();
 const { isOverridingBreadcrumbs, breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 const { subTypeTranslation } = useSubTypeTranslation();
 const { data: translations } = useTranslations({ domain: route.params.domain as string });
+// Breakpoints
+const { mdAndDown, smAndDown, xs } = useDisplay();
+
+// Max length of breadcrumbs before
+const BREADCRUMB_BREAKOFF = computed(() => {
+  if (xs.value) return 6;
+  if (smAndDown.value) return 4;
+  if (mdAndDown.value) return 0;
+  return 0;
+});
+
+const truncateAt = computed(() => {
+  if (xs.value) return 26;
+  return 22;
+});
+
+const numberOfVisibleCrumbs = computed(() =>
+  xs.value ? -10
+  : smAndDown.value ? 1
+  : 2
+);
 
 const title = ref('');
 
@@ -235,9 +228,6 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
     }
   ]
 ]);
-
-// After this position, all breadcrumbs will be moved to a menu to avoid scrolling
-const BREADCRUMB_BREAKOFF = 5;
 
 // Queried text. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
 // Must be refactored if for example two objects are part of the path.
@@ -380,8 +370,23 @@ const breadcrumbs = computed(() => {
   return _breadcrumbs.sort((breadcrumbA, breadcrumbB) => breadcrumbA.position - breadcrumbB.position);
 });
 
-const displayedBreadcrumbs = computed(() => breadcrumbs.value.slice(0, BREADCRUMB_BREAKOFF + 1)); // Use one breadcrumb more than would be displayed to display the "more"-button
-const slicedBreadcrumbs = computed(() => breadcrumbs.value.slice(BREADCRUMB_BREAKOFF + 1)); // Start with the breadcrumb that wouldn't be displayed
+// remove index 0 + 1 from breadcrumbs
+const menuCrumbs = computed(() => {
+  if (BREADCRUMB_BREAKOFF.value > 0 || breadcrumbs.value.length > 3) {
+    return JSON.parse(JSON.stringify(breadcrumbs.value)).slice(
+      0,
+      breadcrumbs.value.length - numberOfVisibleCrumbs.value
+    );
+  }
+  return null;
+});
+
+const visibleCrumbs = computed(() => {
+  if (BREADCRUMB_BREAKOFF.value > 0 || breadcrumbs.value.length > 3) {
+    return JSON.parse(JSON.stringify(breadcrumbs.value)).slice(-numberOfVisibleCrumbs.value);
+  }
+  return JSON.parse(JSON.stringify(breadcrumbs.value));
+});
 
 // Put all query parameters into a map
 watch(
@@ -413,7 +418,7 @@ watch(
   }
 );
 
-// Page title related stuff
+// Page title
 const updateTitle = () => {
   if (props.writeToTitle) {
     title.value = breadcrumbs.value
@@ -423,14 +428,72 @@ const updateTitle = () => {
         : entry.text
       )
       .reverse()
-      .slice(0, BREADCRUMB_BREAKOFF)
+      .slice(0, 5)
       .join(' - ');
   }
 };
 
 watch(() => locale.value, updateTitle, { immediate: true });
-watch(() => queryResultMap, updateTitle, { deep: true, immediate: true });
-watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
+watch(queryResultMap, updateTitle, { immediate: true });
+watch(breadcrumbs, updateTitle, { immediate: true });
+
+const Crumb: TInlineComponent = {
+  props: ['item', 'hasChevron'],
+  data: () => ({
+    mdiChevronRight,
+    route,
+    BREADCRUMB_BREAKOFF,
+    queryResultMap,
+    truncate,
+    truncateAt
+  }),
+  methods: {
+    getBreadcrumbText({ item, queryResultMap }) {
+      if (!item) return;
+      if (Object.keys(queryResultMap).includes(item?.param)) return queryResultMap?.[item?.param];
+      return item?.text as string;
+    }
+  },
+  computed: {
+    breadcrumbText() {
+      return this.getBreadcrumbText({ item: this.item, queryResultMap: this.queryResultMap });
+    }
+  },
+
+  template: `
+    <v-breadcrumbs-item>
+      <v-tooltip :text="breadcrumbText">
+        <template v-slot:activator="{ props }">
+        <span v-bind="props">
+          <RouterLink
+            :data-veo-test="item?.dataVeoTest ?? 'breadcrumb-item'"
+            :disabled="item.disabled || item.to === route.fullPath"
+            :to="item.to"
+            :aria-label="breadcrumbText"
+            class="crumb__link"
+
+          >
+
+          <div class="crumb__inner">
+            <v-icon v-if="item.icon" class="text-primary" :icon="item.icon" size="large" />
+
+            <span v-if="breadcrumbText" class="crumb__name breadcrumbs-item-height small-caps capitalize">
+              {{ truncate( breadcrumbText , {length: truncateAt}) }}
+            </span>
+
+            <v-skeleton-loader v-if="!breadcrumbText && !item.icon" data-veo-test="loader" type="list-item"/>
+
+            <span v-if="hasChevron">
+              <v-icon :icon="mdiChevronRight" size="small" />
+            </span>
+          </div>
+
+        </RouterLink>
+      </template>
+    </v-tooltip>
+  </v-breadcrumbs-item>
+  `
+};
 </script>
 
 <i18n src="~/locales/base/components/layout-breadcrumbs.json"></i18n>
@@ -448,5 +511,58 @@ watch(() => breadcrumbs.value, updateTitle, { deep: true, immediate: true });
 }
 .v-breadcrumbs {
   padding: 0;
+}
+
+:deep(.crumb__menu__list) {
+  display: flex;
+  flex-direction: column;
+  padding: 8px;
+  border-radius: 2px;
+  gap: 8px;
+  cursor: pointer;
+}
+
+:deep(.v-overlay__content a:not([disabled='true'])) {
+  cursor: pointer;
+}
+:deep(.v-breadcrumbs-item a[disabled='true']) {
+  opacity: var(--v-disabled-opacity);
+}
+
+:deep(.crumb__inner) {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .v-skeleton-loader {
+    width: 80px;
+  }
+
+  @media (max-width: 620px) {
+    .v-skeleton-loader {
+      width: 10px;
+    }
+  }
+}
+
+:deep(.crumb__menu) {
+  display: flex;
+  align-items: center;
+}
+
+.crumbs {
+  display: flex;
+  align-items: center;
+}
+
+:deep(.crumb__link) {
+  text-decoration: none;
+  color: rgb(var(--v-theme-on-basepage));
+}
+
+@media (max-width: 520px) {
+  .crumbs {
+    display: none;
+  }
 }
 </style>
