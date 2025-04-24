@@ -239,11 +239,15 @@ const presetHeaders: { [key: string]: TableHeader } = {
     text: '',
     render: (context) => {
       const isSelected = internalModelValue.value.includes(context.internalItem.value);
-      const checkbox = document.querySelector('input[type="checkbox"][id^="input-"]');
-      const ariaLabel = isSelected ? t('deselectRow') : t('selectRow');
+      const itemValue = context.internalItem.value;
+      const mainCheckBox = document.querySelector('table thead input[type="checkbox"][id^="input-"]');
+      const checkbox = document.querySelector(`#checkbox-${itemValue}`);
+      const ariaLabel = isSelected ? t('deselect') : t('selectAll');
+      const ariaLabelRow = isSelected ? t('deselectRow') : t('selectRow');
 
       if (checkbox) {
-        checkbox.setAttribute('aria-label', ariaLabel);
+        checkbox.setAttribute('aria-label', ariaLabelRow);
+        mainCheckBox.setAttribute('aria-label', ariaLabel);
       }
       return h(VCheckbox, {
         id: `checkbox-${context.internalItem.value}`,

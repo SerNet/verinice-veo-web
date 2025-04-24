@@ -93,8 +93,10 @@
     "type": "Type",
     "icon": "Type",
     "actions": "Aktionen",
-    "deselectRow": "Deselect Row",
-    "selectRow": "Select Row"
+    "deselectRow": "Zeile Abswählen",
+    "selectRow": "Zeile Auswählen",
+    "deselect": "Abswählen",
+    "selectAll": "Auswählen Alle"
   },
 
   "domain.index.title": "Dashboard",

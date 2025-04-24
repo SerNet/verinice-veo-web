@@ -90,8 +90,10 @@
     "updatedBy": "Editor",
     "icon": "Type",
     "actions": "Actions",
-    "deselectRow": "Zeile abswählen",
-    "selectRow": "Zeile auswählen"
+    "deselectRow": "Deselect Row",
+    "selectRow": "Select Row",
+    "deselect": "Deselect",
+    "selectAll": "Select All"
   },
 
   "domain.index.title": "Dashboard",
