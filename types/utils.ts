@@ -21,7 +21,8 @@ export type TInlineComponent = {
   props?: string[];
   emits?: string[];
   data?: () => Record<string, any>;
-  methods?: Record<string, () => void | any>;
+  methods?: Record<string, (args: any) => void | any>;
+  computed?: Record<string, (args: any) => void | any>;
   template?: string;
 };
 
