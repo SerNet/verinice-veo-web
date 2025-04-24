@@ -19,7 +19,7 @@
     v-model="isOpen"
     max-width="1200"
     :title="$t('importObjects.title')"
-    confirm-close
+    :confirm-close="confirmCloseMessage || false"
     fixed-footer
     x-large
     scrollable
@@ -229,6 +229,14 @@ const csvTableRef = ref();
 const editingItem = ref<any>(null);
 const editingKey = ref<string>('');
 
+// Track original state for dirty check
+const originalState = ref({
+  headerMappings: {} as Record<string, string>,
+  items: [] as Record<string, any>[],
+  globalObjectType: '',
+  globalSubType: ''
+});
+
 /** Computed Properties **/
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
@@ -283,7 +291,29 @@ props.headers.forEach((header) => {
   headerMappings.value[header] = '';
 });
 
+const confirmCloseMessage = computed(() => {
+  if (importedItems.value > 0) return '';
+
+  // Check if mappings have changed
+  const mappingsChanged = Object.keys(headerMappings.value).some(
+    (key) => headerMappings.value[key] !== originalState.value.headerMappings[key]
+  );
+
+  // Check if items have been edited
+  const itemsChanged = items.value?.some((item, index) => {
+    if (index >= originalState.value.items.length) return true;
+    return Object.keys(item).some((key) => item[key] !== originalState.value.items[index][key]);
+  });
+
+  // Check if type selections changed
+  const typeChanged = globalObjectType.value !== originalState.value.globalObjectType;
+  const subTypeChanged = globalSubType.value !== originalState.value.globalSubType;
+
+  return mappingsChanged || itemsChanged || typeChanged || subTypeChanged ? $t('importObjects.confirmClose') : '';
+});
+
 /** Watchers **/
+
 watchEffect(() => {
   items.value = props.data.map((item) => ({ ...item })); // Shallow copy
 });
@@ -295,6 +325,25 @@ watch(globalObjectType, (newType) => {
 
 /** Methods **/
 
+// Initialize the original state to track changes
+const initializeOriginalState = () => {
+  originalState.value = {
+    headerMappings: JSON.parse(JSON.stringify(headerMappings.value)),
+    items: items.value ? JSON.parse(JSON.stringify(items.value)) : [],
+    globalObjectType: globalObjectType.value,
+    globalSubType: globalSubType.value
+  };
+};
+// Initialize original state when dialog opens
+watch(
+  isOpen,
+  (newValue) => {
+    if (newValue) {
+      initializeOriginalState();
+    }
+  },
+  { immediate: true }
+);
 // Apply global type to all items
 const applyType = (value: any) => {
   items.value = items.value.map((item) => ({

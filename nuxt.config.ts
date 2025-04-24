@@ -156,7 +156,5 @@ export default defineNuxtConfig({
         family: 'Open Sans'
       }
     ]
-  },
-
-  compatibilityDate: '2025-04-24'
+  }
 });
