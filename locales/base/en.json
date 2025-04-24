@@ -89,11 +89,7 @@
     "updatedAt": "Last change",
     "updatedBy": "Editor",
     "icon": "Type",
-    "actions": "Actions",
-    "deselectRow": "Deselect Row",
-    "selectRow": "Select Row",
-    "deselect": "Deselect",
-    "selectAll": "Select All"
+    "actions": "Actions"
   },
 
   "domain.index.title": "Dashboard",

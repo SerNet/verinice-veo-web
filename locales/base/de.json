@@ -92,11 +92,7 @@
     "updatedBy": "Bearbeiter",
     "type": "Type",
     "icon": "Type",
-    "actions": "Aktionen",
-    "deselectRow": "Zeile Abswählen",
-    "selectRow": "Zeile Auswählen",
-    "deselect": "Abswählen",
-    "selectAll": "Auswählen Alle"
+    "actions": "Aktionen"
   },
 
   "domain.index.title": "Dashboard",

@@ -251,7 +251,6 @@ const presetHeaders: { [key: string]: TableHeader } = {
       }
       return h(VCheckbox, {
         id: `checkbox-${context.internalItem.value}`,
-        indeterminate: false,
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
         density: props.compact ? 'compact' : 'default',
