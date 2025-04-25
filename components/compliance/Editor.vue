@@ -26,6 +26,7 @@
     @update:model-value="emit('update:show-dialog', $event)"
   >
     <BaseCard>
+      <!-- Loading state -->
       <v-card-text v-if="!item || view.isLoading">
         <v-skeleton-loader class="mb-4" type="list-item-two-line" />
         <v-skeleton-loader class="mb-4" type="paragraph" />
@@ -33,9 +34,7 @@
       </v-card-text>
 
       <v-card-text v-if="item && !view.isLoading">
-        <!-- Read only text fields -->
-
-        <!-- Target object  -->
+        <!-- Target object section -->
         <v-label class="mt-4">{{ t('riEditor.targetObject') }}</v-label>
         <BaseCard border padding>
           <ComplianceEditorRiMetaData
@@ -47,18 +46,17 @@
           />
         </BaseCard>
 
-        <!-- Control -->
+        <!-- Control section -->
         <v-label class="mt-4">{{ ciSubType }}</v-label>
         <BaseCard border padding>
           <DynamicFormEntrypoint
-            v-if="formSchema"
+            v-if="controlFormSchema"
             v-model="form.control"
             :disabled="true"
             :object-schema="objectSchema"
-            :form-schema="formSchema.content"
-            :domain="domain"
+            :form-schema="controlFormSchema.content"
+            :domain="currentDomain?.raw"
             :translations="mergedTranslations"
-            :additional-info="additionalInfo"
           />
           <ComplianceEditorRiMetaData
             v-for="property in config.riEditor.renderedProperties.control"
@@ -92,7 +90,7 @@
           <!-- @click:clear
             in vuetify 3.6.xx `clearable` doesn't reset the value when clearing the input,
             thus v-model is being reset manually
-        -->
+          -->
           <v-date-input
             v-model="form.implementationUntil"
             :label="t('riEditor.implementationUntil')"
@@ -131,6 +129,8 @@
       </v-card-text>
       <ObjectFormSkeletonLoader v-else />
     </BaseCard>
+
+    <!-- Dialog footer buttons -->
     <template #dialog-options>
       <v-btn flat variant="plain" :disabled="view.isLoading" @click="emit('update:show-dialog', false)">
         {{ t('global.button.cancel') }}
@@ -163,36 +163,33 @@
 </template>
 
 <script setup lang="ts">
+// ===== External dependencies =====
+import { format } from 'date-fns';
 import { cloneDeep, merge } from 'lodash';
+import { useDate } from 'vuetify';
+
+// ===== Internal components =====
 import DynamicFormEntrypoint from '~/components/dynamic-form/Entrypoint.vue';
+import ComplianceEditorRiMetaData from './editorRiMetaData.vue';
+
+// ===== API and composables =====
+import { useRequest } from '@/composables/api/utils/request';
 import domainQueryDefinitions, {
   IVeoFetchPersonsInDomainParameters,
   IVeoPersonInDomain
 } from '~/composables/api/queryDefinitions/domains';
+import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import controlQueryDefinitions, { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+
+// ===== Types and interfaces =====
 import type { IVeoEntity, IVeoLink, RequirementImplementation, ResponsiblePerson } from '~/types/VeoTypes';
 import { contextKeys, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { isVeoLink, validateType } from '~/types/utils';
-import ComplianceEditorRiMetaData from './editorRiMetaData.vue';
 
-const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-
-import { useRequest } from '@/composables/api/utils/request';
-import { format } from 'date-fns';
-import { useDate } from 'vuetify';
-import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
-
-const { data: config } = useConfiguration();
-
-const { request } = useRequest();
-const { t } = useVeoI18n();
-const adapter = useDate();
-const route = useRoute();
-const { updateItem } = useRequirementImplementationQuery();
-
+// ===== Type definitions =====
 interface Props {
   item: RequirementImplementation | null;
   showDialog: boolean;
@@ -213,6 +210,27 @@ type RequirementImplementationForForm = {
   implementationUntil?: Date;
 };
 
+export type TAdditionalInfo = {
+  originationDescription?: string;
+  protectionApproach?: string;
+  targetObjectDescription?: string;
+  protectionApproachTranslation?: string;
+};
+
+// ===== Props and emits =====
+const props = defineProps<Props>();
+const emit = defineEmits<Emits>();
+
+// ===== Utilities and hooks =====
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+const { t } = useVeoI18n();
+const adapter = useDate();
+const route = useRoute();
+const { request } = useRequest();
+const { updateItem } = useRequirementImplementationQuery();
+const { data: config } = useConfiguration();
+const { data: currentDomain } = useCurrentDomain();
+// ===== Constants =====
 enum Status {
   Unknown = 'UNKNOWN',
   Yes = 'YES',
@@ -221,11 +239,10 @@ enum Status {
   NA = 'N_A'
 }
 
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
+const RI_CONTROL_VIEW_CONTEXT = contextKeys[1];
 
-/** STATE */
-// data
+// ===== State management =====
+// Form state
 const initialForm: RequirementImplementationForForm = {
   origin: {},
   control: {},
@@ -236,69 +253,90 @@ const initialForm: RequirementImplementationForForm = {
 };
 
 const form = ref<RequirementImplementationForForm>(initialForm);
+const additionalInfo = ref<TAdditionalInfo>({});
 
-// React on changing props, e.g. if a new item is passed
-const _item = computed(() => props.item);
-watch(_item, () => {
-  if (!_item.value) return;
-  form.value = {
-    ..._item.value,
-    // TODO #3066 is there some way to get a date adapter that explicitly returns Dates and doesn't need casting?
-    implementationUntil:
-      _item.value.implementationUntil ? (adapter.parseISO(_item.value.implementationUntil) as Date) : undefined
-  };
-});
-
-// view
+// View state
 const view = reactive({
   isLoading: false,
   formIsDirty: false
 });
 
-// Load persons from current unit + current domain
+// ===== Route and context parameters =====
 const unitId = computed(() => route.params.unit);
 const currentDomainId = computed(() => route.params.domain);
-const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
 
-// Fetch to get total number of persons
-const fetchPersonsForTotalItemCountEnabled = computed(() => !!currentDomainId.value && !!unitId.value);
-
-const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
-  domainId: currentDomainId.value as string,
-  unitId: unitId.value as string,
-  size: '1'
-}));
-const RI_CONTROL_VIEW_CONTEXT = contextKeys[1];
-// Stuff that manages which form schema gets used to display the object
-const formsQueryParameters = computed(() => ({
-  domainId: route.params.domain as string
-}));
-const formsQueryEnabled = computed(() => !!currentDomainId);
-const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
-  enabled: formsQueryEnabled,
-  placeholderData: []
-});
-// Fetch targetObject
+// ===== API query parameters =====
+// Object queries
 const targetObjectParameters = computed<IVeoFetchObjectParameters>(() => ({
   id: props.item?.origin.id as string,
   domain: currentDomainId.value as string,
   endpoint: VeoElementTypePlurals[props.item?.origin.type]
 }));
-const { data: targetObject } = useQuery(controlQueryDefinitions.queries.fetch, targetObjectParameters, {
-  enabled: computed(() => !!props.item?.control.id)
-});
 
-// Fetch Control
 const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
   id: props.item?.control.id as string,
   domain: currentDomainId.value as string,
   endpoint: 'controls'
 }));
+
+// Domain and persons queries
+const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
+const fetchPersonsForTotalItemCountEnabled = computed(() => !!currentDomainId.value && !!unitId.value);
+const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
+  domainId: currentDomainId.value as string,
+  unitId: unitId.value as string,
+  size: '1'
+}));
+
+const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount);
+const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
+  domainId: currentDomainId.value as string,
+  unitId: unitId.value as string,
+  size: totalItemCount.value
+}));
+
+// Forms and schemas queries
+const formsQueryParameters = computed(() => ({
+  domainId: route.params.domain as string
+}));
+const formsQueryEnabled = computed(() => !!currentDomainId);
+
+const fetchSchemaQueryParameters = computed(() => ({
+  type: 'controls',
+  domainId: currentDomainId.value as string
+}));
+const fetchSchemaQueryEnabled = computed(() => !!currentDomainId.value);
+
+// ===== API data fetching =====
+// Fetch persons
+const { data: _personsForTotalItemCount } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  totalItemCountQueryParameters,
+  { enabled: fetchPersonsForTotalItemCountEnabled.value }
+);
+
+const { data: translations } = useTranslations({ domain: currentDomainId.value });
+
+// Fetch forms and schemas
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+  enabled: formsQueryEnabled,
+  placeholderData: []
+});
+
+// Fetch objects
+const { data: targetObject } = useQuery(controlQueryDefinitions.queries.fetch, targetObjectParameters, {
+  enabled: computed(() => !!props.item?.control.id)
+});
+
 const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, controlParameters, {
   enabled: computed(() => !!props.item?.control.id)
 });
 
-// Determine which form schema to use based on the rules
+const { data: objectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, {
+  enabled: fetchSchemaQueryEnabled
+});
+
+// Form schema selection - Move this up before it's used
 const selectedFormSchema = computed(() => {
   if (!formSchemas.value || !props.item) return null;
 
@@ -334,45 +372,34 @@ const selectedFormSchema = computed(() => {
   return null;
 });
 
-// Update form query parameters to use selected form
+// Form query parameters using selectedFormSchema
 const formQueryParameters = computed(() => ({
   id: selectedFormSchema.value?.id
 }));
-
-// Only enable form query if we have a selected form
 const formQueryEnabled = computed(() => !!formQueryParameters.value.id);
-const { data: formSchema } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, {
-  enabled: formQueryEnabled
-});
+
 const translationQueryParameters = computed(() => ({
   languages: [props.locale],
   domain: currentDomainId.value
 }));
-const { data: fetchedTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
-const mergedTranslations = computed<IVeoTranslations['lang']>(() =>
-  merge({}, fetchedTranslations.value?.lang || {}, formSchema.value?.translation || {})
-);
 
-const { data: _personsForTotalItemCount } = useQuery(
-  domainQueryDefinitions.queries.fetchPersonsInDomain,
-  totalItemCountQueryParameters,
-  { enabled: fetchPersonsForTotalItemCountEnabled.value }
-);
-const fetchDomainQueryParameters = computed(() => ({
-  id: currentDomainId.value as string
-}));
-const fetchDomainQueryEnabled = computed(() => !!currentDomainId.value);
-const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
-  enabled: fetchDomainQueryEnabled
+const { data: fetchedTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
+
+const { data: controlFormSchema } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, {
+  enabled: formQueryEnabled
 });
 
-// Translate the current item's `protection approach`
-const { data: translations } = useTranslations({ domain: currentDomainId.value });
+const { data: _persons } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  fetchPersonsInDomainQueryParameters,
+  { enabled: isFetchingPersons.value }
+);
 
-function translateProtectionApproach({ translations, locale, protectionApproach }): string {
-  if (!translations?.lang || !locale || !protectionApproach) return '';
-  return translations.lang[locale][protectionApproach];
-}
+// ===== Computed properties =====
+// Translations
+const mergedTranslations = computed<IVeoTranslations['lang']>(() =>
+  merge({}, fetchedTranslations.value?.lang || {}, controlFormSchema.value?.translation || {})
+);
 
 // @ts-ignore TODO #3066 ComputedRef<string> is not assignable to type string
 const protectionApproachTranslation = computed(() =>
@@ -383,22 +410,30 @@ const protectionApproachTranslation = computed(() =>
   })
 );
 
-/**
- * Information to be shown as meta data
- * It does not come whith `props.item` and thus has to be fetched
- * You will not need it to PUT a requirement implementation
- * -> It is solely for the purpose of displaying informative data to users
- * That is why we write it into a separate variable
- */
-export type TAdditionalInfo = {
-  originationDescription?: string;
-  protectionApproach?: string;
-  targetObjectDescription?: string;
-  protectionApproachTranslation?: string;
-};
-const additionalInfo = ref<TAdditionalInfo>({});
+const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
+  toRef(() => control.value?.type),
+  toRef(() => control.value?.subType),
+  false
+);
 
-const updateAdditionalInfo = (control: IVeoEntity, targetObject: IVeoEntity, protectionApproachTranslation: string) => {
+// Persons
+const persons = computed(() => mapPersons(_persons?.value?.items as IVeoPersonInDomain[]) ?? []);
+
+// ===== Helper functions =====
+function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
+  if (!persons) return [];
+  return persons.map((person) => ({
+    name: person.name,
+    targetUri: person._self
+  }));
+}
+
+function translateProtectionApproach({ translations, locale, protectionApproach }): string {
+  if (!translations?.lang || !locale || !protectionApproach) return '';
+  return translations.lang[locale][protectionApproach];
+}
+
+function updateAdditionalInfo(control: IVeoEntity, targetObject: IVeoEntity, protectionApproachTranslation: string) {
   // Target object
   additionalInfo.value.targetObjectDescription = targetObject?.description;
 
@@ -417,57 +452,9 @@ const updateAdditionalInfo = (control: IVeoEntity, targetObject: IVeoEntity, pro
   additionalInfo.value.protectionApproach =
     customAspects?.['control_bpInformation']?.control_bpInformation_protectionApproach;
   additionalInfo.value.protectionApproachTranslation = protectionApproachTranslation;
-};
-
-watch(
-  [control, targetObject, protectionApproachTranslation],
-  () => updateAdditionalInfo(control.value, targetObject.value, protectionApproachTranslation.value),
-  { immediate: true }
-);
-
-const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
-  toRef(() => control.value?.type),
-  toRef(() => control.value?.subType),
-  false
-);
-
-// Fetch again to get all persons in current domain + unit
-const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount);
-
-const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
-  domainId: currentDomainId.value as string,
-  unitId: unitId.value as string,
-  size: totalItemCount.value
-}));
-
-const { data: _persons } = useQuery(
-  domainQueryDefinitions.queries.fetchPersonsInDomain,
-  fetchPersonsInDomainQueryParameters,
-  { enabled: isFetchingPersons.value }
-);
-
-const persons = computed(() => mapPersons(_persons?.value?.items as IVeoPersonInDomain[]) ?? []);
-
-function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
-  if (!persons) return [];
-  return persons.map((person) => ({
-    name: person.name,
-    targetUri: person._self
-  }));
 }
 
-const objectTypePlural = computed(() => VeoElementTypePlurals['control']);
-// Formschema/display stuff
-// Fetching object schema
-const fetchSchemaQueryParameters = computed(() => ({
-  type: objectTypePlural.value as string,
-  domainId: currentDomainId.value as string
-}));
-const fetchSchemaQueryEnabled = computed(() => !!objectTypePlural.value && !!currentDomainId.value);
-const { data: objectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, {
-  enabled: fetchSchemaQueryEnabled
-});
-
+// ===== Event handlers =====
 async function submitForm({
   type,
   riskAffected,
@@ -510,6 +497,26 @@ async function submitForm({
     emit('update:show-dialog', false);
   }
 }
+
+// ===== Watchers and lifecycle hooks =====
+// Update form when item changes
+const _item = computed(() => props.item);
+watch(_item, () => {
+  if (!_item.value) return;
+  form.value = {
+    ..._item.value,
+    // TODO #3066 is there some way to get a date adapter that explicitly returns Dates and doesn't need casting?
+    implementationUntil:
+      _item.value.implementationUntil ? (adapter.parseISO(_item.value.implementationUntil) as Date) : undefined
+  };
+});
+
+// Update additional info when relevant data changes
+watch(
+  [control, targetObject, protectionApproachTranslation],
+  () => updateAdditionalInfo(control.value, targetObject.value, protectionApproachTranslation.value),
+  { immediate: true }
+);
 </script>
 
 <i18n src="~/locales/base/components/compliance-editor.json"></i18n>
