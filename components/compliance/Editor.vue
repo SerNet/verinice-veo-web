@@ -50,8 +50,19 @@
         <!-- Control -->
         <v-label class="mt-4">{{ ciSubType }}</v-label>
         <BaseCard border padding>
+          <DynamicFormEntrypoint
+            v-if="formSchema"
+            v-model="form.control"
+            :disabled="true"
+            :object-schema="objectSchema"
+            :form-schema="formSchema.content"
+            :domain="domain"
+            :translations="mergedTranslations"
+            :additional-info="additionalInfo"
+          />
           <ComplianceEditorRiMetaData
             v-for="property in config.riEditor.renderedProperties.control"
+            v-else
             :key="property.key"
             :property="property"
             :data="form.control"
@@ -152,22 +163,27 @@
 </template>
 
 <script setup lang="ts">
-import { cloneDeep } from 'lodash';
+import { cloneDeep, merge } from 'lodash';
+import DynamicFormEntrypoint from '~/components/dynamic-form/Entrypoint.vue';
 import domainQueryDefinitions, {
   IVeoFetchPersonsInDomainParameters,
   IVeoPersonInDomain
 } from '~/composables/api/queryDefinitions/domains';
 import controlQueryDefinitions, { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import { useQuery } from '~/composables/api/utils/query';
+import type { IVeoEntity, IVeoLink, RequirementImplementation, ResponsiblePerson } from '~/types/VeoTypes';
+import { contextKeys, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { isVeoLink, validateType } from '~/types/utils';
+import ComplianceEditorRiMetaData from './editorRiMetaData.vue';
+
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 import { useRequest } from '@/composables/api/utils/request';
 import { format } from 'date-fns';
 import { useDate } from 'vuetify';
-import type { IVeoLink, IVeoEntity, RequirementImplementation, ResponsiblePerson } from '~/types/VeoTypes';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
-
-import { isVeoLink, validateType } from '~/types/utils';
+import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 
 const { data: config } = useConfiguration();
 
@@ -245,20 +261,23 @@ const currentDomainId = computed(() => route.params.domain);
 const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
 
 // Fetch to get total number of persons
-const isFetchingTotalItemCount = computed(() => !!currentDomainId.value && !!unitId.value);
+const fetchPersonsForTotalItemCountEnabled = computed(() => !!currentDomainId.value && !!unitId.value);
 
 const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
   domainId: currentDomainId.value as string,
   unitId: unitId.value as string,
   size: '1'
 }));
-
-const { data: _personsForTotalItemCount } = useQuery(
-  domainQueryDefinitions.queries.fetchPersonsInDomain,
-  totalItemCountQueryParameters,
-  { enabled: isFetchingTotalItemCount.value }
-);
-
+const RI_CONTROL_VIEW_CONTEXT = contextKeys[1];
+// Stuff that manages which form schema gets used to display the object
+const formsQueryParameters = computed(() => ({
+  domainId: route.params.domain as string
+}));
+const formsQueryEnabled = computed(() => !!currentDomainId);
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+  enabled: formsQueryEnabled,
+  placeholderData: []
+});
 // Fetch targetObject
 const targetObjectParameters = computed<IVeoFetchObjectParameters>(() => ({
   id: props.item?.origin.id as string,
@@ -277,6 +296,74 @@ const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
 }));
 const { data: control } = useQuery(controlQueryDefinitions.queries.fetch, controlParameters, {
   enabled: computed(() => !!props.item?.control.id)
+});
+
+// Determine which form schema to use based on the rules
+const selectedFormSchema = computed(() => {
+  if (!formSchemas.value || !props.item) return null;
+
+  const riOwnerType = targetObject.value?.type;
+  const riOwnerSubType = targetObject.value?.subType;
+
+  // 1. Check for RI-Control form for specific subtype of current RI-Owner
+  const specificSubtypeForm = formSchemas.value.find(
+    (form) =>
+      form.modelType === riOwnerType && form.context === RI_CONTROL_VIEW_CONTEXT && form.subType === riOwnerSubType
+  );
+
+  if (specificSubtypeForm) {
+    return specificSubtypeForm;
+  }
+
+  // 2. Check for RI-Control form for all subtypes of current RI-Owner
+  const allSubtypesForm = formSchemas.value.find(
+    (form) => form.modelType === riOwnerType && form.context === RI_CONTROL_VIEW_CONTEXT
+  );
+
+  if (allSubtypesForm) {
+    return allSubtypesForm;
+  }
+
+  // 3. Check for RI-Control form for all object types
+  const allObjectTypesForm = formSchemas.value.find((form) => form.context === RI_CONTROL_VIEW_CONTEXT);
+
+  if (allObjectTypesForm) {
+    return allObjectTypesForm;
+  }
+
+  return null;
+});
+
+// Update form query parameters to use selected form
+const formQueryParameters = computed(() => ({
+  id: selectedFormSchema.value?.id
+}));
+
+// Only enable form query if we have a selected form
+const formQueryEnabled = computed(() => !!formQueryParameters.value.id);
+const { data: formSchema } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, {
+  enabled: formQueryEnabled
+});
+const translationQueryParameters = computed(() => ({
+  languages: [props.locale],
+  domain: currentDomainId.value
+}));
+const { data: fetchedTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
+const mergedTranslations = computed<IVeoTranslations['lang']>(() =>
+  merge({}, fetchedTranslations.value?.lang || {}, formSchema.value?.translation || {})
+);
+
+const { data: _personsForTotalItemCount } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  totalItemCountQueryParameters,
+  { enabled: fetchPersonsForTotalItemCountEnabled.value }
+);
+const fetchDomainQueryParameters = computed(() => ({
+  id: currentDomainId.value as string
+}));
+const fetchDomainQueryEnabled = computed(() => !!currentDomainId.value);
+const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+  enabled: fetchDomainQueryEnabled
 });
 
 // Translate the current item's `protection approach`
@@ -368,6 +455,18 @@ function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
     targetUri: person._self
   }));
 }
+
+const objectTypePlural = computed(() => VeoElementTypePlurals['control']);
+// Formschema/display stuff
+// Fetching object schema
+const fetchSchemaQueryParameters = computed(() => ({
+  type: objectTypePlural.value as string,
+  domainId: currentDomainId.value as string
+}));
+const fetchSchemaQueryEnabled = computed(() => !!objectTypePlural.value && !!currentDomainId.value);
+const { data: objectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSchema, fetchSchemaQueryParameters, {
+  enabled: fetchSchemaQueryEnabled
+});
 
 async function submitForm({
   type,
