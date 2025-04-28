@@ -18,7 +18,7 @@
   <div>
     <BaseDialog
       :model-value="isDialogOpen"
-      title="Keyboard Shortcuts"
+      :title="t('title')"
       large
       fixed-footer
       @close="closeDialog"
@@ -30,9 +30,8 @@
           <v-row class="mb-2">
             <v-col cols="12">
               <div class="text-body-2 font-weight-bold">
-                Press
-                <KeyboardShortcutDisplay :shortcut="SHORTCUT_DIALOG_DISPLAY" show-tooltips compact-keys />
-                anytime to open this dialog
+                {{ t('openInstructions', { shortcut: '' }) }}
+                <ShortcutsItem :shortcut="SHORTCUT_DIALOG_DISPLAY" show-tooltips compact-keys />
               </div>
             </v-col>
           </v-row>
@@ -42,16 +41,31 @@
             <!-- Domain Navigation Shortcuts -->
             <v-col v-if="domainNavigationShortcuts.length > 0" cols="12" :md="columnWidth">
               <v-card flat>
-                <v-card-title class="text-subtitle-2 py-2">Domain Navigation Shortcuts</v-card-title>
+                <v-card-title class="text-subtitle-2 py-2">{{ t('domainNavigation') }}</v-card-title>
                 <v-divider></v-divider>
                 <v-list density="compact" class="shortcut-list">
-                  <v-list-item v-for="shortcut in domainNavigationShortcuts" :key="shortcut.id" class="text-body-2">
-                    <v-list-item-title class="text-body-2">{{ shortcut.name }}</v-list-item-title>
+                  <v-list-item
+                    v-for="shortcut in domainNavigationShortcuts"
+                    :key="shortcut.id"
+                    class="text-body-2"
+                    :class="{ 'shortcut-disabled': shortcut.disabled }"
+                  >
+                    <v-list-item-title class="text-body-2">
+                      {{ shortcut.name }}
+                      <v-chip v-if="shortcut.disabled" size="x-small" color="grey" class="ms-2">{{
+                        t('disabled')
+                      }}</v-chip>
+                    </v-list-item-title>
                     <v-list-item-subtitle v-if="shortcut.description" class="text-caption">
                       {{ shortcut.description }}
                     </v-list-item-subtitle>
                     <template #append>
-                      <KeyboardShortcutDisplay :shortcut="shortcut.shortcut" :show-tooltips="true" compact-keys />
+                      <ShortcutsItem
+                        :shortcut="shortcut.shortcut"
+                        :show-tooltips="true"
+                        compact-keys
+                        :disabled="shortcut.disabled"
+                      />
                     </template>
                   </v-list-item>
                 </v-list>
@@ -60,7 +74,7 @@
 
             <!-- No shortcuts available message -->
             <v-col v-if="!hasAnyShortcuts" cols="12" class="text-center">
-              <p class="text-body-2">No shortcuts available for this page.</p>
+              <p class="text-body-2">{{ t('noShortcuts') }}</p>
             </v-col>
           </v-row>
         </v-container>
@@ -77,19 +91,13 @@ import {
   shortcutService
 } from '~/composables/shortcuts/useShortcuts';
 
+const { t } = useI18n();
 // ============================
 // DIALOG STATE
 // ============================
 
-/**
- * Whether the dialog is currently open
- * Reflects the state from the shortcut service
- */
 const isDialogOpen = computed(() => shortcutService.getDialogState());
 
-/**
- * Close the dialog by updating the shortcut service state
- */
 function closeDialog() {
   shortcutService.setDialogState(false);
 }
@@ -150,6 +158,8 @@ const columnWidth = computed(() => {
 });
 </script>
 
+<i18n src="~/locales/base/components/shortcuts-dialog.json"></i18n>
+
 <style scoped>
 /* Container with max height and scrolling */
 .shortcut-dialog-container {
@@ -160,5 +170,10 @@ const columnWidth = computed(() => {
 /* Remove default list padding */
 .shortcut-list {
   padding: 0;
+}
+
+/* Disabled shortcuts styling */
+.shortcut-disabled {
+  color: rgba(var(--v-theme-on-surface), 0.6) !important;
 }
 </style>

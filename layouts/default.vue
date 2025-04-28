@@ -83,7 +83,7 @@
 
     <!-- @vue-ignore // not assignable -->
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
-    <KeyboardShortcutDialog />
+    <ShortcutsDialog />
   </v-app>
 </template>
 
