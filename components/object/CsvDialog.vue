@@ -488,7 +488,6 @@ const handleImport = async () => {
 
     return newItem;
   });
-  transformedData[2].status = 'fewd';
   // Call onSubmit with transformed data and original data (items)
   onSubmit(transformedData, items.value);
 };
