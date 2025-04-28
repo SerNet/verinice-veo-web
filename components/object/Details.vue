@@ -79,7 +79,7 @@
             <span>{{ tab.tooltip ?? t('defaultDisabledTooltip') }}</span>
           </v-tooltip>
           <v-tab v-else :data-component-name="`object-details-${tab.key}-tab`" tabindex="0">
-            {{ t(tab.key) }}
+            {{ getTabLabel(tab) }}
           </v-tab>
         </div>
       </template>
@@ -132,7 +132,7 @@ const emit = defineEmits<{
 const { data: config } = useConfiguration();
 const { data: currentDomain } = useCurrentDomain();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { formatDateTime } = useFormatters();
 const { ability } = useVeoPermissions();
 
@@ -207,6 +207,17 @@ const createdAtFormatted = computed(() =>
 const updatedAtFormatted = computed(() =>
   props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined
 );
+
+const getTabLabel = (tab: { key: string }) => {
+  if (tab.key === 'controls') {
+    return (
+      currentDomain.value?.raw?.elementTypeDefinitions['control']?.translations[locale.value]?.[
+        `control_${currentDomain.value?.complianceControlSubType}_plural`
+      ] ?? t(tab.key)
+    );
+  }
+  return t(tab.key);
+};
 </script>
 
 <i18n src="~/locales/base/components/object-details.json"></i18n>
