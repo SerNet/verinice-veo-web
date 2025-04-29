@@ -18,7 +18,7 @@
   <BaseDialog
     v-model="isOpen"
     max-width="1200"
-    :title="$t('importObjects.title')"
+    :title="t('importObjects.title')"
     :confirm-close="confirmCloseMessage || false"
     fixed-footer
     x-large
@@ -33,9 +33,9 @@
               <v-list-item-title>
                 <span class="text-error">
                   <v-icon :icon="mdiAlert"></v-icon>
-                  {{ $t('importObjects.requiredFieldsNotMapped') }}
+                  {{ t('importObjects.requiredFieldsNotMapped') }}
                 </span>
-                <span> {{ unmappedRequiredFields.join(', ') }}</span>
+                <span> {{ displayFields(unmappedRequiredFields) }}</span>
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -46,24 +46,24 @@
             <v-select
               v-model="globalObjectType"
               :items="typesOptions"
-              :label="$t('importObjects.objectType')"
+              :label="t('importObjects.objectType')"
               :rules="[requiredRule]"
               outlined
               class="mr-2"
               style="width: 240px"
               :error="!globalObjectType"
-              :error-messages="!globalObjectType ? globalT('global.input.required') : ''"
+              :error-messages="!globalObjectType ? t('global.input.required') : ''"
               @update:model-value="applyType"
             />
             <v-select
               v-model="globalSubType"
               :items="subTypesOptions"
-              :label="$t('importObjects.subType') + '*'"
+              :label="t('importObjects.subType') + '*'"
               :required="true"
               outlined
               style="width: 200px"
               :error="!globalSubType"
-              :error-messages="!globalSubType ? globalT('global.input.required') : ''"
+              :error-messages="!globalSubType ? t('global.input.required') : ''"
               @update:model-value="applySubType"
             />
           </div>
@@ -74,18 +74,17 @@
             variant="tonal"
           >
             <strong v-if="failedImports.length > 0">
-              {{ $t('importObjects.importCompletedWithErrors', { imported: importedItems, total: totalItems }) }}
+              {{ t('importObjects.importCompletedWithErrors', { imported: importedItems, total: totalItems }) }}
             </strong>
             <strong v-else>
-              {{ $t('importObjects.importSuccessful', { imported: importedItems, total: totalItems }) }}
+              {{ t('importObjects.importSuccessful', { imported: importedItems, total: totalItems }) }}
             </strong>
-
-            <span v-if="totalItems - importedItems > 0">
-              {{ $t('importObjects.showingRemaining', { count: totalItems - importedItems }) }}
+            &nbsp;<span v-if="totalItems - importedItems > 0">
+              {{ t('importObjects.showingRemaining', { count: totalItems - importedItems }) }}
             </span>
 
             <v-btn v-if="failedImports.length > 0" small class="mb-1 ml-1" @click="toggleAndHighlight">
-              {{ $t('importObjects.showFailedItems', { count: failedImports.length }) }}
+              {{ t('importObjects.showFailedItems', { count: failedImports.length }) }}
             </v-btn>
 
             <v-expand-transition>
@@ -107,15 +106,18 @@
                   <tr>
                     <th v-for="header in headers" :key="header">
                       <v-autocomplete
-                        :value="headerMappings[header]"
+                        :value="getFieldTranslation(headerMappings[header])"
                         :items="getAvailableOptions(header)"
                         dense
                         :label="header"
                         outlined
                         hide-details
                         clearable
-                        :placeholder="$t('importObjects.selectMapping')"
-                        @update:model-value="updateMapping(header, $event)"
+                        :placeholder="t('importObjects.selectMapping')"
+                        item-title="title"
+                        item-value="value"
+                        return-object
+                        @update:model-value="(val) => updateMapping(header, val?.value)"
                       />
                     </th>
                   </tr>
@@ -145,28 +147,28 @@
     </template>
     <template #dialog-options>
       <v-btn variant="text" @click="emit('update:model-value', false)">
-        {{ globalT('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
       <v-btn v-if="items.length" variant="text" color="primary" :disabled="!hasAllRequiredFields" @click="handleImport">
-        {{ globalT('global.button.import') }}
+        {{ t('global.button.import') }}
       </v-btn>
     </template>
   </BaseDialog>
-  <BaseDialog v-model="isImporting" confirm-close :title="$t('importObjects.importingTitle')">
+  <BaseDialog v-model="isImporting" confirm-close :title="t('importObjects.importingTitle')">
     <template #default>
       <div class="text-center py-6">
-        <div class="text-h6 mb-4">{{ $t('importObjects.importing') }}</div>
+        <div class="text-h6 mb-4">{{ t('importObjects.importing') }}</div>
         <div class="text-h6 mb-4">{{ importedItems }} / {{ totalItems }}</div>
         <div class="text-subtitle-1">
-          {{ $t('importObjects.importedProgress', { progress }) }}
+          {{ t('importObjects.importedProgress', { progress }) }}
         </div>
         <v-progress-linear :model-value="progress" height="6" color="primary" class="mt-4 mb-4" />
       </div>
     </template>
     <template #dialog-options>
       <v-btn variant="text" color="primary" :disabled="!isImporting" @click="cancelImport">
-        {{ globalT('global.button.cancel') }}
+        {{ t('global.button.cancel') }}
       </v-btn>
     </template>
   </BaseDialog>
@@ -206,7 +208,7 @@ const emit = defineEmits<{
 const isOpen = toRef(props.modelValue);
 
 /** Dependencies **/
-const { t: globalT, t: $t, locale } = useI18n();
+const { t, locale } = useI18n();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
@@ -268,6 +270,15 @@ const unmappedRequiredFields = computed(() => props.requiredFields.filter((field
 
 const objectProps = computed(() => [...props.requiredFields, 'abbreviation', 'description']);
 
+// Map technical field names to user-friendly translated names
+const getFieldTranslation = (technicalName: string) => {
+  return t('objectlist.' + technicalName) || technicalName;
+};
+
+const displayFields = (fields: string[]) => {
+  return fields.map((field) => getFieldTranslation(field)).join(', ');
+};
+
 const localHeaders = computed<MappedHeader[]>(() =>
   props.headers.map((header) => ({
     title: header,
@@ -309,7 +320,7 @@ const confirmCloseMessage = computed(() => {
   const typeChanged = globalObjectType.value !== originalState.value.globalObjectType;
   const subTypeChanged = globalSubType.value !== originalState.value.globalSubType;
 
-  return mappingsChanged || itemsChanged || typeChanged || subTypeChanged ? $t('importObjects.confirmClose') : '';
+  return mappingsChanged || itemsChanged || typeChanged || subTypeChanged ? t('importObjects.confirmClose') : '';
 });
 
 /** Watchers **/
@@ -360,10 +371,15 @@ const applySubType = (value: any) => {
 };
 
 const getAvailableOptions = (header: string) => {
-  const usedOptions = Object.values(headerMappings.value)
-    .filter((value) => value)
-    .filter((value) => value !== headerMappings.value[header]);
-  return objectProps.value.filter((option) => !usedOptions.includes(option));
+  const usedOptions = Object.values(headerMappings.value).filter(
+    (value) => value && value !== headerMappings.value[header]
+  );
+  return objectProps.value
+    .filter((option) => !usedOptions.includes(option))
+    .map((option) => ({
+      value: option,
+      title: getFieldTranslation(option)
+    }));
 };
 
 const getMappedHeader = (requiredField: string) => {
@@ -381,7 +397,7 @@ const stopEditing = () => {
 };
 
 function requiredRule(value: string) {
-  return !!value || $t('global.input.required').toString();
+  return !!value || t('global.input.required').toString();
 }
 
 /** Event Handlers **/
@@ -497,8 +513,8 @@ const cancelImport = () => {
   isImporting.value = false;
 };
 
-const updateMapping = (key: string, value: string) => {
-  headerMappings.value[key] = value;
+const updateMapping = (key: string, value: string | undefined) => {
+  headerMappings.value[key] = value || '';
 };
 
 const updateView = (value: boolean) => {

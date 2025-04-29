@@ -150,7 +150,12 @@
         :object-name="objectName"
         @update:model-value="objectAssignDialogVisible = false"
       />
-      <CsvImportCard :object-type="filter.objectType" :sub-type="filter.subType" @navigate="handleNavigate" />
+      <CsvImportCard
+        :object-type="filter.objectType"
+        :sub-type="filter.subType"
+        :required-fields="['name']"
+        @navigate="handleNavigate"
+      />
     </template>
     <template #footer>
       <ObjectCreateDialog
