@@ -16,16 +16,19 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <label>{{ t('search') }}</label>
   <v-combobox
     ref="searchInput"
     v-model="select"
     data-component-name="veo-search"
+    hide-details="auto"
+    :placeholder="t('search')"
     :items="selectionItems"
     :item-title="(item) => translateItem(item)"
     :append-inner-icon="mdiMagnify"
     chips
     hide-selected
+    class="compact-view"
+    :density="density"
     auto-select-first="exact"
     :aria-label="t('search')"
     @click:clear="resetSearch"
@@ -49,7 +52,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiCloseCircle, mdiMagnify, mdiFilter } from '@mdi/js';
+import { mdiCloseCircle, mdiFilter, mdiMagnify } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 import type { VeoSearch, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
@@ -63,6 +66,7 @@ const props = withDefaults(
   defineProps<{
     filters?: VeoSearchFilters;
     operators?: VeoSearchOperators;
+    density?: 'default' | 'comfortable' | 'compact';
   }>(),
   {
     filters: () => ({
@@ -72,7 +76,8 @@ const props = withDefaults(
     operators: () => ({
       all: ['='],
       default: '='
-    })
+    }),
+    density: 'default'
   }
 );
 
@@ -217,6 +222,32 @@ function handleDelete(event: KeyboardEvent) {
   cursor: pointer;
   :hover {
     color: rgb(var(--v-theme-primary));
+  }
+}
+.compact-view {
+  :deep(.v-field__field) {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  :deep(.v-field__input) {
+    min-height: 36px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  :deep(.v-field) {
+    min-height: 36px !important;
+  }
+
+  :deep(.v-chip) {
+    margin-top: 2px !important;
+    margin-bottom: 2px !important;
+  }
+
+  :deep(.v-field__placeholder) {
+    opacity: 0.7;
+    font-style: italic;
   }
 }
 </style>
