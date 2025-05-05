@@ -16,33 +16,52 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="object-overview-page" :title="`${route.params.objectType}`" sticky-footer>
+  <BasePage
+    data-component-name="object-overview-page"
+    :title="`${route.params.objectType}`"
+    heading-level="3"
+    sticky-footer
+  >
     <template #default>
-      <ObjectFilterBar
-        ref="filterBar"
-        class="mt-4"
-        :domain-id="domainId"
-        :filter="filter"
-        :required-fields="['objectType']"
-        :available-object-types="availableSubTypes"
-        @update:filter="updateRoute"
-      />
+      <div class="filter-row">
+        <div class="filter-section">
+          <ObjectFilterBar
+            ref="filterBar"
+            class="my-0 py-0"
+            :domain-id="domainId"
+            :filter="filter"
+            :required-fields="['objectType']"
+            :available-object-types="availableSubTypes"
+            @update:filter="updateRoute"
+          />
+        </div>
+        <div class="toggle-section">
+          <FeatureFlagsFeatureSwitch
+            feature-key="cardView"
+            density="compact"
+            hide-details
+            :label="{ on: t('cardViewOn'), off: t('cardViewOff') }"
+          />
+        </div>
+      </div>
 
-      <div class="actions">
+      <div class="actions py-0 my-0">
         <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
           <v-btn
             v-if="selectedItems.length > 0"
             :icon="mdiTrashCanOutline"
             variant="text"
-            class="trash-btn ma-3"
+            class="trash-btn"
+            density="compact"
+            size="small"
             @click="onBulkDelete"
           />
         </div>
         <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
-          <SearchBar v-model:search="search" />
+          <SearchBar v-model:search="search" density="compact" />
         </div>
       </div>
-      <FeatureFlagsFeatureSwitch feature-key="cardView" :label="{ on: t('cardViewOn'), off: t('cardViewOff') }" />
+
       <v-scale-transition>
         <template v-if="filter.objectType">
           <!-- Card View -->
@@ -76,6 +95,9 @@
               ]"
               :additional-headers="additionalHeaders"
               show-select
+              density="compact"
+              class="ultra-compact-table"
+              compact
               data-component-name="object-overview-table"
               enable-click
               @click="openItem"
@@ -91,6 +113,9 @@
                         :icon="btn.icon"
                         v-bind="props"
                         variant="text"
+                        density="compact"
+                        size="x-small"
+                        class="mr-3"
                         :aria-label="btn.label"
                         @click="btn.action(item)"
                       />
@@ -125,9 +150,7 @@
         :object-name="objectName"
         @update:model-value="objectAssignDialogVisible = false"
       />
-      <div>
-        <CsvImportCard :object-type="filter.objectType" :sub-type="filter.subType" @navigate="handleNavigate" />
-      </div>
+      <CsvImportCard :object-type="filter.objectType" :sub-type="filter.subType" @navigate="handleNavigate" />
     </template>
     <template #footer>
       <ObjectCreateDialog
@@ -672,6 +695,39 @@ const handleError = (message: string, error: unknown) => {
 <i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-index.json"></i18n>
 
 <style scoped lang="scss">
+.filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.filter-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-section {
+  display: flex;
+  align-items: center;
+
+  :deep(.v-switch) {
+    margin: 0;
+    padding: 0;
+  }
+
+  :deep(.v-switch__track) {
+    opacity: 0.7;
+  }
+
+  :deep(.v-label) {
+    font-size: 13px;
+    opacity: 0.85;
+    margin-left: 4px;
+  }
+}
+
 .actions {
   position: relative;
   display: flex;
@@ -681,11 +737,16 @@ const handleError = (message: string, error: unknown) => {
 
 .actions__bulk__wrapper {
   position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   left: 0;
   z-index: 1;
   opacity: 0;
   transition: opacity 0.4s ease;
-  margin-bottom: 22px;
+  height: 100%;
+  width: 36px;
+  padding-right: 8px;
 }
 
 .actions__bulk__wrapper.visible {
@@ -693,6 +754,7 @@ const handleError = (message: string, error: unknown) => {
 }
 
 .search-wrapper {
+  flex: 1;
   width: 100%;
   margin-left: 0;
   transition:
@@ -701,11 +763,113 @@ const handleError = (message: string, error: unknown) => {
 }
 
 .search-shrunk {
-  width: calc(100% - 72px);
-  margin-left: 72px;
+  width: calc(100% - 36px);
+  margin-left: 36px;
 }
 </style>
-<style>
+
+<style lang="scss">
+/* Ultra-compact table specific styling */
+.ultra-compact-table {
+  .v-selection-control--density-default {
+    --v-selection-control-size: 23px !important;
+  }
+
+  .v-selection-control--density-default .v-selection-control__wrapper .v-selection-control__input .v-icon {
+    height: 21px !important;
+    width: 21px !important;
+  }
+
+  .v-selection-control__wrapper .v-selection-control__input .v-icon {
+    height: 18px !important;
+    width: 18px !important;
+  }
+
+  .v-selection-control--density-compact {
+    --v-selection-control-size: 23px !important;
+  }
+
+  /* Center the checkbox within the cell */
+  .v-data-table__tr .v-selection-control {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .v-data-table__tr {
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+  }
+
+  .v-data-table__td {
+    height: 24px !important;
+    max-height: 24px !important;
+    padding: 0 3px !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+  .v-data-table-header__content {
+    height: 24px !important;
+    font-size: 11px !important;
+    padding: 0 3px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+  }
+
+  /* Improve vertical alignment in cells */
+  .v-data-table__td > * {
+    vertical-align: middle !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .v-table__wrapper {
+    overflow-y: visible !important;
+    overflow-x: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* Items per page selector and footer elements */
+  .v-data-table-footer__items-per-page {
+    font-size: 12px !important;
+  }
+
+  .v-data-table-footer__select {
+    margin: 0 4px !important;
+  }
+
+  .v-select__selection {
+    font-size: 12px !important;
+  }
+
+  .v-field--variant-solo,
+  .v-field--variant-filled,
+  .v-field--variant-outlined {
+    min-height: 32px !important;
+    border-radius: 4px !important;
+  }
+
+  .v-field__input {
+    min-height: 32px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .v-field__field {
+    min-height: 32px !important;
+  }
+
+  .v-select__selection-text {
+    line-height: 1 !important;
+  }
+
+  .v-data-table-footer {
+    padding: 0 !important;
+  }
+}
+
 /* Hidden File Input */
 .hidden {
   display: none;
@@ -714,7 +878,8 @@ const handleError = (message: string, error: unknown) => {
 /* Drop Zone Styles */
 .drop-zone {
   border: 2px dashed #ccc;
-  border-radius: 5px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
   padding: 20px;
   text-align: center;
   margin: 20px 0;

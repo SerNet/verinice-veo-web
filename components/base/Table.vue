@@ -33,7 +33,7 @@ import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 import { useVeoUser } from '~/composables/VeoUser';
-import { VeoElementTypePlurals, type IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export type TableFormatter = (value: any) => string;
 export type TableRenderer = (
@@ -118,6 +118,11 @@ const props = withDefaults(
      * @default false
      */
     showSelect?: boolean;
+    /**
+     * Boolean to show the compact view.
+     * @default false
+     */
+    compact?: boolean;
   }>(),
   {
     items: () => [],
@@ -238,11 +243,21 @@ const presetHeaders: { [key: string]: TableHeader } = {
         id: `checkbox-${context.internalItem.value}`,
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
+        density: props.compact ? 'compact' : 'default',
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
         'aria-checked': isSelected.toString(),
         'aria-label': isSelected ? t('deselectRow') : t('selectRow'),
-        'onUpdate:model-value': () => toggleSelection(context)
+        'onUpdate:model-value': () => toggleSelection(context),
+        style:
+          props.compact ?
+            {
+              height: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              overflow: 'visible'
+            }
+          : {}
       });
     }
   },
