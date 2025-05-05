@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row class="mb-4" no-gutters v-bind="$attrs">
+  <v-row no-gutters v-bind="$attrs">
     <v-col cols="auto" class="d-flex align-center">
       <v-btn
         class="bg-primary"
@@ -46,12 +46,12 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
-import { upperFirst } from 'lodash';
 import { mdiFilter } from '@mdi/js';
+import { upperFirst } from 'lodash';
+import { PropType } from 'vue';
 
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
