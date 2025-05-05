@@ -14,9 +14,9 @@
     "createdAt": "Erstellt",
     "loadingData": "Daten werden geladen",
     "updatedAt": "Aktualisiert",
-    "deselectRow": "Zeile Abswählen",
+    "deselectRow": "Zeile Abwählen",
     "selectRow": "Zeile Auswählen",
-    "deselect": "Alle Abswählen",
+    "deselect": "Alle Abwählen",
     "selectAll": "Alle Auswählen"
   }
 }
