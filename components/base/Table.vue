@@ -239,15 +239,21 @@ const presetHeaders: { [key: string]: TableHeader } = {
     text: '',
     render: (context) => {
       const isSelected = internalModelValue.value.includes(context.internalItem.value);
+      const checkbox = document.querySelector('input[type="checkbox"][id^="input-"]');
+      const ariaLabel = isSelected ? t('deselectRow') : t('selectRow');
+
+      if (checkbox) {
+        checkbox.setAttribute('aria-label', ariaLabel);
+      }
       return h(VCheckbox, {
         id: `checkbox-${context.internalItem.value}`,
+        indeterminate: false,
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
         density: props.compact ? 'compact' : 'default',
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
-        'aria-checked': isSelected.toString(),
-        'aria-label': isSelected ? t('deselectRow') : t('selectRow'),
+        'aria-checked': isSelected ? 'true' : 'false',
         'onUpdate:model-value': () => toggleSelection(context),
         style:
           props.compact ?
