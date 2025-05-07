@@ -16,53 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <div class="object-details">
-      <BaseCard>
-        <v-card-text>
-          <div class="text-body-1 pb-2">
-            <template v-if="!loading">
-              <v-row no-gutters>
-                <v-col data-component-name="object-details-date-time">
-                  <p class="text-no-wrap mb-0">
-                    <strong>{{ upperFirst(t('updatedAt').toString()) }}:</strong>
-                    {{ updatedAtFormatted || '-' }} {{ t('by') }}
-                    {{ (object && object.updatedBy) || '-' }}
-                  </p>
-                  <p class="text-no-wrap mb-0">
-                    <strong>{{ upperFirst(t('createdAt').toString()) }}:</strong>
-                    {{ createdAtFormatted || '-' }} {{ t('by') }}
-                    {{ (object && object.createdBy) || '-' }}
-                  </p>
-                </v-col>
-                <v-col cols="auto" class="text-right ml-auto pt-1">
-                  <ObjectDetailsActionMenu
-                    :disabled="ability.cannot('manage', 'objects')"
-                    :object="object"
-                    @reload="emit('reload')"
-                  />
-                </v-col>
-              </v-row>
-            </template>
-            <template v-else>
-              <v-skeleton-loader data-veo-test="loader" type="text" width="60%" />
-              <v-skeleton-loader data-veo-test="loader" type="text" width="60%" />
-            </template>
-          </div>
-          <div
-            v-if="!loading"
-            class="text-body-2 overflow-y-auto object-details__description"
-            data-component-name="object-details-description"
-          >
-            <span v-if="object && object.description">{{ object.description }}</span>
-            <i v-else>{{ t('noDescription') }}</i>
-          </div>
-          <div v-else class="flex-grow-0">
-            <v-skeleton-loader data-veo-test="loader" type="paragraph" />
-          </div>
-        </v-card-text>
-      </BaseCard>
-    </div>
+  <div class="object-details">
     <BaseTabs v-model="internalActiveTab">
       <template #tabs>
         <div v-for="tab in tabs" v-show="!tab.hidden" :key="tab.key">
@@ -102,7 +56,6 @@
 </template>
 
 <script setup lang="ts">
-import { upperFirst } from 'lodash';
 import { useFormatters } from '~/composables/utils';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
@@ -134,7 +87,6 @@ const { data: currentDomain } = useCurrentDomain();
 
 const { t, locale } = useI18n();
 const { formatDateTime } = useFormatters();
-const { ability } = useVeoPermissions();
 
 // Display logic for tabs
 
@@ -201,13 +153,6 @@ const internalActiveTab = computed({
   }
 });
 
-const createdAtFormatted = computed(() =>
-  props.object ? formatDateTime(new Date(props.object.createdAt)).value : undefined
-);
-const updatedAtFormatted = computed(() =>
-  props.object ? formatDateTime(new Date(props.object.updatedAt)).value : undefined
-);
-
 const getTabLabel = (tab: { key: string }) => {
   if (tab.key === 'controls') {
     return (
@@ -219,14 +164,4 @@ const getTabLabel = (tab: { key: string }) => {
   return t(tab.key);
 };
 </script>
-
 <i18n src="~/locales/base/components/object-details.json"></i18n>
-
-<style lang="scss" scoped>
-.object-details {
-  min-height: 30vh;
-}
-.object-details__description {
-  max-height: 30vh;
-}
-</style>
