@@ -15,7 +15,7 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="keyboard-shortcut" :class="{ 'compact-keys': compactKeys, disabled: disabled }">
+  <div class="keyboard-shortcut" :class="{ 'compact-keys': compactKeys }">
     <template v-for="(keyData, index) in keyDataArray" :key="index">
       <!-- Add '+' symbol between keys, but not before the first key -->
       <div v-if="index > 0" class="key-separator">
@@ -42,7 +42,6 @@ const props = defineProps<{
   shortcut: string;
   showTooltips?: boolean;
   compactKeys?: boolean;
-  disabled?: boolean;
 }>();
 
 // Extract key data from the shortcut
@@ -52,11 +51,6 @@ const keyDataArray = computed(() => {
 
 // Function to determine the color based on key type
 function getColorForKeyType(keyType: string, symbol?: string): string {
-  // If shortcut is disabled, return grey regardless of key type
-  if (props.disabled) {
-    return 'grey';
-  }
-
   // Special case for 'g' key - treat as navigation regardless of keyType
   if (symbol === 'g' || symbol === 'G') {
     return 'info'; // Navigation color
@@ -196,15 +190,5 @@ function getColorForKeyType(keyType: string, symbol?: string): string {
     min-width: 20px;
     font-size: 10px;
   }
-}
-
-.disabled {
-  opacity: 0.7;
-  background-color: rgba(var(--v-theme-surface-variant), 0.02);
-  border-color: rgba(var(--v-theme-outline), 0.05);
-}
-
-.shortcut-disabled {
-  opacity: 0.8;
 }
 </style>
