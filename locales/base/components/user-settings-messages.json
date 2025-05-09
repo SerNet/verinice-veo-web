@@ -1,0 +1,35 @@
+{
+  "en": {
+    "settings": "settings",
+    "alertHeader": "Settings could not be loaded.",
+    "alertBody": "Please contact our support: verinice{'@'}sernet.de.",
+    "errorHeader": "Update failed.",
+    "errorBody": "An error occurred while updating your settings. Please contact our support: verinice{'@'}sernet.de.",
+    "successHeader": "Settings updated successfully.",
+    "userSettingsPage": {
+      "header": "User Settings",
+      "body": "Customize your interface preferences, including layout options and appearance settings."
+    },
+    "compact": {
+      "header": "Compact Table View",
+      "body": "Enable compact mode to reduce spacing in tables."
+    },"save": "Save"
+  },
+  "de": {
+    "settings": "Einstellungen",
+    "alertHeader": "Einstellungen konnten nicht geladen werden.",
+    "alertBody": "Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
+    "errorHeader": "Aktualisierung fehlgeschlagen.",
+    "errorBody": "Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten. Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
+    "successHeader": "Einstellungen erfolgreich aktualisiert.",
+    "userSettingsPage": {
+      "header": "Benutzereinstellungen",
+      "body": "Passen Sie Ihre Anzeigeeinstellungen an, einschließlich Layout- und Darstellungsoptionen."
+    },
+    "compact": {
+      "header": "Kompakte Tabellenansicht",
+      "body": "Aktivieren Sie den Kompaktmodus, um Abstände in Tabellen zu reduzieren."
+    },
+    "save": "Speichern"
+  }
+}

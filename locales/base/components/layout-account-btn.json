@@ -5,14 +5,16 @@
     "editAccount": "Edit account",
     "firststeps": "First steps",
     "notAvailable": "Not available",
-    "OpenPreferences": "Open application preferences"
-  },
+    "OpenPreferences": "Open application preferences",
+     "settings":"settings"
+ },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
     "editAccount": "Benutzerkonto bearbeiten",
     "firststeps": "Erste Schritte",
     "notAvailable": "Keine Angabe",
-    "OpenPreferences": "App-Einstellungen öffnen"
-  }
+    "OpenPreferences": "App-Einstellungen öffnen",
+    "settings":"Einstellungen"
+ }
 }

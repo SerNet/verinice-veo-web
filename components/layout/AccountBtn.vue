@@ -91,6 +91,12 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
+        <v-list-item color="primary" to="/settings">
+          <v-list-item-title>
+            {{ $t('settings') }}
+          </v-list-item-title>
+        </v-list-item>
+        <v-divider />
         <v-list-item :active="displayDeploymentDetails" color="primary" @click.stop="displayDeploymentDetails = true">
           <v-list-item-title>
             {{ t('about') }}
