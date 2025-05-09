@@ -258,6 +258,7 @@ export default defineComponent({
       () => formSchema.value,
       (newValue) => {
         if (newValue && !forceOwnObjectSchema.value) {
+          formSchemaDetails.value.context = newValue.context;
           objectSchemaId.value = newValue.modelType;
         }
       }

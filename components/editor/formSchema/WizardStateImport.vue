@@ -89,7 +89,7 @@ import { PropType } from 'vue';
 import { isObject } from 'lodash';
 
 import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { VeoAlertType, VeoElementTypePlurals, RI_CONTROL_VIEW_CONTEXT } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
@@ -157,8 +157,11 @@ export default defineComponent({
     const objectTypeMissing = computed(
       () =>
         props.formSchema &&
-        !Object.keys(VeoElementTypePlurals).some(
-          (elementType) => elementType === (props.formSchema?.modelType as string)
+        !(
+          (props.formSchema.context === RI_CONTROL_VIEW_CONTEXT && props.formSchema.modelType == null) ||
+          Object.keys(VeoElementTypePlurals).some(
+            (elementType) => elementType === (props.formSchema?.modelType as string)
+          )
         )
     );
 
