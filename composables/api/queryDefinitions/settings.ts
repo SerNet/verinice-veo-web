@@ -35,6 +35,12 @@ export default {
   queries: {
     fetchSettings: {
       primaryQueryKey: 'userSettings',
+      url: '/api/user-configurations',
+      queryParameterTransformationFn: () => ({}),
+      staticQueryOptions: { placeholderData: [] }
+    } as IVeoQueryDefinition< IVeoFetchSettingsParameters>,
+    fetchSettingsWithAppId: {
+      primaryQueryKey: 'userSettings',
       url: '/api/user-configurations/:appId',
       queryParameterTransformationFn: (params) => ({
         params
@@ -42,6 +48,7 @@ export default {
       staticQueryOptions: { placeholderData: [] }
     } as IVeoQueryDefinition<IVeoFetchSettingsParameters, IVeoUserSetting>
   },
+  mutations: {
   updateSettings: {
     primaryQueryKey: 'userSettings',
     url: '/api/user-configurations/:appId',
@@ -66,5 +73,6 @@ export default {
         queryClient.invalidateQueries(['userSettings', { userId: variables.params?.appId }]);
       }
     }
-  }  as IVeoMutationDefinition<IVeoUpdateSettingParameters, void>
+  } as IVeoMutationDefinition<IVeoUpdateSettingParameters, void>
+}
 };

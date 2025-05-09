@@ -6,8 +6,8 @@
     "firststeps": "First steps",
     "notAvailable": "Not available",
     "OpenPreferences": "Open application preferences",
-     "settings":"settings"
- },
+    "settings": "settings"
+  },
   "de": {
     "about": "Über verinice.",
     "logout": "Abmelden",
@@ -15,6 +15,6 @@
     "firststeps": "Erste Schritte",
     "notAvailable": "Keine Angabe",
     "OpenPreferences": "App-Einstellungen öffnen",
-    "settings":"Einstellungen"
- }
+    "settings": "Einstellungen"
+  }
 }

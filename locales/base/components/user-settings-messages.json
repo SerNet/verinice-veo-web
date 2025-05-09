@@ -13,7 +13,8 @@
     "compact": {
       "header": "Compact Table View",
       "body": "Enable compact mode to reduce spacing in tables."
-    },"save": "Save"
+    },
+    "save": "Save"
   },
   "de": {
     "settings": "Einstellungen",

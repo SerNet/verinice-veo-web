@@ -16,44 +16,38 @@
 -->
 
 <template>
-   <template v-for="(item, index) in props.items" :key="index">
-      <BaseCard class="flex-grow-1 d-flex mb-2">
+  <template v-for="(item, index) in props.items" :key="index">
+    <BaseCard class="flex-grow-1 d-flex mb-2">
       <v-card-text class="d-flex justify-space-between">
-        
-      
-        <div >
+        <div>
           <h2 class="text-h3">{{ t(`${item.key}.header`).toString() }}</h2>
           <p v-if="t(`${item.key}.body`)">
             {{ t(`${item.key}.body`).toString() }}
           </p>
         </div>
 
-      
         <div>
           <v-switch
             color="primary"
             :model-value="item.enabled"
             :aria-label="t(`${item.key}.body`)"
-            @update:model-value="(val) =>props.handleClick(item.key, val)"
+            @update:model-value="(val) => props.handleClick(item.key, val)"
           />
         </div>
-
       </v-card-text>
     </BaseCard>
   </template>
- </template>
+</template>
 
 <script setup lang="ts">
 import { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 
 const { t } = useI18n();
 export interface Props {
-  items: IVeoUserSetting[]; 
+  items: IVeoUserSetting[];
   handleClick: (key: string, value: boolean) => void;
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  
-});
+const props = withDefaults(defineProps<Props>(), {});
 </script>
 <i18n src="~/locales/base/components/user-settings-messages.json"></i18n>
