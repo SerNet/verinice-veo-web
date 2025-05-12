@@ -233,24 +233,23 @@ const presetHeaders: { [key: string]: TableHeader } = {
     value: 'data-table-select',
     key: 'data-table-select',
     sortable: false,
-    width: 50,
-    priority: 100,
+    width: 30,
+    priority: 110,
     order: 0,
     text: '',
     render: (context) => {
       const isSelected = internalModelValue.value.includes(context.internalItem.value);
       const itemValue = context.internalItem.value;
-      const mainCheckBox = document.querySelector('table thead input[type="checkbox"][id^="input-"]');
-      const checkbox = document.querySelector(`#checkbox-${itemValue}`);
-      const ariaLabel = isSelected ? t('deselect') : t('selectAll');
-      const ariaLabelRow = isSelected ? t('deselectRow') : t('selectRow');
 
+      const checkbox = document.querySelector(`#checkbox-${itemValue}`);
       if (checkbox) {
-        checkbox.setAttribute('aria-label', ariaLabelRow);
-        mainCheckBox.setAttribute('aria-label', ariaLabel);
+        const mainCheckBox = document.querySelector('table thead input[type="checkbox"][id^="input-"]');
+        checkbox.setAttribute('aria-label', isSelected ? t('deselectRow') : t('selectRow'));
+        mainCheckBox?.setAttribute('aria-label', isSelected ? t('deselect') : t('selectAll'));
       }
+
       return h(VCheckbox, {
-        id: `checkbox-${context.internalItem.value}`,
+        id: `checkbox-${itemValue}`,
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
         density: props.compact ? 'compact' : 'default',
@@ -266,7 +265,10 @@ const presetHeaders: { [key: string]: TableHeader } = {
               alignItems: 'center',
               overflow: 'visible'
             }
-          : {}
+          : {
+              display: 'flex',
+              justifyContent: 'start'
+            }
       });
     }
   },
@@ -610,6 +612,34 @@ const render = () => {
     dataTableSlots = {
       ...dataTableSlots,
       'no-data': props.noDataText
+    };
+  }
+
+  if (props.showSelect) {
+    dataTableSlots['header.data-table-select'] = () => {
+      // Get selectable items (non-disabled) from current page
+      const data = isPaginatedResponse(props.items) ? props.items.items : props.items;
+      const selectableIds = (data || []).filter((item) => !item.disabled).map((item) => item.id);
+
+      const allSelected =
+        selectableIds.length > 0 && selectableIds.every((id) => internalModelValue.value.includes(id));
+      const someSelected = !allSelected && selectableIds.some((id) => internalModelValue.value.includes(id));
+
+      return h(VCheckbox, {
+        modelValue: allSelected,
+        indeterminate: someSelected,
+        density: props.compact ? 'compact' : 'default',
+        hideDetails: true,
+        'aria-label': t('selectAll'),
+        style: { display: 'flex', justifyContent: 'start' },
+        'onUpdate:model-value': (checked) => {
+          if (checked) {
+            internalModelValue.value = [...new Set([...internalModelValue.value, ...selectableIds])];
+          } else {
+            internalModelValue.value = internalModelValue.value.filter((id) => !selectableIds.includes(id));
+          }
+        }
+      });
     };
   }
 
