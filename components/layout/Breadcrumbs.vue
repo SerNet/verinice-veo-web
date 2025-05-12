@@ -16,72 +16,75 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-breadcrumbs class="text-h3" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
-    <v-breadcrumbs-item
-      v-for="(item, index) of displayedBreadcrumbs"
-      :key="item.key"
-      :data-veo-test="item.dataVeoTest ?? 'breadcrumb-item'"
-      :disabled="item.disabled || (item.to === route.fullPath && item.index < BREADCRUMB_BREAKOFF)"
-      :to="item.to"
-      nuxt
-    >
-      <span v-if="index > 0 && (queryResultMap[item.param] || item.text)">
-        <v-icon :icon="mdiChevronRight" size="small" />
-      </span>
-      <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
-      <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
-        <v-icon v-if="item.icon" class="text-primary" :icon="item.icon" size="large" />
-        <span
-          v-else-if="Object.keys(queryResultMap).includes(item.param)"
-          class="breadcrumbs-item-height small-caps capitalize"
-        >
-          <template v-if="queryResultMap[item.param]">
-            {{ queryResultMap[item.param] }}
-          </template>
-          <v-skeleton-loader v-else data-veo-test="loader" type="text" />
+  <nav aria-label="breadcrumb">
+    <v-breadcrumbs class="text-h3" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
+      <v-breadcrumbs-item
+        v-for="(item, index) of displayedBreadcrumbs"
+        :key="item.key"
+        :data-veo-test="item.dataVeoTest ?? 'breadcrumb-item'"
+        :disabled="item.disabled || (item.to === route.fullPath && item.index < BREADCRUMB_BREAKOFF)"
+        :to="item.to"
+        nuxt
+      >
+        <span v-if="index > 0 && (queryResultMap[item.param] || item.text)">
+          <v-icon :icon="mdiChevronRight" size="small" />
         </span>
-        <span v-else-if="item.text" class="breadcrumbs-item-height small-caps capitalize">
-          {{ item.text }}
-        </span>
-      </template>
-      <!-- Display the button with the list instead of the last item -->
-      <template v-else-if="item.index === BREADCRUMB_BREAKOFF">
-        <v-menu>
-          <template #activator="{ props }">
-            <v-btn v-bind="props" color="primary" :icon="mdiDotsHorizontal" small @click.stop.prevent />
-          </template>
-          <template #default>
-            <v-list dense>
-              <v-list-item v-for="menuItem of slicedBreadcrumbs" :key="menuItem.key" nuxt>
-                <v-breadcrumbs-item
-                  :key="menuItem.key"
-                  :disabled="menuItem.disabled || menuItem.to === route.fullPath"
-                  :to="menuItem.to"
-                  nuxt
-                >
-                  <!-- @vue-ignore TODO #3099 property does not exist-->
-                  <template v-if="menuItem.icon" #prepend>
-                    <v-icon :icon="menuItem.icon" color="primary" size="large" />
-                  </template>
-                  <v-list-item-title v-if="!menuItem.icon">
-                    <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
-                      <template v-if="queryResultMap[menuItem.param]">
-                        {{ queryResultMap[menuItem.param] }}
+        <!-- Display if the breadcrumb is visible or the amount of breadcrumbs is bigger than BREADCRUMB_BREAKOFF -->
+        <template v-if="item.index < BREADCRUMB_BREAKOFF || breadcrumbs.length === BREADCRUMB_BREAKOFF + 1">
+          <v-icon v-if="item.icon" class="text-primary" :icon="item.icon" size="large" />
+          <span
+            v-else-if="Object.keys(queryResultMap).includes(item.param)"
+            class="breadcrumbs-item-height small-caps capitalize"
+          >
+            <template v-if="queryResultMap[item.param]">
+              {{ queryResultMap[item.param] }}
+            </template>
+            <v-skeleton-loader v-else data-veo-test="loader" type="text" />
+          </span>
+          <span v-else-if="item.text" class="breadcrumbs-item-height small-caps capitalize">
+            {{ item.text }}
+          </span>
+        </template>
+        <!-- Display the button with the list instead of the last item -->
+        <template v-else-if="item.index === BREADCRUMB_BREAKOFF">
+          <v-menu>
+            <template #activator="{ props }">
+              <v-btn v-bind="props" color="primary" :icon="mdiDotsHorizontal" small @click.stop.prevent />
+            </template>
+            <template #default>
+              <v-list dense>
+                <v-list-item v-for="menuItem of slicedBreadcrumbs" :key="menuItem.key" nuxt>
+                  <v-breadcrumbs-item
+                    :key="menuItem.key"
+                    :disabled="menuItem.disabled || menuItem.to === route.fullPath"
+                    :to="menuItem.to"
+                    nuxt
+                    :aria-current="index === displayedBreadcrumbs.length - 1 ? 'page' : null"
+                  >
+                    <!-- @vue-ignore TODO #3099 property does not exist-->
+                    <template v-if="menuItem.icon" #prepend>
+                      <v-icon :icon="menuItem.icon" color="primary" size="large" />
+                    </template>
+                    <v-list-item-title v-if="!menuItem.icon">
+                      <template v-if="Object.keys(queryResultMap).includes(menuItem.param)">
+                        <template v-if="queryResultMap[menuItem.param]">
+                          {{ queryResultMap[menuItem.param] }}
+                        </template>
+                        <v-skeleton-loader v-else data-veo-test="loader" type="text" />
                       </template>
-                      <v-skeleton-loader v-else data-veo-test="loader" type="text" />
-                    </template>
-                    <template v-if="menuItem.text">
-                      {{ menuItem.text }}
-                    </template>
-                  </v-list-item-title>
-                </v-breadcrumbs-item>
-              </v-list-item>
-            </v-list>
-          </template>
-        </v-menu>
-      </template>
-    </v-breadcrumbs-item>
-  </v-breadcrumbs>
+                      <template v-if="menuItem.text">
+                        {{ menuItem.text }}
+                      </template>
+                    </v-list-item-title>
+                  </v-breadcrumbs-item>
+                </v-list-item>
+              </v-list>
+            </template>
+          </v-menu>
+        </template>
+      </v-breadcrumbs-item>
+    </v-breadcrumbs>
+  </nav>
 </template>
 
 <script setup lang="ts">
