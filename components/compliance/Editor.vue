@@ -338,10 +338,10 @@ const { data: objectSchema } = useQuery(schemaQueryDefinitions.queries.fetchSche
 
 // Form schema selection - Move this up before it's used
 const selectedFormSchema = computed(() => {
-  if (!formSchemas.value || !props.item) return null;
+  if (!formSchemas.value || !props.item || !targetObject.value) return null;
 
-  const riOwnerType = targetObject.value?.type;
-  const riOwnerSubType = targetObject.value?.subType;
+  const riOwnerType = targetObject.value.type;
+  const riOwnerSubType = targetObject.value.subType;
 
   // 1. Check for RI-Control form for specific subtype of current RI-Owner
   const specificSubtypeForm = formSchemas.value.find(
@@ -363,7 +363,9 @@ const selectedFormSchema = computed(() => {
   }
 
   // 3. Check for RI-Control form for all object types
-  const allObjectTypesForm = formSchemas.value.find((form) => form.context === RI_CONTROL_VIEW_CONTEXT);
+  const allObjectTypesForm = formSchemas.value.find(
+    (form) => form.modelType == null && form.context === RI_CONTROL_VIEW_CONTEXT
+  );
 
   if (allObjectTypesForm) {
     return allObjectTypesForm;
