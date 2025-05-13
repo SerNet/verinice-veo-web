@@ -17,7 +17,7 @@
 <template>
   <BaseDialog
     :model-value="showDialog"
-    :title="t('title')"
+    :title="dialogTitle"
     large
     v-bind="$attrs"
     @update:model-value="emit('update:model-value', $event)"
@@ -99,12 +99,23 @@ const props = withDefaults(
     showDialog: false
   }
 );
+const { data: currentDomain } = useCurrentDomain();
+
+const dialogTitle = computed(() => {
+  return (
+    t('title', [
+      currentDomain.value?.raw?.elementTypeDefinitions['control']?.translations[locale.value]?.[
+        `control_${currentDomain.value?.complianceControlSubType}_singular`
+      ]
+    ]) ?? t('title', ['Control'])
+  );
+});
 
 const emit = defineEmits<{
   (e: 'update:model-value', value: boolean): void;
 }>();
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
 
 const route = useRoute();
@@ -130,6 +141,7 @@ const { data: persons } = useQuery(domainQueryDefinitions.queries.fetchPersonsIn
 const controlAbbreviation = computed(
   () => props.object?.controlImplementations[props.controlIndex].control.abbreviation
 );
+
 const controlName = computed(() => props.object?.controlImplementations[props.controlIndex].control.name);
 
 const personNames = computed(() =>
