@@ -59,7 +59,7 @@
                     :disabled="menuItem.disabled || menuItem.to === route.fullPath"
                     :to="menuItem.to"
                     nuxt
-                    :aria-current="index === displayedBreadcrumbs.length - 1 ? 'page' : null"
+                    :aria-current="index === displayedBreadcrumbs.length - 1 ? 'page' : false"
                   >
                     <!-- @vue-ignore TODO #3099 property does not exist-->
                     <template v-if="menuItem.icon" #prepend>
