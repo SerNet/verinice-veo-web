@@ -32,28 +32,16 @@ import { useMutation } from '~/composables/api/utils/mutation';
 const { t } = useI18n();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
+const { data: appIds, refetch: refetchAppIds } = useQuery(settingsQueryDefinition.queries.fetchSettings);
 
-
-const {
-  data: appIds,
-  refetch: refetchAppIds
-} = useQuery(settingsQueryDefinition.queries.fetchSettings);
-
-
-const appId = computed(() =>
-  appIds.value?.includes('verinice-veo') ? 'verinice-veo' : null
-);
+const appId = computed(() => (appIds.value?.includes('verinice-veo') ? 'verinice-veo' : null));
 
 // Fetch user settings if appId exists
-const {
-  data: userSettings
-} = useQuery(
+const { data: userSettings } = useQuery(
   settingsQueryDefinition.queries.fetchSettingsWithAppId,
   computed(() => (appId.value ? { appId: appId.value } : undefined))
 );
 const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
-
-
 
 // Reactive state
 const state = reactive({
@@ -89,10 +77,10 @@ async function toggleSetting(key: string, enabled: boolean) {
 async function handleSave() {
   try {
     await updateSettingsMutation.mutateAsync({
-       appId: 'verinice-veo',
+      appId: 'verinice-veo',
       settings: state.settings
     });
-      await refetchAppIds();
+    await refetchAppIds();
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
     handleError(error);

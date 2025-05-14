@@ -38,7 +38,7 @@ export default {
       url: '/api/user-configurations',
       queryParameterTransformationFn: () => ({}),
       staticQueryOptions: { placeholderData: [] }
-    } as IVeoQueryDefinition< IVeoFetchSettingsParameters>,
+    } as IVeoQueryDefinition<IVeoFetchSettingsParameters>,
     fetchSettingsWithAppId: {
       primaryQueryKey: 'userSettings',
       url: '/api/user-configurations/:appId',
@@ -49,30 +49,30 @@ export default {
     } as IVeoQueryDefinition<IVeoFetchSettingsParameters, IVeoUserSetting>
   },
   mutations: {
-  updateSettings: {
-    primaryQueryKey: 'userSettings',
-    url: '/api/user-configurations/:appId',
-    method: 'PUT',
-    reponseType: VeoApiReponseType.VOID,
-    mutationParameterTransformationFn: (mutationParameters) => {
-      const flatSettings: Record<string, boolean> = {};
-      for (const [key, value] of Object.entries(mutationParameters.settings)) {
-        flatSettings[key] = value.enabled;
-      }
+    updateSettings: {
+      primaryQueryKey: 'userSettings',
+      url: '/api/user-configurations/:appId',
+      method: 'PUT',
+      reponseType: VeoApiReponseType.VOID,
+      mutationParameterTransformationFn: (mutationParameters) => {
+        const flatSettings: Record<string, boolean> = {};
+        for (const [key, value] of Object.entries(mutationParameters.settings)) {
+          flatSettings[key] = value.enabled;
+        }
 
-      return {
-        params: {
-          appId: mutationParameters.appId
-        },
-        json: flatSettings
-      };
-    },
+        return {
+          params: {
+            appId: mutationParameters.appId
+          },
+          json: flatSettings
+        };
+      },
 
-    staticMutationOptions: {
-      onSuccess: (queryClient, _data, variables, _context) => {
-        queryClient.invalidateQueries(['userSettings', { userId: variables.params?.appId }]);
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, variables, _context) => {
+          queryClient.invalidateQueries(['userSettings', { userId: variables.params?.appId }]);
+        }
       }
-    }
-  } as IVeoMutationDefinition<IVeoUpdateSettingParameters, void>
-}
+    } as IVeoMutationDefinition<IVeoUpdateSettingParameters, void>
+  }
 };
