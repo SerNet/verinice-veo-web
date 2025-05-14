@@ -279,6 +279,13 @@ export default defineComponent({
      * Fetch Data
      */
     const { data: translations } = useTranslations({ domain: props.domainId });
+    const fetchDomainQueryParameters = computed(() => ({
+      id: props.domainId as string
+    }));
+    const { data: domain, isFetching: domainIsFetching } = useQuery(
+      domainQueryDefinitions.queries.fetchDomain,
+      fetchDomainQueryParameters
+    );
 
     const parentScopesQueryParameters = computed(() => ({
       parentEndpoint: 'scopes',
@@ -336,7 +343,13 @@ export default defineComponent({
       page: page.value,
       size: tableSize.value
     }));
-    const cisQueryEnabled = computed(() => props.type === 'controls' || props.type === 'targets');
+
+    const cisQueryEnabled = computed(
+      () =>
+        (props.type === 'controls' || props.type === 'targets') &&
+        !!domain.value?.controlImplementationConfiguration?.complianceControlSubType
+    );
+
     const {
       data: cis,
       isFetching: cisIsFetching,
@@ -427,14 +440,6 @@ export default defineComponent({
       objectQueryDefinitions.queries.fetchRisks,
       risksQueryParameters,
       { enabled: risksQueryEnabled }
-    );
-
-    const fetchDomainQueryParameters = computed(() => ({
-      id: props.domainId as string
-    }));
-    const { data: domain, isFetching: domainIsFetching } = useQuery(
-      domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters
     );
     /**
      * Headers
@@ -1045,7 +1050,7 @@ export default defineComponent({
         if (newLinks !== oldLinks) {
           refetchLinks();
         }
-        if (newCis !== oldCis) {
+        if (newCis !== oldCis && cisQueryEnabled.value) {
           refetchCis();
         }
       }
