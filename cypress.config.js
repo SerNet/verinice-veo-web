@@ -12,6 +12,8 @@ module.exports = defineConfig({
   video: true, // Let's enable video recording by default
   defaultCommandTimeout: 30000,
   requestTimeout: 15000,
+  experimentalMemoryManagement: true,
+  numTestsKeptInMemory: 1,
   e2e: {
     setupNodeEvents(on, config) {
       on('task', {
