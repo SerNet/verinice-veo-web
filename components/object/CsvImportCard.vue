@@ -31,6 +31,7 @@
           :multiple="false"
           class="custom-file-upload drop-zone"
           :class="{ 'drop-zone-active': isDragging }"
+          :aria-label="t('import.dropzone.label')"
           @dragenter.prevent="isDragging = true"
           @dragleave.prevent="isDragging = false"
           @update:model-value="handleFileChange"
