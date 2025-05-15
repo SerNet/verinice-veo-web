@@ -15,9 +15,9 @@
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-‚
+
 <template>
-  <BasePage style="height: 100vh" :title="t('compliance')">
+  <BasePage style="height: 100vh" :title="`${t('implementation')} (${containerControl?.name})`">
     <template #header>
       <div class="mt-8 mb-4 text-body-1">
         <v-btn
