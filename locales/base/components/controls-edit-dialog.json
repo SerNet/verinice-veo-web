@@ -4,13 +4,13 @@
     "controlUpdateFailed": "Control could not be updated",
     "description": "Description",
     "responsible": "Responsible person",
-    "title": "Edit {0}"
+    "title": "Edit {0} assignment"
   },
   "de": {
     "controlUpdate": "Baustein erfolgreich aktualisiert",
     "controlUpdateFailed": "Baustein konnte nicht aktualisiert werden",
     "description": "Beschreibung",
     "responsible": "Verantwortliche Person",
-    "title": "{0} bearbeiten"
+    "title": "{0}-Zuordnung bearbeiten"
   }
 }
