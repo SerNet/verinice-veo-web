@@ -17,7 +17,7 @@
 -->
 
 <template>
-  <BasePage style="height: 100vh" :title="`${t('implementation')} (${containerControl?.name})`">
+  <BasePage style="height: 100vh" :title="pageTitle">
     <template #header>
       <div class="mt-8 mb-4 text-body-1">
         <v-btn
@@ -199,6 +199,7 @@ watch([locale, customCrumbs], () => {
   clearCustomBreadcrumbs();
   customCrumbs.value?.forEach((crumb) => addCustomBreadcrumb(crumb));
 });
+const pageTitle = computed(() => `${t('implementation')} (${containerControl.value?.name})`);
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-domain-compliance.json"></i18n>
