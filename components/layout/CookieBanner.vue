@@ -104,7 +104,7 @@ export default defineComponent({
 
     const dataProtectionDeclarationLink = computed(() =>
       locale.value === 'en' ?
-        'https://www.sernet.de/en/data-protection-verinicecloud'
+        'https://www.sernet.de/en/data-protection-declaration/'
       : 'https://www.sernet.de/de/datenschutz/'
     );
     const cookieConfigurationVisible = ref(false);
