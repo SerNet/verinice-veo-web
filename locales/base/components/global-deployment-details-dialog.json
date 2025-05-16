@@ -18,7 +18,8 @@
         "3": "The publisher of verinice is SerNet GmbH, with more than 25 years of experience in the in the IT security industry."
       }
     },
-    "versioninfo": "Version information"
+    "versioninfo": "Version information",
+    "footerNote": "The terms of SerNet GmbH apply: {privacyLink} and {imprintLink}."
   },
   "de": {
     "about": "Über verinice",
@@ -39,6 +40,7 @@
         "3": "Herausgeberin von verinice ist die SerNet GmbH mit mehr als 25 Jahren Erfahrung in der IT-Security-Branche."
       }
     },
-    "versioninfo": "Versionsinformation"
+    "versioninfo": "Versionsinformation",
+    "footerNote": "Es gelten {privacyLink} und {imprintLink}  der SerNet GmbH."
   }
 }

@@ -44,12 +44,9 @@
 
             <div class="mt-6 text-center">
               &copy; {{ currentYear }} &hyphen;
-              <a href="https://www.sernet.de" rel="noopener noreferrer" target="_blank"> SerNet GmbH </a>
-              &hyphen;&nbsp; Es gelten
-              <a :href="privacyPolicyLink" rel="noopener noreferrer" target="_blank">{{ t('privacyPolicy') }}</a>
-              {{ locale === 'de' ? 'und' : 'and' }}
-              <a :href="imprintLink" rel="noopener noreferrer" target="_blank">{{ t('imprint') }}</a>
-              der SerNet GmbH.
+              <a href="https://www.sernet.de" target="_blank">SerNet GmbH</a>
+              &hyphen;&nbsp;
+              <span v-html="footerText"></span>
             </div>
           </v-card-text>
         </BaseCard>
@@ -190,7 +187,15 @@ const imprintLink = computed(() =>
   locale.value === 'de' ? 'https://www.sernet.de/impressum' : 'https://www.sernet.de/en/imprint'
 );
 const privacyPolicyLink = computed(() =>
-  locale.value === 'de' ? 'https://www.sernet.de/datenschutz' : 'https://www.sernet.de/privacy'
+  locale.value === 'de' ?
+    'https://www.sernet.de/datenschutz-verinicecloud'
+  : 'https://www.sernet.de/en/data-protection-verinicecloud'
+);
+const footerText = computed(() =>
+  t('footerNote', {
+    privacyLink: `<a href='${privacyPolicyLink.value}' target='_blank'>${t('privacyPolicy')}</a>`,
+    imprintLink: `<a href='${imprintLink.value}' target='_blank'>${t('imprint')}</a>`
+  })
 );
 </script>
 

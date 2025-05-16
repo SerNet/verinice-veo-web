@@ -97,7 +97,9 @@ if (!keycloakInitialized.value) {
 const login = () => _login((route.query.redirect_uri as string | undefined) || '/');
 
 const dataProtectionRegulationLink = computed(() =>
-  locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'
+  locale.value === 'en' ?
+    'https://www.sernet.de/en/data-protection-verinicecloud/'
+  : 'https://www.sernet.de/datenschutz-verinicecloud/'
 );
 const imprintLink = computed(() =>
   locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'
