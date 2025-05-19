@@ -18,21 +18,14 @@
   <BaseDialog
     :model-value="modelValue"
     v-bind="$attrs"
-    :title="t('title', { object: props.objectName })"
+    :title="dialogTitle"
     heading-level="h2"
     large
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <BaseAlert
-        :model-value="true"
-        :title="t('domainAssignmentHintTitle')"
-        :type="VeoAlertType.INFO"
-        class="ma-4"
-        flat
-        no-close-button
-      >
-        {{ t('domainAssignmentHint') }}
+      <BaseAlert :model-value="true" :title="alertTitle" :type="VeoAlertType.INFO" class="ma-4" flat no-close-button>
+        {{ alertMessage }}
       </BaseAlert>
 
       <div class="mx-4">
@@ -107,22 +100,58 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 
-import { IVeoEntityLegacy, VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoEntityLegacy, VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{
     modelValue: boolean;
-    objectId: string;
-    objectType: string;
-    objectName: string;
+    // Objects array (single item for single mode, multiple for bulk)
+    objects?: IVeoEntity[];
   }>(),
   {
     modelValue: false,
-    objectId: '',
-    objectType: '',
-    objectName: ''
+    objects: () => []
   }
 );
+
+// Core computed properties
+const isBulkMode = computed(() => props.objects.length > 1);
+
+// In single mode we always have exactly one object in the array
+const singleObject = computed(() => (isBulkMode.value ? null : props.objects[0]));
+
+// Extracted object properties from the first/single object
+const objectId = computed(() => singleObject.value?.id || props.objects[0]?.id || '');
+const objectName = computed(() => singleObject.value?.name || props.objects[0]?.name || '');
+const effectiveObjectType = computed(() => singleObject.value?.type || props.objects[0]?.type || '');
+
+const dialogTitle = computed(() => {
+  if (!isBulkMode.value) {
+    return t('title', { object: objectName.value });
+  }
+
+  return props.objects.length > 1 ?
+      t('titleBulk', { count: props.objects.length })
+    : t('titleBulkSingle', { object: props.objects[0]?.name });
+});
+
+const alertTitle = computed(() => {
+  if (!isBulkMode.value) {
+    return t('domainAssignmentHintTitle');
+  }
+
+  return props.objects.length > 1 ? t('bulkDomainAssignmentHintTitle') : t('bulkDomainAssignmentHintTitleSingle');
+});
+
+const alertMessage = computed(() => {
+  if (!isBulkMode.value) {
+    return t('domainAssignmentHint');
+  }
+
+  return props.objects.length > 1 ?
+      t('bulkDomainAssignmentHint', { count: props.objects.length })
+    : t('bulkDomainAssignmentHintSingle', { object: props.objects[0]?.name });
+});
 
 const emit = defineEmits<{
   (e: 'update:model-value', value: boolean): void;
@@ -144,22 +173,29 @@ const selectedSubType = ref<Record<string, string | undefined>>({});
 const selectedStatus = ref<Record<string, string | undefined>>({});
 const selectedDomains = ref<string[]>([]);
 
-const schemaParametersEnabled = computed(() => !!props.objectId);
+const schemaParametersEnabled = computed(() => !!objectId.value);
 const fetchLegacyObjectQueryParameters = computed(
-  () => ({ endpoint: VeoElementTypePlurals[props.objectType], id: props.objectId }) as any
+  () => ({ endpoint: VeoElementTypePlurals[effectiveObjectType.value], id: objectId.value }) as any
 );
 
 const formIsValid = ref(undefined);
 
 const { data: legacyObject } = useQuery(objectQueryDefinitions.queries.fetchLegacy, fetchLegacyObjectQueryParameters, {
   onSuccess: (data: any) => {
-    selectedDomains.value = Object.keys(data.domains || {});
-    prePolluteList(data);
+    if (!isBulkMode.value) {
+      selectedDomains.value = Object.keys(data.domains || {});
+      prePolluteList(data);
+    }
   },
-  enabled: schemaParametersEnabled
+  enabled: schemaParametersEnabled && !isBulkMode.value
 });
 
-const isDirty = computed(() => !isEqual(Object.keys(legacyObject.value?.domains || {}), selectedDomains.value));
+const isDirty = computed(() => {
+  if (isBulkMode.value) {
+    return selectedDomains.value.length > 0;
+  }
+  return !isEqual(Object.keys(legacyObject.value?.domains || {}), selectedDomains.value);
+});
 const prePolluteList = (data: IVeoEntityLegacy) => {
   selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
   selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
@@ -169,11 +205,11 @@ const subTypes = computed(() =>
   (domains.value || []).reduce(
     (prevValue, currentValue) => {
       prevValue[currentValue.id] = Object.keys(
-        currentValue.elementTypeDefinitions?.[props.objectType]?.subTypes || {}
+        currentValue.elementTypeDefinitions?.[effectiveObjectType.value]?.subTypes || {}
       ).map((subType) => ({
         title:
-          currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][
-            `${props.objectType}_${subType}_singular`
+          currentValue.elementTypeDefinitions[effectiveObjectType.value].translations[locale.value][
+            `${effectiveObjectType.value}_${subType}_singular`
           ],
         value: subType
       }));
@@ -190,12 +226,12 @@ const statuses = computed(() =>
       if (!selectedSubType.value[currentValue.id]) {
         return prevValue;
       }
-      prevValue[currentValue.id] = currentValue.elementTypeDefinitions[props.objectType].subTypes[
+      prevValue[currentValue.id] = currentValue.elementTypeDefinitions[effectiveObjectType.value].subTypes[
         selectedSubType.value[currentValue.id]
       ].statuses.map((status: any) => ({
         title:
-          currentValue.elementTypeDefinitions[props.objectType].translations[locale.value][
-            `${props.objectType}_${selectedSubType.value[currentValue.id]}_status_${status}`
+          currentValue.elementTypeDefinitions[effectiveObjectType.value].translations[locale.value][
+            `${effectiveObjectType.value}_${selectedSubType.value[currentValue.id]}_status_${status}`
           ],
         value: status
       }));
@@ -225,32 +261,84 @@ const availableDomains = computed(
     })) ?? []
 );
 
-const disabledDomains = computed(() => Object.keys(legacyObject.value?.domains || {}));
+/**
+ * List of domains that should be disabled in the UI
+ * In bulk mode, no domains are disabled
+ * In single mode, domains that already have the object are disabled
+ */
+const disabledDomains = computed(() => {
+  if (isBulkMode.value) {
+    return [];
+  }
+  return Object.keys(legacyObject.value?.domains || {});
+});
 
+/**
+ * Properties for domain selection list
+ */
 const domainProperties = computed(() =>
   availableDomains.value.map((domain) => {
     return {
       title: domain.name,
       subtitle: domain.description,
       value: domain.id,
-      disabled: disabledDomains.value.includes(domain.id)
+      disabled: !isBulkMode.value && disabledDomains.value.includes(domain.id)
     };
   })
 );
 
+/**
+ * Assign a single object to a domain
+ */
+const assignSingleObject = async (domain: string, objectId: string, endpoint?: string) => {
+  const payload = {
+    domain: domain,
+    endpoint: endpoint || route.params?.objectType || VeoElementTypePlurals[effectiveObjectType.value],
+    objectId: objectId,
+    subType: selectedSubType.value[domain],
+    status: selectedStatus.value[domain]
+  };
+
+  await assign(payload);
+  disabledDomains.value.push(domain);
+};
+
+/**
+ * Main assign function - handles both single and bulk operations
+ */
 const assignObject = async () => {
   try {
-    for (const domain of selectedDomains.value.filter((domain) => !disabledDomains.value.includes(domain))) {
-      await assign({
-        domain: domain,
-        endpoint: route.params?.objectType,
-        objectId: props.objectId,
-        subType: selectedSubType.value[domain],
-        status: selectedStatus.value[domain]
-      });
-      disabledDomains.value.push(domain);
+    if (isBulkMode.value) {
+      let assignedCount = 0;
+
+      for (const domain of selectedDomains.value) {
+        for (const object of props.objects) {
+          try {
+            await assignSingleObject(domain, object.id, VeoElementTypePlurals[object.type]);
+            assignedCount++;
+          } catch (err) {
+            console.error(`Failed to assign object ${object.name} to domain ${domain}:`, err);
+          }
+        }
+      }
+
+      displaySuccessMessage(
+        assignedCount === 0 ?
+          props.objects.length === 1 ?
+            t('objectAlreadyAssigned').toString()
+          : t('objectsAlreadyAssigned').toString()
+        : t('objectsBulkAssigned', { count: assignedCount }).toString()
+      );
+    } else {
+      // Single object assign - only assign to domains not already assigned
+      const unassignedDomains = selectedDomains.value.filter((domain) => !disabledDomains.value.includes(domain));
+
+      for (const domain of unassignedDomains) {
+        await assignSingleObject(domain, objectId.value);
+      }
+
+      displaySuccessMessage(t('objectAssigned').toString());
     }
-    displaySuccessMessage(t('objectAssigned').toString());
   } catch (error: any) {
     displayErrorMessage(t('assignmentFailed').toString(), error.message);
   } finally {
@@ -258,12 +346,22 @@ const assignObject = async () => {
   }
 };
 
+/**
+ * Reset form state when dialog opens
+ */
 watch(
   () => props.modelValue,
   () => {
     selectedSubType.value = {};
     selectedStatus.value = {};
+    selectedDomains.value = [];
 
+    if (isBulkMode.value) {
+      // For bulk assign, start with empty selections
+      return;
+    }
+
+    // For single object assignment, populate with existing domains
     if (legacyObject.value) {
       prePolluteList(legacyObject.value);
     }

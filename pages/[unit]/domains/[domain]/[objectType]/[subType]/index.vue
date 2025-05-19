@@ -47,15 +47,39 @@
 
       <div class="actions py-0 my-0">
         <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
-          <v-btn
-            v-if="selectedItems.length > 0"
-            :icon="mdiTrashCanOutline"
-            variant="text"
-            class="trash-btn"
-            density="compact"
-            size="small"
-            @click="onBulkDelete"
-          />
+          <v-tooltip location="start" :aria-label="t('deleteObjects')">
+            <template #activator="{ props }">
+              <v-btn
+                v-if="selectedItems.length > 0"
+                :icon="mdiTrashCanOutline"
+                variant="text"
+                class="trash-btn"
+                v-bind="props"
+                density="compact"
+                size="small"
+                data-component-name="bulk-delete-button"
+                @click="onBulkDelete"
+              />
+            </template>
+            {{ t('deleteObjects') }}
+          </v-tooltip>
+          <v-tooltip location="start" :aria-label="t('assignObjects')">
+            <template #activator="{ props }">
+              <v-btn
+                v-if="selectedItems.length > 0"
+                :disabled="!domains || domains.length <= 1"
+                :icon="mdiPuzzleOutline"
+                variant="text"
+                class="assign-btn"
+                v-bind="props"
+                density="compact"
+                size="small"
+                data-component-name="bulk-assign-button"
+                @click="onBulkAssign"
+              />
+            </template>
+            {{ t('assignObjects') }}
+          </v-tooltip>
         </div>
         <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
           <SearchBar v-model:search="search" density="compact" />
@@ -137,7 +161,7 @@
       <!-- Dialogs -->
       <ObjectDeleteDialog
         :model-value="showDeleteDialog"
-        :items="itemsToDelete"
+        :items="selectedOperationItems"
         @update:model-value="onCloseDeleteDialog({ isOpen: false, isCancel: true })"
         @success="onCloseDeleteDialog({ isOpen: false }, $event)"
         @error="showError('delete', $event)"
@@ -145,10 +169,8 @@
 
       <ObjectAssignDialog
         :model-value="objectAssignDialogVisible"
-        :object-id="objectId"
-        :object-type="objectType"
-        :object-name="objectName"
-        @update:model-value="objectAssignDialogVisible = false"
+        :objects="selectedOperationItems"
+        @update:model-value="resetOperationItems"
       />
       <CsvImportCard
         :object-type="filter.objectType"
@@ -523,31 +545,28 @@ const openItem = ({ item }: { item: any }) => {
 const createObjectDialogVisible = ref(false);
 
 // Delete object
-const itemsToDelete = ref<IVeoEntity[]>([]);
-const resetItemsToDelete = () => {
+const selectedOperationItems = ref<IVeoEntity[]>([]);
+const resetOperationItems = () => {
   showDeleteDialog.value = false;
-  itemsToDelete.value = [];
+  objectAssignDialogVisible.value = false;
+  selectedOperationItems.value = [];
 };
 const onCloseDeleteDialog = (
   { isOpen, isCancel = false }: { isOpen: boolean; isCancel?: boolean },
   multiple?: boolean
 ) => {
   if (!isOpen && isCancel) {
-    return resetItemsToDelete();
+    return resetOperationItems();
   }
   if (!isOpen && !isCancel) {
     displaySuccessMessage(multiple ? t('objectsDeleted') : t('objectDeleted'));
     selectedItems.value = [];
     tableKey.value += 1;
-    return resetItemsToDelete();
+    return resetOperationItems();
   }
 };
 
 const objectAssignDialogVisible = ref(false);
-const objectName = ref<string>();
-
-const objectId = ref<string>();
-const objectType = ref<string>();
 
 const actions = computed(() => [
   {
@@ -583,7 +602,7 @@ const actions = computed(() => [
     label: upperFirst(t('deleteObject')),
     icon: mdiTrashCanOutline,
     action(item: any) {
-      itemsToDelete.value = [item];
+      selectedOperationItems.value = [item];
       showDeleteDialog.value = true;
     }
   },
@@ -593,10 +612,8 @@ const actions = computed(() => [
     label: t('assignObject'),
     icon: mdiPuzzleOutline,
     action(item: any) {
+      selectedOperationItems.value = [item];
       objectAssignDialogVisible.value = true;
-      objectId.value = item.id;
-      objectType.value = item.type;
-      objectName.value = item.name;
     }
   }
 ]);
@@ -682,8 +699,13 @@ const tableKey = ref(0);
 const selectedItems = ref<IVeoEntity[]>([]);
 const showDeleteDialog = ref(false);
 const onBulkDelete = () => {
-  itemsToDelete.value = selectedItems.value;
+  selectedOperationItems.value = selectedItems.value;
   showDeleteDialog.value = true;
+};
+
+const onBulkAssign = () => {
+  selectedOperationItems.value = selectedItems.value;
+  objectAssignDialogVisible.value = true;
 };
 
 const handleNavigate = async (objectType: string, subType: string) => {
@@ -755,14 +777,14 @@ const handleError = (message: string, error: unknown) => {
   position: absolute;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   left: 0;
   z-index: 1;
   opacity: 0;
   transition: opacity 0.4s ease;
   height: 100%;
-  width: 36px;
-  padding-right: 8px;
+  width: 48px;
+  gap: 2px;
 }
 
 .actions__bulk__wrapper.visible {
@@ -779,8 +801,8 @@ const handleError = (message: string, error: unknown) => {
 }
 
 .search-shrunk {
-  width: calc(100% - 36px);
-  margin-left: 36px;
+  width: calc(100% - 48px);
+  margin-left: 48px;
 }
 </style>
 
