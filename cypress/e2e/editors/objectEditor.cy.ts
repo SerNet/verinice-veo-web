@@ -36,15 +36,19 @@ describe('Object Editor', () => {
     });
     assertEditorPage();
   });
+  const selectMenuItem = (status: string) => {
+    new Cypress.Promise(() => {
+      cy.get('[data-veo-test="import-object-schema"]').click();
+      cy.get('[data-veo-test="object-schema-select"]').click();
+      cy.getCustom('div[role="listbox"]').contains(status).click();
+    });
 
+    cy.getCustom('.v-overlay__content .v-field__input').contains(status);
+  };
   it('should import an object editor', () => {
     visitEditor();
     cy.get('[data-veo-test="objectschema-item"]').click();
-    cy.get('[data-veo-test="dialog-card"]').within(() => {
-      cy.get('[data-veo-test="import-object-schema"]').click();
-      cy.get('[data-veo-test="object-schema-select"]').click();
-    });
-    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('scope').click();
+    selectMenuItem('scope');
     cy.get('[data-veo-test="import-object-schema-button"]').click();
     assertEditorPage();
   });
