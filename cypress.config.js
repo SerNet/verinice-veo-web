@@ -8,12 +8,12 @@ const yaml = require('js-yaml');
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 module.exports = defineConfig({
-  retries: 2,
+  retries: 1,
   video: true, // Let's enable video recording by default
   defaultCommandTimeout: 30000,
   requestTimeout: 15000,
   experimentalMemoryManagement: true,
-  numTestsKeptInMemory: 1,
+  numTestsKeptInMemory: 0,
   e2e: {
     setupNodeEvents(on, config) {
       on('task', {
