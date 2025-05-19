@@ -17,7 +17,7 @@
 
 <template>
   <template v-for="(item, index) in props.items" :key="index">
-    <BaseCard class="flex-grow-1 d-flex mb-2">
+    <BaseCard class="flex-grow-1 d-flex mb-2" :data-test="`setting-${item.key}`">
       <v-card-text class="d-flex justify-space-between">
         <div>
           <h2 class="text-h3">{{ t(`${item.key}.header`).toString() }}</h2>
