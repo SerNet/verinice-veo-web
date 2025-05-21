@@ -24,23 +24,15 @@
 </template>
 
 <script setup lang="ts">
-import { useQuery } from '~/composables/api/utils/query';
 import settingsQueryDefinition, { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 import { logError } from '../userData/modules/HandleError';
 import { useMutation } from '~/composables/api/utils/mutation';
+import { useSettings } from '~/composables/api/settings';
 
 const { t } = useI18n();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
-const { data: appIds, refetch: refetchAppIds } = useQuery(settingsQueryDefinition.queries.fetchSettings);
-
-const appId = computed(() => (appIds.value?.includes('verinice-veo') ? 'verinice-veo' : null));
-
-// Fetch user settings if appId exists
-const { data: userSettings } = useQuery(
-  settingsQueryDefinition.queries.fetchSettingsWithAppId,
-  computed(() => (appId.value ? { appId: appId.value } : undefined))
-);
+const { userSettings, refetchAppIds, refetchUserSettings } = useSettings();
 const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
 
 // Reactive state
@@ -57,10 +49,8 @@ watchEffect(() => {
   const fetched = userSettings.value || {};
   state.settings = Object.entries({ ...defaultSettings, ...fetched }).reduce(
     (acc, [key, value]) => {
-      acc[key] = {
-        key,
-        enabled: String(value).toLowerCase?.() === 'true' || value === true
-      };
+      const isEnabled = String(value).toLowerCase?.() === 'true' || value === true;
+      acc[key] = { key, enabled: isEnabled };
       return acc;
     },
     {} as Record<string, IVeoUserSetting>
@@ -81,6 +71,7 @@ async function handleSave() {
       settings: state.settings
     });
     await refetchAppIds();
+    refetchUserSettings();
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
     handleError(error);

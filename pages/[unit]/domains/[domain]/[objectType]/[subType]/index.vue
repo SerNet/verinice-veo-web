@@ -95,9 +95,9 @@
               ]"
               :additional-headers="additionalHeaders"
               show-select
-              density="compact"
-              class="ultra-compact-table"
-              compact
+              :density="isCompact ? 'compact' : 'default'"
+              :class="isCompact ? 'ultra-compact-table' : ''"
+              :compact="isCompact"
               data-component-name="object-overview-table"
               enable-click
               @click="openItem"
@@ -234,6 +234,8 @@ import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import CsvImportCard from '~/components/object/CsvImportCard.vue';
 import { useCurrentDomainUtils } from '~/composables/domains/useDomains';
 import type { VeoSearch } from '~/types/VeoSearch';
+import { useSettings } from '~/composables/api/settings';
+import { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -260,6 +262,10 @@ const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
 const { hasFeature } = useFeatureFlag();
+
+const { userSettings } = useSettings();
+const rawSettings = JSON.parse(JSON.stringify(userSettings.value)) as IVeoUserSetting;
+const isCompact = rawSettings['compact'] === true;
 
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
