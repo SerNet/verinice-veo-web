@@ -34,11 +34,11 @@
           :aria-label="t('import.dropzone.label')"
           @dragenter.prevent="isDragging = true"
           @dragleave.prevent="isDragging = false"
-          @update:model-value="handleFileChange"
-          @click="triggerFileUpload"
+          @update:model-value="handleFileUpload"
+          @click.prevent="triggerFileUpload"
         >
-          <template #browse="{ props }">
-            <v-btn color="primary" class="browse-button" size="large" flat @click="props.onClick">
+          <template #browse="{}">
+            <v-btn color="primary" class="browse-button" size="large" flat>
               {{ t('import.button.browse') }}
             </v-btn>
           </template>
@@ -47,7 +47,7 @@
           </template>
         </v-file-upload>
 
-        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleFileChange" />
+        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" />
       </v-card>
     </div>
 
@@ -69,9 +69,13 @@ import { mdiUpload } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 
 const { t } = useI18n();
 const { parseCsv } = useCsvImporter();
+const { displayErrorMessage } = useVeoAlerts();
+
+const isProcessing = ref(false);
 
 const props = defineProps({
   objectType: {
@@ -98,34 +102,71 @@ const isDragging = ref(false);
 const fileInputRef = ref<HTMLInputElement | null>(null);
 
 const triggerFileUpload = () => {
-  fileInputRef.value?.click();
-};
-
-const processFile = async (file: File) => {
-  try {
-    // Process the CSV data
-    const result = await parseCsv(file);
-
-    // Set data and open dialog
-    headers.value = result.value.headers;
-    parsedData.value = result.value.records;
-    isCsvDialogOpen.value = true;
-  } catch (error) {
-    console.error('Error processing CSV file:', error);
+  if (fileInputRef.value) {
+    fileInputRef.value.value = '';
+    fileInputRef.value.click();
   }
 };
 
-// Upload is returning a list even though multiple is false. This should be in vuetify fixed in newer verions
-// Using any as a workaround
-const handleFileChange = (input: any) => {
-  if (input instanceof File) {
-    processFile(input);
-  } else if (input instanceof Event) {
-    const target = input.target as HTMLInputElement;
-    const file = target.files?.[0];
-    if (file) {
-      processFile(file);
-    }
+const resetFileInput = () => {
+  if (fileInputRef.value) {
+    fileInputRef.value.value = '';
+  }
+};
+const isValidCsvFile = (file: File): boolean => {
+  const type = file.type;
+  const name = file.name.toLowerCase();
+  return type === 'text/csv' || type === 'application/csv' || name.endsWith('.csv');
+};
+
+const extractFile = (input: any): File | null => {
+  if (input instanceof File) return input;
+  if (input instanceof FileList && input.length > 0) return input[0];
+  if (Array.isArray(input) && input.length > 0) return input[0];
+  return null;
+};
+
+const handleFile = (file: File) => {
+  if (!isValidCsvFile(file)) {
+    displayErrorMessage(t('import.errors.invalidFile'), t('import.errors.onlyCsvAllowed'));
+    resetFileInput();
+    return;
+  }
+  processFile(file);
+};
+
+const handleFileUpload = (files: any) => {
+  const file = extractFile(files);
+  if (!file) {
+    console.error('Unsupported file input type:', files);
+    return;
+  }
+  handleFile(file);
+};
+
+const handleNativeInputChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  if (input.files?.length) {
+    handleFile(input.files[0]);
+  }
+};
+
+const processFile = async (file: File) => {
+  if (isProcessing.value || !file) return;
+
+  isProcessing.value = true;
+  try {
+    const result = await parseCsv(file);
+    headers.value = result.value.headers;
+    parsedData.value = result.value.records;
+    isCsvDialogOpen.value = true;
+    resetFileInput();
+  } catch (error) {
+    console.error('Error processing CSV file:', error);
+    displayErrorMessage(t('import.errors.processingFailed'), String(error));
+    resetFileInput();
+  } finally {
+    isProcessing.value = false;
   }
 };
 
@@ -140,13 +181,19 @@ const handleNavigate = (objectType: string, subType: string) => {
     "import.title": "Import Items",
     "import.dropzone.label": "Drag and drop a CSV file here",
     "import.button.browse": "Browse Files",
-    "import.or.text": "or select from your device"
+    "import.or.text": "or select from your device",
+    "import.errors.invalidFile": "Invalid File Type",
+    "import.errors.onlyCsvAllowed": "Only CSV files are allowed. Please select a file with .csv extension.",
+    "import.errors.processingFailed": "Error Processing File"
   },
   "de": {
     "import.title": "Elemente importieren",
     "import.dropzone.label": "CSV-Datei hierher ziehen und ablegen",
     "import.button.browse": "Dateien auswählen",
-    "import.or.text": "oder von Ihrem Gerät auswählen"
+    "import.or.text": "oder von Ihrem Gerät auswählen",
+    "import.errors.invalidFile": "Ungültiger Dateityp",
+    "import.errors.onlyCsvAllowed": "Es sind nur CSV-Dateien erlaubt. Bitte wählen Sie eine Datei mit der Endung .csv.",
+    "import.errors.processingFailed": "Fehler bei der Verarbeitung der Datei"
   }
 }
 </i18n>
@@ -165,21 +212,16 @@ const handleNavigate = (objectType: string, subType: string) => {
 
 .drop-zone {
   border: 2px dashed #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
   text-align: center;
-
   cursor: pointer;
   transition: all 0.3s ease;
+  background-color: #f9f9f9;
 }
 
 .drop-zone-active {
-  border-color: #c62828;
-  background-color: rgba(198, 40, 40, 0.05);
-}
-
-.drop-text {
-  color: #888;
-  font-size: 18px;
+  border-color: #1976d2;
+  background-color: rgba(25, 118, 210, 0.05);
 }
 
 .hidden-input {
