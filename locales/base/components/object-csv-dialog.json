@@ -19,7 +19,8 @@
       "importErrorMessage": "{imported}/{total} items were imported successfully. Failed items: {failed}",
       "importSuccessTitle": "Import Successful",
       "importSuccessMessage": "{imported}/{total} items were imported successfully.",
-      "confirmClose": "Are you sure you want to close the import dialog? You will lose all unsaved changes."
+      "confirmClose": "Are you sure you want to close the import dialog? You will lose all unsaved changes.",
+      "noOptionsAvailable": "No more import fields available."
     }
   },
   "de": {
@@ -42,7 +43,8 @@
       "importErrorMessage": "{imported}/{total} Elemente wurden erfolgreich importiert. Fehlgeschlagene Elemente: {failed}",
       "importSuccessTitle": "Erfolgreicher Import",
       "importSuccessMessage": "{imported}/{total} Elemente wurden erfolgreich importiert.",
-      "confirmClose": "Sind Sie sicher, dass Sie den Import-Dialog schließen möchten? Sie werden alle unsichern Änderungen verlieren."
+      "confirmClose": "Sind Sie sicher, dass Sie den Import-Dialog schließen möchten? Sie werden alle unsichern Änderungen verlieren.",
+      "noOptionsAvailable": "Keine weiteren Importfelder vorhanden."
     }
   }
 }

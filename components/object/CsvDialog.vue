@@ -114,6 +114,7 @@
                         hide-details
                         clearable
                         :placeholder="t('importObjects.selectMapping')"
+                        :no-data-text="t('importObjects.noOptionsAvailable')"
                         item-title="title"
                         item-value="value"
                         return-object
@@ -272,7 +273,7 @@ const objectProps = computed(() => [...props.requiredFields, 'abbreviation', 'de
 
 // Map technical field names to user-friendly translated names
 const getFieldTranslation = (technicalName: string) => {
-  return t('objectlist.' + technicalName) || technicalName;
+  return technicalName ? t('objectlist.' + technicalName) : '';
 };
 
 const displayFields = (fields: string[]) => {
