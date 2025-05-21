@@ -183,9 +183,7 @@ const links = {
 const date = new Date();
 const currentYear = date.getFullYear();
 
-const SerNetLink = computed(() =>
-  locale.value === 'de' ? 'https://www.sernet.de/' : 'https://www.sernet.de/en/'
-);
+const SerNetLink = computed(() => (locale.value === 'de' ? 'https://www.sernet.de/' : 'https://www.sernet.de/en/'));
 const imprintLink = computed(() =>
   locale.value === 'de' ? 'https://www.sernet.de/impressum' : 'https://www.sernet.de/en/imprint'
 );
