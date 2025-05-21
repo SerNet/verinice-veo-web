@@ -44,7 +44,7 @@
 
             <div class="mt-6 text-center">
               &copy; {{ currentYear }} &hyphen;
-              <a href="https://www.sernet.de" target="_blank">SerNet GmbH</a>
+              <a :href="SerNetLink" target="_blank">SerNet GmbH</a>
               &hyphen;&nbsp;
               <span v-html="footerText"></span>
             </div>
@@ -183,6 +183,9 @@ const links = {
 const date = new Date();
 const currentYear = date.getFullYear();
 
+const SerNetLink = computed(() =>
+  locale.value === 'de' ? 'https://www.sernet.de/' : 'https://www.sernet.de/en/'
+);
 const imprintLink = computed(() =>
   locale.value === 'de' ? 'https://www.sernet.de/impressum' : 'https://www.sernet.de/en/imprint'
 );
