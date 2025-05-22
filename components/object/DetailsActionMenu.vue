@@ -15,14 +15,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
+  <div class="d-flex justify-center" style="width: 100%">
     <UtilNestedMenu location="bottom left" :items="visibleItems">
       <template #activator="{ props: menuProps }">
         <v-btn
-          class="bg-primary mr-2"
+          class="mr-3 mt-2"
           v-bind="mergeProps($attrs, menuProps)"
-          variant="text"
-          size="small"
+          variant="tonal"
+          size="xs"
           :loading="isLoadingActions"
           :disabled="!visibleItems.length || $props.disabled"
           :aria-label="t('expandOptions')"

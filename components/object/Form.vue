@@ -55,10 +55,9 @@
                 v-bind="sideBarActions[selectedSideBarAction].props"
               />
             </BaseCard>
-            <ObjectDetailsActionMenu :object="objectData" />
             <v-btn-toggle
               v-model="selectedSideBarAction"
-              :class="$style['object-side-container-select']"
+              class="object-side-container-select"
               color="primary"
               variant="plain"
             >
@@ -85,6 +84,9 @@
                 </template>
               </ObjectSideBarAction>
             </v-btn-toggle>
+            <div class="object-side-container-select">
+              <ObjectDetailsActionMenu :object="objectData" />
+            </div>
           </div>
         </template>
       </BasePage>
@@ -577,7 +579,7 @@ export default defineComponent({
 
 <i18n src="~/locales/base/components/object-form.json"></i18n>
 
-<style lang="scss" module>
+<style lang="scss">
 .object-side-container-select {
   flex-direction: column;
   height: auto !important;
