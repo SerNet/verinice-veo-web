@@ -54,7 +54,7 @@ import type { TVeoAction } from '~/composables/actions/useActions';
 
 const props = withDefaults(
   defineProps<{
-    disabled: boolean;
+    disabled?: boolean;
     object: IVeoEntity | undefined;
   }>(),
   {

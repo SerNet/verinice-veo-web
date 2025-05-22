@@ -186,7 +186,7 @@ export default defineComponent({
     // Object stuff
     const objectData = computed({
       get() {
-        return props.modelValue as Record<string, any>;
+        return props.modelValue as IVeoEntity;
       },
       set(newValue: Record<string, any>) {
         emit('update:model-value', newValue);
