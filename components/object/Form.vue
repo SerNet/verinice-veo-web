@@ -48,13 +48,14 @@
       </BasePage>
       <BasePage content-class="fill-height" height="100%" no-padding data-component-name="object-form-sidebar">
         <template #default>
-          <div class="d-flex flex-row fill-height pb-13 ml-2 align-start">
+          <div class="d-flex flex-column fill-height pb-13 ml-2 align-start">
             <BaseCard v-if="selectedSideBarAction" class="overflow-y-auto" style="max-height: 100%; width: 300px">
               <component
                 :is="sideBarActions[selectedSideBarAction].component"
                 v-bind="sideBarActions[selectedSideBarAction].props"
               />
             </BaseCard>
+            <ObjectDetailsActionMenu :object="objectData" />
             <v-btn-toggle
               v-model="selectedSideBarAction"
               :class="$style['object-side-container-select']"
