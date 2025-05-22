@@ -91,9 +91,9 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item color="primary" to="/settings">
+        <v-list-item   v-if="hasFeature('userSettings')" color="primary" to="/settings">
           <v-list-item-title>
-            {{ $t('settings') }}
+            {{ $t('settings')}}
           </v-list-item-title>
         </v-list-item>
         <v-divider />
@@ -121,6 +121,7 @@ import { mdiOpenInNew } from '@mdi/js';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { useFeatureFlag } from '~/composables/features/featureFlag';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -131,7 +132,7 @@ const { ability } = useVeoPermissions();
 const logout = () => _logout('/');
 
 const displayDeploymentDetails = ref(false);
-
+const { hasFeature } = useFeatureFlag();
 const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');
 const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');

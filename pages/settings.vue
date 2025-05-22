@@ -16,8 +16,8 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage sticky-footer>
-    <h3>{{ t('userSettingsPage.header') }}</h3>
+  <BasePage v-if="hasFeature('userSettings')"  sticky-footer>
+    <h1 class="text-h3">{{ t('userSettingsPage.header') }}</h1>
     <text>{{ t('userSettingsPage.body') }}</text>
     <v-row class="align-start">
       <v-col class="mt-4" cols="12">
@@ -27,7 +27,10 @@
   </BasePage>
 </template>
 <script setup lang="ts">
+import { useFeatureFlag } from '~/composables/features/featureFlag';
+
 const { t } = useI18n();
+const { hasFeature } = useFeatureFlag();
 </script>
 
 <i18n src="~/locales/base/components/user-settings-messages.json"></i18n>

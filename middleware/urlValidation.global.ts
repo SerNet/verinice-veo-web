@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { useFeatureFlag } from "~/composables/features/featureFlag";
+
 /**
  * This middleware checks whether a url is valid. If the validation fails, the user gets redirected to the index page.
  */
@@ -27,5 +29,11 @@ export default defineNuxtRouteMiddleware((to) => {
   );
   if (invalidUrl) {
     return navigateTo('/');
+  }
+  if (to.path === '/settings') {
+    const { hasFeature } = useFeatureFlag();
+    if (!hasFeature('userSettings')) {
+      throw createError({ statusCode: 404 });
+    }
   }
 });
