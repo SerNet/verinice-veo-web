@@ -48,43 +48,43 @@
       </BasePage>
       <BasePage content-class="fill-height" height="100%" no-padding data-component-name="object-form-sidebar">
         <template #default>
-          <div class="d-flex flex-column fill-height pb-13 ml-2 align-start">
+          <div class="d-flex flex-row fill-height pb-13 ml-2 align-start">
             <BaseCard v-if="selectedSideBarAction" class="overflow-y-auto" style="max-height: 100%; width: 300px">
               <component
                 :is="sideBarActions[selectedSideBarAction].component"
                 v-bind="sideBarActions[selectedSideBarAction].props"
               />
             </BaseCard>
-            <v-btn-toggle
-              v-model="selectedSideBarAction"
-              class="object-side-container-select"
-              color="primary"
-              variant="plain"
-            >
-              <ObjectSideBarAction
-                v-for="(action, actionName) in sideBarActions"
-                v-bind="action"
-                :key="actionName"
-                :value="actionName"
+            <div>
+              <v-btn-toggle
+                v-model="selectedSideBarAction"
+                class="object-side-container-select"
+                color="primary"
+                variant="plain"
               >
-                <template v-if="actionName === 'messages'" #default="{ props: actionProps, activatorProps }">
-                  <div>
-                    <v-badge :content="messages.length" :model-value="!!messages.length" :color="messagesBadgeColor">
-                      <v-btn
-                        v-bind="activatorProps"
-                        :data-component-name="actionProps.dataComponentName"
-                        class="my-1 py-1"
-                        :disabled="actionProps.disabled"
-                        :icon="actionProps.icon"
-                        :value="actionProps.value"
-                        :aria-label="`${actionName}`"
-                      />
-                    </v-badge>
-                  </div>
-                </template>
-              </ObjectSideBarAction>
-            </v-btn-toggle>
-            <div class="object-side-container-select">
+                <ObjectSideBarAction
+                  v-for="(action, actionName) in sideBarActions"
+                  v-bind="action"
+                  :key="actionName"
+                  :value="actionName"
+                >
+                  <template v-if="actionName === 'messages'" #default="{ props: actionProps, activatorProps }">
+                    <div>
+                      <v-badge :content="messages.length" :model-value="!!messages.length" :color="messagesBadgeColor">
+                        <v-btn
+                          v-bind="activatorProps"
+                          :data-component-name="actionProps.dataComponentName"
+                          class="my-1 py-1"
+                          :disabled="actionProps.disabled"
+                          :icon="actionProps.icon"
+                          :value="actionProps.value"
+                          :aria-label="`${actionName}`"
+                        />
+                      </v-badge>
+                    </div>
+                  </template>
+                </ObjectSideBarAction>
+              </v-btn-toggle>
               <ObjectDetailsActionMenu :object="objectData" />
             </div>
           </div>
