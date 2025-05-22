@@ -91,9 +91,9 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item   v-if="hasFeature('userSettings')" color="primary" to="/settings">
+        <v-list-item v-if="hasFeature('userSettings')" color="primary" to="/settings">
           <v-list-item-title>
-            {{ $t('settings')}}
+            {{ $t('settings') }}
           </v-list-item-title>
         </v-list-item>
         <v-divider />

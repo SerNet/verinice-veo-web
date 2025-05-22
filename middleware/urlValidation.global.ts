@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { useFeatureFlag } from "~/composables/features/featureFlag";
+import { useFeatureFlag } from '~/composables/features/featureFlag';
 
 /**
  * This middleware checks whether a url is valid. If the validation fails, the user gets redirected to the index page.

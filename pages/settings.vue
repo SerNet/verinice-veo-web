@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage v-if="hasFeature('userSettings')"  sticky-footer>
+  <BasePage v-if="hasFeature('userSettings')" sticky-footer>
     <h1 class="text-h3">{{ t('userSettingsPage.header') }}</h1>
     <text>{{ t('userSettingsPage.body') }}</text>
     <v-row class="align-start">
