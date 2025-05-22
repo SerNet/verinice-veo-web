@@ -17,12 +17,6 @@ steps:
   #  - title: 'Objektdetails verstecken/anzeigen'
   #    element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
   #    intro: Die Objektdetails können per Schaltfläche oder Shortcut Alt/STRG + 1 versteckt bzw. angezeigt werden.
-  - title: 'Änderungsdetails'
-    element: '[data-component-name=object-details-date-time]'
-    intro: Erkennen Sie auf den ersten Blick, wer das Objekt wann erstellt oder letztmalig geändert hat.
-  - title: 'Objektbeschreibung'
-    element: '[data-component-name=object-details-description]'
-    intro: Zur eindeutigen Beschreibung des Objektes wird sofern vorhanden die Objektbeschreibung ausgegeben.
   - title: 'Scopes'
     element: '[data-component-name=object-details-childScopes-tab]'
     intro: In diesem Abschnitt sehen Sie alle (Unter-)Scopes des aktiven Scopes.
