@@ -1,4 +1,3 @@
-import { upperFirst } from 'lodash';
 import { getRandomElementType } from '../../commands/utils';
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
@@ -22,7 +21,7 @@ describe('Create elements', () => {
   // number of elements to be created in each sub type
   const numOfElements = 1;
 
-  it('verifies actions available in `all scope`', () => {
+  it('verifies actions available in `all scopes`', () => {
     cy.visit(
       `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${Cypress.env('dynamicTestData').unit.domains[0].id}/scopes/-`,
       { failOnStatusCode: false }
