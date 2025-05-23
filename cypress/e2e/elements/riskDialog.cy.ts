@@ -54,7 +54,7 @@ describe('Risk Dialog', { testIsolation: false, retries: 0 }, () => {
     cy.getCustom('@container').within(() => {
       cy.getCustom('[id^="checkbox-"]')
         .filter('[aria-disabled="false"]')
-        .first()
+        .last()
         .then(($checkbox) => {
           const $parentRow = $checkbox.closest('tr');
           selectedRiskText = $parentRow.find('td').eq(4).text().trim();
@@ -115,7 +115,7 @@ describe('Risk Dialog', { testIsolation: false, retries: 0 }, () => {
     cy.getCustom('[data-veo-test="link-dialog"]').within(() => {
       cy.getCustom('[id^="checkbox-"]')
         .filter('[aria-disabled="false"]')
-        .first()
+        .last()
         .then(($checkbox) => {
           const $parentRow = $checkbox.closest('tr');
           selectedMitigationText = $parentRow.find('td').eq(4).text().trim();

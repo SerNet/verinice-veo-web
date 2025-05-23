@@ -31,7 +31,7 @@ describe('Copy elements', () => {
         cy.checkSubTypePage($subType[0].innerText);
 
         cy.getCustom('.v-data-table__tr') // Adjust this selector if needed to be more specific
-          .first()
+          .last()
           .as('originalRow');
 
         cy.getCustom('@originalRow').then(($row) => {
@@ -48,9 +48,9 @@ describe('Copy elements', () => {
             texts.push(Cypress.$(cell).text());
           });
 
-          const abb = texts[3];
-          const name = texts[4];
+          const abb = texts[4];
           const status = texts[5];
+          const name = texts[3];
 
           cy.wait('@cloneElement').its('response.statusCode').should('eq', 201);
           cy.wait('@getClonedElement').its('response.statusCode').should('eq', 200);
