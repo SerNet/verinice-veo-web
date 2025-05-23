@@ -27,9 +27,9 @@
                 v-bind="props"
                 color="primary"
                 :icon="mdiDotsHorizontal"
+                :aria-label="t('showBreadcrumbs')"
                 small
                 @click.stop.prevent
-                :aria-label="t('showBreadcrumbs')"
               />
             </template>
             <template #default>
