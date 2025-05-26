@@ -489,6 +489,7 @@ const Crumb: TInlineComponent = {
           </div>
 
         </RouterLink>
+      </span>
       </template>
     </v-tooltip>
   </v-breadcrumbs-item>
