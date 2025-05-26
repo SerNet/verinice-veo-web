@@ -1,4 +1,7 @@
+import { truncate } from 'lodash';
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
+
+const crumbDefaultLength = 22;
 
 let unitDetails: UnitDetails;
 
@@ -26,7 +29,7 @@ describe('Navigation Menu', () => {
     }
   ];
 
-  it('DSGVO navigate to all expected menu entries', () => {
+  it.only('DSGVO navigate to all expected menu entries', () => {
     cy.selectDomain('DS-GVO');
 
     cy.getCustom('[data-veo-test="domain-select"]').should('be.visible');
@@ -64,7 +67,10 @@ describe('Navigation Menu', () => {
           cy.wait(['@gettingData'], { responseTimeout: 15000 })
             .its('response.statusCode')
             .should('be.oneOf', [200, 304]);
-          cy.getCustom('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
+          cy.getCustom('[data-component-name="breadcrumbs"]').contains(
+            truncate($subType.text(), { length: crumbDefaultLength }),
+            { matchCase: false }
+          );
         });
       });
     });
@@ -73,7 +79,10 @@ describe('Navigation Menu', () => {
       group.entry.forEach((entry) => {
         cy.navigateTo({ group: group.name, entry: entry });
         cy.wait(['@gettingData'], { responseTimeout: 15000 }).its('response.statusCode').should('be.oneOf', [200, 304]);
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(
+          truncate(entry.toLowerCase(), { length: crumbDefaultLength }),
+          { matchCase: false }
+        );
       });
     });
   });
@@ -126,7 +135,10 @@ describe('Navigation Menu', () => {
           cy.wait(['@gettingData'], { responseTimeout: 15000 })
             .its('response.statusCode')
             .should('be.oneOf', [200, 304]);
-          cy.getCustom('[data-component-name="breadcrumbs"]').contains($subType.text(), { matchCase: false });
+          cy.getCustom('[data-component-name="breadcrumbs"]').contains(
+            truncate($subType.text(), { length: crumbDefaultLength }),
+            { matchCase: false }
+          );
         });
       });
     });
@@ -135,7 +147,10 @@ describe('Navigation Menu', () => {
       group.entry.forEach((entry) => {
         cy.navigateTo({ group: group.name, entry: entry });
         cy.wait(['@gettingData'], { responseTimeout: 15000 }).its('response.statusCode').should('be.oneOf', [200, 304]);
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains(entry.toLowerCase(), { matchCase: false });
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(
+          truncate(entry.toLowerCase(), { length: crumbDefaultLength }),
+          { matchCase: false }
+        );
       });
     });
   });

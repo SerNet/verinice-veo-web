@@ -200,7 +200,7 @@ describe('Requirement Implementations:  List', () => {
     const domainName = 'ITGS';
     const objectTypePlural = dynamicTestData.testObject.objectTypePlural;
     const subType = dynamicTestData.testObject.subTypePlural;
-    const objectName = dynamicTestData.testObject.name;
+    const displayName = Cypress.env('dynamicTestData').ris[0].origin.displayName;
     const moduleName = `${dynamicTestData.modules[0].name}`;
 
     // Navigate
@@ -209,30 +209,37 @@ describe('Requirement Implementations:  List', () => {
     cy.getCustom('[data-veo-test="breadcrumbs"]').contains('Compliance').should('not.exist');
 
     cy.getCustom('[data-veo-test="breadcrumbs"] li').as('breadcrumbs');
-    cy.get('@breadcrumbs')
+
+    cy.getCustom('.crumb__menu button').click();
+    cy.wait(500);
+    cy.getCustom('.crumb__menu__list li').as('breadcrumbsInMenu');
+
+    cy.get('@breadcrumbsInMenu')
       .eq(0)
       .invoke('text')
-      .then((text: string) => expect(text).to.include(unitName));
+      // Slice off the `...` part of a truncated breadcrumb
+      .then((text: string) => expect(unitName).to.include(text.slice(0, -3)));
+    cy.get('@breadcrumbsInMenu')
+      .eq(1)
+      .invoke('text')
+      .then((text: string) => expect(domainName).to.include(text));
+    cy.get('@breadcrumbsInMenu')
+      .eq(2)
+      .invoke('text')
+      .then((text: string) => expect(objectTypePlural).to.include(text));
+    cy.get('@breadcrumbsInMenu')
+      .eq(3)
+      .invoke('text')
+      .then((text: string) => expect(subType).to.include(text));
+
     cy.get('@breadcrumbs')
       .eq(1)
       .invoke('text')
-      .then((text: string) => expect(text).to.include(domainName));
+      .then((text: string) => expect(displayName).to.include(text.slice(0, -3)));
     cy.get('@breadcrumbs')
       .eq(2)
       .invoke('text')
-      .then((text: string) => expect(text).to.include(objectTypePlural));
-    cy.get('@breadcrumbs')
-      .eq(3)
-      .invoke('text')
-      .then((text: string) => expect(text).to.include(subType));
-    cy.get('@breadcrumbs')
-      .eq(4)
-      .invoke('text')
-      .then((text: string) => expect(text).to.include(objectName));
-    cy.get('@breadcrumbs')
-      .eq(5)
-      .invoke('text')
-      .then((text: string) => expect(text).to.include(`Implementation (${moduleName})`));
+      .then((text: string) => expect(`Implementation (${moduleName})`).to.include(text.slice(0, -3)));
   });
 });
 

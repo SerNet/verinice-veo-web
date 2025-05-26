@@ -1,4 +1,7 @@
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
+import { truncate } from 'lodash';
+
+const crumbDefaultLength = 22;
 
 let unitDetails_0: UnitDetails;
 let unitDetails_1: UnitDetails;
@@ -23,7 +26,9 @@ describe('Unit Selection Functionality', () => {
       .invoke('text')
       .then((text: string) => {
         expect(text.trim()).to.equal(testUnits[0].name);
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains(testUnits[0].name);
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(
+          truncate(testUnits[0].name, { length: crumbDefaultLength })
+        );
       });
 
     // Select the second test unit
@@ -36,7 +41,9 @@ describe('Unit Selection Functionality', () => {
       .then((newUnitText: string) => {
         expect(newUnitText.trim()).to.equal(testUnits[1].name);
         expect(newUnitText.trim()).to.not.equal(testUnits[0].name);
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains(testUnits[1].name);
+        cy.getCustom('[data-component-name="breadcrumbs"]').contains(
+          truncate(testUnits[1].name, { length: crumbDefaultLength })
+        );
       });
   });
 });
