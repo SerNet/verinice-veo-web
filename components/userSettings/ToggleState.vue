@@ -47,13 +47,11 @@ const defaultSettings: Record<string, IVeoUserSetting> = {
 // Watch and sync settings
 watchEffect(() => {
   const fetched = userSettings.value || {};
-  state.settings = Object.entries({ ...defaultSettings, ...fetched }).reduce(
-    (acc, [key, value]) => {
-      const isEnabled = String(value).toLowerCase?.() === 'true' || value === true;
-      acc[key] = { key, enabled: isEnabled };
-      return acc;
-    },
-    {} as Record<string, IVeoUserSetting>
+  state.settings = Object.fromEntries(
+    Object.entries({ ...defaultSettings, ...fetched }).map(([key, value]) => [
+      key,
+      { key, enabled: value === true || String(value).toLowerCase() === 'true' }
+    ])
   );
 });
 
@@ -70,9 +68,7 @@ async function handleSave() {
       appId: 'verinice-veo',
       settings: state.settings
     });
-    await refetchAppIds();
-    refetchUserSettings();
-    displaySuccessMessage(t('successHeader'));
+    handleSuccess();
   } catch (error) {
     handleError(error);
   }
@@ -81,6 +77,11 @@ async function handleSave() {
 function handleError(error: unknown) {
   logError(error);
   displayErrorMessage(t('errorHeader'), t('errorBody'));
+}
+async function handleSuccess() {
+  await refetchAppIds();
+  refetchUserSettings();
+  displaySuccessMessage(t('successHeader'));
 }
 </script>
 
