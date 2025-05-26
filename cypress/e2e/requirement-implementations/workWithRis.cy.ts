@@ -193,7 +193,7 @@ describe('Requirement Implementations:  List', () => {
     cy.checkPagination(['abbreviation, name, status']);
   });
 
-  it.only('checks if breadcrumbs are correct', () => {
+  it('checks if breadcrumbs are correct', () => {
     const dynamicTestData = Cypress.env('dynamicTestData');
 
     const unitName = dynamicTestData.unit.name;
