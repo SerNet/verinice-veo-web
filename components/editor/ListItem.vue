@@ -22,7 +22,7 @@
         <v-icon size="small" :icon="styling.icon" color="white" />
       </v-avatar>
     </template>
-    <v-list-item-title class="caption">{{ title }}</v-list-item-title>
+    <v-list-item-title class="caption">{{ sanitizedTitle }}</v-list-item-title>
     <v-list-item-subtitle v-if="scope">
       {{ pointer }}
     </v-list-item-subtitle>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { last } from 'lodash';
+import { last, upperFirst } from 'lodash';
 import { IInputType } from '~/types/VeoEditor';
 
 interface Props {
@@ -62,15 +62,19 @@ const props = withDefaults(defineProps<Props>(), {
   translate: false
 });
 
+const sanitizedTitle: ComputedRef<string> = computed(() => {
+  return upperFirst(props.title.replace(/([A-Z])/g, ' $1')).trim();
+});
 const pointer: ComputedRef<string> = computed(() => {
   if (!props.scope) return '';
 
   const result = props.scope.split('/');
-  const match = props.scope.match(/[A-Z]{1,2}/);
+  const match = props.scope.match(/riskValues/);
 
+  // only display the pointer, if it's a risk value; e.g. GSRA > C > PotentialImpact
   return match ?
-      `${result[4]} > ${result[8]} > ${last(props.scope.split('/'))}` // index [8] stores the risk category, e.g. "A" | "C" | "I"
-    : last(props.scope.split('/'));
+      `${result[4]} > ${result[8]} > ${upperFirst(last(props.scope.split('/')).replace(/([A-Z])/g, ' $1'))}`
+    : '';
 });
 
 const { t } = useI18n();
