@@ -37,12 +37,9 @@ describe('Object Editor', () => {
     assertEditorPage();
   });
   const selectMenuItem = (status: string) => {
-    new Cypress.Promise(() => {
-      cy.get('[data-veo-test="import-object-schema"]').click();
-      cy.get('[data-veo-test="object-schema-select"]').click();
-      cy.getCustom('div[role="listbox"]').contains(status).click();
-    });
-
+    cy.get('[data-veo-test="import-object-schema"]').click();
+    cy.getCustom('[data-veo-test="object-schema-select"]').should('be.visible').click();
+    cy.getCustom('div[role="listbox"]').contains(status).click();
     cy.getCustom('.v-overlay__content .v-field__input').contains(status);
   };
   it('should import an object editor', () => {
