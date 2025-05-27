@@ -31,7 +31,7 @@ describe('Copy elements', () => {
         cy.checkSubTypePage($subType[0].innerText);
 
         cy.getCustom('.v-data-table__tr') // Adjust this selector if needed to be more specific
-          .last()
+          .first()
           .as('originalRow');
 
         cy.getCustom('@originalRow').then(($row) => {
@@ -41,7 +41,8 @@ describe('Copy elements', () => {
           cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}**`).as(
             'getClonedElement'
           );
-          cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').should('be.visible').click();
+          cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').as('cloneButton');
+          cy.get('@cloneButton').should('be.visible').click();
           const cells = $row.children();
           const texts = [];
           cells.each((_index, cell) => {
