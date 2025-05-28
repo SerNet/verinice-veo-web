@@ -95,7 +95,7 @@
               ]"
               :additional-headers="additionalHeaders"
               show-select
-              v-bind="tableCompactProps"
+              :v-bind="tableCompactProps"
               data-component-name="object-overview-table"
               enable-click
               @click="openItem"
