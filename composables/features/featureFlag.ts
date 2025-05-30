@@ -25,10 +25,12 @@ interface CachedFeatureFlags {
 }
 
 const featureFlags = ref<FeatureFlags>({});
+const isInitializing = ref(true);
 
 export function useFeatureFlag() {
   const config = useRuntimeConfig();
   const isBetaMode = config.public.isBetaMode === 'true';
+  const isInitializingFeatureFlags = isInitializing;
 
   const updateCache = () => {
     if (!isBetaMode) return;
@@ -82,7 +84,7 @@ export function useFeatureFlag() {
   };
 
   const hasFeature = (flag: FeatureFlagName): Ref<boolean> => {
-    return computed(() => featureFlags.value?.[flag] ?? undefined);
+    return computed(() => featureFlags.value?.[flag] ?? false);
   };
 
   const enableFeature = (flag: FeatureFlagName) => {
@@ -104,11 +106,14 @@ export function useFeatureFlag() {
   };
 
   const initializeFeatureFlags = async () => {
+    if (!isInitializing.value) return;
+
     if (!isBetaMode) {
       localStorage.removeItem(LOCAL_STORAGE_KEYS.FEATURE_FLAGS);
       const jsonFlags = await loadFeatureFlags();
       const envFlags = loadEnvironmentFeatureFlags();
       featureFlags.value = { ...jsonFlags, ...envFlags };
+      isInitializing.value = false;
       return;
     }
 
@@ -117,6 +122,7 @@ export function useFeatureFlag() {
     const cacheFlags = loadFeatureFlagsFromCache();
     featureFlags.value = { ...jsonFlags, ...envFlags, ...cacheFlags };
     updateCache();
+    isInitializing.value = false;
   };
 
   initializeFeatureFlags();
@@ -128,6 +134,7 @@ export function useFeatureFlag() {
     disableFeature,
     toggleFeature,
     resetFeatureFlags,
-    isBetaMode
+    isBetaMode,
+    isInitializingFeatureFlags
   };
 }
