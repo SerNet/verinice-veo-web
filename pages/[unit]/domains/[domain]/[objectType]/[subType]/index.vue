@@ -261,16 +261,12 @@ const { clone } = useCloneObject();
 const { hasFeature } = useFeatureFlag();
 
 const { userSettings } = useSettings();
-const isCompact = computed(() => {
-  const compactValue = userSettings.value['compact'];
-  return compactValue === true || compactValue === 'true';
-});
+const isCompact = computed(() => Boolean((userSettings.value as any)?.compact));
 const tableCompactProps = computed(() => ({
-  density: isCompact ? 'compact' : 'default',
-  class: isCompact ? 'ultra-compact-table' : '',
-  compact: isCompact
+  density: isCompact.value ? 'compact' : 'default',
+  class: isCompact.value ? 'ultra-compact-table' : '',
+  compact: isCompact.value
 }));
-
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
