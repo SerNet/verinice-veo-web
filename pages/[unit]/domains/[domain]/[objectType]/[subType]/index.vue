@@ -62,11 +62,13 @@
         </div>
       </div>
 
-      <v-scale-transition>
+      <v-skeleton-loader v-if="isInitializingFeatureFlags" type="table" />
+      <v-scale-transition v-else>
         <template v-if="filter.objectType">
           <!-- Card View -->
+
           <ObjectCardView
-            v-if="hasFeature('cardView')"
+            v-if="hasCardView"
             :card-items="cardItems"
             :fetched-items="_items"
             :sort-by="sortBy"
@@ -258,7 +260,10 @@ const { data: currentDomain } = useCurrentDomain();
 const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
-const { hasFeature } = useFeatureFlag();
+const { hasFeature, isInitializingFeatureFlags } = useFeatureFlag();
+
+// CardView Feature
+const hasCardView = hasFeature('cardView');
 
 const { userSettings } = useSettings();
 const isCompact = computed(() => Boolean((userSettings.value as any)?.compact));
