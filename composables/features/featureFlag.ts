@@ -81,12 +81,8 @@ export function useFeatureFlag() {
     updateCache();
   };
 
-  const hasFeature = (flag: FeatureFlagName): boolean => {
-    if (!(flag in featureFlags.value)) {
-      console.warn(`Feature flag "${flag}" is not defined`);
-      return false;
-    }
-    return !!featureFlags.value[flag];
+  const hasFeature = (flag: FeatureFlagName): Ref<boolean> => {
+    return computed(() => featureFlags.value?.[flag] ?? undefined);
   };
 
   const enableFeature = (flag: FeatureFlagName) => {
