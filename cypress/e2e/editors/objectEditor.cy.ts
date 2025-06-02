@@ -38,9 +38,20 @@ describe('Object Editor', () => {
   });
   const selectMenuItem = (status: string) => {
     cy.get('[data-veo-test="import-object-schema"]').click();
-    cy.getCustom('[data-veo-test="object-schema-select"]').should('be.visible').click();
-    cy.getCustom('div[role="listbox"]').contains(status).click();
-    cy.getCustom('.v-overlay__content .v-field__input').contains(status);
+    cy.wait(100);
+
+    cy.getCustom('[data-veo-test="object-schema-select"]').should('be.visible');
+    cy.wait(100);
+
+    cy.getCustom('[data-veo-test="object-schema-select"]').click();
+
+    cy.getCustom('div[role="listbox"]').should('be.visible').and('contain', status);
+
+    cy.wait(100);
+
+    cy.getCustom('div[role="listbox"]').find('[role="option"]').contains(status).first().click({ force: true });
+
+    cy.getCustom('.v-overlay__content .v-field__input').should('contain', status);
   };
   it('should import an object editor', () => {
     visitEditor();
