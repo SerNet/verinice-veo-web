@@ -82,7 +82,7 @@ export interface IVeoDomain extends IVeoBaseObject {
     [key: string]: IVeoElementTypeDefinition;
   };
   controlImplementationConfiguration: {
-    complianceControlSubType?: string;
+    complianceControlSubTypes?: string[];
     mitigationControlSubType?: string;
   };
 }
@@ -127,6 +127,12 @@ export interface IVeoFetchProfilesParameters {
 export interface IVeoFetchProfileParameters {
   domainId: string;
   id: string;
+}
+
+export interface IVeoUpdateControlImplementationConfigurationParameters {
+  domainId: string;
+  mitigationControlSubType?: string;
+  complianceControlSubTypes?: string[];
 }
 
 export default {
@@ -243,6 +249,25 @@ export default {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         onSuccess: (_queryClient, _data, _variables, _context) => {}
       }
-    } as IVeoMutationDefinition<IVeoApplyProfilesParameters, void>
+    } as IVeoMutationDefinition<IVeoApplyProfilesParameters, void>,
+    updateControlImplementationConfiguration: {
+      primaryQueryKey: 'domain',
+      url: '/api/content-creation/domains/:domainId/control-implementation-configuration',
+      method: 'PUT',
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: {
+          domainId: mutationParameters.domainId
+        },
+        json: {
+          mitigationControlSubType: mutationParameters.mitigationControlSubType,
+          complianceControlSubTypes: mutationParameters.complianceControlSubTypes
+        }
+      }),
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, _variables, _context) => {
+          queryClient.invalidateQueries(['domain']);
+        }
+      }
+    } as IVeoMutationDefinition<IVeoUpdateControlImplementationConfigurationParameters, void>
   }
 };
