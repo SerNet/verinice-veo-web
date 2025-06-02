@@ -79,7 +79,7 @@ watch(
       currentDomain.value?.raw?.elementTypeDefinitions?.control?.customAspects?.control_bpInformation;
 
     const subTypeMatches =
-      props.containerControl?.subType === controlConfig?.complianceControlSubType ||
+      controlConfig?.complianceControlSubTypes?.includes(props.containerControl?.subType || '') ||
       props.containerControl?.subType === controlConfig?.mitigationControlSubType;
 
     showVdA.value = bpInformation && subTypeMatches;

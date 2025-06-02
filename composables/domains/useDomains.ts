@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { useQuerySync } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import { useQuerySync } from '~/composables/api/utils/query';
 import { customKebabCase } from '~/composables/useConfiguration';
 
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
@@ -29,7 +29,7 @@ export type TVeoDomain = {
   abbreviation: string;
   description: string;
   riskDefinitions: { [key: string]: IVeoDomainRiskDefinition };
-  complianceControlSubType: string;
+  complianceControlSubTypes: string[];
   color: string;
   raw: IVeoDomain;
 };
@@ -76,7 +76,7 @@ export function useCurrentDomain() {
           riskDefinitions: result.riskDefinitions,
           id: result.id,
           description: result.description,
-          complianceControlSubType: result.controlImplementationConfiguration?.complianceControlSubType,
+          complianceControlSubTypes: result.controlImplementationConfiguration?.complianceControlSubTypes || [],
           color: useDomainColor(result.name)!,
           raw: result
         };
@@ -147,7 +147,7 @@ function map(domains: IVeoDomain[]): TVeoDomain[] {
     abbreviation: domain.abbreviation,
     id: domain.id,
     riskDefinitions: domain.riskDefinitions,
-    complianceControlSubType: domain.controlImplementationConfiguration?.complianceControlSubType,
+    complianceControlSubTypes: domain.controlImplementationConfiguration?.complianceControlSubTypes || [],
     description: domain.description,
     color: useDomainColor(domain?.name)!,
     raw: domain

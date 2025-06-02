@@ -23,9 +23,9 @@
 <script setup lang="ts">
 import { mdiLinkPlus } from '@mdi/js';
 import { computed, inject } from 'vue';
-const { locale } = useI18n();
 import { useCurrentDomain } from '~/composables/index';
 import { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+const { locale } = useI18n();
 
 // Define props
 const props = defineProps<{
@@ -41,12 +41,12 @@ const t: any = inject('t');
 
 const { data: currentDomain } = useCurrentDomain();
 
-const complianceControlSubType = computed(
-  () => currentDomain.value.raw.controlImplementationConfiguration.complianceControlSubType
+const complianceControlSubTypes = computed(
+  () => currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubTypes || []
 );
 
 // Function to open the link object dialog
-const openLinkObjectDialog = (objectType?: string) => {
+const openLinkObjectDialog = (objectType?: string, subType?: string) => {
   const updatedDialog = {
     object: props.object,
     editRelationship: objectType,
@@ -54,7 +54,7 @@ const openLinkObjectDialog = (objectType?: string) => {
     editParents: true,
     preselectedItems: getPreselectedItems(),
     returnObjects: true, // explicitly setting it to true
-    preselectedFilters: { subType: complianceControlSubType.value },
+    preselectedFilters: { subType },
     disabledFields: ['subType', 'objectType'],
     linkRiskAffected: false
   };
@@ -62,8 +62,8 @@ const openLinkObjectDialog = (objectType?: string) => {
 };
 
 // Callback for linking object
-const linkObjectCallback = () => {
-  openLinkObjectDialog('control');
+const linkObjectCallback = (subType?: string) => {
+  return () => openLinkObjectDialog('control', subType);
 };
 
 // Get preselected items for the link dialog
@@ -72,20 +72,20 @@ const getPreselectedItems = (): IVeoLink[] => {
 };
 
 // Define actions for parent objects
-const actions = computed(() => [
-  {
-    key: 'linkObject',
+const actions = computed(() => {
+  return complianceControlSubTypes.value.map((subType) => ({
+    key: `linkObject_${subType}`,
     title: computed(() =>
       t('linkControl', [
         currentDomain.value.raw.elementTypeDefinitions.control.translations[locale.value][
-          `control_${complianceControlSubType.value}_plural`
-        ]
+          `control_${subType}_plural`
+        ] || subType
       ])
     ),
     icon: mdiLinkPlus,
     tab: ['controls'],
     objectTypes: ['entity'],
-    action: linkObjectCallback
-  }
-]);
+    action: linkObjectCallback(subType)
+  }));
+});
 </script>

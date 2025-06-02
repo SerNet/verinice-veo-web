@@ -56,9 +56,6 @@
 </template>
 
 <script setup lang="ts">
-import { useFormatters } from '~/composables/utils';
-import { useVeoPermissions } from '~/composables/VeoPermissions';
-
 import type { IVeoEntity } from '~/types/VeoTypes';
 
 const props = withDefaults(
@@ -86,8 +83,9 @@ const { data: config } = useConfiguration();
 const { data: currentDomain } = useCurrentDomain();
 
 const { t, locale } = useI18n();
-const { formatDateTime } = useFormatters();
-
+const complianceControlSubTypes = computed(
+  () => currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubTypes ?? []
+);
 // Display logic for tabs
 
 // SCOPES are special, so they come with their own set of tabs
@@ -103,8 +101,10 @@ const hasRiskTab = computed(
 const isRiskTabDisabled = computed(() => isScope.value && !props.object?.riskDefinition);
 
 // CONTROlS
-const hasComplianceControlSubType = computed(() => !!currentDomain.value?.complianceControlSubType);
-const hasControlsTab = computed(() => hasComplianceControlSubType.value && isRiskAffected.value);
+const hasComplianceControlSubTypes = computed(() => {
+  return complianceControlSubTypes?.value?.length > 0;
+});
+const hasControlsTab = computed(() => hasComplianceControlSubTypes.value && isRiskAffected.value);
 
 const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; tooltip?: string }[]>(() => [
   {
@@ -130,8 +130,7 @@ const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; toolt
   },
   {
     key: 'targets',
-    hidden:
-      props.object?.subType !== currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubType
+    hidden: !complianceControlSubTypes.value?.includes(props.object?.subType || '')
   },
   {
     key: 'risks',
@@ -155,11 +154,14 @@ const internalActiveTab = computed({
 
 const getTabLabel = (tab: { key: string }) => {
   if (tab.key === 'controls') {
-    return (
-      currentDomain.value?.raw?.elementTypeDefinitions['control']?.translations[locale.value]?.[
-        `control_${currentDomain.value?.complianceControlSubType}_plural`
-      ] ?? t(tab.key)
-    );
+    if (complianceControlSubTypes.value.length === 1) {
+      const singleSubType = complianceControlSubTypes[0];
+      return (
+        currentDomain.value?.raw?.elementTypeDefinitions['control']?.translations[locale.value]?.[
+          `control_${singleSubType}_plural`
+        ] ?? t(tab.key)
+      );
+    }
   }
   return t(tab.key);
 };

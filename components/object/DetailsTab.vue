@@ -347,7 +347,7 @@ export default defineComponent({
     const cisQueryEnabled = computed(
       () =>
         (props.type === 'controls' || props.type === 'targets') &&
-        !!domain.value?.controlImplementationConfiguration?.complianceControlSubType
+        !!domain.value?.controlImplementationConfiguration?.complianceControlSubTypes?.length
     );
 
     const {

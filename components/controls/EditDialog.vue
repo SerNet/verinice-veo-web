@@ -102,13 +102,32 @@ const props = withDefaults(
 const { data: currentDomain } = useCurrentDomain();
 
 const dialogTitle = computed(() => {
-  return (
-    t('title', [
+  const controlSubType = props.object?.controlImplementations?.[props.controlIndex]?.control?.subType;
+
+  if (controlSubType) {
+    const translation =
       currentDomain.value?.raw?.elementTypeDefinitions['control']?.translations[locale.value]?.[
-        `control_${currentDomain.value?.complianceControlSubType}_singular`
-      ]
-    ]) ?? t('title', ['Control'])
-  );
+        `control_${controlSubType}_singular`
+      ];
+    if (translation) {
+      return t('title', [translation]);
+    }
+  }
+
+  const complianceControlSubTypes =
+    currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubTypes;
+  if (complianceControlSubTypes?.length === 1) {
+    const singleSubType = complianceControlSubTypes[0];
+    const translation =
+      currentDomain.value?.raw?.elementTypeDefinitions['control']?.translations[locale.value]?.[
+        `control_${singleSubType}_singular`
+      ];
+    if (translation) {
+      return t('title', [translation]);
+    }
+  }
+
+  return t('title', ['Control']);
 });
 
 const emit = defineEmits<{
