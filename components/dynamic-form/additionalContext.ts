@@ -62,7 +62,7 @@ function enrichRisks({
 }) {
   const riskProperties = [
     { name: 'potentialImpacts', transLateEnumValues: true, disabled: false },
-    { name: 'potentialImpactReasons', transLateEnumValues: false, disabled: false },
+    { name: 'potentialImpactReasons', transLateEnumValues: true, disabled: false },
     { name: 'potentialImpactExplanations', transLateEnumValues: false, disabled: false },
     { name: 'potentialImpactEffectiveReasons', transLateEnumValues: false, disabled: false },
     { name: 'potentialImpactsCalculated', transLateEnumValues: true, disabled: true },

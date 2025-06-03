@@ -24,7 +24,7 @@
     </template>
     <v-list-item-title class="caption">{{ sanitizedTitle }}</v-list-item-title>
     <v-list-item-subtitle v-if="scope">
-      {{ pointer }}
+      {{ upperFirst(pointer) }}
     </v-list-item-subtitle>
     <slot name="description" />
     <template #append>
@@ -72,9 +72,7 @@ const pointer: ComputedRef<string> = computed(() => {
   const match = props.scope.match(/riskValues/);
 
   // only display the pointer, if it's a risk value; e.g. GSRA > C > PotentialImpact
-  return match ?
-      `${result[4]} > ${result[8]} > ${upperFirst(last(props.scope.split('/')).replace(/([A-Z])/g, ' $1'))}`
-    : '';
+  return match ? `${result[4]} > ${result[8]} > ${last(props.scope.split('/')).replace(/([A-Z])/g, ' $1')}` : '';
 });
 
 const { t } = useI18n();
