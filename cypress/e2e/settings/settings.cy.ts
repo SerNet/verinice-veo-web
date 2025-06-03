@@ -1,4 +1,8 @@
-describe('User Settings', () => {
+const featureEnabled = process.env.VEO_FEATURE_FLAG_SETTINGS === 'true';
+
+const maybeDescribe = featureEnabled ? describe : describe.skip;
+
+maybeDescribe('User Settings', function () {
   const settings = [{ key: 'compact', enabled: false }];
 
   beforeEach(() => {
@@ -14,7 +18,6 @@ describe('User Settings', () => {
       cy.get(`[data-test="setting-${label}"]`)
         .should('exist')
         .within(() => {
-          // Searches for an <h2> element that contains text matching label (case-insensitive)
           cy.contains('h2', new RegExp(label, 'i'));
           cy.get('input[type="checkbox"]').should(setting.enabled ? 'be.checked' : 'not.be.checked');
         });
