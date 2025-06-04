@@ -35,7 +35,7 @@ import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 
 import { useFeatureFlag } from '~/composables/features/featureFlag';
 import { useVeoUser } from '~/composables/VeoUser';
-import { type IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export type TableFormatter = (value: any) => string;
 export type TableRenderer = (
@@ -111,6 +111,10 @@ const props = withDefaults(
      */
     enableClick?: boolean;
     /**
+     * Makes table rows true links that support right-click to open in new tab and adds hover effects.
+     */
+    enableLinks?: boolean;
+    /**
      * Text to display when there is no data to show in the table.
      * This text will be shown in place of the table when `items` array is empty.
      */
@@ -130,6 +134,7 @@ const props = withDefaults(
     additionalHeaders: () => [],
     showAllColumns: false,
     enableClick: false,
+    enableLinks: false,
     noDataText: undefined,
     showSelect: false
   }
@@ -148,7 +153,7 @@ const { tablePageSize } = useVeoUser();
 const vm = getCurrentInstance();
 const slots = useSlots();
 const attrs = useAttrs();
-
+const route = useRoute();
 /** @description Synchronizes the current API page parameter with the parent component, 0-indexed */
 const page = defineModel<number>('page', { default: 0 });
 const { hasFeature } = useFeatureFlag();
@@ -400,7 +405,7 @@ const items = computed(() => {
 
 const defaultRenderer: TableRenderer = (context: any, header) => {
   const column = context.column;
-  return h(
+  const cellContent = h(
     'div',
     {
       class: [
@@ -412,6 +417,28 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
     },
     header?.key ? context.internalItem.columns[header.key] : undefined
   );
+  // If enableLinks is true and this is the name column, add a hidden router-link for right-click functionality
+  if (props.enableLinks && column.key === 'name') {
+    const getItemHref = (item: IVeoEntity) => {
+      return `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${item.id}/`;
+    };
+    const href = getItemHref(context.item);
+    return h(
+      resolveComponent('router-link'),
+      {
+        class: 'position-relative table-row-link',
+        style: {
+          color: 'inherit',
+          textDecoration: 'none',
+          fontWeight: 'bold'
+        },
+        to: href
+      },
+      [cellContent]
+    );
+  }
+
+  return cellContent;
 };
 const renderers = computed(() =>
   Object.fromEntries(
@@ -769,6 +796,11 @@ const render = () => {
 
   .cursor-pointer {
     cursor: pointer;
+  }
+}
+:deep(.table-row-link) {
+  &:hover {
+    text-decoration: underline !important;
   }
 }
 </style>

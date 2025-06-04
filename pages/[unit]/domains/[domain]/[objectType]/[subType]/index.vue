@@ -112,6 +112,7 @@
               :default-headers="[
                 'icon',
                 'designator',
+                'name',
                 'abbreviation',
                 'status',
                 'description',
@@ -121,6 +122,7 @@
               ]"
               :additional-headers="additionalHeaders"
               show-select
+              enable-links
               data-component-name="object-overview-table"
               enable-click
               @click="openItem"
@@ -612,33 +614,7 @@ const SUBTYPES_WITH_VDA = ['CTL_Requirement', 'CTL_PartialRequirement', 'CTL_Saf
 
 // @ts-ignore TODO #3066 cannot find name
 const additionalHeaders = computed<ObjectTableHeader[]>(() => {
-  const baseHeader: any = [
-    {
-      value: 'name',
-      key: 'name',
-      cellClass: ['font-weight-bold'],
-      width: 100,
-      truncate: true,
-      sortable: true,
-      priority: 100,
-      order: 20,
-      render: ({ item }: any) => {
-        const href = `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${item.id}/`;
-        return h(
-          resolveComponent('router-link'),
-          {
-            to: href,
-            style: {
-              color: 'inherit',
-              textDecoration: 'none',
-              fontWeight: 'bold'
-            }
-          },
-          { default: () => item.name ?? '' }
-        );
-      }
-    }
-  ];
+  const baseHeader: any = [];
 
   if (filter.value.objectType === 'process' && filter.value.subType === 'PRO_DataProcessing') {
     baseHeader.push({

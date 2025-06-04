@@ -22,6 +22,7 @@
     :additional-headers="mergedAdditionalHeaders"
     :default-headers="unmatchedDefaultHeaders"
     :show-select="showSelect"
+    :enable-links="enableLinks"
     @update:model-value="emit('update:model-value', $event)"
     @update:items-per-page="emit('update:items-per-page', $event)"
     @update:page="emit('update:page', $event)"
@@ -80,6 +81,10 @@ const props = withDefaults(
      */
     enableClick?: boolean;
     /**
+     * Makes table column name true links that support right-click to open in new tab.
+     */
+    enableLinks?: boolean;
+    /**
      * Text to display when there is no data to show in the table.
      * This text will be shown in place of the table when `items` array is empty.
      */
@@ -95,6 +100,7 @@ const props = withDefaults(
     additionalHeaders: () => [],
     showAllColumns: false,
     enableClick: false,
+    enableLinks: false,
     noDataText: () => '',
     showSelect: false
   }
