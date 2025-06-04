@@ -462,7 +462,7 @@ const Crumb: TInlineComponent = {
 
   template: `
     <v-breadcrumbs-item>
-      <v-tooltip :text="breadcrumbText">
+      <v-tooltip :text="breadcrumbText" :aria-label="breadcrumbText">
         <template v-slot:activator="{ props }">
         <span v-bind="props">
           <RouterLink

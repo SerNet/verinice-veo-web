@@ -235,4 +235,7 @@ const handleNavigate = (objectType: string, subType: string) => {
   white-space: nowrap;
   border: 0;
 }
+::v-deep(.v-divider__content) {
+  color: #555555 !important;
+}
 </style>
