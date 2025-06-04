@@ -91,7 +91,7 @@
           </v-list-item-title>
         </v-list-item>
         <v-divider />
-        <v-list-item v-if="hasFeature('userSettings')" color="primary" to="/settings">
+        <v-list-item v-if="hasUserSettings" color="primary" to="/settings">
           <v-list-item-title>
             {{ $t('settings') }}
           </v-list-item-title>
@@ -133,6 +133,8 @@ const logout = () => _logout('/');
 
 const displayDeploymentDetails = ref(false);
 const { hasFeature } = useFeatureFlag();
+const hasUserSettings = hasFeature('userSettings');
+
 const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');
 const initials = computed(() => firstName.value.substring(0, 1) + lastName.value.substring(0, 1) || '??');

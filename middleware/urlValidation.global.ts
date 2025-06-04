@@ -32,7 +32,7 @@ export default defineNuxtRouteMiddleware((to) => {
   }
   if (to.path === '/settings') {
     const { hasFeature } = useFeatureFlag();
-    if (!hasFeature('userSettings')) {
+    if (!hasFeature('userSettings').value) {
       throw createError({ statusCode: 404 });
     }
   }
