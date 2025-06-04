@@ -28,7 +28,7 @@
 
     <template #footer>
       <div class="d-flex justify-space-between">
-        <v-btn to="/units" size="large" class="my-6">
+        <v-btn to="/units" size="large" class="my-6" data-veo-test="cancel-dialog">
           {{ globalT('global.button.cancel') }}
         </v-btn>
         <v-btn

@@ -27,7 +27,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <template #footer>
       <div class="d-flex justify-space-between">
-        <v-btn to="/units" size="large" class="my-6">
+        <v-btn to="/units" size="large" class="my-6" data-veo-test="cancel-dialog">
           {{ globalT('global.button.cancel') }}
         </v-btn>
         <!-- @vue-ignore TODO #3066 not assignable -->
