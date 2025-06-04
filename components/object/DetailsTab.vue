@@ -25,6 +25,7 @@
       :items="items"
       :loading="tableIsLoading"
       enable-click
+      enable-links
       @click="openItem"
     >
       <template #actions="{ item }">
