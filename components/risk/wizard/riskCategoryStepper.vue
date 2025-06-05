@@ -1,0 +1,65 @@
+<template>
+  <v-stepper v-model="step" non-linear>
+    <v-stepper-header>
+      <v-stepper-item :title="t('editRiskImpacts')" :value="1" editable></v-stepper-item>
+      <v-divider></v-divider>
+
+      <v-stepper-item :title="t('editRiskMatrix')" :value="2" editable></v-stepper-item>
+      <v-divider></v-divider>
+
+      <v-stepper-item :title="t('summary')" :value="3" editable></v-stepper-item>
+    </v-stepper-header>
+  </v-stepper>
+
+  <v-window v-model="step" class="my-6" style="width: 100%">
+    <!-- Edit potential impacts -->
+    <v-window-item :value="1">
+      <RiskDefinitionEditor
+        :data="potentialImpactsSingleCategory"
+        @add-item="createPotentialImpact"
+        @remove-item="deletePotentialImpact"
+      />
+    </v-window-item>
+
+    <!-- Edit risk matrix -->
+    <v-window-item v-if="riskCategory.valueMatrix?.length" :value="2">
+      <v-card class="pa-8">
+        <RiskMatrix
+          :value-matrix="riskCategory.valueMatrix"
+          :potential-impacts="potentialImpactsSingleCategory"
+          :risk-values="riskValues"
+          :probability-levels="probabilityLevels"
+          :is-edit-mode="true"
+        />
+      </v-card>
+    </v-window-item>
+
+    <!-- Summary -->
+    <v-window-item :value="3">
+      <v-card class="pa-8">
+        <RiskMatrix
+          :value-matrix="riskCategory.valueMatrix"
+          :potential-impacts="potentialImpactsSingleCategory"
+          :risk-values="riskValues"
+          :probability-levels="probabilityLevels"
+        />
+      </v-card>
+    </v-window-item>
+  </v-window>
+</template>
+<script setup lang="ts">
+import { IVeoRiskCategory, IVeoRiskPotentialImpact, IVeoRiskValueLevel } from '~/types/VeoTypes';
+const { t } = useI18n();
+
+defineProps<{
+  createPotentialImpact: () => void;
+  deletePotentialImpact: (index: number) => void;
+  riskValues: IVeoRiskValueLevel[];
+  probabilityLevels: any[];
+  riskCategory: IVeoRiskCategory;
+  potentialImpactsSingleCategory: IVeoRiskPotentialImpact[];
+}>();
+
+const step = defineModel<number>('step', { default: 1 });
+</script>
+<i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
