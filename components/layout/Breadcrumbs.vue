@@ -210,7 +210,7 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
     }
   ],
   [
-    ':matrix',
+    ':definition',
     {
       dynamicText: (_param, value) => value || ''
     }

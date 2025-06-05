@@ -129,7 +129,7 @@ import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domain
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
 import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
-import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[matrix].vue';
+import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[definition]/index.vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import { CATALOG_TYPE_ICONS } from '~/components/catalog/Icon.vue';
@@ -381,7 +381,7 @@ const riskChildItems = computed<INavItem[]>(() =>
       params: {
         unit: props.unitId,
         domain: props.domainId,
-        matrix: id
+        definition: id
       }
     }
   }))

@@ -96,9 +96,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-risks-matrix';
+export const ROUTE_NAME = 'unit-domains-domain-risks-definition';
 </script>
-
 <script setup lang="ts">
 import { cloneDeep, isEqual } from 'lodash';
 import { computed } from 'vue';
@@ -125,7 +124,7 @@ const { data: domain, isFetching: domainIsFetching } = useQuery(
   fetchDomainQueryParameters
 );
 
-const data = computed(() => domain.value?.riskDefinitions?.[route.params.matrix as string]);
+const data = computed(() => domain.value?.riskDefinitions?.[route.params.definition as string]);
 
 const probabilities = computed(() => data.value?.probability.levels || []);
 const riskValues = computed(() => data.value?.riskValues || []);
