@@ -17,125 +17,122 @@
 -->
 
 <template>
-  <v-dialog v-model="isOpen" width="auto" @after-leave="resetTabState" @keydown.enter="saveAndClose">
-    <v-card min-width="640">
-      <div v-if="form.items?.length" class="d-flex flex-column">
-        <v-tabs v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
-          <v-tab v-for="translation in Object.keys(form.items?.[0]?.translations ?? {})" :key="translation">
-            {{ translation }}
-          </v-tab>
-        </v-tabs>
-        <v-tabs-window v-model="translationTab">
-          <h2 style="margin-left: 14px">{{ form?.typeTranslation ?? '' }}</h2>
-          <v-tabs-window-item
-            v-for="(translation, index) in Object.keys(form.items?.[0]?.translations ?? {})"
-            :key="translation"
-          >
-            <v-tabs v-model="tab" color="primary" direction="vertical">
-              <v-tab
-                v-for="(item, idx) in form.items ?? []"
-                :key="`${item.ordinalValue}-${idx}`"
-                :text="item.translations[translation]?.name"
-              >
-                <template #prepend>
-                  <v-icon :color="item.htmlColor" :icon="mdiSquare" size="large" />
-                </template>
-              </v-tab>
-            </v-tabs>
+  <v-card min-width="640" class="pb-4">
+    <div v-if="true" class="d-flex flex-column">
+      <v-tabs v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
+        <v-tab v-for="translation in Object.keys(data?.[0]?.translations ?? {})" :key="translation">
+          {{ translation }}
+        </v-tab>
+      </v-tabs>
+      <v-tabs-window v-model="translationTab">
+        <v-tabs-window-item
+          v-for="(translation, index) in Object.keys(data?.[0]?.translations ?? {})"
+          :key="translation"
+        >
+          <v-tabs v-model="tab" color="primary" direction="vertical">
+            <v-tab
+              v-for="(item, idx) in data ?? []"
+              :key="`${item.ordinalValue}-${idx}`"
+              :text="item.translations[translation]?.name"
+            >
+              <template #prepend>
+                <v-icon :color="item.htmlColor" :icon="mdiSquare" size="large" />
+              </template>
+            </v-tab>
+          </v-tabs>
 
-            <v-tabs-window v-model="tab">
-              <v-tabs-window-item
-                v-for="(item, indexItems) in form.items"
-                :key="indexItems"
-                :text="item.translations[translation].name"
-              >
-                <v-container fluid>
-                  <v-form>
-                    <!-- Name -->
-                    <v-text-field
-                      v-model="item.translations[translation].name"
-                      :label="$t('inputLabel.name')"
-                      hide-details
-                      required
-                    />
+          <v-tabs-window v-model="tab">
+            <v-btn variant="outlined" class="add-btn" @click="addItem"> + {{ t('addItem') }} </v-btn>
+            <v-tabs-window-item
+              v-for="(item, itemIndex) in data"
+              :key="itemIndex"
+              :text="item.translations[translation].name"
+            >
+              <v-container fluid>
+                <v-form>
+                  <!-- Name -->
+                  <v-text-field
+                    v-model="item.translations[translation].name"
+                    :label="$t('inputLabel.name')"
+                    hide-details
+                    required
+                    @input="() => changeItem(itemIndex)"
+                  >
+                    <template #append-inner>
+                      <v-btn
+                        :icon="mdiDeleteOutline"
+                        :aria-label="t('removeItem')"
+                        @click="() => removeItem(item.ordinalValue)"
+                      />
+                    </template>
+                  </v-text-field>
 
-                    <!-- Description -->
-                    <v-textarea
-                      v-model="item.translations[translation].description"
-                      :label="$t('inputLabel.description')"
-                    />
+                  <!-- Description -->
+                  <v-textarea
+                    v-model="item.translations[translation].description"
+                    :label="$t('inputLabel.description')"
+                    @input="() => changeItem(itemIndex)"
+                  />
 
-                    <!-- Color picker -->
-                    <v-row justify="center" align="center">
-                      <v-col style="min-width: 220px">
-                        <v-text-field v-model="item.htmlColor" class="ma-0 pa-0" variant="solo" readonly>
-                          <template #prepend-inner>
-                            <v-menu
-                              :model-value="isColorMenuOpen(index + '-' + indexItems)"
-                              top
-                              nudge-bottom="105"
-                              nudge-left="16"
-                              :close-on-content-click="false"
-                              @update:model-value="(val) => handleMenuUpdate(index + '-' + indexItems, val)"
-                            >
-                              <template #activator="{ props }">
-                                <div
-                                  v-bind="props"
-                                  :style="{ ...swatchStyle, backgroundColor: item.htmlColor || defaultSwatchColor }"
+                  <!-- Color picker -->
+                  <v-row justify="center" align="center">
+                    <v-col style="min-width: 220px">
+                      <v-text-field v-model="item.htmlColor" class="ma-0 pa-0" variant="solo" readonly>
+                        <template #prepend-inner>
+                          <v-menu
+                            :model-value="isColorMenuOpen(index + '-' + itemIndex)"
+                            top
+                            nudge-bottom="105"
+                            nudge-left="16"
+                            :close-on-content-click="false"
+                            @update:model-value="(val) => handleMenuUpdate(index + '-' + itemIndex, val)"
+                          >
+                            <template #activator="{ props }">
+                              <div
+                                v-bind="props"
+                                :style="{ ...swatchStyle, backgroundColor: item.htmlColor || defaultSwatchColor }"
+                              />
+                            </template>
+                            <v-card>
+                              <v-card-text class="pa-0">
+                                <v-color-picker
+                                  v-model="item.htmlColor"
+                                  flat
+                                  @update:model-value="formIsDirty = true"
                                 />
-                              </template>
-                              <v-card>
-                                <v-card-text class="pa-0">
-                                  <v-color-picker
-                                    v-model="item.htmlColor"
-                                    flat
-                                    @update:model-value="formIsDirty = true"
-                                  />
-                                </v-card-text>
-                              </v-card>
-                            </v-menu>
-                          </template>
-                        </v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-form>
-                </v-container>
-              </v-tabs-window-item>
-            </v-tabs-window>
-          </v-tabs-window-item>
-        </v-tabs-window>
-      </div>
-
-      <v-card-actions class="justify-space-between">
-        <v-btn variant="outlined" :text="$t('global.button.cancel')" @click="isOpen = false" />
-
-        <v-btn
-          color="primary"
-          variant="outlined"
-          :text="$t('global.button.save')"
-          :disabled="!formIsDirty"
-          @click="
-            emit('update-risk-definition');
-            isOpen = false;
-          "
-        />
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+                              </v-card-text>
+                            </v-card>
+                          </v-menu>
+                        </template>
+                      </v-text-field>
+                    </v-col>
+                  </v-row>
+                </v-form>
+              </v-container>
+            </v-tabs-window-item>
+          </v-tabs-window>
+        </v-tabs-window-item>
+      </v-tabs-window>
+    </div>
+  </v-card>
 </template>
 
 <script setup lang="ts">
-import { mdiSquare } from '@mdi/js';
-import type { TRiskDefinitionPart } from './RiskDefinitionCustomization.module';
+import { mdiSquare, mdiDeleteOutline } from '@mdi/js';
+import { IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 
 const emit = defineEmits<{
   (e: 'close'): void;
-  (e: 'update-risk-definition'): void;
+  (e: 'save-editor'): void;
+  (e: 'add-item'): void;
+  (e: 'remove-item', index: number): void;
+  (e: 'change-item', index: number): void;
 }>();
 
+const { t } = useI18n();
+
 // State
-const form = defineModel<TRiskDefinitionPart>('form', { default: [] });
-const isOpen = defineModel<boolean>('isOpen', { default: false });
+const data = defineModel<IVeoRiskPotentialImpact[]>('data', { default: [] });
 const formIsDirty = defineModel<boolean>('isDirty', { default: false });
 
 const tab = ref(0);
@@ -154,12 +151,6 @@ const swatchStyle = computed(() => {
   };
 });
 
-function resetTabState() {
-  translationTab.value = 0;
-  tab.value = 0;
-  colorMenuStates.value.clear();
-}
-
 function isColorMenuOpen(id: string | number) {
   return colorMenuStates.value.get(id) || false;
 }
@@ -172,8 +163,31 @@ function handleMenuUpdate(id: string | number, value: boolean) {
   }
 }
 
-function saveAndClose() {
-  emit('update-risk-definition');
-  isOpen.value = false;
+function addItem() {
+  emit('add-item');
+  nextTick(() => {
+    tab.value = data.value.length - 1;
+  });
+}
+
+function changeItem(itemIndex: number) {
+  emit('change-item', itemIndex);
+}
+
+function removeItem(itemIndex: number) {
+  emit('remove-item', itemIndex);
+  nextTick(() => {
+    tab.value = 0;
+  });
 }
 </script>
+<style scoped lang="scss">
+.add-btn {
+  margin: auto;
+  max-width: calc(100% - 32px);
+  border: 2px dashed #ccc;
+  color: #666;
+  margin-top: 8px;
+  width: 100%;
+}
+</style>
