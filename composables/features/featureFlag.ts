@@ -125,6 +125,17 @@ export function useFeatureFlag() {
     isInitializing.value = false;
   };
 
+  function waitForFeatureFlagsInitialization(): Promise<void> {
+    return new Promise<void>((resolve) => {
+      const unwatch = watchEffect(() => {
+        if (!isInitializing.value) {
+          unwatch();
+          resolve();
+        }
+      });
+    });
+  }
+
   initializeFeatureFlags();
 
   return {
@@ -135,6 +146,7 @@ export function useFeatureFlag() {
     toggleFeature,
     resetFeatureFlags,
     isBetaMode,
-    isInitializingFeatureFlags
+    isInitializingFeatureFlags,
+    waitForFeatureFlagsInitialization
   };
 }
