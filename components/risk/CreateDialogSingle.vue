@@ -305,7 +305,11 @@ export default defineComponent({
       owner: {
         targetUri: `${config.public.apiUrl}/units/${route.params.unit}`
       },
-      subType: domain.value?.controlImplementationConfiguration?.mitigationControlSubType,
+      // TODO #3866: Remove this once we have a proper ISO group control
+      subType:
+        domain.value?.abbreviation === 'ISO' ?
+          'CTL_ISOGroup'
+        : domain.value?.controlImplementationConfiguration?.mitigationControlSubType,
       status: 'NEW',
       parts: mitigations.value.map((m) => createLink('controls', m.id))
     }));
