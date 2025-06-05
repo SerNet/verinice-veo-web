@@ -100,7 +100,7 @@ const props = withDefaults(
     additionalHeaders: () => [],
     showAllColumns: false,
     enableClick: false,
-    enableLinks: false,
+    enableLinks: true,
     noDataText: () => '',
     showSelect: false
   }
