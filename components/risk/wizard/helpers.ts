@@ -34,9 +34,15 @@ function getInitialTranslations(riskValues?: IVeoRiskValueLevel[], abbreviation?
 export class UnsetItem {
   isUnset: boolean;
   translations: any;
+  htmlColor: string;
+  ordinalValue: number;
+  symbolicRisk: string;
   constructor() {
     this.isUnset = true;
     this.translations = getInitialTranslations();
+    this.htmlColor = defaultColor;
+    this.ordinalValue = -1;
+    this.symbolicRisk = '';
   }
 }
 
@@ -80,4 +86,47 @@ export class Impact {
   }
 }
 
+// Check if values in risk matrices are unset
+export function hasUnsetRiskValues(valueMatrix: IVeoRiskValueLevel[][]): boolean {
+  if (!valueMatrix || !Array.isArray(valueMatrix)) return false;
+  return (valueMatrix.flat() ?? []).some((riskValue) => riskValue.hasOwnProperty('isUnset'));
+}
 
+// Manipulate risk categories
+export function updateRiskMatrixValues(
+  category: IVeoRiskCategory,
+  oldRiskValue: IVeoRiskValueLevel,
+  newRiskValue: IVeoRiskValueLevel
+) {
+  const valueMatrix =
+    category.valueMatrix?.map((row) =>
+      row.map((riskValue) => (riskValue.ordinalValue === oldRiskValue.ordinalValue ? newRiskValue : riskValue))
+    ) ?? [];
+  return { ...category, valueMatrix };
+}
+
+export function updateRiskCategory(riskCategories: IVeoRiskCategory[], newRiskCategory: IVeoRiskCategory) {
+  return riskCategories.map((oldCategory) => (oldCategory.id === newRiskCategory.id ? newRiskCategory : oldCategory));
+}
+
+export function getPotentialImpactsByCategory(riskDefinition: IVeoDomainRiskDefinition, categoryId: string) {
+  if (!riskDefinition.categories) return [];
+  const category = riskDefinition.categories.find((cat) => cat.id === categoryId);
+  return category?.potentialImpacts ?? [];
+}
+
+export function createNewMatrixRow(
+  valueMatrix: IVeoRiskValueLevel[][] = [],
+  newValue: IVeoRiskValueLevel | UnsetItem,
+  rowLength: number = 0
+) {
+  const valueMatrixRowLength = valueMatrix?.[0]?.length ?? rowLength;
+  const newRow = Array(valueMatrixRowLength).fill(newValue);
+
+  return [...valueMatrix, newRow];
+}
+
+export function removeMatrixRow(valueMatrix: IVeoRiskValueLevel[][], index: number) {
+  if (!valueMatrix?.length) return;
+  return valueMatrix.filter((_, i) => i !== index);
+}
