@@ -22,28 +22,31 @@
       {{ t('notFoundCode').toString() }}
     </h1>
     <p class="mt-2 text-body-1">
-      {{ text }}
+      {{ text ?? t('pageDoesNotExist') }}
     </p>
-    <v-btn variant="text" color="primary" @click="goBackToPreviousPage">
+    <v-btn v-if="hasDashboardButton" variant="text" color="primary" :to="dashboardRoute">
+      {{ t('goToDashboard') }}
+    </v-btn>
+    <v-btn v-else variant="text" color="primary" @click="goBackToPreviousPage">
       {{ t('backToPrevious').toString() }}
     </v-btn>
   </div>
 </template>
 
 <script setup lang="ts">
-defineProps({
-  text: {
-    type: String,
-    required: true
-  }
-});
+defineProps<{
+  text?: string;
+  hasDashboardButton?: boolean;
+}>();
 
 const { t } = useI18n();
 const router = useRouter();
+const route = useRoute();
+
+const dashboardRoute = `/${route.params.unit}/domains/${route.params.domain}/`;
 
 const goBackToPreviousPage = () => {
   router.back();
 };
 </script>
-
 <i18n src="~/locales/base/components/util-not-found-error.json"></i18n>
