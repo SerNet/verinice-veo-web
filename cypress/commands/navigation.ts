@@ -14,6 +14,7 @@ declare global {
       selectFirstSubType: typeof selectFirstSubType;
       visitObject: typeof visitObject;
       visitDashboard: typeof visitDashboard;
+      navigateToReport: typeof navigateToReport;
     }
   }
 }
@@ -52,7 +53,21 @@ export function navigateTo({ group, category, entry }: { group: string; category
       .click();
   });
 }
+export function navigateToReport({ group, entry }: { group: string; entry?: string }) {
+  cy.handleLanguageBug();
+  cy.viewport(2000, 1320);
+  cy.getCustom(`[data-veo-test="nav-group-${group.toLowerCase()}"]`).as('group').click();
 
+  if (entry) {
+    cy.getCustom('@group').within(() => {
+      cy.getCustom(`[data-veo-test="nav-entry-${entry.toLowerCase().replace(/\s+/g, '-')}"]`)
+        .first()
+        .as('entry')
+        .click();
+    });
+    return;
+  }
+}
 export function selectFirstSubType(elementType: string, callback: (args: any) => void) {
   cy.containsCustom('div[sub-group="true"] > div', new RegExp(`^${upperFirst(elementType)}$`))
     .should('be.visible')
