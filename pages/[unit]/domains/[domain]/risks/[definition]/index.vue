@@ -66,3 +66,4 @@ const { t } = useVeoI18n();
 const { data: riskDefinition } = useRiskDefinition();
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks-matrix.json"></i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
