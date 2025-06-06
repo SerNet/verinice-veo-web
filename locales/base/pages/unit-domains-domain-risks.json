@@ -1,8 +1,30 @@
 {
   "en": {
-    "selectRiskMatrixToView": "Please select the risk definition you want to view."
+    "selectRiskMatrixToView": "Please select the risk definition you want to view.",
+    "edit": "Edit {item}",
+    "editRiskImpacts": "Set Probabilities",
+    "editRiskMatrix": "Edit risk matrix",
+    "summary": "Summary",
+    "editCategory": "Edit [1]",
+    "editRiskValues": "Edit risk values",
+    "goToRiskDefintion": "Cancel",
+    "saveRiskDefinition": "Save risk definition",
+    "crossCategoryValues": "Cross-category values",
+    "createValueMatrix": "Create value matrix",
+    "createValueMatrixBody": "You can now create a value matrix for this domain. This will allow you to define the risk values for each criterion and impact. Do you want to create a value matrix?"
   },
   "de": {
-    "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten."
+    "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten.",
+    "edit": "{item} bearbeiten",
+    "editRiskImpacts": "Eintrittswahrscheinlichkeiten bearbeiten",
+    "editRiskMatrix": "Risikomatrix bearbeiten",
+    "summary": "Zusammenfassung",
+    "editCategory": "{1} bearbeiten",
+    "editRiskValues": "Risikowerte bearbeiten",
+    "goToRiskDefintion": "Abbrechen",
+    "saveRiskDefinition": "Risikodefinition speichern",
+    "crossCategoryValues": "Kriterienübergreifende Werte",
+    "createValueMatrix": "Risikomatrix erstellen",
+    "createValueMatrixBody": "Sie können jetzt eine Risikomatrix für diese Domäne erstellen. Dadurch können Sie die Risikowerte für jedes Kriterium und jede Auswirkung definieren. Möchten Sie eine Risikomatrix erstellen?"
   }
 }

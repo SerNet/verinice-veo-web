@@ -1,8 +1,8 @@
 {
   "en": {
-    "impact": "impact",
-    "noData": "no data",
-    "probability": "probability",
+    "impact": "Impact",
+    "noData": "No data",
+    "probability": "Probability",
     "riskMatrix": "Risk matrix:",
     "messages": {
       "isUpdatingRiskMatrix": "Risk matrix is being updated...",
@@ -11,9 +11,9 @@
     }
   },
   "de": {
-    "impact": "auswirkung",
-    "noData": "keine Daten",
-    "probability": "eintrittswahrscheinlichkeit",
+    "impact": "Auswirkung",
+    "noData": "Keine Daten",
+    "probability": "Eintrittswahrscheinlichkeit",
     "riskMatrix": "Risikomatrix:",
     "messages": {
       "isUpdatingRiskMatrix": "Risikomatrix wird aktualisiert...",
