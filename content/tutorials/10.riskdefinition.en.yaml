@@ -1,19 +1,19 @@
-title: The risk definitions
-description: The description of the risk definitions
-route: /:unit()/domains/:domain()/risk/:definition()
-lang: en
-steps:
-  - title: 'Risk definitions'
-    element: '[data-component-name=risk-page]'
-    intro: In the section Risk definitions the available risk definitions can be viewed.
-  - title: 'Risk definition DSRA'
-    element: '[data-component-name=risk-definition-DSRA]'
-    intro: The risk definition for the Risk Analysis is currently available.
-  - title: 'Protection goals'
-    element: '[data-component-name=risk-matrix-wrapper]'
-    intro: The associated risk matrix is shown for each available protection target.
-  - title: 'Risk matrix'
-    element: '[data-component-name=risk-matrix-wrapper] .veo-risk-matrix'
-    intro: The risk matrix represents the assignment of the combination of probability of occurrence and potential impact to the risk categories.
-  - title: 'Done'
-    intro: Further information can also be found in the documentation.
+# title: The risk definitions
+# description: The description of the risk definitions
+# route: /:unit()/domains/:domain()/risks/:definition()
+# lang: en
+# steps:
+#   - title: 'Risk definitions'
+#     element: '[data-component-name=risk-page]'
+#     intro: In the section Risk definitions the available risk definitions can be viewed.
+#   - title: 'Risk definition DSRA'
+#     element: '[data-component-name=risk-definition-DSRA]'
+#     intro: The risk definition for the Risk Analysis is currently available.
+#   - title: 'Protection goals'
+#     element: '[data-component-name=risk-matrix-wrapper]'
+#     intro: The associated risk matrix is shown for each available protection target.
+#   - title: 'Risk matrix'
+#     element: '[data-component-name=risk-matrix-wrapper] .veo-risk-matrix'
+#     intro: The risk matrix represents the assignment of the combination of probability of occurrence and potential impact to the risk categories.
+#   - title: 'Done'
+#     intro: Further information can also be found in the documentation.

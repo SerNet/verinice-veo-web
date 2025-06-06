@@ -108,7 +108,7 @@ describe('Tutorials', () => {
     runTutorial('9.reports.en.yaml');
   });
 
-  it('should go through risks tutorial', () => {
+  it.skip('should go through risks tutorial', () => {
     cy.url().then((fullUrl) => {
       const url = new URL(fullUrl);
       cy.visit(`${url.pathname}/risks/DSRA`, { failOnStatusCode: false });

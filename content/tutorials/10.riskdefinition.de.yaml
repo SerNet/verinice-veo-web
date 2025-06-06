@@ -1,19 +1,19 @@
-title: Die Risikodefinitionen
-description: Die Beschreibung der Risikodefinitionen
-route: /:unit()/domains/:domain()/risk/:definition()
-lang: de
-steps:
-  - title: 'Risikodefinitionen'
-    element: '[data-component-name=risk-page]'
-    intro: Im Abschnitt Risikodefinitionen können die verfügbaren Risikodefinitionen eingesehen werden.
-  - title: 'Risikodefinition DSRA'
-    element: '[data-component-name=risk-definition-DSRA]'
-    intro: Aktuell steht die Risikodefinition für die Risikoanalyse zur Verfügung.
-  - title: 'Schutzziele'
-    element: '[data-component-name=risk-matrix-wrapper]'
-    intro: Für jedes verfügbare Schutzziel wird die zugehörige Risikomatrix dargestellt.
-  - title: 'Risikomatrix'
-    element: '[data-component-name=risk-matrix-wrapper] .veo-risk-matrix'
-    intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.
-  - title: 'Geschafft'
-    intro: Weitere Informationen finden Sie auch in der Dokumentation.
+# title: Die Risikodefinitionen
+# description: Die Beschreibung der Risikodefinitionen
+# route: /:unit()/domains/:domain()/risks/:definition()
+# lang: de
+# steps:
+#   - title: 'Risikodefinitionen'
+#     element: '[data-component-name=risk-page]'
+#     intro: Im Abschnitt Risikodefinitionen können die verfügbaren Risikodefinitionen eingesehen werden.
+#   - title: 'Risikodefinition DSRA'
+#     element: '[data-component-name=risk-definition-DSRA]'
+#     intro: Aktuell steht die Risikodefinition für die Risikoanalyse zur Verfügung.
+#   - title: 'Schutzziele'
+#     element: '[data-component-name=risk-matrix-wrapper]'
+#     intro: Für jedes verfügbare Schutzziel wird die zugehörige Risikomatrix dargestellt.
+#   - title: 'Risikomatrix'
+#     element: '[data-component-name=risk-matrix-wrapper] .veo-risk-matrix'
+#     intro: Die Risikomatrix stellt die Zuordnung der Kombination aus Eintrittswahrscheinlichkeit und möglicher Auswirkung zu den Risikokategorien dar.
+#   - title: 'Geschafft'
+#     intro: Weitere Informationen finden Sie auch in der Dokumentation.
