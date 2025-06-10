@@ -21,7 +21,7 @@ import { useFeatureFlag } from '~/composables/features/featureFlag';
 /**
  * This middleware checks whether a url is valid. If the validation fails, the user gets redirected to the index page.
  */
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   // Fix for Link Hijack & Open Redirect
   // To fix the problem, the page will be redirected to the index page if a url parameter contains at least one "/"
   const invalidUrl = Object.values(to.params).some(
@@ -30,8 +30,9 @@ export default defineNuxtRouteMiddleware((to) => {
   if (invalidUrl) {
     return navigateTo('/');
   }
-  if (to.path === '/settings') {
-    const { hasFeature } = useFeatureFlag();
+  if (to.path === '/user-settings') {
+    const { hasFeature, waitForFeatureFlagsInitialization } = useFeatureFlag();
+    await waitForFeatureFlagsInitialization();
     if (!hasFeature('userSettings').value) {
       throw createError({ statusCode: 404 });
     }
