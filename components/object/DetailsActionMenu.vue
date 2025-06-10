@@ -123,7 +123,6 @@ const items = computed<TActionItems[]>(() => [
       callback: () => {
         generateMessages(action.name);
         performVeoAction({
-          ...actionsRequestParams,
           actionId: action.id,
           affectedRessources: action.affectedRessources
         });
@@ -172,15 +171,7 @@ const visibleItems = computed(() =>
   )
 );
 
-// Veo actions
-const actionsRequestParams = {
-  domainId: route.params.domain as string,
-  elementType: VeoElementTypePlurals[props.object?.type as keyof typeof VeoElementTypePlurals],
-  elementId: props.object?.id as string
-};
-
-const { data: actions, isLoading: isLoadingActions } = useActions(actionsRequestParams);
-
+const { data: actions, isLoading: isLoadingActions } = useActions();
 const { performVeoAction, isLoading: isPerformingActions, error: performActionsError } = usePerformActions();
 
 // Show messages to inform users
