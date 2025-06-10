@@ -121,7 +121,6 @@
               ]"
               :additional-headers="additionalHeaders"
               show-select
-              :v-bind="tableCompactProps"
               data-component-name="object-overview-table"
               enable-click
               @click="openItem"
@@ -256,8 +255,6 @@ import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import CsvImportCard from '~/components/object/CsvImportCard.vue';
 import { useCurrentDomainUtils } from '~/composables/domains/useDomains';
 import type { VeoSearch } from '~/types/VeoSearch';
-import { useSettings } from '~/composables/api/settings';
-
 enum FILTER_SOURCE {
   QUERY,
   PARAMS,
@@ -286,14 +283,6 @@ const { hasFeature, isInitializingFeatureFlags } = useFeatureFlag();
 
 // CardView Feature
 const hasCardView = hasFeature('cardView');
-
-const { userSettings } = useSettings();
-const isCompact = computed(() => Boolean((userSettings.value as any)?.compact));
-const tableCompactProps = computed(() => ({
-  density: isCompact.value ? 'compact' : 'default',
-  class: isCompact.value ? 'ultra-compact-table' : '',
-  compact: isCompact.value
-}));
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
@@ -807,107 +796,6 @@ const handleError = (message: string, error: unknown) => {
 </style>
 
 <style lang="scss">
-/* Ultra-compact table specific styling */
-.ultra-compact-table {
-  .v-selection-control--density-default {
-    --v-selection-control-size: 23px !important;
-  }
-
-  .v-selection-control--density-default .v-selection-control__wrapper .v-selection-control__input .v-icon {
-    height: 21px !important;
-    width: 21px !important;
-  }
-
-  .v-selection-control__wrapper .v-selection-control__input .v-icon {
-    height: 18px !important;
-    width: 18px !important;
-  }
-
-  .v-selection-control--density-compact {
-    --v-selection-control-size: 23px !important;
-  }
-
-  /* Center the checkbox within the cell */
-  .v-data-table__tr .v-selection-control {
-    height: 100% !important;
-    display: flex !important;
-    align-items: center !important;
-  }
-  .v-data-table__tr {
-    height: 24px !important;
-    min-height: 24px !important;
-    max-height: 24px !important;
-  }
-
-  .v-data-table__td {
-    height: 24px !important;
-    max-height: 24px !important;
-    padding: 0 3px !important;
-    font-size: 12px !important;
-    line-height: 1 !important;
-  }
-  .v-data-table-header__content {
-    height: 24px !important;
-    font-size: 11px !important;
-    padding: 0 3px !important;
-    font-weight: 600 !important;
-    line-height: 1 !important;
-  }
-
-  /* Improve vertical alignment in cells */
-  .v-data-table__td > * {
-    vertical-align: middle !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
-    line-height: 1.2 !important;
-  }
-
-  .v-table__wrapper {
-    overflow-y: visible !important;
-    overflow-x: visible !important;
-    height: auto !important;
-    max-height: none !important;
-  }
-
-  /* Items per page selector and footer elements */
-  .v-data-table-footer__items-per-page {
-    font-size: 12px !important;
-  }
-
-  .v-data-table-footer__select {
-    margin: 0 4px !important;
-  }
-
-  .v-select__selection {
-    font-size: 12px !important;
-  }
-
-  .v-field--variant-solo,
-  .v-field--variant-filled,
-  .v-field--variant-outlined {
-    min-height: 32px !important;
-    border-radius: 4px !important;
-  }
-
-  .v-field__input {
-    min-height: 32px !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  .v-field__field {
-    min-height: 32px !important;
-  }
-
-  .v-select__selection-text {
-    line-height: 1 !important;
-  }
-
-  .v-data-table-footer {
-    padding: 0 !important;
-  }
-}
-
 /* Hidden File Input */
 .hidden {
   display: none;

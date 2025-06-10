@@ -22,7 +22,6 @@
     :additional-headers="mergedAdditionalHeaders"
     :default-headers="unmatchedDefaultHeaders"
     :show-select="showSelect"
-    :compact="compact"
     @update:model-value="emit('update:model-value', $event)"
     @update:items-per-page="emit('update:items-per-page', $event)"
     @update:page="emit('update:page', $event)"
@@ -86,7 +85,6 @@ const props = withDefaults(
      */
     noDataText?: () => any;
     showSelect?: boolean;
-    compact?: boolean;
   }>(),
   {
     items: () => [],
@@ -98,8 +96,7 @@ const props = withDefaults(
     showAllColumns: false,
     enableClick: false,
     noDataText: () => '',
-    showSelect: false,
-    compact: false
+    showSelect: false
   }
 );
 

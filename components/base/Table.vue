@@ -32,6 +32,8 @@ import { VCheckbox, VIcon, VProgressLinear, VTooltip } from 'vuetify/components'
 import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
+
+import { useFeatureFlag } from '~/composables/features/featureFlag';
 import { useVeoUser } from '~/composables/VeoUser';
 import { type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
@@ -118,11 +120,6 @@ const props = withDefaults(
      * @default false
      */
     showSelect?: boolean;
-    /**
-     * Boolean to show the compact view.
-     * @default false
-     */
-    compact?: boolean;
   }>(),
   {
     items: () => [],
@@ -151,11 +148,11 @@ const { tablePageSize } = useVeoUser();
 const vm = getCurrentInstance();
 const slots = useSlots();
 const attrs = useAttrs();
-const route = useRoute();
 
 /** @description Synchronizes the current API page parameter with the parent component, 0-indexed */
 const page = defineModel<number>('page', { default: 0 });
-
+const { hasFeature } = useFeatureFlag();
+const hasCompactTable = hasFeature('compact-table');
 /** @description Tracks the current page state of VDataTable, has to be 1-indexed. */
 const localPage = ref(1);
 
@@ -186,6 +183,13 @@ watch(
   (newValue) => {
     localSortBy.value = newValue;
   }
+);
+/**
+ * compact-mode styling
+ */
+
+const tableClassAndDensity = computed(() =>
+  hasCompactTable.value ? { class: 'ultra-compact-table', density: 'compact' } : {}
 );
 
 /**
@@ -252,13 +256,13 @@ const presetHeaders: { [key: string]: TableHeader } = {
         id: `checkbox-${itemValue}`,
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
-        density: props.compact ? 'compact' : 'default',
+        density: hasCompactTable.value ? 'compact' : 'default',
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
         'aria-checked': isSelected ? 'true' : 'false',
         'onUpdate:model-value': () => toggleSelection(context),
         style:
-          props.compact ?
+          hasCompactTable.value ?
             {
               height: '100%',
               display: 'flex',
@@ -568,7 +572,6 @@ const sharedProps = computed(() => {
     headers: normalizedDisplayHeaders.value,
     page: localPage.value,
     sortBy: localSortBy.value,
-
     // Spread conditional event handlers
     ...onClickRowHandler,
 
@@ -597,6 +600,7 @@ const sharedProps = computed(() => {
 const render = () => {
   const dataTableProps = {
     ...sharedProps.value,
+    ...tableClassAndDensity.value,
     loading: props.loading,
     loadingText: t('loadingData'),
     itemsLength: props.items.totalItemCount,
@@ -628,7 +632,7 @@ const render = () => {
       return h(VCheckbox, {
         modelValue: allSelected,
         indeterminate: someSelected,
-        density: props.compact ? 'compact' : 'default',
+        density: hasCompactTable.value ? 'compact' : 'default',
         hideDetails: true,
         'aria-label': t('selectAll'),
         style: { display: 'flex', justifyContent: 'start' },
@@ -657,7 +661,107 @@ const render = () => {
 
 <i18n src="~/locales/base/components/base-table.json"></i18n>
 
-<style lang="scss" scoped>
+<style lang="scss">
+/* Ultra-compact table specific styling */
+.ultra-compact-table {
+  .v-selection-control--density-default {
+    --v-selection-control-size: 23px !important;
+  }
+
+  .v-selection-control--density-default .v-selection-control__wrapper .v-selection-control__input .v-icon {
+    height: 21px !important;
+    width: 21px !important;
+  }
+
+  .v-selection-control__wrapper .v-selection-control__input .v-icon {
+    height: 18px !important;
+    width: 18px !important;
+  }
+
+  .v-selection-control--density-compact {
+    --v-selection-control-size: 23px !important;
+  }
+
+  /* Center the checkbox within the cell */
+  .v-data-table__tr .v-selection-control {
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+  .v-data-table__tr {
+    height: 24px !important;
+    min-height: 24px !important;
+    max-height: 24px !important;
+  }
+
+  .v-data-table__td {
+    height: 24px !important;
+    max-height: 24px !important;
+    padding: 0 3px !important;
+    font-size: 12px !important;
+    line-height: 1 !important;
+  }
+  .v-data-table-header__content {
+    height: 24px !important;
+    font-size: 11px !important;
+    padding: 0 3px !important;
+    font-weight: 600 !important;
+    line-height: 1 !important;
+  }
+
+  /* Improve vertical alignment in cells */
+  .v-data-table__td > * {
+    vertical-align: middle !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.2 !important;
+  }
+
+  .v-table__wrapper {
+    overflow-y: visible !important;
+    overflow-x: visible !important;
+    height: auto !important;
+    max-height: none !important;
+  }
+
+  /* Items per page selector and footer elements */
+  .v-data-table-footer__items-per-page {
+    font-size: 12px !important;
+  }
+
+  .v-data-table-footer__select {
+    margin: 0 4px !important;
+  }
+
+  .v-select__selection {
+    font-size: 12px !important;
+  }
+
+  .v-field--variant-solo,
+  .v-field--variant-filled,
+  .v-field--variant-outlined {
+    min-height: 32px !important;
+    border-radius: 4px !important;
+  }
+
+  .v-field__input {
+    min-height: 32px !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .v-field__field {
+    min-height: 32px !important;
+  }
+
+  .v-select__selection-text {
+    line-height: 1 !important;
+  }
+
+  .v-data-table-footer {
+    padding: 0 !important;
+  }
+}
 :deep(*) {
   .cursor-default {
     cursor: default;
