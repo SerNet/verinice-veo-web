@@ -155,7 +155,7 @@ const internalActiveTab = computed({
 const getTabLabel = (tab: { key: string }) => {
   if (tab.key === 'controls') {
     if (complianceControlSubTypes.value.length === 1) {
-      const singleSubType = complianceControlSubTypes[0];
+      const singleSubType = complianceControlSubTypes.value[0];
       return (
         currentDomain.value?.raw?.elementTypeDefinitions['control']?.translations[locale.value]?.[
           `control_${singleSubType}_plural`
