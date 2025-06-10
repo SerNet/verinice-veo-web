@@ -7,7 +7,7 @@ maybeDescribe('User Settings', function () {
 
   beforeEach(() => {
     cy.login();
-    cy.visit('/settings');
+    cy.visit('/user-settings');
     cy.acceptAllCookies();
   });
 

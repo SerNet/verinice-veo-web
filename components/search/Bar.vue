@@ -27,7 +27,7 @@
     :append-inner-icon="mdiMagnify"
     chips
     hide-selected
-    class="compact-view"
+    :class="hasUserSettings ? 'compact-view' : ''"
     :density="density"
     auto-select-first="exact"
     :aria-label="t('search')"
@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import { mdiCloseCircle, mdiFilter, mdiMagnify } from '@mdi/js';
 import { cloneDeep } from 'lodash';
+import { useFeatureFlag } from '~/composables/features/featureFlag';
 import type { VeoSearch, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
 type UpdateSearchMsg = {
@@ -62,6 +63,8 @@ type UpdateSearchMsg = {
   newValue?: string;
 };
 
+const { hasFeature } = useFeatureFlag();
+const hasUserSettings = hasFeature('compact-table');
 const props = withDefaults(
   defineProps<{
     filters?: VeoSearchFilters;
