@@ -9,8 +9,8 @@
   "osvVulnerabilityAlerts": true,
   "packageRules": [
     {
-      "matchPackagePatterns": ["vitest"],
-      "groupName": "Vitest"
+      "groupName": "Vitest",
+      "matchPackageNames": ["/vitest/"]
     },
     {
       "matchPackageNames": ["cypress/browsers"],
