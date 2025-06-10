@@ -11,16 +11,35 @@ export type TVeoAction = {
   affectedRessources?: string[];
 };
 
-type TVeoGetActionsParams = { domainId: string; elementType: string; elementId: string };
-type TVeoPerformActionParams = TVeoGetActionsParams & { actionId?: string; affectedRessources?: string[] };
+type TVeoPerformActionParams = { actionId?: string; affectedRessources?: string[] };
 
-export function useActions({ domainId, elementType, elementId }: TVeoGetActionsParams) {
-  const { request } = useRequest();
-  const url = `/api/domains/${domainId}/${elementType}/${elementId}/actions`;
+function useUrl() {
+  const url = ref();
+  const route = useRoute();
 
+  const requestParams = computed(() => ({
+    domainId: route.params.domain as string,
+    elementType: route.params.objectType as string,
+    elementId: route.params.object as string
+  }));
+
+  const isEnabled = computed(
+    () => requestParams.value.domainId && requestParams.value.elementType && requestParams.value.elementId
+  );
+
+  url.value =
+    isEnabled ?
+      `/api/domains/${requestParams.value.domainId}/${requestParams.value.elementType}/${requestParams.value.elementId}/actions`
+    : '';
+
+  return { url, isEnabled };
+}
+export function useActions() {
   const data = ref([]);
   const error = ref<TVeoError>(null);
   const isLoading = ref(true);
+
+  const { request } = useRequest();
 
   async function fetchActions(url: string) {
     try {
@@ -33,7 +52,8 @@ export function useActions({ domainId, elementType, elementId }: TVeoGetActionsP
     }
   }
 
-  fetchActions(url);
+  const { url, isEnabled } = useUrl();
+  watch(isEnabled, () => (isEnabled.value ? fetchActions(url.value) : []), { immediate: true });
 
   return {
     data,
@@ -47,32 +67,36 @@ export function usePerformActions() {
   const isLoading = ref(false);
   const error = ref<TVeoError>(null);
 
-  async function performVeoAction({
-    domainId,
-    elementType,
-    elementId,
-    actionId,
-    affectedRessources
-  }: TVeoPerformActionParams) {
-    const url = `/api/domains/${domainId}/${elementType}/${elementId}/actions/${actionId}/execution`;
+  function performVeoAction({ actionId, affectedRessources }: TVeoPerformActionParams) {
+    const { url: baseUrl, isEnabled } = useUrl();
 
-    const requestParams = {
-      method: 'POST',
-      url,
-      primaryQueryKey: '',
-      mutationParameterTransformationFn: () => ({}),
-      queryParameterTransformationFn: () => ({})
-    };
+    watch(
+      isEnabled,
+      async () => {
+        if (!isEnabled.value) return;
 
-    try {
-      isLoading.value = true;
-      await useQuerySync(requestParams);
-      updateAffectedResources(affectedRessources);
-    } catch (err) {
-      error.value = handleErrorMessage(err);
-    } finally {
-      isLoading.value = false;
-    }
+        const url = `/${baseUrl.value}/${actionId}/execution`;
+
+        const requestParams = {
+          method: 'POST',
+          url,
+          primaryQueryKey: '',
+          mutationParameterTransformationFn: () => ({}),
+          queryParameterTransformationFn: () => ({})
+        };
+
+        try {
+          isLoading.value = true;
+          await useQuerySync(requestParams);
+          updateAffectedResources(affectedRessources);
+        } catch (err) {
+          error.value = handleErrorMessage(err);
+        } finally {
+          isLoading.value = false;
+        }
+      },
+      { immediate: true }
+    );
   }
 
   function updateAffectedResources(queryKey: string[]) {
