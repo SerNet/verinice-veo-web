@@ -39,6 +39,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         :create-probability-level="addProbabilityLevel"
         :delete-probability-level="deleteProbabilityLevel"
       />
+
+      <RiskWizardRiskCategoryStepper
+        v-if="riskCategoryId"
+        v-model:step="step"
+        :risk-category="riskCategory"
+        :potential-impacts-single-category="potentialImpactsSingleCategory"
+        :probability-levels="probabilityLevels"
+        :risk-values="riskValues"
+        :create-potential-impact="createSingleModePotentialImpact"
+        :delete-potential-impact="deleteSingleModePotentialImpact"
+      />
     </BaseContainer>
 
     <!-- Actions --->
@@ -92,8 +103,12 @@ import { cloneDeep } from 'lodash';
 import type { IVeoRiskCategory, IVeoRiskValueLevel, IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 import {
   ProbabilityLevel,
+  updateRiskCategory,
+  removeMatrixRow,
+  createNewMatrixRow,
   UnsetItem,
   RiskValue,
+  Impact,
   hasUnsetRiskValues,
   updateRiskMatrixValues
 } from '~/components/risk/wizard/helpers';
@@ -209,6 +224,37 @@ async function save() {
 
   await saveRiskDefinition(newRiskDefinition);
   router.push(riskDefinitionRoute.value);
+}
+
+// State: Single category mode (riskCategoryStepper)
+const riskCategory = computed<IVeoRiskCategory>(() => {
+  if (!riskCategoryId || !riskDefinition) return {};
+  const category = riskCategories.value?.find((cat) => cat.id === riskCategoryId.value);
+  return category ?? {};
+});
+
+const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[]>(
+  () => riskCategory.value?.potentialImpacts ?? []
+);
+
+// MANIPULATE STATE SINGLE CATEGORY MODE
+function createSingleModePotentialImpact() {
+  const newImpact = new Impact(potentialImpactsSingleCategory.value);
+  riskCategories.value = updateRiskCategory(riskCategories.value, {
+    ...riskCategory.value,
+    potentialImpacts: [...potentialImpactsSingleCategory.value, newImpact],
+    valueMatrix: createNewMatrixRow(cloneDeep(riskCategory.value.valueMatrix), new UnsetItem())
+  });
+}
+
+function deleteSingleModePotentialImpact(index: number) {
+  const newPotentialImpacts = potentialImpactsSingleCategory.value?.filter((_, i) => i !== index);
+
+  riskCategories.value = updateRiskCategory(riskCategories.value, {
+    ...riskCategory.value,
+    potentialImpacts: newPotentialImpacts,
+    valueMatrix: removeMatrixRow(cloneDeep(riskCategory.value.valueMatrix), index)
+  });
 }
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
