@@ -12,7 +12,7 @@ describe('Catalogs', () => {
   });
 
   after(() => cy.deleteUnit(unitDetails.name));
-  it('check Accessibility in catalog ', () => {
+  it('checks Accessibility in catalog ', () => {
     cy.goToUnitSelection();
     cy.selectUnit(unitDetails.name);
 

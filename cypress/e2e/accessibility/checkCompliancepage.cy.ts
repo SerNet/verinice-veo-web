@@ -13,7 +13,7 @@ describe('Compliance', () => {
     });
   });
 
-  it('check Accessibility in Compliance', () => {
+  it('checks Accessibility in Compliance', () => {
     visitRIList();
     cy.checkAxeViolations();
     cy.getCustom('.v-data-table__tr').first().click();

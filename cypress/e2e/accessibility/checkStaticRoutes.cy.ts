@@ -1,7 +1,7 @@
 import { checkAxeViolations } from '../../commands/axe';
 
 describe('checkAxe', () => {
-  const routesToTest = ['/', '/units', '/user-data', '/welcome', '/security'];
+  const routesToTest = ['/', '/user-data', '/welcome', '/security'];
 
   beforeEach(() => {
     cy.login();
@@ -9,7 +9,7 @@ describe('checkAxe', () => {
   });
 
   routesToTest.forEach((route) => {
-    it(`check accessibility violations on ${route}`, () => {
+    it(`checks accessibility violations on ${route}`, () => {
       cy.visit(route);
       cy.injectAxe();
       checkAxeViolations();

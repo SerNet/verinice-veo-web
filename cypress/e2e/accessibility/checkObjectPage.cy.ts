@@ -30,7 +30,7 @@ const tabConfigs: TabConfig[] = [
 ];
 const SideBarActions = ['view', 'toc', 'history', 'messages'];
 describe('check Accessibility', () => {
-  before(() => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('ElementsDetailsTab');
     cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
     cy.login();
@@ -52,22 +52,50 @@ describe('check Accessibility', () => {
         status: 'NEW'
       }
     });
+
     cy.visitObject();
-
     cy.checkAxeViolations();
-
-    // Test each tab configuration
-
+  });
+  // Test each tab configuration
+  it('checks accessibility on detail tabs', () => {
     tabConfigs.forEach(({ tab, actions }) => {
+      createObject({
+        objectData: {
+          owner: {},
+          riskDefinition: 'DSRA',
+          name: `test-object-${tab}`,
+          objectType: 'scope',
+          objectTypePlural: 'scopes',
+          subType: 'SCP_Scope',
+          subTypePlural: 'Scopes',
+          status: 'NEW'
+        }
+      });
+      cy.visitObject();
       cy.get(`[data-component-name="object-details-${tab}-tab"]`).click();
-
       cy.checkAxeViolations();
+
       if (actions?.length) {
         ElementActions.verifyAndPerformTabActions(tab, actions);
       }
     });
-
+  });
+  // Test sidebar tabs
+  it('checks accessibility on sidebar tabs', () => {
     SideBarActions.forEach((tab) => {
+      createObject({
+        objectData: {
+          owner: {},
+          riskDefinition: 'DSRA',
+          name: `test-object-${tab}`,
+          objectType: 'scope',
+          objectTypePlural: 'scopes',
+          subType: 'SCP_Scope',
+          subTypePlural: 'Scopes',
+          status: 'NEW'
+        }
+      });
+      cy.visitObject();
       cy.get(`[data-component-name="object-form-${tab}-tab"]`).click();
       cy.checkAxeViolations();
     });

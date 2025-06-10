@@ -16,7 +16,7 @@ describe('Report', () => {
     cy.handleLanguageBug();
   });
   after(() => cy.deleteUnit(unitDetails.name));
-  it('check Accessibility in Report ', () => {
+  it('checks Accessibility in Report ', () => {
     cy.goToUnitSelection();
     cy.selectUnit(unitDetails.name);
 

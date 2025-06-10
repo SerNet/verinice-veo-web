@@ -9,54 +9,62 @@ const testData = {
   domainSelectors: ['[data-veo-test="domain-card-checkbox-ds-gvo"]', '[data-veo-test="domain-card-checkbox-itgs"]']
 };
 
-describe('check Accessibility', () => {
-  before(() => {
+describe('checks Accessibility', () => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('profiles');
     cy.login();
     cy.acceptAllCookies();
     cy.createUnit(unitDetails);
+    cy.goToUnitSelection();
   });
 
   afterEach(() => cy.deleteUnit(unitDetails.name));
 
-  it('check Accessibility in unit', () => {
-    cy.goToUnitSelection();
+  it('checks accessibility in unit page', () => {
     cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
     cy.checkAxeViolations();
-
-    //check Accessibility in edit dialog
-    cy.getCustom('@testUnitCard').within((_card) => {
+  });
+  //checks Accessibility in edit dialog
+  it('checks accessibility in edit dialog', () => {
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
+    cy.getCustom('@testUnitCard').within(() => {
       cy.getCustom('[data-veo-test="units-edit-unit-button"]').click();
     });
     cy.checkAxeViolations();
-    cy.getCustom('[data-veo-test="cancel-dialog"]').click({ force: true });
+  });
 
-    // check Accessibility in profiles
-    cy.getCustom('@testUnitCard').within((_card) => {
+  // checks Accessibility in profiles
+  it('checks accessibility in profile dialog', () => {
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
+    cy.getCustom('@testUnitCard').within(() => {
       cy.getCustom('[data-veo-test="apply-profiles-link"]').click();
     });
     cy.checkAxeViolations();
-    cy.getCustom('[data-veo-test="cancel-dialog"]').click({ force: true });
+  });
 
-    // check Accessibility in create unit cards
+  // checks Accessibility in create unit cards
+  it('checks accessibility during create unit flow', () => {
     cy.getCustom('[data-veo-test="create-unit-btn"]').click({ force: true });
     cy.getCustom('[data-veo-test="unit-details-card"]').as('detailsCard');
-    cy.getCustom('@detailsCard').within((_$card) => {
+
+    cy.getCustom('@detailsCard').within(() => {
       cy.getCustom('input').type(testData.unitName);
       cy.getCustom('textarea').type(testData.unitDesc);
     });
     cy.checkAxeViolations();
+
     cy.getCustom('[data-veo-test="create-unit-next-btn"]').click({ force: true });
-    // choose profile card
+    // profile card
     cy.checkAxeViolations();
     cy.getCustom('[data-veo-test="profile-radio-btn-none"]');
     cy.getCustom('[data-veo-test="create-unit-next-btn"]').click({ force: true });
-    // choose domain card
+    // domain card
     cy.checkAxeViolations();
     cy.getCustom('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
     cy.getCustom('[data-veo-test="create-unit-next-btn"]').click({ force: true });
     // summary card
     cy.checkAxeViolations();
+
     cy.goToUnitSelection();
   });
 });
