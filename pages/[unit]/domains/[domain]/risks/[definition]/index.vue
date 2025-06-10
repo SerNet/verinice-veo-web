@@ -28,6 +28,12 @@
         <v-row>
           <v-col cols="12">
             <v-card class="pa-2">
+              <div class="d-flex justify-space-between">
+                <v-card-title>{{ t('crossCategoryValues') }}</v-card-title>
+                <v-card-actions>
+                  <v-btn :icon="mdiPencil" variant="plain" size="small" :to="`${route.path}/edit`" />
+                </v-card-actions>
+              </div>
               <div class="d-flex align-center">
                 <RiskProperty :title="t('riskValues')" :items="riskDefinition.riskValues" />
                 <RiskProperty :title="t('probability')" :items="riskDefinition.probability.levels" />
@@ -62,8 +68,10 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-definition';
 </script>
 
 <script setup lang="ts">
+import { mdiPencil } from '@mdi/js';
 const { t } = useVeoI18n();
 const { data: riskDefinition } = useRiskDefinition();
+const route = useRoute();
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks-matrix.json"></i18n>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
