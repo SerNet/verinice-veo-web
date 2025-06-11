@@ -11,7 +11,8 @@
     "saveRiskDefinition": "Save risk definition",
     "crossCategoryValues": "Cross-category values",
     "createValueMatrix": "Create value matrix",
-    "createValueMatrixBody": "You can now create a value matrix for this domain. This will allow you to define the risk values for each criterion and impact. Do you want to create a value matrix?"
+    "createValueMatrixBody": "You can now create a value matrix for this domain. This will allow you to define the risk values for each criterion and impact. Do you want to create a value matrix?",
+    "deleteValueMatrix": "Delete risk matrix"
   },
   "de": {
     "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten.",
@@ -25,6 +26,7 @@
     "saveRiskDefinition": "Risikodefinition speichern",
     "crossCategoryValues": "Kriterienübergreifende Werte",
     "createValueMatrix": "Risikomatrix erstellen",
-    "createValueMatrixBody": "Sie können jetzt eine Risikomatrix für diese Domäne erstellen. Dadurch können Sie die Risikowerte für jedes Kriterium und jede Auswirkung definieren. Möchten Sie eine Risikomatrix erstellen?"
+    "createValueMatrixBody": "Sie können jetzt eine Risikomatrix für diese Domäne erstellen. Dadurch können Sie die Risikowerte für jedes Kriterium und jede Auswirkung definieren. Möchten Sie eine Risikomatrix erstellen?",
+    "deleteValueMatrix": "Riskomatrix löschen"
   }
 }

@@ -71,6 +71,7 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-definition';
 import { mdiPencil } from '@mdi/js';
 const { t } = useVeoI18n();
 const { data: riskDefinition } = useRiskDefinition();
+watch(riskDefinition, () => console.log({ riskDefinition: riskDefinition }), { immediate: true, deep: true });
 const route = useRoute();
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks-matrix.json"></i18n>

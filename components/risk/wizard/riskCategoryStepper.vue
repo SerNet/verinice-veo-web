@@ -24,14 +24,21 @@
     <!-- Edit risk matrix -->
     <v-window-item :value="2">
       <v-card class="pa-8">
-        <RiskMatrix
-          v-if="riskCategory.valueMatrix?.length"
-          :value-matrix="riskCategory.valueMatrix"
-          :potential-impacts="potentialImpactsSingleCategory"
-          :risk-values="riskValues"
-          :probability-levels="probabilityLevels"
-          :is-edit-mode="true"
-        />
+        <template v-if="riskCategory.valueMatrix?.length">
+          <RiskMatrix
+            :value-matrix="riskCategory.valueMatrix"
+            :potential-impacts="potentialImpactsSingleCategory"
+            :risk-values="riskValues"
+            :probability-levels="probabilityLevels"
+            :is-edit-mode="true"
+          />
+
+          <v-container class="mt-2 d-flex justify-end">
+            <v-btn color="primary" variant="outlined" @click="deleteValueMatrix(riskCategory.id)">{{
+              t('deleteValueMatrix')
+            }}</v-btn>
+          </v-container>
+        </template>
 
         <BaseAlert
           v-else
@@ -87,6 +94,7 @@ defineProps<{
     riskCategory: IVeoRiskCategory,
     potentialImpactsSingleCategory: IVeoRiskPotentialImpact[]
   ) => void;
+  deleteValueMatrix: (riskCategoryId: string) => void;
 }>();
 
 const step = defineModel<number>('step', { default: 1 });

@@ -50,6 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         :create-potential-impact="createSingleModePotentialImpact"
         :delete-potential-impact="deleteSingleModePotentialImpact"
         :create-initial-value-matrix="createInitialValueMatrix"
+        :delete-value-matrix="deleteValueMatrix"
       />
     </BaseContainer>
 
@@ -282,6 +283,15 @@ function createInitialValueMatrix(riskCategory: IVeoRiskCategory, potentialImpac
         ...category,
         valueMatrix: newValueMatrix
       };
+    }
+    return category;
+  });
+}
+
+function deleteValueMatrix(riskCategoryId: string) {
+  riskCategories.value = riskCategories.value.map((category) => {
+    if (category.id === riskCategoryId) {
+      return { ...category, valueMatrix: undefined };
     }
     return category;
   });
