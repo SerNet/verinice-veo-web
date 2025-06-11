@@ -246,7 +246,7 @@ function createSingleModePotentialImpact() {
   const newValueMatrix =
     riskCategory.value?.valueMatrix?.length ?
       createNewMatrixRow(cloneDeep(riskCategory.value.valueMatrix), new UnsetItem(), rowLength)
-    : [];
+    : undefined;
 
   riskCategories.value = updateRiskCategory(riskCategories.value, {
     ...riskCategory.value,
