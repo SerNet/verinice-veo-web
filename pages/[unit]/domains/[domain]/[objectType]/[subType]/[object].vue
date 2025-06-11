@@ -75,6 +75,7 @@
             :loading="loading || !modifiedObject"
             :domain-id="domainId"
             :additional-context="additionalContext"
+            :has-actions-menu="true"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
             @link-dpia="linkObjectDialogVisible = true"
