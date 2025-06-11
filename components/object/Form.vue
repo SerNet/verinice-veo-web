@@ -85,7 +85,7 @@
                   </template>
                 </ObjectSideBarAction>
               </v-btn-toggle>
-              <ObjectDetailsActionMenu :object="objectData" />
+              <ObjectDetailsActionMenu v-if="hasActionsMenu" :object="objectData" />
             </div>
           </div>
         </template>
@@ -176,6 +176,10 @@ export default defineComponent({
      * If set to true, objects can't be created from within the custom link dropdown
      */
     objectCreationDisabled: {
+      type: Boolean,
+      default: false
+    },
+    hasActionsMenu: {
       type: Boolean,
       default: false
     }
