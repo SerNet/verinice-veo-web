@@ -13,16 +13,19 @@ function getNewOrdinalValue(items: any[]) {
   return Math.max(...items.map((i) => i.ordinalValue)) + 1;
 }
 
-function getInitialTranslations(riskValues?: IVeoRiskValueLevel[], abbreviation?: string) {
+function getInitialTranslations(
+  items?: IVeoRiskValueLevel[] | IVeoRiskPotentialImpact[] | UnsetItem[],
+  abbreviation?: string
+) {
   const initialTranslation = {
     name: 'N.N.',
     description: 'N.N.',
     ...(abbreviation ? { abbreviation } : {})
   };
 
-  if (!riskValues?.[0].translations?.[0]) return { de: initialTranslation, en: initialTranslation };
+  if (!items?.[0].translations?.[0]) return { de: initialTranslation, en: initialTranslation };
 
-  return Object.keys(riskValues[0].translations).reduce((acc, lang) => {
+  return Object.keys(items[0].translations).reduce((acc, lang) => {
     acc[lang] = { name: '', description: '', ...(abbreviation ? { abbreviation } : {}) };
     return acc;
   });
@@ -79,7 +82,7 @@ export class Impact {
   htmlColor: string;
   translations: any;
 
-  constructor(potentialImpacts: IVeoRiskPotentialImpact[]) {
+  constructor(potentialImpacts: IVeoRiskPotentialImpact[] | UnsetItem[]) {
     this.ordinalValue = getNewOrdinalValue(potentialImpacts);
     this.htmlColor = defaultColor;
     this.translations = getInitialTranslations(potentialImpacts);
@@ -89,7 +92,7 @@ export class Impact {
 // Check if values in risk matrices are unset
 export function hasUnsetRiskValues(valueMatrix: IVeoRiskValueLevel[][]): boolean {
   if (!valueMatrix || !Array.isArray(valueMatrix)) return false;
-  return (valueMatrix.flat() ?? []).some((riskValue) => riskValue.hasOwnProperty('isUnset'));
+  return (valueMatrix.flat() ?? []).some((riskValue) => Object.hasOwn(riskValue, 'isUnset'));
 }
 
 // Manipulate risk categories

@@ -235,7 +235,7 @@ const riskCategory = computed<IVeoRiskCategory>(() => {
   return category ?? {};
 });
 
-const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[]>(() =>
+const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[] | UnsetItem[]>(() =>
   riskCategory.value?.potentialImpacts?.length ? riskCategory.value.potentialImpacts : [new UnsetItem()]
 );
 
