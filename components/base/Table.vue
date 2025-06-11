@@ -32,8 +32,8 @@ import { VCheckbox, VIcon, VProgressLinear, VTooltip } from 'vuetify/components'
 import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
+import { useSettings } from '~/composables/api/settings';
 
-import { useFeatureFlag } from '~/composables/features/featureFlag';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
@@ -156,8 +156,11 @@ const attrs = useAttrs();
 const route = useRoute();
 /** @description Synchronizes the current API page parameter with the parent component, 0-indexed */
 const page = defineModel<number>('page', { default: 0 });
-const { hasFeature } = useFeatureFlag();
-const hasCompactTable = hasFeature('compact-table');
+const { userSettings } = useSettings();
+const hasCompactTable = computed(() => {
+  const compactValue = userSettings.value['compact'];
+  return compactValue === true;
+});
 /** @description Tracks the current page state of VDataTable, has to be 1-indexed. */
 const localPage = ref(1);
 
