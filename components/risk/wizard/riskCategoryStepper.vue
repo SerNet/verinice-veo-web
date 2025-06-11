@@ -39,7 +39,7 @@
           :buttons="[
             {
               text: t('createValueMatrix'),
-              onClick: () => createInitialRiskMatrix(riskCategory, potentialImpactsSingleCategory)
+              onClick: () => createInitialValueMatrix(riskCategory, potentialImpactsSingleCategory)
             }
           ]"
           :title="t('createValueMatrix')"
@@ -83,7 +83,7 @@ defineProps<{
   potentialImpactsSingleCategory: IVeoRiskPotentialImpact[];
   createPotentialImpact: () => void;
   deletePotentialImpact: (index: number) => void;
-  createInitialRiskMatrix: (
+  createInitialValueMatrix: (
     riskCategory: IVeoRiskCategory,
     potentialImpactsSingleCategory: IVeoRiskPotentialImpact[]
   ) => void;
