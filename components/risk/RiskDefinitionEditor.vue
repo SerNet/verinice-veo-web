@@ -18,7 +18,7 @@
 
 <template>
   <v-card min-width="640" class="pb-4">
-    <div v-if="true" class="d-flex flex-column">
+    <div class="d-flex flex-column">
       <v-tabs v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
         <v-tab v-for="translation in Object.keys(data?.[0]?.translations ?? {})" :key="translation">
           {{ translation }}
@@ -53,7 +53,7 @@
                   <!-- Name -->
                   <v-text-field
                     v-model="item.translations[translation].name"
-                    :label="$t('inputLabel.name')"
+                    :label="t('inputLabel.name')"
                     hide-details
                     required
                     @input="() => changeItem(itemIndex)"
@@ -62,7 +62,7 @@
                       <v-btn
                         :icon="mdiDeleteOutline"
                         :aria-label="t('removeItem')"
-                        @click="() => removeItem(item.ordinalValue)"
+                        @click="() => removeItem(itemIndex)"
                       />
                     </template>
                   </v-text-field>
@@ -70,7 +70,7 @@
                   <!-- Description -->
                   <v-textarea
                     v-model="item.translations[translation].description"
-                    :label="$t('inputLabel.description')"
+                    :label="t('inputLabel.description')"
                     @input="() => changeItem(itemIndex)"
                   />
 
