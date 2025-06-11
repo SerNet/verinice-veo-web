@@ -22,15 +22,34 @@
     </v-window-item>
 
     <!-- Edit risk matrix -->
-    <v-window-item v-if="riskCategory.valueMatrix?.length" :value="2">
+    <v-window-item :value="2">
       <v-card class="pa-8">
         <RiskMatrix
+          v-if="riskCategory.valueMatrix?.length"
           :value-matrix="riskCategory.valueMatrix"
           :potential-impacts="potentialImpactsSingleCategory"
           :risk-values="riskValues"
           :probability-levels="probabilityLevels"
           :is-edit-mode="true"
         />
+
+        <BaseAlert
+          v-else
+          :model-value="true"
+          :buttons="[
+            {
+              text: t('createValueMatrix'),
+              onClick: () => createInitialRiskMatrix(riskCategory, potentialImpactsSingleCategory)
+            }
+          ]"
+          :title="t('createValueMatrix')"
+          :type="VeoAlertType.INFO"
+          class="mx-14 my-2"
+          flat
+          no-close-button
+        >
+          {{ t('createValueMatrixBody') }}
+        </BaseAlert>
       </v-card>
     </v-window-item>
 
@@ -48,16 +67,26 @@
   </v-window>
 </template>
 <script setup lang="ts">
-import { IVeoRiskCategory, IVeoRiskPotentialImpact, IVeoRiskValueLevel } from '~/types/VeoTypes';
+import { VeoAlertType } from '~/types/VeoTypes';
+import type {
+  IVeoRiskCategory,
+  IVeoRiskPotentialImpact,
+  IVeoRiskProbabilityLevel,
+  IVeoRiskValueLevel
+} from '~/types/VeoTypes';
 const { t } = useI18n();
 
 defineProps<{
-  createPotentialImpact: () => void;
-  deletePotentialImpact: (index: number) => void;
   riskValues: IVeoRiskValueLevel[];
-  probabilityLevels: any[];
+  probabilityLevels: IVeoRiskProbabilityLevel[];
   riskCategory: IVeoRiskCategory;
   potentialImpactsSingleCategory: IVeoRiskPotentialImpact[];
+  createPotentialImpact: () => void;
+  deletePotentialImpact: (index: number) => void;
+  createInitialRiskMatrix: (
+    riskCategory: IVeoRiskCategory,
+    potentialImpactsSingleCategory: IVeoRiskPotentialImpact[]
+  ) => void;
 }>();
 
 const step = defineModel<number>('step', { default: 1 });

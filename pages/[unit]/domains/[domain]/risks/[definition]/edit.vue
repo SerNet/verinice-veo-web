@@ -26,7 +26,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   >
     <BaseContainer>
       <RiskWizardCrossCategoryStepper
-        v-if="!riskCategoryId"
+        v-if="!riskCategoryId && riskCategories?.length"
         v-model:step="step"
         :risk-categories="riskCategories"
         :probability-levels="probabilityLevels"
@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       />
 
       <RiskWizardRiskCategoryStepper
-        v-if="riskCategoryId"
+        v-if="riskCategoryId && riskCategories?.length"
         v-model:step="step"
         :risk-category="riskCategory"
         :potential-impacts-single-category="potentialImpactsSingleCategory"
@@ -49,6 +49,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         :risk-values="riskValues"
         :create-potential-impact="createSingleModePotentialImpact"
         :delete-potential-impact="deleteSingleModePotentialImpact"
+        :create-initial-risk-matrix="createInitialRiskMatrix"
       />
     </BaseContainer>
 
@@ -233,17 +234,24 @@ const riskCategory = computed<IVeoRiskCategory>(() => {
   return category ?? {};
 });
 
-const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[]>(
-  () => riskCategory.value?.potentialImpacts ?? []
+const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[]>(() =>
+  riskCategory.value?.potentialImpacts?.length ? riskCategory.value.potentialImpacts : [new UnsetItem()]
 );
 
 // MANIPULATE STATE SINGLE CATEGORY MODE
 function createSingleModePotentialImpact() {
   const newImpact = new Impact(potentialImpactsSingleCategory.value);
+
+  const rowLength = probabilityLevels.value.length ?? 0;
+  const newValueMatrix =
+    riskCategory.value?.valueMatrix?.length ?
+      createNewMatrixRow(cloneDeep(riskCategory.value.valueMatrix), new UnsetItem(), rowLength)
+    : [];
+
   riskCategories.value = updateRiskCategory(riskCategories.value, {
     ...riskCategory.value,
     potentialImpacts: [...potentialImpactsSingleCategory.value, newImpact],
-    valueMatrix: createNewMatrixRow(cloneDeep(riskCategory.value.valueMatrix), new UnsetItem())
+    valueMatrix: newValueMatrix
   });
 }
 
@@ -254,6 +262,28 @@ function deleteSingleModePotentialImpact(index: number) {
     ...riskCategory.value,
     potentialImpacts: newPotentialImpacts,
     valueMatrix: removeMatrixRow(cloneDeep(riskCategory.value.valueMatrix), index)
+  });
+}
+
+function createInitialRiskMatrix(riskCategory: IVeoRiskCategory, potentialImpacts: IVeoRiskPotentialImpact[]) {
+  if (!riskCategories.value) return;
+
+  riskCategories.value = riskCategories.value.map((category) => {
+    if (category.id === riskCategory.id) {
+      let newValueMatrix = [];
+      const rowLength = probabilityLevels.value.length ?? 0;
+
+      // Add a row for each potential impact
+      potentialImpacts.forEach((_impact) => {
+        newValueMatrix = createNewMatrixRow(cloneDeep(newValueMatrix), new UnsetItem(), rowLength);
+      });
+
+      return {
+        ...category,
+        valueMatrix: newValueMatrix
+      };
+    }
+    return category;
   });
 }
 </script>
