@@ -46,6 +46,10 @@ export function useRiskDefinitionUpdate() {
       riskDefinition: IVeoDomainRiskDefinition,
       domainId: string = currentDomain.value?.id
     ) {
+      if (!domainId) {
+        throw new Error(`DomainId is required to put a risk definition: ${domainId}`);
+      }
+
       let loadingId: symbol;
       try {
         loadingId = setLoading(messages?.[locale.value]?.updatingRiskDefinition ?? '');
