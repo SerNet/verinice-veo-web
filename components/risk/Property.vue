@@ -22,7 +22,7 @@
 
     <div class="px-3">
       <v-tooltip
-        v-for="item in items"
+        v-for="(item, index) in items"
         :key="item.ordinalValue"
         max-width="400px"
         top
@@ -32,20 +32,7 @@
         "
       >
         <template #activator="{ props }">
-          <v-chip
-            v-bind="props"
-            label
-            outlined
-            size="small"
-            :style="{
-              marginLeft: '1px',
-              marginRight: '1px',
-              marginTop: '1px',
-              marginBottom: '1px',
-              backgroundColor: item.htmlColor,
-              color: getMostContrastyColor(item.htmlColor)
-            }"
-          >
+          <v-chip v-bind="props" label outlined size="small" :style="itemStyles[index]">
             {{
               (item.translations[locale] && item.translations[locale].name) || Object.values(item.translations)[0].name
             }}&nbsp;</v-chip
@@ -60,7 +47,7 @@
 import { getMostContrastyColor } from '~/lib/utils';
 import type { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel } from '~/types/VeoTypes';
 
-defineProps({
+const props = defineProps({
   items: {
     type: (Array as PropType<IVeoRiskPotentialImpact[]>) || (Array as PropType<IVeoRiskProbabilityLevel[]>),
     required: true
@@ -70,6 +57,16 @@ defineProps({
     required: true
   }
 });
-
 const { locale } = useI18n();
+
+const itemStyles = computed(() =>
+  props.items.map((item) => ({
+    marginLeft: '1px',
+    marginRight: '1px',
+    marginTop: '1px',
+    marginBottom: '1px',
+    backgroundColor: item.htmlColor,
+    color: getMostContrastyColor(item.htmlColor)
+  }))
+);
 </script>

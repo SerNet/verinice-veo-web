@@ -22,7 +22,6 @@
           <v-card-title class="pr-0">{{ riskCategory.translations?.[locale]?.name ?? '' }}</v-card-title>
 
           <v-card-actions>
-            <v-btn :icon="mdiDelete" variant="plain" size="small" class="d-none" />
             <v-btn
               :icon="mdiPencil"
               variant="plain"
@@ -54,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiDelete, mdiPencil } from '@mdi/js';
+import { mdiPencil } from '@mdi/js';
 import type {
   IVeoRiskCategory,
   IVeoRiskPotentialImpact,

@@ -34,7 +34,7 @@
             <th class="no-borders"></th>
             <th class="no-borders"></th>
             <v-tooltip
-              v-for="probability in probabilityLevels"
+              v-for="(probability, probabilityIndex) in probabilityLevels"
               :key="probability.ordinalValue"
               max-width="400px"
               top
@@ -42,19 +42,7 @@
               :disabled="isEditMode"
             >
               <template #activator="{ props }">
-                <th
-                  v-bind="props"
-                  :style="{
-                    flex: 1,
-                    height: '100%',
-                    padding: '12px',
-                    textAlign: 'center',
-                    border: 'var(--veo-risk-matrix-border)',
-                    backgroundColor: probability?.htmlColor,
-                    width: `${100 / (probabilityLevels.length + 1)}%`,
-                    color: getMostContrastyColor(probability?.htmlColor)
-                  }"
-                >
+                <th v-bind="props" :style="probabilityStyles[probabilityIndex]">
                   <div>
                     {{ probability?.translations?.[locale]?.name }}
                   </div>
@@ -65,22 +53,14 @@
         </thead>
         <tbody class="flex-container">
           <tr>
-            <th :style="{ border: 'none' }" :rowspan="valueMatrix.length + 1" class="title-cell">
+            <th :rowspan="rowSpan" class="title-cell no-borders">
               <div class="impact-title text-capitalize">
                 {{ t('impact') }}
               </div>
             </th>
           </tr>
 
-          <tr
-            v-for="(_row, rowIndex) in valueMatrix"
-            :key="rowIndex"
-            :style="{
-              height: '100%',
-              width: `${100 / (probabilityLevels.length + 1)}%`,
-              textAlign: 'center'
-            }"
-          >
+          <tr v-for="(_row, rowIndex) in valueMatrix" :key="rowIndex" :style="tableRowStyles">
             <!-- Matrix rows are displayed in a reversed order: `.at(-1 - rowIndex)` does this -->
             <v-tooltip
               max-width="400px"
@@ -89,17 +69,7 @@
               :disabled="isEditMode"
             >
               <template #activator="{ props }">
-                <td
-                  v-bind="props"
-                  :style="{
-                    height: '100%',
-                    padding: '12px',
-                    border: 'var(--veo-risk-matrix-border)',
-                    backgroundColor: getImpact(rowIndex)?.htmlColor ?? '#ffffff',
-                    width: `${100 / (probabilityLevels.length + 1)}%`,
-                    color: getMostContrastyColor(getImpact(rowIndex)?.htmlColor ?? '#fffff')
-                  }"
-                >
+                <td v-bind="props" :style="potentialImpactStyles.at(-1 - rowIndex)">
                   <div>
                     {{ getImpact(rowIndex)?.translations?.[locale]?.name ?? t('noValue') }}
                   </div>
@@ -116,26 +86,8 @@
               top
             >
               <template #activator="{ props }">
-                <td
-                  v-bind="props"
-                  :style="{
-                    width: `${100 / (probabilityLevels.length + 1)}%`,
-                    border: 'var(--veo-risk-matrix-border)'
-                  }"
-                  class="text-center px-0 py-0"
-                >
-                  <div
-                    :style="{
-                      padding: '12px',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: '100%',
-                      flex: 1,
-                      backgroundColor: getRiskValue(rowIndex, cellIndex)?.htmlColor,
-                      color: getMostContrastyColor(getRiskValue(rowIndex, cellIndex)?.htmlColor)
-                    }"
-                  >
+                <td v-bind="props" class="text-center px-0 py-0 risk-matrix-border">
+                  <div :style="tableCellInnerStyles?.at(-1 - rowIndex)?.[cellIndex]">
                     <v-row v-if="isEditMode">
                       <v-autocomplete
                         v-if="riskValues && getRiskValue(rowIndex, cellIndex)"
@@ -186,6 +138,55 @@ const valueMatrix = defineModel<IVeoRiskValueLevel[][]>('value-matrix', { defaul
 // Getters for static matrix values
 const getImpact = (rowIndex: number) => props.potentialImpacts?.at(-1 - rowIndex);
 const getRiskValue = (rowIndex: number, cellIndex: number) => valueMatrix.value?.at(-1 - rowIndex)?.[cellIndex];
+
+// Styles
+const rowSpan = computed(() => valueMatrix.value.length + 1);
+
+const probabilityStyles = computed(
+  () =>
+    props.probabilityLevels?.map((probability) => ({
+      flex: 1,
+      height: '100%',
+      padding: '12px',
+      border: 'var(--veo-risk-matrix-border)',
+      backgroundColor: probability?.htmlColor,
+      width: `${100 / (props.probabilityLevels.length + 1)}%`,
+      textAlign: 'center' as const,
+      color: getMostContrastyColor(probability?.htmlColor)
+    })) ?? []
+);
+
+const potentialImpactStyles = computed(() =>
+  props.potentialImpacts.map((impact) => ({
+    height: '100%',
+    padding: '12px',
+    border: 'var(--veo-risk-matrix-border)',
+    backgroundColor: impact?.htmlColor ?? '#ffffff',
+    width: `${100 / (props.probabilityLevels.length + 1)}%`,
+    color: getMostContrastyColor(impact?.htmlColor ?? '#fffff')
+  }))
+);
+
+const tableRowStyles = computed(() => ({
+  height: '100%',
+  width: `${100 / (props.probabilityLevels.length + 1)}%`,
+  textAlign: 'center' as const
+}));
+
+const tableCellInnerStyles = computed(() =>
+  valueMatrix.value?.map((row) =>
+    row.map((cell) => ({
+      padding: '12px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100%',
+      flex: 1,
+      backgroundColor: cell?.htmlColor,
+      color: getMostContrastyColor(cell?.htmlColor ?? '#ffffff')
+    }))
+  )
+);
 </script>
 
 <i18n src="~/locales/base/components/risk-risk-elements-matrix.json"></i18n>
@@ -235,5 +236,8 @@ th {
   @supports not (writing-mode: sideways-lr) {
     transform: rotate(-90deg);
   }
+}
+.risk-matrix-border {
+  border: var(--veo-risk-matrix-border);
 }
 </style>
