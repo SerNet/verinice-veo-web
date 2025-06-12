@@ -19,7 +19,10 @@
 <template>
   <v-card min-width="640" class="pb-4">
     <div class="d-flex flex-column">
-      <v-tabs v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
+      <template v-if="!data.length">
+        <slot name="infoBox"></slot>
+      </template>
+      <v-tabs v-else v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
         <v-tab v-for="translation in Object.keys(data?.[0]?.translations ?? {})" :key="translation">
           {{ translation }}
         </v-tab>

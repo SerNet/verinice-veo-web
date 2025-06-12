@@ -236,12 +236,13 @@ const riskCategory = computed<IVeoRiskCategory>(() => {
 });
 
 const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[] | UnsetItem[]>(() =>
-  riskCategory.value?.potentialImpacts?.length ? riskCategory.value.potentialImpacts : [new UnsetItem()]
+  riskCategory.value?.potentialImpacts?.length ? riskCategory.value.potentialImpacts : []
 );
 
 // MANIPULATE STATE SINGLE CATEGORY MODE
 function createSingleModePotentialImpact() {
-  const newImpact = new Impact(potentialImpactsSingleCategory.value);
+  const newImpact =
+    potentialImpactsSingleCategory.value.length ? new Impact(potentialImpactsSingleCategory.value) : new UnsetItem();
 
   const rowLength = probabilityLevels.value.length ?? 0;
   const newValueMatrix =

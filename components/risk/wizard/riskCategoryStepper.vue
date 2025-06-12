@@ -18,7 +18,26 @@
         :data="potentialImpactsSingleCategory"
         @add-item="createPotentialImpact"
         @remove-item="deletePotentialImpact"
-      />
+      >
+        <template #infoBox>
+          <BaseAlert
+            :model-value="true"
+            :buttons="[
+              {
+                text: t('createPotentialImpact'),
+                onClick: () => createPotentialImpact()
+              }
+            ]"
+            :title="t('createPotentialImpact')"
+            :type="VeoAlertType.INFO"
+            class="mx-14 my-8"
+            flat
+            no-close-button
+          >
+            {{ t('createPotentialImpactBody') }}
+          </BaseAlert>
+        </template>
+      </RiskDefinitionEditor>
     </v-window-item>
 
     <!-- Edit risk matrix -->

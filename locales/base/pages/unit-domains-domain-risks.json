@@ -2,7 +2,7 @@
   "en": {
     "selectRiskMatrixToView": "Please select the risk definition you want to view.",
     "edit": "Edit {item}",
-    "editRiskImpacts": "Set Probabilities",
+    "editRiskImpacts": "Edit Impacts",
     "editRiskMatrix": "Edit risk matrix",
     "summary": "Summary",
     "editCategory": "Edit [1]",
@@ -12,12 +12,14 @@
     "crossCategoryValues": "Cross-category values",
     "createValueMatrix": "Create value matrix",
     "createValueMatrixBody": "You can now create a value matrix for this domain. This will allow you to define the risk values for each criterion and impact. Do you want to create a value matrix?",
-    "deleteValueMatrix": "Delete risk matrix"
+    "deleteValueMatrix": "Delete risk matrix",
+    "createPotentialImpact": "Create impact",
+    "createPotentialImpactBody": "You can now create impact values for this category."
   },
   "de": {
     "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten.",
     "edit": "{item} bearbeiten",
-    "editRiskImpacts": "Eintrittswahrscheinlichkeiten bearbeiten",
+    "editRiskImpacts": "Auswirkungen bearbeiten",
     "editRiskMatrix": "Risikomatrix bearbeiten",
     "summary": "Zusammenfassung",
     "editCategory": "{1} bearbeiten",
@@ -27,6 +29,8 @@
     "crossCategoryValues": "Kriterienübergreifende Werte",
     "createValueMatrix": "Risikomatrix erstellen",
     "createValueMatrixBody": "Sie können jetzt eine Risikomatrix für diese Domäne erstellen. Dadurch können Sie die Risikowerte für jedes Kriterium und jede Auswirkung definieren. Möchten Sie eine Risikomatrix erstellen?",
-    "deleteValueMatrix": "Riskomatrix löschen"
+    "deleteValueMatrix": "Riskomatrix löschen",
+    "createPotentialImpact": "Auswirkung anlegen",
+    "createPotentialImpactBody": "Sie können jetzt Auswirkungen für diese Kategorie anlegen."
   }
 }
