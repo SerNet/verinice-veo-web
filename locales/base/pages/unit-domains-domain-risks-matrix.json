@@ -1,6 +1,6 @@
 {
   "en": {
-    "impact": "impact",
+    "impact": "Impact",
     "noData": "no data",
     "probability": "probability",
     "riskValues": "Risk values",
@@ -8,10 +8,12 @@
     "criterion": "Criterion",
     "error": "Updating risk definitions failed.",
     "success": "Successfully updaded risk definitions.",
-    "potentialImpacts": "Impact"
+    "potentialImpacts": "Impact",
+    "noMatrix": "No risk matrix defined yet.",
+    "createMatrixInCategory": "A new matrix can be defined when editing the corresponding risk category."
   },
   "de": {
-    "impact": "auswirkung",
+    "impact": "Auswirkung",
     "noData": "keine Daten",
     "Newcriterion": "Neues Kriterium",
     "criterion": "Kriterium",
@@ -19,6 +21,8 @@
     "probability": "Eintrittswahrscheinlichkeit",
     "error": "Riskodefinitionen konnten nicht aktualisert werden.",
     "success": "Riskodefinitionen wurden erfolgreich aktualisiert.",
-    "potentialImpacts": "Auswirkung"
+    "potentialImpacts": "Auswirkung",
+    "noMatrix": "Bislang wurde keine Risikomatrix angelegt.",
+    "createMatrixInCategory": "Eine neue Matrix kann bei der Bearbeitung der entsprechenden Risikokategorie definiert werden."
   }
 }

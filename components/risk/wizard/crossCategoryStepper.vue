@@ -45,22 +45,22 @@
             {{ riskCategories?.[index]?.translations?.[locale]?.name ?? '' }}
           </v-card-title>
 
-          <RiskProperty
-            v-if="!riskCategories[index]?.valueMatrix.length && potentialImpacts[index].length"
-            :title="t('impact')"
-            :items="potentialImpacts[index]"
-          />
+          <template v-if="!riskCategories[index]?.valueMatrix?.length && potentialImpacts[index].length">
+            <RiskProperty :title="t('impact')" :items="potentialImpacts[index]" />
+            <v-card-subtitle class="pr-0">
+              <span>{{ t('noMatrix') }}{{ ' ' }}</span>
+              <span>{{ t('createMatrixInCategory') }}</span>
+            </v-card-subtitle>
+          </template>
 
           <RiskMatrix
-            v-else-if="riskCategories[index]?.valueMatrix.length"
+            v-else
             :value-matrix="riskCategories[index]?.valueMatrix"
             :probability-levels="probabilityLevels"
             :risk-values="riskValues"
             :potential-impacts="potentialImpacts[index]"
             :is-edit-mode="true"
           />
-
-          <v-card-subtitle v-else class="pr-0">{{ t('noMatrix') }}</v-card-subtitle>
         </v-card>
       </v-window-item>
 
@@ -69,8 +69,18 @@
           <v-card class="pa-2 mb-4">
             <v-card-title>{{ riskCategories?.[index]?.translations?.[locale]?.name ?? '' }} </v-card-title>
 
+            <template v-if="!riskCategories[rcIndex]?.valueMatrix?.length && potentialImpacts[index].length">
+              <RiskProperty :title="t('impact')" :items="potentialImpacts[rcIndex]" />
+
+              <v-card-subtitle class="pr-0">
+                <span>{{ t('noMatrix') }}{{ ' ' }}</span>
+                <span>{{ t('createMatrixInCategory') }}</span>
+              </v-card-subtitle>
+            </template>
+
             <RiskMatrix
-              :value-matrix="riskCategories[rcIndex].valueMatrix"
+              v-else
+              :value-matrix="riskCategories[rcIndex]?.valueMatrix"
               :risk-values="riskValues"
               :probability-levels="probabilityLevels"
               :potential-impacts="potentialImpacts[rcIndex]"
@@ -108,3 +118,4 @@ const step = defineModel<number>('step', { default: 1 });
 const stepOffset = 3;
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
+<i18n src="~/locales/base/pages/unit-domains-domain-risks-matrix.json"></i18n>
