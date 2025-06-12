@@ -1,8 +1,46 @@
 # veo-web
 
-Welcome to the GitHub repository for the web frontend of the verinice.veo tool, the next generation solution for data protection and information security management. Leveraging modern web technologies, this software-as-a-service (SaaS) solution aims to provide a user-friendly and comprehensive approach to fulfilling data protection obligations in accordance with GDPR, ISO 27001 and other regulations. Whether you are a novice or a professional, the tool facilitates easy data collection, intuitive operation, and the generation of valuable reports, all within a web-based environment. Developed by the experienced verinice team, this frontend is part of a continuous development effort to build upon a legacy of expertise dating back to 2007 and over 10.000 customers worldwide, aiming to create a flexible, reliable, and efficient security management tool. Explore the repository to learn more about how verinice.veo is shaping the future of data protection and information security management.
+Welcome to the GitHub repository for the web frontend of the **verinice.veo** tool, the next generation solution for data protection and information security management. Leveraging modern web technologies, this software-as-a-service (SaaS) solution aims to provide a user-friendly and comprehensive approach to fulfilling data protection obligations in accordance with GDPR, ISO 27001 and other regulations. Whether you are a novice or a professional, the tool facilitates easy data collection, intuitive operation, and the generation of valuable reports, all within a web-based environment. Developed by the experienced verinice team, this frontend is part of a continuous development effort to build upon a legacy of expertise dating back to 2007 and over 10.000 customers worldwide, aiming to create a flexible, reliable, and efficient security management tool. Explore the repository to learn more about how **verinice.veo** is shaping the future of data protection and information security management.
 
 ![Screenshot](readme_imgs/dashboard.png)
+
+## Table of Contents
+
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Development Server](#development-server)
+- [Production Build](#production)
+- [Project Structure](#project-structure)
+- [Environment Variables](#environment-variables)
+- [Technical Debt](#technical-debt)
+- [Documentation](#documentation)
+- [Vue Query Debugging](#vue-query-debugging)
+- [License Headers](#license-headers)
+
+## Prerequisites
+
+Before starting, ensure you have:
+
+- **Node.js** (v20 or later)
+- **npm** (comes with Node.js)
+- A terminal or shell environment
+- A modern browser (for local testing)
+
+Check versions:
+
+```bash
+node -v
+npm -v
+```
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://gitlab.int.sernet.de/veo/verinice-veo-web.git
+cd verinice-veo-web
+```
 
 ## Setup
 
@@ -38,6 +76,21 @@ Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/prese
 
 For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
 
+## Project Structure
+
+```bash
+├── components/   # Reusable Vue components #
+├── composables/  # Shared logic and hooks #
+├── pages/        # Nuxt 3 file-based routing #
+├── plugins/      # Nuxt plugins (e.g. vue-query, i18n) #
+├── public/       # Static assets #
+├── cypress/      # End-to-end tests and accessibility tests#
+├── types/        # TypeScript definitions #
+├── configuration/ # configuration domains #
+├── content/       # Interactive Guided Tour #
+└── nuxt.config.ts  # Nuxt configuration#
+```
+
 ## Environment variables
 
 | Environment variable | Default value | What does it do? |
@@ -56,6 +109,7 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_OIDC_CLIENT` | `veo-oidcclient-example` | Client name you use for this webapp in your OIDC provider. |
 | `VEO_ACCOUNT_PATH` | `https://account.veo.example` | URL under which the user can edit his/her subscription. |
 | `VEO_OIDC_ACCOUNT_APPLICATION` | `https://auth.veo.example/auth/realms/veo-oidcrealm-example/account` | URL under which the user can self manage his/her account. |
+| `VEO_DOCUMENTATION_URL` | `https://veo-docs.develop.verinice.com` | URL under which the user can access the official documentation for verinice.veo. |
 | `VEO_DEBUG` | `false` | While not exposing any critical information, this variable should only be set to true when developing. |
 | `VEO_DEBUG_CACHE` | `false` | If set to true, additional logging output gets set regarding caching and retrieving of data. |
 | `VEO_BETA_MODE` | `false` | If set to true, the toggle for beta mode gets enabled |
@@ -75,24 +129,34 @@ VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-prod
 VEO_ACCOUNT_PATH=https://account.verinice.com
 VEO_OIDC_ACCOUNT_APPLICATION=https://auth.verinice.com/auth/realms/verinice-veo/account
+VEO_DOCUMENTATION_URL=https://veo-docs.develop.verinice.com
 ```
 
-## Technical debt
+## Technical Debt
 
-- All translations used by the `<i18n-t>` component are currently present in the language files and the components they get used in because of this bug: https://github.com/intlify/vue-i18n-next/issues/1248 (currently we use v8.0.0-beta, however the fix is only available for 7.3.1). The translations should get removed from the language files if the fix is also available for v8.x.
-- VSkeletonLoader, VDateInput, VTimeInput, VSpeedDial, VEditDialog and VDataIterator are not yet ported to nuxt 3 (vuetify v3.1), so we currently use local polyfills. Should get replaced by the vuetify components once available as they are more feature rich, more accessible and provide a better UI/UX.
-- The editors were useful to develop all object and formschemas, however constant modifications of them have left a toll on them. Should get integrated into a new, combinded editor, joining the domain editor.
-- Externalize-Scripts: Currently there is no "after-everything" hook for node, so the externalize-scripts.mjx file HAS to be called after generating the application if you want to use the frontend in production (due to CSP)
+The following known technical limitations are being tracked and should be addressed in future development cycles:
+
+- **i18n Translation Duplication:**  
+  Due to a bug in [`vue-i18n-next`](https://github.com/intlify/vue-i18n-next/issues/1248), translations used by the `<i18n-t>` component must currently exist in both the language files and their respective components. We use `vue-i18n` v8.0.0-beta, but the fix is only available in v7.3.1. Once a fix is available for v8.x, the redundant entries should be removed.
+
+- **Vuetify 3 Compatibility:**  
+  Components like `VSkeletonLoader`, `VDateInput`, `VTimeInput`, `VSpeedDial`, `VEditDialog`, and `VDataIterator` have not been ported to Nuxt 3 / Vuetify v3.1. We use local polyfills for now, which should be replaced once official versions are available.
+
+- **Schema Editors:**  
+  The object and form schema editors have become difficult to maintain due to ongoing modifications. We plan to merge them into a unified domain editor.
+
+- **Externalize Scripts Manual Step:**  
+  The file `externalize-scripts.mjx` must be executed manually after generating the application, due to the lack of a proper post-generation hook in Node. This step is necessary to meet CSP requirements when running the app in production.
 
 ## Documentation
 
 Use the `DocsLink` component for all **internal** links instead of `<nuxt-link>`, as `<nuxt-link>` won't work in the pdf. Also remove `index` from all links in order for PDF navigation to work correctly.
 
-## vue-query Debugging
+## Vue Query Debugging
 
 Debugging can be enabled by setting the `VEO_DEBUG_CACHE` variable to `true` or an array containing the first part of each query key you want to debug, eg. `VEO_DEBUG_CACHE=["objects","monitoring"]`.
 
-## License headers
+## License Headers
 
 Each file has to contain a license header. This project contains configuration for the VSCode Plugin [psioniq File Header](https://marketplace.visualstudio.com/items?itemName=psioniq.psi-header). If you use this plugin, the license header will get automatically generated for new files and files that don't contain a header yet. Please add your name to the license header of every file you make meaningful changes in.
 
