@@ -19,7 +19,7 @@
   <UtilNotFoundError v-if="!loading && notFoundError" :text="t('notFound')" />
   <LayoutPageWrapper
     v-else
-    class="px-4 pt-6 bg-basepage"
+    class="px-4 bg-basepage"
     collapsable-left
     collapsable-right
     :loading="loading"
@@ -61,7 +61,7 @@
         </template>
       </BasePage>
 
-      <BasePage no-padding-top content-class="fill-height" no-padding data-component-name="object-details-form">
+      <BasePage content-class="fill-height" no-padding no-padding-top data-component-name="object-details-form">
         <template #default>
           <ObjectForm
             v-if="objectType"
@@ -111,7 +111,7 @@
                     flat
                     @click="saveObject"
                   >
-                    {{ $t('global.button.save') }}
+                    {{ t('global.button.save') }}
                   </v-btn>
                 </template>
                 <template v-else>
