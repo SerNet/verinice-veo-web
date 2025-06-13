@@ -56,7 +56,7 @@
                 v-else
                 chart-height="30"
                 :data="widget[1]"
-                :domain-id="/* @ts-ignore TODO #3066 $route does not exist*/ $route.params.domain as string"
+                :domain-id="route.params.domain as string"
                 :object-type="widget[0]"
                 :data-component-name="`domain-dashboard-${widget[0]}-widget`"
                 :data-veo-test="`domain-dashboard-${widget[0]}-widget`"
@@ -167,7 +167,8 @@ export default defineComponent({
       unit,
 
       t,
-      tGlobal
+      tGlobal,
+      route
     };
   }
 });
