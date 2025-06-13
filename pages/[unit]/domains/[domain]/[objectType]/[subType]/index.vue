@@ -16,12 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage
-    data-component-name="object-overview-page"
-    :title="`${route.params.objectType}`"
-    heading-level="3"
-    sticky-footer
-  >
+  <BasePage data-component-name="object-overview-page" :title="`${route.params.objectType}`" sticky-footer>
     <template #default>
       <div class="filter-row">
         <div class="filter-section">
