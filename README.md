@@ -7,7 +7,6 @@ Welcome to the GitHub repository for the web frontend of the **verinice.veo** to
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
-- [Installation](#installation)
 - [Development Server](#development-server)
 - [Production Build](#production)
 - [Project Structure](#project-structure)
@@ -15,6 +14,7 @@ Welcome to the GitHub repository for the web frontend of the **verinice.veo** to
 - [Technical Debt](#technical-debt)
 - [Documentation](#documentation)
 - [Vue Query Debugging](#vue-query-debugging)
+- [Code Formatting](#code-formatting)
 - [License Headers](#license-headers)
 
 ## Prerequisites
@@ -33,21 +33,12 @@ node -v
 npm -v
 ```
 
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://gitlab.int.sernet.de/veo/verinice-veo-web.git
-cd verinice-veo-web
-```
-
 ## Setup
 
 Make sure to install the dependencies:
 
 ```bash
-npm install
+npm ci
 ```
 
 ## Development Server
@@ -60,21 +51,15 @@ npm run dev
 
 ## Production
 
-Build the application for production:
+The official method for building the app for production is defined in the [`Dockerfile`](./Dockerfile), which uses:
 
 ```bash
-npm run build
+npm run generate
 ```
 
-Locally preview production build:
+Checkout the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
 
-```bash
-npm run preview
-```
-
-Checkout the [deployment documentation](https://v3.nuxtjs.org/guide/deploy/presets) for more information.
-
-For detailed explanation on how things work, checkout the [Nuxt.js docs](https://github.com/nuxt/nuxt.js).
+For detailed explanation on how things work, checkout the [Nuxt.js docs](https://nuxt.com/docs).
 
 ## Project Structure
 
@@ -136,9 +121,6 @@ VEO_DOCUMENTATION_URL=https://veo-docs.develop.verinice.com
 
 The following known technical limitations are being tracked and should be addressed in future development cycles:
 
-- **i18n Translation Duplication:**  
-  Due to a bug in [`vue-i18n-next`](https://github.com/intlify/vue-i18n-next/issues/1248), translations used by the `<i18n-t>` component must currently exist in both the language files and their respective components. We use `vue-i18n` v8.0.0-beta, but the fix is only available in v7.3.1. Once a fix is available for v8.x, the redundant entries should be removed.
-
 - **Vuetify 3 Compatibility:**  
   Components like `VSkeletonLoader`, `VDateInput`, `VTimeInput`, `VSpeedDial`, `VEditDialog`, and `VDataIterator` have not been ported to Nuxt 3 / Vuetify v3.1. We use local polyfills for now, which should be replaced once official versions are available.
 
@@ -155,6 +137,14 @@ Use the `DocsLink` component for all **internal** links instead of `<nuxt-link>`
 ## Vue Query Debugging
 
 Debugging can be enabled by setting the `VEO_DEBUG_CACHE` variable to `true` or an array containing the first part of each query key you want to debug, eg. `VEO_DEBUG_CACHE=["objects","monitoring"]`.
+
+## Code Formatting
+
+To ensure consistent code style across the project, use the following command to format all files:
+
+```bash
+npm run format:all
+```
 
 ## License Headers
 
