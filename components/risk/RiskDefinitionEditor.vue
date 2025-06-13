@@ -57,6 +57,7 @@
                   <v-text-field
                     v-model="item.translations[translation].name"
                     :label="t('inputLabel.name')"
+                    :rules="[requiredRule]"
                     hide-details
                     required
                     @input="() => changeItem(itemIndex)"
@@ -133,6 +134,7 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
+const { requiredRule } = useRules();
 
 // State
 const data = defineModel<IVeoRiskPotentialImpact[]>('data', { default: [] });
