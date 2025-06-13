@@ -84,6 +84,7 @@
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/test-utils": "^2.4.6",
     "cypress": "^14.0.0",
+    "cypress-axe": "^1.6.0",
     "cypress-multi-reporters": "^2.0.4",
     "cypress-parallel-extended": "^2.1.8",
     "eslint": "^8.57.1",
