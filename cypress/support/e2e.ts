@@ -9,6 +9,8 @@ import { login } from '../commands/login';
 import { navigateTo, selectFirstSubType, visitObject, visitDashboard } from '../commands/navigation';
 import { veoRequest } from '../commands/requests';
 import { checkPagination } from '../commands/table/pagination';
+import 'cypress-axe';
+import { checkAxeViolations } from '../commands/axe';
 import {
   createUnit,
   deleteUnit,
@@ -51,7 +53,8 @@ Cypress.Commands.addAll({
   containsCustom,
   visitObject,
   deleteTestUnits,
-  visitDashboard
+  visitDashboard,
+  checkAxeViolations
 });
 
 // Uncaught exeptions make cypress test runs fail
