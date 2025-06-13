@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         :delete-risk-value="deleteRiskValue"
         :create-probability-level="addProbabilityLevel"
         :delete-probability-level="deleteProbabilityLevel"
+        :validate-names="validateNames"
       />
 
       <RiskWizardRiskCategoryStepper
@@ -51,6 +52,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         :delete-potential-impact="deleteSingleModePotentialImpact"
         :create-initial-value-matrix="createInitialValueMatrix"
         :delete-value-matrix="deleteValueMatrix"
+        :validate-names="validateNames"
       />
     </BaseContainer>
 
@@ -67,16 +69,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               {{ t('goToRiskDefintion') }}
             </v-btn>
 
-            <v-btn
-              size="large"
-              class="my-6"
-              color="primary"
-              variant="flat"
-              :disabled="
-                riskCategories?.map((category) => hasUnsetRiskValues(category?.valueMatrix)).includes(true) ?? false
-              "
-              @click="save"
-            >
+            <v-btn size="large" class="my-6" color="primary" variant="flat" :disabled="!canSave" @click="save">
               {{ t('saveRiskDefinition') }}
             </v-btn>
           </div>
@@ -89,7 +82,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               class="my-6"
               color="secondary"
               variant="flat"
-              :disabled="hasUnsetRiskValues(riskCategories?.[step - 3]?.valueMatrix)"
+              :disabled="hasUnsetRiskValues(riskCategories?.[step - 3]?.valueMatrix) || !canGoNext"
               @click="goForward"
             >
               {{ globalT('global.button.next') }}
@@ -106,7 +99,8 @@ import type {
   IVeoRiskCategory,
   IVeoRiskValueLevel,
   IVeoRiskPotentialImpact,
-  IVeoRiskProbabilityLevel
+  IVeoRiskProbabilityLevel,
+  IVeoRiskDefinitionItemTranslations
 } from '~/types/VeoTypes';
 import {
   ProbabilityLevel,
@@ -142,16 +136,16 @@ function goBack() {
 const riskDefinitionRoute = computed(() => route.path.replace(/\/edit$/, ''));
 
 // State
-const probabilityLevels = ref<IVeoRiskProbabilityLevel[]>([]);
-const riskValues = ref<IVeoRiskValueLevel[]>([]);
-const riskCategories = ref<IVeoDomainRiskCategory[]>([]);
+const probabilityLevels = ref([]);
+const riskValues = ref([]);
+const riskCategories = ref([]);
 
 watch(
   riskDefinition,
   () => {
     riskValues.value = cloneDeep(riskDefinition.value?.riskValues) ?? [];
     probabilityLevels.value = cloneDeep(riskDefinition.value?.probability?.levels) ?? [];
-    riskCategories.value = cloneDeep(riskDefinition.value?.categories)?.map((cat: IVeoRiskCategory) => cat ?? []);
+    riskCategories.value = cloneDeep(riskDefinition.value?.categories) ?? [];
   },
   { immediate: true, deep: true }
 );
@@ -159,6 +153,15 @@ watch(
 const potentialImpactsAll = computed<IVeoRiskPotentialImpact[][]>(
   () => riskDefinition.value?.categories?.map((category) => category.potentialImpacts) ?? []
 );
+
+// Validations
+const isMissingTranslations = ref(false);
+const hasUnsetItems = computed(() =>
+  riskCategories.value?.map((category) => hasUnsetRiskValues(category?.valueMatrix)).includes(true)
+);
+
+const canSave = computed(() => !hasUnsetItems.value && !isMissingTranslations.value);
+const canGoNext = computed(() => !isMissingTranslations.value);
 
 // MANIPULATE STATE CROSS CATEGORY MODE
 
@@ -301,6 +304,25 @@ function deleteValueMatrix(riskCategoryId: string) {
     }
     return category;
   });
+}
+
+function hasMissingTranslations(items: IVeoRiskValueLevel[] | IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[]) {
+  const translations = items
+    .map((item: IVeoRiskValueLevel | IVeoRiskPotentialImpact | IVeoRiskProbabilityLevel) =>
+      Object.values(item?.translations ?? {})
+        .flat()
+        .map((translation) => translation.name)
+    )
+    .flat();
+
+  return translations.includes('');
+}
+
+function validateNames(
+  name: string,
+  items: IVeoRiskValueLevel[] | IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[]
+) {
+  isMissingTranslations.value = name == '' || hasMissingTranslations(items);
 }
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>

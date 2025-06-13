@@ -26,7 +26,7 @@
         :data="riskValues"
         @add-item="createRiskValue"
         @remove-item="deleteRiskValue"
-        @change-item="updateRiskValue"
+        @change-item="(index, value) => handleChange(index, value, riskValues)"
       />
     </v-window-item>
 
@@ -101,7 +101,7 @@ import {
 
 const { t } = useI18n();
 
-defineProps<{
+const props = defineProps<{
   locale: string;
   potentialImpacts: IVeoRiskPotentialImpact[][];
   createRiskValue: () => void;
@@ -112,10 +112,16 @@ defineProps<{
   riskValues: IVeoRiskValueLevel[];
   probabilityLevels: IVeoRiskProbabilityLevel[];
   riskCategories: IVeoRiskCategory[];
+  validateNames: (input: string, items: IVeoRiskPotentialImpact[] | IVeoRiskValueLevel[]) => void;
 }>();
 
 const step = defineModel<number>('step', { default: 1 });
 const stepOffset = 3;
+
+function handleChange(index: number, value: string, items: IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[]) {
+  props.validateNames(value, items);
+  props.updateRiskValue(index);
+}
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks-matrix.json"></i18n>

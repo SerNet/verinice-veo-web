@@ -60,7 +60,7 @@
                     :rules="[requiredRule]"
                     hide-details
                     required
-                    @input="() => changeItem(itemIndex)"
+                    @input="() => changeItem(itemIndex, item.translations[translation].name)"
                   >
                     <template #append-inner>
                       <v-btn
@@ -75,7 +75,6 @@
                   <v-textarea
                     v-model="item.translations[translation].description"
                     :label="t('inputLabel.description')"
-                    @input="() => changeItem(itemIndex)"
                   />
 
                   <!-- Color picker -->
@@ -130,7 +129,7 @@ const emit = defineEmits<{
   (e: 'save-editor'): void;
   (e: 'add-item'): void;
   (e: 'remove-item', index: number): void;
-  (e: 'change-item', index: number): void;
+  (e: 'change-item', index: number, value: string): void;
 }>();
 
 const { t } = useI18n();
@@ -175,8 +174,8 @@ function addItem() {
   });
 }
 
-function changeItem(itemIndex: number) {
-  emit('change-item', itemIndex);
+function changeItem(itemIndex: number, value: string) {
+  emit('change-item', itemIndex, value);
 }
 
 function removeItem(itemIndex: number) {

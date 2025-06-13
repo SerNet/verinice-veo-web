@@ -18,6 +18,7 @@
         :data="potentialImpactsSingleCategory"
         @add-item="createPotentialImpact"
         @remove-item="deletePotentialImpact"
+        @change-item="handleChange"
       >
         <template #infoBox>
           <BaseAlert
@@ -102,7 +103,7 @@ import type {
 } from '~/types/VeoTypes';
 const { t } = useI18n();
 
-defineProps<{
+const props = defineProps<{
   riskValues: IVeoRiskValueLevel[];
   probabilityLevels: IVeoRiskProbabilityLevel[];
   riskCategory: IVeoRiskCategory;
@@ -114,7 +115,12 @@ defineProps<{
     potentialImpactsSingleCategory: IVeoRiskPotentialImpact[]
   ) => void;
   deleteValueMatrix: (riskCategoryId: string) => void;
+  validateNames: (input: string, items: IVeoRiskPotentialImpact[]) => void;
 }>();
+
+function handleChange(_index: number, value: string) {
+  props.validateNames(value, props.potentialImpactsSingleCategory);
+}
 
 const step = defineModel<number>('step', { default: 1 });
 </script>
