@@ -102,7 +102,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </template>
 <script setup lang="ts">
 import { cloneDeep } from 'lodash';
-import type { IVeoRiskCategory, IVeoRiskValueLevel, IVeoRiskPotentialImpact } from '~/types/VeoTypes';
+import type {
+  IVeoRiskCategory,
+  IVeoRiskValueLevel,
+  IVeoRiskPotentialImpact,
+  IVeoRiskProbabilityLevel
+} from '~/types/VeoTypes';
 import {
   ProbabilityLevel,
   updateRiskCategory,
@@ -137,9 +142,9 @@ function goBack() {
 const riskDefinitionRoute = computed(() => route.path.replace(/\/edit$/, ''));
 
 // State
-const probabilityLevels = ref([]);
-const riskValues = ref([]);
-const riskCategories = ref([]);
+const probabilityLevels = ref<IVeoRiskProbabilityLevel[]>([]);
+const riskValues = ref<IVeoRiskValueLevel[]>([]);
+const riskCategories = ref<IVeoDomainRiskCategory[]>([]);
 
 watch(
   riskDefinition,
