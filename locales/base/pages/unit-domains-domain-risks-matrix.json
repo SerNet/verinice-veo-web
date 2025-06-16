@@ -10,7 +10,8 @@
     "success": "Successfully updaded risk definitions.",
     "potentialImpacts": "Impact",
     "noMatrix": "No risk matrix defined yet.",
-    "createMatrixInCategory": "A new matrix can be defined when editing the corresponding risk category."
+    "createMatrixInCategory": "A new matrix can be defined when editing the corresponding risk category.",
+    "updatingRiskDefinition": "Updating risk definition..."
   },
   "de": {
     "impact": "Auswirkung",
@@ -23,6 +24,7 @@
     "success": "Riskodefinitionen wurden erfolgreich aktualisiert.",
     "potentialImpacts": "Auswirkung",
     "noMatrix": "Bislang wurde keine Risikomatrix angelegt.",
-    "createMatrixInCategory": "Eine neue Matrix kann bei der Bearbeitung der entsprechenden Risikokategorie definiert werden."
+    "createMatrixInCategory": "Eine neue Matrix kann bei der Bearbeitung der entsprechenden Risikokategorie definiert werden.",
+    "updatingRiskDefinition": "Aktualisiere Risikodefinition"
   }
 }
