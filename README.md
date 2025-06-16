@@ -97,7 +97,7 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_DOCUMENTATION_URL` | `https://veo-docs.develop.verinice.com` | URL under which the user can access the official documentation for verinice.veo. |
 | `VEO_DEBUG` | `false` | While not exposing any critical information, this variable should only be set to true when developing. |
 | `VEO_DEBUG_CACHE` | `false` | If set to true, additional logging output gets set regarding caching and retrieving of data. |
-| `VEO_BETA_MODE` | `false` | If set to true, the toggle for beta mode gets enabled |
+| `VEO_BETA_MODE` | `false` | If set to true, the toggle button for the table/card view will be avaialble. |
 | `VEO_FEATURE_FLAG_CARD_VIEW` | `false` | If set to true, the toggle for feature flag card view gets enabled |
 | `VEO_FEATURE_FLAG_USER_SETTINGS` | `false` | If set to true, the user settings page will be available. |
 
@@ -148,7 +148,7 @@ npm run format:all
 
 ## License Headers
 
-Each file has to contain a license header. This project contains configuration for the VSCode Plugin [psioniq File Header](https://marketplace.visualstudio.com/items?itemName=psioniq.psi-header). If you use this plugin, the license header will get automatically generated for new files and files that don't contain a header yet. Please add your name to the license header of every file you make meaningful changes in.
+Each file has to contain a license header. Please add your name to the license header of every file you make meaningful changes in.
 
 ## License
 
