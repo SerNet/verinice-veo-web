@@ -26,11 +26,12 @@ export function useSettings() {
     settingsQueryDefinition.queries.fetchSettingsWithAppId,
     computed(() => (appId.value ? { appId: appId.value } : undefined))
   );
-
+  const hasCompactTable = computed(() => (userSettings.value as { compact?: boolean })?.compact);
   return {
     appId,
     userSettings,
     refetchAppIds,
-    refetchUserSettings
+    refetchUserSettings,
+    hasCompactTable
   };
 }

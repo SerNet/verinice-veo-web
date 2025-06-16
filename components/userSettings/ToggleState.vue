@@ -27,7 +27,6 @@
 import settingsQueryDefinition, { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 import { logError } from '../userData/modules/HandleError';
 import { useMutation } from '~/composables/api/utils/mutation';
-import { useSettings } from '~/composables/api/settings';
 
 const { t } = useI18n();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();

@@ -121,7 +121,6 @@ import { mdiOpenInNew } from '@mdi/js';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFeatureFlag } from '~/composables/features/featureFlag';
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });

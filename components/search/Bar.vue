@@ -54,7 +54,6 @@
 <script setup lang="ts">
 import { mdiCloseCircle, mdiFilter, mdiMagnify } from '@mdi/js';
 import { cloneDeep } from 'lodash';
-import { useSettings } from '~/composables/api/settings';
 import type { VeoSearch, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
 type UpdateSearchMsg = {
@@ -63,11 +62,7 @@ type UpdateSearchMsg = {
   newValue?: string;
 };
 
-const { userSettings } = useSettings();
-const hasCompactTable = computed(() => {
-  const compactValue = userSettings.value['compact'];
-  return compactValue === true;
-});
+const { hasCompactTable } = useSettings();
 const props = withDefaults(
   defineProps<{
     filters?: VeoSearchFilters;
