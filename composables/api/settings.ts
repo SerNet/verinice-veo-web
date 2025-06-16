@@ -26,12 +26,15 @@ export function useSettings() {
     settingsQueryDefinition.queries.fetchSettingsWithAppId,
     computed(() => (appId.value ? { appId: appId.value } : undefined))
   );
-  const hasCompactTable = computed(() => (userSettings.value as { compact?: boolean })?.compact);
+
+  const getSetting = (key: string): Ref<boolean> => {
+    return computed(() => userSettings.value?.[key] ?? true);
+  };
   return {
     appId,
     userSettings,
     refetchAppIds,
     refetchUserSettings,
-    hasCompactTable
+    getSetting
   };
 }

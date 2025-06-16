@@ -62,7 +62,8 @@ type UpdateSearchMsg = {
   newValue?: string;
 };
 
-const { hasCompactTable } = useSettings();
+const { getSetting } = useSettings();
+const hasCompactTable = getSetting('compact');
 const props = withDefaults(
   defineProps<{
     filters?: VeoSearchFilters;
