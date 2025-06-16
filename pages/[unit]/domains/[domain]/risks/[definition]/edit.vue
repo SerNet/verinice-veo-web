@@ -306,16 +306,14 @@ function deleteValueMatrix(riskCategoryId: string) {
   });
 }
 
-function hasMissingTranslations(items: IVeoRiskValueLevel[] | IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[]) {
-  const translations = items
-    .map((item: IVeoRiskValueLevel | IVeoRiskPotentialImpact | IVeoRiskProbabilityLevel) =>
-      Object.values(item?.translations ?? {})
-        .flat()
-        .map((translation) => translation.name)
+function hasMissingTranslations(
+  items: IVeoRiskValueLevel[] | IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[]
+): boolean {
+  return items.some((item) =>
+    Object.values(item?.translations ?? {}).some(
+      (translationArray) => Array.isArray(translationArray) && translationArray.some((t) => t.name === '')
     )
-    .flat();
-
-  return translations.includes('');
+  );
 }
 
 function validateNames(
