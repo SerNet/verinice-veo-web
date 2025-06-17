@@ -1,6 +1,6 @@
 {
   "en": {
-    "settings": "settings",
+    "settings": "Settings",
     "alertHeader": "Settings could not be loaded.",
     "alertBody": "Please contact our support: verinice{'@'}sernet.de.",
     "errorHeader": "Update failed.",

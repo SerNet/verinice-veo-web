@@ -93,7 +93,7 @@
         <v-divider />
         <v-list-item v-if="hasUserSettings" color="primary" to="/user-settings">
           <v-list-item-title>
-            {{ $t('settings') }}
+            {{ $t('breadcrumbs.user-settings') }}
           </v-list-item-title>
         </v-list-item>
         <v-divider />

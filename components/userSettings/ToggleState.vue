@@ -67,8 +67,6 @@ async function handleSave() {
       appId: 'verinice-veo',
       settings: state.settings
     });
-    // eslint-disable-next-line no-debugger
-    debugger;
     handleSuccess();
   } catch (error) {
     handleError(error);
