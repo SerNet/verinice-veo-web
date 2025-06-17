@@ -156,7 +156,7 @@ const route = useRoute();
 /** @description Synchronizes the current API page parameter with the parent component, 0-indexed */
 const page = defineModel<number>('page', { default: 0 });
 const { getSetting } = useSettings();
-const hasCompactTable = getSetting('compact');
+const hasCompactTable = getSetting('compact-styles');
 /** @description Tracks the current page state of VDataTable, has to be 1-indexed. */
 const localPage = ref(1);
 

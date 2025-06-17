@@ -40,7 +40,7 @@ const state = reactive({
 });
 
 const defaultSettings: Record<string, IVeoUserSetting> = {
-  compact: { key: 'compact', enabled: false }
+  'compact-styles': { key: 'compact-styles', enabled: false }
 };
 
 // Watch and sync settings
@@ -67,6 +67,8 @@ async function handleSave() {
       appId: 'verinice-veo',
       settings: state.settings
     });
+    // eslint-disable-next-line no-debugger
+    debugger;
     handleSuccess();
   } catch (error) {
     handleError(error);

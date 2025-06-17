@@ -10,7 +10,7 @@
       "header": "User Settings",
       "body": "Customize your interface preferences, including layout options and appearance settings."
     },
-    "compact": {
+    "compact-styles": {
       "header": "Compact Table View",
       "body": "Enable compact mode to reduce spacing in tables."
     },
@@ -27,7 +27,7 @@
       "header": "Benutzereinstellungen",
       "body": "Passen Sie Ihre Anzeigeeinstellungen an, einschließlich Layout- und Darstellungsoptionen."
     },
-    "compact": {
+    "compact-styles": {
       "header": "Kompakte Tabellenansicht",
       "body": "Aktivieren Sie den Kompaktmodus, um Abstände in Tabellen zu reduzieren."
     },
