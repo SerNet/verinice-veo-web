@@ -126,6 +126,7 @@ export function useFeatureFlag() {
   };
 
   function waitForFeatureFlagsInitialization(): Promise<void> {
+    if (!isInitializing.value) return Promise.resolve();
     return new Promise<void>((resolve) => {
       const unwatch = watchEffect(() => {
         if (!isInitializing.value) {
