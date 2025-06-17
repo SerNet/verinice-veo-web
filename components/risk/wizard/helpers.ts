@@ -104,7 +104,7 @@ export function updateRiskMatrixValues(
   const valueMatrix =
     category.valueMatrix?.map((row) =>
       row.map((riskValue) => (riskValue.ordinalValue === oldRiskValue.ordinalValue ? newRiskValue : riskValue))
-    ) ?? [];
+    ) ?? undefined;
   return { ...category, valueMatrix };
 }
 
