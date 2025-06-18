@@ -202,7 +202,7 @@ interface Emits {
 
 type RequirementImplementationForForm = {
   origin: Partial<IVeoLink>;
-  control: Partial<IVeoLink>;
+  control: Partial<IVeoEntity>;
   responsible?: ResponsiblePerson;
   status: string;
   origination: string;
@@ -475,7 +475,7 @@ async function submitForm({
   const clone = cloneDeep(form);
   const _form: RequirementImplementation = {
     ...clone,
-    control: validateType(clone.control, isVeoLink),
+    control: { targetUri: clone.control._self },
     origin: validateType(clone.origin, isVeoLink),
     implementationUntil: form.implementationUntil && format(form.implementationUntil, 'yyyy-MM-dd')
   };
@@ -501,10 +501,11 @@ async function submitForm({
 // ===== Watchers and lifecycle hooks =====
 // Update form when item changes
 const _item = computed(() => props.item);
-watch(_item, () => {
+watch([_item, control], () => {
   if (!_item.value) return;
   form.value = {
     ..._item.value,
+    control: control.value,
     // TODO #3066 is there some way to get a date adapter that explicitly returns Dates and doesn't need casting?
     implementationUntil:
       _item.value.implementationUntil ? (adapter.parseISO(_item.value.implementationUntil) as Date) : undefined
