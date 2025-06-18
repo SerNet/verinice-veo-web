@@ -83,7 +83,6 @@
 
     <!-- @vue-ignore // not assignable -->
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
-    <ShortcutsDialog />
   </v-app>
 </template>
 
@@ -91,7 +90,6 @@
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
 import { useDisplay, useTheme } from 'vuetify';
-import { useGlobalDomainShortcuts } from '~/composables/shortcuts/useDomainShortcuts';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -125,8 +123,6 @@ const domainId = computed((): string | undefined => {
   }
   return route.params.domain as string;
 });
-
-useGlobalDomainShortcuts();
 
 // Theme stuff
 onBeforeMount(() => {
