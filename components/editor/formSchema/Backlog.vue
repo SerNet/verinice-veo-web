@@ -423,11 +423,15 @@ const unused = computed<IUnused>(() => {
 });
 
 const filteredBasics = computed<IControl[]>(() => {
-  return unused.value.basics.filter(
-    (b: any) =>
-      !b.label?.toLowerCase().startsWith('potential') &&
-      (!props.searchQuery || b.label?.toLowerCase().includes(props.searchQuery))
-  );
+  return unused.value.basics.filter((b: IControl) => {
+    const label = b.label?.toLowerCase() || '';
+
+    const isNotPotential = !label.startsWith('potential');
+    const matchesSearch = !props.searchQuery || label.includes(props.searchQuery.toLowerCase());
+
+    // Only include items that do not start with "potential" and match the search term
+    return isNotPotential && matchesSearch;
+  });
 });
 
 const filteredAspects = computed<IControl[]>(() => {

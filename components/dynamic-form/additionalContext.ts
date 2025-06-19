@@ -64,7 +64,7 @@ function enrichRisks({
     { name: 'potentialImpacts', transLateEnumValues: true, disabled: false },
     { name: 'potentialImpactReasons', transLateEnumValues: true, disabled: false },
     { name: 'potentialImpactExplanations', transLateEnumValues: false, disabled: false },
-    { name: 'potentialImpactEffectiveReasons', transLateEnumValues: false, disabled: false },
+    { name: 'potentialImpactEffectiveReasons', transLateEnumValues: true, disabled: false },
     { name: 'potentialImpactsCalculated', transLateEnumValues: true, disabled: true },
     { name: 'potentialImpactsEffective', transLateEnumValues: true, disabled: true }
   ];
