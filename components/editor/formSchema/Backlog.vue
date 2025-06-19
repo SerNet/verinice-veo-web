@@ -79,7 +79,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="t(`${element.propertyName}`)"
+                    :title="element.propertyName"
                     :styling="typeMap[element.type]"
                     translate
                   />
@@ -424,7 +424,9 @@ const unused = computed<IUnused>(() => {
 
 const filteredBasics = computed<IControl[]>(() => {
   return unused.value.basics.filter(
-    (b: any) => !props.searchQuery || b.label?.toLowerCase().includes(props.searchQuery)
+    (b: any) =>
+      !b.label?.toLowerCase().startsWith('potential') &&
+      (!props.searchQuery || b.label?.toLowerCase().includes(props.searchQuery))
   );
 });
 
