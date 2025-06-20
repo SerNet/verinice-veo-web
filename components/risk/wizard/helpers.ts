@@ -23,7 +23,7 @@ function getInitialTranslations(
     ...(abbreviation ? { abbreviation } : {})
   };
 
-  if (!items?.[0].translations?.[0]) return { de: initialTranslation, en: initialTranslation };
+  if (!items?.[0].translations?.[0]) return { de: { ...initialTranslation }, en: { ...initialTranslation } };
 
   return Object.keys(items[0].translations).reduce((acc, lang) => {
     acc[lang] = { name: '', description: '', ...(abbreviation ? { abbreviation } : {}) };
