@@ -16,27 +16,31 @@
 -->
 
 <template>
-  <template v-for="(item, index) in props.items" :key="index">
-    <BaseCard class="flex-grow-1 d-flex mb-2" :data-test="`setting-${item.key}`">
-      <v-card-text class="d-flex justify-space-between">
-        <div>
-          <h2 class="text-h3">{{ t(`${item.key}.header`).toString() }}</h2>
-          <p v-if="t(`${item.key}.body`)">
-            {{ t(`${item.key}.body`).toString() }}
-          </p>
-        </div>
-
-        <div>
-          <v-switch
-            color="primary"
-            :model-value="item.enabled"
-            :aria-label="t(`${item.key}.body`)"
-            @update:model-value="(val) => props.handleClick(item.key, val)"
-          />
-        </div>
-      </v-card-text>
-    </BaseCard>
+  <template v-if="isLoading">
+    <v-col cols="12">
+      <VSkeletonLoader v-for="i in 5" :key="i" type="image" elevation="2" class="my-6" height="160px" />
+    </v-col>
   </template>
+
+  <BaseCard class="flex-grow-1 d-flex mb-2" :data-test="`setting-${props.item.key}`">
+    <v-card-text class="d-flex justify-space-between">
+      <div>
+        <h2 class="text-h3">{{ t(`${props.item.key}.header`).toString() }}</h2>
+        <p v-if="t(`${props.item.key}.body`)">
+          {{ t(`${props.item.key}.body`).toString() }}
+        </p>
+      </div>
+
+      <div>
+        <v-switch
+          color="primary"
+          :model-value="props.item.enabled"
+          :aria-label="t(`${props.item.key}.body`)"
+          @update:model-value="(val) => props.handleClick(props.item.key, val)"
+        />
+      </div>
+    </v-card-text>
+  </BaseCard>
 </template>
 
 <script setup lang="ts">
@@ -44,8 +48,9 @@ import { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 
 const { t } = useI18n();
 export interface Props {
-  items: IVeoUserSetting[];
+  item: IVeoUserSetting;
   handleClick: (key: string, value: boolean) => void;
+  isLoading?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {});

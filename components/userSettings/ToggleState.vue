@@ -15,7 +15,9 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <UserSettingsCard :items="settingsList" :handle-click="toggleSetting" />
+  <template v-for="(item, index) in settingsList" :key="index">
+    <UserSettingsCard :item="item" :handle-click="toggleSetting" :isloading="isLoadingUserSettings" />
+  </template>
   <div class="d-flex justify-end">
     <v-btn color="primary" @click="handleSave">
       {{ t('save') }}
@@ -24,49 +26,16 @@
 </template>
 
 <script setup lang="ts">
-import settingsQueryDefinition, { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 import { logError } from '../userData/modules/HandleError';
-import { useMutation } from '~/composables/api/utils/mutation';
 
 const { t } = useI18n();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
-const { userSettings, refetchAppIds, refetchUserSettings } = useSettings();
-const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
-
-// Reactive state
-const state = reactive({
-  settings: {} as Record<string, IVeoUserSetting>
-});
-
-const defaultSettings: Record<string, IVeoUserSetting> = {
-  'compact-styles': { key: 'compact-styles', enabled: false }
-};
-
-// Watch and sync settings
-watchEffect(() => {
-  const fetched = userSettings.value || {};
-  state.settings = Object.fromEntries(
-    Object.entries({ ...defaultSettings, ...fetched }).map(([key, value]) => [
-      key,
-      { key, enabled: value === true || String(value).toLowerCase() === 'true' }
-    ])
-  );
-});
-
-const settingsList = computed(() => Object.values(state.settings));
-
-// Toggle handler
-async function toggleSetting(key: string, enabled: boolean) {
-  state.settings[key].enabled = enabled;
-}
+const { settingsList, saveUserSettings, isLoadingUserSettings, toggleSetting } = useSettings();
 
 async function handleSave() {
   try {
-    await updateSettingsMutation.mutateAsync({
-      appId: 'verinice-veo',
-      settings: state.settings
-    });
+    await saveUserSettings();
     handleSuccess();
   } catch (error) {
     handleError(error);
@@ -78,8 +47,6 @@ function handleError(error: unknown) {
   displayErrorMessage(t('errorHeader'), t('errorBody'));
 }
 async function handleSuccess() {
-  await refetchAppIds();
-  refetchUserSettings();
   displaySuccessMessage(t('successHeader'));
 }
 </script>

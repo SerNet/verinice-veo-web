@@ -16,25 +16,63 @@
  */
 import { computed } from 'vue';
 import { useQuery } from './utils/query';
-import settingsQueryDefinition from '~/composables/api/queryDefinitions/settings';
+import settingsQueryDefinition, { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 
 export function useSettings() {
   const { data: appIds, refetch: refetchAppIds } = useQuery(settingsQueryDefinition.queries.fetchSettings);
-
+  const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
   const appId = computed(() => (appIds.value?.includes('verinice-veo') ? 'verinice-veo' : null));
-  const { data: userSettings, refetch: refetchUserSettings } = useQuery(
+  const {
+    data: userSettings,
+    refetch: refetchUserSettings,
+    isLoading: isLoadingUserSettings
+  } = useQuery(
     settingsQueryDefinition.queries.fetchSettingsWithAppId,
     computed(() => (appId.value ? { appId: appId.value } : undefined))
   );
+  const saveUserSettings = async () => {
+    await updateSettingsMutation.mutateAsync({
+      appId: 'verinice-veo',
+      settings: state.settings
+    });
+    refetchAppIds();
+    refetchUserSettings();
+  };
 
+  // Reactive state
+  const state = reactive({
+    settings: {} as Record<string, IVeoUserSetting>
+  });
+
+  const defaultSettings: Record<string, IVeoUserSetting> = {
+    'compact-styles': { key: 'compact-styles', enabled: false }
+  };
+
+  // Watch and sync settings
+  watchEffect(() => {
+    const fetched = userSettings.value || {};
+    state.settings = Object.fromEntries(
+      Object.entries({ ...defaultSettings, ...fetched }).map(([key, value]) => [
+        key,
+        { key, enabled: value === true || String(value).toLowerCase() === 'true' }
+      ])
+    );
+  });
+
+  const settingsList = computed(() => Object.values(state.settings));
+
+  // Toggle handler
+  async function toggleSetting(key: string, enabled: boolean) {
+    state.settings[key].enabled = enabled;
+  }
   const getSetting = (key: string): Ref<boolean> => {
     return computed(() => userSettings.value?.[key] ?? true);
   };
   return {
-    appId,
-    userSettings,
-    refetchAppIds,
-    refetchUserSettings,
-    getSetting
+    settingsList,
+    getSetting,
+    isLoadingUserSettings,
+    toggleSetting,
+    saveUserSettings
   };
 }
