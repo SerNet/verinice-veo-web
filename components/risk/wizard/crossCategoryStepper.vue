@@ -4,7 +4,7 @@
       <v-stepper-item :title="t('editRiskValues')" :value="1" editable></v-stepper-item>
       <v-divider></v-divider>
 
-      <v-stepper-item :title="t('editRiskImpacts')" :value="2" editable></v-stepper-item>
+      <v-stepper-item :title="t('editProbabilities')" :value="2" editable></v-stepper-item>
       <v-divider></v-divider>
 
       <template v-for="(_riskCategory, index) in riskCategories" :key="_riskCategory.id">
