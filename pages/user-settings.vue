@@ -20,7 +20,7 @@
     <text>{{ t('userSettingsPage.body') }}</text>
     <v-row class="align-start">
       <v-col class="mt-4" cols="12">
-        <UserSettingsToggleState />
+        <UserSettingsList />
       </v-col>
     </v-row>
   </BasePage>
