@@ -14,6 +14,9 @@ module.exports = defineConfig({
   requestTimeout: 15000,
   experimentalMemoryManagement: true,
   numTestsKeptInMemory: 0,
+  env: {
+    VEO_FEATURE_FLAG_USER_SETTINGS: 'false'
+  },
   e2e: {
     setupNodeEvents(on, config) {
       on('task', {
