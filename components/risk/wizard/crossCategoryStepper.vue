@@ -1,14 +1,21 @@
 <template>
   <v-stepper v-model="step" style="width: 100%" non-linear>
     <v-stepper-header>
-      <v-stepper-item :title="t('editRiskValues')" :value="1" editable></v-stepper-item>
+      <v-stepper-item :ref="(el) => setStepperRef(el, 0)" :title="t('editRiskValues')" :value="1" editable>
+      </v-stepper-item>
       <v-divider></v-divider>
 
-      <v-stepper-item :title="t('editProbabilities')" :value="2" editable></v-stepper-item>
+      <v-stepper-item
+        :ref="(el) => setStepperRef(el, 1)"
+        :title="t('editProbabilities')"
+        :value="2"
+        editable
+      ></v-stepper-item>
       <v-divider></v-divider>
 
       <template v-for="(_riskCategory, index) in riskCategories" :key="_riskCategory.id">
         <v-stepper-item
+          :ref="(el) => setStepperRef(el, index + stepOffset)"
           :title="t('edit', { item: riskCategories?.[index]?.translations?.[locale]?.name ?? '' })"
           :value="index + stepOffset"
           editable
@@ -99,8 +106,6 @@ import {
   IVeoRiskPotentialImpact
 } from '~/types/VeoTypes';
 
-const { t } = useI18n();
-
 const props = defineProps<{
   locale: string;
   potentialImpacts: IVeoRiskPotentialImpact[][];
@@ -115,8 +120,11 @@ const props = defineProps<{
   validateNames: (input: string, items: IVeoRiskPotentialImpact[] | IVeoRiskValueLevel[]) => void;
 }>();
 
+const { t } = useI18n();
+
 const step = defineModel<number>('step', { default: 1 });
 const stepOffset = 3;
+const { setStepperRef } = useSideScroll(step); // Make stepper side-scrollable
 
 function handleChange(index: number, value: string, items: IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[]) {
   props.validateNames(value, items);
