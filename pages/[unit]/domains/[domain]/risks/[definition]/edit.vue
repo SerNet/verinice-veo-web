@@ -111,7 +111,8 @@ import {
   RiskValue,
   Impact,
   hasUnsetRiskValues,
-  updateRiskMatrixValues
+  updateRiskMatrixValues,
+  updateRiskDefinition
 } from '~/components/risk/wizard/helpers';
 
 const { t: globalT } = useI18n({ useScope: 'global' });
@@ -222,15 +223,12 @@ function deleteProbabilityLevel(index: number) {
 // PUT
 const { saveRiskDefinition } = useRiskDefinitionUpdate();
 async function save() {
-  const newRiskDefinition = {
-    ...riskDefinition.value,
-    categories: riskCategories.value,
-    probability: {
-      ...riskDefinition.value?.probability,
-      levels: probabilityLevels.value
-    },
-    riskValues: riskValues.value
-  };
+  const newRiskDefinition = updateRiskDefinition(
+    riskDefinition.value,
+    riskCategories.value,
+    probabilityLevels.value,
+    riskValues.value
+  );
 
   await saveRiskDefinition(newRiskDefinition);
   router.push(riskDefinitionRoute.value);

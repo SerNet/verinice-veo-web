@@ -133,3 +133,20 @@ export function removeMatrixRow(valueMatrix: IVeoRiskValueLevel[][], index: numb
   if (!valueMatrix?.length) return;
   return valueMatrix.filter((_, i) => i !== index);
 }
+
+export function updateRiskDefinition(
+  riskDefinition: IVeoDomainRiskDefinition,
+  newRiskCategories: IVeoRiskCategory[],
+  newProbabilityLevels: ProbabilityLevel[],
+  newRiskValues: IVeoRiskValueLevel[]
+): IVeoDomainRiskDefinition {
+  return {
+    ...riskDefinition,
+    categories: newRiskCategories,
+    probability: {
+      ...riskDefinition?.probability,
+      levels: newProbabilityLevels
+    },
+    riskValues: newRiskValues
+  };
+}
