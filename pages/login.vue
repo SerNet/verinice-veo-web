@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="wrapper">
+  <div v-if="!whitelabelMode" class="wrapper">
     <VeriniceCloudLogo />
     <BaseAlert
       :model-value="!!route.query.client_disabled"
@@ -72,6 +72,11 @@
       </nuxt-link>
     </div>
   </div>
+  <div v-else class="fill-height d-flex align-center justify-center">
+    <v-btn color="primary" data-veo-test="login-btn-login" flat size="x-large" @click="login">
+      {{ t('login') }}
+    </v-btn>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -102,6 +107,8 @@ const dataProtectionRegulationLink = computed(() =>
 const imprintLink = computed(() =>
   locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'
 );
+const config = useRuntimeConfig();
+const whitelabelMode = config.public.whitelabelMode === 'true';
 </script>
 
 <i18n src="~/locales/base/pages/login.json"></i18n>

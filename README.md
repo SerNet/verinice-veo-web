@@ -100,6 +100,7 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_BETA_MODE` | `false` | If set to true, the toggle button for the table/card view will be avaialble. |
 | `VEO_FEATURE_FLAG_CARD_VIEW` | `false` | If set to true, the toggle for feature flag card view gets enabled |
 | `VEO_FEATURE_FLAG_USER_SETTINGS` | `false` | If set to true, the user settings page will be available. |
+| `VEO_WHITE_SER_NET_LABEL_MODE` | `false` | If set to true, disabling logos, URLs, or images related to SerNet logo. |
 
 Required env variables (prod preset):
 

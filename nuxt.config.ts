@@ -70,6 +70,7 @@ export default defineNuxtConfig({
         : new Date(new Date().getFullYear() + 1, 0, 1),
       documentationUrl: process.env.VEO_DOCUMENTATION_URL || 'veo-documentation-url-example',
       isBetaMode: process.env.VEO_BETA_MODE || 'veo-beta-mode-example',
+      whitelabelMode: process.env.VEO_WHITE_SER_NET_LABEL_MODE || 'veo-white-ser-net-label-mode-example',
       featureFlags: Object.keys(process?.env || {})
         .filter((key) => key.startsWith('VEO_FEATURE_FLAG_'))
         .map((key) => ({
@@ -78,7 +79,6 @@ export default defineNuxtConfig({
         }))
     }
   },
-
   // Modules are buildtime only. Can be used to modify build behaviour
   modules: [
     '@nuxt/content',
