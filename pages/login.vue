@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div v-if="!whitelabelMode" class="wrapper">
+  <div v-if="!hideSerNetReferences" class="wrapper">
     <VeriniceCloudLogo />
     <BaseAlert
       :model-value="!!route.query.client_disabled"
@@ -108,7 +108,7 @@ const imprintLink = computed(() =>
   locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'
 );
 const config = useRuntimeConfig();
-const whitelabelMode = config.public.whitelabelMode === 'true';
+const hideSerNetReferences = config.public.hideSerNetReferences === 'true';
 </script>
 
 <i18n src="~/locales/base/pages/login.json"></i18n>

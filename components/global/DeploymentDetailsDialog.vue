@@ -42,7 +42,7 @@
             ><br />
             <p>{{ t('version.paragraph.3') }}</p>
 
-            <div class="mt-6 text-center">
+            <div v-if="!hideSerNetReferences" class="mt-6 text-center">
               &copy; {{ currentYear }} &hyphen;
               <a :href="serNetLink" target="_blank">SerNet GmbH</a>
               &hyphen;&nbsp;
@@ -198,6 +198,8 @@ const footerText = computed(() =>
     imprintLink: `<a href='${imprintLink.value}' target='_blank'>${t('imprint')}</a>`
   })
 );
+
+const hideSerNetReferences = config.public.hideSerNetReferences === 'true';
 </script>
 
 <i18n src="~/locales/base/components/global-deployment-details-dialog.json"></i18n>

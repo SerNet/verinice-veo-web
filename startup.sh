@@ -14,5 +14,5 @@ sed -i "s,veo-documentation-url-example,$VEO_DOCUMENTATION_URL,g" $file
 sed -i "s,veo-beta-mode-example,$VEO_BETA_MODE,g" $file
 sed -i "s,veo-feature-flag-card-view-example,$VEO_FEATURE_FLAG_CARD_VIEW,g" $file
 sed -i "s,veo-feature-flag-user-settings-example,$VEO_FEATURE_FLAG_USER_SETTINGS,g" $file
-sed -i "s,veo-white-ser-net-label-mode-example,$VEO_WHITE_SER_NET_LABEL_MODE,g" $file
+sed -i "s,veo-hide-sernet-references-example,$VEO_HIDE_SERNET_REFERENCES,g" $file
 nginx -c /etc/nginx/conf.d/custom.conf -g 'pid /tmp/nginx.pid; daemon off;'
