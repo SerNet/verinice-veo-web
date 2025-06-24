@@ -26,25 +26,37 @@ export interface IVeoUpdateRiskMatrixValuesParameters {
 
 export default {
   queries: {
-    mutations: {
-      update: {
-        primaryQueryKey: 'matrixValues',
-        url: `/api/content-customizing/domains/:domainId/risk-definitions/:riskDefinitionId`,
-        method: 'PUT',
-        mutationParameterTransformationFn: (params) => ({
-          params: {
-            domainId: params.domainId,
-            riskDefinitionId: params.riskDefinitionId
-          },
-          json: params.json
-        }),
-
-        staticMutationOptions: {
-          onSuccess: (queryClient, _data, _variables, _context) => {
-            queryClient.invalidateQueries(['domain']);
-          }
-        }
-      } as IVeoMutationDefinition<IVeoUpdateRiskMatrixValuesParameters, IVeoAPIMessage>
+    evaluation: {
+      primaryQueryKey: 'risk-definition-evaluation',
+      url: `/api/content-customizing/domains/:domainId/risk-definitions/:riskDefinitionId/evaluation`,
+      method: 'POST',
+      queryParameterTransformationFn: (params) => ({
+        params: {
+          domainId: params.domainId,
+          riskDefinitionId: params.riskDefinitionId
+        },
+        json: params.riskDefinition
+      })
     }
+  },
+  mutations: {
+    update: {
+      primaryQueryKey: 'matrixValues',
+      url: `/api/content-customizing/domains/:domainId/risk-definitions/:riskDefinitionId`,
+      method: 'PUT',
+      mutationParameterTransformationFn: (params) => ({
+        params: {
+          domainId: params.domainId,
+          riskDefinitionId: params.riskDefinitionId
+        },
+        json: params.json
+      }),
+
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, _variables, _context) => {
+          queryClient.invalidateQueries(['domain']);
+        }
+      }
+    } as IVeoMutationDefinition<IVeoUpdateRiskMatrixValuesParameters, IVeoAPIMessage>
   }
 };

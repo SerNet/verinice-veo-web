@@ -33,7 +33,7 @@ export function getRiskCategory(riskCategories: IVeoRiskCategory[], riskCategory
 }
 
 export function useRiskDefinitionUpdate() {
-  const { mutateAsync: updateRiskDefinition } = useMutation(riskQueryDefinitions.queries.mutations.update);
+  const { mutateAsync: updateRiskDefinition } = useMutation(riskQueryDefinitions.mutations.update);
   const queryClient = useQueryClient();
   const { locale } = useI18n();
   const { setLoading, clearLoading } = useGlobalLoadingState();
