@@ -11,7 +11,11 @@
     "potentialImpacts": "Impact",
     "noMatrix": "No risk matrix defined yet.",
     "createMatrixInCategory": "A new matrix can be defined when editing the corresponding risk category.",
-    "updatingRiskDefinition": "Updating risk definition..."
+    "updatingRiskDefinition": "Updating risk definition...",
+    "error": {
+      "rdEvaluation": "Could not evaluate risk definition. Risk definition cannot be saved.",
+      "update": "Risk definition could not be saved."
+    }
   },
   "de": {
     "impact": "Auswirkung",
@@ -25,6 +29,10 @@
     "potentialImpacts": "Auswirkung",
     "noMatrix": "Bislang wurde keine Risikomatrix angelegt.",
     "createMatrixInCategory": "Eine neue Matrix kann bei der Bearbeitung der entsprechenden Risikokategorie definiert werden.",
-    "updatingRiskDefinition": "Aktualisiere Risikodefinition"
+    "updatingRiskDefinition": "Aktualisiere Risikodefinition",
+    "error": {
+      "rdEvaluation": "Riskodefinition konnte nicht evaluiert werden. Ein Speichern ist nicht möglich.",
+      "update": "Speichern der Risikodefinition leider nicht möglich."
+    }
   }
 }

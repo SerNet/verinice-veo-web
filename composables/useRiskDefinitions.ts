@@ -72,7 +72,39 @@ export function useRiskDefinitionUpdate() {
   };
 
   function handleError(error: unknown) {
-    displayErrorMessage(messages?.[locale.value]?.error ?? '');
+    displayErrorMessage(messages?.[locale.value]?.error.update ?? '');
     if (config.public.debug) console.error(error);
   }
+}
+
+import { useQuerySync } from './api/utils/query';
+export function useRiskDefinitionEvaluation() {
+  const evaluation = ref();
+
+  const { data: currentDomain } = useCurrentDomain();
+  const { setLoading, clearLoading } = useGlobalLoadingState();
+  const { displayErrorMessage } = useVeoAlerts();
+  const { locale } = useI18n();
+  const config = useRuntimeConfig();
+
+  async function evaluate(riskDefinition: IVeoDomainRiskDefinition) {
+    let loadingId: symbol;
+    try {
+      loadingId = setLoading();
+      evaluation.value = await useQuerySync(riskQueryDefinitions.queries.evaluation, {
+        domainId: currentDomain.value.id,
+        riskDefinitionId: riskDefinition.id,
+        riskDefinition
+      });
+    } catch (error) {
+      if (config.public.debug) console.error(error);
+      displayErrorMessage(messages?.[locale.value]?.error.rdEvaluation ?? '');
+    } finally {
+      clearLoading(loadingId);
+    }
+  }
+  return {
+    evaluation,
+    evaluate
+  };
 }
