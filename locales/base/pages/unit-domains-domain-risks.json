@@ -15,7 +15,9 @@
     "createValueMatrixBody": "You can now create a value matrix for this domain. This will allow you to define the risk values for each criterion and impact. Do you want to create a value matrix?",
     "deleteValueMatrix": "Delete risk matrix",
     "createPotentialImpact": "Create impact",
-    "createPotentialImpactBody": "You can now create impact values for this category."
+    "createPotentialImpactBody": "You can now create impact values for this category.",
+    "saveRiskDefinitionWarningTitle": "Attention!",
+    "saveRiskDefinitionWarningBody": "When you save, you change risk values. These must be edited manually. Existing risk analyses are also changed if necessary."
   },
   "de": {
     "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten.",
@@ -33,6 +35,8 @@
     "createValueMatrixBody": "Sie können jetzt eine Risikomatrix für diese Domäne erstellen. Dadurch können Sie die Risikowerte für jedes Kriterium und jede Auswirkung definieren. Möchten Sie eine Risikomatrix erstellen?",
     "deleteValueMatrix": "Riskomatrix löschen",
     "createPotentialImpact": "Auswirkung anlegen",
-    "createPotentialImpactBody": "Sie können jetzt Auswirkungen für diese Kategorie anlegen."
+    "createPotentialImpactBody": "Sie können jetzt Auswirkungen für diese Kategorie anlegen.",
+    "saveRiskDefinitionWarningTitle": "Achtung!",
+    "saveRiskDefinitionWarningBody": "Wenn Sie speichern, ändern Sie Risikowerte. Diese müssen manuell nachbearbeitet werden. Außerdem werden bestehende Risikoanalysen gegebenenfalls geändert."
   }
 }
