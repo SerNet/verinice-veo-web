@@ -69,9 +69,20 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               {{ t('goToRiskDefintion') }}
             </v-btn>
 
-            <v-btn size="large" class="my-6" color="primary" variant="flat" :disabled="!canSave" @click="save">
-              {{ t('saveRiskDefinition') }}
-            </v-btn>
+            <template v-if="!isInitializingFeatureFlags">
+              <RiskEvaluation
+                v-if="featureFlags?.riskDefinitionEvaluation"
+                :risk-definition="riskDefinition"
+                :risk-categories="riskCategories"
+                :probability-levels="probabilityLevels"
+                :risk-values="riskValues"
+                :save="save"
+                :can-save="canSave"
+              />
+              <v-btn v-else size="large" class="my-6" color="primary" variant="flat" :disabled="!canSave" @click="save">
+                {{ t('saveRiskDefinition') }}
+              </v-btn>
+            </template>
           </div>
 
           <div class="d-flex ga-2">
@@ -119,6 +130,8 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const { t, locale } = useI18n();
 const route = useRoute();
 const router = useRouter();
+
+const { featureFlags, isInitializingFeatureFlags } = useFeatureFlag();
 
 const riskCategoryId = computed(() => (route?.query.id as string) ?? '');
 const { data: riskDefinition } = useRiskDefinition();

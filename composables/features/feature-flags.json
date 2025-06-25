@@ -1,5 +1,6 @@
 {
   "cardView": false,
   "compact-table": true,
-  "userSettings": true
+  "userSettings": true,
+  "riskDefinitionEvaluation": false
 }
