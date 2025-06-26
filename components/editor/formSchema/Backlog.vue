@@ -48,7 +48,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="upperFirst(element.description.title)"
+                    :title="getTranslatedTitle(element.description.title)"
                     :styling="element.description"
                     translate
                   />
@@ -79,7 +79,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="element.propertyName"
+                    :title="getTranslatedTitle(element.propertyName)"
                     :styling="typeMap[element.type]"
                     translate
                   />
@@ -110,7 +110,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="element.backlogTitle"
+                    :title="getTranslatedTitle(element.backlogTitle)"
                     :styling="typeMap[element.type]"
                     translate
                   />
@@ -140,7 +140,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="element.backlogTitle"
+                    :title="getTranslatedTitle(element.backlogTitle)"
                     :styling="typeMap[element.type]"
                     translate
                   />
@@ -187,10 +187,10 @@
 </template>
 
 <script setup lang="ts">
+import { mdiArrowCollapseVertical, mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
 import { cloneDeep, pick, upperFirst } from 'lodash';
 import { v4 as uuid } from 'uuid';
-import { mdiAutoFix, mdiFormatText, mdiFormSelect, mdiArrowCollapseVertical } from '@mdi/js';
 
 import Draggable from 'vuedraggable';
 
@@ -199,7 +199,8 @@ import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { INPUT_TYPES } from '~/types/VeoEditor';
-import type { IVeoDomainSpecificObjectSchema, IVeoRiskCategory } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
+import { IEditorTranslations, TRANSLATION_SOURCE } from '../translations/types';
 
 export interface IControl {
   scope: string;
@@ -236,19 +237,54 @@ const emit = defineEmits<{
   (event: 'control-items', value: any): void;
 }>();
 
-const { locale, t } = useI18n();
-const { t: globalT, locales } = useI18n({ useScope: 'global' });
+const { locale: globalLocale, t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+
+// Inject editor context for translations
+const editorLanguage = inject<Ref<string>>('editorLanguage');
+const editorTranslations = inject<Ref<IEditorTranslations>>('translations');
+
+// Use prop locale if provided, otherwise fallback to global locale
+const locale = computed(() => editorLanguage.value || globalLocale.value);
 
 const typeMap = ref(INPUT_TYPES);
 
-const getTranslations = (category: IVeoRiskCategory) => {
-  return locales.value.reduce(
-    (acc, locale) => {
-      acc[locale.code] = category.translations[locale.code]?.name || Object.values(category.translations)[0].name;
-      return acc;
-    },
-    {} as Record<string, string>
-  );
+// Convert camelCase to Title Case (e.g. "camelCase" -> "Camel Case")
+const camelCaseToTitle = (key: string): string => {
+  return upperFirst(key.replace(/([A-Z])/g, ' $1')).trim();
+};
+
+const getTranslatedTitle = (titleKey: string) => {
+  if (!editorLanguage?.value || !editorTranslations?.value) {
+    return camelCaseToTitle(titleKey);
+  }
+
+  const currentLanguage = editorLanguage.value;
+
+  const formSchemaTranslation =
+    editorTranslations.value?.[titleKey]?.[TRANSLATION_SOURCE.FORMSCHEMA]?.[currentLanguage];
+  const objectSchemaTranslation =
+    editorTranslations.value?.[titleKey]?.[TRANSLATION_SOURCE.OBJECTSCHEMA]?.[currentLanguage];
+  // Try formschema first, then objectschema, then fallback to formatted original
+  if (formSchemaTranslation) {
+    return formSchemaTranslation;
+  }
+
+  if (objectSchemaTranslation) {
+    return objectSchemaTranslation;
+  }
+  // Translate the part after the "/"
+  if (titleKey.includes(' / ')) {
+    const parts = titleKey.split(' / ');
+    if (parts.length >= 2) {
+      const lastPart = parts[parts.length - 1];
+      const translatedLastPart = getTranslatedTitle(lastPart);
+      parts[parts.length - 1] = translatedLastPart;
+      titleKey = parts.join(' / ');
+    }
+  }
+
+  return camelCaseToTitle(titleKey);
 };
 
 const formElements = [

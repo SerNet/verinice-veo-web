@@ -61,8 +61,10 @@ const props = withDefaults(defineProps<Props>(), {
   styling: () => ({}) as IInputType,
   translate: false
 });
-
 const sanitizedTitle: ComputedRef<string> = computed(() => {
+  if (te(props.title)) {
+    return t(props.title);
+  }
   return upperFirst(props.title.replace(/([A-Z])/g, ' $1')).trim();
 });
 const pointer: ComputedRef<string> = computed(() => {
@@ -75,5 +77,5 @@ const pointer: ComputedRef<string> = computed(() => {
   return match ? `${result[4]} > ${result[8]} > ${last(props.scope.split('/')).replace(/([A-Z])/g, ' $1')}` : '';
 });
 
-const { t } = useI18n();
+const { t, te } = useI18n();
 </script>
