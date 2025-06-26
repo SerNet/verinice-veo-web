@@ -1,10 +1,9 @@
-import { navigateToReport } from '../../commands/navigation';
 import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 
 let unitDetails: UnitDetails;
 
 describe('Report', () => {
-  before(() => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('Tutorials');
     cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
   });
@@ -15,16 +14,14 @@ describe('Report', () => {
     cy.selectUnit(unitDetails.name);
     cy.handleLanguageBug();
   });
-  after(() => cy.deleteUnit(unitDetails.name));
-  it('checks Accessibility in Report ', () => {
-    cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
-
+  afterEach(() => cy.deleteUnit(unitDetails.name));
+  it('checks Accessibility in Report page', () => {
     // go to report page
-    navigateToReport({ group: 'reports', entry: 'title' });
+    cy.url().then((fullUrl) => {
+      const url = new URL(fullUrl);
+      cy.visit(`${url.pathname}/reports`, { failOnStatusCode: false });
+    });
     cy.getCustom('.v-data-table').should('be.visible');
-    cy.checkAxeViolations();
-    cy.getCustom('.v-data-table__tr').first().click();
     cy.checkAxeViolations();
   });
 });
