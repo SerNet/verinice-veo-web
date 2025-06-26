@@ -3,24 +3,36 @@ import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 let unitDetails: UnitDetails;
 
 describe('Catalogs', () => {
-  before(() => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('catalogs');
     cy.login();
     cy.createUnit(unitDetails);
+
+    cy.goToUnitSelection();
+    cy.selectUnit(unitDetails.name);
     cy.acceptAllCookies();
     cy.injectAxe();
   });
 
-  after(() => cy.deleteUnit(unitDetails.name));
+  afterEach(() => cy.deleteUnit(unitDetails.name));
   it('checks Accessibility in catalog ', () => {
-    cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
-
     // go to catalog page
-    cy.navigateTo({ group: 'catalog', entry: 'all' });
+    cy.url().then((fullUrl) => {
+      const url = new URL(fullUrl);
+      cy.visit(`${url.pathname}/catalog`, { failOnStatusCode: false });
+    });
     cy.getCustom('.v-data-table__tr').should('be.visible');
 
     cy.checkAxeViolations();
+  });
+
+  // Wait for the dialog to open
+  it('checks Accessibility in catalog dialog ', () => {
+    cy.url().then((fullUrl) => {
+      const url = new URL(fullUrl);
+      cy.visit(`${url.pathname}/catalog`, { failOnStatusCode: false });
+    });
+    cy.getCustom('.v-data-table__tr').should('be.visible');
     cy.getCustom('.v-data-table__tr').first().click();
     cy.get('[data-veo-test="catalogs-btn-apply"]').click();
 

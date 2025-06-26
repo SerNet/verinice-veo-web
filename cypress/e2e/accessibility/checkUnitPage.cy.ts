@@ -21,7 +21,7 @@ describe('checks Accessibility', () => {
   afterEach(() => cy.deleteUnit(unitDetails.name));
 
   it('checks accessibility in unit page', () => {
-    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
+    cy.getVeoTestUnitCard(unitDetails.name);
     cy.checkAxeViolations();
   });
   //checks Accessibility in edit dialog
@@ -33,12 +33,13 @@ describe('checks Accessibility', () => {
     cy.checkAxeViolations();
   });
 
-  // checks Accessibility in profiles
-  it('checks accessibility in profile dialog', () => {
-    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
+ it('checks accessibility in delete unit dialog', () => {
+   cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
     cy.getCustom('@testUnitCard').within(() => {
-      cy.getCustom('[data-veo-test="apply-profiles-link"]').click();
+      cy.getCustom('[data-veo-test="units-delete-unit-button"]').click({ force: true });
     });
+ 
+   cy.get('[data-veo-test="units-delete-dialog"]').should('be.visible');
     cy.checkAxeViolations();
   });
 

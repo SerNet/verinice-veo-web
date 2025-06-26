@@ -20,8 +20,7 @@ export const ElementActions = {
   selectElement: (isRisk: boolean = false) => {
     // Find the dialog container
     cy.getCustom('[data-veo-test="dialog-card"]').as('container');
-    cy.injectAxe();
-    cy.checkAxeViolations();
+
     // Find the first enabled row and check its checkbox
     cy.getCustom('@container')
       .find('tbody.v-data-table__tbody tr.v-data-table__tr')
@@ -49,8 +48,7 @@ export const ElementActions = {
   createElement: (status: Status) => {
     cy.getCustom('[data-veo-test="dialog-card"]').as('container');
     cy.log(testData.element.abbreviation);
-    cy.injectAxe();
-    cy.checkAxeViolations();
+
     cy.getCustom('@container').find('input[id="#/properties/abbreviation"]').type(testData.element.abbreviation);
     cy.getCustom('@container').find('input[id="#/properties/name"]').type(testData.element.name);
     cy.getCustom('div[data-attribute-name="subType"]').click();

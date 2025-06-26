@@ -5,18 +5,21 @@ import { addModule } from '../../requests/control-implementations';
 
 describe('Compliance', () => {
   beforeEach(() => {
-    cy.injectAxe();
     // Setup API
     setupVeo('workWithRis').then(() => {
       applyCatalogItem();
       addModule();
+      cy.injectAxe();
     });
   });
-
-  it('checks Accessibility in Compliance', () => {
+  // go to Compliance page and check it
+  it('checks Accessibility in Compliance page', () => {
     visitRIList();
     cy.checkAxeViolations();
     cy.getCustom('.v-data-table__tr').first().click();
     cy.checkAxeViolations();
+    cy.get('.v-card-actions button')
+      .contains(/cancel/i)
+      .click();
   });
 });

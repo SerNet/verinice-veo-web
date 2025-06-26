@@ -1,6 +1,6 @@
 import { checkAxeViolations } from '../../commands/axe';
 
-describe('checkAxe', () => {
+describe('checks Accessibility', () => {
   const routesToTest = ['/', '/user-data', '/welcome', '/security'];
 
   beforeEach(() => {

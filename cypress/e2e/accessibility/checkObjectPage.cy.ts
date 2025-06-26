@@ -1,6 +1,8 @@
-import { createObject } from '../../requests/objects';
+import { setupVeo } from '../../commands/setup';
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
-import { Actions, ElementActions, Tabs } from '../elements/elementHelpers';
+
+export type Tabs = 'childScopes' | 'childObjects' |'parentScopes' | 'links'| 'controls' | 'risks' ;
+export type Actions = 'Create scope' | 'Select scope' |'Create object' | 'Select object' |'Model Modules'|  'Create risk' ;
 
 let unitDetails: UnitDetails;
 type TabConfig = {
@@ -9,92 +11,66 @@ type TabConfig = {
 };
 const tabConfigs: TabConfig[] = [
   {
+    tab: 'childScopes',
+    actions: ['Create scope', 'Select scope']
+  },{
+    tab: 'childObjects',
+    actions: ['Create object', 'Select object']
+  },{
     tab: 'parentScopes',
     actions: ['Create scope', 'Select scope']
   },
   {
     tab: 'links'
-  },
+  }, {
+  tab:'controls',
+  actions: ['Model Modules']},
   {
     tab: 'risks',
     actions: ['Create risk']
-  },
-  {
-    tab: 'childScopes',
-    actions: ['Create scope', 'Select scope']
-  },
-  {
-    tab: 'childObjects',
-    actions: ['Create object', 'Select object']
   }
+  
+ 
 ];
 const SideBarActions = ['view', 'toc', 'history', 'messages'];
-describe('check Accessibility', () => {
+describe('checks Accessibility', () => {
   beforeEach(() => {
     unitDetails = generateUnitDetails('ElementsDetailsTab');
-    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit(unitDetails.name);
     cy.injectAxe();
+    setupVeo('checks accessibility');
   });
-  it('check Accessibility in object', () => {
-    createObject({
-      objectData: {
-        owner: {},
-        riskDefinition: 'DSRA',
-        name: 'test-object-name',
-        objectType: 'scope',
-        objectTypePlural: 'scopes',
-        subType: 'SCP_Scope',
-        subTypePlural: 'Scopes',
-        status: 'NEW'
-      }
-    });
+  it('checks accessibility on the object detail page', () => {
+   
 
     cy.visitObject();
     cy.checkAxeViolations();
   });
   // Test each tab configuration
-  it('checks accessibility on detail tabs', () => {
+  it('checks accessibility in each tab of the object detail page', () => {
     tabConfigs.forEach(({ tab, actions }) => {
-      createObject({
-        objectData: {
-          owner: {},
-          riskDefinition: 'DSRA',
-          name: `test-object-${tab}`,
-          objectType: 'scope',
-          objectTypePlural: 'scopes',
-          subType: 'SCP_Scope',
-          subTypePlural: 'Scopes',
-          status: 'NEW'
-        }
-      });
       cy.visitObject();
       cy.get(`[data-component-name="object-details-${tab}-tab"]`).click();
-      cy.checkAxeViolations();
+ if (actions?.length) {
+      actions.forEach((action) => {
+        // Open action menu
+        cy.get('[data-component-name="object-details-actions-button"]').click();
 
-      if (actions?.length) {
-        ElementActions.verifyAndPerformTabActions(tab, actions);
-      }
-    });
-  });
-  // Test sidebar tabs
-  it('checks accessibility on sidebar tabs', () => {
-    SideBarActions.forEach((tab) => {
-      createObject({
-        objectData: {
-          owner: {},
-          riskDefinition: 'DSRA',
-          name: `test-object-${tab}`,
-          objectType: 'scope',
-          objectTypePlural: 'scopes',
-          subType: 'SCP_Scope',
-          subTypePlural: 'Scopes',
-          status: 'NEW'
-        }
+        cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action).click();
+
+        cy.get('[data-veo-test="dialog-card"]').should('be.visible');
+        cy.checkAxeViolations();
+
+        cy.get('.v-card-actions button').contains(/cancel/i).click();
       });
+    }
+  });
+  });
+  // Test sidebar tabs in object detail page
+  it('checks accessibility in each tab of the sidebar in object detail page', () => {
+    SideBarActions.forEach((tab) => {
       cy.visitObject();
       cy.get(`[data-component-name="object-form-${tab}-tab"]`).click();
       cy.checkAxeViolations();
