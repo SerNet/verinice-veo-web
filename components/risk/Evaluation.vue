@@ -12,7 +12,7 @@
   />
 </template>
 <script setup lang="ts">
-import { updateRiskDefinition } from './wizard/helpers';
+import { getUpdatedRiskDefinition } from './wizard/helpers';
 import {
   IVeoDomainRiskDefinition,
   IVeoRiskCategory,
@@ -45,7 +45,7 @@ function _save() {
 }
 
 async function evaluateRiskDefinition() {
-  const newRiskDefinition = updateRiskDefinition(
+  const newRiskDefinition = getUpdatedRiskDefinition(
     props.riskDefinition,
     props.riskCategories,
     props.probabilityLevels,
