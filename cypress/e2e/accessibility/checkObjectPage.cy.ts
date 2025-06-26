@@ -1,8 +1,14 @@
 import { setupVeo } from '../../commands/setup';
 import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
-export type Tabs = 'childScopes' | 'childObjects' |'parentScopes' | 'links'| 'controls' | 'risks' ;
-export type Actions = 'Create scope' | 'Select scope' |'Create object' | 'Select object' |'Model Modules'|  'Create risk' ;
+export type Tabs = 'childScopes' | 'childObjects' | 'parentScopes' | 'links' | 'controls' | 'risks';
+export type Actions =
+  | 'Create scope'
+  | 'Select scope'
+  | 'Create object'
+  | 'Select object'
+  | 'Model Modules'
+  | 'Create risk';
 
 let unitDetails: UnitDetails;
 type TabConfig = {
@@ -13,24 +19,26 @@ const tabConfigs: TabConfig[] = [
   {
     tab: 'childScopes',
     actions: ['Create scope', 'Select scope']
-  },{
+  },
+  {
     tab: 'childObjects',
     actions: ['Create object', 'Select object']
-  },{
+  },
+  {
     tab: 'parentScopes',
     actions: ['Create scope', 'Select scope']
   },
   {
     tab: 'links'
-  }, {
-  tab:'controls',
-  actions: ['Model Modules']},
+  },
+  {
+    tab: 'controls',
+    actions: ['Model Modules']
+  },
   {
     tab: 'risks',
     actions: ['Create risk']
   }
-  
- 
 ];
 const SideBarActions = ['view', 'toc', 'history', 'messages'];
 describe('checks Accessibility', () => {
@@ -43,8 +51,6 @@ describe('checks Accessibility', () => {
     setupVeo('checks accessibility');
   });
   it('checks accessibility on the object detail page', () => {
-   
-
     cy.visitObject();
     cy.checkAxeViolations();
   });
@@ -53,20 +59,22 @@ describe('checks Accessibility', () => {
     tabConfigs.forEach(({ tab, actions }) => {
       cy.visitObject();
       cy.get(`[data-component-name="object-details-${tab}-tab"]`).click();
- if (actions?.length) {
-      actions.forEach((action) => {
-        // Open action menu
-        cy.get('[data-component-name="object-details-actions-button"]').click();
+      if (actions?.length) {
+        actions.forEach((action) => {
+          // Open action menu
+          cy.get('[data-component-name="object-details-actions-button"]').click();
 
-        cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action).click();
+          cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action).click();
 
-        cy.get('[data-veo-test="dialog-card"]').should('be.visible');
-        cy.checkAxeViolations();
+          cy.get('[data-veo-test="dialog-card"]').should('be.visible');
+          cy.checkAxeViolations('[data-veo-test="dialog-card"]');
 
-        cy.get('.v-card-actions button').contains(/cancel/i).click();
-      });
-    }
-  });
+          cy.get('.v-card-actions button')
+            .contains(/cancel/i)
+            .click();
+        });
+      }
+    });
   });
   // Test sidebar tabs in object detail page
   it('checks accessibility in each tab of the sidebar in object detail page', () => {

@@ -38,6 +38,6 @@ describe('Catalogs', () => {
 
     // Wait for the dialog to open
     cy.get('[data-veo-test="catalog-dialog"]').should('be.visible');
-    cy.checkAxeViolations();
+    cy.checkAxeViolations('[data-veo-test="catalog-dialog"]');
   });
 });

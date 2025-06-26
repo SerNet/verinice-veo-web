@@ -33,14 +33,14 @@ describe('checks Accessibility', () => {
     cy.checkAxeViolations();
   });
 
- it('checks accessibility in delete unit dialog', () => {
-   cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
+  it('checks accessibility in delete unit dialog', () => {
+    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
     cy.getCustom('@testUnitCard').within(() => {
       cy.getCustom('[data-veo-test="units-delete-unit-button"]').click({ force: true });
     });
- 
-   cy.get('[data-veo-test="units-delete-dialog"]').should('be.visible');
-    cy.checkAxeViolations();
+
+    cy.get('[data-veo-test="units-delete-dialog"]').should('be.visible');
+    cy.checkAxeViolations('[data-veo-test="units-delete-dialog"]');
   });
 
   // checks Accessibility in create unit cards

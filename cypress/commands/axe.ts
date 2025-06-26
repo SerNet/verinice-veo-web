@@ -6,7 +6,12 @@ declare global {
     }
   }
 }
-
+/**
+ * Runs axe accessibility checks on the given DOM context.
+ *
+ * @param context -  selector string (e.g. '#main', '.content') to scope the analysis
+ *                  to a specific part of the page or classes,  or `null` to scan the entire document.
+ */
 export const checkAxeViolations = (context: string | null = null) => {
   const A11Y_OPTIONS = {
     runOnly: {
