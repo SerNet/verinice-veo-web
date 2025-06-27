@@ -110,9 +110,9 @@ function updateImpactsElement(element: any, categories: IVeoRiskCategory[], risk
           },
           {
             type: 'Control',
-            scope: `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactEffectiveReasons`,
+            scope: `#/properties/riskValues/properties/${riskDefinitionName}/properties/potentialImpacts/properties/${category.id}/properties/potentialImpactReasons`,
             options: {
-              label: '#lang/potentialImpactEffectiveReasons'
+              label: '#lang/potentialImpactReasons'
             }
           }
         ]
