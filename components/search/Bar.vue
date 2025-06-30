@@ -36,10 +36,10 @@
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
   >
     <template #prepend-inner>
-      <div v-for="s in search" :key="s.searchFilter" class="d-flex">
+      <div v-for="s in search" :key="s.searchFilter.toString()" class="d-flex">
         <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
           <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start />
-          {{ translateItem(s.searchFilter) }}
+          {{ translateItem(s.searchFilter.toString()) }}
         </v-chip>
         <v-chip v-if="s.operator" size="large" class="mr-1" color="green">{{ s.operator }}</v-chip>
         <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ s.term }}</v-chip>
@@ -87,7 +87,7 @@ const props = withDefaults(
 );
 
 const { t } = useI18n();
-const filters = [...props.filters.all];
+const filters = Array.isArray(props.filters.all) ? [...props.filters.all] : undefined;
 const operators = [...props.operators.all];
 
 function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {

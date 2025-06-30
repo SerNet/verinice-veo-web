@@ -17,13 +17,25 @@
  */
 
 export type VeoSearch = {
-  searchFilter?: string;
+  searchFilter?: string | VeoSearchFilterItem;
   term?: string;
+  displayedText?: string;
   operator?: string;
 };
 
+export type VeoSearchFilterItem = {
+  value?: string;
+  text?: string;
+  selection?: Record<string, VeoSearchSelectionItem>;
+};
+
+export type VeoSearchSelectionItem = {
+  value?: string | boolean;
+  text?: string;
+};
+
 export type VeoSearchFilters = {
-  all: string[];
+  all: string[] | Record<string, VeoSearchFilterItem>;
   default: string;
 };
 
@@ -37,4 +49,13 @@ export type VeoSearchQueryParameters = {
   name?: VeoSearchQueryParameter;
   abbreviation?: VeoSearchQueryParameter;
   displayName?: VeoSearchQueryParameter;
+  objectType?: VeoSearchQueryParameter;
+  subType?: VeoSearchQueryParameter;
+  designator?: VeoSearchQueryParameter;
+  status?: VeoSearchQueryParameter;
+  description?: VeoSearchQueryParameter;
+  updatedBy?: VeoSearchQueryParameter;
+  hasNoParentElements?: VeoSearchQueryParameter;
+  hasParentElements?: VeoSearchQueryParameter;
+  hasChildElements?: VeoSearchQueryParameter;
 };

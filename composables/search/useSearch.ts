@@ -18,7 +18,7 @@
 
 import { useQuerySync } from '~/composables/api/utils/query';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
-import type { VeoSearch, VeoSearchQueryParameters, VeoSearchFilters } from '~/types/VeoSearch';
+import type { VeoSearch, VeoSearchQueryParameters, VeoSearchFilters, VeoSearchFilterItem } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 type UseSearchParams<T> = {
@@ -29,7 +29,16 @@ type UseSearchParams<T> = {
 
 type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
 
-type SearchKey = 'abbreviation' | 'displayName' | 'name';
+// The 'subtype' search key is taken out for now because it conflicts with the navigation subtype.
+type SearchKey =
+  | 'abbreviation'
+  | 'displayName'
+  | 'name'
+  | 'designator'
+  | 'status'
+  | 'description'
+  | 'hasParentElements'
+  | 'hasChildElements';
 
 export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: UseSearchParams<T>): {
   data: Ref<VeoSearchResponse>;
@@ -75,7 +84,16 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
   };
 }
 
-const defaultSearchKeys: SearchKey[] = ['abbreviation', 'displayName', 'name'];
+const defaultSearchKeys: SearchKey[] = [
+  'name',
+  'abbreviation',
+  'displayName',
+  'designator',
+  'status',
+  'description',
+  'hasParentElements',
+  'hasChildElements'
+];
 
 const defaultSearch = defaultSearchKeys.reduce(
   (acc, key) => {
@@ -92,25 +110,73 @@ export function getSearchQueryParameters(
   if (!search.length) return defaultSearch;
   return Object.fromEntries(
     search
-      .filter((item) => allowedKeys.includes(item.searchFilter as SearchKey))
-      .map((item) => [item.searchFilter, item.term])
+      .filter((item) => allowedKeys.includes(getSearchFiltersKey(item.searchFilter) as SearchKey))
+      .map((item) => [getSearchFiltersKey(item.searchFilter), item.term])
   );
 }
 
 export function useUrlFilters(filters: VeoSearchFilters, search: Ref<VeoSearch[]>) {
   const route = useRoute();
-  const urlFilters = computed<VeoSearch[]>(() =>
-    filters.all
-      .map((filter) => {
-        if (!route.query[filter]) return null;
-        return {
-          searchFilter: filter,
-          operator: '=',
-          term: route.query[filter] as string
-        };
-      })
-      .filter(Boolean)
-  );
 
-  watch(urlFilters, () => (search.value = urlFilters.value), { immediate: true });
+  const searchFilters = filters.all ?? filters;
+
+  if (hasFeature('newSearchbar')) {
+    // rebuild new searchbar from url if VEO_FEATURE_FLAG_NEW_SEARCHBAR and VEO_FEATURE_FLAG_URL_PARAMS are true
+    const keys = new Set(Object.keys(searchFilters));
+
+    const urlFilters = computed<VeoSearch[]>(() =>
+      Object.keys(route.query)
+        .filter((filter) => keys.has(filter) && route.query[filter])
+        .map((filter) => {
+          if (!route.query[filter]) return null;
+          return {
+            searchFilter: searchFilters[filter].selection ? searchFilters[filter] : filter,
+            operator: '=',
+            term: route.query[filter] as string,
+            displayedText:
+              searchFilters[filter]?.selection ?
+                searchFilters[filter]?.selection[route.query[filter]]?.text
+              : route.query[filter]
+          };
+        })
+        .filter(Boolean)
+    );
+
+    watch(
+      [urlFilters],
+      () => {
+        if (search.value.length === 0) search.value = urlFilters.value; // only load search from url if the search is empty
+        if (search.value[search.value.length - 1]?.searchFilter === undefined) search.value = urlFilters.value;
+      },
+      { immediate: true }
+    );
+  } else {
+    const urlFilters = computed<VeoSearch[]>(() => {
+      if (!Array.isArray(searchFilters)) {
+        return [];
+      }
+      return searchFilters
+        .map((filter) => {
+          if (!route.query[filter]) return null;
+          return {
+            searchFilter: filter,
+            operator: '=',
+            term: route.query[filter] as string
+          };
+        })
+        .filter(Boolean);
+    });
+
+    watch(
+      [urlFilters],
+      () => {
+        search.value = urlFilters.value;
+      },
+      { immediate: true }
+    );
+  }
+}
+
+function getSearchFiltersKey(filter: string | VeoSearchFilterItem): string | undefined {
+  return typeof filter === 'string' ? filter : filter?.text;
 }
