@@ -32,15 +32,7 @@
 </template>
 
 <script lang="ts">
-import { last } from 'lodash';
-import Prism from 'prismjs';
-import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
-import DOMPurify from 'dompurify';
-
 import { IVeoFormsElementDefinition } from '../types';
-import { getControlErrorMessages, VeoFormsControlProps } from '../util';
-import { onMounted } from 'vue';
-import { Editor } from '@toast-ui/editor';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',
@@ -57,8 +49,19 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     typeof props.options !== 'undefined' && props.options.format === 'markdown'
   ]
 };
+</script>
 
-// Outside of vue as the editor can't handle the function being part of the vue methods or computed properties.
+<script setup lang="ts">
+import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
+import DOMPurify from 'dompurify';
+import { last } from 'lodash';
+import Prism from 'prismjs';
+
+import { Editor } from '@toast-ui/editor';
+import '@toast-ui/editor/dist/toastui-editor-viewer.css';
+
+import { VeoFormsControlProps } from '../util';
+
 function clearButton(callback: CallableFunction) {
   const el = document.createElement('button');
   el.textContent = 'X';
@@ -74,101 +77,91 @@ function clearButton(callback: CallableFunction) {
 
 let localEditor: any = null;
 
-export default defineComponent({
-  name: CONTROL_DEFINITION.code,
-  props: VeoFormsControlProps,
-  emits: ['update:model-value'],
-  setup(props, { emit }) {
-    const { t } = useI18n();
+defineOptions({
+  name: CONTROL_DEFINITION.code
+});
 
-    const editor = ref();
+const props = defineProps(VeoFormsControlProps);
+const emit = defineEmits<{
+  'update:model-value': [value: string | undefined];
+}>();
 
-    const onCreated = () => {
-      if (editor.value) {
-        localEditor.setMarkdown(props.modelValue);
-      }
-    };
+const { t } = useI18n();
+const editor = ref();
 
-    const sanitizedInput = ref();
-
-    watch(
-      () => props.modelValue,
-      (newContent) => {
-        onCreated();
-        sanitizedInput.value = typeof newContent === 'string' ? DOMPurify.sanitize(newContent) : undefined;
-      },
-      { immediate: true }
-    );
-
-    watch(() => editor.value, onCreated, { immediate: true });
-
-    onMounted(() => {
-      if (props.options.disabled) return;
-      let firstFocus = true;
-
-      localEditor = new Editor({
-        el: editor.value,
-        initialEditType: 'markdown',
-        previewStyle: 'vertical',
-        autofocus: false, // For some reason this config is buggy, workaround in `events`, cp. https://github.com/nhn/tui.editor/issues/1802
-        events: {
-          focus: () => {
-            if (firstFocus) {
-              nextTick(() => {
-                // Focus name control and not the editor (cp. above)
-                localEditor.blur();
-                document.querySelector<HTMLElement>('[data-component-name="object-form-form"]')?.scrollTo(0, 0);
-                firstFocus = false;
-              });
-            }
-          },
-          change: () => {
-            const markdownText = localEditor.getMarkdown();
-            emit(
-              'update:model-value',
-              (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ?
-                props.modelValue
-              : markdownText
-            );
-          }
-        },
-        usageStatistics: false,
-        plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
-        toolbarItems: [
-          ['heading', 'bold', 'italic', 'strike'],
-          ['hr', 'quote'],
-          ['ul', 'ol', 'task', 'indent', 'outdent'],
-          ['table', 'image', 'link'],
-          ['code', 'codeblock'],
-          [
-            {
-              el: clearButton(() => emit('update:model-value', undefined)),
-              command: 'clear-button',
-              name: 'clear-button',
-              tooltip: t('clear')
-            }
-          ]
-        ]
-      });
-    });
-
-    return {
-      editor,
-      sanitizedInput,
-      getControlErrorMessages,
-      last
-    };
+const onCreated = () => {
+  if (editor.value) {
+    localEditor.setMarkdown(props.modelValue);
   }
+};
+
+const sanitizedInput = ref();
+
+watch(
+  () => props.modelValue,
+  (newContent) => {
+    onCreated();
+    sanitizedInput.value = typeof newContent === 'string' ? DOMPurify.sanitize(newContent) : undefined;
+  },
+  { immediate: true }
+);
+
+watch(() => editor.value, onCreated, { immediate: true });
+
+onMounted(() => {
+  if (props.options.disabled) return;
+  let firstFocus = true;
+
+  localEditor = new Editor({
+    el: editor.value,
+    initialEditType: 'markdown',
+    previewStyle: 'vertical',
+    autofocus: false, // For some reason this config is buggy, workaround in `events`, cp. https://github.com/nhn/tui.editor/issues/1802
+    events: {
+      focus: () => {
+        if (firstFocus) {
+          nextTick(() => {
+            // Focus name control and not the editor (cp. above)
+            localEditor.blur();
+            document.querySelector<HTMLElement>('[data-component-name="object-form-form"]')?.scrollTo(0, 0);
+            firstFocus = false;
+          });
+        }
+      },
+      change: () => {
+        const markdownText = localEditor.getMarkdown();
+        emit(
+          'update:model-value',
+          (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ?
+            props.modelValue
+          : markdownText
+        );
+      }
+    },
+    usageStatistics: false,
+    plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
+    toolbarItems: [
+      ['heading', 'bold', 'italic', 'strike'],
+      ['hr', 'quote'],
+      ['ul', 'ol', 'task', 'indent', 'outdent'],
+      ['table', 'image', 'link'],
+      ['code', 'codeblock'],
+      [
+        {
+          el: clearButton(() => emit('update:model-value', undefined)),
+          command: 'clear-button',
+          name: 'clear-button',
+          tooltip: t('clear')
+        }
+      ]
+    ]
+  });
 });
 </script>
 
 <i18n src="~/locales/base/components/dynamic-form-controls-markdown-editor.json"></i18n>
 
 <style lang="scss">
-// Good resource how to include external .css as inline in scss
-// https://github.com/sass/node-sass/issues/2362#issuecomment-388634848
-// add node_modules/ to work with rollup and vue together
-// https://github.com/vuejs/rollup-plugin-vue/issues/146#issuecomment-363749613
 .vf-markdown-editor {
   position: relative;
   z-index: 0;
