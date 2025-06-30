@@ -25,9 +25,7 @@
     <div v-if="options.label" class="subtitle-1">
       {{ options.label }}
     </div>
-    <div v-if="!options.disabled" ref="editor" />
-    <!-- eslint-disable-next-line vue/no-v-html -- input sanitized -->
-    <div v-else class="no-editor-html-output" v-html="sanitizedInput" />
+    <div ref="editor" />
   </div>
 </template>
 
@@ -53,11 +51,11 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
 
 <script setup lang="ts">
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
-import DOMPurify from 'dompurify';
 import { last } from 'lodash';
 import Prism from 'prismjs';
 
 import { Editor } from '@toast-ui/editor';
+import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
 import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 
 import { VeoFormsControlProps } from '../util';
@@ -76,6 +74,7 @@ function clearButton(callback: CallableFunction) {
 }
 
 let localEditor: any = null;
+let localViewer: any = null;
 
 defineOptions({
   name: CONTROL_DEFINITION.code
@@ -89,73 +88,98 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const editor = ref();
 
-const onCreated = () => {
-  if (editor.value) {
-    localEditor.setMarkdown(props.modelValue);
+const cleanup = () => {
+  if (localEditor) {
+    localEditor.destroy();
+    localEditor = null;
+  }
+  if (localViewer) {
+    localViewer.destroy();
+    localViewer = null;
   }
 };
 
-const sanitizedInput = ref();
+// Initialize editor or viewer based on disabled state
+const initializeComponent = () => {
+  if (!editor.value) return;
 
-watch(
-  () => props.modelValue,
-  (newContent) => {
-    onCreated();
-    sanitizedInput.value = typeof newContent === 'string' ? DOMPurify.sanitize(newContent) : undefined;
-  },
-  { immediate: true }
-);
+  cleanup(); // Clean up existing instances
 
-watch(() => editor.value, onCreated, { immediate: true });
-
-onMounted(() => {
-  if (props.options.disabled) return;
+  const isDisabled = props.options.disabled || props.disabled;
   let firstFocus = true;
 
-  localEditor = new Editor({
-    el: editor.value,
-    initialEditType: 'markdown',
-    previewStyle: 'vertical',
-    autofocus: false, // For some reason this config is buggy, workaround in `events`, cp. https://github.com/nhn/tui.editor/issues/1802
-    events: {
-      focus: () => {
-        if (firstFocus) {
-          nextTick(() => {
-            // Focus name control and not the editor (cp. above)
-            localEditor.blur();
-            document.querySelector<HTMLElement>('[data-component-name="object-form-form"]')?.scrollTo(0, 0);
-            firstFocus = false;
-          });
+  if (isDisabled) {
+    // Render HTML in read-only mode using Viewer
+    localViewer = new Viewer({
+      el: editor.value,
+      initialValue: props.modelValue ?? '',
+      usageStatistics: false,
+      plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]]
+    });
+  } else {
+    // Create editable markdown editor
+    localEditor = new Editor({
+      el: editor.value,
+      initialEditType: 'markdown',
+      previewStyle: 'vertical',
+      autofocus: false,
+      usageStatistics: false,
+      plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
+      toolbarItems: [
+        ['heading', 'bold', 'italic', 'strike'],
+        ['hr', 'quote'],
+        ['ul', 'ol', 'task', 'indent', 'outdent'],
+        ['table', 'image', 'link'],
+        ['code', 'codeblock'],
+        [
+          {
+            el: clearButton(() => emit('update:model-value', undefined)),
+            command: 'clear-button',
+            name: 'clear-button',
+            tooltip: t('clear')
+          }
+        ]
+      ],
+      events: {
+        focus: () => {
+          if (firstFocus) {
+            nextTick(() => {
+              localEditor.blur();
+              document.querySelector<HTMLElement>('[data-component-name="object-form-form"]')?.scrollTo(0, 0);
+              firstFocus = false;
+            });
+          }
+        },
+        change: () => {
+          const markdownText = localEditor.getMarkdown();
+          emit(
+            'update:model-value',
+            (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ?
+              props.modelValue
+            : markdownText
+          );
         }
-      },
-      change: () => {
-        const markdownText = localEditor.getMarkdown();
-        emit(
-          'update:model-value',
-          (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ?
-            props.modelValue
-          : markdownText
-        );
       }
-    },
-    usageStatistics: false,
-    plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
-    toolbarItems: [
-      ['heading', 'bold', 'italic', 'strike'],
-      ['hr', 'quote'],
-      ['ul', 'ol', 'task', 'indent', 'outdent'],
-      ['table', 'image', 'link'],
-      ['code', 'codeblock'],
-      [
-        {
-          el: clearButton(() => emit('update:model-value', undefined)),
-          command: 'clear-button',
-          name: 'clear-button',
-          tooltip: t('clear')
-        }
-      ]
-    ]
-  });
+    });
+
+    // Set initial content for editor
+    if (props.modelValue !== undefined) {
+      localEditor.setMarkdown(props.modelValue);
+    }
+  }
+};
+
+// Watch for content changes
+watch(
+  () => [props.modelValue, editor.value],
+  () => {
+    initializeComponent();
+  }
+);
+
+// Cleanup on unmount
+onBeforeUnmount(() => {
+  cleanup();
 });
 </script>
 
