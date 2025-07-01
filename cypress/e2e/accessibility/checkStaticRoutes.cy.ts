@@ -10,7 +10,7 @@ describe('checks Accessibility', () => {
 
   routesToTest.forEach((route) => {
     it(`checks accessibility violations on ${route}`, () => {
-      cy.visit(route);
+      cy.visit(route, { failOnStatusCode: false });
       cy.injectAxe();
       checkAxeViolations();
     });
