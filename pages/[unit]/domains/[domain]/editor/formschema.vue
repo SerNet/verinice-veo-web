@@ -268,7 +268,6 @@
         :object-schema="objectSchema"
         :form-schema="formSchema.name[editorLanguage]"
         :domain-id="$route.params.domain as string"
-        @update-schema-name="updateSchemaName"
       />
     </template>
   </LayoutPageWrapper>
