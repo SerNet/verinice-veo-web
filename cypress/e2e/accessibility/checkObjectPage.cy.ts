@@ -1,5 +1,4 @@
 import { setupVeo } from '../../commands/setup';
-import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
 
 export type Tabs = 'childScopes' | 'childObjects' | 'parentScopes' | 'links' | 'controls' | 'risks';
 export type Actions =
@@ -10,7 +9,6 @@ export type Actions =
   | 'Model Modules'
   | 'Create risk';
 
-let unitDetails: UnitDetails;
 type TabConfig = {
   tab: Tabs;
   actions?: Actions[];
@@ -43,13 +41,12 @@ const tabConfigs: TabConfig[] = [
 const SideBarActions = ['view', 'toc', 'history', 'messages'];
 describe('checks Accessibility', () => {
   beforeEach(() => {
-    unitDetails = generateUnitDetails('ElementsDetailsTab');
-    cy.login();
-    cy.goToUnitSelection();
-    cy.acceptAllCookies();
-    cy.injectAxe();
-    setupVeo('checks accessibility');
+    setupVeo('Object');
   });
+  afterEach(() => {
+    cy.deleteUnit();
+  });
+
   it('checks accessibility on the object detail page', () => {
     cy.visitObject();
     cy.checkAxeViolations();

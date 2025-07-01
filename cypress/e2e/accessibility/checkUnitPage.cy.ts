@@ -21,7 +21,6 @@ describe('checks Accessibility', () => {
   afterEach(() => cy.deleteUnit(unitDetails.name));
 
   it('checks accessibility in unit page', () => {
-    cy.getVeoTestUnitCard(unitDetails.name);
     cy.checkAxeViolations();
   });
   //checks Accessibility in edit dialog

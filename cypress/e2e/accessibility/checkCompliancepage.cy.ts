@@ -12,6 +12,9 @@ describe('Compliance', () => {
       cy.injectAxe();
     });
   });
+  afterEach(() => {
+    cy.deleteUnit();
+  });
   // go to Compliance page and check it
   it('checks Accessibility in Compliance page', () => {
     visitRIList();

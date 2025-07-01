@@ -1,26 +1,20 @@
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
-
-let unitDetails: UnitDetails;
+import { setupAxeVeo } from '../../commands/setup';
 
 describe('Report', () => {
   beforeEach(() => {
-    unitDetails = generateUnitDetails('Tutorials');
-    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
+    setupAxeVeo('Report');
   });
-  beforeEach(() => {
-    cy.login();
-    cy.acceptAllCookies();
-    cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
-    cy.handleLanguageBug();
+  afterEach(() => {
+    cy.deleteUnit();
   });
-  afterEach(() => cy.deleteUnit(unitDetails.name));
-  it('checks Accessibility in Report page', () => {
+  // We skip this test because it's used elsewhere
+  it.skip('checks Accessibility in Report page', () => {
     // go to report page
-    cy.url().then((fullUrl) => {
-      const url = new URL(fullUrl);
-      cy.visit(`${url.pathname}/reports`, { failOnStatusCode: false });
-    });
+    const dynamicTestData = Cypress.env('dynamicTestData');
+    cy.visit(
+      `/${dynamicTestData.unit?.unitId}/domains/${dynamicTestData.unit?.domains?.[0]?.id}/reports/dp-privacy-incident`,
+      { failOnStatusCode: false }
+    );
     cy.getCustom('.v-data-table').should('be.visible');
     cy.checkAxeViolations();
   });

@@ -1,26 +1,18 @@
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
-
-let unitDetails: UnitDetails;
+import { setupAxeVeo } from '../../commands/setup';
 
 describe('Catalogs', () => {
   beforeEach(() => {
-    unitDetails = generateUnitDetails('catalogs');
-    cy.login();
-    cy.createUnit(unitDetails);
-
-    cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
-    cy.acceptAllCookies();
-    cy.injectAxe();
+    setupAxeVeo('Catalogs');
   });
 
-  afterEach(() => cy.deleteUnit(unitDetails.name));
+  afterEach(() => {
+    cy.deleteUnit();
+  });
   it('checks Accessibility in catalog ', () => {
     // go to catalog page
-    cy.url().then((fullUrl) => {
-      const url = new URL(fullUrl);
-      cy.visit(`${url.pathname}/catalog`, { failOnStatusCode: false });
-    });
+    const dynamicTestData = Cypress.env('dynamicTestData');
+    cy.visit(`/${dynamicTestData.unit?.unitId}/domains/${dynamicTestData.unit?.domains?.[0]?.id}/catalog`);
+
     cy.getCustom('.v-data-table__tr').should('be.visible');
 
     cy.checkAxeViolations();
@@ -28,10 +20,9 @@ describe('Catalogs', () => {
 
   // Wait for the dialog to open
   it('checks Accessibility in catalog dialog ', () => {
-    cy.url().then((fullUrl) => {
-      const url = new URL(fullUrl);
-      cy.visit(`${url.pathname}/catalog`, { failOnStatusCode: false });
-    });
+    const dynamicTestData = Cypress.env('dynamicTestData');
+
+    cy.visit(`/${dynamicTestData.unit?.unitId}/domains/${dynamicTestData.unit?.domains?.[0]?.id}/catalog`);
     cy.getCustom('.v-data-table__tr').should('be.visible');
     cy.getCustom('.v-data-table__tr').first().click();
     cy.get('[data-veo-test="catalogs-btn-apply"]').click();
