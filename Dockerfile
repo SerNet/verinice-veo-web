@@ -40,7 +40,7 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/
 
 RUN npm run generate && node externalize-scripts.mjs
 
-FROM nginx:1.28 AS release
+FROM nginx:1.29 AS release
 
 COPY --from=builder /usr/src/app/.output/public /usr/src/app
 
