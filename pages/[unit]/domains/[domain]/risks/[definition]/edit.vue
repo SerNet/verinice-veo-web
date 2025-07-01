@@ -110,8 +110,7 @@ import type {
   IVeoRiskCategory,
   IVeoRiskValueLevel,
   IVeoRiskPotentialImpact,
-  IVeoRiskProbabilityLevel,
-  IVeoRiskDefinitionItemTranslations
+  IVeoRiskProbabilityLevel
 } from '~/types/VeoTypes';
 import {
   ProbabilityLevel,
@@ -125,6 +124,7 @@ import {
   updateRiskMatrixValues,
   getUpdatedRiskDefinition
 } from '~/components/risk/wizard/helpers';
+import { isEqual } from 'lodash';
 
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { t, locale } = useI18n();
@@ -154,16 +154,6 @@ const probabilityLevels = ref([]);
 const riskValues = ref([]);
 const riskCategories = ref([]);
 
-watch(
-  riskDefinition,
-  () => {
-    riskValues.value = cloneDeep(riskDefinition.value?.riskValues) ?? [];
-    probabilityLevels.value = cloneDeep(riskDefinition.value?.probability?.levels) ?? [];
-    riskCategories.value = cloneDeep(riskDefinition.value?.categories) ?? [];
-  },
-  { immediate: true, deep: true }
-);
-
 const potentialImpactsAll = computed<IVeoRiskPotentialImpact[][]>(
   () => riskDefinition.value?.categories?.map((category) => category.potentialImpacts) ?? []
 );
@@ -174,7 +164,7 @@ const hasUnsetItems = computed(() =>
   riskCategories.value?.map((category) => hasUnsetRiskValues(category?.valueMatrix)).includes(true)
 );
 
-const canSave = computed(() => !hasUnsetItems.value && !isMissingTranslations.value);
+const canSave = computed(() => !hasUnsetItems.value && !isMissingTranslations.value && isDirty.value);
 const canGoNext = computed(() => !isMissingTranslations.value);
 
 // MANIPULATE STATE CROSS CATEGORY MODE
@@ -333,5 +323,56 @@ function validateNames(
 ) {
   isMissingTranslations.value = name == '' || hasMissingTranslations(items);
 }
+
+// Dirty state
+type InitialData = {
+  probabilityLevels: IVeoRiskProbabilityLevel[];
+  riskValues: IVeoRiskValueLevel[];
+  riskCategories: IVeoRiskCategory[];
+};
+
+const isDirty = ref(false);
+let hasInitialData = false;
+const initialData: InitialData = {
+  probabilityLevels: [],
+  riskValues: [],
+  riskCategories: []
+};
+
+function assignInitialData() {
+  hasInitialData = true;
+  initialData.probabilityLevels = cloneDeep(probabilityLevels.value);
+  initialData.riskValues = cloneDeep(riskValues.value);
+  initialData.riskCategories = cloneDeep(riskCategories.value);
+}
+
+function evaluateDirtyWizard() {
+  if (!hasInitialData) return false;
+  return (
+    !isEqual(probabilityLevels.value, initialData.probabilityLevels) ||
+    !isEqual(riskValues.value, initialData.riskValues) ||
+    !isEqual(riskCategories.value, initialData.riskCategories)
+  );
+}
+
+watch(
+  riskDefinition,
+  () => {
+    riskValues.value = cloneDeep(riskDefinition.value?.riskValues) ?? [];
+    probabilityLevels.value = cloneDeep(riskDefinition.value?.probability?.levels) ?? [];
+    riskCategories.value = cloneDeep(riskDefinition.value?.categories) ?? [];
+    if (!hasInitialData && riskDefinition.value) assignInitialData();
+  },
+  { immediate: true, deep: true }
+);
+
+watch(
+  [probabilityLevels, riskValues, riskCategories],
+  () => {
+    if (!riskDefinition.value) return false;
+    isDirty.value = evaluateDirtyWizard();
+  },
+  { immediate: true, deep: true }
+);
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
