@@ -70,32 +70,32 @@
           />
         </v-card>
       </v-window-item>
-
-      <v-window-item :value="riskCategories?.length + stepOffset">
-        <template v-for="(_category, rcIndex) in riskCategories?.length" :key="_category.id">
-          <v-card class="pa-2 mb-4">
-            <v-card-title>{{ riskCategories?.[index]?.translations?.[locale]?.name ?? '' }} </v-card-title>
-
-            <template v-if="!riskCategories[rcIndex]?.valueMatrix?.length && potentialImpacts[index].length">
-              <RiskProperty :title="t('impact')" :items="potentialImpacts[rcIndex]" />
-
-              <v-card-subtitle class="pr-0">
-                <span>{{ t('noMatrix') }}{{ ' ' }}</span>
-                <span>{{ t('createMatrixInCategory') }}</span>
-              </v-card-subtitle>
-            </template>
-
-            <RiskMatrix
-              v-else
-              :value-matrix="riskCategories[rcIndex]?.valueMatrix"
-              :risk-values="riskValues"
-              :probability-levels="probabilityLevels"
-              :potential-impacts="potentialImpacts[rcIndex]"
-            />
-          </v-card>
-        </template>
-      </v-window-item>
     </template>
+
+    <v-window-item :value="riskCategories?.length + stepOffset">
+      <template v-for="(_category, rcIndex) in riskCategories?.length" :key="_category.id">
+        <v-card class="pa-2 mb-4">
+          <v-card-title>{{ riskCategories?.[rcIndex]?.translations?.[locale]?.name ?? '' }} </v-card-title>
+
+          <template v-if="!riskCategories[rcIndex]?.valueMatrix?.length && potentialImpacts[rcIndex].length">
+            <RiskProperty :title="t('impact')" :items="potentialImpacts[rcIndex]" />
+
+            <v-card-subtitle class="pr-0">
+              <span>{{ t('noMatrix') }}{{ ' ' }}</span>
+              <span>{{ t('createMatrixInCategory') }}</span>
+            </v-card-subtitle>
+          </template>
+
+          <RiskMatrix
+            v-else
+            :value-matrix="riskCategories[rcIndex]?.valueMatrix"
+            :risk-values="riskValues"
+            :probability-levels="probabilityLevels"
+            :potential-impacts="potentialImpacts[rcIndex]"
+          />
+        </v-card>
+      </template>
+    </v-window-item>
   </v-window>
 </template>
 <script setup lang="ts">
