@@ -72,10 +72,38 @@
       </nuxt-link>
     </div>
   </div>
-  <div v-else class="fill-height d-flex align-center justify-center">
-    <v-btn color="primary" data-veo-test="login-btn-login" flat size="x-large" @click="login">
-      {{ t('login') }}
-    </v-btn>
+  <div v-else class="wrapper">
+    <LayoutAppLogoDesktop />
+    <BaseAlert
+      :model-value="!!route.query.client_disabled"
+      class="my-4"
+      flat
+      no-close-button
+      :type="VeoAlertType.ERROR"
+      :title="t('access')"
+      :text="t('error-message')"
+    />
+    <BaseCard class="mt-4 bg-surface">
+      <v-card-text class="d-flex justify-space-around">
+        <div style="flex-basis: 0; flex-grow: 1">
+          <h4 class="text-h4 cta" style="height: 60px !important">
+            {{ t('loginV') }}
+          </h4>
+          <div class="text-center">
+            <v-btn color="primary" data-veo-test="login-btn-login" flat size="x-large" @click="login">
+              {{ t('login') }}
+            </v-btn>
+          </div>
+        </div>
+        <v-divider class="mx-7" vertical light />
+
+        <div style="flex-basis: 0; flex-grow: 1; min-width: 250px" class="text-center text-body-1 d-flex align-center">
+          <h4 class="text-h4 cta">
+            {{ t('Wenn sie noch keine Anmeldedaten haben, wenden Sie sich an Ihre Administrator*innen') }}
+          </h4>
+        </div>
+      </v-card-text>
+    </BaseCard>
   </div>
 </template>
 

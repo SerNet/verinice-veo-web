@@ -59,7 +59,7 @@
         @logout="logout"
       />
       <v-btn
-        v-else
+        v-if="!hideSerNetReferences && !profile"
         color="primary"
         icon
         :href="/* @ts-ignore TODO #3066 $config does not exist*/ $config.public.accountPath"
@@ -85,7 +85,8 @@ const context = useNuxtApp();
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
 }));
-
+const config = useRuntimeConfig();
+const hideSerNetReferences = config.public.hideSerNetReferences === 'true';
 const logout = () => _logout('/');
 </script>
 <i18n src="~/locales/base/components/layout-default.json"></i18n>

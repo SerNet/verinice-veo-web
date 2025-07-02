@@ -7,8 +7,10 @@
     "imprint": "Imprint",
     "login": "Login",
     "loginCTA": "Enter the\nverinice.cloud",
+    "loginV": "Enter \nverinice.Veo",
     "policy": "Security policy",
-    "subscribe": "subscribe"
+    "subscribe": "subscribe",
+    "Wenn sie noch keine Anmeldedaten haben, wenden Sie sich an Ihre Administrator*innen": "If you do not yet have login credentials, please contact your administrators."
   },
   "de": {
     "access": "Account deaktiviert.",
@@ -18,7 +20,9 @@
     "imprint": "Impressum",
     "login": "Anmelden",
     "loginCTA": "Direkt zur\nverinice.cloud",
+    "loginV": "Direkt zur\nverinice.Veo",
     "policy": "Sicherheitsrichtlinie",
-    "subscribe": "abonnieren"
+    "subscribe": "abonnieren",
+    "Wenn sie noch keine Anmeldedaten haben, wenden Sie sich an Ihre Administrator*innen": "Wenn sie noch keine Anmeldedaten haben, wenden Sie sich an Ihre Administrator*innen."
   }
 }
