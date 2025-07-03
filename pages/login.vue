@@ -85,7 +85,7 @@
     />
     <BaseCard class="mt-4 bg-surface">
       <v-card-text class="d-flex">
-        <div class="flex-1">
+        <div class="" style="flex-basis: 0; flex-grow: 1">
           <h4 class="text-h4 cta" style="height: 60px">
             {{ t('loginV') }}
           </h4>
@@ -96,7 +96,7 @@
           </div>
         </div>
         <v-divider class="mx-7" vertical light />
-        <div style="min-width: 250px" class="text-center flex-1 text-body-1 d-flex align-center">
+        <div style="min-width: 250px; flex-basis: 0; flex-grow: 1" class="text-center text-body-1 d-flex align-center">
           <h4 class="text-h4 cta">
             {{ t('Wenn sie noch keine Anmeldedaten haben, wenden Sie sich an Ihre Administrator*innen') }}
           </h4>
