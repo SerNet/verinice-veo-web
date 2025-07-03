@@ -1,9 +1,13 @@
 {
   "en": {
+    "expand": "Expand all",
+    "collapse": "Collapse all",
     "createCustomPropertyError": "Couldn't create link/aspect",
     "addCustomLink": "Add link"
   },
   "de": {
+    "expand": "Alle ausklappen",
+    "collapse": "Alle einklappen",
     "createCustomPropertyError": "Der Link/Aspekt konnte nicht erstellt werden",
     "addCustomLink": "Link hinzufügen"
   }

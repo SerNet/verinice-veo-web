@@ -17,6 +17,14 @@
 -->
 <template>
   <div class="fill-width" style="display: contents">
+    <div class="ma-4 text-center">
+      <v-btn class="mx-1" variant="elevated" size="small" @click="onExpandAll">
+        {{ t('expand') }}
+      </v-btn>
+      <v-btn class="mx-1" variant="elevated" size="small" @click="onCollapseAll">
+        {{ t('collapse') }}
+      </v-btn>
+    </div>
     <v-expansion-panels accordion multiple :model-value="expansionPanels" flat>
       <v-expansion-panel>
         <v-expansion-panel-title class="text-h5 overline small-caps px-2">
@@ -184,6 +192,16 @@ export default defineComponent({
     const { t: globalT } = useI18n({ useScope: 'global' });
     const { displayErrorMessage } = useVeoAlerts();
 
+    const expansionPanels = ref<number[]>([0, 1, 2]);
+
+    function onExpandAll() {
+      expansionPanels.value = [0, 1, 2];
+    }
+
+    function onCollapseAll() {
+      expansionPanels.value = [];
+    }
+
     function itemContainsAttributeTitle(item: EditorPropertyItem, title: string): boolean {
       return (
         !title ||
@@ -209,8 +227,6 @@ export default defineComponent({
     const customAspects = ref<EditorPropertyItem[]>([]);
     const customLinks = ref<EditorPropertyItem[]>([]);
     const basicProps = ref<EditorPropertyItem[]>([]);
-
-    const expansionPanels = ref([0, 1, 2]);
 
     computeProperties();
     watch(
@@ -334,6 +350,8 @@ export default defineComponent({
       objectSchemaDialog,
       expansionPanels,
       showAddDialog,
+      onCollapseAll,
+      onExpandAll,
       onEditPropertyError,
       onEditPropertySuccess,
       showEditDialog,
