@@ -110,7 +110,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="getTranslatedTitle(element.backlogTitle)"
+                    :title="getTranslatedTitle(element.propertyName)"
                     :styling="typeMap[element.type]"
                     translate
                   />
@@ -140,7 +140,7 @@
                 <template #item="{ element }">
                   <EditorListItem
                     :scope="element.scope"
-                    :title="getTranslatedTitle(element.backlogTitle)"
+                    :title="getTranslatedTitle(element.propertyName)"
                     :styling="typeMap[element.type]"
                     translate
                   />
@@ -200,7 +200,6 @@ import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
-import { IEditorTranslations, TRANSLATION_SOURCE } from '../translations/types';
 
 export interface IControl {
   scope: string;
@@ -242,7 +241,6 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 
 // Inject editor context for translations
 const editorLanguage = inject<Ref<string>>('editorLanguage');
-const editorTranslations = inject<Ref<IEditorTranslations>>('translations');
 
 // Use prop locale if provided, otherwise fallback to global locale
 const locale = computed(() => editorLanguage.value || globalLocale.value);
@@ -250,41 +248,17 @@ const locale = computed(() => editorLanguage.value || globalLocale.value);
 const typeMap = ref(INPUT_TYPES);
 
 // Convert camelCase to Title Case (e.g. "camelCase" -> "Camel Case")
-const camelCaseToTitle = (key: string): string => {
+const camelToTitleCase = (key: string): string => {
   return upperFirst(key.replace(/([A-Z])/g, ' $1')).trim();
 };
 
+// Tranlate titles of form elements, custom aspects and links
+const { data: translations } = useTranslations({ domain: props.domain.id });
 const getTranslatedTitle = (titleKey: string) => {
-  if (!editorLanguage?.value || !editorTranslations?.value) {
-    return camelCaseToTitle(titleKey);
+  if (!editorLanguage?.value || !translations?.value) {
+    return camelToTitleCase(titleKey);
   }
-
-  const currentLanguage = editorLanguage.value;
-
-  const formSchemaTranslation =
-    editorTranslations.value?.[titleKey]?.[TRANSLATION_SOURCE.FORMSCHEMA]?.[currentLanguage];
-  const objectSchemaTranslation =
-    editorTranslations.value?.[titleKey]?.[TRANSLATION_SOURCE.OBJECTSCHEMA]?.[currentLanguage];
-  // Try formschema first, then objectschema, then fallback to formatted original
-  if (formSchemaTranslation) {
-    return formSchemaTranslation;
-  }
-
-  if (objectSchemaTranslation) {
-    return objectSchemaTranslation;
-  }
-  // Translate the part after the "/"
-  if (titleKey.includes(' / ')) {
-    const parts = titleKey.split(' / ');
-    if (parts.length >= 2) {
-      const lastPart = parts[parts.length - 1];
-      const translatedLastPart = getTranslatedTitle(lastPart);
-      parts[parts.length - 1] = translatedLastPart;
-      titleKey = parts.join(' / ');
-    }
-  }
-
-  return camelCaseToTitle(titleKey);
+  return translations.value?.lang?.[editorLanguage.value]?.[titleKey] ?? camelToTitleCase(titleKey);
 };
 
 const formElements = [
