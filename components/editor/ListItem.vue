@@ -24,7 +24,7 @@
     </template>
     <v-list-item-title class="caption">{{ sanitizedTitle }}</v-list-item-title>
     <v-list-item-subtitle v-if="scope">
-      {{ upperFirst(pointer) }}
+      {{ pointer }}
     </v-list-item-subtitle>
     <slot name="description" />
     <template #append>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { last, upperFirst } from 'lodash';
+import { upperFirst } from 'lodash';
 import { IInputType } from '~/types/VeoEditor';
 
 interface Props {
@@ -61,20 +61,18 @@ const props = withDefaults(defineProps<Props>(), {
   styling: () => ({}) as IInputType,
   translate: false
 });
+
 const sanitizedTitle: ComputedRef<string> = computed(() => {
   if (te(props.title)) {
     return t(props.title);
   }
   return upperFirst(props.title.replace(/([A-Z])/g, ' $1')).trim();
 });
+
 const pointer: ComputedRef<string> = computed(() => {
   if (!props.scope) return '';
 
-  const result = props.scope.split('/');
-  const match = props.scope.match(/riskValues/);
-
-  // only display the pointer, if it's a risk value; e.g. GSRA > C > PotentialImpact
-  return match ? `${result[4]} > ${result[8]} > ${last(props.scope.split('/')).replace(/([A-Z])/g, ' $1')}` : '';
+  return props.scope.replace(/properties\//g, '');
 });
 
 const { t, te } = useI18n();
