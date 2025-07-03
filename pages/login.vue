@@ -85,7 +85,7 @@
     />
     <BaseCard class="mt-4 bg-surface">
       <v-card-text class="d-flex">
-        <div class="" style="flex-basis: 0; flex-grow: 1">
+        <div style="flex-basis: 0; flex-grow: 1">
           <h4 class="text-h4 cta" style="height: 60px">
             {{ t('loginV') }}
           </h4>
