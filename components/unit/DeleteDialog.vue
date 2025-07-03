@@ -28,7 +28,7 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <div>{{ t('question', { name: unit?.name }) }}</div
+      <div class="text-pre-wrap">{{ t('question', { name: unit?.name }) }}</div
       ><br />
       <h2 style="color: #c00000; font-size: unset">
         {{ t('hint') }}
