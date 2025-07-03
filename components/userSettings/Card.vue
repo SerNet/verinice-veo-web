@@ -36,7 +36,7 @@
           color="primary"
           :model-value="props.item.enabled"
           :aria-label="t(`${props.item.key}.body`)"
-          @update:model-value="(val) => props.handleClick(props.item.key, val)"
+          @update:model-value="(val) => props.handleClick(props.item.key)"
         />
       </div>
     </v-card-text>
@@ -49,7 +49,7 @@ import { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
 const { t } = useI18n();
 export interface Props {
   item: IVeoUserSetting;
-  handleClick: (key: string, value: boolean) => void;
+  handleClick: (key: string) => void;
   isLoading?: boolean;
 }
 

@@ -15,40 +15,19 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <template v-for="(item, index) in settingsList" :key="index">
-    <UserSettingsCard :item="item" :handle-click="toggleSetting" :isloading="isLoadingUserSettings" />
+  <template v-for="(item, index) in data" :key="index">
+    <UserSettingsCard :item="item" :handle-click="toggleSetting" :isloading="isLoading" />
   </template>
   <div class="d-flex justify-end">
-    <v-btn color="primary" @click="handleSave">
+    <v-btn color="primary" @click="Save">
       {{ t('save') }}
     </v-btn>
   </div>
 </template>
 
 <script setup lang="ts">
-import { logError } from '../userData/modules/HandleError';
-
 const { t } = useI18n();
-const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-
-const { settingsList, saveUserSettings, isLoadingUserSettings, toggleSetting } = useSettings();
-
-async function handleSave() {
-  try {
-    await saveUserSettings();
-    handleSuccess();
-  } catch (error) {
-    handleError(error);
-  }
-}
-
-function handleError(error: unknown) {
-  logError(error);
-  displayErrorMessage(t('errorHeader'), t('errorBody'));
-}
-async function handleSuccess() {
-  displaySuccessMessage(t('successHeader'));
-}
+const { data, isLoading, Save, toggleSetting } = useSettings();
 </script>
 
 <i18n src="~/locales/base/components/user-settings-messages.json"></i18n>

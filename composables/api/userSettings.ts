@@ -15,64 +15,78 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { computed } from 'vue';
-import { useQuery } from './utils/query';
+import { useQuerySync } from './utils/query';
 import settingsQueryDefinition, { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
+import messages from '~/locales/base/components/user-settings-messages.json';
 
 export function useSettings() {
-  const { data: appIds, refetch: refetchAppIds } = useQuery(settingsQueryDefinition.queries.fetchSettings);
+  const appId = 'verinice-veo';
   const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
-  const appId = computed(() => (appIds.value?.includes('verinice-veo') ? 'verinice-veo' : null));
-  const {
-    data: userSettings,
-    refetch: refetchUserSettings,
-    isLoading: isLoadingUserSettings
-  } = useQuery(
-    settingsQueryDefinition.queries.fetchSettingsWithAppId,
-    computed(() => (appId.value ? { appId: appId.value } : undefined))
-  );
-  const saveUserSettings = async () => {
-    await updateSettingsMutation.mutateAsync({
-      appId: 'verinice-veo',
-      settings: state.settings
-    });
-    refetchAppIds();
-    refetchUserSettings();
-  };
-
-  // Reactive state
-  const state = reactive({
-    settings: {} as Record<string, IVeoUserSetting>
-  });
-
+  const data = ref<Record<string, IVeoUserSetting> | undefined>();
+  const isLoading = ref(true);
+  const error = ref<TVeoError>(null);
+  const { locale } = useI18n();
+  const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
   const defaultSettings: Record<string, IVeoUserSetting> = {
     'compact-styles': { key: 'compact-styles', enabled: false }
   };
 
-  // Watch and sync settings
-  watchEffect(() => {
-    const fetched = userSettings.value || {};
-    state.settings = Object.fromEntries(
-      Object.entries({ ...defaultSettings, ...fetched }).map(([key, value]) => [
-        key,
-        { key, enabled: value === true || String(value).toLowerCase() === 'true' }
-      ])
-    );
-  });
+  async function fetchSettings() {
+    isLoading.value = true;
+    error.value = null;
 
-  const settingsList = computed(() => Object.values(state.settings));
+    try {
+      const result = await useQuerySync(settingsQueryDefinition.queries.fetchSettingsWithAppId, { appId: appId });
+
+      // Merge default settings with fetched settings
+      // And normalize each setting's value
+      data.value = Object.fromEntries(
+        Object.entries({ ...defaultSettings, ...result }).map(([key, value]) => [
+          key,
+          {
+            key,
+            enabled: value === true || String((value as any)?.enabled ?? value).toLowerCase?.() === 'true'
+          }
+        ])
+      );
+    } catch (err) {
+      error.value = handleErrorMessage(err);
+      displayErrorMessage(messages?.[locale.value]?.errorBody ?? '');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // save change in setting page
+  const Save = async () => {
+    await updateSettingsMutation.mutateAsync({
+      appId: 'verinice-veo',
+      settings: data.value
+    });
+    displaySuccessMessage(messages?.[locale.value]?.successHeader ?? '');
+  };
 
   // Toggle handler
-  async function toggleSetting(key: string, enabled: boolean) {
-    state.settings[key].enabled = enabled;
+  async function toggleSetting(key: string) {
+    const setting = data.value?.[key];
+    setting.enabled = !setting.enabled;
   }
+
+  // get setting by setting key
   const getSetting = (key: string): Ref<boolean> => {
-    return computed(() => userSettings.value?.[key] ?? true);
+    return computed(() => {
+      const setting = data.value?.[key];
+      return setting?.enabled ?? true;
+    });
   };
+
+  fetchSettings();
+
   return {
-    settingsList,
-    getSetting,
-    isLoadingUserSettings,
+    data,
+    isLoading,
+    Save,
     toggleSetting,
-    saveUserSettings
+    getSetting
   };
 }
