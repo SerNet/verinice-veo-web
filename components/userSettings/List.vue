@@ -15,8 +15,8 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <template v-for="(item, index) in data" :key="index">
-    <UserSettingsCard :item="item" :handle-click="toggleSetting" :isloading="isLoading" />
+  <template v-for="(enabled, key) in data" :key="key">
+    <UserSettingsCard :item="{ key, enabled }" :handle-click="toggleSetting" :isloading="isLoading" />
   </template>
   <div class="d-flex justify-end">
     <v-btn color="primary" @click="Save">
