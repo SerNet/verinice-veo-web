@@ -25,4 +25,4 @@ export { useActions, usePerformActions } from '~/composables/actions/useActions'
 export { useSearch } from '~/composables/search/useSearch';
 export { useSystemMessages } from '~/composables/messages/useSystemMessages';
 export { useFeatureFlag } from '~/composables/features/featureFlag';
-export { useSettings } from '~/composables/api/userSettings';
+export { useSettings } from '~/composables/api/useSettings';
