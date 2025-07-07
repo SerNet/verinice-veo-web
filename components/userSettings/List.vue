@@ -19,7 +19,7 @@
     <UserSettingsCard :item="{ key, enabled }" :handle-click="toggleSetting" :isloading="isLoading" />
   </template>
   <div class="d-flex justify-end">
-    <v-btn color="primary" @click="Save">
+    <v-btn color="primary" @click="save">
       {{ t('save') }}
     </v-btn>
   </div>
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 const { t } = useI18n();
-const { data, isLoading, Save, toggleSetting } = useSettings();
+const { data, isLoading, save, toggleSetting } = useSettings();
 </script>
 
 <i18n src="~/locales/base/components/user-settings-messages.json"></i18n>

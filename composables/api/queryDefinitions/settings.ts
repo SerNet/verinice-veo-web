@@ -34,11 +34,6 @@ import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
 import { VeoApiReponseType } from '../utils/request';
 
-export interface IVeoUserSetting {
-  key: string;
-  enabled: boolean;
-}
-
 export interface IVeoFetchSettingsParameters {
   appId: string;
 }
@@ -62,7 +57,7 @@ export default {
         params
       }),
       staticQueryOptions: { placeholderData: [] }
-    } as IVeoQueryDefinition<IVeoFetchSettingsParameters, IVeoUserSetting>
+    } as IVeoQueryDefinition<IVeoFetchSettingsParameters, Record<string, boolean>>
   },
   mutations: {
     updateSettings: {
@@ -71,15 +66,11 @@ export default {
       method: 'PUT',
       reponseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => {
-        const flatSettings: Record<string, boolean> = {};
-        for (const [key, value] of Object.entries(mutationParameters.settings)) {
-          flatSettings[key] = value;
-        }
         return {
           params: {
             appId: mutationParameters.appId
           },
-          json: flatSettings
+          json: mutationParameters.settings
         };
       },
 

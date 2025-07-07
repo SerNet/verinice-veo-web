@@ -62,9 +62,9 @@ type UpdateSearchMsg = {
   newValue?: string;
 };
 
-const { data } = useSettings();
+const { data: userSettings } = useSettings();
 const hasCompactTable = computed(() => {
-  return data.value?.['compact-styles'];
+  return userSettings.value?.['compact-styles'] ?? false;
 });
 const props = withDefaults(
   defineProps<{

@@ -14,6 +14,8 @@ module.exports = defineConfig({
   requestTimeout: 15000,
   experimentalMemoryManagement: true,
   numTestsKeptInMemory: 0,
+
+  // disable the user settings test via feature flag
   env: {
     VEO_FEATURE_FLAG_USER_SETTINGS: 'false'
   },

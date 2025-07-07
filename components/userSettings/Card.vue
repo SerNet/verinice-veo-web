@@ -22,21 +22,21 @@
     </v-col>
   </template>
 
-  <BaseCard class="flex-grow-1 d-flex mb-2" :data-test="`setting-${props.item.key}`">
+  <BaseCard class="flex-grow-1 d-flex mb-2" :data-test="`setting-${item.key}`">
     <v-card-text class="d-flex justify-space-between">
       <div>
-        <h2 class="text-h3">{{ t(`${props.item.key}.header`).toString() }}</h2>
-        <p v-if="t(`${props.item.key}.body`)">
-          {{ t(`${props.item.key}.body`).toString() }}
+        <h2 class="text-h3">{{ t(`${item.key}.header`).toString() }}</h2>
+        <p v-if="t(`${item.key}.body`)">
+          {{ t(`${item.key}.body`).toString() }}
         </p>
       </div>
 
       <div>
         <v-switch
           color="primary"
-          :model-value="props.item.enabled"
-          :aria-label="t(`${props.item.key}.body`)"
-          @update:model-value="(val) => props.handleClick(props.item.key)"
+          :model-value="item.enabled"
+          :aria-label="t(`${item.key}.body`)"
+          @update:model-value="(val) => handleClick(item.key)"
         />
       </div>
     </v-card-text>
@@ -44,11 +44,12 @@
 </template>
 
 <script setup lang="ts">
-import { IVeoUserSetting } from '~/composables/api/queryDefinitions/settings';
-
 const { t } = useI18n();
 export interface Props {
-  item: IVeoUserSetting;
+  item: {
+    key: string;
+    enabled: boolean;
+  };
   handleClick: (key: string) => void;
   isLoading?: boolean;
 }

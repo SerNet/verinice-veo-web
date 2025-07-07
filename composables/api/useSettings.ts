@@ -37,13 +37,9 @@ export function useSettings() {
 
     try {
       const result = await useQuerySync(settingsQueryDefinition.queries.fetchSettingsWithAppId, { appId: appId });
+
       // Merge default settings with fetched settings
-      data.value = Object.fromEntries(
-        Object.entries({ ...defaultSettings, ...result }).map(([key, value]) => [
-          key,
-          value === true || String(value).toLowerCase?.() === 'true'
-        ])
-      );
+      data.value = { ...defaultSettings, ...result };
     } catch (err) {
       error.value = handleErrorMessage(err);
       displayErrorMessage(messages?.[locale.value]?.errorBody ?? '');
@@ -53,7 +49,7 @@ export function useSettings() {
   }
 
   // save change in setting page
-  const Save = async () => {
+  const save = async () => {
     await updateSettingsMutation.mutateAsync({
       appId: 'verinice-veo',
       settings: data.value
@@ -73,7 +69,7 @@ export function useSettings() {
   return {
     data,
     isLoading,
-    Save,
+    save,
     toggleSetting
   };
 }

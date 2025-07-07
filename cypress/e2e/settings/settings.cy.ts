@@ -36,7 +36,7 @@ maybeDescribe('User Settings', function () {
 
     cy.get('.v-alert').should('be.visible').and('contain.text', 'successfully');
   });
-  it('check compact table', () => {
+  it('checks if tables have compact styles', () => {
     unitDetails = generateUnitDetails('catalogs');
     cy.createUnit(unitDetails);
 
