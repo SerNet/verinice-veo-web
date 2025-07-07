@@ -1,8 +1,8 @@
-import { setupAxeVeo } from '../../commands/setup';
+import { setupVeo } from '../../commands/setup';
 
 describe('Catalogs', () => {
   beforeEach(() => {
-    setupAxeVeo('Catalogs');
+    setupVeo('Catalogs');
   });
 
   afterEach(() => {

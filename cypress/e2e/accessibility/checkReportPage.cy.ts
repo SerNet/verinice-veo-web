@@ -1,13 +1,13 @@
-import { setupAxeVeo } from '../../commands/setup';
+import { setupVeo } from '../../commands/setup';
 
 describe('Report', () => {
   beforeEach(() => {
-    setupAxeVeo('Report');
+    setupVeo('Report');
   });
   afterEach(() => {
     cy.deleteUnit();
   });
-  // We skip this test because it's used elsewhere
+  // This test is skipped here because it's already covered in another test file
   it.skip('checks Accessibility in Report page', () => {
     // go to report page
     const dynamicTestData = Cypress.env('dynamicTestData');

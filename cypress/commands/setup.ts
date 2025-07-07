@@ -11,10 +11,3 @@ export function setupVeo(unitName?: string) {
       cy.acceptAllCookies();
     });
 }
-export function setupAxeVeo(unitName?: string) {
-  const unitDetails = generateUnitDetails(unitName || 'Veo');
-  return cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['DS-GVO'] }).then(() => {
-    cy.login();
-    cy.acceptAllCookies();
-  });
-}
