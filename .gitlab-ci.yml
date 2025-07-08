@@ -139,6 +139,7 @@ build_test_app:
     - export {http,https}_proxy="${http_proxy}"
     - npx serve .output/public/ &
   interruptible: true
+  retry: 2
 
 test:
   extends: .test_template
