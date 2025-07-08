@@ -45,7 +45,12 @@
         <!-- Risk categories -->
         <v-row>
           <v-col cols="12">
-            <h2>{{ t('criterion') }}</h2>
+            <div class="d-flex justify-space-between align-center">
+              <h2>{{ t('criterion') }}</h2>
+              <v-btn color="primary" variant="outlined" size="small" prepend-icon="mdi-cog" @click="addRiskCategory">
+                {{ t('manageCriteria') }}
+              </v-btn>
+            </div>
           </v-col>
           <RiskCategory
             v-for="riskCategory in riskDefinition.categories"
@@ -96,6 +101,7 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-definition';
 <script setup lang="ts">
 import { mdiPencil } from '@mdi/js';
 import {
+  createRiskCategory,
   deleteRiskCategory as deleteRiskCategoryHelper,
   getUpdatedRiskDefinition
 } from '~/components/risk/wizard/helpers';
@@ -105,6 +111,11 @@ const { data: riskDefinition, reload } = useRiskDefinition();
 const route = useRoute();
 const closeConfirmationDialogVisible = ref(false);
 const categoryToDelete = ref<string | null>(null);
+
+const addRiskCategory = () => {
+  const newRiskCategory = createRiskCategory();
+  navigateTo(`${route.path}/edit?id=${newRiskCategory.id}`);
+};
 
 const { saveRiskDefinition } = useRiskDefinitionUpdate();
 

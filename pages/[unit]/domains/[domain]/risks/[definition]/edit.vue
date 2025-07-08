@@ -53,6 +53,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         :create-initial-value-matrix="createInitialValueMatrix"
         :delete-value-matrix="deleteValueMatrix"
         :validate-names="validateNames"
+        :translations="riskCategoryTranslations"
+        @update:translations="updateRiskCategoryTranslations"
       />
     </BaseContainer>
 
@@ -93,7 +95,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               class="my-6"
               color="secondary"
               variant="flat"
-              :disabled="hasUnsetRiskValues(riskCategories?.[step - 3]?.valueMatrix) || !canGoNext"
+              :disabled="
+                (riskCategories?.[step - 3]?.valueMatrix &&
+                  hasUnsetRiskValues(riskCategories?.[step - 3]?.valueMatrix)) ||
+                !canGoNext
+              "
               @click="goForward"
             >
               {{ globalT('global.button.next') }}
@@ -105,26 +111,27 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   </BasePage>
 </template>
 <script setup lang="ts">
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isEqual } from 'lodash';
+import {
+  createNewMatrixRow,
+  createRiskCategory,
+  getUpdatedRiskDefinition,
+  hasUnsetRiskValues,
+  Impact,
+  ProbabilityLevel,
+  removeMatrixRow,
+  RiskValue,
+  UnsetItem,
+  updateRiskCategory,
+  updateRiskMatrixValues
+} from '~/components/risk/wizard/helpers';
 import type {
   IVeoRiskCategory,
-  IVeoRiskValueLevel,
+  IVeoRiskDefinitionItemTranslations,
   IVeoRiskPotentialImpact,
-  IVeoRiskProbabilityLevel
+  IVeoRiskProbabilityLevel,
+  IVeoRiskValueLevel
 } from '~/types/VeoTypes';
-import {
-  ProbabilityLevel,
-  updateRiskCategory,
-  removeMatrixRow,
-  createNewMatrixRow,
-  UnsetItem,
-  RiskValue,
-  Impact,
-  hasUnsetRiskValues,
-  updateRiskMatrixValues,
-  getUpdatedRiskDefinition
-} from '~/components/risk/wizard/helpers';
-import { isEqual } from 'lodash';
 
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { t, locale } = useI18n();
@@ -137,6 +144,7 @@ const riskCategoryId = computed(() => (route?.query.id as string) ?? '');
 const { data: riskDefinition } = useRiskDefinition();
 
 const step = ref(1);
+let hasInitialData = false;
 
 function goForward() {
   step.value++;
@@ -152,7 +160,45 @@ const riskDefinitionRoute = computed(() => route.path.replace(/\/edit$/, ''));
 // State
 const probabilityLevels = ref([]);
 const riskValues = ref([]);
-const riskCategories = ref([]);
+const riskCategories = ref<IVeoRiskCategory[]>([]);
+const riskCategoryTranslations = ref<IVeoRiskDefinitionItemTranslations>({});
+
+const findCategoryById = (id: string) => riskCategories.value.find((cat) => cat.id === id);
+
+// Initialize state from risk definition
+function initializeFromRiskDefinition() {
+  if (!riskDefinition.value) return;
+
+  riskValues.value = cloneDeep(riskDefinition.value.riskValues) ?? [];
+  probabilityLevels.value = cloneDeep(riskDefinition.value.probability?.levels) ?? [];
+  riskCategories.value = cloneDeep(riskDefinition.value.categories) ?? [];
+
+  // Set initial data for dirty checking
+  if (!hasInitialData) assignInitialData();
+
+  if (riskCategoryId.value && !findCategoryById(riskCategoryId.value)) {
+    const newCategory = createRiskCategory(riskCategoryId.value);
+    riskCategories.value.push(newCategory);
+  }
+
+  // Update translations for current category
+  updateCategoryTranslations();
+}
+
+function updateCategoryTranslations() {
+  const currentCategory = findCategoryById(riskCategoryId.value);
+  riskCategoryTranslations.value = cloneDeep(currentCategory?.translations) ?? {};
+}
+
+watch(riskDefinition, initializeFromRiskDefinition, { immediate: true, deep: true });
+
+// Watch for changes in riskCategoryId to update translations when switching categories
+watch(riskCategoryId, (newCategoryId) => {
+  if (newCategoryId && riskCategories.value.length) {
+    updateCategoryTranslations();
+    isMissingTranslations.value = false;
+  }
+});
 
 const potentialImpactsAll = computed<IVeoRiskPotentialImpact[][]>(
   () => riskDefinition.value?.categories?.map((category) => category.potentialImpacts) ?? []
@@ -160,9 +206,15 @@ const potentialImpactsAll = computed<IVeoRiskPotentialImpact[][]>(
 
 // Validations
 const isMissingTranslations = ref(false);
-const hasUnsetItems = computed(() =>
-  riskCategories.value?.map((category) => hasUnsetRiskValues(category?.valueMatrix)).includes(true)
+const hasUnsetMatrixValues = computed(() =>
+  riskCategories.value.some((category) => category?.valueMatrix && hasUnsetRiskValues(category.valueMatrix))
 );
+
+const hasEmptyTranslations = computed(() =>
+  riskCategories.value.some((category) => Object.values(category?.translations ?? {}).some((t) => t.name === ''))
+);
+
+const hasUnsetItems = computed(() => hasUnsetMatrixValues.value || hasEmptyTranslations.value);
 
 const canSave = computed(() => !hasUnsetItems.value && !isMissingTranslations.value && isDirty.value);
 const canGoNext = computed(() => !isMissingTranslations.value);
@@ -239,9 +291,9 @@ async function save() {
 
 // State: Single category mode (riskCategoryStepper)
 const riskCategory = computed<IVeoRiskCategory>(() => {
-  if (!riskCategoryId || !riskDefinition) return {};
+  if (!riskCategoryId || !riskDefinition) return {} as IVeoRiskCategory;
   const category = riskCategories.value?.find((cat) => cat.id === riskCategoryId.value);
-  return category ?? {};
+  return category ?? ({} as IVeoRiskCategory);
 });
 
 const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[] | UnsetItem[]>(() =>
@@ -252,7 +304,6 @@ const potentialImpactsSingleCategory = computed<IVeoRiskPotentialImpact[] | Unse
 function createSingleModePotentialImpact() {
   const newImpact =
     potentialImpactsSingleCategory.value.length ? new Impact(potentialImpactsSingleCategory.value) : new UnsetItem();
-
   const rowLength = probabilityLevels.value.length ?? 0;
   const newValueMatrix =
     riskCategory.value?.valueMatrix?.length ?
@@ -266,6 +317,19 @@ function createSingleModePotentialImpact() {
   });
 }
 
+async function updateRiskCategoryTranslations(newTranslations: IVeoRiskDefinitionItemTranslations) {
+  const updatedCategory = {
+    ...riskCategory.value,
+    translations: { ...newTranslations }
+  };
+
+  riskCategories.value = riskCategories.value.map((category) =>
+    category.id === riskCategoryId.value ? updatedCategory : category
+  );
+  riskCategoryTranslations.value = { ...newTranslations };
+  isMissingTranslations.value = false;
+}
+
 function deleteSingleModePotentialImpact(index: number) {
   const newPotentialImpacts = potentialImpactsSingleCategory.value?.filter((_, i) => i !== index);
 
@@ -277,7 +341,7 @@ function deleteSingleModePotentialImpact(index: number) {
 }
 
 function createInitialValueMatrix(riskCategory: IVeoRiskCategory, potentialImpacts: IVeoRiskPotentialImpact[]) {
-  if (!riskCategories.value) return;
+  if (!riskCategories.value || !riskCategory.potentialImpacts.length) return;
 
   riskCategories.value = riskCategories.value.map((category) => {
     if (category.id === riskCategory.id) {
@@ -321,7 +385,7 @@ function validateNames(
   name: string,
   items: IVeoRiskValueLevel[] | IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[]
 ) {
-  isMissingTranslations.value = name == '' || hasMissingTranslations(items);
+  isMissingTranslations.value = name === '' || hasMissingTranslations(items);
 }
 
 // Dirty state
@@ -332,7 +396,6 @@ type InitialData = {
 };
 
 const isDirty = ref(false);
-let hasInitialData = false;
 const initialData: InitialData = {
   probabilityLevels: [],
   riskValues: [],
@@ -354,17 +417,6 @@ function evaluateDirtyWizard() {
     !isEqual(riskCategories.value, initialData.riskCategories)
   );
 }
-
-watch(
-  riskDefinition,
-  () => {
-    riskValues.value = cloneDeep(riskDefinition.value?.riskValues) ?? [];
-    probabilityLevels.value = cloneDeep(riskDefinition.value?.probability?.levels) ?? [];
-    riskCategories.value = cloneDeep(riskDefinition.value?.categories) ?? [];
-    if (!hasInitialData && riskDefinition.value) assignInitialData();
-  },
-  { immediate: true, deep: true }
-);
 
 watch(
   [probabilityLevels, riskValues, riskCategories],

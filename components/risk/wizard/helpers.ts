@@ -1,3 +1,4 @@
+import { v4 as uuid } from 'uuid';
 import type {
   IVeoDomainRiskDefinition,
   IVeoRiskCategory,
@@ -86,6 +87,15 @@ export class Impact {
     this.htmlColor = defaultColor;
     this.translations = getInitialTranslations(potentialImpacts);
   }
+}
+// Factory function to create a new risk category
+export function createRiskCategory(id?: string): IVeoRiskCategory {
+  return {
+    id: id ?? uuid(),
+    translations: getInitialTranslations() as any,
+    potentialImpacts: [],
+    valueMatrix: undefined
+  };
 }
 
 // Check if values in risk matrices are unset
