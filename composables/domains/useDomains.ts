@@ -101,7 +101,8 @@ export function useCurrentDomain() {
   return {
     data,
     isLoading,
-    error
+    error,
+    refresh: getDomain
   };
 }
 

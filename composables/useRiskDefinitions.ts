@@ -1,11 +1,11 @@
-import riskQueryDefinitions from '~/composables/api/queryDefinitions/risks';
-import messages from '~/locales/base/pages/unit-domains-domain-risks-matrix.json';
 import { useQueryClient } from '@tanstack/vue-query';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import riskQueryDefinitions from '~/composables/api/queryDefinitions/risks';
+import messages from '~/locales/base/pages/unit-domains-domain-risks-matrix.json';
 import type { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export function useRiskDefinition() {
-  const { data: currentDomain } = useCurrentDomain();
+  const { data: currentDomain, refresh } = useCurrentDomain();
   const route = useRoute();
 
   const riskDefinition = computed(() => {
@@ -13,7 +13,8 @@ export function useRiskDefinition() {
   });
 
   return {
-    data: riskDefinition
+    data: riskDefinition,
+    reload: refresh
   };
 }
 

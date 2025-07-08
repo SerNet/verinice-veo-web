@@ -28,6 +28,7 @@
               size="small"
               :to="`${route.path}/edit?id=${riskCategory.id ?? ''}`"
             />
+            <v-btn :icon="mdiTrashCan" variant="plain" size="small" @click="deleteRiskCategory(riskCategory.id)" />
           </v-card-actions>
         </div>
       </div>
@@ -53,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiPencil } from '@mdi/js';
+import { mdiPencil, mdiTrashCan } from '@mdi/js';
 import type {
   IVeoRiskCategory,
   IVeoRiskPotentialImpact,
@@ -67,6 +68,7 @@ defineProps<{
   riskValues: IVeoRiskValueLevel[];
   probabilityLevels: IVeoRiskProbabilityLevel[];
   riskCategory: IVeoRiskCategory;
+  deleteRiskCategory: (categoryId: string) => void;
 }>();
 
 const { locale } = useI18n();

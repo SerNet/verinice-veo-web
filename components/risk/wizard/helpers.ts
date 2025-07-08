@@ -1,9 +1,8 @@
 import type {
-  IVeoRiskValue,
-  IVeoRiskCategory,
-  IVeoRiskValueLevel,
   IVeoDomainRiskDefinition,
-  IVeoRiskPotentialImpact
+  IVeoRiskCategory,
+  IVeoRiskPotentialImpact,
+  IVeoRiskValueLevel
 } from '~/types/VeoTypes';
 
 const defaultColor = '#444444';
@@ -91,7 +90,7 @@ export class Impact {
 
 // Check if values in risk matrices are unset
 export function hasUnsetRiskValues(valueMatrix: IVeoRiskValueLevel[][]): boolean {
-  if (!valueMatrix || !Array.isArray(valueMatrix)) return false;
+  if (!valueMatrix || !Array.isArray(valueMatrix)) return true;
   return (valueMatrix.flat() ?? []).some((riskValue) => Object.hasOwn(riskValue, 'isUnset'));
 }
 
@@ -110,6 +109,10 @@ export function updateRiskMatrixValues(
 
 export function updateRiskCategory(riskCategories: IVeoRiskCategory[], newRiskCategory: IVeoRiskCategory) {
   return riskCategories.map((oldCategory) => (oldCategory.id === newRiskCategory.id ? newRiskCategory : oldCategory));
+}
+
+export function deleteRiskCategory(riskCategories: IVeoRiskCategory[], categoryId: string) {
+  return riskCategories.filter((category) => category.id !== categoryId);
 }
 
 export function getPotentialImpactsByCategory(riskDefinition: IVeoDomainRiskDefinition, categoryId: string) {

@@ -55,8 +55,34 @@
             :risk-values="riskDefinition.riskValues ?? []"
             :probability-levels="riskDefinition.probability.levels ?? []"
             :risk-category="riskCategory"
+            :delete-risk-category="() => requestDeleteRiskCategory(riskCategory.id)"
           />
         </v-row>
+        <v-dialog v-model="closeConfirmationDialogVisible" width="450px">
+          <v-card>
+            <v-card-title class="bg-accent small-caps">
+              {{ t('deleteDialog') }}
+            </v-card-title>
+            <v-card-text>
+              {{ t('deleteDialogBody') }}
+              <v-card-actions class="px-0 pb-0">
+                <v-btn variant="text" @click="cancelDeleteRiskCategory">
+                  {{ t('global.button.cancel') }}
+                </v-btn>
+                <v-spacer />
+                <v-btn
+                  ref="confirmButton"
+                  color="primary"
+                  variant="text"
+                  @click="confirmDeleteRiskCategory"
+                  @keydown.enter="confirmDeleteRiskCategory"
+                >
+                  {{ t('global.button.yes') }}
+                </v-btn>
+              </v-card-actions>
+            </v-card-text>
+          </v-card>
+        </v-dialog>
       </template>
       <v-skeleton-loader v-else type="heading"></v-skeleton-loader>
     </BaseContainer>
@@ -69,9 +95,50 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-definition';
 
 <script setup lang="ts">
 import { mdiPencil } from '@mdi/js';
+import {
+  deleteRiskCategory as deleteRiskCategoryHelper,
+  getUpdatedRiskDefinition
+} from '~/components/risk/wizard/helpers';
+import { useRiskDefinitionUpdate } from '~/composables/useRiskDefinitions';
 const { t } = useVeoI18n();
-const { data: riskDefinition } = useRiskDefinition();
+const { data: riskDefinition, reload } = useRiskDefinition();
 const route = useRoute();
+const closeConfirmationDialogVisible = ref(false);
+const categoryToDelete = ref<string | null>(null);
+
+const { saveRiskDefinition } = useRiskDefinitionUpdate();
+
+const requestDeleteRiskCategory = (categoryId: string) => {
+  categoryToDelete.value = categoryId;
+  closeConfirmationDialogVisible.value = true;
+};
+
+const confirmDeleteRiskCategory = async () => {
+  if (!riskDefinition.value || !categoryToDelete.value) {
+    closeConfirmationDialogVisible.value = false;
+    categoryToDelete.value = null;
+    return;
+  }
+  closeConfirmationDialogVisible.value = false;
+  // Remove the category from the list
+  const newCategories = deleteRiskCategoryHelper(riskDefinition.value.categories, categoryToDelete.value);
+  // Create the updated risk definition
+  const updatedRiskDefinition = getUpdatedRiskDefinition(
+    riskDefinition.value,
+    newCategories,
+    riskDefinition.value.probability.levels,
+    riskDefinition.value.riskValues
+  );
+  // Persist the change
+  await saveRiskDefinition(updatedRiskDefinition);
+  categoryToDelete.value = null;
+  reload();
+};
+
+const cancelDeleteRiskCategory = () => {
+  closeConfirmationDialogVisible.value = false;
+  categoryToDelete.value = null;
+};
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks-matrix.json"></i18n>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
