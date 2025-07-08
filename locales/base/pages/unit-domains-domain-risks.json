@@ -17,7 +17,9 @@
     "createPotentialImpact": "Create impact",
     "createPotentialImpactBody": "You can now create impact values for this category.",
     "saveRiskDefinitionWarningTitle": "Attention!",
-    "saveRiskDefinitionWarningBody": "When you save, you change risk values. These must be edited manually. Existing risk analyses are also changed if necessary."
+    "saveRiskDefinitionWarningBody": "When you save, you change risk values. These must be edited manually. Existing risk analyses are also changed if necessary.",
+    "deleteDialog": "Delete category",
+    "deleteDialogBody": "Are you sure you want to delete this criterion? In all units where this criterion is used, all associated impact and risk values will also be removed. This action cannot be undone."
   },
   "de": {
     "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten.",
@@ -37,6 +39,8 @@
     "createPotentialImpact": "Auswirkung anlegen",
     "createPotentialImpactBody": "Sie können jetzt Auswirkungen für diese Kategorie anlegen.",
     "saveRiskDefinitionWarningTitle": "Achtung!",
-    "saveRiskDefinitionWarningBody": "Wenn Sie speichern, ändern Sie Risikowerte. Diese müssen manuell nachbearbeitet werden. Außerdem werden bestehende Risikoanalysen gegebenenfalls geändert."
+    "saveRiskDefinitionWarningBody": "Wenn Sie speichern, ändern Sie Risikowerte. Diese müssen manuell nachbearbeitet werden. Außerdem werden bestehende Risikoanalysen gegebenenfalls geändert.",
+    "deleteDialog": "Kategorie löschen",
+    "deleteDialogBody": "Möchten Sie dieses Kriterium wirklich löschen? In allen Units, in denen dieses Kriterium verwendet wird, werden alle zugehörigen Auswirkungs- und Risikowerte ebenfalls entfernt. Diese Aktion kann nicht rückgängig gemacht werden."
   }
 }
