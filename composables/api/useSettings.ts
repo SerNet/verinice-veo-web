@@ -21,43 +21,51 @@ import messages from '~/locales/base/components/user-settings-messages.json';
 
 export function useSettings() {
   const appId = 'verinice-veo';
-  const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
-  const data = ref<Record<string, boolean> | undefined>();
-  const isLoading = ref(true);
-  const error = ref<TVeoError>(null);
-  const { locale } = useI18n();
-  const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
   const defaultSettings: Record<string, boolean> = {
     'compact-styles': false
   };
 
+  const data = ref<Record<string, boolean> | undefined>();
+  const isLoading = ref(true);
+  const error = ref<TVeoError>();
+
+  const config = useRuntimeConfig();
+  const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
+  const { locale } = useI18n();
+  const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
+
   async function fetchSettings() {
     isLoading.value = true;
-    error.value = null;
+    let result: Record<string, boolean> = {};
 
     try {
-      const result = await useQuerySync(settingsQueryDefinition.queries.fetchSettingsWithAppId, { appId: appId });
-
-      // Merge default settings with fetched settings
-      data.value = { ...defaultSettings, ...result };
+      result = await useQuerySync(settingsQueryDefinition.queries.fetchSettingsWithAppId, { appId });
     } catch (err) {
-      error.value = handleErrorMessage(err);
-      displayErrorMessage(messages?.[locale.value]?.errorBody ?? '');
+      error.value = err as TVeoError;
+      if (config.public.debug) {
+        console.error('Error fetching settings:', err);
+      }
     } finally {
       isLoading.value = false;
+      data.value = { ...defaultSettings, ...result };
     }
   }
 
-  // save change in setting page
-  const save = async () => {
-    await updateSettingsMutation.mutateAsync({
-      appId: 'verinice-veo',
-      settings: data.value
-    });
-    displaySuccessMessage(messages?.[locale.value]?.successHeader ?? '');
-  };
+  async function saveSettings() {
+    try {
+      await updateSettingsMutation.mutateAsync({
+        appId,
+        settings: data.value
+      });
+      displaySuccessMessage(messages?.[locale.value]?.successHeader ?? '');
+    } catch (err) {
+      if (config.public.debug) {
+        console.error('Error saving settings:', err);
+      }
+      displayErrorMessage(messages?.[locale.value]?.errorBody ?? '');
+    }
+  }
 
-  // Toggle handler
   async function toggleSetting(key: string) {
     if (data.value) {
       data.value[key] = !data.value[key];
@@ -69,7 +77,7 @@ export function useSettings() {
   return {
     data,
     isLoading,
-    save,
+    save: saveSettings,
     toggleSetting
   };
 }

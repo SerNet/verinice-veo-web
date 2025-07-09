@@ -2,9 +2,8 @@
   "en": {
     "settings": "Settings",
     "alertHeader": "Settings could not be loaded.",
-    "alertBody": "Please contact our support: verinice{'@'}sernet.de.",
     "errorHeader": "Update failed.",
-    "errorBody": "An error occurred while updating your settings. Please contact our support: verinice{'@'}sernet.de.",
+    "errorBody": "An error occurred while updating your settings. ",
     "successHeader": "Settings updated successfully.",
     "userSettingsPage": {
       "header": "User Settings",
@@ -19,9 +18,8 @@
   "de": {
     "settings": "Einstellungen",
     "alertHeader": "Einstellungen konnten nicht geladen werden.",
-    "alertBody": "Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
     "errorHeader": "Aktualisierung fehlgeschlagen.",
-    "errorBody": "Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten. Bitte kontaktieren Sie unseren Support: verinice{'@'}sernet.de.",
+    "errorBody": "Beim Aktualisieren Ihrer Einstellungen ist ein Fehler aufgetreten.",
     "successHeader": "Einstellungen erfolgreich aktualisiert.",
     "userSettingsPage": {
       "header": "Benutzereinstellungen",
