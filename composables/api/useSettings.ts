@@ -34,11 +34,11 @@ function filterSettings(allSettings: Record<string, boolean>, allowedSettingKeys
     .reduce((filteredSettings, key) => ({ ...filteredSettings, ...{ [key]: allSettings[key] } }), {}) as UserSettings;
 }
 
-export function useSettings() {
-  const data = ref<UserSettings>();
-  const isLoading = ref(true);
-  const error = ref<TVeoError | undefined>();
+const data = ref<UserSettings>();
+const isLoading = ref(false);
+const error = ref<TVeoError | undefined>();
 
+export function useSettings() {
   const config = useRuntimeConfig();
   const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
   const { locale } = useI18n();
@@ -74,6 +74,9 @@ export function useSettings() {
         console.error('Error saving settings:', err);
       }
       displayErrorMessage(messages?.[locale.value]?.errorBody ?? '');
+    } finally {
+      isLoading.value = false;
+      fetchSettings();
     }
   }
 
@@ -83,7 +86,9 @@ export function useSettings() {
     }
   }
 
-  fetchSettings();
+  if (!data.value && !isLoading.value) {
+    fetchSettings();
+  }
 
   return {
     data,
