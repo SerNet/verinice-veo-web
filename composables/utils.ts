@@ -107,7 +107,7 @@ export const useRules = () => {
 /**
  * generic helper handling error messages
  */
-export type TVeoError = Error | { message: string; cause: string } | null;
+export type TVeoError = Error | { message: string; cause: string };
 export function handleErrorMessage(err: unknown) {
   if (err instanceof Error) return { message: err.message, cause: err.cause } as Error;
   else return { message: String(err), cause: 'unknown' };
