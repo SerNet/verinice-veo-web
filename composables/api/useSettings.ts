@@ -19,15 +19,25 @@ import { useQuerySync } from './utils/query';
 import settingsQueryDefinition from '~/composables/api/queryDefinitions/settings';
 import messages from '~/locales/base/components/user-settings-messages.json';
 
-export function useSettings() {
-  const appId = 'verinice-veo';
-  const defaultSettings: Record<string, boolean> = {
-    'compact-styles': false
-  };
+const appId = 'verinice-veo';
+const defaultSettings = { 'compact-styles': false };
 
-  const data = ref<Record<string, boolean> | undefined>();
+const allowedSettingKeys = Object.keys(defaultSettings);
+export type UserSettings = typeof defaultSettings;
+type AllowedSettingKeys = typeof allowedSettingKeys;
+
+function filterSettings(allSettings: Record<string, boolean>, allowedSettingKeys: AllowedSettingKeys): UserSettings {
+  if (!allSettings || !allowedSettingKeys) return defaultSettings;
+
+  return Object.keys(allSettings)
+    .filter((key) => allowedSettingKeys.includes(key))
+    .reduce((filteredSettings, key) => ({ ...filteredSettings, ...{ [key]: allSettings[key] } }), {}) as UserSettings;
+}
+
+export function useSettings() {
+  const data = ref<UserSettings>();
   const isLoading = ref(true);
-  const error = ref<TVeoError>();
+  const error = ref<TVeoError | undefined>();
 
   const config = useRuntimeConfig();
   const updateSettingsMutation = useMutation(settingsQueryDefinition.mutations.updateSettings);
@@ -36,10 +46,11 @@ export function useSettings() {
 
   async function fetchSettings() {
     isLoading.value = true;
-    let result: Record<string, boolean> = {};
+    let filteredSettings: UserSettings;
 
     try {
-      result = await useQuerySync(settingsQueryDefinition.queries.fetchSettingsWithAppId, { appId });
+      const settings = await useQuerySync(settingsQueryDefinition.queries.fetchSettingsWithAppId, { appId });
+      filteredSettings = filterSettings(settings, allowedSettingKeys);
     } catch (err) {
       error.value = err as TVeoError;
       if (config.public.debug) {
@@ -47,7 +58,7 @@ export function useSettings() {
       }
     } finally {
       isLoading.value = false;
-      data.value = { ...defaultSettings, ...result };
+      data.value = { ...defaultSettings, ...filteredSettings };
     }
   }
 

@@ -33,6 +33,7 @@
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
 import { VeoApiReponseType } from '../utils/request';
+import { UserSettings } from '../useSettings';
 
 export interface IVeoFetchSettingsParameters {
   appId: string;
@@ -40,8 +41,9 @@ export interface IVeoFetchSettingsParameters {
 
 export interface IVeoUpdateSettingParameters {
   appId: string;
-  settings: Record<string, boolean>;
+  settings: UserSettings;
 }
+
 export default {
   queries: {
     fetchSettings: {
@@ -57,7 +59,7 @@ export default {
         params
       }),
       staticQueryOptions: { placeholderData: [] }
-    } as IVeoQueryDefinition<IVeoFetchSettingsParameters, Record<string, boolean>>
+    } as IVeoQueryDefinition<IVeoFetchSettingsParameters, UserSettings>
   },
   mutations: {
     updateSettings: {
