@@ -177,7 +177,7 @@
     </template>
     <template #footer>
       <ObjectCreateDialog
-        v-if="filter.objectType"
+        v-if="filter.objectType && createObjectDialogVisible"
         v-model="createObjectDialogVisible"
         :domain-id="domainId"
         :object-type="filter.objectType"
