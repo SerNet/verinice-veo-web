@@ -111,7 +111,12 @@
                     flat
                     @click="saveObject"
                   >
-                    {{ t('global.button.save') }}
+                    <template v-if="wasSavedSuccessfully">
+                      <v-icon :icon="mdiCheck" />
+                    </template>
+                    <template v-else>
+                      {{ t('global.button.save') }}
+                    </template>
                   </v-btn>
                 </template>
                 <template v-else>
@@ -165,6 +170,7 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType, VeoElementTypesSingular } from '~/types/VeoTypes';
+import { mdiCheck } from '@mdi/js';
 
 onBeforeRouteLeave((to, _from, next) => {
   // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
@@ -188,7 +194,7 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const config = useRuntimeConfig();
 const route = useRoute();
 const router = useRouter();
-const { displaySuccessMessage, displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
+const { displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
 const { link } = useLinkObject();
 const { ability } = useVeoPermissions();
 const { mutateAsync: _updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
@@ -249,6 +255,8 @@ const pageWidths = ref<number[]>([3, 9]);
 const pageWidthsLg = ref<number[]>([5, 7]);
 const pageWidthsXl = ref<number[]>([5, 7]);
 const pageTitles = ref<string[]>([t('objectInfo'), t('objectForm')]);
+// on button save
+const wasSavedSuccessfully = ref<boolean>(false);
 
 const onPageCollapsed = (collapsedPages: boolean[]) => {
   if (collapsedPages.some((page) => page)) {
@@ -276,12 +284,23 @@ function resetForm() {
 }
 
 async function saveObject() {
-  await updateObject(
-    upperFirst(t('objectSaved', { name: object.value?.displayName })),
-    upperFirst(t('objectNotSaved'))
-  );
-  if (!isEqual(object.value?.riskValues, modifiedObject.value?.riskValues)) {
-    displayInfoMessage('', upperFirst(t('riskAlert')));
+  try {
+    await updateObject(
+      upperFirst(t('objectSaved', { name: object.value?.displayName })),
+      upperFirst(t('objectNotSaved'))
+    );
+
+    if (!isEqual(object.value?.riskValues, modifiedObject.value?.riskValues)) {
+      displayInfoMessage('', upperFirst(t('riskAlert')));
+    }
+
+    wasSavedSuccessfully.value = true;
+
+    setTimeout(() => {
+      wasSavedSuccessfully.value = false;
+    }, 1000);
+  } catch (e) {
+    wasSavedSuccessfully.value = false;
   }
 }
 
@@ -322,7 +341,6 @@ async function updateObject(successText: string, errorText: string) {
         endpoint: route.params.objectType,
         object: modifiedObject.value
       });
-      displaySuccessMessage(successText);
       refetch();
       formDataIsRevision.value = false;
     }
