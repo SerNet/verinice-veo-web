@@ -107,7 +107,7 @@
                   <v-btn
                     :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
                     class="mb-4"
-                    color="primary"
+                    :color="wasSavedSuccessfully ? 'success' : 'primary'"
                     flat
                     @click="saveObject"
                   >
@@ -255,7 +255,7 @@ const pageWidths = ref<number[]>([3, 9]);
 const pageWidthsLg = ref<number[]>([5, 7]);
 const pageWidthsXl = ref<number[]>([5, 7]);
 const pageTitles = ref<string[]>([t('objectInfo'), t('objectForm')]);
-// on button save
+
 const wasSavedSuccessfully = ref<boolean>(false);
 
 const onPageCollapsed = (collapsedPages: boolean[]) => {
@@ -283,24 +283,22 @@ function resetForm() {
   modifiedObject.value = cloneDeep(object.value);
 }
 
-async function saveObject() {
-  try {
-    await updateObject(
-      upperFirst(t('objectSaved', { name: object.value?.displayName })),
-      upperFirst(t('objectNotSaved'))
-    );
-
-    if (!isEqual(object.value?.riskValues, modifiedObject.value?.riskValues)) {
-      displayInfoMessage('', upperFirst(t('riskAlert')));
-    }
-
-    wasSavedSuccessfully.value = true;
-
-    setTimeout(() => {
-      wasSavedSuccessfully.value = false;
-    }, 1000);
-  } catch (e) {
+function handleSaveSuccess() {
+  wasSavedSuccessfully.value = true;
+  setTimeout(() => {
     wasSavedSuccessfully.value = false;
+  }, 2000);
+}
+
+async function saveObject() {
+  await updateObject(
+    upperFirst(t('objectSaved', { name: object.value?.displayName })),
+    upperFirst(t('objectNotSaved')),
+    handleSaveSuccess
+  );
+
+  if (!isEqual(object.value?.riskValues, modifiedObject.value?.riskValues)) {
+    displayInfoMessage('', upperFirst(t('riskAlert')));
   }
 }
 
@@ -332,7 +330,7 @@ const expireOptimisticLockingAlert = () => {
   }
 };
 
-async function updateObject(successText: string, errorText: string) {
+async function updateObject(successText: string, errorText: string, callback?: () => void) {
   expireOptimisticLockingAlert();
   try {
     if (modifiedObject.value && object.value) {
@@ -343,6 +341,7 @@ async function updateObject(successText: string, errorText: string) {
       });
       refetch();
       formDataIsRevision.value = false;
+      callback?.();
     }
   } catch (e: any) {
     if (e.code === 412) {
