@@ -31,7 +31,7 @@
         </div>
       </template>
       <template #default>
-        {{ translatedObjectType }}
+        {{ upperFirst(translatedObjectType) }}
       </template>
     </v-tooltip>
   </div>
@@ -63,8 +63,9 @@ import {
   mdiShieldAlertOutline
 } from '@mdi/js';
 
-import { useQuery } from '~/composables/api/utils/query';
+import { upperFirst } from 'lodash';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { useQuery } from '~/composables/api/utils/query';
 
 const props = withDefaults(
   defineProps<{
