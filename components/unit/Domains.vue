@@ -35,7 +35,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             color="primary"
             :value="d"
             :aria-label="`domain-${domain.name}`"
-            :disabled="isDisabled || d.id === mandatoryDomain?.id"
+            :disabled="isDisabled || d.id === mandatoryDomain?.id || isDomainExisting(d)"
           ></v-checkbox>
         </template>
       </BaseListItem>
@@ -47,6 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import { mdiPuzzle } from '@mdi/js';
 import type { TVeoDomain } from '~/composables/domains/useDomains';
 const { t } = useI18n();
+const { data: currentUnit } = useCurrentUnit();
 
 interface Props {
   domains: readonly TVeoDomain[];
@@ -55,14 +56,32 @@ interface Props {
   mandatoryDomain?: TVeoDomain;
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   isAssociatingDomains: false,
   isDisabled: false,
   mandatoryDomain: undefined
 });
 
 // State
-const selected = defineModel<string[]>();
+const selected = defineModel<TVeoDomain[]>();
+
+const isDomainExisting = (domain: TVeoDomain): boolean => {
+  return !!currentUnit.value?.raw?.domains?.some((d) => d.id === domain.id);
+};
+
+watch([() => props.domains, () => currentUnit.value?.raw?.domains], () => {
+  selected.value ??= [];
+
+  const unitDomains = currentUnit.value?.raw?.domains ?? [];
+  const allDomains = props.domains;
+
+  unitDomains.forEach((unitDomain) => {
+    const matchingDomain = allDomains.find((d) => d.id === unitDomain.id);
+    if (matchingDomain && !selected.value?.some((s) => s.id === matchingDomain.id)) {
+      selected.value?.push(matchingDomain);
+    }
+  });
+});
 </script>
 
 <i18n src="~/locales/base/components/unit-domains.json"></i18n>
