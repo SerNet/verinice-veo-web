@@ -31,8 +31,6 @@ ENV VEO_OIDC_CLIENT=
 ENV VEO_OIDC_ACCOUNT_APPLICATION=
 ENV VEO_DEBUG ${VEO_DEBUG}
 ENV NODE_ENV=$NODE_ENV
-ENV VEO_FEATURE_FLAG_CARD_VIEW=
-ENV VEO_FEATURE_FLAG_USER_SETTINGS=
 ENV VEO_HIDE_SERNET_REFERENCES=
 
 RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/VERSION && echo ${CI_COMMIT_SHORT_SHA} > BUILD && echo ${CI_COMMIT_SHORT_SHA} > public/BUILD
@@ -59,8 +57,6 @@ ENV VEO_OIDC_URL=https://auth.veo.example/auth
 ENV VEO_OIDC_REALM=veo-oidcrealm-example
 ENV VEO_OIDC_CLIENT=veo-oidcclient-example
 ENV VEO_OIDC_ACCOUNT_APPLICATION=https://auth.veo.example/auth/realms/veo-oidcrealm-example/account
-ENV VEO_FEATURE_FLAG_CARD_VIEW=veo-feature-flag-card-view-example
-ENV VEO_FEATURE_FLAG_USER_SETTINGS=feature-flag-user-settings-example
 ENV VEO_HIDE_SERNET_REFERENCES=veo-hide-sernet-references-example
 
 EXPOSE 80
