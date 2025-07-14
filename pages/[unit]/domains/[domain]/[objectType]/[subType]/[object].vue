@@ -298,7 +298,10 @@ async function saveObject() {
   );
 
   if (!isEqual(object.value?.riskValues, modifiedObject.value?.riskValues)) {
-    displayInfoMessage('', upperFirst(t('riskAlert')));
+    displayInfoMessage('', upperFirst(t('riskAlert')), {
+      timeout: 3000,
+      noCloseButton: true
+    });
   }
 }
 

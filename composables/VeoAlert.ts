@@ -38,8 +38,8 @@ export function useVeoAlerts() {
       type,
       title,
       text,
-      params,
-      alertKey
+      alertKey,
+      ...params
     });
     return alertKey;
   }
