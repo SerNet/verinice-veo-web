@@ -1,8 +1,8 @@
-import { camelCase } from 'lodash';
 import { resolve } from 'path';
 
 // Types
 import { LOCALES } from './types/locales';
+import { createFeatureFlags } from './utils/featureFlags';
 
 export default defineNuxtConfig({
   //==============================================================
@@ -70,12 +70,7 @@ export default defineNuxtConfig({
         : new Date(new Date().getFullYear() + 1, 0, 1),
       documentationUrl: process.env.VEO_DOCUMENTATION_URL || 'veo-documentation-url-example',
       hideSerNetReferences: process.env.VEO_HIDE_SERNET_REFERENCES || 'veo-hide-sernet-references-example',
-      featureFlags: Object.keys(process?.env || {})
-        .filter((key) => key.startsWith('VEO_FEATURE_FLAG_'))
-        .map((key) => ({
-          key: camelCase(key.replace('VEO_FEATURE_FLAG_', '').toLowerCase()),
-          value: (process.env?.[key] || '') === 'true'
-        }))
+      featureFlags: createFeatureFlags(process.env)
     }
   },
   // Modules are buildtime only. Can be used to modify build behaviour
