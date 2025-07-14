@@ -73,78 +73,75 @@
         </div>
       </div>
 
-      <v-skeleton-loader v-if="isInitializingFeatureFlags" type="table" />
-      <v-scale-transition v-else>
-        <template v-if="filter.objectType">
-          <!-- Card View -->
+      <template v-if="filter.objectType">
+        <!-- Card View -->
 
-          <ObjectCardView
-            v-if="hasCardView"
-            :card-items="cardItems"
-            :fetched-items="_items"
-            :sort-by="sortBy"
-            :actions="actions"
-            :translations="translations"
-            :cards-page-change="cardsPageChange"
-          />
-          <!-- Table View -->
-          <BaseCard v-else>
-            <ObjectTable
-              :key="tableKey"
-              v-model="selectedItems"
-              v-model:page="page"
-              v-model:sort-by="sortBy"
-              :items="items"
-              :loading="isLoading"
-              :default-headers="[
-                'icon',
-                'designator',
-                'name',
-                'abbreviation',
-                'status',
-                'description',
-                'updatedBy',
-                'updatedAt',
-                'actions'
-              ]"
-              :additional-headers="additionalHeaders"
-              show-select
-              enable-links
-              data-component-name="object-overview-table"
-              enable-click
-              @click="openItem"
-            >
-              <template #actions="{ item }">
-                <div class="d-flex justify-end">
-                  <v-tooltip v-for="btn in actions" :key="btn.id" location="start" :aria-label="btn.label">
-                    <template #activator="{ props }">
-                      <v-btn
-                        :data-component-name="`object-overview-${btn.id}-button`"
-                        :data-veo-test="`object-overview-${btn.id}-button`"
-                        :disabled="ability.cannot('manage', 'objects') || btn.disabled"
-                        :icon="btn.icon"
-                        v-bind="props"
-                        variant="text"
-                        density="compact"
-                        size="x-small"
-                        class="mr-3"
-                        :aria-label="btn.label"
-                        @click="btn.action(item)"
-                      />
-                    </template>
-                    {{ btn.label }}
-                  </v-tooltip>
-                </div>
-              </template>
-            </ObjectTable>
-          </BaseCard>
-        </template>
-        <ObjectTypeError v-else>
-          <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
-            {{ t('filterObjects') }}
-          </v-btn>
-        </ObjectTypeError>
-      </v-scale-transition>
+        <ObjectCardView
+          v-if="hasCardView"
+          :card-items="cardItems"
+          :fetched-items="_items"
+          :sort-by="sortBy"
+          :actions="actions"
+          :translations="translations"
+          :cards-page-change="cardsPageChange"
+        />
+        <!-- Table View -->
+        <BaseCard v-else>
+          <ObjectTable
+            :key="tableKey"
+            v-model="selectedItems"
+            v-model:page="page"
+            v-model:sort-by="sortBy"
+            :items="items"
+            :loading="isLoading"
+            :default-headers="[
+              'icon',
+              'designator',
+              'name',
+              'abbreviation',
+              'status',
+              'description',
+              'updatedBy',
+              'updatedAt',
+              'actions'
+            ]"
+            :additional-headers="additionalHeaders"
+            show-select
+            enable-links
+            data-component-name="object-overview-table"
+            enable-click
+            @click="openItem"
+          >
+            <template #actions="{ item }">
+              <div class="d-flex justify-end">
+                <v-tooltip v-for="btn in actions" :key="btn.id" location="start" :aria-label="btn.label">
+                  <template #activator="{ props }">
+                    <v-btn
+                      :data-component-name="`object-overview-${btn.id}-button`"
+                      :data-veo-test="`object-overview-${btn.id}-button`"
+                      :disabled="ability.cannot('manage', 'objects') || btn.disabled"
+                      :icon="btn.icon"
+                      v-bind="props"
+                      variant="text"
+                      density="compact"
+                      size="x-small"
+                      class="mr-3"
+                      :aria-label="btn.label"
+                      @click="btn.action(item)"
+                    />
+                  </template>
+                  {{ btn.label }}
+                </v-tooltip>
+              </div>
+            </template>
+          </ObjectTable>
+        </BaseCard>
+      </template>
+      <ObjectTypeError v-else>
+        <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
+          {{ t('filterObjects') }}
+        </v-btn>
+      </ObjectTypeError>
 
       <!-- Dialogs -->
       <ObjectDeleteDialog
