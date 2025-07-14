@@ -95,7 +95,6 @@
 import { computed } from 'vue';
 import ObjectIcon from '~/components/object/Icon.vue';
 import { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
-import { useFeatureFlag } from '~/composables/features/featureFlag';
 import { IVeoEntity, IVeoPaginatedResponse, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 // Props
@@ -106,20 +105,18 @@ const props = defineProps<{
   actions: Array<{ id: string; icon: string; label: string; action: (object: any) => void; disabled?: boolean }>;
   translations: IVeoTranslations;
   cardsPageChange: (page: number) => void;
+  isCardViewVisible: boolean;
 }>();
 const emit = defineEmits(['update:sortBy']);
 
 // Use the custom feature flag composable
 const route = useRoute();
 const { t: globalT, locale } = useI18n({ useScope: 'global' });
-const { featureFlags } = useFeatureFlag();
 const { tablePageSize } = useVeoUser();
 const { ability } = useVeoPermissions();
 
 const cardsPage = ref(1);
 const localSortBy = ref(props.sortBy);
-// Computed property to check if the card view should be visible
-const isCardViewVisible = computed(() => featureFlags.value.cardView);
 
 // Card View
 const { formatDateTime } = useFormatters();

@@ -78,6 +78,7 @@
 
         <ObjectCardView
           v-if="hasCardView"
+          :is-card-view-visible="hasCardView"
           :card-items="cardItems"
           :fetched-items="_items"
           :sort-by="sortBy"
