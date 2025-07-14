@@ -96,7 +96,6 @@ import { computed } from 'vue';
 import ObjectIcon from '~/components/object/Icon.vue';
 import { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import { useFeatureFlag } from '~/composables/features/featureFlag';
-import { TInlineComponent } from '~/types/utils';
 import { IVeoEntity, IVeoPaginatedResponse, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 // Props
@@ -112,8 +111,7 @@ const emit = defineEmits(['update:sortBy']);
 
 // Use the custom feature flag composable
 const route = useRoute();
-const { t, locale } = useI18n();
-const { t: globalT } = useI18n({ useScope: 'global' });
+const { t: globalT, locale } = useI18n({ useScope: 'global' });
 const { featureFlags } = useFeatureFlag();
 const { tablePageSize } = useVeoUser();
 const { ability } = useVeoPermissions();
