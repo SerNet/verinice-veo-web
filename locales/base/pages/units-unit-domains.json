@@ -3,12 +3,14 @@
     "isAssociatingDomains": "Associating domains...",
     "associateDomainsErrorText": "Domains could not be associated.",
     "associateDomainsSuccess": "Domains successfully associated.",
-    "associateDomains": "Associate domains"
+    "associateDomains": "Associate domains",
+    "domainSelection": "Domain selection"
   },
   "de": {
     "isAssociatingDomains": "Assoziiere Domänen...",
     "associateDomainsErrorText": "Domänen konnten nicht assoziiert werden.",
     "associateDomainsSuccess": "Domänen erfolgreich assoziert.",
-    "associateDomains": "Domänen hinzufügen"
+    "associateDomains": "Domänen hinzufügen",
+    "domainSelection": "Domänenauswahl"
   }
 }

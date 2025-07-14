@@ -15,7 +15,7 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :title="t('unit-selection')" class="pt-6" data-component-name="unit-selection-page" sticky-footer>
+  <BasePage :title="pageTitle" class="pt-6" data-component-name="domain-selection-page" sticky-footer>
     <BaseContainer>
       <UnitDomains v-model="selectedDomains" :domains="domains" :is-associating-domains="isAssociatingDomains" />
     </BaseContainer>
@@ -62,6 +62,9 @@ const { data: domains } = useDomains();
 const { data: currentUnit } = useCurrentUnit();
 
 // State
+const pageTitle = computed(() => {
+  return `[${currentUnit.value?.raw?.name || ''}] - ${t('domainSelection')}`;
+});
 const selectedDomains = ref([]);
 const domainsToAssociate = computed(() =>
   selectedDomains.value.map((domain) => createLink('domains', domain.id) ?? [])
