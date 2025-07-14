@@ -30,14 +30,6 @@
             @update:filter="updateRoute"
           />
         </div>
-        <div class="toggle-section">
-          <FeatureFlagsFeatureSwitch
-            feature-key="cardView"
-            density="compact"
-            hide-details
-            :label="{ on: t('cardViewOn'), off: t('cardViewOff') }"
-          />
-        </div>
       </div>
 
       <div class="actions py-0 my-0">
