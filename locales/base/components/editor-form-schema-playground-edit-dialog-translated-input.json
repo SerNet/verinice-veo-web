@@ -5,10 +5,10 @@
     "noLabel": "No label",
     "noText": "No text",
     "source": {
-      "formSchema": "form schema",
-      "formSchemaTranslations": "form schema translations",
-      "objectSchema": "object schema translations",
-      "objectSchemaKey": "attribute key"
+      "formSchema": "Form schema",
+      "formSchemaTranslations": "Form schema translations",
+      "objectSchema": "Object schema translations",
+      "objectSchemaKey": "Attribute key"
     },
     "text": "Text"
   },

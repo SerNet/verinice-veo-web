@@ -1,6 +1,6 @@
 {
   "en": {
-    "active": "active",
+    "active": "Active",
     "createUnit": "Create Unit",
     "deleteUnit": "Delete Unit",
     "editUnit": "Edit Unit",
@@ -8,7 +8,7 @@
     "of": "of"
   },
   "de": {
-    "active": "aktiv",
+    "active": "Aktiv",
     "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",

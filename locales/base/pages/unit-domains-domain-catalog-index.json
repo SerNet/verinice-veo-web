@@ -1,9 +1,9 @@
 {
   "en": {
     "all": "All",
-    "applyEntries": "apply scenarios",
+    "applyEntries": "Apply scenarios",
     "applyScenariosError": "Couldn't apply scenarios",
-    "applyTOMs": "apply TOMs",
+    "applyTOMs": "Apply TOMs",
     "applyTOMsError": "Couldn't apply TOMs",
     "catalog": "{name}",
     "scenariosApplied": "Scenarios were applied successfully",

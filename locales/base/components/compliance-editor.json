@@ -51,11 +51,11 @@
       },
       "status": "Status",
       "statusValues": {
-        "Unknown": "unedited",
-        "Yes": "yes",
-        "Partial": "partial",
-        "No": "no",
-        "NA": "dispensable"
+        "Unknown": "Unedited",
+        "Yes": "Yes",
+        "Partial": "Partial",
+        "No": "No",
+        "NA": "Dispensable"
       },
       "responsible": "Responsible",
       "editRequirementImplementation": "Edit implementation",

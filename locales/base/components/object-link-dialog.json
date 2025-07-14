@@ -4,12 +4,12 @@
     "editChildScopes": "Edit scopes of \"{0}\"",
     "editParentObjects": "Edit parent parts of \"{0}\"",
     "editParentScopes": "Edit parent scopes of \"{0}\"",
-    "object": "object",
+    "object": "Object",
     "controlNoDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
     "nonControlNoDataText": "There is currently no {subType}. Please {correspondingObject}",
-    "correspondingObject": "create a corresponding object.",
+    "correspondingObject": "Create a corresponding object.",
     "noSearchResults": "Your search did not match any results",
-    "catalog": "catalog",
+    "catalog": "Catalog",
     "addTarget": "Add {0}"
   },
   "de": {

@@ -1,10 +1,10 @@
 {
   "en": {
-    "createDPIA": "create DPIA",
-    "deleteObject": "delete object",
+    "createDPIA": "Create DPIA",
+    "deleteObject": "Delete object",
     "deleteObjectFailed": "Deleting the object failed",
     "dpia": "DPIA",
-    "linkDPIA": "link DPIA",
+    "linkDPIA": "Link DPIA",
     "performActionsErrorTitle": "Error",
     "performActionsErrorBody": "\"{actionName}\" was not successful.",
     "performActionsSuccess": "\"{actionName}\" was successful.",

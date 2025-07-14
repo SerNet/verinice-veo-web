@@ -1,16 +1,16 @@
 {
   "en": {
-    "effectiveImpact": "effective impact",
-    "explanation": "explanation",
-    "potentialImpact": "potential impact",
-    "saveCTA": "save to recompute",
-    "specificImpact": "specific impact"
+    "effectiveImpact": "Effective impact",
+    "explanation": "Explanation",
+    "potentialImpact": "Potential impact",
+    "saveCTA": "Save to recompute",
+    "specificImpact": "Specific impact"
   },
   "de": {
     "effectiveImpact": "Effektive Auswirkung",
     "explanation": "Erklärung",
-    "potentialImpact": "potentielle Auswirkung",
+    "potentialImpact": "Potentielle Auswirkung",
     "saveCTA": "Speichern zum Neuberechnen",
-    "specificImpact": "spezifische Auswirkungen"
+    "specificImpact": "Spezifische Auswirkungen"
   }
 }

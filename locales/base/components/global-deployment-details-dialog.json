@@ -9,7 +9,7 @@
     "imprint": "Imprint",
     "privacyPolicy": "Privacy policy",
     "productinfo": "Product information",
-    "unknown": "unknown",
+    "unknown": "Unknown",
     "version": {
       "header": "verinice is the open source framework for integrated management systems.",
       "paragraph": {
@@ -31,7 +31,7 @@
     "imprint": "Impressum",
     "privacyPolicy": "Datenschutzerklärung",
     "productinfo": "Produktinformation",
-    "unknown": "unbekannt",
+    "unknown": "Unbekannt",
     "version": {
       "header": "verinice ist das Open-Source Framework für integrierte Management-Systeme.",
       "paragraph": {

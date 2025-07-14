@@ -2,14 +2,14 @@
   "en": {
     "notFoundCode": "404 Not found",
     "notFound": "The object that you requested could not be found.",
-    "backToPrevious": "back to previous page",
+    "backToPrevious": "Back to previous page",
     "pageDoesNotExist": "The page you are looking for does not exist.",
     "goToDashboard": "Go to Dashboard"
   },
   "de": {
     "notFoundCode": "404 Not found",
     "notFound": "Das von Ihnen angeforderte Objekt konnte nicht gefunden werden.",
-    "backToPrevious": "zurück zur vorherigen Seite",
+    "backToPrevious": "Zurück zur vorherigen Seite",
     "pageDoesNotExist": "Die von Ihnen gesuchte Seite existiert nicht.",
     "goToDashboard": "Zum Dashboard"
   }

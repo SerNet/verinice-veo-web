@@ -7,7 +7,7 @@
     "search": "Search for a property",
     "translations": "Translations",
     "help": "Help",
-    "save": "save",
+    "save": "Save",
     "saveSchemaSuccess": "Schema saved! The change will be visible to other users in less than 30 minutes.",
     "saveSchemaError": "Couldn't save schema!",
     "saveContentCreator": "You need the role \"Content Creator\" to save the objectschema."
@@ -20,7 +20,7 @@
     "search": "Nach einer Eigenschaft suchen...",
     "translations": "Übersetzungen",
     "help": "Hilfe",
-    "save": "speichern",
+    "save": "Speichern",
     "saveSchemaSuccess": "Schema wurde gespeichert! Andere User werden die Änderung in spätestens 30 Minuten sehen.",
     "saveSchemaError": "Schema konnte nicht gespeichert werden",
     "saveContentCreator": "Sie müssen die Rolle \"Content Creator\" besitzen, um das Objektschema zu speichern."

@@ -1,9 +1,9 @@
 {
   "en": {
-    "addMitigation": "add mitigating action",
-    "addMitigatingActionsToRisk": "add existing mitigating actions to the risk \"{0} ({1})\"",
-    "createMitigation": "create mitigating action",
-    "editMitigatingActions": "add mitigating actions",
+    "addMitigation": "Add mitigating action",
+    "addMitigatingActionsToRisk": "Add existing mitigating actions to the risk \"{0} ({1})\"",
+    "createMitigation": "Create mitigating action",
+    "editMitigatingActions": "Add mitigating actions",
     "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions.{lineBreak} All selected mitigating actions are available under the action \"Mitigating action for {risk}\"",
     "mitigationSection": "risk reduction actions (mitigating actions)",
     "unlinkPart": "Unlink mitigating action",

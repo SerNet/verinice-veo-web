@@ -1,8 +1,8 @@
 {
   "en": {
     "impact": "Impact",
-    "noData": "no data",
-    "probability": "probability",
+    "noData": "No data",
+    "probability": "Probability",
     "riskValues": "Risk values",
     "Newcriterion": "New criterion",
     "criterion": "Criterion",
@@ -20,7 +20,7 @@
   },
   "de": {
     "impact": "Auswirkung",
-    "noData": "keine Daten",
+    "noData": "Keine Daten",
     "Newcriterion": "Neues Kriterium",
     "criterion": "Kriterium",
     "manageCriteria": "Risikokategorien hinzufügen",

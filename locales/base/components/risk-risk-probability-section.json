@@ -1,11 +1,11 @@
 {
   "en": {
-    "effectiveProbability": "effective probability",
-    "explanation": "explanation",
-    "potentialProbability": "potential probability",
-    "probability": "probability",
-    "saveCTA": "save to recompute",
-    "specificProbability": "specific probability"
+    "effectiveProbability": "Effective probability",
+    "explanation": "Explanation",
+    "potentialProbability": "Potential probability",
+    "probability": "Probability",
+    "saveCTA": "Save to recompute",
+    "specificProbability": "Specific probability"
   },
   "de": {
     "effectiveProbability": "Effektive Wahrscheinlichkeit",

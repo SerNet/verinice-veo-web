@@ -6,7 +6,7 @@
     "linkScope": "Select scope",
     "linkAsset": "Select asset",
     "linkProcess": "Select process",
-    "object": "object",
+    "object": "Object",
     "objectLinked": "The links were successfully updated.",
     "objectNotLinked": "The links could not be updated.",
     "create_entity": "Please specify the type of the new object.",

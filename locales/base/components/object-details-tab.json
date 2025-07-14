@@ -1,6 +1,6 @@
 {
   "en": {
-    "cloneObject": "clone object",
+    "cloneObject": "Clone object",
     "controlDeleted": "The control implementation has been removed",
     "controls": {
       "abbreviation": "Abbreviation",
@@ -10,7 +10,7 @@
     },
     "deleteDialogText": "Only the control implementation of \"{ name }\" will be removed!",
     "deleteDialogTitle": "Remove control implementation",
-    "deleteRisk": "delete risk",
+    "deleteRisk": "Delete risk",
     "errors": {
       "clone": "Could not clone object",
       "control": "Could not remove control implementation link",
@@ -24,10 +24,10 @@
     "to": "To",
     "outbound": "Outgoing",
     "inbound": "Ingoing",
-    "no": "no",
+    "no": "No",
     "objectCloned": "Object successfully cloned",
-    "partial": "partially",
-    "parentType": "parent type",
+    "partial": "Partially",
+    "parentType": "Parent type",
     "removeFromObject": "Remove from object",
     "removeFromScope": "Remove from scope",
     "removeObjectFromObjectError": "Couldn't remove object",

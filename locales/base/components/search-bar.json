@@ -1,9 +1,9 @@
 {
   "en": {
     "search": "Search",
-    "searchFilter_name": "name",
-    "searchFilter_abbreviation": "abbreviation",
-    "searchFilter_displayName": "name & abbreviation"
+    "searchFilter_name": "Name",
+    "searchFilter_abbreviation": "Abbreviation",
+    "searchFilter_displayName": "Name & abbreviation"
   },
   "de": {
     "search": "Suche",

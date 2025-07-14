@@ -82,9 +82,9 @@
     "createdAt": "Erstellzeitpunkt",
     "designator": "Designator",
     "description": "Beschreibung",
-    "hasChildElements": "hat Bestandteile",
+    "hasChildElements": "Hat Bestandteile",
     "name": "Name",
-    "hasNoParentElements": "nicht Teil eines anderen Objektes",
+    "hasNoParentElements": "Nicht Teil eines anderen Objektes",
     "objectType": "Objekttyp",
     "status": "Status",
     "subType": "Subtyp",
@@ -125,14 +125,14 @@
 
   "compliance": {
     "status": {
-      "NO": "nein",
-      "PARTIAL": "teilweise",
-      "UNKNOWN": "unbearbeitet",
-      "YES": "ja",
-      "N_A": "entbehrlich"
+      "NO": "Nein",
+      "PARTIAL": "Teilweise",
+      "UNKNOWN": "Unbearbeitet",
+      "YES": "Ja",
+      "N_A": "Entbehrlich"
     },
     "origination": {
-      "SYSTEM_SPECIFIC": "systemspezifisch"
+      "SYSTEM_SPECIFIC": "Systemspezifisch"
     }
   },
 
@@ -152,7 +152,7 @@
   },
 
   "createEntitiesCTA": "Viele Wege führen zum Ziel... erfassen Sie die {0}, benennen Sie Ihre {1} oder legen Sie eine {2} an.",
-  "dashboardCTA": "Ein Schritt nach dem anderen... das {0} bietet Ihnen einen Gesamtüberblick und führt Sie entlang des Lebebenszyklus Ihrer Assets direkt zu den nächsten Aufgaben oder den letzten Aktivitäten.",
+  "dashboardCTA": "Ein Schritt nach dem anderen... Das {0} bietet Ihnen einen Gesamtüberblick und führt Sie entlang des Lebebenszyklus Ihrer Assets direkt zu den nächsten Aufgaben oder den letzten Aktivitäten.",
   "demoUnitCTA": "Sie möchten sich lieber erst orientieren? Dann werfen Sie einen Blick auf die {0}.",
   "lastLine": "Viel Erfolg wünscht!{0}Ihr verinice.TEAM",
 

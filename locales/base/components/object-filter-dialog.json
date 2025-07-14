@@ -1,10 +1,10 @@
 {
   "en": {
-    "collapseOptions": "less options",
-    "expandOptions": "more options",
-    "filterList": "filter list",
-    "resetFilter": "reset filter",
-    "submitFilter": "apply filter"
+    "collapseOptions": "Less options",
+    "expandOptions": "More options",
+    "filterList": "Filter list",
+    "resetFilter": "Reset filter",
+    "submitFilter": "Apply filter"
   },
   "de": {
     "collapseOptions": "weniger Optionen",

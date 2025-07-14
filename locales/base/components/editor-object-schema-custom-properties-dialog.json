@@ -27,9 +27,9 @@
     "technicalId": "Technical id"
   },
   "de": {
-    "attributes": "attribute",
+    "attributes": "Attribute",
     "addAttribute": "Attribut hinzufügen",
-    "common": "allgemein",
+    "common": "Allgemein",
     "delete": {
       "aspect": "Aspekt löschen",
       "link": "Link löschen"

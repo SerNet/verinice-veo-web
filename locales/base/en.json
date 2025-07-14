@@ -80,9 +80,9 @@
     "createdAt": "Created at",
     "designator": "Designator",
     "description": "Description",
-    "hasChildElements": "has parts",
+    "hasChildElements": "Has parts",
     "name": "Name",
-    "hasNoParentElements": "not part of another object",
+    "hasNoParentElements": "Not part of another object",
     "objectType": "Object type",
     "status": "Status",
     "subType": "Subtype",
@@ -104,12 +104,12 @@
     "details": "Details",
     "domain": "Domains",
     "editor": "Editors",
-    "formschema": "Formschema editor",
+    "formschema": "Formschema Editor",
     "help": "Manual",
     "units": "Unit management",
     "more": "Further domains",
     "objects": "Objects",
-    "objectschema": "Objektschema editor",
+    "objectschema": "Objectschema Editor",
     "profiles": "Profiles",
     "reports": "Reports",
     "risks": "Risk definitions",
@@ -122,11 +122,11 @@
 
   "compliance": {
     "status": {
-      "NO": "no",
-      "PARTIAL": "partial",
-      "UNKNOWN": "unedited",
-      "YES": "yes",
-      "N_A": "dispensable"
+      "NO": "No",
+      "PARTIAL": "Partial",
+      "UNKNOWN": "Unedited",
+      "YES": "Yes",
+      "N_A": "Dispensable"
     },
     "origination": {
       "SYSTEM_SPECIFIC": "system specific"
@@ -159,7 +159,7 @@
 
   "furtherDomainInformation": "The verinice.TEAM will successively provide further domains for verinice.veo click {here} for further information.",
 
-  "residualRiskHint": "the displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
+  "residualRiskHint": "The displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
 
   "deleteText": "Do you really want to delete the element \"{0}\"? This action cannot be undone.",
   "fix": "Fix",

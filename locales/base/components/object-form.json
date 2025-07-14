@@ -1,13 +1,13 @@
 {
   "en": {
-    "createDPIA": "create DPIA",
-    "display": "view as",
-    "history": "history",
-    "linkDPIA": "link DPIA",
-    "messages": "messages",
-    "objects": "objects",
-    "tableOfContents": "contents",
-    "unknown": "unknown"
+    "createDPIA": "Create DPIA",
+    "display": "View as",
+    "history": "History",
+    "linkDPIA": "Link DPIA",
+    "messages": "Messages",
+    "objects": "Objects",
+    "tableOfContents": "Contents",
+    "unknown": "Unknown"
   },
   "de": {
     "createDPIA": "DSFA erstellen",
@@ -17,6 +17,6 @@
     "messages": "Meldungen",
     "objects": "Objekte",
     "tableOfContents": "Inhalt",
-    "unknown": "unbestimmt"
+    "unknown": "Unbestimmt"
   }
 }

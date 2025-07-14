@@ -1,7 +1,7 @@
 {
   "en": {
     "profiles": "Profiles",
-    "active": "active",
+    "active": "Active",
     "createUnit": "Create Unit",
     "deleteUnit": "Delete Unit",
     "editUnit": "Edit Unit",
@@ -16,7 +16,7 @@
   },
   "de": {
     "profiles": "Profile",
-    "active": "aktiv",
+    "active": "Aktiv",
     "createUnit": "Unit erstellen",
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",
