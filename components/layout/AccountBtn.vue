@@ -118,6 +118,7 @@
 <script setup lang="ts">
 import { mergeProps } from 'vue';
 import { mdiOpenInNew } from '@mdi/js';
+import { hasFeature } from '~/utils/featureFlags';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -131,7 +132,6 @@ const { ability } = useVeoPermissions();
 const logout = () => _logout('/');
 
 const displayDeploymentDetails = ref(false);
-const { hasFeature } = useFeatureFlag();
 const hasUserSettings = hasFeature('userSettings');
 const firstName = computed(() => profile.value?.firstName || '');
 const lastName = computed(() => profile.value?.lastName || '');

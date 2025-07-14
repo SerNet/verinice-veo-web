@@ -229,7 +229,7 @@ import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { useFeatureFlag } from '~/composables/features/featureFlag';
+import { hasFeature } from '~/utils/featureFlags';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -266,7 +266,6 @@ const { data: currentDomain } = useCurrentDomain();
 const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
-const { hasFeature, isInitializingFeatureFlags } = useFeatureFlag();
 
 // CardView Feature
 const hasCardView = hasFeature('cardView');
