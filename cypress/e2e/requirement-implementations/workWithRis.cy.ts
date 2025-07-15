@@ -16,11 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { createObject, getModules } from '../../requests/objects';
-import { applyCatalogItem } from '../../requests/catalogs';
-import { addModule, fetchRequirementImplementations } from '../../requests/control-implementations';
 import { visitRIList } from '../../commands/navigation';
 import { setupVeo } from '../../commands/setup';
+import { applyCatalogItem } from '../../requests/catalogs';
+import { addModule, fetchRequirementImplementations } from '../../requests/control-implementations';
+import { createObject, getModules } from '../../requests/objects';
 
 // Used for intercepting requests
 const apiRoutes = {
@@ -298,13 +298,13 @@ describe('Requirement Implementations: Editor', () => {
 
       // protection approach
       cy.getCustom('[data-veo-test="compliance-editor-text-field"] input')
-        .eq(2)
+        .eq(3)
         .invoke('val')
-        .then((riAbbreviation: string) => expect(riAbbreviation).to.contain('BASE'));
+        .then((riAbbreviation: string) => expect(riAbbreviation).to.contain('base'));
 
       // name
       cy.getCustom('[data-veo-test="compliance-editor-text-field"] input')
-        .eq(3)
+        .eq(4)
         .invoke('val')
         .then((riName: string) => expect(riName).to.contain(requirementImplementation.control.name));
     });

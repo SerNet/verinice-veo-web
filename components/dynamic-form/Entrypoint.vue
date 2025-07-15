@@ -506,7 +506,7 @@ export default defineComponent({
             ...(formError.value ? [{ code: 'OS_Error', message: formError.value }] : [])
           ]
         })
-      : h('div', { class: 'vf-wrapper' }, [
+      : h('div', { class: 'vf-wrapper', 'data-veo-test': 'compliance-editor-text-field' }, [
           createComponent(localFormSchema.value, '#', localTranslations.value, localObjectSchema)
         ]);
   }
