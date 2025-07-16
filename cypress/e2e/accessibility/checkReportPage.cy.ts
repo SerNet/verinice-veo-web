@@ -7,7 +7,7 @@ describe('Report', () => {
   afterEach(() => {
     cy.deleteUnit();
   });
-  // This test is skipped here because it's already covered in another test file
+
   it.skip('checks Accessibility in Report page', () => {
     // go to report page
     const dynamicTestData = Cypress.env('dynamicTestData');
