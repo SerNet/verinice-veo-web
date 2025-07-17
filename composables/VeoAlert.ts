@@ -23,6 +23,7 @@ const alerts: Ref<IVeoGlobalAlert[]> = ref([]);
 
 export function useVeoAlerts() {
   const { t } = useI18n();
+
   /**
    * Internal function that handles adding the message to the alerts array ready for displaying
    *
@@ -39,7 +40,7 @@ export function useVeoAlerts() {
       title,
       text,
       alertKey,
-      ...params
+      params
     });
     return alertKey;
   }

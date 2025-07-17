@@ -23,8 +23,8 @@
     :buttons="buttons"
     enable-keyboard-navigation
     class="veo-global-alert"
-    :no-close-button="type === VeoAlertType.SUCCESS"
-    :dismiss-on-click="type === VeoAlertType.SUCCESS"
+    :no-close-button="type === VeoAlertType.SUCCESS || params?.noCloseButton"
+    :dismiss-on-click="type === VeoAlertType.SUCCESS || params?.dismissOnClick"
     :timeout="params ? params.timeout : undefined"
     @update:model-value="onInput"
   >
