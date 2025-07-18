@@ -208,5 +208,42 @@
     "isUpdatingDetails": "Aktualisiere Unitdetails...",
     "isAssociatingDomains": "Assoziiere Domänen...",
     "isCreatingUnit": "Erstelle Unit..."
+  },
+
+  "keys": {
+    "shift": "Shift-Taste, verwendet mit anderen Tasten"
+  },
+
+  "shortcuts": {
+    "navigation": {
+      "home": {
+        "name": "Dashboard/Start",
+        "description": "Zur Dashboard-Seite navigieren"
+      },
+      "editor": {
+        "name": "Editor öffnen",
+        "description": "Zur Editor-Seite navigieren"
+      },
+      "catalogs": {
+        "name": "Kataloge",
+        "description": "Zur Katalog-Seite navigieren"
+      },
+      "reports": {
+        "name": "Reports",
+        "description": "Zur Reports-Seite navigieren"
+      },
+      "riskDefinitions": {
+        "name": "Risikodefinitionen",
+        "description": "Zur Risikodefinitionen-Seite navigieren"
+      },
+      "menu": {
+        "name": "Menü",
+        "description": "Menü öffnen"
+      }
+    },
+    "elements": {
+      "name": "{elementType} öffnen",
+      "description": "Zur {elementType}-Seite navigieren"
+    }
   }
 }

@@ -205,5 +205,41 @@
     "isUpdatingDetails": "Updating unit details...",
     "isAssociatingDomains": "Associating domains...",
     "isCreatingUnit": "Creating unit..."
+  },
+  "keys": {
+    "shift": "Shift key, used with other keys"
+  },
+
+  "shortcuts": {
+    "navigation": {
+      "home": {
+        "name": "Dashboard/Home",
+        "description": "Navigate to the dashboard page"
+      },
+      "editor": {
+        "name": "Open Editor",
+        "description": "Navigate to the editor page"
+      },
+      "catalogs": {
+        "name": "Catalogs",
+        "description": "Navigate to the catalogs page"
+      },
+      "reports": {
+        "name": "Reports",
+        "description": "Navigate to the reports page"
+      },
+      "riskDefinitions": {
+        "name": "Risk Definitions",
+        "description": "Navigate to the risk definitions page"
+      },
+      "menu": {
+        "name": "Menu",
+        "description": "Open the menu"
+      }
+    },
+    "elements": {
+      "name": "Open {elementType}",
+      "description": "Navigate to {elementType} page"
+    }
   }
 }
