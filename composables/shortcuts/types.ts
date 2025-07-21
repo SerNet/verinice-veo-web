@@ -15,45 +15,14 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const SHORTCUT_DIALOG_DISPLAY = 'Shift + ?';
 export const CATEGORY_DOMAIN_NAVIGATION = 'Domain Navigation';
-export const SEQUENCE_TIMEOUT_MS = 1000;
-export const MAX_SEQUENCE_LENGTH = 3;
 
-export interface ShortcutAction {
+export interface Shortcut {
   id: string;
   name: string;
-  keys: string;
+  keys: string[];
   description: string;
   action: () => void;
   category?: string;
   disabled?: boolean;
-}
-
-export interface ShortcutGroup {
-  id: string;
-  name: string;
-  shortcuts: ShortcutAction[];
-}
-
-export interface TrieNode {
-  shortcuts: ShortcutAction[];
-  children: Map<string, TrieNode>;
-}
-
-export interface MatchResult {
-  exactMatches: ShortcutAction[];
-  hasPartialMatches: boolean;
-}
-
-export interface KeyboardHandlerOptions {
-  onExactMatch: (shortcut: ShortcutAction) => void;
-  onSequenceReset: () => void;
-  isEnabled: () => boolean;
-}
-
-export interface ShortcutRegistry {
-  register: (group: ShortcutGroup) => void;
-  unregister: (id?: string) => void;
-  clear: () => void;
 }

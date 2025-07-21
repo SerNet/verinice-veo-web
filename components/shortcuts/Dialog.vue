@@ -87,11 +87,11 @@
 </template>
 
 <script setup lang="ts">
-import type { ShortcutGroup } from '~/composables/shortcuts/types';
+import type { Shortcut } from '~/composables/shortcuts/types';
 
 interface Props {
   modelValue: boolean;
-  shortcuts: ShortcutGroup[];
+  shortcuts: Shortcut[];
 }
 
 defineProps<Props>();

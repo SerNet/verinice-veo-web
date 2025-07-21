@@ -18,7 +18,7 @@ import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { getElementTypeKeys, getNavigationKeys } from './shortcutConfig';
-import { CATEGORY_DOMAIN_NAVIGATION, type ShortcutAction } from './types';
+import { CATEGORY_DOMAIN_NAVIGATION, type Shortcut } from './types';
 
 // Route name imports
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -39,7 +39,7 @@ export function useDomainShortcuts() {
   const unitId = computed(() => route?.params?.unit as string);
   const isDomainPage = computed(() => !!(route?.params?.unit && route?.params?.domain));
 
-  const createBaseShortcuts = (): ShortcutAction[] => [
+  const createBaseShortcuts = (): Shortcut[] => [
     {
       id: 'nav-home',
       name: t('shortcuts.navigation.home.name'),
@@ -114,7 +114,7 @@ export function useDomainShortcuts() {
     }
   ];
 
-  const createElementTypeShortcuts = (): ShortcutAction[] => {
+  const createElementTypeShortcuts = (): Shortcut[] => {
     const elementTypes = Object.keys(VeoElementTypePlurals) as Array<keyof typeof VeoElementTypePlurals>;
 
     return elementTypes.map((elementType) => {
@@ -142,7 +142,7 @@ export function useDomainShortcuts() {
     });
   };
 
-  const domainShortcuts = computed<ShortcutAction[]>(() => {
+  const domainShortcuts = computed<Shortcut[]>(() => {
     if (!isDomainPage.value) return [];
     return [...createBaseShortcuts(), ...createElementTypeShortcuts()];
   });

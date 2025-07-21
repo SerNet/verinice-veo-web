@@ -39,12 +39,12 @@ export const DOMAIN_SHORTCUTS_CONFIG = {
     control: ['g', 'c'],
     scenario: ['g', 'e']
   } as Record<keyof typeof VeoElementTypePlurals, string[]>
-} as const;
+};
 
-export function getElementTypeKeys(elementType: keyof typeof VeoElementTypePlurals): string {
+export function getElementTypeKeys(elementType: keyof typeof VeoElementTypePlurals): string[] {
   return DOMAIN_SHORTCUTS_CONFIG.elementTypes[elementType];
 }
 
-export function getNavigationKeys(action: keyof typeof DOMAIN_SHORTCUTS_CONFIG.navigation): string {
+export function getNavigationKeys(action: keyof typeof DOMAIN_SHORTCUTS_CONFIG.navigation): string[] {
   return DOMAIN_SHORTCUTS_CONFIG.navigation[action];
 }
