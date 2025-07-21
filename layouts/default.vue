@@ -83,12 +83,8 @@
 
     <!-- @vue-ignore // not assignable -->
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
-    <ShortcutsDialog
-      v-if="hasFeature('shortcuts').value"
-      v-model="isDialogOpen"
-      :navigation-shortcuts="navigationShortcuts"
-      :has-any-shortcuts="hasAnyShortcuts"
-    />
+
+    <ShortcutsDialog v-model="isDialogOpen" :shortcuts="shortcuts" @close="isDialogOpen = false" />
   </v-app>
 </template>
 
@@ -96,8 +92,6 @@
 import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
 import { useDisplay, useTheme } from 'vuetify';
-import { ShortcutGroup } from '~/composables/shortcuts/types';
-import { useShortcuts } from '~/composables/shortcuts/useShortcuts';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -113,9 +107,10 @@ const { t } = useI18n();
 const theme = useTheme();
 const context = useNuxtApp();
 const { data: messages } = useSystemMessages();
-const { hasFeature, waitForFeatureFlagsInitialization } = useFeatureFlag();
 
 const { isLoading, loadingInfo } = useGlobalLoadingState();
+
+const { shortcuts, isDialogOpen } = useShortcuts();
 
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
@@ -132,20 +127,6 @@ const domainId = computed((): string | undefined => {
   }
   return route.params.domain as string;
 });
-
-await waitForFeatureFlagsInitialization();
-
-const shortcutsEnabled = hasFeature('shortcuts').value;
-
-// Get shortcuts state for dialog
-const { isDialogOpen, navigationShortcuts, hasAnyShortcuts } =
-  shortcutsEnabled ? useShortcuts() : (
-    {
-      isDialogOpen: ref(false),
-      navigationShortcuts: ref<ShortcutGroup[]>([]),
-      hasAnyShortcuts: ref(false)
-    }
-  );
 
 // Theme stuff
 onBeforeMount(() => {
