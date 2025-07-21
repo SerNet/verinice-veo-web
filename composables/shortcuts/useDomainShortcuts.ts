@@ -17,8 +17,8 @@
 import { StorageSerializers, useStorage } from '@vueuse/core';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import { getElementTypeKeys, getNavigationKeys } from './shortcutsConfig';
-import { CATEGORY_DOMAIN_NAVIGATION, type ShortcutAction, type ShortcutRegistry } from './types';
+import { getElementTypeKeys, getNavigationKeys } from './shortcutConfig';
+import { CATEGORY_DOMAIN_NAVIGATION, type ShortcutAction } from './types';
 
 // Route name imports
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -26,7 +26,7 @@ import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domain
 import { ROUTE_NAME as EDITOR_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[definition]/index.vue';
 
-export function useDomainShortcuts(registry: ShortcutRegistry) {
+export function useDomainShortcuts() {
   const router = useRouter();
   const route = useRoute();
   const { t } = useI18n();
@@ -37,10 +37,7 @@ export function useDomainShortcuts(registry: ShortcutRegistry) {
 
   const domainId = computed(() => route?.params?.domain as string);
   const unitId = computed(() => route?.params?.unit as string);
-  const pageId = computed(() => `domain-${domainId.value}`);
-
-  // Track the currently registered pageId to handle proper cleanup
-  const registeredPageId = ref<string | null>(null);
+  const isDomainPage = computed(() => !!(route?.params?.unit && route?.params?.domain));
 
   const createBaseShortcuts = (): ShortcutAction[] => [
     {
@@ -49,7 +46,7 @@ export function useDomainShortcuts(registry: ShortcutRegistry) {
       description: t('shortcuts.navigation.home.description'),
       keys: getNavigationKeys('home'),
       category: CATEGORY_DOMAIN_NAVIGATION,
-      action: () => router.push('/')
+      action: () => router.push(`/${unitId.value}/domains/${domainId.value}`)
     },
     {
       id: 'dom-to_editor',
@@ -145,38 +142,12 @@ export function useDomainShortcuts(registry: ShortcutRegistry) {
     });
   };
 
-  const getAllShortcuts = computed<ShortcutAction[]>(() => {
+  const domainShortcuts = computed<ShortcutAction[]>(() => {
+    if (!isDomainPage.value) return [];
     return [...createBaseShortcuts(), ...createElementTypeShortcuts()];
   });
 
-  const initialize = (): (() => void) => {
-    const stopRouteWatch = watch(
-      [route, getAllShortcuts],
-      () => {
-        const isDomainPage = !!(route?.params?.unit && route?.params?.domain);
-
-        if (registeredPageId.value) {
-          registry.unregister(registeredPageId.value);
-          registeredPageId.value = null;
-        }
-
-        if (isDomainPage) {
-          const currentPageId = pageId.value;
-          registry.register({
-            id: currentPageId,
-            name: CATEGORY_DOMAIN_NAVIGATION,
-            shortcuts: getAllShortcuts.value
-          });
-          registeredPageId.value = currentPageId;
-        }
-      },
-      { deep: true, immediate: true }
-    );
-
-    return stopRouteWatch;
-  };
-
   return {
-    initialize
+    data: domainShortcuts
   };
 }
