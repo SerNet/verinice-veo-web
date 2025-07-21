@@ -20,25 +20,25 @@ import { VeoElementTypePlurals } from '~/types/VeoTypes';
 export const DOMAIN_SHORTCUTS_CONFIG = {
   // Base navigation shortcuts
   navigation: {
-    home: 'g+b',
-    editor: 'g+d',
-    catalogs: 'g+t',
-    reports: 'g+r',
-    riskDefinitions: 'g+f',
-    menu: 'g+m'
+    home: ['g', 'b'],
+    editor: ['g', 'd'],
+    catalogs: ['g', 't'],
+    reports: ['g', 'r'],
+    riskDefinitions: ['g', 'f'],
+    menu: ['g', 'm']
   },
 
   // Element type shortcuts
   elementTypes: {
-    scope: 'g+s',
-    process: 'g+p',
-    asset: 'g+a',
-    person: 'g+n',
-    incident: 'g+i',
-    document: 'g+o',
-    control: 'g+c',
-    scenario: 'g+e'
-  } as Record<keyof typeof VeoElementTypePlurals, string>
+    scope: ['g', 's'],
+    process: ['g', 'p'],
+    asset: ['g', 'a'],
+    person: ['g', 'n'],
+    incident: ['g', 'i'],
+    document: ['g', 'o'],
+    control: ['g', 'c'],
+    scenario: ['g', 'e']
+  } as Record<keyof typeof VeoElementTypePlurals, string[]>
 } as const;
 
 export function getElementTypeKeys(elementType: keyof typeof VeoElementTypePlurals): string {
