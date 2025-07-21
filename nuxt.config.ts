@@ -18,6 +18,13 @@ export default defineNuxtConfig({
   vue: {
     runtimeCompiler: true
   },
+  imports: {
+    dirs: [
+      // Auto import composables from subdirs too
+      'composables',
+      'composables/shortcuts'
+    ]
+  },
 
   typescript: {
     // Disable, because Takeover mode and Volar should be used
