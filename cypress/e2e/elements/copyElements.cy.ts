@@ -64,7 +64,7 @@ describe('Copy elements', () => {
       cy.getCustom('.v-data-table__tr')
         .filter((index, row) => {
           const rowText = Cypress.$(row).text();
-          return rowText.includes(abb) && rowText.includes(`${name} (duplicated)`) && rowText.includes(status);
+          return rowText.includes(abb) && rowText.includes(`${name} (Duplicated)`) && rowText.includes(status);
         })
         .should('exist');
     }

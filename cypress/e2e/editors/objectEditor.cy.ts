@@ -2,7 +2,7 @@ import { visitEditor } from '../../commands/navigation';
 import { setupVeo } from '../../commands/setup';
 
 function assertEditorPage() {
-  cy.get('[data-component-name="breadcrumbs"]').contains('Objektschema editor', { matchCase: false });
+  cy.get('[data-component-name="breadcrumbs"]').contains('Objectschema editor', { matchCase: false });
   cy.get('div').contains('Basic properties', { matchCase: false });
 }
 

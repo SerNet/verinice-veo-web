@@ -30,7 +30,7 @@ export const ElementActions = {
       .closest('tr') // Get the closest row containing this checkbox
       .as('selectedRowText'); // Save the row text for later use
 
-    if (isRisk) cy.getCustom('.v-overlay-container').containsCustom('create risk').click();
+    if (isRisk) cy.getCustom('.v-card-actions button').contains('Create risk').click();
     else cy.getCustom('.v-card-actions button').contains('Save').click({ force: true });
 
     // Now, use the saved text to confirm that the row exists

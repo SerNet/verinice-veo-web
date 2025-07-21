@@ -77,11 +77,11 @@ describe('Object details, modules tab: Content', () => {
     openAddModulesDialog();
 
     // Check if user info exists
-    cy.containsCustom('No modules applied yet. Please apply modules from the catalog');
+    cy.containsCustom('No modules applied yet. Please apply modules from the Catalog.');
 
     // Click link to `/catalogs`
     cy.intercept('GET', apiRoutes.catalogItems).as('getCatalogItems');
-    cy.getCustom('tr').containsCustom('catalog').click({ force: true });
+    cy.getCustom('.v-overlay__content').get('tr').contains('Catalog').click({ force: true });
     cy.wait(['@getCatalogItems']).its('response.statusCode').should('eq', 200);
 
     // Check if the link took you to the right place
@@ -337,7 +337,7 @@ describe('Requirement Implementations: Editor', () => {
 
     // Assert content of RI list
     cy.getCustom('[data-veo-test="responsible.displayName"]').first().contains(testPerson.name);
-    cy.getCustom('[data-veo-test="translations.status"]').first().first().contains('no');
+    cy.getCustom('[data-veo-test="translations.status"]').first().first().contains('No');
 
     // Open editor again
     cy.getCustom('td').first().click();

@@ -65,7 +65,7 @@ describe('Risk Dialog', { testIsolation: false, retries: 0 }, () => {
     });
 
     cy.intercept('POST', `${Cypress.env('veoApiUrl')}/scopes/**/risks`).as('addRisk');
-    cy.containsCustom('create risk').should('exist').click();
+    cy.getCustom('.v-card-actions button').contains('Create risk').click();
     cy.wait('@addRisk').its('response.statusCode').should('eq', 201);
     cy.getCustom('[data-veo-test="loadedDataTable"]').should('be.visible');
     cy.getCustom('.v-data-table__tr.v-data-table__tr--clickable').should('have.length.greaterThan', 0);
@@ -111,7 +111,7 @@ describe('Risk Dialog', { testIsolation: false, retries: 0 }, () => {
     cy.getCustom('@container').within(() => {
       cy.getCustom('[data-veo-test="add-mitigation"]').click();
     });
-    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('div', 'add mitigating action').click();
+    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('div', 'Add mitigating action').click();
     cy.getCustom('[data-veo-test="link-dialog"]').within(() => {
       cy.getCustom('[id^="checkbox-"]')
         .filter('[aria-disabled="false"]')
