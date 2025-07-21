@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2025 Aziz Khalledi
+ * Copyright (C) 2025 jae
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Affero General Public License
@@ -14,71 +14,99 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { ShortcutTrie } from './ShortcutTrie';
-import { useDomainShortcuts } from './domainShortcuts';
-import { KeyboardHandler } from './keyboardHandler';
-import { ShortcutRegistryService } from './shortcutRegistry';
-import { CATEGORY_DOMAIN_NAVIGATION } from './types';
-
-let isInitialized = false;
-let cleanupFns: (() => void)[] = [];
-
-let shortcutTrie: ShortcutTrie;
-let keyboardHandler: KeyboardHandler;
-let registry: ShortcutRegistryService;
-
-function setupDialogShortcut(): () => void {
-  const handler = (event: KeyboardEvent) => {
-    if (event.key === '?' && event.shiftKey) {
-      registry.toggleDialog();
-    }
-  };
-  document.addEventListener('keydown', handler);
-  return () => document.removeEventListener('keydown', handler);
-}
-
-function initializeGlobalShortcuts(): void {
-  if (isInitialized) return;
-
-  shortcutTrie = new ShortcutTrie();
-  registry = new ShortcutRegistryService(shortcutTrie);
-  keyboardHandler = new KeyboardHandler(shortcutTrie, {
-    onExactMatch: (shortcut) => shortcut.action(),
-    onSequenceReset: () => {},
-    isEnabled: () => true
-  });
-
-  const keyboardCleanup = keyboardHandler.initialize();
-  const dialogCleanup = setupDialogShortcut();
-  const domainCleanup = useDomainShortcuts(registry).initialize();
-
-  cleanupFns = [keyboardCleanup, dialogCleanup, domainCleanup];
-  isInitialized = true;
-
-  onScopeDispose(() => {
-    cleanupFns.forEach((fn) => fn());
-    cleanupFns = [];
-    registry.clear();
-    isInitialized = false;
-  });
-}
+import { useMagicKeys } from '@vueuse/core';
+import { useActiveElement } from '@vueuse/core';
+import { DOMAIN_SHORTCUTS_CONFIG } from './shortcutConfig';
 
 export function useShortcuts() {
-  initializeGlobalShortcuts();
+  const isDialogOpen = ref(false);
 
-  const { shortcutGroups, isDialogOpen } = registry.getReactive();
+  const modifiers = Object.values({
+    ...DOMAIN_SHORTCUTS_CONFIG.navigation,
+    ...DOMAIN_SHORTCUTS_CONFIG.elementTypes
+  }).map(([modifier]) => modifier);
+  const relevantKeys = Object.values({
+    ...DOMAIN_SHORTCUTS_CONFIG.navigation,
+    ...DOMAIN_SHORTCUTS_CONFIG.elementTypes
+  }).map(([, relevantKey]) => relevantKey);
 
-  const navigationShortcuts = computed(() =>
-    shortcutGroups.value.map((group) => ({
-      ...group,
-      shortcuts: group.shortcuts.filter((s) => s.category === CATEGORY_DOMAIN_NAVIGATION && !s.disabled)
-    }))
-  );
+  const SEQUENCE_TIMEOUT_MS = 1000;
+  const keySequence = ref([]);
+
+  const { isInputElement } = useInputElementDetection();
+  const { data: shortcuts } = useDomainShortcuts();
+
+  const keys = useMagicKeys();
+  const current = keys.current;
+
+  const isDialogTrigger = keys['Shift+?'];
+
+  function getKeys(keySet: Set<string>, acceptedKeys: string[]) {
+    return acceptedKeys.find((key) => keySet.has(key)) ?? [];
+  }
+
+  function clearShortcutSequence() {
+    keySequence.value = [];
+  }
+
+  function runShortcut(keySequence: string[], shortcuts) {
+    const shortcut = shortcuts.find((s) => s.keys.join() === keySequence.join());
+    shortcut?.action?.();
+  }
+
+  const unwatchKeys = watch(current, (keys) => {
+    if (!current.size || isInputElement.value) return;
+
+    // Open dialog
+    if (isDialogTrigger.value) {
+      isDialogOpen.value = true;
+      return;
+    }
+
+    // Check for modifiers
+    if (!keySequence.value.length) {
+      keySequence.value = [...getKeys(keys, modifiers)];
+      setTimeout(clearShortcutSequence, SEQUENCE_TIMEOUT_MS);
+      return;
+    }
+
+    // Add key to key sequence
+    keySequence.value = [...keySequence.value, ...getKeys(keys, relevantKeys)];
+
+    if (keySequence.value.length == 2) {
+      runShortcut(keySequence.value, shortcuts.value);
+      return;
+    }
+  });
+
+  onScopeDispose(() => {
+    unwatchKeys();
+  });
 
   return {
-    isDialogOpen,
-    toggleDialog: () => registry.toggleDialog(),
-    navigationShortcuts,
-    hasAnyShortcuts: computed(() => navigationShortcuts.value?.some((group) => group.shortcuts.length > 0))
+    shortcuts,
+    isDialogOpen
+  };
+}
+
+function useInputElementDetection() {
+  const activeElement = useActiveElement();
+
+  function isInputElement(el: Element | null): boolean {
+    if (!el) return false;
+
+    const tagName = el.tagName.toLowerCase();
+    return (
+      tagName === 'input' ||
+      tagName === 'textarea' ||
+      tagName === 'select' ||
+      el.hasAttribute('contenteditable') ||
+      el.getAttribute('role') === 'textbox' ||
+      el.getAttribute('role') === 'combobox'
+    );
+  }
+
+  return {
+    isInputElement: computed(() => isInputElement(activeElement.value))
   };
 }
