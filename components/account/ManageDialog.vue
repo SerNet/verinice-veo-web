@@ -88,14 +88,49 @@
             </v-row>
             <v-row>
               <v-col cols="12" md="6">
-                <v-select
-                  v-model="formData.groups"
-                  clearable
-                  multiple
-                  :items="availableGroups"
-                  :label="t('groups')"
-                  variant="underlined"
-                />
+                <v-tooltip location="top" width="300">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-select
+                      v-model="formData.groups"
+                      clearable
+                      multiple
+                      v-bind="tooltipProps"
+                      :items="availableRoles"
+                      :label="t('roles')"
+                      variant="underlined"
+                    />
+                  </template>
+                  <span>{{ t('tooltips.roles') }}</span>
+                </v-tooltip>
+              </v-col>
+
+              <v-col v-if="showAccessGroupsFeature" cols="12" md="6">
+                <v-tooltip location="top" width="300">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-select
+                      v-model="formData.accessGroups"
+                      multiple
+                      chips
+                      closable-chips
+                      v-bind="tooltipProps"
+                      :items="accessGroups"
+                      item-title="name"
+                      item-value="id"
+                      :label="t('accessGroups')"
+                      variant="underlined"
+                    >
+                      <template #selection="{ item, index }">
+                        <v-chip v-if="index === 0">
+                          <span>{{ item.raw.name }}</span>
+                        </v-chip>
+                        <span v-if="index === 1" class="text-grey text-caption align-self-center ml-2">
+                          (+{{ formData.accessGroups.length - 1 }} others)
+                        </span>
+                      </template>
+                    </v-select>
+                  </template>
+                  <span>{{ t('tooltips.accessGroups') }}</span>
+                </v-tooltip>
               </v-col>
             </v-row>
           </v-form>
@@ -131,6 +166,8 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useMutation } from '~/composables/api/utils/mutation';
+import { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
+import { hasFeature } from '~/utils/featureFlags';
 
 export default defineComponent({
   props: {
@@ -166,6 +203,10 @@ export default defineComponent({
       type: Array as PropType<string[]>,
       default: () => []
     },
+    accessGroups: {
+      type: Array as PropType<IVeoAccessGroup[]>,
+      default: () => []
+    },
     existingAccounts: {
       type: Array as PropType<IVeoAccount[]>,
       default: () => []
@@ -188,6 +229,7 @@ export default defineComponent({
       lastName?: string;
       enabled?: boolean;
       groups?: string[];
+      accessGroups?: IVeoAccessGroup[];
       [key: string]: any;
     }>({});
 
@@ -202,9 +244,9 @@ export default defineComponent({
       t('emailAddressWrongFormat').toString();
     const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
 
-    const availableGroups = ref([
+    const availableRoles = ref([
       {
-        title: t('permissions.veo-write').toString(),
+        title: t('permissions.editors').toString(),
         value: 'veo-write-access'
       }
     ]);
@@ -216,6 +258,8 @@ export default defineComponent({
         formData.value = cloneDeep(
           pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups')
         );
+        formData.value.accessGroups =
+          props.existingAccounts.filter((acc) => acc.id === props.id)[0]?.accessGroups || [];
       },
       { deep: true, immediate: true }
     );
@@ -274,9 +318,12 @@ export default defineComponent({
       }
     };
 
+    //featureFlag
+    const showAccessGroupsFeature = hasFeature('veoFeatureFlagAccessGroups');
+
     return {
       ability,
-      availableGroups,
+      availableRoles,
       createOrUpdateAccount,
       formData,
       formIsValid,
@@ -291,7 +338,9 @@ export default defineComponent({
       globalT,
       VeoAlertType,
       mdiAccountOutline,
-      mdiEmailOutline
+      mdiEmailOutline,
+
+      showAccessGroupsFeature
     };
   }
 });

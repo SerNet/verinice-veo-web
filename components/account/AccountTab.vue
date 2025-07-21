@@ -16,19 +16,6 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseAlert
-    v-if="allUnitsHaveAccessAccountTab"
-    :model-value="true"
-    :type="VeoAlertType.INFO"
-    class="mt-6 mb-4 d-flex align-center"
-    no-close-button
-    flat
-    style="width: max-content"
-  >
-    <template #default>
-      {{ t('allUsersHaveAccessHint') }}
-    </template>
-  </BaseAlert>
   <BaseCard class="mb-16">
     <v-card-title class="bg-accent small-caps text-h4">
       <span>{{ t('accounts') }}</span>
@@ -84,8 +71,10 @@
     :model-value="manageAccountDialogVisible"
     v-bind="manageAccountProps"
     :existing-accounts="accounts"
+    :access-groups="accessGroups"
     @update:model-value="onManageAccountDialogInput"
   />
+
   <!-- @vue-ignore TODO #3066 not assignable -->
   <AccountDeleteDialog
     v-if="deleteAccountDialogVisible"
@@ -100,6 +89,7 @@ import { useQuery } from '~/composables/api/utils/query';
 import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
+import accessGroupsDefinition from '~/composables/api/queryDefinitions/accessGroups';
 import { VeoAlertType } from '~/types/VeoTypes';
 import accessGroupsDefinition from '~/composables/api/queryDefinitions/accessGroups';
 
@@ -108,6 +98,7 @@ const { profile, userSettings } = useVeoUser();
 const { ability } = useVeoPermissions();
 
 const { data: accounts, isFetching } = useQuery(accountQueryDefinition.queries.fetchAccounts);
+const { data: accessGroups } = useQuery(accessGroupsDefinition.queries.fetchAccessGroups);
 const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
 
 const allUnitsHaveAccessAccountTab = ref(!isRestrictedAccess.value);
@@ -136,9 +127,11 @@ const editAccountDialogVisible = ref(false);
 const editAccountDialogProps = ref<Record<string, any>>({});
 
 const manageAccountDialogVisible = computed(() => createAccountDialogVisible.value || editAccountDialogVisible.value);
+
 const manageAccountProps = computed(() =>
   editAccountDialogVisible.value ? editAccountDialogProps.value : { groups: ['veo-write-access'] }
 );
+
 const onManageAccountDialogInput = (newValue: boolean) => {
   if (!newValue) {
     if (createAccountDialogVisible.value) {
@@ -210,10 +203,10 @@ const additionalTableHeaders = [
   {
     order: 60,
     priority: 60,
-    text: t('groups').toString(),
+    text: t('roles').toString(),
     render: ({ internalItem: item }) => item.raw.groups.join(', '),
-    value: 'groups',
-    key: 'groups'
+    value: 'roles',
+    key: 'roles'
   }
 ];
 </script>
