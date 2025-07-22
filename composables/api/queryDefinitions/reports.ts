@@ -72,7 +72,7 @@ export default {
       primaryQueryKey: 'report',
       url: '/api/reporting/reports/:type',
       method: 'POST',
-      reponseType: VeoApiReponseType.BLOB,
+      responseType: VeoApiReponseType.BLOB,
       mutationParameterTransformationFn: (mutationParameters) => ({
         json: mutationParameters.body,
         params: { type: mutationParameters.type }

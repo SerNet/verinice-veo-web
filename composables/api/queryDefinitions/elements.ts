@@ -514,7 +514,7 @@ export default {
       primaryQueryKey: 'object',
       url: '/api/:endpoint/:id',
       method: 'DELETE',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: mutationParameters
       }),
@@ -587,7 +587,7 @@ export default {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:objectId/risks/:scenarioId',
       method: 'DELETE',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: mutationParameters
       }),

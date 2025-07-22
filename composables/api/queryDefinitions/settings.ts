@@ -66,7 +66,7 @@ export default {
       primaryQueryKey: 'userSettings',
       url: '/api/user-configurations/:appId',
       method: 'PUT',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => {
         return {
           params: {

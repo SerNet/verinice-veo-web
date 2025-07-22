@@ -1,0 +1,16 @@
+{
+  "en": {
+    "deleteAccessGroupTitle": "Delete access group",
+    "deleteAccessGroupConfirmation": "Are you sure you want to delete the access group '{groupName}'? This action cannot be undone.",
+    "confirmDelete": "Confirm Delete",
+    "deletingAccessGroupFailed": "Couldn't delete Access Group",
+    "deletingAccessGroupSuccess": "Access Group was deleted"
+  },
+  "de": {
+    "deleteAccessGroupTitle": "Zugriffsgruppe löschen",
+    "deleteAccessGroupConfirmation": "Sind Sie sicher, dass Sie die Zugriffsgruppe '{groupName}' löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+    "confirmDelete": "Löschen bestätigen",
+    "deletingAccessGroupFailed": "Zugriffsgruppe konnte nicht gelöscht werden",
+    "deletingAccessGroupSuccess": "Zugriffsgruppe wurde gelöscht"
+  }
+}

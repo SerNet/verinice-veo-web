@@ -34,7 +34,7 @@ export interface IVeoQueryDefinition<TVariables, TResult = any> {
   primaryQueryKey: string;
   url: string;
   queryParameterTransformationFn: (_queryParameters: TVariables) => IVeoQueryParameters;
-  reponseType?: VeoApiReponseType;
+  responseType?: VeoApiReponseType;
   onDataFetched?: (result: TResult, queryParameters: IVeoQueryParameters) => TResult;
   staticQueryOptions?: QueryOptions;
 }

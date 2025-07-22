@@ -162,7 +162,7 @@ export default {
       primaryQueryKey: 'unit',
       url: '/api/units/:id',
       method: 'DELETE',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: mutationParameters
       }),

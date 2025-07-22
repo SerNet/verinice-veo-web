@@ -90,7 +90,7 @@ export default {
       primaryQueryKey: 'account',
       url: '/api/accounts/:id',
       method: 'PUT',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id },
         json: mutationParameters
@@ -106,7 +106,7 @@ export default {
       primaryQueryKey: 'account',
       url: '/api/accounts/:id',
       method: 'DELETE',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiReponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id }
       }),

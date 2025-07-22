@@ -1,0 +1,113 @@
+import { IVeoMutationDefinition } from '../utils/mutation';
+import { IVeoQueryDefinition } from '../utils/query';
+import { VeoApiReponseType } from '../utils/request';
+
+export interface IVeoAccessGroupUnitPermission {
+  unitId: string;
+  name: string;
+  read: boolean;
+  write: boolean;
+}
+
+export interface IVeoAccessGroup {
+  id: string;
+  name: string;
+  units: IVeoAccessGroupUnitPermission[];
+}
+
+export interface IVeoCreateAccessGroupParameters {
+  name: string;
+  units: Record<string, 'READ_ONLY' | 'READ_WRITE'>;
+}
+
+export interface IVeoUpdateAccessGroupParameters {
+  id: string;
+  name: string;
+  units: Record<string, 'READ_ONLY' | 'READ_WRITE'>;
+}
+
+export interface IVeoFetchAccessGroupParameters {
+  id: string;
+}
+
+export interface IVeoDeleteAccessGroupParameters {
+  id: string;
+}
+
+export default {
+  queries: {
+    fetchAccessGroups: {
+      primaryQueryKey: 'accessGroups',
+      url: '/api/accounts/access-groups',
+      queryParameterTransformationFn: () => ({}),
+      staticQueryOptions: { placeholderData: [] }
+    } as IVeoQueryDefinition<Record<string, never>, IVeoAccessGroup[]>,
+
+    fetchAccessGroup: {
+      primaryQueryKey: 'accessGroup',
+      url: '/api/accounts/access-groups/:id',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: queryParameters
+      })
+    } as IVeoQueryDefinition<IVeoFetchAccessGroupParameters, IVeoAccessGroup>,
+    fetchUnits: {
+      primaryQueryKey: 'units',
+      url: '/api/accounts/access-groups/:id',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: queryParameters
+      })
+    } as IVeoQueryDefinition<IVeoFetchAccessGroupParameters, IVeoAccessGroup>
+  },
+
+  mutations: {
+    createAccessGroup: {
+      primaryQueryKey: 'accessGroup',
+      url: '/api/accounts/access-groups',
+      method: 'POST',
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        json: mutationParameters
+      }),
+      staticMutationOptions: {
+        onSuccess: (queryClient) => {
+          queryClient.invalidateQueries(['accessGroups']);
+        }
+      }
+    } as IVeoMutationDefinition<IVeoCreateAccessGroupParameters, IVeoAccessGroup>,
+
+    updateAccessGroup: {
+      primaryQueryKey: 'accessGroup',
+      url: '/api/accounts/access-groups/:id',
+      method: 'PUT',
+      responseType: VeoApiReponseType.VOID,
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: { id: mutationParameters.id },
+        json: {
+          name: mutationParameters.name,
+          units: mutationParameters.units
+        }
+      }),
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, variables) => {
+          queryClient.invalidateQueries(['accessGroups']);
+          queryClient.invalidateQueries(['accessGroup', { id: variables.params?.id || '' }]);
+        }
+      }
+    } as IVeoMutationDefinition<IVeoUpdateAccessGroupParameters, void>,
+
+    deleteAccessGroup: {
+      primaryQueryKey: 'accessGroup',
+      url: '/api/accounts/access-groups/:id',
+      method: 'DELETE',
+      responseType: VeoApiReponseType.VOID,
+      mutationParameterTransformationFn: (mutationParameters) => ({
+        params: { id: mutationParameters.id }
+      }),
+      staticMutationOptions: {
+        onSuccess: (queryClient, _data, variables) => {
+          queryClient.invalidateQueries(['accessGroups']);
+          queryClient.invalidateQueries(['accessGroup', { id: variables.params?.id || '' }]);
+        }
+      }
+    } as IVeoMutationDefinition<IVeoDeleteAccessGroupParameters, void>
+  }
+};

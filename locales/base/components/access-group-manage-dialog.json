@@ -1,0 +1,40 @@
+{
+  "en": {
+    "name": "Name",
+    "accessGroups": "Access groups",
+    "createAccessGroup": "Create access group",
+    "accessGroupSavedSuccessfully": "Access group saved successfully",
+    "accessGroupSavedFailed": "Access group save failed",
+    "editAccessGroup": "Edit access group",
+    "units": "Units",
+    "read": "Read",
+    "write": "Write",
+    "cancel": "Cancel",
+    "create": "Create",
+    "save": "Save",
+    "global": {
+      "message": {
+        "loading": "Loading..."
+      }
+    }
+  },
+  "de": {
+    "name": "Name",
+    "accessGroups": "Zugriffsgruppen",
+    "createAccessGroup": "Neue Zugriffsgruppe",
+    "accessGroupSavedSuccessfully": "Zugriffsgruppe erfolgreich gespeichert",
+    "accessGroupSavedFailed": "Erstellung der Zugriffsgruppe fehlgeschlagen",
+    "editAccessGroup": "Zugriffsgruppe bearbeiten",
+    "units": "Einheiten",
+    "read": "Lesen",
+    "write": "Schreiben",
+    "cancel": "Abbrechen",
+    "create": "Erstellen",
+    "save": "Speichern",
+    "global": {
+      "message": {
+        "loading": "Laden..."
+      }
+    }
+  }
+}
