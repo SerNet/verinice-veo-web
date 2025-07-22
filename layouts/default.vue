@@ -84,7 +84,7 @@
     <!-- @vue-ignore // not assignable -->
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
 
-    <ShortcutsDialog v-model="isDialogOpen" :shortcuts="shortcuts" @close="isDialogOpen = false" />
+    <ShortcutsDialog v-if="hasShortcuts" v-model="isDialogOpen" :shortcuts="shortcuts" @close="isDialogOpen = false" />
   </v-app>
 </template>
 
@@ -96,6 +96,7 @@ import { useDisplay, useTheme } from 'vuetify';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
+import { hasFeature } from '~/utils/featureFlags';
 
 const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
@@ -110,7 +111,8 @@ const { data: messages } = useSystemMessages();
 
 const { isLoading, loadingInfo } = useGlobalLoadingState();
 
-const { shortcuts, isDialogOpen } = useShortcuts();
+const hasShortcuts = hasFeature('shortcuts');
+const { shortcuts = [], isDialogOpen = false } = hasShortcuts ? useShortcuts() : {};
 
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'

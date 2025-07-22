@@ -1,7 +1,8 @@
 const flagNames = {
   userSettings: 'VEO_FEATURE_FLAG_USER_SETTINGS',
   cardView: 'VEO_FEATURE_FLAG_CARD_VIEW',
-  riskDefinitionEvaluation: 'VEO_FEATURE_FLAG_RISK_DEFINITION_EVALUATION'
+  riskDefinitionEvaluation: 'VEO_FEATURE_FLAG_RISK_DEFINITION_EVALUATION',
+  shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS'
 };
 
 type FlagNames = keyof typeof flagNames;
