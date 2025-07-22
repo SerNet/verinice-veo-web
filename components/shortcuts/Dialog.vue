@@ -46,8 +46,8 @@
 
           <main>
             <!-- Main Content -->
-            <v-row v-if="shortcuts.length">
-              <v-col cols="12">
+            <v-row>
+              <v-col v-if="shortcuts.length" cols="12">
                 <v-card flat>
                   <v-card-title class="text-subtitle-2 py-2">{{ t('domainNavigation') }}</v-card-title>
                   <v-divider></v-divider>
@@ -73,7 +73,7 @@
               </v-col>
 
               <!-- No shortcuts available message -->
-              <v-col v-if="!shortcuts.length" cols="12" class="text-center">
+              <v-col v-else cols="12" class="text-center">
                 <h3 class="text-h6 mb-2 text-medium-emphasis">
                   {{ t('noShortcuts') }}
                 </h3>
