@@ -19,6 +19,7 @@
     "saveRiskDefinitionWarningTitle": "Attention!",
     "saveRiskDefinitionWarningBody": "When you save, you change risk values. These must be edited manually. Existing risk analyses are also changed if necessary.",
     "deleteDialog": "Delete category",
+    "categoryName": "Category name",
     "deleteDialogBody": "Are you sure you want to delete this criterion? In all units where this criterion is used, all associated impact and risk values will also be removed. This action cannot be undone."
   },
   "de": {
@@ -41,6 +42,7 @@
     "saveRiskDefinitionWarningTitle": "Achtung!",
     "saveRiskDefinitionWarningBody": "Wenn Sie speichern, ändern Sie Risikowerte. Diese müssen manuell nachbearbeitet werden. Außerdem werden bestehende Risikoanalysen gegebenenfalls geändert.",
     "deleteDialog": "Kategorie löschen",
+    "categoryName": "Name der Kategorie",
     "deleteDialogBody": "Möchten Sie dieses Kriterium wirklich löschen? In allen Units, in denen dieses Kriterium verwendet wird, werden alle zugehörigen Auswirkungs- und Risikowerte ebenfalls entfernt. Diese Aktion kann nicht rückgängig gemacht werden."
   }
 }

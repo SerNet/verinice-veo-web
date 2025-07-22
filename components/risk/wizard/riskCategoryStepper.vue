@@ -3,7 +3,7 @@
     <v-stepper-header>
       <v-stepper-item
         :ref="(el) => setStepperRef(el, 0)"
-        :title="t('translations')"
+        :title="t('categoryName')"
         :value="1"
         editable
       ></v-stepper-item>
