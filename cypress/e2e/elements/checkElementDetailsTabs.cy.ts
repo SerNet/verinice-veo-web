@@ -60,7 +60,7 @@ describe('Elements Details Tabs', () => {
       },
       {
         tab: 'childObjects',
-        actions: ['Create object', 'Select object']
+        actions: ['Create Object', 'Select Object']
       }
     ];
 

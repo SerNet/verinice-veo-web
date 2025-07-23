@@ -11,7 +11,7 @@ const testData = {
     }
   }
 };
-export type Actions = 'Create object' | 'Select object' | 'Create scope' | 'Select scope' | 'Create risk';
+export type Actions = 'Create Object' | 'Select Object' | 'Create scope' | 'Select scope' | 'Create risk';
 export type Tabs = 'parentScopes' | 'links' | 'risks' | 'childScopes' | 'childObjects';
 export type Status = 'Archived' | 'New' | 'In progress' | 'Released' | 'For review';
 export const ElementActions = {
@@ -76,11 +76,11 @@ export const ElementActions = {
       cy.getCustom('[data-veo-test="confirm-object-type"]').click();
     }
     const actionsMap = {
-      'Create object': () => {
+      'Create Object': () => {
         selectType();
         ElementActions.createElement(status);
       },
-      'Select object': () => {
+      'Select Object': () => {
         selectType();
         ElementActions.selectElement();
       },
@@ -98,7 +98,7 @@ export const ElementActions = {
       const availableActions = $items.toArray().map((item) => item.innerText.trim());
       cy.get('[data-component-name="object-details-actions-button"]').click();
       availableActions.forEach((action) => {
-        if (!actions.includes(action as Actions)) return;
+        if (!actions.includes(action as Actions)) throw new Error(`Action ${action} not found`);
         cy.getCustom('[data-component-name="object-details-actions-button"]').click();
         cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action).click();
         ElementActions.performAction(action as Actions);
