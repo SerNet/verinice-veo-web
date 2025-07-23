@@ -123,3 +123,8 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
     raw: toRaw(unit)
   };
 }
+
+// Sort helper: show last updated unit on top
+export function sortUnits(a: TVeoUnit, b: TVeoUnit): number {
+  return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+}

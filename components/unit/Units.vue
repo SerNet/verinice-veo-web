@@ -62,6 +62,7 @@ import {
   mdiShapeOutline
 } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { sortUnits } from '~/composables/units/useUnits';
 
 // Types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
@@ -74,11 +75,6 @@ const { t } = useI18n();
 const { data: veoUnits, isLoading: isLoadingUnits, invalidateUnitCache } = useUnits();
 const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
-
-// Sort helper: show last updated unit on top
-function sortUnits(a: TVeoUnit, b: TVeoUnit): number {
-  return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-}
 
 const units = computed({
   get() {
