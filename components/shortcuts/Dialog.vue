@@ -63,7 +63,7 @@
                         <template #append>
                           <template v-for="(shortcutKey, index) in shortcut.keys" :key="shortcutKey">
                             <v-chip class="ma-2 d-flex justify-center shortcuts__chip" label>{{ shortcutKey }}</v-chip>
-                            <span v-if="index < shortcut.keys.length - 1">+</span>
+                            <span v-if="index < shortcut.keys.length - 1">{{ t('then') }}</span>
                           </template>
                         </template>
                       </v-list-item>

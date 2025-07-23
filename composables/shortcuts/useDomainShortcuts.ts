@@ -123,8 +123,8 @@ export function useDomainShortcuts() {
 
       return {
         id: `nav-${elementType}`,
-        name: t('shortcuts.elements.name', { elementType }),
-        description: t('shortcuts.elements.description', { elementType }),
+        name: t('shortcuts.elements.name', { elementTypePlural: VeoElementTypePlurals[elementType] }),
+        description: t('shortcuts.elements.description', { elementTypePlural: VeoElementTypePlurals[elementType] }),
         keys: getElementTypeKeys(elementType),
         category: CATEGORY_DOMAIN_NAVIGATION,
         disabled: isDisabled,

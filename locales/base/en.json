@@ -213,33 +213,33 @@
   "shortcuts": {
     "navigation": {
       "home": {
-        "name": "Dashboard/Home",
-        "description": "Navigate to the dashboard page"
+        "name": "Dashboard",
+        "description": "Navigate to the dashboard"
       },
       "editor": {
-        "name": "Open Editor",
-        "description": "Navigate to the editor page"
+        "name": "Editors",
+        "description": "Navigate to the editor"
       },
       "catalogs": {
-        "name": "Catalogs",
-        "description": "Navigate to the catalogs page"
+        "name": "Catalog",
+        "description": "Navigate to the catalogs"
       },
       "reports": {
         "name": "Reports",
-        "description": "Navigate to the reports page"
+        "description": "Navigate to the reports"
       },
       "riskDefinitions": {
-        "name": "Risk Definitions",
-        "description": "Navigate to the risk definitions page"
+        "name": "Risk definitions",
+        "description": "Navigate to the risk definitions"
       },
       "menu": {
         "name": "Menu",
-        "description": "Open the menu"
+        "description": "Collaps / open the menu"
       }
     },
     "elements": {
-      "name": "Open {elementType}",
-      "description": "Navigate to {elementType} page"
+      "name": "Open {elementTypePlural}",
+      "description": "Navigate to all {elementTypePlural}"
     }
   }
 }

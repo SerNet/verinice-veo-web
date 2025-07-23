@@ -4,13 +4,15 @@
     "openInstructions": "Open this dialog:",
     "domainNavigation": "Domain Navigation Shortcuts",
     "noShortcuts": "No shortcuts available for this page.",
-    "disabled": "Disabled"
+    "disabled": "Disabled",
+    "then": "then"
   },
   "de": {
     "title": "Tastaturkürzel",
     "openInstructions": "Diesen Dialog öffnen:",
     "domainNavigation": "Tastaturkürzel für die Domänennavigation",
     "noShortcuts": "Keine Tastaturkürzel für diese Seite verfügbar.",
-    "disabled": "Deaktiviert"
+    "disabled": "Deaktiviert",
+    "then": "dann"
   }
 }
