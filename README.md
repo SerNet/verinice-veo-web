@@ -100,6 +100,8 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_BETA_MODE` | `false` | If set to true, the toggle button for the table/card view will be avaialble. |
 | `VEO_FEATURE_FLAG_CARD_VIEW` | `false` | If set to true, the toggle for feature flag card view gets enabled |
 | `VEO_FEATURE_FLAG_USER_SETTINGS` | `false` | If set to true, the user settings page will be available. |
+| `VEO_FEATURE_FLAG_RISK_DEFINITION_EVALUATION` | `false` | If set to true, changing risk definitions will be evaluated before saving. |
+| `VEO_FEATURE_FLAG_SHORTCUTS` | `false` | If set to true, keyboard shortcuts become available |
 | `VEO_HIDE_SERNET_REFERENCES` | `false` | If set to true, logos, URLs, and images related to SerNet will be disabled. |
 
 Required env variables (prod preset):
