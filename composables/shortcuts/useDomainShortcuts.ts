@@ -38,6 +38,7 @@ export function useDomainShortcuts() {
 
   const { data: units } = useUnits();
   const firstUnit = computed(() => units.value.sort(sortUnits)?.[0]);
+  const { ability } = useVeoPermissions();
 
   const { data: riskDefinitions } = useRiskDefinitions();
   const hasRiskDefinitions = computed(() => !!riskDefinitions.value);
@@ -60,6 +61,7 @@ export function useDomainShortcuts() {
       id: 'dom-to_editor',
       name: t('shortcuts.navigation.editor.name'),
       description: t('shortcuts.navigation.editor.description'),
+      disabled: !ability.value.can('view', 'editors'),
       keys: getNavigationKeys('editor'),
       category: CATEGORY_DOMAIN_NAVIGATION,
       action: () =>
