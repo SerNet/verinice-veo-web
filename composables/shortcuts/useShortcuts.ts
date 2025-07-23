@@ -38,7 +38,7 @@ export function useShortcuts() {
   const { isInputElement } = useInputElementDetection();
   const { data: domainShortcuts } = useDomainShortcuts();
   const { data: staticShortcuts } = useStaticShortcuts();
-  const shortcuts = computed(() => [...domainShortcuts.value, ...staticShortcuts.value]);
+  const shortcuts = computed(() => [...domainShortcuts.value, ...staticShortcuts.value].filter((s) => !s.disabled));
 
   const keys = useMagicKeys();
   const current = keys.current;
