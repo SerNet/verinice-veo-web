@@ -39,6 +39,9 @@ export function useDomainShortcuts() {
   const { data: units } = useUnits();
   const firstUnit = computed(() => units.value.sort(sortUnits)?.[0]);
 
+  const { data: riskDefinitions } = useRiskDefinitions();
+  const hasRiskDefinitions = computed(() => !!riskDefinitions.value);
+
   const domainId = computed(() => route?.params?.domain ?? (firstUnit.value?.domains?.[0].id as string));
   const unitId = computed(() => route?.params?.unit ?? (firstUnit.value?.id as string));
 
@@ -89,6 +92,7 @@ export function useDomainShortcuts() {
       id: 'nav-risks',
       name: t('shortcuts.navigation.riskDefinitions.name'),
       description: t('shortcuts.navigation.riskDefinitions.description'),
+      disabled: !hasRiskDefinitions.value,
       keys: getNavigationKeys('riskDefinitions'),
       category: CATEGORY_DOMAIN_NAVIGATION,
       action: () => {
