@@ -31,18 +31,18 @@ export function useDomainShortcuts() {
   const router = useRouter();
   const route = useRoute();
   const { t } = useI18n();
-  const { data: currentDomain } = useCurrentDomain();
+  const { data: domains } = useDomains();
   const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, {
     serializer: StorageSerializers.boolean
   });
 
   const { data: units } = useUnits();
-
   const firstUnit = computed(() => units.value.sort(sortUnits)?.[0]);
 
   const domainId = computed(() => route?.params?.domain ?? (firstUnit.value?.domains?.[0].id as string));
   const unitId = computed(() => route?.params?.unit ?? (firstUnit.value?.id as string));
-  const isDomainPage = computed(() => !!(unitId && domainId));
+
+  const currentDomain = computed(() => domains.value?.find((d) => d.id === domainId.value));
 
   const baseShortcuts = computed<Shortcut[]>(() => [
     {
@@ -137,8 +137,8 @@ export function useDomainShortcuts() {
           router.push({
             name: OBJECT_OVERVIEW_ROUTE_NAME,
             params: {
-              unit: route?.params?.unit,
-              domain: route?.params?.domain,
+              unit: unitId.value,
+              domain: domainId.value,
               objectType: VeoElementTypePlurals[elementType as keyof typeof VeoElementTypePlurals],
               subType: '-'
             }
@@ -148,7 +148,7 @@ export function useDomainShortcuts() {
   });
 
   const domainShortcuts = computed<Shortcut[]>(() => {
-    if (!isDomainPage.value) return [];
+    if (!unitId.value || !domainId.value) return [];
     return [...baseShortcuts.value, ...elementTypeShortcuts.value];
   });
 
