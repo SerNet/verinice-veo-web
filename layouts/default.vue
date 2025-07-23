@@ -84,7 +84,12 @@
     <!-- @vue-ignore // not assignable -->
     <LayoutGlobalAlert v-if="alerts[0]" v-bind="alerts[0]" />
 
-    <ShortcutsDialog v-if="hasShortcuts" v-model="isDialogOpen" :shortcuts="shortcuts" @close="isDialogOpen = false" />
+    <ShortcutsDialog
+      v-if="hasShortcuts && isDialogOpen"
+      v-model="isDialogOpen"
+      :shortcuts="shortcuts"
+      @close="isDialogOpen = false"
+    />
   </v-app>
 </template>
 
