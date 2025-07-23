@@ -19,6 +19,7 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { getElementTypeKeys, getNavigationKeys } from './shortcutConfig';
 import { CATEGORY_DOMAIN_NAVIGATION, type Shortcut } from './types';
+import { sortUnits } from '~/composables/units/useUnits';
 
 // Route name imports
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -35,11 +36,15 @@ export function useDomainShortcuts() {
     serializer: StorageSerializers.boolean
   });
 
-  const domainId = computed(() => route?.params?.domain as string);
-  const unitId = computed(() => route?.params?.unit as string);
-  const isDomainPage = computed(() => !!(route?.params?.unit && route?.params?.domain));
+  const { data: units } = useUnits();
 
-  const createBaseShortcuts = (): Shortcut[] => [
+  const firstUnit = computed(() => units.value.sort(sortUnits)?.[0]);
+
+  const domainId = computed(() => route?.params?.domain ?? (firstUnit.value?.domains?.[0].id as string));
+  const unitId = computed(() => route?.params?.unit ?? (firstUnit.value?.id as string));
+  const isDomainPage = computed(() => !!(unitId && domainId));
+
+  const baseShortcuts = computed<Shortcut[]>(() => [
     {
       id: 'nav-home',
       name: t('shortcuts.navigation.home.name'),
@@ -112,9 +117,9 @@ export function useDomainShortcuts() {
         miniVariant.value = !miniVariant.value;
       }
     }
-  ];
+  ]);
 
-  const createElementTypeShortcuts = (): Shortcut[] => {
+  const elementTypeShortcuts = computed<Shortcut[]>(() => {
     const elementTypes = Object.keys(VeoElementTypePlurals) as Array<keyof typeof VeoElementTypePlurals>;
 
     return elementTypes.map((elementType) => {
@@ -140,11 +145,11 @@ export function useDomainShortcuts() {
           })
       };
     });
-  };
+  });
 
   const domainShortcuts = computed<Shortcut[]>(() => {
     if (!isDomainPage.value) return [];
-    return [...createBaseShortcuts(), ...createElementTypeShortcuts()];
+    return [...baseShortcuts.value, ...elementTypeShortcuts.value];
   });
 
   return {
