@@ -18,6 +18,14 @@ export function useRiskDefinition() {
   };
 }
 
+export function useRiskDefinitions() {
+  const { data: currentDomain } = useCurrentDomain();
+  const route = useRoute();
+
+  const data = computed(() => (route.params?.domain ? currentDomain.value?.riskDefinitions : undefined));
+  return { data };
+}
+
 export function getRiskDefinition(domain: IVeoDomain, rType: string): IVeoDomainRiskDefinition | undefined {
   if (!domain?.riskDefinitions || !rType) return;
   return domain.riskDefinitions[rType];
