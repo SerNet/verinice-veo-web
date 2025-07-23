@@ -239,6 +239,10 @@
       "menu": {
         "name": "Menü",
         "description": "Menü verstecken/anzeigen"
+      },
+      "units": {
+        "name": "Unitverwaltung",
+        "description": "Zur Unitverwaltung navigieren"
       }
     },
     "elements": {

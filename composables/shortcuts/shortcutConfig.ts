@@ -41,6 +41,12 @@ export const DOMAIN_SHORTCUTS_CONFIG = {
   } as Record<keyof typeof VeoElementTypePlurals, string[]>
 };
 
+export const STATIC_SHORTCUTS_CONFIG = {
+  navigation: {
+    units: ['g', 'u']
+  }
+};
+
 export function getElementTypeKeys(elementType: keyof typeof VeoElementTypePlurals): string[] {
   return DOMAIN_SHORTCUTS_CONFIG.elementTypes[elementType];
 }

@@ -16,25 +16,29 @@
  */
 import { useMagicKeys } from '@vueuse/core';
 import { useActiveElement } from '@vueuse/core';
-import { DOMAIN_SHORTCUTS_CONFIG } from './shortcutConfig';
+import { DOMAIN_SHORTCUTS_CONFIG, STATIC_SHORTCUTS_CONFIG } from './shortcutConfig';
 
 export function useShortcuts() {
   const isDialogOpen = ref(false);
 
   const modifiers = Object.values({
     ...DOMAIN_SHORTCUTS_CONFIG.navigation,
-    ...DOMAIN_SHORTCUTS_CONFIG.elementTypes
+    ...DOMAIN_SHORTCUTS_CONFIG.elementTypes,
+    ...STATIC_SHORTCUTS_CONFIG.navigation
   }).map(([modifier]) => modifier);
   const relevantKeys = Object.values({
     ...DOMAIN_SHORTCUTS_CONFIG.navigation,
-    ...DOMAIN_SHORTCUTS_CONFIG.elementTypes
+    ...DOMAIN_SHORTCUTS_CONFIG.elementTypes,
+    ...STATIC_SHORTCUTS_CONFIG.navigation
   }).map(([, relevantKey]) => relevantKey);
 
   const SEQUENCE_TIMEOUT_MS = 1000;
   const keySequence = ref([]);
 
   const { isInputElement } = useInputElementDetection();
-  const { data: shortcuts } = useDomainShortcuts();
+  const { data: domainShortcuts } = useDomainShortcuts();
+  const { data: staticShortcuts } = useStaticShortcuts();
+  const shortcuts = computed(() => [...domainShortcuts.value, ...staticShortcuts.value]);
 
   const keys = useMagicKeys();
   const current = keys.current;

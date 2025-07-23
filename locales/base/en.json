@@ -235,6 +235,10 @@
       "menu": {
         "name": "Menu",
         "description": "Collaps / open the menu"
+      },
+      "units": {
+        "name": "Unit administration",
+        "description": "Navigate to the unit administration"
       }
     },
     "elements": {

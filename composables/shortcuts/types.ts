@@ -16,7 +16,7 @@
  */
 
 export const CATEGORY_DOMAIN_NAVIGATION = 'Domain Navigation';
-
+export const CATEGORY_STATIC_SHORTCUT = 'Static Shortcut';
 export interface Shortcut {
   id: string;
   name: string;
