@@ -21,7 +21,7 @@ steps:
     intro: The object type as minimum criterion can only be changed via the filter dialogue!
   - title: 'Search Function'
     element: '[data-component-name=veo-search]'
-    intro: The search box allows you to quickly find items on the website. Enter either the name, the abbreviation, or a combination of both to get relevant results.
+    intro: The search box allows you to quickly find items. Enter either the name, the abbreviation, or a combination of both to get relevant results.
   - title: 'By the way ...'
     element: '[data-component-name=breadcrumbs]'
     intro: ... via the breadcrumb you navigate directly to all listed elements by mouse click.
@@ -46,11 +46,14 @@ steps:
   - title: 'Delete object'
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... and delete it just as quickly.
-  - title: 'Further actions'
+  - title: 'Assign object'
     element: '[data-component-name=object-overview-assign-button]'
-    intro: Further actions may be available for individual objects.
+    intro: Assign object to another domain.
   - title: 'Create object'
     element: '[data-component-name=create-object-button]'
     intro: Use the 'Create object' button to create a new object for the active filter settings.
+  - title: 'Import Items'
+    element: '[data-component-name=csv-button]'
+    intro: Click to browse and select a file manually.
   - title: 'Created'
     intro: Further information can also be found in the documentation.

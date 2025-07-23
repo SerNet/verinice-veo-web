@@ -32,15 +32,15 @@ steps:
   - title: 'Links'
     element: '[data-component-name=object-details-links-tab]'
     intro: The Links section shows all objects linked in the form.
-  - title: 'Risks'
-    element: '[data-component-name=object-details-risks-tab]'
-    intro: Depending on the domain, risks can be documented and processed for some objects (scopes, processes, assets).
   - title: 'Measures'
     element: '[data-component-name=object-details-controls-tab]'
     intro: Depending on the domain, modules or controls can be stored for some objects.
+  - title: 'Risks'
+    element: '[data-component-name=object-details-risks-tab]'
+    intro: Depending on the domain, risks can be documented and processed for some objects (scopes, processes, assets).
   - title: 'Add'
     element: '[data-component-name=object-details-actions-button]'
-    intro: Depending on the active section, you can use the Add button to add objects and scopes as components or make the active object part of another and add risks if available.
+    intro: Depending on the active section, you can use the Add-Button to add objects and scopes as components or make the active object part of another and add risks if available.
   # form
   - title: 'Form'
     element: '[data-component-name=object-form-form]'

@@ -21,13 +21,13 @@ steps:
     intro: Der Objekttyp als Mindestkriterium kann nur über den Filterdialog geändert werden!
   - title: 'Suchfunktion'
     element: '[data-component-name=veo-search]'
-    intro: Mit dem Suchfenster können Sie schnell Objekte auf der Webseite finden. Geben Sie entweder den Namen, die Abkürzung oder eine Kombination aus beidem ein, um passende Ergebnisse zu erhalten.
+    intro: Mit der Suche können Sie schnell Objekte finden. Geben Sie entweder den Namen, die Abkürzung oder eine Kombination aus beidem ein, um passende Ergebnisse zu erhalten.
   - title: 'Übrigens ...'
     element: '[data-component-name=breadcrumbs]'
     intro: ... über die Breadcrumbs navigieren Sie per Mausklick direkt zu allen aufgelisteten Elementen.
   - title: 'Objektliste'
     element: '[data-component-name=object-overview-page]'
-    intro: Die Objektliste kann auf unterschiedliche Art und Weise zum schnellen Auffinden von Objekten modifziert werden.
+    intro: Die Objektliste kann auf unterschiedliche Art und Weise zum schnellen Auffinden von Objekten modifiziert werden.
   - title: 'Sortierung'
     element: '[data-component-name=object-overview-table] thead'
     intro: Sortieren Sie die Objektliste durch Mausklick auf die Spaltenüberschriften, um bestimmte Objekte schnell zu finden.
@@ -46,11 +46,14 @@ steps:
   - title: 'Objekt löschen'
     element: '[data-component-name=object-overview-delete-button]'
     intro: ... und genau so schnell löschen.
-  - title: 'Weitere Aktionen'
+  - title: 'Objekt zuordnen'
     element: '[data-component-name=object-overview-assign-button]'
-    intro: Gegebenenfalls stehen weitere Aktionen für einzelne Objekte zur Verfügung.
+    intro: Objekt einer weiteren Domäne zuordnen.
   - title: 'Objekt erstellen'
     element: '[data-component-name=create-object-button]'
-    intro: Über die Schältfläche "Objekt erstellen" können Sie ein neues Objekt zu den aktiven Filtereinstellungen erstellen.
+    intro: Über die Schaltfläche "Objekt erstellen" können Sie ein neues Objekt zu den aktiven Filtereinstellungen erstellen.
+  - title: 'Elemente importieren'
+    element: '[data-component-name=csv-button]'
+    intro: Klicken Sie, um eine Datei manuell zu erstellen.
   - title: 'Geschafft'
     intro: Weitere Informationen finden Sie auch in der Dokumentation.

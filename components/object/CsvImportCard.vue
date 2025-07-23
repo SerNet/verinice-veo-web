@@ -32,6 +32,7 @@
           class="custom-file-upload drop-zone"
           :class="{ 'drop-zone-active': isDragging }"
           :aria-label="t('import.dropzone.label')"
+          data-component-name="csv-button"
           @dragenter.prevent="isDragging = true"
           @dragleave.prevent="isDragging = false"
           @update:model-value="handleFileUpload"
