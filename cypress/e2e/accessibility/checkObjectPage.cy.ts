@@ -4,8 +4,8 @@ export type Tabs = 'childScopes' | 'childObjects' | 'parentScopes' | 'links' | '
 export type Actions =
   | 'Create scope'
   | 'Select scope'
-  | 'Create object'
-  | 'Select object'
+  | 'Create Object'
+  | 'Select Object'
   | 'Model Modules'
   | 'Create risk';
 
@@ -20,7 +20,7 @@ const tabConfigs: TabConfig[] = [
   },
   {
     tab: 'childObjects',
-    actions: ['Create object', 'Select object']
+    actions: ['Create Object', 'Select Object']
   },
   {
     tab: 'parentScopes',
