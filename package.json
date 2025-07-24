@@ -32,7 +32,7 @@
     "@codemirror/lang-json": "^6.0.1",
     "@mdi/font": "^7.0.0",
     "@mdi/js": "^7.0.96",
-    "@nuxt/kit": "^3.0.0",
+    "@nuxt/kit": "^4.0.0",
     "@nuxtjs/i18n": "^9.5.5",
     "@tanstack/vue-query": "^4.37.1",
     "@toast-ui/editor": "^3.1.0",
