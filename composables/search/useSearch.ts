@@ -29,6 +29,8 @@ type UseSearchParams<T> = {
 
 type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
 
+type SearchKey = 'abbreviation' | 'displayName' | 'name';
+
 export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: UseSearchParams<T>): {
   data: Ref<VeoSearchResponse>;
   isLoading: Ref<boolean>;
@@ -73,13 +75,16 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
   };
 }
 
-export function getSearchQueryParameters(search: VeoSearch[]): VeoSearchQueryParameters {
+const defaultSearchKeys: SearchKey[] = ['abbreviation', 'displayName', 'name'];
+
+export function getSearchQueryParameters(
+  search: VeoSearch[],
+  allowedKeys: SearchKey[] = defaultSearchKeys
+): VeoSearchQueryParameters {
   if (!search.length) return {};
-  return search.reduce(
-    (queries, query) => ({
-      ...queries,
-      ...(query.searchFilter && query.term && query.operator == '=' ? { [query.searchFilter]: query.term } : {})
-    }),
-    {}
-  ) as VeoSearchQueryParameters;
+  return Object.fromEntries(
+    search
+      .filter((item) => allowedKeys.includes(item.searchFilter as SearchKey))
+      .map((item) => [item.searchFilter, item.term])
+  );
 }
