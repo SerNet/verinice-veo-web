@@ -80,7 +80,7 @@
           v-if="hasCardView"
           :is-card-view-visible="hasCardView"
           :card-items="items.items ?? []"
-          :fetched-items="_items"
+          :fetched-items="items"
           :sort-by="sortBy"
           :actions="actions"
           :translations="translations"
@@ -393,22 +393,14 @@ const combinedQueryParameters = computed<any>(() => ({
   unit: route.params.unit as string,
   ...omit(filter.value, 'objectType'),
   endpoint: VeoElementTypePlurals[filter.value.objectType as string],
-  domain: route.params.domain
+  domain: route.params.domain,
+  ...getSearchQueryParameters(search.value)
 }));
 const queryEnabled = computed(() => !!VeoElementTypePlurals[filter.value.objectType as string]);
-const { data: _items, isFetching: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
+const { data: items, isFetching: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
   enabled: queryEnabled,
   keepPreviousData: true
 });
-
-// SEARCH
-const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
-  baseQueryParameters: combinedQueryParameters,
-  search
-});
-
-// items rendered in ObjectTable
-const items = computed(() => (search.value.length ? searchResults.value : _items.value) || []);
 
 const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
 const formsQueryEnabled = computed(() => !!domainId.value);
@@ -437,7 +429,7 @@ const nestedActions = computed<INestedMenuEntries[]>(() => {
     }));
 });
 
-const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value || isLoadingSearchResults.value);
+const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
 
 watch(() => filter.value, resetQueryOptions, { deep: true });
 
