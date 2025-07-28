@@ -18,7 +18,7 @@
 
 import { useQuerySync } from '~/composables/api/utils/query';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
-import type { VeoSearch, VeoSearchQueryParameters } from '~/types/VeoSearch';
+import type { VeoSearch, VeoSearchQueryParameters, VeoSearchFilters } from '~/types/VeoSearch';
 import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 type UseSearchParams<T> = {
@@ -87,4 +87,22 @@ export function getSearchQueryParameters(
       .filter((item) => allowedKeys.includes(item.searchFilter as SearchKey))
       .map((item) => [item.searchFilter, item.term])
   );
+}
+
+export function useUrlFilters(filters: VeoSearchFilters, search: Ref<VeoSearch[]>) {
+  const route = useRoute();
+  const urlFilters = computed<VeoSearch[]>(() =>
+    filters.all
+      .map((filter) => {
+        if (!route.query[filter]) return null;
+        return {
+          searchFilter: filter,
+          operator: '=',
+          term: route.query[filter] as string
+        };
+      })
+      .filter(Boolean)
+  );
+
+  watch(urlFilters, () => (search.value = urlFilters.value), { immediate: true });
 }

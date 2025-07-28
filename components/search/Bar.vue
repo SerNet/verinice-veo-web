@@ -54,6 +54,7 @@
 <script setup lang="ts">
 import { mdiCloseCircle, mdiFilter, mdiMagnify } from '@mdi/js';
 import { cloneDeep } from 'lodash';
+import { hasFeature } from '~/utils/featureFlags';
 import type { VeoSearch, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
 type UpdateSearchMsg = {
@@ -127,6 +128,10 @@ function translateItem(item: string) {
 const search = defineModel<VeoSearch[]>('search', {
   default: []
 });
+
+// Get existing queries form url and assign them to search
+// TODO: Make this the sole mechanism to set the search state, the abvove v-model will then become obsolete
+if (hasFeature('urlParams')) useUrlFilters(props.filters, search);
 
 // v-combobox menu items
 const selectionItems = computed(() => {
