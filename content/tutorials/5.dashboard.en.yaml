@@ -19,7 +19,7 @@ steps:
   - title: 'Assets'
     element: '[data-component-name=domain-dashboard-asset-widget]'
     intro: Each subtype can have a specific status. By default, a life cycle of the individual objects is presented, e.g. for the assets.
-  - title: 'People'
+  - title: 'Persons'
     element: '[data-component-name=domain-dashboard-person-widget]'
     intro: The statuses of the objects are color-coded:<br>dark gray = New<br>yellow = In progress<br>blue = For review<br>green = Released<br>light gray = Archived.
   - title: 'Controls'

@@ -17,7 +17,7 @@ steps:
     intro: On the Dashboard you can see all objects per subtype and status (life cycle) at a glance and navigate directly to them.
   - title: 'Objects'
     element: '[data-component-name=objects-nav-item]'
-    intro: In the Objects section, you navigate directly to the overview pages of the object types <i>Scopes</i>, <i>Processes</i>, <i>Assets</i>, <i>People</i>, <i>Incidents</i>, <i>Documents</i>, <i>Scenarios</i> and <i>Controls</i>.
+    intro: In the Objects section, you navigate directly to the overview pages of the object types <i>Scopes</i>, <i>Processes</i>, <i>Assets</i>, <i>Persons</i>, <i>Incidents</i>, <i>Documents</i>, <i>Scenarios</i> and <i>Controls</i>.
   - title: 'Catalogs'
     element: '[data-component-name=catalogs-nav-item]'
     intro: Under Catalogs you can apply <i>objects</i> from one of the available catalogs.
