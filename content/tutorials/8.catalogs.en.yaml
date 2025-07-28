@@ -1,11 +1,11 @@
-title: The catalogues
-description: Description of the catalogues
+title: The catalogs
+description: Description of the catalogs
 route: /:unit()/domains/:domain()/catalog
 lang: en
 steps:
-  - title: 'Catalogues'
+  - title: 'Catalogs'
     element: '[data-component-name=catalog-page]'
-    intro: In this section, existing catalogues can be applied.
+    intro: In this section, existing catalogs can be applied.
   - title: 'Search Function'
     element: '[data-component-name=veo-search]'
     intro: The search box allows you to quickly find items on the website. Enter either the name, the abbreviation, or a combination of both to get relevant results.

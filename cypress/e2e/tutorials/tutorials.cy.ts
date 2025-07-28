@@ -93,7 +93,7 @@ describe('Tutorials', () => {
       cy.visit(`${url.pathname}/catalog`, { failOnStatusCode: false });
     });
     cy.get('[data-component-name=tutorial-select]').click();
-    cy.contains('The catalogues').click();
+    cy.contains('The catalogs').click();
     runTutorial('8.catalogs.en.yaml');
   });
 
