@@ -77,11 +77,19 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
 
 const defaultSearchKeys: SearchKey[] = ['abbreviation', 'displayName', 'name'];
 
+const defaultSearch = defaultSearchKeys.reduce(
+  (acc, key) => {
+    acc[key] = undefined;
+    return acc;
+  },
+  {} as Record<SearchKey, undefined>
+);
+
 export function getSearchQueryParameters(
   search: VeoSearch[],
   allowedKeys: SearchKey[] = defaultSearchKeys
 ): VeoSearchQueryParameters {
-  if (!search.length) return {};
+  if (!search.length) return defaultSearch;
   return Object.fromEntries(
     search
       .filter((item) => allowedKeys.includes(item.searchFilter as SearchKey))
