@@ -396,8 +396,13 @@ const combinedQueryParameters = computed<any>(() => ({
   domain: route.params.domain,
   ...getSearchQueryParameters(search.value)
 }));
+
+// Sync request parameters with URL query parameters, if enabled
+const { queryParams } =
+  hasFeature('urlParams') ? useQueryParams(combinedQueryParameters) : { queryParams: combinedQueryParameters };
+
 const queryEnabled = computed(() => !!VeoElementTypePlurals[filter.value.objectType as string]);
-const { data: items, isFetching: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
+const { data: items, isFetching: isLoadingObjects } = useFetchObjects(queryParams, {
   enabled: queryEnabled,
   keepPreviousData: true
 });
