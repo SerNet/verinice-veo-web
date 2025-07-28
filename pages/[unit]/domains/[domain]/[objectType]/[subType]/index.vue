@@ -381,6 +381,8 @@ const resetQueryOptions = () => {
   sortBy.value = [{ key: 'name', order: 'asc' }];
 };
 
+const search = ref<VeoSearch[]>([]);
+
 const combinedQueryParameters = computed<any>(() => ({
   size: tablePageSize.value,
   sortBy: sortBy.value[0].key,
@@ -398,10 +400,6 @@ const { data: _items, isFetching: isLoadingObjects } = useFetchObjects(combinedQ
 });
 
 // SEARCH
-// v-model from `SearchBar`
-const search = ref<VeoSearch[]>([]);
-
-// get search results
 const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
   baseQueryParameters: combinedQueryParameters,
   search
