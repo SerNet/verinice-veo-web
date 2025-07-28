@@ -375,7 +375,9 @@ const page = ref(0);
 const cardsPageChange = (value: number) => {
   page.value = value - 1;
 };
-const sortBy = ref([{ key: 'name', order: 'asc' }]);
+const sortBy = ref([
+  route.query.sortOrder ? { key: route.query.sortBy, order: route.query.sortOrder } : { key: 'name', order: 'asc' }
+]);
 const resetQueryOptions = () => {
   page.value = 0;
   sortBy.value = [{ key: 'name', order: 'asc' }];
