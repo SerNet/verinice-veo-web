@@ -11,7 +11,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="cancel">
+        <v-btn @click="cancel">
           {{ globalT('global.button.cancel') }}
         </v-btn>
         <v-btn color="error" @click="confirm">

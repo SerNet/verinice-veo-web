@@ -70,10 +70,10 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="closeDialog">
+        <v-btn @click="closeDialog">
           {{ t('cancel') }}
         </v-btn>
-        <v-btn color="primary" text @click="saveGroup">
+        <v-btn :disabled="isFetchingUnits || !localGroupName.trim()" color="primary" @click="saveGroup">
           {{ isEditMode ? t('save') : t('create') }}
         </v-btn>
       </v-card-actions>
