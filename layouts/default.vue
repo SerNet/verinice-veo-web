@@ -22,7 +22,7 @@
       <v-app-bar-nav-icon v-if="xs" @click="drawer = !drawer" />
       <nuxt-link
         to="/units"
-        class="text-decoration-none ml-4"
+        class="text-decoration-none ml-2"
         data-component-name="logo"
         aria-label="logo"
         data-veo-test="unit-page-link"

@@ -26,7 +26,7 @@
       <v-tooltip location="bottom" :aria-label="t('OpenPreferences')">
         <template #activator="{ props: tooltipProps }">
           <v-btn
-            class="mr-0"
+            class="mr-2"
             data-component-name="account-menu-button"
             color="primary"
             v-bind="{ ...tooltipProps, ...props }"
