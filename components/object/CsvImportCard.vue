@@ -17,7 +17,7 @@
 <template>
   <div>
     <div class="import-container">
-      <v-card class="upload-card" flat>
+      <v-card class="upload-card bg-basepage" flat>
         <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>
         <v-file-upload
           :browse-text="t('import.button.browse')"
@@ -29,7 +29,7 @@
           accept=".csv"
           show-selection="false"
           :multiple="false"
-          class="custom-file-upload drop-zone"
+          class="custom-file-upload drop-zone bg-surface"
           :class="{ 'drop-zone-active': isDragging }"
           :aria-label="t('import.dropzone.label')"
           data-component-name="csv-button"
@@ -39,7 +39,7 @@
           @click.prevent="triggerFileUpload"
         >
           <template #browse="{}">
-            <v-btn color="primary" class="browse-button" size="large" flat>
+            <v-btn color="primary" variant="flat" size="large">
               {{ t('import.button.browse') }}
             </v-btn>
           </template>
@@ -78,7 +78,7 @@ const { displayErrorMessage } = useVeoAlerts();
 
 const isProcessing = ref(false);
 
-const props = defineProps({
+const _props = defineProps({
   objectType: {
     type: String,
     default: ''
