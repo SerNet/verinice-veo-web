@@ -176,28 +176,7 @@ const handleNavigate = (objectType: string, subType: string) => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "import.title": "Import Items",
-    "import.dropzone.label": "Drag and drop a CSV file here",
-    "import.button.browse": "Browse Files",
-    "import.or.text": "or select from your device",
-    "import.errors.invalidFile": "Invalid File Type",
-    "import.errors.onlyCsvAllowed": "Only CSV files are allowed. Please select a file with .csv extension.",
-    "import.errors.processingFailed": "Error Processing File"
-  },
-  "de": {
-    "import.title": "Elemente importieren",
-    "import.dropzone.label": "CSV-Datei hierher ziehen und ablegen",
-    "import.button.browse": "Dateien auswählen",
-    "import.or.text": "oder von Ihrem Gerät auswählen",
-    "import.errors.invalidFile": "Ungültiger Dateityp",
-    "import.errors.onlyCsvAllowed": "Es sind nur CSV-Dateien erlaubt. Bitte wählen Sie eine Datei mit der Endung .csv.",
-    "import.errors.processingFailed": "Fehler bei der Verarbeitung der Datei"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-csv-import-card.json"></i18n>
 
 <style scoped>
 .import-container {
