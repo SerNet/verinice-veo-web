@@ -71,8 +71,8 @@
           @click="miniVariant = !miniVariant"
         >
           <template #prepend>
-            <v-icon v-if="miniVariant" color="black" class="mr-3" :icon="mdiChevronRight" />
-            <v-icon v-else color="black" class="mr-3" :icon="mdiChevronLeft" />
+            <v-icon v-if="miniVariant" :color="chevronColor" class="mr-3" :icon="mdiChevronRight" />
+            <v-icon v-else :color="chevronColor" class="mr-3" :icon="mdiChevronLeft" />
           </template>
           <v-list-item-title v-if="miniVariant">
             {{ t('fix') }}
@@ -142,6 +142,7 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+import { useTheme } from 'vuetify';
 
 const props = withDefaults(
   defineProps<{
@@ -161,6 +162,7 @@ const { t: $t } = useI18n({ useScope: 'global' });
 const { authenticated } = useVeoUser();
 const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
+const theme = useTheme();
 
 // Layout stuff
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, {
@@ -468,6 +470,9 @@ const items = computed<INavItem[]>(() => [
 // Provide the ref to the v-list so children can do stuff with it
 const primaryNavList = ref();
 provide(PROVIDE_KEYS.navigation, primaryNavList);
+
+// adjust icon color <mdiChevron> according to the mode chosen
+const chevronColor = computed(() => (theme.global.name.value === 'light' ? 'black' : 'white'));
 </script>
 
 <i18n src="~/locales/base/components/navigation-primary-navigation.json"></i18n>
