@@ -21,6 +21,8 @@ describe('Compliance', () => {
     cy.checkAxeViolations();
     cy.getCustom('.v-data-table__tr').first().click();
     cy.checkAxeViolations();
+    cy.get('[data-veo-test="dialog-card"]').should('be.visible');
+    cy.checkAxeViolations('[data-veo-test="dialog-card"]');
     cy.get('.v-card-actions button')
       .contains(/cancel/i)
       .click();
