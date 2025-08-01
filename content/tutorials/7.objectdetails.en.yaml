@@ -53,18 +53,21 @@ steps:
     intro: You can save forms after changes or reset all changes.
   - title: 'Sidebar'
     element: '[data-component-name=object-form-sidebar]'
-    intro: Use the sidebar to display the object view, form navigation, history and validation messages.
+    intro: More features are available in the sidebar...
   - title: 'Sidebar - View'
     element: '[data-component-name=object-form-view-tab]'
-    intro: In the view you can look at an object in the different forms/subtypes.
-  - title: 'Sidebar - Form Navigation'
+    intro: Switch between different representations of the object.
+  - title: 'Sidebar - Contents'
     element: '[data-component-name=object-form-toc-tab]'
-    intro: With the form navigation you can quickly navigate to specific sections in the form.
-  - title: 'Sidebar - Object History'
+    intro: Quickly navigate to specific form sections.
+  - title: 'Sidebar - History'
     element: '[data-component-name=object-form-history-tab]'
     intro: In the object history you can see all previous versions and restore an older version.
-  - title: 'Sidebar - Validation'
+  - title: 'Sidebar - Messages'
     element: '[data-component-name=object-form-messages-tab]'
-    intro: In the Validation section, you will see errors or warnings about the content entered in the form.
+    intro: Errors, warnings and hints about the object will be shown here.
+  - title: 'Sidebar – More Actions'
+    element: '[data-component-name=object-form-more-actions-button]'
+    intro: Click here to perform additional operations on the object, such as deleting it.
   - title: 'Done'
     intro: Further information can also be found in the documentation.

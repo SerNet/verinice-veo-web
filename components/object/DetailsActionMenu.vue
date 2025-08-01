@@ -26,6 +26,7 @@
           :loading="isLoadingActions"
           :disabled="!visibleItems.length || $props.disabled"
           :aria-label="t('expandOptions')"
+          data-component-name="object-form-more-actions-button"
           :icon="mdiDotsVertical"
         />
       </template>

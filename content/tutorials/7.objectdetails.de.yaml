@@ -53,18 +53,21 @@ steps:
     intro: Sie können Formulare nach Änderungen speichern oder alle Änderungen zurücksetzen.
   - title: 'Seitenleiste'
     element: '[data-component-name=object-form-sidebar]'
-    intro: Über die Seitenleiste blenden Sie die Objektansicht, die Formular-Navigation, die History und Validierungsmeldungen ein.
+    intro: Weitere Funktionen erwarten Sie in der Seitenleiste...
   - title: 'Seitenleiste - Ansicht'
     element: '[data-component-name=object-form-view-tab]'
-    intro: In der Ansicht können Sie ein Objekt in den unterschiedlichen Formularen/Subtypen betrachten.
-  - title: 'Seitenleiste - Formularnavigation'
+    intro: Wechseln Sie hier zwischen verschiedenen Darstellungen des Objektes.
+  - title: 'Seitenleiste - Inhalt'
     element: '[data-component-name=object-form-toc-tab]'
-    intro: Mit der Formularnavigation können Sie schnell zu bestimmten Abschnitten im Formular navigieren.
-  - title: 'Seitenleiste - Objekthistorie'
+    intro: Navigieren Sie schnell zu bestimmten Abschnitten im Formular.
+  - title: 'Seitenleiste - Verlauf'
     element: '[data-component-name=object-form-history-tab]'
-    intro: In der Objekthistorie sehen Sie alle vorherigen Versionen und können eine ältere Version wiederherstellen.
-  - title: 'Seitenleiste - Validierung'
+    intro: Im Verlauf sehen Sie alle vorherigen Versionen und können eine ältere Version wiederherstellen.
+  - title: 'Seitenleiste - Meldungen'
     element: '[data-component-name=object-form-messages-tab]'
-    intro: Im Abschnitt Validierung werden Ihnen Fehler oder Warnungen zu den im Formular eingegebenen Inhalten angezeigt.
+    intro: Fehler, Warnungen und Hinweise zum Objekt werden hier angezeigt.
+  - title: 'Seitenleiste - Weitere Aktionen'
+    element: '[data-component-name=object-form-more-actions-button]'
+    intro: Klicken Sie hier, um zusätzliche Aktionen für das Objekt ausführen, wie zum Beispiel das Löschen des Objekts.
   - title: 'Geschafft'
     intro: Weitere Informationen finden Sie auch in der Dokumentation.
