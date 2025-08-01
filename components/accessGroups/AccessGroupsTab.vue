@@ -42,7 +42,7 @@
 
     <BaseTable
       :default-headers="['actions']"
-      :items="accessGroups || []"
+      :items="accessGroups"
       :loading="isFetching"
       :additional-headers="accessGroupTableHeaders"
     >
@@ -79,8 +79,9 @@
   </BaseCard>
 
   <ManageDialog
-    v-model:visible="createEditDialogVisible"
+    v-model="createEditDialogVisible"
     :group="editAccessGroupDialogProps"
+    :access-groups="accessGroups"
     :available-units="unitsData"
     :is-fetching-units="isFetchingUnits"
     @save="onSaveAccessGroup"
@@ -106,6 +107,9 @@ import unitsDefinition, { IVeoUnit } from '~/composables/api/queryDefinitions/un
 import ManageDialog from './ManageDialog.vue';
 import DeleteDialog from '~/components/accessGroups/DeleteDialog.vue';
 import { VeoAlertType } from '~/types/VeoTypes';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+
+const { displayErrorMessage } = useVeoAlerts();
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -147,7 +151,7 @@ const setAllUnitsToReadWrite = async () => {
 
     await refetchAccessGroups();
   } catch (error) {
-    console.error('Failed to update all units to READ_WRITE:', error);
+    displayErrorMessage(t('failedToGiveAllAccessToUnits'), JSON.stringify(error));
   } finally {
     isLoadingAllUnitsAccess.value = false;
   }

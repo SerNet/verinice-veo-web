@@ -27,6 +27,7 @@
     "of": "of",
     "username": "Username",
     "grantAllAccessToAllUnits": "Grant all users access to all units",
+    "failedToGiveAllAccessToUnits": "Failed to give all users access to all units.",
     "allUsersHaveAccessHint": "All users now have access to all units for this client."
   },
   "de": {
@@ -57,6 +58,7 @@
     "of": "von",
     "username": "Benutzername",
     "grantAllAccessToAllUnits": "Allen Benutzern Zugriff auf alle Einheiten gewähren",
+    "failedToGiveAllAccessToUnits": "Fehler beim Gewähren des Zugriffs auf alle Einheiten für alle Benutzer.",
     "allUsersHaveAccessHint": "Alle Benutzer haben jetzt Zugriff auf alle Einheiten für diesen Client."
   }
 }

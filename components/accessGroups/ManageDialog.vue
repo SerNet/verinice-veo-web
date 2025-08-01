@@ -1,123 +1,153 @@
 <template>
-  <v-dialog max-width="600px" persistent :model-value="visible" @update:model-value="$emit('update:visible', $event)">
-    <v-card>
-      <v-card-title>
-        {{ isEditMode ? t('editAccessGroup') : t('createAccessGroup') }}
-      </v-card-title>
-      <v-card-text>
-        <v-text-field v-model="localGroupName" :label="t('name')" variant="outlined" density="compact" required />
-        <v-divider class="my-4" />
-        <v-card-title class="bg-accent small-caps text-h4">
-          <span>{{ t('units') }}</span>
-        </v-card-title>
+  <BaseDialog
+    :model-value="modelValue"
+    v-bind="$attrs"
+    :close-disabled="isFetchingUnits"
+    :title="isEditMode ? t('editAccessGroup') : t('createAccessGroup')"
+    large
+    @update:model-value="$emit('update:model-value', $event)"
+  >
+    <template #default>
+      <BaseCard>
+        <v-card-text>
+          <v-form v-model="formIsValid" @submit.prevent="submitGroup">
+            <v-text-field
+              v-model="formData.name"
+              :label="`${t('name')}*`"
+              :rules="[requiredRule, nameIsDuplicateRule]"
+              variant="underlined"
+              class="mb-4"
+            />
 
-        <div v-if="isFetchingUnits" class="text-center pa-4">
-          <v-progress-circular indeterminate color="primary" />
-          <p>{{ t('global.message.loading') }}</p>
-        </div>
+            <v-card-title class="bg-accent small-caps text-h4 mt-4">
+              {{ t('units') }}
+            </v-card-title>
 
-        <v-table v-else density="compact">
-          <thead>
-            <tr>
-              <th>{{ t('name') }}</th>
-              <th class="text-center">{{ t('read') }}</th>
-              <th class="text-center">{{ t('write') }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="unitPermission in localUnitPermissions" :key="unitPermission.unitId">
-              <td>{{ unitPermission.name }}</td>
+            <div v-if="isFetchingUnits" class="text-center pa-4">
+              <v-progress-circular indeterminate color="primary" />
+            </div>
 
-              <td class="text-center pa-0">
-                <div class="d-flex justify-center align-center">
-                  <v-checkbox
-                    :model-value="unitPermission.read"
-                    :disabled="unitPermission.write"
-                    density="compact"
-                    hide-details
-                    class="ma-0 pa-0"
-                    :ripple="false"
-                    @update:model-value="
-                      (val) => {
-                        unitPermission.read = val;
-                        if (!val) unitPermission.write = false;
-                      }
-                    "
-                  />
-                </div>
-              </td>
+            <v-data-table
+              v-else
+              v-model:page="currentPage"
+              :headers="tableHeaders"
+              :items="formData.units"
+              :items-per-page="itemsPerPage"
+            >
+              <template #item.read="{ item }">
+                <v-checkbox
+                  :model-value="item.read"
+                  :disabled="item.write"
+                  density="compact"
+                  hide-details
+                  :ripple="false"
+                  @update:model-value="
+                    (val) => {
+                      item.read = val;
+                      if (!val) item.write = false;
+                    }
+                  "
+                />
+              </template>
+              <template #item.write="{ item }">
+                <v-checkbox
+                  :model-value="item.write"
+                  density="compact"
+                  hide-details
+                  class="ma-0 pa-0"
+                  :ripple="false"
+                  @update:model-value="
+                    (val) => {
+                      item.write = val;
+                      if (val) item.read = true;
+                    }
+                  "
+                />
+              </template>
+            </v-data-table>
+          </v-form>
+        </v-card-text>
+      </BaseCard>
+    </template>
 
-              <td class="text-center pa-0">
-                <div class="d-flex justify-center align-center">
-                  <v-checkbox
-                    :model-value="unitPermission.write"
-                    density="compact"
-                    hide-details
-                    class="ma-0 pa-0"
-                    :ripple="false"
-                    @update:model-value="
-                      (val) => {
-                        unitPermission.write = val;
-                        if (val) unitPermission.read = true;
-                      }
-                    "
-                  />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </v-table>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer />
-        <v-btn @click="closeDialog">
-          {{ t('cancel') }}
-        </v-btn>
-        <v-btn :disabled="isFetchingUnits || !localGroupName.trim()" color="primary" @click="saveGroup">
-          {{ isEditMode ? t('save') : t('create') }}
-        </v-btn>
-      </v-card-actions>
-    </v-card>
-  </v-dialog>
+    <template #dialog-options>
+      <v-btn :disabled="isFetchingUnits" @click="$emit('update:model-value', false)">
+        {{ t('cancel') }}
+      </v-btn>
+      <v-spacer />
+      <v-btn
+        color="primary"
+        :disabled="formIsValid === false || !formData.name?.trim()"
+        :loading="false"
+        @click="submitGroup"
+      >
+        {{ isEditMode ? t('saveAccessGroup') : t('createAccessGroup') }}
+      </v-btn>
+    </template>
+  </BaseDialog>
 </template>
 
-<script setup lang="ts">
-import { IVeoAccessGroup, IVeoAccessGroupUnitPermission } from '~/composables/api/queryDefinitions/accessGroups';
-import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+<script lang="ts" setup>
+import { trim } from 'lodash';
+import { useI18n } from 'vue-i18n';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+
 import type {
+  IVeoAccessGroup,
+  IVeoAccessGroupUnitPermission,
   IVeoCreateAccessGroupParameters,
   IVeoUpdateAccessGroupParameters
 } from '~/composables/api/queryDefinitions/accessGroups';
-
-const { displaySuccessMessage } = useVeoAlerts();
+import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 const props = defineProps<{
-  visible: boolean;
+  modelValue: boolean;
   group: IVeoAccessGroup | null;
+  accessGroups: IVeoAccessGroup[];
   availableUnits: IVeoUnit[];
   isFetchingUnits: boolean;
 }>();
 
 const emit = defineEmits<{
-  (e: 'update:visible', visible: boolean): void;
+  (e: 'update:model-value', value: boolean): void;
   (e: 'save', group: IVeoCreateAccessGroupParameters | IVeoUpdateAccessGroupParameters): void;
 }>();
 
 const { t } = useI18n();
+const { displaySuccessMessage } = useVeoAlerts();
 
-const localGroupName = ref('');
-const localUnitPermissions = ref<IVeoAccessGroupUnitPermission[]>([]);
+const formIsValid = ref(true);
+const currentPage = ref(1);
+const itemsPerPage = 10;
 
 const isEditMode = computed(() => !!props.group);
 
+const formData = ref<{
+  name: string;
+  units: IVeoAccessGroupUnitPermission[];
+}>({
+  name: '',
+  units: []
+});
+
+const requiredRule = (v: string) => !!v?.trim() || t('global.input.required').toString();
+const nameIsDuplicateRule = (v: string) =>
+  !props.accessGroups.find((group) => group.name === trim(v) && group.id !== props.group?.id) ||
+  t('nameAlreadyTaken').toString();
+
+const tableHeaders = [
+  { text: t('name'), value: 'name' },
+  { text: t('read'), value: 'read', align: 'center', width: '120px' },
+  { text: t('write'), value: 'write', align: 'center', width: '120px' }
+] as any;
+
 watch(
   () => props.group,
-  (newGroup) => {
-    if (newGroup) {
-      localGroupName.value = newGroup.name;
-      localUnitPermissions.value = props.availableUnits.map((unit) => {
-        const perm = newGroup.units?.[unit.id];
+  (group) => {
+    if (group) {
+      formData.value.name = group.name;
+      formData.value.units = props.availableUnits.map((unit) => {
+        const perm = group.units?.[unit.id];
         return {
           unitId: unit.id,
           name: unit.name,
@@ -126,8 +156,8 @@ watch(
         };
       });
     } else {
-      localGroupName.value = '';
-      localUnitPermissions.value = props.availableUnits.map((unit) => ({
+      formData.value.name = '';
+      formData.value.units = props.availableUnits.map((unit) => ({
         unitId: unit.id,
         name: unit.name,
         read: false,
@@ -138,41 +168,40 @@ watch(
   { immediate: true }
 );
 
-function closeDialog() {
-  emit('update:visible', false);
-}
+watch(
+  () => props.modelValue,
+  (open) => {
+    if (!open) {
+      setTimeout(() => {
+        formData.value.name = '';
+        formData.value.units = [];
+      }, 250);
+    }
+  }
+);
 
-function saveGroup() {
-  if (!localGroupName.value.trim()) return;
+function submitGroup() {
+  if (formIsValid.value === false) return;
 
-  const unitsPayload: Record<string, 'READ_ONLY' | 'READ_WRITE'> = {};
+  const name = trim(formData.value.name);
+  if (!name) return;
 
-  localUnitPermissions.value.forEach(({ unitId, read, write }) => {
+  const units: Record<string, 'READ_ONLY' | 'READ_WRITE'> = {};
+  formData.value.units.forEach(({ unitId, read, write }) => {
     if (read || write) {
-      unitsPayload[unitId] = write ? 'READ_WRITE' : 'READ_ONLY';
+      units[unitId] = write ? 'READ_WRITE' : 'READ_ONLY';
     }
   });
 
-  const name = localGroupName.value.trim();
+  const payload =
+    isEditMode.value && props.group ?
+      ({ id: props.group.id, name, units } as IVeoUpdateAccessGroupParameters)
+    : ({ name, units } as IVeoCreateAccessGroupParameters);
 
-  if (isEditMode.value && props.group) {
-    const payload: IVeoUpdateAccessGroupParameters = {
-      id: props.group.id,
-      name,
-      units: unitsPayload
-    };
-    emit('save', payload);
-  } else {
-    const payload: IVeoCreateAccessGroupParameters = {
-      name,
-      units: unitsPayload
-    };
-    emit('save', payload);
-  }
-
-  closeDialog();
+  emit('save', payload);
+  emit('update:model-value', false);
   displaySuccessMessage(t('accessGroupSavedSuccessfully').toString());
 }
 </script>
 
-<i18n src="~/locales/base/components/access-group-manage-dialog.json"></i18n>
+<i18n src="~/locales/base/components/access-group-manage-dialog.json" />

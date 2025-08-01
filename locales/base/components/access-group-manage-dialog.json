@@ -2,7 +2,6 @@
   "en": {
     "name": "Name",
     "accessGroups": "Access groups",
-    "createAccessGroup": "Create access group",
     "accessGroupSavedSuccessfully": "Access group saved successfully",
     "accessGroupSavedFailed": "Access group save failed",
     "editAccessGroup": "Edit access group",
@@ -10,18 +9,14 @@
     "read": "Read",
     "write": "Write",
     "cancel": "Cancel",
-    "create": "Create",
-    "save": "Save",
-    "global": {
-      "message": {
-        "loading": "Loading..."
-      }
-    }
+    "createAccessGroup": "Create access group",
+    "saveAccessGroup": "Save Access Group",
+    "editMode": "Edit",
+    "nameAlreadyTaken": "Name already taken"
   },
   "de": {
     "name": "Name",
     "accessGroups": "Zugriffsgruppen",
-    "createAccessGroup": "Neue Zugriffsgruppe",
     "accessGroupSavedSuccessfully": "Zugriffsgruppe erfolgreich gespeichert",
     "accessGroupSavedFailed": "Erstellung der Zugriffsgruppe fehlgeschlagen",
     "editAccessGroup": "Zugriffsgruppe bearbeiten",
@@ -29,12 +24,9 @@
     "read": "Lesen",
     "write": "Schreiben",
     "cancel": "Abbrechen",
-    "create": "Erstellen",
-    "save": "Speichern",
-    "global": {
-      "message": {
-        "loading": "Laden..."
-      }
-    }
+    "createAccessGroup": "Neue Zugriffsgruppe",
+    "saveAccessGroup": "Speichern der Zugriffsgruppe",
+    "editMode": "Bearbeitung",
+    "nameAlreadyTaken": "Name bereits vergeben"
   }
 }
