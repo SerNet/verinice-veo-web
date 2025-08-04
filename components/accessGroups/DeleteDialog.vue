@@ -24,9 +24,6 @@
 
 <script setup lang="ts">
 import { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
-import { useVeoAlerts } from '~/composables/VeoAlert';
-
-const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
@@ -48,10 +45,9 @@ function cancel() {
 function confirm() {
   try {
     emit('confirm');
-    displaySuccessMessage(t('deletingAccessGroupSuccess').toString());
     emit('update:visible', false);
-  } catch {
-    displayErrorMessage(t('deletingAccessGroupFailed').toString());
+  } catch (error) {
+    console.error('Error deleting access group:', error);
   }
 }
 </script>

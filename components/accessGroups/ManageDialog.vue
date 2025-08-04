@@ -90,7 +90,6 @@
 <script lang="ts" setup>
 import { trim } from 'lodash';
 import { useI18n } from 'vue-i18n';
-import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import type {
   IVeoAccessGroup,
@@ -114,7 +113,6 @@ const emit = defineEmits<{
 }>();
 
 const { t } = useI18n();
-const { displaySuccessMessage } = useVeoAlerts();
 
 const formIsValid = ref(true);
 const currentPage = ref(1);
@@ -200,7 +198,6 @@ function submitGroup() {
 
   emit('save', payload);
   emit('update:model-value', false);
-  displaySuccessMessage(t('accessGroupSavedSuccessfully').toString());
 }
 </script>
 

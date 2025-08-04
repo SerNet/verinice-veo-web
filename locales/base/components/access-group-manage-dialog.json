@@ -2,8 +2,6 @@
   "en": {
     "name": "Name",
     "accessGroups": "Access groups",
-    "accessGroupSavedSuccessfully": "Access group saved successfully",
-    "accessGroupSavedFailed": "Access group save failed",
     "editAccessGroup": "Edit access group",
     "units": "Units",
     "read": "Read",
@@ -17,8 +15,6 @@
   "de": {
     "name": "Name",
     "accessGroups": "Zugriffsgruppen",
-    "accessGroupSavedSuccessfully": "Zugriffsgruppe erfolgreich gespeichert",
-    "accessGroupSavedFailed": "Erstellung der Zugriffsgruppe fehlgeschlagen",
     "editAccessGroup": "Zugriffsgruppe bearbeiten",
     "units": "Einheiten",
     "read": "Lesen",

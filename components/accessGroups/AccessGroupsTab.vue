@@ -109,7 +109,7 @@ import DeleteDialog from '~/components/accessGroups/DeleteDialog.vue';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
-const { displayErrorMessage } = useVeoAlerts();
+const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
@@ -150,6 +150,7 @@ const setAllUnitsToReadWrite = async () => {
     }
 
     await refetchAccessGroups();
+    displaySuccessMessage(t('successfullyGrantedAllAccess'));
   } catch (error) {
     displayErrorMessage(t('failedToGiveAllAccessToUnits'), JSON.stringify(error));
   } finally {
@@ -202,13 +203,16 @@ async function onSaveAccessGroup(payload: IVeoCreateAccessGroupParameters | IVeo
   try {
     if ('id' in payload) {
       await updateAccessGroup(payload);
+      displaySuccessMessage(t('successfullyUpdatedAccessGroup'));
     } else {
       await createAccessGroup(payload);
+      displaySuccessMessage(t('successfullyCreatedAccessGroup'));
     }
     createEditDialogVisible.value = false;
     refetchAccessGroups();
   } catch (e) {
     console.error('Error saving access group', e);
+    displayErrorMessage(t('failedToSaveAccessGroup'), JSON.stringify(e));
   }
 }
 
@@ -219,9 +223,11 @@ async function confirmDeleteAccessGroup() {
     await deleteAccessGroup({ id: groupToDelete.value.id });
     deleteAccessGroupDialogVisible.value = false;
     groupToDelete.value = null;
-    refetchAccessGroups();
+    await refetchAccessGroups();
+    displaySuccessMessage(t('successfullyDeletedAccessGroup'));
   } catch (e) {
     console.error('Error deleting access group', e);
+    displayErrorMessage(t('failedToDeleteAccessGroup'), JSON.stringify(e));
   }
 }
 
