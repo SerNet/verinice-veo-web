@@ -99,7 +99,7 @@
     "sass": "1.77.6",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^3.0.5",
-    "vue-tsc": "3.0.3"
+    "vue-tsc": "3.0.5"
   },
   "overrides": {
     "vue": "^3.5.16"
