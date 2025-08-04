@@ -13,8 +13,8 @@
       <v-progress-circular v-if="isLoadingAllUnitsAccess" indeterminate color="primary" size="20" class="ml-2" />
     </template>
   </BaseAlert>
-
-  <BaseCard>
+  <!--space added for the button on the bottom-->
+  <BaseCard class="mb-16">
     <v-card-title class="bg-accent small-caps text-h4 d-flex justify-space-between align-center">
       <span>{{ t('accessGroups') }}</span>
     </v-card-title>

@@ -1,5 +1,5 @@
 <template>
-  <BaseCard>
+  <BaseCard class="mb-16">
     <v-card-title class="bg-accent small-caps text-h4">
       <span>{{ t('accounts') }}</span>
       <span style="float: right">
