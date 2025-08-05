@@ -108,7 +108,7 @@ watch(
     if (open) {
       initializeForm();
     } else {
-      setTimeout(clearForm, 250);
+      clearForm();
     }
   }
 );

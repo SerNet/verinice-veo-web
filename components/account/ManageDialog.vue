@@ -223,11 +223,9 @@ export default defineComponent({
     // Reset form on close (dialog close animation is done after 250ms)
     watch(
       () => props.modelValue,
-      () => {
-        if (!props.modelValue) {
-          setTimeout(() => {
-            formData.value = {};
-          }, 250);
+      (open) => {
+        if (!open) {
+          formData.value = {};
         }
       }
     );
