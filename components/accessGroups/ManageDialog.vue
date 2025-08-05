@@ -180,22 +180,21 @@ const unitTableHeaders = [
     align: 'center',
     width: 120,
     render: ({ item }: { item: IVeoAccessGroupUnitPermission }) => {
-      return h('div', { class: 'd-flex justify-center align-center' }, [
-        h(VCheckbox, {
-          modelValue: item.read,
-          disabled: item.write,
-          density: 'compact',
-          hideDetails: true,
-          ripple: false,
-          'onUpdate:model-value': (val: boolean) => {
-            const unit = formData.value.units.find((u) => u.unitId === item.unitId);
-            if (unit) {
-              unit.read = val;
-              if (!val) unit.write = false;
-            }
+      return h(VCheckbox, {
+        class: 'd-flex justify-center align-center',
+        modelValue: item.read,
+        disabled: item.write,
+        density: 'compact',
+        hideDetails: true,
+        ripple: false,
+        'onUpdate:model-value': (val: boolean) => {
+          const unit = formData.value.units.find((u) => u.unitId === item.unitId);
+          if (unit) {
+            unit.read = val;
+            if (!val) unit.write = false;
           }
-        })
-      ]);
+        }
+      });
     }
   },
   {
@@ -207,21 +206,20 @@ const unitTableHeaders = [
     align: 'center',
     width: 120,
     render: ({ item }: { item: IVeoAccessGroupUnitPermission }) => {
-      return h('div', { class: 'd-flex justify-center align-center' }, [
-        h(VCheckbox, {
-          modelValue: item.write,
-          density: 'compact',
-          hideDetails: true,
-          ripple: false,
-          'onUpdate:model-value': (val: boolean) => {
-            const unit = formData.value.units.find((u) => u.unitId === item.unitId);
-            if (unit) {
-              unit.write = val;
-              if (val) unit.read = true;
-            }
+      return h(VCheckbox, {
+        class: 'd-flex justify-center align-center',
+        modelValue: item.write,
+        density: 'compact',
+        hideDetails: true,
+        ripple: false,
+        'onUpdate:model-value': (val: boolean) => {
+          const unit = formData.value.units.find((u) => u.unitId === item.unitId);
+          if (unit) {
+            unit.write = val;
+            if (val) unit.read = true;
           }
-        })
-      ]);
+        }
+      });
     }
   }
 ];
