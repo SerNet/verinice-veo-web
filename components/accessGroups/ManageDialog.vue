@@ -53,12 +53,7 @@
         {{ t('cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn
-        color="primary"
-        :disabled="formIsValid === false || !formData.name?.trim()"
-        :loading="false"
-        @click="submitGroup"
-      >
+      <v-btn color="primary" :disabled="!formIsValid || !formData.name?.trim()" @click="submitGroup">
         {{ isEditMode ? t('saveAccessGroup') : t('createAccessGroup') }}
       </v-btn>
     </template>
@@ -67,6 +62,7 @@
 
 <script lang="ts" setup>
 import { trim } from 'lodash';
+import { VCheckbox } from 'vuetify/components';
 import type {
   IVeoAccessGroup,
   IVeoAccessGroupUnitPermission,
@@ -74,7 +70,6 @@ import type {
   IVeoUpdateAccessGroupParameters
 } from '~/composables/api/queryDefinitions/accessGroups';
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import { VCheckbox } from 'vuetify/components';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -92,7 +87,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const formIsValid = ref(true);
-
 const isEditMode = computed(() => !!props.group);
 
 const formData = ref<{
@@ -109,46 +103,46 @@ const nameIsDuplicateRule = (v: string) =>
   t('nameAlreadyTaken').toString();
 
 watch(
-  () => props.group,
-  (group) => {
-    if (group) {
-      formData.value.name = group.name;
-      formData.value.units = props.availableUnits.map((unit) => {
-        const perm = group.units?.[unit.id];
-        return {
-          unitId: unit.id,
-          name: unit.name,
-          read: perm === 'READ_ONLY' || perm === 'READ_WRITE',
-          write: perm === 'READ_WRITE'
-        };
-      });
-    } else {
-      formData.value.name = '';
-      formData.value.units = props.availableUnits.map((unit) => ({
-        unitId: unit.id,
-        name: unit.name,
-        read: false,
-        write: false
-      }));
-    }
-  },
-  { immediate: true }
-);
-
-watch(
   () => props.modelValue,
   (open) => {
-    if (!open) {
-      setTimeout(() => {
-        formData.value.name = '';
-        formData.value.units = [];
-      }, 250);
+    if (open) {
+      initializeForm();
+    } else {
+      setTimeout(clearForm, 250);
     }
   }
 );
 
+function initializeForm() {
+  if (props.group) {
+    formData.value.name = props.group.name;
+    formData.value.units = props.availableUnits.map((unit) => {
+      const perm = props.group?.units?.[unit.id];
+      return {
+        unitId: unit.id,
+        name: unit.name,
+        read: perm === 'READ_ONLY' || perm === 'READ_WRITE',
+        write: perm === 'READ_WRITE'
+      };
+    });
+  } else {
+    formData.value.name = '';
+    formData.value.units = props.availableUnits.map((unit) => ({
+      unitId: unit.id,
+      name: unit.name,
+      read: false,
+      write: false
+    }));
+  }
+}
+
+function clearForm() {
+  formData.value.name = '';
+  formData.value.units = [];
+}
+
 function submitGroup() {
-  if (formIsValid.value === false) return;
+  if (!formIsValid.value) return;
 
   const name = trim(formData.value.name);
   if (!name) return;
