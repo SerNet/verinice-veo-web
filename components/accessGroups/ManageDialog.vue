@@ -1,3 +1,20 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2025  Djordje Mirosavljevic
+   -
+   - This program is free software: you can redistribute it and/or modify
+   - it under the terms of the GNU Affero General Public License as published by
+   - the Free Software Foundation, either version 3 of the License, or
+   - (at your option) any later version.
+   -
+   - This program is distributed in the hope that it will be useful,
+   - but WITHOUT ANY WARRANTY; without even the implied warranty of
+   - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   - GNU Affero General Public License for more details.
+   -
+   - You should have received a copy of the GNU Affero General Public License
+   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <BaseDialog
     :model-value="modelValue"
@@ -5,6 +22,7 @@
     :close-disabled="isFetchingUnits"
     :title="isEditMode ? t('editAccessGroup') : t('createAccessGroup')"
     large
+    fixed-footer
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
@@ -18,53 +36,13 @@
               variant="underlined"
               class="mb-4"
             />
-
             <v-card-title class="bg-accent small-caps text-h4 mt-4">
               {{ t('units') }}
             </v-card-title>
-
             <div v-if="isFetchingUnits" class="text-center pa-4">
               <v-progress-circular indeterminate color="primary" />
             </div>
-
-            <v-data-table
-              v-else
-              v-model:page="currentPage"
-              :headers="tableHeaders"
-              :items="formData.units"
-              :items-per-page="itemsPerPage"
-            >
-              <template #item.read="{ item }">
-                <v-checkbox
-                  :model-value="item.read"
-                  :disabled="item.write"
-                  density="compact"
-                  hide-details
-                  :ripple="false"
-                  @update:model-value="
-                    (val) => {
-                      item.read = val;
-                      if (!val) item.write = false;
-                    }
-                  "
-                />
-              </template>
-              <template #item.write="{ item }">
-                <v-checkbox
-                  :model-value="item.write"
-                  density="compact"
-                  hide-details
-                  class="ma-0 pa-0"
-                  :ripple="false"
-                  @update:model-value="
-                    (val) => {
-                      item.write = val;
-                      if (val) item.read = true;
-                    }
-                  "
-                />
-              </template>
-            </v-data-table>
+            <BaseTable :items="formData.units" :additional-headers="unitTableHeaders" :loading="isFetchingUnits" />
           </v-form>
         </v-card-text>
       </BaseCard>
@@ -89,8 +67,6 @@
 
 <script lang="ts" setup>
 import { trim } from 'lodash';
-import { useI18n } from 'vue-i18n';
-
 import type {
   IVeoAccessGroup,
   IVeoAccessGroupUnitPermission,
@@ -98,6 +74,7 @@ import type {
   IVeoUpdateAccessGroupParameters
 } from '~/composables/api/queryDefinitions/accessGroups';
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import { VCheckbox } from 'vuetify/components';
 
 const props = defineProps<{
   modelValue: boolean;
@@ -115,8 +92,6 @@ const emit = defineEmits<{
 const { t } = useI18n();
 
 const formIsValid = ref(true);
-const currentPage = ref(1);
-const itemsPerPage = 10;
 
 const isEditMode = computed(() => !!props.group);
 
@@ -132,12 +107,6 @@ const requiredRule = (v: string) => !!v?.trim() || t('global.input.required').to
 const nameIsDuplicateRule = (v: string) =>
   !props.accessGroups.find((group) => group.name === trim(v) && group.id !== props.group?.id) ||
   t('nameAlreadyTaken').toString();
-
-const tableHeaders = [
-  { text: t('name'), value: 'name' },
-  { text: t('read'), value: 'read', align: 'center', width: '120px' },
-  { text: t('write'), value: 'write', align: 'center', width: '120px' }
-] as any;
 
 watch(
   () => props.group,
@@ -199,6 +168,63 @@ function submitGroup() {
   emit('save', payload);
   emit('update:model-value', false);
 }
+
+const unitTableHeaders = [
+  { order: 10, priority: 100, text: t('name').toString(), value: 'name', key: 'name' },
+  {
+    order: 20,
+    priority: 100,
+    text: t('read').toString(),
+    value: 'read',
+    key: 'read',
+    align: 'center',
+    width: 120,
+    render: ({ item }: { item: IVeoAccessGroupUnitPermission }) => {
+      return h('div', { class: 'd-flex justify-center align-center' }, [
+        h(VCheckbox, {
+          modelValue: item.read,
+          disabled: item.write,
+          density: 'compact',
+          hideDetails: true,
+          ripple: false,
+          'onUpdate:model-value': (val: boolean) => {
+            const unit = formData.value.units.find((u) => u.unitId === item.unitId);
+            if (unit) {
+              unit.read = val;
+              if (!val) unit.write = false;
+            }
+          }
+        })
+      ]);
+    }
+  },
+  {
+    order: 30,
+    priority: 100,
+    text: t('write').toString(),
+    value: 'write',
+    key: 'write',
+    align: 'center',
+    width: 120,
+    render: ({ item }: { item: IVeoAccessGroupUnitPermission }) => {
+      return h('div', { class: 'd-flex justify-center align-center' }, [
+        h(VCheckbox, {
+          modelValue: item.write,
+          density: 'compact',
+          hideDetails: true,
+          ripple: false,
+          'onUpdate:model-value': (val: boolean) => {
+            const unit = formData.value.units.find((u) => u.unitId === item.unitId);
+            if (unit) {
+              unit.write = val;
+              if (val) unit.read = true;
+            }
+          }
+        })
+      ]);
+    }
+  }
+];
 </script>
 
 <i18n src="~/locales/base/components/access-group-manage-dialog.json" />
