@@ -26,7 +26,7 @@ import {
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
 
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 
 import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 
@@ -243,7 +243,7 @@ export default {
           unit: mutationParameters.unitId
         }
       }),
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       staticMutationOptions: {
         // no invalidation needed
         // eslint-disable-next-line @typescript-eslint/no-empty-function

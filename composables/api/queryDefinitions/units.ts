@@ -18,7 +18,7 @@
 import { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnationDescriptions } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 import { omit } from 'lodash';
 
 export interface IVeoUnit extends IVeoBaseObject {
@@ -162,7 +162,7 @@ export default {
       primaryQueryKey: 'unit',
       url: '/api/units/:id',
       method: 'DELETE',
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: mutationParameters
       }),

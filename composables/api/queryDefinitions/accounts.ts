@@ -17,7 +17,7 @@
  */
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 
 export interface IVeoAccount {
   id: string;
@@ -90,7 +90,7 @@ export default {
       primaryQueryKey: 'account',
       url: '/api/accounts/:id',
       method: 'PUT',
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id },
         json: mutationParameters
@@ -106,7 +106,7 @@ export default {
       primaryQueryKey: 'account',
       url: '/api/accounts/:id',
       method: 'DELETE',
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id }
       }),

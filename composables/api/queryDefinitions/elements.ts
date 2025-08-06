@@ -28,7 +28,7 @@ import type {
 } from '~/types/VeoTypes';
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 
 export interface IVeoFetchObjectsParameters extends IVeoPaginationOptions {
   domain: string;
@@ -514,7 +514,7 @@ export default {
       primaryQueryKey: 'object',
       url: '/api/:endpoint/:id',
       method: 'DELETE',
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: mutationParameters
       }),
@@ -587,7 +587,7 @@ export default {
       primaryQueryKey: 'risk',
       url: '/api/:endpoint/:objectId/risks/:scenarioId',
       method: 'DELETE',
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: mutationParameters
       }),

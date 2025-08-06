@@ -1,6 +1,6 @@
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 
 export interface IVeoAccessGroupUnitPermission {
   unitId: string;
@@ -78,7 +78,7 @@ export default {
       primaryQueryKey: 'accessGroup',
       url: '/api/accounts/access-groups/:id',
       method: 'PUT',
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id },
         json: {
@@ -98,7 +98,7 @@ export default {
       primaryQueryKey: 'accessGroup',
       url: '/api/accounts/access-groups/:id',
       method: 'DELETE',
-      responseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id }
       }),
