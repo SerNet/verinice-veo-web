@@ -163,12 +163,12 @@ function submitGroup() {
   emit('update:model-value', false);
 }
 
-const unitTableHeaders = [
-  { order: 10, priority: 100, text: t('name').toString(), value: 'name', key: 'name' },
+const unitTableHeaders = computed(() => [
+  { order: 10, priority: 100, text: t('name'), value: 'name', key: 'name' },
   {
     order: 20,
     priority: 100,
-    text: t('read').toString(),
+    text: t('read'),
     value: 'read',
     key: 'read',
     align: 'center',
@@ -194,7 +194,7 @@ const unitTableHeaders = [
   {
     order: 30,
     priority: 100,
-    text: t('write').toString(),
+    text: t('write'),
     value: 'write',
     key: 'write',
     align: 'center',
@@ -216,7 +216,7 @@ const unitTableHeaders = [
       });
     }
   }
-];
+]);
 </script>
 
 <i18n src="~/locales/base/components/access-group-manage-dialog.json" />
