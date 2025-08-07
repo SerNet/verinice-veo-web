@@ -24,11 +24,11 @@ steps:
   - title: 'Dokumentation'
     element: '[data-component-name=docs-nav-item]'
     intro: Über das Fragezeichen gelangen Sie zur Dokumentation.
-  - title: 'Account Button'
+  - title: 'Account-Button'
     element: '[data-component-name=account-menu-button]'
     intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br> Über den Account-Button stehen weitere Funktionen und Informationen zur Verfügung.
     position: 'top'
-  - title: 'Benutzerkonto bearbeiten'
+  - title: 'Account-Button: Benutzerkonto bearbeiten'
     element: '[data-component-name=account-menu-button]'
     intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br> Über <strong>Benutzerkonto bearbeiten</strong> können Sie in einem separaten Reiter z.B. Ihre persönlichen Angaben oder das Passwort ändern oder die Zwei-Faktor-Authentifizierung aktivieren.
   - title: 'Account-Button: Erste Schritte'
