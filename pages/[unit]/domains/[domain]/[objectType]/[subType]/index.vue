@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="object-overview-page" :title="`${route.params.objectType}`" sticky-footer>
+  <BasePage data-component-name="object-overview-page" :title="`${pageTitle}`" sticky-footer>
     <template #default>
       <div class="filter-row">
         <div class="filter-section">
@@ -266,7 +266,6 @@ const { data: currentDomain } = useCurrentDomain();
 const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
-
 // CardView Feature
 const hasCardView = hasFeature('cardView');
 const fetchTranslationsQueryParameters = computed(() => ({
@@ -490,12 +489,20 @@ const formatObjectLabel = (label: string, value?: string) => {
       );
   }
 };
+const getPluralLabel = (objectType?: string): string => {
+  if (!objectType) return '';
+
+  const langData = translations.value?.lang?.[locale.value];
+  return langData?.[`${objectType}_plural`] ?? '';
+};
 
 const createObjectLabel = computed(() =>
   filter.value.subType ?
     formatObjectLabel('subType', filter.value.subType)
   : formatObjectLabel('objectType', filter.value.objectType)
 );
+
+const pageTitle = computed(() => getPluralLabel(filter.value.objectType));
 
 const showError = (messageKey: 'clone' | 'delete', error: Error) => {
   displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
