@@ -16,21 +16,6 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseAlert
-    v-if="allUnitsAccess"
-    :model-value="true"
-    :type="VeoAlertType.INFO"
-    class="mt-6 mb-4 d-flex align-center"
-    no-close-button
-    flat
-    style="width: max-content"
-  >
-    <template #default>
-      {{ t('allUsersHaveAccessHint') }}
-      <v-progress-circular v-if="isLoadingAllUnitsAccess" indeterminate color="primary" size="20" class="ml-2" />
-    </template>
-  </BaseAlert>
-  <!--space added for the button on the bottom-->
   <BaseCard class="mb-16">
     <v-card-title class="bg-accent small-caps text-h4 d-flex justify-space-between align-center">
       <span>{{ t('accessGroups') }}</span>
@@ -50,11 +35,11 @@
       <span>{{ t('createAccessGroup') }}</span>
     </v-tooltip>
     <v-checkbox
-      :disabled="allUnitsAccess"
       class="mb-2"
+      :disabled="isLoadingAccess"
       :label="t('grantAllAccessToAllUnits')"
-      :model-value="allUnitsAccess"
-      @change="setAllUnitsToReadWrite"
+      :model-value="allUnitsHaveAccess"
+      @change="toggleAllUnitsAccess"
     />
 
     <BaseTable
@@ -69,6 +54,7 @@
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
+                :disabled="allUnitsHaveAccess"
                 :icon="mdiPencilOutline"
                 variant="text"
                 :aria-label="t('edit')"
@@ -118,62 +104,17 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import accessGroupsDefinition, {
   IVeoAccessGroup,
   IVeoCreateAccessGroupParameters,
-  IVeoUpdateAccessGroupParameters
+  IVeoUpdateAccessGroupParameters,
+  IVeoUpdateRestrictUnitAccessParameters
 } from '~/composables/api/queryDefinitions/accessGroups';
 import unitsDefinition, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import ManageDialog from './ManageDialog.vue';
 import DeleteDialog from '~/components/accessGroups/DeleteDialog.vue';
-import { VeoAlertType } from '~/types/VeoTypes';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-
 const { t } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });
-
-const isLoadingAllUnitsAccess = ref(false);
-
-const allUnitsAccess = computed(() => {
-  if (!accessGroups.value?.length || !availableUnits.value.length) return false;
-
-  return accessGroups.value.every((group) => {
-    return availableUnits.value.every((unit) => {
-      if (!unit.id) return true;
-      return group.units?.[unit.id] === 'READ_WRITE';
-    });
-  });
-});
-
-const setAllUnitsToReadWrite = async () => {
-  if (!accessGroups.value?.length || !availableUnits.value.length) return;
-
-  isLoadingAllUnitsAccess.value = true;
-
-  try {
-    for (const group of accessGroups.value) {
-      const updatedUnits: Record<string, 'READ_WRITE'> = availableUnits.value.reduce(
-        (acc, unit) => {
-          if (unit.id) acc[unit.id] = 'READ_WRITE';
-          return acc;
-        },
-        {} as Record<string, 'READ_WRITE'>
-      );
-
-      await updateAccessGroup({
-        id: group.id,
-        name: group.name,
-        units: updatedUnits
-      });
-    }
-
-    await refetchAccessGroups();
-    displaySuccessMessage(t('successfullyGrantedAllAccess'));
-  } catch (error) {
-    displayErrorMessage(t('failedToGiveAllAccessToUnits'), JSON.stringify(error));
-  } finally {
-    isLoadingAllUnitsAccess.value = false;
-  }
-};
 
 const {
   data: accessGroups,
@@ -182,8 +123,30 @@ const {
 } = useQuery(accessGroupsDefinition.queries.fetchAccessGroups);
 
 const { data: unitsData, isFetching: isFetchingUnits } = useQuery(unitsDefinition.queries.fetchAll);
-const availableUnits = ref<Partial<IVeoUnit>[]>([]);
+const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
 
+const { mutateAsync: updateRestrictUnitAccess, isLoading: isLoadingAccess } = useMutation<
+  IVeoUpdateRestrictUnitAccessParameters,
+  void
+>(accessGroupsDefinition.mutations.updateRestrictUnitAccess);
+
+const allUnitsHaveAccess = ref(false);
+
+watchEffect(() => {
+  const val = isRestrictedAccess.value;
+  allUnitsHaveAccess.value = val?.restrictUnitAccess !== undefined ? !val.restrictUnitAccess : !val;
+});
+
+async function toggleAllUnitsAccess() {
+  const newValue = !allUnitsHaveAccess.value;
+  await updateRestrictUnitAccess({ restrictUnitAccess: !newValue });
+  allUnitsHaveAccess.value = newValue;
+  if (newValue) {
+    displaySuccessMessage(t('successfullyGrantedAllAccess'));
+  }
+}
+
+const availableUnits = ref<Partial<IVeoUnit>[]>([]);
 watch(
   unitsData,
   (units) => {

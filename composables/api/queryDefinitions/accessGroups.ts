@@ -34,6 +34,10 @@ export interface IVeoDeleteAccessGroupParameters {
   id: string;
 }
 
+export interface IVeoUpdateRestrictUnitAccessParameters {
+  restrictUnitAccess: boolean;
+}
+
 export default {
   queries: {
     fetchAccessGroups: {
@@ -50,13 +54,21 @@ export default {
         params: queryParameters
       })
     } as IVeoQueryDefinition<IVeoFetchAccessGroupParameters, IVeoAccessGroup>,
+
     fetchUnits: {
       primaryQueryKey: 'units',
       url: '/api/accounts/access-groups/:id',
       queryParameterTransformationFn: (queryParameters) => ({
         params: queryParameters
       })
-    } as IVeoQueryDefinition<IVeoFetchAccessGroupParameters, IVeoAccessGroup>
+    } as IVeoQueryDefinition<IVeoFetchAccessGroupParameters, IVeoAccessGroup>,
+
+    isRestrictUnitAccess: {
+      primaryQueryKey: 'restrictUnitAccess',
+      url: '/api/accounts/client-config',
+      queryParameterTransformationFn: () => ({}),
+      responseType: VeoApiResponseType.JSON
+    } as IVeoQueryDefinition<Record<string, never>, boolean>
   },
 
   mutations: {
@@ -108,6 +120,26 @@ export default {
           queryClient.invalidateQueries(['accessGroup', { id: variables.params?.id || '' }]);
         }
       }
-    } as IVeoMutationDefinition<IVeoDeleteAccessGroupParameters, void>
+    } as IVeoMutationDefinition<IVeoDeleteAccessGroupParameters, void>,
+
+    updateRestrictUnitAccess: {
+      primaryQueryKey: 'restrictUnitAccess',
+      url: '/api/accounts/client-config',
+      method: 'PUT',
+      responseType: VeoApiResponseType.VOID,
+      mutationParameterTransformationFn: (mutationParameters: { restrictUnitAccess: boolean }) => ({
+        json: {
+          restrictUnitAccess: mutationParameters.restrictUnitAccess
+        }
+      }),
+      staticMutationOptions: {
+        onSuccess: (queryClient) => {
+          queryClient.invalidateQueries(['restrictUnitAccess']);
+        }
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    } as IVeoMutationDefinition<{ restrictUnitAccess: boolean }, void>
   }
 };
