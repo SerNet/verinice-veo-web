@@ -37,8 +37,11 @@ steps:
   - title: 'Objekt bearbeiten'
     element: '[data-component-name=object-overview-page]'
     intro: Öffnen Sie ein Objekt in der Liste durch einfachen Mausklick zum Bearbeiten.
+  - title: 'Der Typ'
+    element: '[data-component-name=object-overview-table] tbody > tr:nth-child(1) > td:nth-child(2)'
+    intro: Der Typ legt die Kategorie oder Klassifizierung des Objekts im System fest.
   - title: 'Der Designator'
-    element: '[data-component-name=object-overview-table] tbody tr:nth-child(1) > td:nth-child(2)'
+    element: '[data-component-name=object-overview-table] tbody tr:nth-child(1) > td:nth-child(3)'
     intro: Der Designator wird vom System als eindeutiges und nicht änderbares Kriterium vergeben, dass zur schnellen Suche von Objekten verwendet kann.
   - title: 'Objekt duplizieren'
     element: '[data-component-name=object-overview-clone-button]'

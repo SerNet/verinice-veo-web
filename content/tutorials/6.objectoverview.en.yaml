@@ -37,8 +37,11 @@ steps:
   - title: 'Edit object'
     element: '[data-component-name=object-overview-page]'
     intro: Open an object in the list for editing by a single mouse click.
-  - title: 'The Designator'
+  - title: 'The type'
     element: '[data-component-name=object-overview-table] tbody > tr:nth-child(1) > td:nth-child(2)'
+    intro: The type defines the category or classification of the object in the system.
+  - title: 'The Designator'
+    element: '[data-component-name=object-overview-table] tbody > tr:nth-child(1) > td:nth-child(3)'
     intro: The designator is assigned by the system as a unique and unchangeable criterion that can be used to quickly search for objects.
   - title: 'Duplicate object'
     element: '[data-component-name=object-overview-clone-button]'
