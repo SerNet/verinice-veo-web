@@ -114,7 +114,7 @@ const allUnitsHaveAccessAccountTab = ref(!isRestrictedAccess.value);
 
 watchEffect(() => {
   const val = isRestrictedAccess.value;
-  allUnitsHaveAccessAccountTab.value = val?.restrictUnitAccess !== undefined ? !val.restrictUnitAccess : !val;
+  allUnitsHaveAccessAccountTab.value = val ? !val.restrictUnitAccess : false;
 });
 
 const activeAccounts = computed(() => (accounts.value || []).filter((account) => account.enabled).length);

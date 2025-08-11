@@ -34,7 +34,7 @@ export interface IVeoDeleteAccessGroupParameters {
   id: string;
 }
 
-export interface IVeoUpdateRestrictUnitAccessParameters {
+export interface IVeoRestrictUnitAccessParameters {
   restrictUnitAccess: boolean;
 }
 
@@ -68,7 +68,7 @@ export default {
       url: '/api/accounts/client-config',
       queryParameterTransformationFn: () => ({}),
       responseType: VeoApiResponseType.JSON
-    } as IVeoQueryDefinition<Record<string, never>, boolean>
+    } as IVeoQueryDefinition<Record<string, never>, { restrictUnitAccess: boolean }>
   },
 
   mutations: {
@@ -127,7 +127,7 @@ export default {
       url: '/api/accounts/client-config',
       method: 'PUT',
       responseType: VeoApiResponseType.VOID,
-      mutationParameterTransformationFn: (mutationParameters: { restrictUnitAccess: boolean }) => ({
+      mutationParameterTransformationFn: (mutationParameters: IVeoRestrictUnitAccessParameters) => ({
         json: {
           restrictUnitAccess: mutationParameters.restrictUnitAccess
         }
@@ -140,6 +140,6 @@ export default {
       headers: {
         'Content-Type': 'application/json'
       }
-    } as IVeoMutationDefinition<{ restrictUnitAccess: boolean }, void>
+    } as IVeoMutationDefinition<IVeoRestrictUnitAccessParameters, void>
   }
 };

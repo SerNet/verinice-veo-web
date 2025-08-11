@@ -105,7 +105,7 @@ import accessGroupsDefinition, {
   IVeoAccessGroup,
   IVeoCreateAccessGroupParameters,
   IVeoUpdateAccessGroupParameters,
-  IVeoUpdateRestrictUnitAccessParameters
+  IVeoRestrictUnitAccessParameters
 } from '~/composables/api/queryDefinitions/accessGroups';
 import unitsDefinition, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import ManageDialog from './ManageDialog.vue';
@@ -126,7 +126,7 @@ const { data: unitsData, isFetching: isFetchingUnits } = useQuery(unitsDefinitio
 const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
 
 const { mutateAsync: updateRestrictUnitAccess, isLoading: isLoadingAccess } = useMutation<
-  IVeoUpdateRestrictUnitAccessParameters,
+  IVeoRestrictUnitAccessParameters,
   void
 >(accessGroupsDefinition.mutations.updateRestrictUnitAccess);
 
@@ -134,7 +134,7 @@ const allUnitsHaveAccess = ref(false);
 
 watchEffect(() => {
   const val = isRestrictedAccess.value;
-  allUnitsHaveAccess.value = val?.restrictUnitAccess !== undefined ? !val.restrictUnitAccess : !val;
+  allUnitsHaveAccess.value = val ? !val.restrictUnitAccess : false;
 });
 
 async function toggleAllUnitsAccess() {
