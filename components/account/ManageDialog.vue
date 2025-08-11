@@ -258,8 +258,7 @@ export default defineComponent({
         formData.value = cloneDeep(
           pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups')
         );
-        formData.value.accessGroups =
-          props.existingAccounts.filter((acc) => acc.id === props.id)[0]?.accessGroups || [];
+        formData.value.accessGroups = props.existingAccounts.find((acc) => acc.id === props.id)?.accessGroups ?? [];
       },
       { deep: true, immediate: true }
     );

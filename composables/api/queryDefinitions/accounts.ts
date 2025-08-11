@@ -26,7 +26,6 @@ export interface IVeoAccount {
   firstName?: string;
   lastName?: string;
   groups: string[];
-  // roles: [];
   accessGroups: [];
   enabled: boolean;
 }
@@ -42,7 +41,6 @@ export interface IVeoCreateAccountParameters {
   lastName?: string;
   enabled: boolean;
   groups: [];
-  // roles: [];
   accessGroups: [];
 }
 
