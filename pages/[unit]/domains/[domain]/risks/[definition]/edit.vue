@@ -86,17 +86,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
           <div class="d-flex ga-2">
             <v-btn
-              v-if="riskCategoryId ? step < 3 : step < riskCategories?.length + 3"
+              v-if="riskCategoryId ? step < 4 : step < riskCategories?.length + 3"
               data-veo-test="next-btn"
               size="large"
               class="my-6"
               color="secondary"
               variant="flat"
-              :disabled="
-                (riskCategories?.[step - 3]?.valueMatrix &&
-                  hasUnsetRiskValues(riskCategories?.[step - 3]?.valueMatrix)) ||
-                !canGoNext
-              "
+              :disabled="!canGoNext"
               @click="goForward"
             >
               {{ globalT('global.button.next') }}
@@ -214,7 +210,16 @@ const hasEmptyTranslations = computed(() =>
 const hasUnsetItems = computed(() => hasUnsetMatrixValues.value || hasEmptyTranslations.value);
 
 const canSave = computed(() => !hasUnsetItems.value && !isMissingTranslations.value && isDirty.value);
-const canGoNext = computed(() => !isMissingTranslations.value);
+const canGoNext = computed(() => {
+  if (isMissingTranslations.value) return false;
+
+  const lastCategory = riskCategories.value?.[riskCategories.value.length - 1];
+  if (step.value === 3 && lastCategory?.valueMatrix && hasUnsetRiskValues(lastCategory.valueMatrix)) {
+    return false;
+  }
+
+  return true;
+});
 
 // MANIPULATE STATE CROSS CATEGORY MODE
 
