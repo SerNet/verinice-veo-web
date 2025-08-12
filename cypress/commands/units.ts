@@ -144,16 +144,21 @@ export function deleteTestUnits() {
     }).then((response) => expect(response.status).to.equal(204));
   });
 }
+export function deleteUnit(unitName?: string): void {
+  const dynamicUnitId = Cypress.env('dynamicTestData')?.unit?.unitId;
+  const namedUnitId = unitName ? Cypress.env(unitName)?.unitId : undefined;
 
-export function deleteUnit(unitName = Cypress.env('dynamicTestData').unit): void {
-  // Check if the cypress environment has an ID for the test unit
-  if (!unitName) {
-    if (Cypress.env('debug')) cy.log('Could not find test unit ID. Test unit cannot be deleted.');
+  const unitId = namedUnitId || dynamicUnitId;
+
+  if (!unitId) {
+    if (Cypress.env('debug')) {
+      cy.log(`Could not find unit ID for deletion. UnitName: ${unitName ?? 'undefined'}`);
+    }
     return;
   }
 
   cy.veoRequest({
-    endpoint: `units/${Cypress.env(unitName).unitId}`,
+    endpoint: `units/${unitId}`,
     method: 'DELETE'
   }).then((response) => expect(response.status).to.equal(204));
 }
