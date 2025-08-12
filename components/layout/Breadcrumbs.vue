@@ -559,6 +559,14 @@ const Crumb: TInlineComponent = {
 :deep(.crumb__link) {
   text-decoration: none;
   color: rgb(var(--v-theme-on-basepage));
+  cursor: pointer;
+  opacity: var(--v-disabled-opacity) !important;
+
+  &[disabled='true'] {
+    pointer-events: none; //disable clicking on the current breadcrumb
+    opacity: 1 !important;
+    color: rgb(var(--v-theme-on-basepage));
+  }
 }
 
 @media (max-width: 520px) {
