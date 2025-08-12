@@ -101,6 +101,8 @@
                                 <v-color-picker
                                   v-model="item.htmlColor"
                                   flat
+                                  :modes="['rgb', 'hex']"
+                                  mode="hex"
                                   @update:model-value="formIsDirty = true"
                                 />
                               </v-card-text>
@@ -121,7 +123,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiSquare, mdiDeleteOutline } from '@mdi/js';
+import { mdiDeleteOutline, mdiSquare } from '@mdi/js';
 import { IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 
 const emit = defineEmits<{
