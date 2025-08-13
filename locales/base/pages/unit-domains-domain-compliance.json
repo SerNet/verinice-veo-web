@@ -4,7 +4,7 @@
     "implementation": "Umsetzung"
   },
   "en": {
-    "targetModule": "Edit requirement \"{currentModule}\"",
+    "targetModule": "Edit {subType} \"{currentModule}\"",
     "implementation": "Implementation"
   }
 }
