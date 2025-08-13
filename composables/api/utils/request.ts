@@ -23,7 +23,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { sanitizeURLParams } from '~/lib/utils';
 import { IVeoPaginationOptions } from '~/types/VeoTypes';
 
-export enum VeoApiReponseType {
+export enum VeoApiResponseType {
   JSON,
   BLOB,
   VOID
@@ -51,7 +51,7 @@ export interface RequestOptions extends RequestInit {
   params?: Record<string, string | number | undefined>;
   json?: any;
   method?: 'GET' | 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
-  reponseType?: VeoApiReponseType;
+  responseType?: VeoApiResponseType;
 }
 
 function generateEtagMapKey({ requestOptions }: { requestOptions: RequestOptions }): string {
@@ -113,11 +113,11 @@ export const useRequest = () => {
     let parsedResponseBody;
 
     try {
-      switch (options.reponseType) {
-        case VeoApiReponseType.BLOB:
+      switch (options.responseType) {
+        case VeoApiResponseType.BLOB:
           parsedResponseBody = await res.blob();
           break;
-        case VeoApiReponseType.VOID:
+        case VeoApiResponseType.VOID:
           break;
         default:
           parsedResponseBody = await parseJson(res);

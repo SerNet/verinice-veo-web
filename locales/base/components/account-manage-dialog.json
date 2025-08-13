@@ -8,12 +8,17 @@
     "emailAddressWrongFormat": "Please enter a valid email address.",
     "enabled": "Account is enabled?",
     "firstName": "First name",
-    "groups": "Assigned groups",
+    "roles": "Roles",
+    "accessGroups": "Access groups",
     "lastName": "Last name",
     "noPassword": "The password can be set by the user after verifying his email address.",
     "password": "Password",
     "permissions": {
-      "veo-write": "Write access"
+      "editors": "Editors"
+    },
+    "tooltips": {
+      "roles": "Roles allow certain actions to be performed. To perform an action within a unit, membership in a corresponding access group is also required.",
+      "accessGroups": "Access groups allow access to certain units. To execute an action in a unit, a corresponding role is also required."
     },
     "updateAccount": "Update account",
     "updatingAccountFailed": "Couldn't update account",
@@ -31,12 +36,17 @@
     "emailAddressWrongFormat": "Bitte gebe eine gültige E-Mail-Adresse ein.",
     "enabled": "Account ist aktiv?",
     "firstName": "Vorname",
-    "groups": "Zugehörige Gruppen",
+    "roles": "Rollen",
+    "accessGroups": "Zugriffsgruppen",
     "lastName": "Nachname",
     "noPassword": "Das Passwort kann vom Benutzer nach dem Verifizieren der E-Mail-Adresse gesetzt werden.",
     "password": "Passwort",
     "permissions": {
-      "veo-write": "Schreibzugriff"
+      "editors": "Editoren"
+    },
+    "tooltips": {
+      "roles": "Rollen erlauben es, bestimmte Aktionen auszuführen. Um eine Aktion in einer Unit auszuführen, ist zusätzlich die Mitgliedschaft in einer entsprechenden Zugriffsgruppe erforderlich.",
+      "accessGroups": "Zugriffsgruppen erluben es, auf bestimmte Unis zuzugriefen. Um in einer Unit eine Aktion auszuführen, ist zusätzlich eine entsprechenden Rolle erforderlich."
     },
     "updateAccount": "Account aktualisieren",
     "updatingAccountFailed": "Account konnte nicht aktualisiert werden",

@@ -17,7 +17,7 @@
  */
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 
 export interface IVeoAccount {
   id: string;
@@ -26,6 +26,7 @@ export interface IVeoAccount {
   firstName?: string;
   lastName?: string;
   groups: string[];
+  accessGroups: [];
   enabled: boolean;
 }
 
@@ -40,6 +41,7 @@ export interface IVeoCreateAccountParameters {
   lastName?: string;
   enabled: boolean;
   groups: [];
+  accessGroups: [];
 }
 
 export interface IVeoUpdateAccountParameters {
@@ -90,7 +92,7 @@ export default {
       primaryQueryKey: 'account',
       url: '/api/accounts/:id',
       method: 'PUT',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id },
         json: mutationParameters
@@ -106,7 +108,7 @@ export default {
       primaryQueryKey: 'account',
       url: '/api/accounts/:id',
       method: 'DELETE',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => ({
         params: { id: mutationParameters.id }
       }),

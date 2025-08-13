@@ -26,7 +26,25 @@ steps:
     intro: Use the questionmark to head over to the documentation.
   - title: 'Account Button'
     element: '[data-component-name=account-menu-button]'
-    intro: Via the account button you can log out and get further information about verinice.veo.
+    intro: <img src="/images/account-btn-en.png" style="width:95%;"> <br> Further functions and information are available via the account button.
+  - title: 'Account Button: Edit account'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-en.png" style="width:95%;"> <br> Via <strong>Edit account</strong> you can, for example, change your personal details or password or activate two-factor authentication in a separate tab.
+  - title: 'Account Button: First steps'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-en.png" style="width:95%;"> <br>The welcome dialog <strong>First steps</strong> summarizes the most important information for orientation in verinice.
+  - title: 'Account Button: Data portability'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-en.png" style="width:95%;"> <br> You can create local backups of your data on the <strong>Data portability</strong> page and thus exercise your right to data portability.
+  - title: 'Account Button: Security policy'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-en.png" style="width:95%;"> <br> Under <strong>Security policy</strong> you will find a description of how to deal with vulnerabilities.
+  - title: 'Account Button: About verinice.'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-en.png" style="width:95%;"> <br> <strong>About verinice</strong> provides further information about the product and the current version.
+  - title: 'Account Button: Logout'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-en.png" style="width:95%;"> <br> You can log out of verinice via <strong>Logout</strong>.
   - title: 'Done'
     # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
     # intro: Further information can also be found in the <a href="/docs">documentation</a>.

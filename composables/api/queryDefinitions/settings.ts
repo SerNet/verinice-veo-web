@@ -32,7 +32,7 @@
  */
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 import { UserSettings } from '../useSettings';
 
 export interface IVeoFetchSettingsParameters {
@@ -66,7 +66,7 @@ export default {
       primaryQueryKey: 'userSettings',
       url: '/api/user-configurations/:appId',
       method: 'PUT',
-      reponseType: VeoApiReponseType.VOID,
+      responseType: VeoApiResponseType.VOID,
       mutationParameterTransformationFn: (mutationParameters) => {
         return {
           params: {

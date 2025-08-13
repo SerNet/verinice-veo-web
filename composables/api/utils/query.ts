@@ -26,7 +26,7 @@ import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { QueryObserverResult } from '@tanstack/query-core';
 import { omit } from 'lodash';
 
-import { useRequest, VeoApiReponseType } from './request';
+import { useRequest, VeoApiResponseType } from './request';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 
@@ -34,7 +34,7 @@ export interface IVeoQueryDefinition<TVariables, TResult = any> {
   primaryQueryKey: string;
   url: string;
   queryParameterTransformationFn: (_queryParameters: TVariables) => IVeoQueryParameters;
-  reponseType?: VeoApiReponseType;
+  responseType?: VeoApiResponseType;
   onDataFetched?: (result: TResult, queryParameters: IVeoQueryParameters) => TResult;
   staticQueryOptions?: QueryOptions;
 }

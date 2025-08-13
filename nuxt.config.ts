@@ -102,7 +102,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: '@import "@/assets/styles/global.scss";'
+          additionalData: '@use "@/assets/styles/global.scss" as *;'
         }
       }
     }

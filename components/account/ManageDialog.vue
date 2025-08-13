@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -22,6 +22,7 @@
     :close-disabled="isLoading"
     :title="id ? t('updateAccount') : t('createAccount')"
     large
+    fixed-footer
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
@@ -87,14 +88,49 @@
             </v-row>
             <v-row>
               <v-col cols="12" md="6">
-                <v-select
-                  v-model="formData.groups"
-                  clearable
-                  multiple
-                  :items="availableGroups"
-                  :label="t('groups')"
-                  variant="underlined"
-                />
+                <v-tooltip location="top" width="300">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-select
+                      v-model="formData.groups"
+                      clearable
+                      multiple
+                      v-bind="tooltipProps"
+                      :items="availableRoles"
+                      :label="t('roles')"
+                      variant="underlined"
+                    />
+                  </template>
+                  <span>{{ t('tooltips.roles') }}</span>
+                </v-tooltip>
+              </v-col>
+
+              <v-col v-if="showAccessGroupsFeature" cols="12" md="6">
+                <v-tooltip location="top" width="300">
+                  <template #activator="{ props: tooltipProps }">
+                    <v-select
+                      v-model="formData.accessGroups"
+                      multiple
+                      chips
+                      closable-chips
+                      v-bind="tooltipProps"
+                      :items="accessGroups"
+                      item-title="name"
+                      item-value="id"
+                      :label="t('accessGroups')"
+                      variant="underlined"
+                    >
+                      <template #selection="{ item, index }">
+                        <v-chip v-if="index === 0">
+                          <span>{{ item.raw.name }}</span>
+                        </v-chip>
+                        <span v-if="index === 1" class="text-grey text-caption align-self-center ml-2">
+                          (+{{ formData.accessGroups.length - 1 }} others)
+                        </span>
+                      </template>
+                    </v-select>
+                  </template>
+                  <span>{{ t('tooltips.accessGroups') }}</span>
+                </v-tooltip>
               </v-col>
             </v-row>
           </v-form>
@@ -130,6 +166,8 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useMutation } from '~/composables/api/utils/mutation';
+import { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
+import { hasFeature } from '~/utils/featureFlags';
 
 export default defineComponent({
   props: {
@@ -165,6 +203,10 @@ export default defineComponent({
       type: Array as PropType<string[]>,
       default: () => []
     },
+    accessGroups: {
+      type: Array as PropType<IVeoAccessGroup[]>,
+      default: () => []
+    },
     existingAccounts: {
       type: Array as PropType<IVeoAccount[]>,
       default: () => []
@@ -187,6 +229,7 @@ export default defineComponent({
       lastName?: string;
       enabled?: boolean;
       groups?: string[];
+      accessGroups?: IVeoAccessGroup[];
       [key: string]: any;
     }>({});
 
@@ -201,9 +244,9 @@ export default defineComponent({
       t('emailAddressWrongFormat').toString();
     const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
 
-    const availableGroups = ref([
+    const availableRoles = ref([
       {
-        title: t('permissions.veo-write').toString(),
+        title: t('permissions.editors').toString(),
         value: 'veo-write-access'
       }
     ]);
@@ -215,6 +258,7 @@ export default defineComponent({
         formData.value = cloneDeep(
           pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups')
         );
+        formData.value.accessGroups = props.existingAccounts.find((acc) => acc.id === props.id)?.accessGroups ?? [];
       },
       { deep: true, immediate: true }
     );
@@ -222,11 +266,9 @@ export default defineComponent({
     // Reset form on close (dialog close animation is done after 250ms)
     watch(
       () => props.modelValue,
-      () => {
-        if (!props.modelValue) {
-          setTimeout(() => {
-            formData.value = {};
-          }, 250);
+      (open) => {
+        if (!open) {
+          formData.value = {};
         }
       }
     );
@@ -275,9 +317,12 @@ export default defineComponent({
       }
     };
 
+    //featureFlag
+    const showAccessGroupsFeature = hasFeature('veoFeatureFlagAccessGroups');
+
     return {
       ability,
-      availableGroups,
+      availableRoles,
       createOrUpdateAccount,
       formData,
       formIsValid,
@@ -292,7 +337,9 @@ export default defineComponent({
       globalT,
       VeoAlertType,
       mdiAccountOutline,
-      mdiEmailOutline
+      mdiEmailOutline,
+
+      showAccessGroupsFeature
     };
   }
 });

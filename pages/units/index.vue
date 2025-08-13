@@ -20,10 +20,7 @@
     <BaseContainer>
       <h2 class="text-h5 d-flex flex-grow-1 justify-end my-4" data-component-name="number-available-units">
         <span><h1 style="font-size: initial">Units:&nbsp;</h1></span>
-        <span>
-          {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }}
-          {{ t('active') }}
-        </span>
+        <span> {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }} {{ t('active') }} </span>
       </h2>
     </BaseContainer>
 
@@ -79,7 +76,7 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
 const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | null>(null);
-const activeUnits = computed(() => unitsRef?.value?.activeUnits || null);
+const activeUnits = computed(() => unitsRef?.value?.activeUnits || 0);
 const maxUnitsExceeded = computed(() => (activeUnits?.value || 0) >= userSettings.value.maxUnits);
 
 function _createUnit() {

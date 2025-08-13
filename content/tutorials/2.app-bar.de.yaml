@@ -24,9 +24,28 @@ steps:
   - title: 'Dokumentation'
     element: '[data-component-name=docs-nav-item]'
     intro: Über das Fragezeichen gelangen Sie zur Dokumentation.
-  - title: 'Account Button'
+  - title: 'Account-Button'
     element: '[data-component-name=account-menu-button]'
-    intro: Über den Account Button können Sie sich abmelden und weitere Informationen zu verinice abrufen.
+    intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br> Über den Account-Button stehen weitere Funktionen und Informationen zur Verfügung.
+    position: 'top'
+  - title: 'Account-Button: Benutzerkonto bearbeiten'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br> Über <strong>Benutzerkonto bearbeiten</strong> können Sie in einem separaten Reiter z.B. Ihre persönlichen Angaben oder das Passwort ändern oder die Zwei-Faktor-Authentifizierung aktivieren.
+  - title: 'Account-Button: Erste Schritte'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br>  Der Willkommensdialog <strong>Erste Schritte</strong> fasst die wichtigsten Informationen zur Orientierung in verinice zusammen.
+  - title: 'Account-Button: Datenübertragung'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br>  Lokale Backups Ihrer Daten können Sie auf der Seite <strong>Datenübertragung</strong> erstellen und so Ihr Recht auf Datenübertragbarkeit wahrnehmen.
+  - title: 'Account-Button: Sicherheitsrichtlinie'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br>  Unter <strong>Sicherheitsrichtlinie</strong> finden Sie die Beschreibung zum Umgang mit Schwachstellen.
+  - title: 'Account-Button: Über verinice'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-de.png" style="width:95%;"> <br>  <strong>Über verinice.</strong> stellt weitergehende Informationen zum Produkt und zur aktuellen Version bereit.
+  - title: 'Account-Button: Abmelden'
+    element: '[data-component-name=account-menu-button]'
+    intro: <img src="/images/account-btn-de.png" style="width:95%;""> <br> Über <strog>Abmelden</strong> melden Sie sich aus verinice ab.
   - title: 'Geschafft'
     # todo4sernet: Hyperlink zur Online-Dokumentation austauschen wenn Dokumentation erstellt.
     #    intro: Weitere Informationen finden Sie auch in der <a href="/docs">Online Dokumentation</a>.

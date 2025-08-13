@@ -17,7 +17,7 @@
 <template>
   <div>
     <div class="import-container">
-      <v-card class="upload-card" flat>
+      <v-card class="upload-card bg-basepage" flat>
         <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>
         <v-file-upload
           :browse-text="t('import.button.browse')"
@@ -29,7 +29,7 @@
           accept=".csv"
           show-selection="false"
           :multiple="false"
-          class="custom-file-upload drop-zone"
+          class="custom-file-upload drop-zone bg-surface"
           :class="{ 'drop-zone-active': isDragging }"
           :aria-label="t('import.dropzone.label')"
           data-component-name="csv-button"
@@ -39,7 +39,7 @@
           @click.prevent="triggerFileUpload"
         >
           <template #browse="{}">
-            <v-btn color="primary" class="browse-button" size="large" flat>
+            <v-btn color="primary" variant="flat" size="large">
               {{ t('import.button.browse') }}
             </v-btn>
           </template>
@@ -78,7 +78,7 @@ const { displayErrorMessage } = useVeoAlerts();
 
 const isProcessing = ref(false);
 
-const props = defineProps({
+const _props = defineProps({
   objectType: {
     type: String,
     default: ''
@@ -176,28 +176,7 @@ const handleNavigate = (objectType: string, subType: string) => {
 };
 </script>
 
-<i18n>
-{
-  "en": {
-    "import.title": "Import Items",
-    "import.dropzone.label": "Drag and drop a CSV file here",
-    "import.button.browse": "Browse Files",
-    "import.or.text": "or select from your device",
-    "import.errors.invalidFile": "Invalid File Type",
-    "import.errors.onlyCsvAllowed": "Only CSV files are allowed. Please select a file with .csv extension.",
-    "import.errors.processingFailed": "Error Processing File"
-  },
-  "de": {
-    "import.title": "Elemente importieren",
-    "import.dropzone.label": "CSV-Datei hierher ziehen und ablegen",
-    "import.button.browse": "Dateien auswählen",
-    "import.or.text": "oder von Ihrem Gerät auswählen",
-    "import.errors.invalidFile": "Ungültiger Dateityp",
-    "import.errors.onlyCsvAllowed": "Es sind nur CSV-Dateien erlaubt. Bitte wählen Sie eine Datei mit der Endung .csv.",
-    "import.errors.processingFailed": "Fehler bei der Verarbeitung der Datei"
-  }
-}
-</i18n>
+<i18n src="~/locales/base/components/object-csv-import-card.json"></i18n>
 
 <style scoped>
 .import-container {

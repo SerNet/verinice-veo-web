@@ -1,0 +1,28 @@
+{
+  "en": {
+    "name": "Name",
+    "accessGroups": "Access groups",
+    "editAccessGroup": "Edit access group",
+    "units": "Units",
+    "read": "Read",
+    "write": "Write",
+    "cancel": "Cancel",
+    "createAccessGroup": "Create access group",
+    "saveAccessGroup": "Save Access Group",
+    "editMode": "Edit",
+    "nameAlreadyTaken": "Name already taken"
+  },
+  "de": {
+    "name": "Name",
+    "accessGroups": "Zugriffsgruppen",
+    "editAccessGroup": "Zugriffsgruppe bearbeiten",
+    "units": "Units",
+    "read": "Lesen",
+    "write": "Schreiben",
+    "cancel": "Abbrechen",
+    "createAccessGroup": "Neue Zugriffsgruppe",
+    "saveAccessGroup": "Speichern der Zugriffsgruppe",
+    "editMode": "Bearbeitung",
+    "nameAlreadyTaken": "Name bereits vergeben"
+  }
+}

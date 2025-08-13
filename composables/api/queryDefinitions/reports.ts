@@ -17,7 +17,7 @@
  */
 import { IVeoMutationDefinition } from '../utils/mutation';
 import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
-import { VeoApiReponseType } from '../utils/request';
+import { VeoApiResponseType } from '../utils/request';
 
 export interface IVeoReportMeta {
   name: {
@@ -72,7 +72,7 @@ export default {
       primaryQueryKey: 'report',
       url: '/api/reporting/reports/:type',
       method: 'POST',
-      reponseType: VeoApiReponseType.BLOB,
+      responseType: VeoApiResponseType.BLOB,
       mutationParameterTransformationFn: (mutationParameters) => ({
         json: mutationParameters.body,
         params: { type: mutationParameters.type }

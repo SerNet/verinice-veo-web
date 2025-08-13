@@ -56,7 +56,7 @@ import { upperFirst, toUpper } from 'lodash';
 import domainQueryDefinitions, { getSubTypes } from '~/composables/api/queryDefinitions/domains';
 import reportQueryDefinitions, { IVeoReportMeta, IVeoReportsMeta } from '~/composables/api/queryDefinitions/reports';
 import { useQuery } from '~/composables/api/utils/query';
-
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 interface IReport {
@@ -86,7 +86,11 @@ const { data: domain, isFetching: isFetchingDomains } = useQuery(
   { enabled: fetchDomainQueryEnabled }
 );
 const { data: reports, isFetching: isFetchingReports } = useQuery(reportQueryDefinitions.queries.fetchAll);
-
+const fetchTranslationsQueryParameters = computed(() => ({
+  languages: [locale.value],
+  domain: route.params.domain
+}));
+const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 /**
  * Filter reports according to domain and GUI language.
  * @param _domain {IVeoDomain} - The currently active veo domain.
@@ -131,13 +135,24 @@ type TMapFilteredReportsParams = {
   reports: [id: string, report: IVeoReportMeta][];
   locale: string;
 };
+const getTargetType = (targetTypes?: string): string => {
+  if (!targetTypes) return '';
+  const langData = translations.value?.lang?.[locale.value];
+  return langData?.[targetTypes] ?? '';
+};
+
 function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
   if (!reports || !locale) return [];
   return reports.map((r) => {
     const [id, report] = r;
 
     const name = report.name[locale] || Object.values(report.name)[0];
-    const targetTypes = report.targetTypes.map((type) => upperFirst(type.modelType)).join(', ');
+    const targetTypes = report.targetTypes
+      .map((type) => {
+        const translated = getTargetType(type.modelType);
+        return upperFirst(translated) || translated;
+      })
+      .join(', ');
     const outputTypes = report.outputTypes
       .map((type) => {
         const formatParts = type.split('/');
