@@ -17,10 +17,12 @@
  */
 import { Ref, WatchStopHandle } from 'vue';
 // @ts-ignore TODO #3066 has no exported member
-import introJs, { Hint, IntroJs } from 'intro.js';
-import { useIsFetching } from '@tanstack/vue-query';
-import { last } from 'lodash';
 import { TutorialsCollectionItem } from '@nuxt/content';
+import { useIsFetching } from '@tanstack/vue-query';
+import introJs from 'intro.js';
+import { Hint } from 'intro.js/src/packages/hint';
+import { Tour } from 'intro.js/src/packages/tour';
+import { last } from 'lodash';
 
 // @ts-ignore TODO #3066 cannot find namespace
 interface ITutorialDocument extends introJs.Options {
@@ -55,11 +57,49 @@ const stop = () => {
 export function createIntro() {
   const route = useRoute();
   const router = useRouter();
+
+  // Reactive tour state management
+  const tourState = reactive({
+    instance: null as Tour | null,
+    hintInstance: null as Hint | null,
+    isInitialized: false,
+    isActive: false,
+    currentStep: 0
+  });
+
+  // Tour instance factory
+  const createTourInstance = () => {
+    // Clean up existing instance
+    if (tourState.instance) {
+      tourState.instance.onComplete(() => {});
+      tourState.instance.onChange(() => {});
+      tourState.instance.onExit(() => {});
+      tourState.instance.exit(true);
+      tourState.instance = null;
+    }
+
+    tourState.instance = introJs.tour();
+    tourState.isInitialized = true;
+    tourState.isActive = false;
+
+    return tourState.instance;
+  };
+
+  // Hint instance factory
+  const createHintInstance = () => {
+    if (tourState.hintInstance) {
+      tourState.hintInstance.hideHints();
+      tourState.hintInstance.destroy();
+      tourState.hintInstance = null;
+    }
+
+    tourState.hintInstance = introJs.hint();
+    return tourState.hintInstance;
+  };
+
   onMounted(() => {
-    let _instance: IntroJs = (window as any).$intro;
-    if (_instance) return;
-    // Configure intro.js
-    _instance = (window as any).$intro = introJs();
+    createTourInstance();
+    createHintInstance();
 
     // Stop watching tutorial on route change
     const _watchRouteChange = watch(
@@ -72,10 +112,12 @@ export function createIntro() {
     );
 
     const toggleHints = () => {
-      if (hintsVisible.value) {
-        _instance.showHints();
-      } else {
-        _instance.hideHints();
+      if (tourState.hintInstance) {
+        if (hintsVisible.value) {
+          tourState.hintInstance.showHints();
+        } else {
+          tourState.hintInstance.hideHints();
+        }
       }
     };
 
@@ -117,10 +159,11 @@ export function createIntro() {
           // Skip step if element is not visible
           const element = document.querySelector(currentStep.element as string) as HTMLElement | undefined;
           if (!element || element.style.display === 'none') {
-            // Skip step if going forward, else go back two steps (No idea why there is a +1 offset. step.value, newValue and _instance.currentStep() all have the same value)
-            _instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
+            // Skip step if going forward, else go back two steps
+            if (tourState.instance) {
+              tourState.instance.goToStep(newValue + (newValue > oldValue ? 2 : 0));
+            }
           }
-
           // For some reason intro.js does not always scroll to the element, so we do it manually to always have then element on screen
           document.querySelector(currentStep.element as string)?.scrollIntoView({
             behavior: 'auto',
@@ -137,11 +180,24 @@ export function createIntro() {
             nextTick(() => {
               // @ts-ignore TODO #3066 does not exist
               if (!options.value.steps?.length) return;
-              _instance.start();
+
+              const tourInstance = createTourInstance();
+
+              if (options.value) {
+                tourInstance.setOptions({
+                  tooltipClass: 'vue-introjs-tooltip',
+                  showBullets: false,
+                  showStepNumbers: true,
+                  ...options.value,
+                  scrollToElement: false
+                });
+              }
+
+              tourInstance.start();
               // defer step change to happen after start is finished
               setTimeout(() => {
                 tutorialReady = true;
-                _instance.goToStep(step.value + 1);
+                tourInstance.goToStep(step.value + 1);
 
                 // check wether element is a link element
                 const isAnchorElement = (el: HTMLElement): el is HTMLAnchorElement => el && el.tagName === 'A';
@@ -169,44 +225,46 @@ export function createIntro() {
                 tooltipEl?.addEventListener('click', onClickHandler);
 
                 // tutorial has been completed
-                _instance.oncomplete(() => {
+                tourInstance.onComplete(() => {
                   // reset step
                   step.value = 0;
                   // sync visibility status
                   stepsVisible.value = false;
-                  step.value = 0;
+                  tourState.isActive = false;
                 });
 
                 // the current step has been changed
-                _instance.onchange(() => {
+                tourInstance.onChange(() => {
                   // Save current step
-                  step.value = _instance.currentStep() || 0;
+                  step.value = tourInstance.getCurrentStep() || 0;
+                  tourState.currentStep = step.value;
                 });
 
-                _instance.onexit(() => {
-                  stepsVisible.value = false;
-                  step.value = 0;
-                  // Hide hints when no hints are avaiable (-> set visible to false)
-                  // @ts-ignore TODO #3066 does not exist
-                  if (!options.value?.hints?.length) {
-                    hintsVisible.value = false;
-                  } else if (hintsVisible.value) {
-                    // show hints after steps finished (-> visible remains true)
-                    _instance.showHints();
+                tourInstance.onExit(() => {
+                  // Only handle exit if this is the current active tour
+                  if (tourState.instance === tourInstance) {
+                    stepsVisible.value = false;
+                    step.value = 0;
+                    tourState.isActive = false;
+                    // Hide hints when no hints are available (-> set visible to false)
+                    // @ts-ignore TODO #3066 does not exist
+                    if (!options.value?.hints?.length) {
+                      hintsVisible.value = false;
+                    } else if (hintsVisible.value && tourState.hintInstance) {
+                      // show hints after steps finished (-> visible remains true)
+                      tourState.hintInstance.showHints();
+                    }
+                    tutorialReady = false;
                   }
-                  tutorialReady = false;
                 });
               });
             });
           } else {
-            _instance.exit(true);
-            // Reset handlers
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            _instance.oncomplete(() => {});
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            _instance.onchange(() => {});
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            _instance.onexit(() => {});
+            // Exit tour when steps become invisible
+            if (tourState.instance) {
+              tourState.instance.exit(true);
+              tourState.isActive = false;
+            }
           }
         },
         { immediate: true }
@@ -216,8 +274,8 @@ export function createIntro() {
       _watchOptionsHandle = watch(
         options,
         (o) => {
-          if (o) {
-            _instance.setOptions({
+          if (o && tourState.instance) {
+            tourState.instance.setOptions({
               tooltipClass: 'vue-introjs-tooltip',
               showBullets: false,
               showStepNumbers: true,
@@ -227,9 +285,9 @@ export function createIntro() {
 
             if (stepsVisible.value && tutorialReady) {
               // refresh options & steps
-              _instance.refresh();
+              tourState.instance.refresh();
               // make changes visible by refreshing steps
-              _instance.goToStep(step.value + 1);
+              tourState.instance.goToStep(step.value + 1);
             }
           }
         },
@@ -249,11 +307,13 @@ export function createIntro() {
     onBeforeUnmount(() => {
       hintsVisible.value = false;
       toggleHints();
-      _watchStepsVisible();
-      _watchHintsVisible();
+      _watchStepsVisible?.();
+      _watchHintsVisible?.();
       _watchRouteChange?.();
       _watchOptionsHandle?.();
-      _instance.exit(true);
+      if (tourState.instance) {
+        tourState.instance.exit(true);
+      }
     });
   });
 }
@@ -348,7 +408,7 @@ export function useIntro() {
           case 'number':
             return (_: Hint, index: number) => index === predicate;
           case 'string':
-            return (hint: Hint) => hint.hint === predicate;
+            return (hint: Hint) => hint.getHints()?.some((h) => h.hint === predicate);
           default:
             return predicate;
         }
