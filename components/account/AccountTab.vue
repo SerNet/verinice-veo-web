@@ -170,7 +170,7 @@ const accountTableActions = [
   }
 ];
 
-const additionalTableHeaders = [
+const additionalTableHeaders = computed(() => [
   {
     order: 10,
     priority: 100,
@@ -220,7 +220,7 @@ const additionalTableHeaders = [
     value: 'roles',
     key: 'roles'
   }
-];
+]);
 </script>
 
 <i18n src="~/locales/base/pages/administration.json"></i18n>

@@ -23,6 +23,7 @@
     <v-tooltip location="start">
       <template #activator="{ props }">
         <v-btn
+          v-if="!allUnitsHaveAccess"
           v-bind="props"
           class="veo-primary-action-fab"
           color="primary"
@@ -68,6 +69,7 @@
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
+                :disabled="allUnitsHaveAccess"
                 :icon="mdiTrashCanOutline"
                 variant="text"
                 :aria-label="$t('global.button.delete')"
@@ -211,7 +213,7 @@ async function confirmDeleteAccessGroup() {
   }
 }
 
-const accessGroupTableHeaders = [
+const accessGroupTableHeaders = computed(() => [
   {
     order: 10,
     priority: 100,
@@ -219,7 +221,7 @@ const accessGroupTableHeaders = [
     value: 'name',
     key: 'name'
   }
-];
+]);
 </script>
 
 <i18n src="~/locales/base/pages/administration.json"></i18n>
