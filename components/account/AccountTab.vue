@@ -109,7 +109,7 @@ const { t } = useI18n();
 const { profile, userSettings } = useVeoUser();
 const { ability } = useVeoPermissions();
 
-const { data: accounts, isFetching } = useQuery(accountQueryDefinition.queries.fetchAccounts);
+const { data: accounts, isFetching, refetch } = useQuery(accountQueryDefinition.queries.fetchAccounts);
 const { data: accessGroups } = useQuery(accessGroupsDefinition.queries.fetchAccessGroups);
 const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
 
@@ -123,6 +123,7 @@ watchEffect(() => {
 const activeAccounts = computed(() => (accounts.value || []).filter((account) => account.enabled).length);
 
 const onEditAccount = (data: IVeoAccount) => {
+  refetch();
   editAccountDialogProps.value = data;
   editAccountDialogVisible.value = true;
 };
@@ -216,7 +217,8 @@ const additionalTableHeaders = computed(() => [
     order: 60,
     priority: 60,
     text: t('roles').toString(),
-    render: ({ internalItem: item }) => item.raw.groups.join(', '),
+    render: ({ internalItem: item }) =>
+      item.raw.groups.join('') === 'veo-write-access' ? t('permissions.editors').toString() : null,
     value: 'roles',
     key: 'roles'
   }

@@ -17,8 +17,8 @@
       "editors": "Editors"
     },
     "tooltips": {
-      "roles": "Roles allow certain actions to be performed. To perform an action within a unit, membership in a corresponding access group is also required.",
-      "accessGroups": "Access groups allow access to certain units. To execute an action in a unit, a corresponding role is also required."
+      "roles": "Roles define which actions are possible in a unit. Membership in a matching access group is also required.",
+      "accessGroups": "Access groups control access to specific units. Performing actions in a unit also requires a matching role."
     },
     "updateAccount": "Update account",
     "updatingAccountFailed": "Couldn't update account",
@@ -42,11 +42,11 @@
     "noPassword": "Das Passwort kann vom Benutzer nach dem Verifizieren der E-Mail-Adresse gesetzt werden.",
     "password": "Passwort",
     "permissions": {
-      "editors": "Editoren"
+      "editors": "Bearbeitende"
     },
     "tooltips": {
-      "roles": "Rollen erlauben es, bestimmte Aktionen auszuführen. Um eine Aktion in einer Unit auszuführen, ist zusätzlich die Mitgliedschaft in einer entsprechenden Zugriffsgruppe erforderlich.",
-      "accessGroups": "Zugriffsgruppen erluben es, auf bestimmte Unis zuzugriefen. Um in einer Unit eine Aktion auszuführen, ist zusätzlich eine entsprechenden Rolle erforderlich."
+      "roles": "Rollen bestimmen, welche Aktionen in einer Unit möglich sind. Zusätzlich ist die Mitgliedschaft in einer passenden Zugriffsgruppe erforderlich.",
+      "accessGroups": "Zugriffsgruppen regeln den Zugriff auf bestimmte Units. Für Aktionen in einer Unit ist außerdem eine passende Rolle nötig."
     },
     "updateAccount": "Account aktualisieren",
     "updatingAccountFailed": "Account konnte nicht aktualisiert werden",

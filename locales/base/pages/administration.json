@@ -34,7 +34,10 @@
     "successfullyUpdatedAccessGroup": "Access group updated successfully.",
     "failedToSaveAccessGroup": "Failed to save access group.",
     "successfullyDeletedAccessGroup": "Access group deleted successfully.",
-    "failedToDeleteAccessGroup": "Failed to delete access group."
+    "failedToDeleteAccessGroup": "Failed to delete access group.",
+    "permissions": {
+      "editors": "Editors"
+    }
   },
   "de": {
     "access": "Zugriff",
@@ -71,6 +74,9 @@
     "successfullyUpdatedAccessGroup": "Zugriffsgruppe erfolgreich aktualisiert.",
     "failedToSaveAccessGroup": "Fehler beim Speichern der Zugriffsgruppe.",
     "successfullyDeletedAccessGroup": "Zugriffsgruppe erfolgreich gelöscht.",
-    "failedToDeleteAccessGroup": "Fehler beim Löschen der Zugriffsgruppe."
+    "failedToDeleteAccessGroup": "Fehler beim Löschen der Zugriffsgruppe.",
+    "permissions": {
+      "editors": "Bearbeitende"
+    }
   }
 }
