@@ -122,3 +122,12 @@ export function visitDashboard({
   // Wait for dashboard to render
   cy.getCustom('[data-component-name="breadcrumbs"]');
 }
+
+export function visitProcess(
+  { unitId, domainId } = {
+    unitId: Cypress.env('dynamicTestData').unit.unitId,
+    domainId: Cypress.env('dynamicTestData').unit.domains[0].id
+  }
+) {
+  cy.visit(`/${unitId}/domains/${domainId}/processes/`, { failOnStatusCode: false });
+}
