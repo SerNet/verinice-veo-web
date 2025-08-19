@@ -382,6 +382,15 @@ const resetQueryOptions = () => {
   sortBy.value = [{ key: 'name', order: 'asc' }];
 };
 
+watch(
+  filter,
+  () => {
+    if (hasFeature('urlParams')) return;
+    resetQueryOptions();
+  },
+  { deep: true }
+);
+
 function resetPage() {
   page.value = 0;
 }
@@ -447,8 +456,6 @@ const nestedActions = computed<INestedMenuEntries[]>(() => {
 });
 
 const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
-
-watch(() => filter.value, resetQueryOptions, { deep: true });
 
 // Update query parameters but keep other route options
 const updateRoute = async (newValue: Record<string, string | undefined | null | true>) => {
