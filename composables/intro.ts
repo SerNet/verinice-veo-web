@@ -23,6 +23,7 @@ import introJs from 'intro.js';
 import { Hint } from 'intro.js/src/packages/hint';
 import { Tour } from 'intro.js/src/packages/tour';
 import { last } from 'lodash';
+import { useTheme } from 'vuetify';
 
 // @ts-ignore TODO #3066 cannot find namespace
 interface ITutorialDocument extends introJs.Options {
@@ -57,6 +58,7 @@ const stop = () => {
 export function createIntro() {
   const route = useRoute();
   const router = useRouter();
+  const theme = useTheme();
 
   // Reactive tour state management
   const tourState = reactive({
@@ -185,7 +187,7 @@ export function createIntro() {
 
               if (options.value) {
                 tourInstance.setOptions({
-                  tooltipClass: 'vue-introjs-tooltip',
+                  tooltipClass: `vue-introjs-tooltip ${theme.global.name.value === 'dark' ? 'introjs-dark' : ''}`,
                   showBullets: false,
                   showStepNumbers: true,
                   ...options.value,
@@ -195,6 +197,13 @@ export function createIntro() {
 
               tourInstance.start();
               // defer step change to happen after start is finished
+              function applyHelperLayerDarkStyle() {
+                const helperLayer = document.querySelector<HTMLElement>('.introjs-helperLayer');
+                if (helperLayer && theme.global.name.value === 'dark') {
+                  helperLayer.classList.add('helper-layer-dark');
+                }
+              }
+
               setTimeout(() => {
                 tutorialReady = true;
                 tourInstance.goToStep(step.value + 1);
@@ -224,6 +233,7 @@ export function createIntro() {
                 const tooltipEl = document.querySelector<HTMLDivElement>('.vue-introjs-tooltip');
                 tooltipEl?.addEventListener('click', onClickHandler);
 
+                applyHelperLayerDarkStyle();
                 // tutorial has been completed
                 tourInstance.onComplete(() => {
                   // reset step
