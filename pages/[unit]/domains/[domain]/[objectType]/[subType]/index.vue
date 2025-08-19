@@ -382,6 +382,19 @@ const resetQueryOptions = () => {
   sortBy.value = [{ key: 'name', order: 'asc' }];
 };
 
+function resetPage() {
+  page.value = 0;
+}
+
+watch(
+  () => route.query,
+  (newValue, oldValue) => {
+    if (!hasFeature('urlParams')) return;
+    if (newValue?.page !== oldValue?.page) return;
+    resetPage();
+  }
+);
+
 const search = ref<VeoSearch[]>([]);
 
 const combinedQueryParameters = computed<any>(() => ({
