@@ -16,9 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { DehydratedState, VueQueryPluginOptions } from '@tanstack/vue-query';
-import { VueQueryPlugin, QueryClient, hydrate, dehydrate } from '@tanstack/vue-query';
+import { QueryClient, VueQueryPlugin, dehydrate, hydrate } from '@tanstack/vue-query';
 
 import { STALE_TIME } from '~/composables/api/utils/query';
+import { VeoApiError } from '~/composables/api/utils/request';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vueQueryState = useState<DehydratedState | null>('vue-query');
@@ -26,7 +27,16 @@ export default defineNuxtPlugin((nuxtApp) => {
   // Modify your Vue Query global settings here
   const queryClient = new QueryClient({
     defaultOptions: {
-      queries: { staleTime: STALE_TIME.REQUEST, refetchOnWindowFocus: false }
+      queries: {
+        staleTime: STALE_TIME.REQUEST,
+        refetchOnWindowFocus: false,
+        retry: (failureCount, error) => {
+          const fetchError = error as VeoApiError;
+          if (fetchError.code === 404) return false;
+          // Default retry count of useQuery
+          return failureCount < 3;
+        }
+      }
     }
   });
   const options: VueQueryPluginOptions = { queryClient };
