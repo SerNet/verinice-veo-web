@@ -433,7 +433,10 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
           textDecoration: 'none',
           fontWeight: 'bold'
         },
-        to: href
+        to: href,
+        onClick: (e: MouseEvent) => {
+          e.stopPropagation();
+        }
       },
       [cellContent]
     );
