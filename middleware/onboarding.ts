@@ -41,6 +41,16 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 });
 
+async function hasDomain(id: string) {
+  const domains = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
+  return !!domains.find((domain) => domain.id === id);
+}
+
+async function hasUnit(id: string) {
+  const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
+  return !!units.find((unit) => unit.id === id);
+}
+
 async function showDashBoard() {
   // check localStorage for unit- and domainkey
   const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
@@ -49,12 +59,18 @@ async function showDashBoard() {
   const favoriteUnitDomain = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN);
 
   if (favoriteUnitId && favoriteUnitDomain) {
-    return navigateTo(`/${favoriteUnitId}/domains/${favoriteUnitDomain}`);
+    if (hasUnit(favoriteUnitId) && hasDomain(favoriteUnitDomain)) {
+      return navigateTo(`/${favoriteUnitId}/domains/${favoriteUnitDomain}`);
+    }
+    return navigateTo('/units');
   }
 
   // if the keys are present, link to the appropriate dashboard
   if (storageUnitId && storageDomainId) {
-    return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
+    if (hasUnit(storageUnitId) && hasDomain(storageDomainId)) {
+      return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
+    }
+    return navigateTo('/units');
   }
 
   // if neither of the keys is found fetch all units and link to the "first" unit / domain returned by the backend
