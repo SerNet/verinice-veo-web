@@ -51,6 +51,8 @@ async function hasUnit(id: string) {
   return !!units.find((unit) => unit.id === id);
 }
 
+const removeStorageKeys = (keys: string[]) => keys.forEach((k) => localStorage.removeItem(k));
+
 async function showDashBoard() {
   // check localStorage for unit- and domainkey
   const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
@@ -62,6 +64,7 @@ async function showDashBoard() {
     if (hasUnit(favoriteUnitId) && hasDomain(favoriteUnitDomain)) {
       return navigateTo(`/${favoriteUnitId}/domains/${favoriteUnitDomain}`);
     }
+    removeStorageKeys([LOCAL_STORAGE_KEYS.FAVORITE_UNIT, LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN]);
     return navigateTo('/units');
   }
 
@@ -70,6 +73,7 @@ async function showDashBoard() {
     if (hasUnit(storageUnitId) && hasDomain(storageDomainId)) {
       return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
     }
+    removeStorageKeys([LOCAL_STORAGE_KEYS.LAST_UNIT, LOCAL_STORAGE_KEYS.LAST_DOMAIN]);
     return navigateTo('/units');
   }
 
