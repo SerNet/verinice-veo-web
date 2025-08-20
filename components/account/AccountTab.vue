@@ -17,7 +17,7 @@
 -->
 <template>
   <BaseAlert
-    v-if="allUnitsHaveAccessAccountTab"
+    v-if="allUnitsHaveAccessAccountTab && showAccessGroupsFeature"
     :model-value="true"
     :type="VeoAlertType.INFO"
     class="mt-6 mb-4 d-flex align-center"
@@ -104,6 +104,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 import accessGroupsDefinition from '~/composables/api/queryDefinitions/accessGroups';
+import { hasFeature } from '~/utils/featureFlags';
 
 const { t } = useI18n();
 const { profile, userSettings } = useVeoUser();
@@ -223,6 +224,8 @@ const additionalTableHeaders = computed(() => [
     key: 'roles'
   }
 ]);
+
+const showAccessGroupsFeature = hasFeature('accessGroups');
 </script>
 
 <i18n src="~/locales/base/pages/administration.json"></i18n>

@@ -318,7 +318,7 @@ export default defineComponent({
     };
 
     //featureFlag
-    const showAccessGroupsFeature = hasFeature('veoFeatureFlagAccessGroups');
+    const showAccessGroupsFeature = hasFeature('accessGroups');
 
     return {
       ability,

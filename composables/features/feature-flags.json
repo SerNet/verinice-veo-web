@@ -3,5 +3,5 @@
   "compact-table": true,
   "userSettings": false,
   "riskDefinitionEvaluation": true,
-  "veoFeatureFlagAccessGroups": false
+  "accessGroups": false
 }
