@@ -18,6 +18,7 @@
 
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuerySync } from '~/composables/api/utils/query';
 
@@ -42,7 +43,7 @@ export default defineNuxtRouteMiddleware((to) => {
 });
 
 async function hasDomain(id: string) {
-  const domains = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
+  const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
   return !!domains.find((domain) => domain.id === id);
 }
 
@@ -61,7 +62,7 @@ async function showDashBoard() {
   const favoriteUnitDomain = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN);
 
   if (favoriteUnitId && favoriteUnitDomain) {
-    if (hasUnit(favoriteUnitId) && hasDomain(favoriteUnitDomain)) {
+    if ((await hasUnit(favoriteUnitId)) && (await hasDomain(favoriteUnitDomain))) {
       return navigateTo(`/${favoriteUnitId}/domains/${favoriteUnitDomain}`);
     }
     removeStorageKeys([LOCAL_STORAGE_KEYS.FAVORITE_UNIT, LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN]);
@@ -70,7 +71,7 @@ async function showDashBoard() {
 
   // if the keys are present, link to the appropriate dashboard
   if (storageUnitId && storageDomainId) {
-    if (hasUnit(storageUnitId) && hasDomain(storageDomainId)) {
+    if ((await hasUnit(storageUnitId)) && (await hasDomain(storageDomainId))) {
       return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
     }
     removeStorageKeys([LOCAL_STORAGE_KEYS.LAST_UNIT, LOCAL_STORAGE_KEYS.LAST_DOMAIN]);
