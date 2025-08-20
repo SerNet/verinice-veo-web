@@ -77,14 +77,5 @@ async function showDashBoard() {
     return navigateTo('/units');
   }
 
-  // if neither of the keys is found fetch all units and link to the "first" unit / domain returned by the backend
-  const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
-
-  const unitId = units?.[0]?.id;
-  const domainId = units?.[0]?.domains?.[0]?.id;
-
-  // check the IDs again; if the API call fails, link to the unit management
-  const linkTarget = unitId && domainId ? `/${unitId}/domains/${domainId}` : '/units';
-
-  return navigateTo(linkTarget);
+  return navigateTo('/units');
 }
