@@ -483,7 +483,7 @@ async function submitForm({
   const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
 
   try {
-    updateItem({
+    await updateItem({
       endpoint: type,
       id: riskAffected,
       requirementId: item?.control?.id,
