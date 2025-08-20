@@ -1,27 +1,33 @@
-// eslint-disable-next-line @typescript-eslint/no-namespace
-declare namespace Cypress {
-  interface Chainable {
-    setImpactValue(index: number, impact: string): Chainable<Element>;
-
-    checkImpactReason(index: number, reason: string): Chainable<Element>;
-
-    verifyEffectiveValue(index: number, effect: string): Chainable<Element>;
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    interface Chainable {
+      setImpactValue: typeof setImpactValue;
+      checkImpactReason: typeof checkImpactReason;
+      verifyEffectiveValue: typeof verifyEffectiveValue;
+    }
   }
 }
 
-Cypress.Commands.add('setImpactValue', (index: number, impact: string) => {
-  cy.getCustom('[data-veo-test="form-potentialImpacts"]').eq(index).click();
-  cy.get('body').contains(impact).should('be.visible').click();
-});
+export function setImpactValue(index: number, impact: string) {
+  cy.getCustom('[data-veo-test="form-potentialImpacts"]').eq(index).scrollIntoView().should('be.visible').click();
 
-Cypress.Commands.add('checkImpactReason', (index: number, reason: string) => {
-  cy.getCustom('[data-veo-test="form-potentialImpactReasons"]').eq(index).click();
-  cy.get('body').contains(reason).should('be.visible').click();
-});
+  cy.get('.v-overlay-container .v-list').contains('.v-list-item-title', impact).should('be.visible').click();
+}
 
-Cypress.Commands.add('verifyEffectiveValue', (index: number, effect: string) => {
+export function checkImpactReason(index: number, reason: string) {
+  cy.getCustom('[data-veo-test="form-potentialImpactReasons"]').eq(index).scrollIntoView().should('be.visible').click();
+
+  cy.get('.v-overlay-container .v-list').contains('.v-list-item-title', reason).should('be.visible').click();
+}
+
+export function verifyEffectiveValue(index: number, effect: string) {
   cy.getCustom('[data-veo-test="form-potentialImpactsEffective"]')
     .eq(index)
     .find('.v-field__input')
     .should('have.text', effect);
-});
+}
+
+Cypress.Commands.add('setImpactValue', setImpactValue);
+Cypress.Commands.add('checkImpactReason', checkImpactReason);
+Cypress.Commands.add('verifyEffectiveValue', verifyEffectiveValue);

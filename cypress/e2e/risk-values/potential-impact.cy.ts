@@ -37,6 +37,9 @@ describe('Process Risk Impact', () => {
     it('is enabled once an impact is set and shows all options', () => {
       cy.setImpactValue(0, 'negligible');
 
+      // This prevents the test from trying to interact with a disabled element.
+      cy.getCustom('[data-veo-test="form-potentialImpactReasons"]').eq(0).should('not.have.class', 'v-input--disabled');
+
       REASONS.forEach((reason) => {
         cy.checkImpactReason(0, reason);
       });
