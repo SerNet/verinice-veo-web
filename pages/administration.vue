@@ -36,7 +36,7 @@ import { hasFeature } from '~/utils/featureFlags';
 
 const { t } = useI18n();
 
-const showAccessGroupsFeature = hasFeature('veoFeatureFlagAccessGroups');
+const showAccessGroupsFeature = hasFeature('accessGroups');
 
 const tabIndex = ref(0);
 </script>
