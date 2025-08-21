@@ -229,12 +229,12 @@ import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { hasFeature } from '~/utils/featureFlags';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
+import { hasFeature } from '~/utils/featureFlags';
 
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 
@@ -370,7 +370,13 @@ const filter = computed(() => {
 //
 // table stuff
 //
-const page = ref(0);
+const parsePage = (raw: string | string[]) => {
+  if (!hasFeature('urlParams')) return 0;
+  return Math.max(0, parseInt(stringOrFirstValue(raw)) || 0);
+};
+
+const page = ref(parsePage(route.query.page));
+
 const cardsPageChange = (value: number) => {
   page.value = value - 1;
 };
@@ -399,7 +405,10 @@ watch(
   () => route.query,
   (newValue, oldValue) => {
     if (!hasFeature('urlParams')) return;
-    if (newValue?.page !== oldValue?.page) return;
+    if (newValue?.page !== oldValue?.page) {
+      page.value = parsePage(newValue.page);
+      return;
+    }
     resetPage();
   }
 );
