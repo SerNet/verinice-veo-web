@@ -92,8 +92,11 @@
     "updatedBy": "Bearbeiter",
     "type": "Type",
     "icon": "Type",
-    "actions": "Aktionen"
+    "actions": "Aktionen",
+    "source": "Quelle"
   },
+
+  "sourceTooltip": "Benutzerdefiniert",
 
   "domain.index.title": "Dashboard",
   "unit-selection": " Auswahl der Unit",

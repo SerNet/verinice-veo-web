@@ -89,8 +89,11 @@
     "updatedAt": "Last change",
     "updatedBy": "Editor",
     "icon": "Type",
-    "actions": "Actions"
+    "actions": "Actions",
+    "source": "Source"
   },
+
+  "sourceTooltip": "Custom",
 
   "domain.index.title": "Dashboard",
   "unit-selection": "Unit Selection",
