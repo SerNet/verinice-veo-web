@@ -97,6 +97,7 @@
             :loading="isLoading"
             :default-headers="[
               'icon',
+              'source',
               'designator',
               'name',
               'abbreviation',

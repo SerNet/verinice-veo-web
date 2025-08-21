@@ -36,9 +36,11 @@
 </template>
 
 <script setup lang="ts">
+import { mdiAccountEdit, mdiBookOpenPageVariantOutline } from '@mdi/js';
 import { mergeProps } from 'vue';
 
 import type { SortItem, TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
+import Icon from '~/components/Icon.vue';
 import ObjectIcon from '~/components/object/Icon.vue';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
@@ -129,11 +131,30 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 /**
  * Render folder or file icons
  */
-const renderIcon: TableRenderer = ({ item }) => {
+const renderObjectIcon: TableRenderer = ({ item }) => {
   return h(ObjectIcon, {
     objectType: item.type,
     isComposite: !!item.parts?.length
   });
+};
+
+/**
+ * Render Source Icons
+ */
+const renderSourceIcon: TableRenderer = ({ item }) => {
+  return h(
+    Icon,
+    item.appliedCatalogItem ?
+      {
+        icon: mdiBookOpenPageVariantOutline,
+        tooltipTranslation: t('breadcrumbs.catalog'),
+        color: 'blue'
+      }
+    : {
+        icon: mdiAccountEdit,
+        tooltipTranslation: t('sourceTooltip')
+      }
+  );
 };
 /**
  * Render date column using date formatter
@@ -211,7 +232,19 @@ const recurringHeaders: { [key: string]: TableHeader } = {
     class: ['pr-0'],
     cellClass: ['pr-0'],
     width: 30,
-    render: renderIcon,
+    render: renderObjectIcon,
+    priority: 100,
+    order: 10
+  },
+  source: {
+    value: 'source',
+    key: 'source',
+    sortable: false,
+    // @ts-ignore TODO #3066 does not exist
+    class: ['pr-0'],
+    cellClass: ['pr-0'],
+    width: 30,
+    render: renderSourceIcon,
     priority: 100,
     order: 10
   },
