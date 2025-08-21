@@ -20,7 +20,8 @@ import {
   goToUnitDashboard,
   goToUnitSelection,
   selectUnit,
-  deleteTestUnits
+  deleteTestUnits,
+  deleteUnitsOlderThan
 } from '../commands/units';
 import '../commands/potential-impact-commands';
 
@@ -56,6 +57,10 @@ Cypress.Commands.addAll({
   deleteTestUnits,
   visitDashboard,
   checkAxeViolations
+});
+
+before(() => {
+  deleteUnitsOlderThan();
 });
 
 // Uncaught exeptions make cypress test runs fail
