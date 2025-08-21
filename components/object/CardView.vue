@@ -30,8 +30,15 @@
           <Details :name="object.displayName" :description="setObjectDetails(object, ['description'])" />
         </template>
         <template #prepend>
-          <div class="d-flex justify-center prepend-icon">
+          <div class="d-flex justify-center prepend-icon ml-2">
             <v-icon :icon="renderIcon(object)" :size="'x-small'" />
+            <Icon
+              :icon="getSourceIcon(object)"
+              :tooltip-translation="getSourceTooltip(object)"
+              :color="getSourceColor(object)"
+              size="small"
+              class="mr-1 mt-1"
+            />
           </div>
         </template>
         <template #center-aside>
@@ -52,7 +59,7 @@
           </div>
         </template>
         <template #bottom-left>
-          <Status :state="setObjectDetails(object, ['designator', 'abbreviation', 'status'])" />
+          <Status :state="setObjectDetails(object, ['designator', 'abbreviation', 'status', 'source'])" />
         </template>
 
         <template #bottom-right>
@@ -92,10 +99,12 @@
 </template>
 
 <script setup lang="ts">
+import { mdiAccountEdit, mdiBookOpenPageVariantOutline } from '@mdi/js';
 import { computed } from 'vue';
+import Icon from '~/components/Icon.vue';
 import ObjectIcon from '~/components/object/Icon.vue';
 import { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
-import { IVeoEntity, IVeoPaginatedResponse, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { IVeoEntity, IVeoLink, IVeoPaginatedResponse, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 // Props
 const props = defineProps<{
@@ -160,7 +169,7 @@ const renderDate: any = (object: any) => {
 const formatDate: any = (v: any) => {
   try {
     return formatDateTime(new Date(v)).value;
-  } catch (e) {
+  } catch (_e) {
     return '';
   }
 };
@@ -172,6 +181,7 @@ type ObjectDetails = {
   updatedBy: string;
   updatedAt: string;
   description?: string;
+  appliedCatalogItem?: IVeoLink;
 };
 
 const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
@@ -196,6 +206,7 @@ const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
       case 'updatedAt':
         details[globalT('objectlist.updatedAt')] = renderDate(object);
         break;
+
       default:
         console.warn(`Unexpected updated key: ${key}`);
     }
@@ -203,6 +214,13 @@ const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
 
   return details;
 };
+
+// Source icon helpers for cards
+const getSourceIcon = (object: IVeoEntity) =>
+  object?.appliedCatalogItem ? mdiBookOpenPageVariantOutline : mdiAccountEdit;
+const getSourceTooltip = (object: IVeoEntity) =>
+  object?.appliedCatalogItem ? globalT('breadcrumbs.catalog') : globalT('sourceTooltip');
+const getSourceColor = (object: IVeoEntity) => (object?.appliedCatalogItem ? 'blue' : undefined);
 
 const statusColor = (status: string) => {
   switch (status) {
@@ -285,6 +303,21 @@ const Details = {
       type: Object as PropType<Record<string, any> | null>, // Adjust based on expected structure
       required: false,
       default: null
+    },
+    sourceIcon: {
+      type: [String, Array] as PropType<string | string[]>,
+      required: false,
+      default: undefined
+    },
+    sourceTooltip: {
+      type: String,
+      required: false,
+      default: ''
+    },
+    sourceColor: {
+      type: String,
+      required: false,
+      default: undefined
     }
   },
   data() {
@@ -314,7 +347,9 @@ const Details = {
 <style scoped lang="scss">
 .prepend-icon {
   display: flex;
-  justify-content: center;
+  flex-direction: column; /* stack main and source icon vertically */
+  align-items: center;
+  justify-content: flex-start;
   width: 30px;
 }
 
