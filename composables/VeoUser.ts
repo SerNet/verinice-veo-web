@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ComputedRef, Ref } from 'vue';
 import Keycloak from 'keycloak-js';
+import { ComputedRef, Ref } from 'vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export interface IVeoUserSettings {
@@ -156,7 +156,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
   }));
 
   const accountDisabled = computed<boolean>(
-    () => !keycloak.value?.tokenParsed?.groups.includes('/veo-userclass/veo-user')
+    () => !keycloak.value?.tokenParsed?.realm_access?.roles.includes('veo-user')
   );
 
   if (authenticated.value && accountDisabled.value) {
