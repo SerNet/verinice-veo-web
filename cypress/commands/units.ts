@@ -2,6 +2,7 @@
 
 import { UnitDetails } from '../support/setupHelpers';
 import { TCYVeoUnitNames } from './domains';
+import { IVeoUnit } from '../../composables/api/queryDefinitions/units';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -16,6 +17,7 @@ declare global {
       editUnit: typeof editUnit;
       goToUnitDashboard: typeof goToUnitDashboard;
       getVeoTestUnitCard: typeof getVeoTestUnitCard;
+      deleteUnitsOlderThan: typeof deleteUnitsOlderThan;
     }
   }
 }
@@ -231,4 +233,45 @@ export function getVeoTestUnitCard(unitName: string) {
   const url = `/${Cypress.env(unitName).unitId}/domains/`;
   const veoCardSelector = `a[data-veo-test="item-card-slot-center-link"][href^="${url}"]`;
   return cy.getCustom(veoCardSelector).parent().parent().parent();
+}
+
+export function deleteUnitsOlderThan(hours: number = 3) {
+  const logStyles = 'color: purple; font-weight: bold;';
+  const someTimeAgo = new Date(Date.now() - hours * 60 * 60 * 1000);
+
+  // Get units, and find the ones older than $hours
+  cy.veoRequest({
+    endpoint: `units`,
+    method: 'GET'
+  }).then((response) => {
+    const units = response.body;
+    console.log(`%cFound ${units.length} units.`, logStyles);
+
+    const oldUnits = units.filter((unit: any) => {
+      const createdAt = new Date(unit.createdAt);
+      return createdAt < someTimeAgo;
+    });
+
+    // Log info
+    if (oldUnits.length > 0) {
+      console.log(`%cStarting to delete ${oldUnits.length} units older than ${hours} hours...`, logStyles);
+    } else {
+      console.log(`%cNo units are older than ${hours} hours.`, logStyles);
+      return;
+    }
+
+    // Delete units
+    oldUnits.forEach((unit: IVeoUnit, index: number) => {
+      cy.veoRequest({
+        endpoint: `units/${unit.id}`,
+        method: 'DELETE'
+      }).then((response) => {
+        if (response.status === 204) {
+          console.info(`%c${index + 1}: Deleted unit ${unit.id}`, logStyles);
+        } else {
+          console.error(`Failed to delete unit ${unit.name} | ${unit.id}. Status: ${response.status}`);
+        }
+      });
+    });
+  });
 }
