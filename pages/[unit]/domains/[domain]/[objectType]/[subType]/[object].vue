@@ -37,6 +37,18 @@
         data-component-name="object-details-details"
         no-padding
       >
+        <template #title>
+          <div class="d-inline-flex align-center ml-2">
+            <Icon
+              v-if="object"
+              :icon="sourceIconName"
+              :tooltip-translation="sourceTooltipText"
+              :color="sourceIconColor"
+              size="s"
+              class="mr-2"
+            />
+          </div>
+        </template>
         <template #default>
           <ObjectDetails
             v-model:active-tab="activeTab"
@@ -160,17 +172,16 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
 </script>
 
 <script setup lang="ts">
+import { mdiAccountEdit, mdiBookOpenPageVariantOutline, mdiCheck } from '@mdi/js';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
-import { Ref } from 'vue';
-
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
-import { IVeoEntity, IVeoObjectHistoryEntry, VeoAlertType, VeoElementTypesSingular } from '~/types/VeoTypes';
-import { mdiCheck } from '@mdi/js';
+import type { IVeoEntity, IVeoLink, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { VeoAlertType, VeoElementTypesSingular } from '~/types/VeoTypes';
 
 onBeforeRouteLeave((to, _from, next) => {
   // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
@@ -229,6 +240,11 @@ const {
     finalizeModifiedObject(data);
   }
 });
+
+const appliedCatalogItem = computed<IVeoLink | undefined>(() => object.value?.appliedCatalogItem);
+const sourceIconName = computed(() => (appliedCatalogItem.value ? mdiBookOpenPageVariantOutline : mdiAccountEdit));
+const sourceTooltipText = computed(() => (appliedCatalogItem.value ? t('breadcrumbs.catalog') : t('sourceTooltip')));
+const sourceIconColor = computed<string | undefined>(() => (appliedCatalogItem.value ? 'blue' : undefined));
 
 // Function to update modifiedObject with fetched data
 function finalizeModifiedObject(data?: IVeoEntity) {

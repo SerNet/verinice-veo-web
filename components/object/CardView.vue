@@ -100,11 +100,10 @@
 
 <script setup lang="ts">
 import { mdiAccountEdit, mdiBookOpenPageVariantOutline } from '@mdi/js';
-import { computed } from 'vue';
-import Icon from '~/components/Icon.vue';
 import ObjectIcon from '~/components/object/Icon.vue';
-import { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
-import { IVeoEntity, IVeoLink, IVeoPaginatedResponse, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import type { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 // Props
 const props = defineProps<{

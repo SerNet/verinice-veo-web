@@ -85,11 +85,13 @@ export default defineComponent({
                       class: 'skeleton-title'
                     })
                 : () => [
-                    h(`h${props.headingLevel}`, {
-                      class: `d-inline flex-grow-0 text-h${props.headingLevel} page-title small-caps text-capitalize`,
-                      innerText: props.title
-                    }),
-                    ...(slots.title ? [slots.title()] : [])
+                    h(
+                      `h${props.headingLevel}`,
+                      {
+                        class: `d-inline-flex align-center flex-grow-1 justify-space-between text-h${props.headingLevel} page-title small-caps text-capitalize`
+                      },
+                      [props.title, ...(slots.title ? [slots.title()] : [])]
+                    )
                   ]
             }
           )
