@@ -55,6 +55,24 @@ export const useVeoPermissions = () => {
     } else {
       cannot('manage', 'accounts');
     }
+
+    // --- Unit permissions ---
+    const hasAccessRestrictions = permissions.includes('unit_access_restrictions');
+
+    // If 'unit_access_restrictions' is NOT present, all users can manage units.
+    if (!hasAccessRestrictions) {
+      can('manage', 'units');
+    } else {
+      if (permissions.includes('unit:create')) {
+        cannot('create', 'units');
+      }
+      if (permissions.includes('unit:update')) {
+        can('update', 'units');
+      }
+      if (permissions.includes('unit:delete')) {
+        can('delete', 'units');
+      }
+    }
     // @ts-ignore For some reason the rules and update types are incompatible, they work however
     ability.value.update(rules);
   };

@@ -5,7 +5,10 @@
     "deleteUnit": "Delete Unit",
     "editUnit": "Edit Unit",
     "exceeded": "You have reached the maximum amount of Units",
-    "of": "of"
+    "of": "of",
+    "permissions": {
+      "missingPermissionTooltip": "Missing permission for this action."
+    }
   },
   "de": {
     "active": "Aktiv",
@@ -13,6 +16,9 @@
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",
     "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
-    "of": "von"
+    "of": "von",
+    "permissions": {
+      "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
+    }
   }
 }

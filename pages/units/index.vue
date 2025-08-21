@@ -38,12 +38,12 @@
                 data-component-name="create-unit-btn"
                 to="/units/create"
                 :prepend-icon="mdiPlus"
-                :disabled="maxUnitsExceeded || ability.cannot('manage', 'units')"
+                :disabled="maxUnitsExceeded || ability.cannot('manage', 'units') || !canCreateUnit"
                 color="primary"
                 size="large"
                 :aria-label="t('createUnit')"
-                >{{ t('createUnit') }}</v-btn
-              >
+                >{{ t('createUnit') }}
+              </v-btn>
             </div>
           </div>
         </template>
@@ -51,6 +51,9 @@
         <template #default>
           <span v-if="maxUnitsExceeded">
             {{ t('exceeded') }}
+          </span>
+          <span v-if="!canCreateUnit">
+            {{ t('permissions.missingPermissionTooltip') }}
           </span>
           <span v-else>
             {{ t('createUnit') }}
@@ -74,6 +77,8 @@ const { ability } = useVeoPermissions();
 const { userSettings } = useVeoUser();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
+
+const canCreateUnit = computed(() => ability.value.can('create', 'units'));
 
 const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | null>(null);
 const activeUnits = computed(() => unitsRef?.value?.activeUnits || 0);

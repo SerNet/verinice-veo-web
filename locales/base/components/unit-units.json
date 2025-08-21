@@ -7,7 +7,10 @@
     "bookmarkTooltip": "Favorite (open the dashboard of this unit at the next login)",
     "createdBy": "Created by",
     "createdAt": "Created at",
-    "noDescription": "No description available"
+    "noDescription": "No description available",
+    "permissions": {
+      "missingPermissionTooltip": "Missing permission for this action."
+    }
   },
   "de": {
     "addProfiles": "Profile anwenden",
@@ -17,6 +20,9 @@
     "bookmarkTooltip": "Favorit (Beim nächsten Login das Dashboard dieser Unit öffnen)",
     "createdBy": "Erstellt von",
     "createdAt": "Erstellt am",
-    "noDescription": "Keine Beschreibung vorhanden"
+    "noDescription": "Keine Beschreibung vorhanden",
+    "permissions": {
+      "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
+    }
   }
 }

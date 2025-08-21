@@ -33,10 +33,15 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           />
         </template>
         <template #center-aside="{ item: u }">
-          <UnitActions :details-url="u?.detailsUrl" @delete-unit="() => deleteUnit(u)" />
+          <UnitActions
+            :details-url="u?.detailsUrl"
+            :can-update-unit="canUpdateUnit"
+            :can-delete-unit="canDeleteUnit"
+            @delete-unit="() => deleteUnit(u)"
+          />
         </template>
         <template #bottom-left="{ item: u }">
-          <DomainActions :domains="u.domains" :domains-url="u.domainsUrl" />
+          <DomainActions :domains="u.domains" :domains-url="u.domainsUrl" :can-edit-domains="canEditDomains" />
         </template>
         <template #prepend="{ item: u }">
           <BookmarkFavorite :is-favorite="u?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(u)" />
@@ -63,6 +68,9 @@ import {
 } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { sortUnits } from '~/composables/units/useUnits';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+
+const { ability } = useVeoPermissions();
 
 // Types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
@@ -75,6 +83,10 @@ const { t } = useI18n();
 const { data: veoUnits, isLoading: isLoadingUnits, invalidateUnitCache } = useUnits();
 const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
+
+const canUpdateUnit = computed(() => ability.value.can('update', 'units'));
+const canDeleteUnit = computed(() => ability.value.can('delete', 'units'));
+const canEditDomains = computed(() => canUpdateUnit.value);
 
 const units = computed({
   get() {
@@ -149,7 +161,7 @@ const Details: TInlineComponent = {
 };
 
 const UnitActions: TInlineComponent = {
-  props: ['detailsUrl'],
+  props: ['detailsUrl', 'canUpdateUnit', 'canDeleteUnit'],
   data: () => ({ mdiPencilOutline, mdiDeleteOutline, t }),
   emits: ['deleteUnit'],
   methods: {
@@ -158,44 +170,79 @@ const UnitActions: TInlineComponent = {
     }
   },
   template: `
-    <v-tooltip :text="t('editUnit')" :aria-label="t('editUnit')">
+    <!-- EDIT BUTTON -->
+    <v-tooltip :aria-label="t('editUnit')">
       <template #activator="{ props }">
-        <v-btn
-          v-bind="props"
-          :to="detailsUrl"
-          :icon="mdiPencilOutline"
-          variant="text"
-          :aria-label="t('editUnit')"
-          data-veo-test="units-edit-unit-button"
-          data-component-name="units-edit-unit-button"
-        >
-        </v-btn>
+        <span v-bind="props">
+          <v-btn
+            v-if="canUpdateUnit"
+            :to="detailsUrl"
+            :icon="mdiPencilOutline"
+            variant="text"
+            :aria-label="t('editUnit')"
+            data-veo-test="units-edit-unit-button"
+            data-component-name="units-edit-unit-button"
+          />
+          <v-btn
+            v-else
+            disabled
+            :icon="mdiPencilOutline"
+            variant="text"
+          />
+        </span>
+      </template>
+      <template #default>
+        <span v-if="!canUpdateUnit">
+          {{ t('permissions.missingPermissionTooltip') }}
+        </span>
+        <span v-else>
+          {{ t('editUnit') }}
+        </span>
       </template>
     </v-tooltip>
-    <v-tooltip :text="t('deleteUnit')" :aria-label="t('deleteUnit')">
+
+    <!-- DELETE BUTTON -->
+    <v-tooltip :aria-label="t('deleteUnit')">
       <template #activator="{ props }">
-        <v-btn
-          v-bind="props"
-          @click="emitDeleteUnit"
-          :icon="mdiDeleteOutline"
-          variant="text"
-          :aria-label="t('deleteUnit')"
-          data-veo-test="units-delete-unit-button"
-          data-component-name="units-delete-unit-button"
-        >
-        </v-btn>
+        <span v-bind="props">
+          <v-btn
+            v-if="canDeleteUnit"
+            @click="emitDeleteUnit"
+            :icon="mdiDeleteOutline"
+            variant="text"
+            :aria-label="t('deleteUnit')"
+            data-veo-test="units-delete-unit-button"
+            data-component-name="units-delete-unit-button"
+          />
+          <v-btn
+            v-else
+            disabled
+            :icon="mdiDeleteOutline"
+            variant="text"
+          />
+        </span>
+      </template>
+      <template #default>
+        <span v-if="!canDeleteUnit">
+          {{ t('permissions.missingPermissionTooltip') }}
+        </span>
+        <span v-else>
+          {{ t('deleteUnit') }}
+        </span>
       </template>
     </v-tooltip>
   `
 };
 
 const DomainActions: TInlineComponent = {
-  props: ['domains', 'domainsUrl'],
+  props: ['domains', 'domainsUrl', 'canEditDomains'],
   data: () => ({ mdiPuzzle, mdiPlus, t, useDomainColor }),
   template: `
-    <v-chip v-for="(domain, index) in this.domains"
-      label
+    <!-- Display domain chips -->
+    <v-chip
+      v-for="(domain, index) in domains"
       :key="index"
+      label
       :prepend-icon="mdiPuzzle"
       variant="outlined"
       :color="useDomainColor(domain.name)"
@@ -205,20 +252,41 @@ const DomainActions: TInlineComponent = {
       {{ domain.name }}
     </v-chip>
 
-    <v-tooltip :text="t('editDomains')" :aria-label="t('editDomains')">
-    <template #activator="{ props }">
-      <v-btn
-        v-bind="props"
-        data-veo-test="units-add-domains-button"
-        data-component-name="units-add-domains-button"
-        :to="domainsUrl"
-        :prepend-icon="mdiPlus"
-        variant="text"
-        size="x-small"
-      >
-      {{ t('editDomains') }}
-    </v-btn>
-    </template>
+    <!-- Edit/Add Domains button with tooltip -->
+    <v-tooltip :aria-label="t('editDomains')">
+      <template #activator="{ props }">
+        <span v-bind="props">
+          <v-btn
+            v-if="canEditDomains"
+            :to="domainsUrl"
+            :prepend-icon="mdiPlus"
+            variant="text"
+            size="x-small"
+            data-veo-test="units-add-domains-button"
+            data-component-name="units-add-domains-button"
+          >
+            {{ t('editDomains') }}
+          </v-btn>
+          <v-btn
+            v-else
+            disabled
+            :prepend-icon="mdiPlus"
+            variant="text"
+            size="x-small"
+          >
+            {{ t('editDomains') }}
+          </v-btn>
+        </span>
+      </template>
+
+      <template #default>
+        <span v-if="!canEditDomains">
+          {{ t('permissions.missingPermissionTooltip') }}
+        </span>
+        <span v-else>
+          {{ t('editDomains') }}
+        </span>
+      </template>
     </v-tooltip>
   `
 };
@@ -265,11 +333,11 @@ const ApplyProfiles: TInlineComponent = {
           color="primary"
           size="small"
         >
-        {{ t('addProfiles') }}
+          {{ t('addProfiles') }}
         </v-btn>
       </template>
     </v-tooltip>
-    `
+  `
 };
 </script>
 
@@ -279,6 +347,7 @@ const ApplyProfiles: TInlineComponent = {
 :deep(.domain-btn) {
   cursor: default;
 }
+
 .parent * {
   overflow-wrap: anywhere;
 }
