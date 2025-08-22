@@ -3,7 +3,7 @@ declare global {
   namespace Cypress {
     interface Chainable {
       setImpactValue: typeof setImpactValue;
-      checkImpactReason: typeof checkImpactReason;
+      setImpactReason: typeof setImpactReason;
       verifyEffectiveValue: typeof verifyEffectiveValue;
     }
   }
@@ -15,7 +15,7 @@ export function setImpactValue(index: number, impact: string) {
   cy.get('.v-overlay-container .v-list').contains('.v-list-item-title', impact).should('be.visible').click();
 }
 
-export function checkImpactReason(index: number, reason: string) {
+export function setImpactReason(index: number, reason: string) {
   cy.getCustom('[data-veo-test="form-potentialImpactReasons"]').eq(index).scrollIntoView().should('be.visible').click();
 
   cy.get('.v-overlay-container .v-list').contains('.v-list-item-title', reason).should('be.visible').click();
@@ -29,5 +29,5 @@ export function verifyEffectiveValue(index: number, effect: string) {
 }
 
 Cypress.Commands.add('setImpactValue', setImpactValue);
-Cypress.Commands.add('checkImpactReason', checkImpactReason);
+Cypress.Commands.add('setImpactReason', setImpactReason);
 Cypress.Commands.add('verifyEffectiveValue', verifyEffectiveValue);

@@ -22,7 +22,7 @@ import {
   selectUnit,
   deleteTestUnits
 } from '../commands/units';
-import './potential-impact-commands';
+import '../commands/potential-impact-commands';
 
 Cypress.Commands.addAll({
   veoRequest,

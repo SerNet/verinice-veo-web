@@ -41,7 +41,7 @@ describe('Process Risk Impact', () => {
       cy.getCustom('[data-veo-test="form-potentialImpactReasons"]').eq(0).should('not.have.class', 'v-input--disabled');
 
       REASONS.forEach((reason) => {
-        cy.checkImpactReason(0, reason);
+        cy.setImpactReason(0, reason);
       });
     });
 
