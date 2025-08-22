@@ -64,7 +64,7 @@ export const useVeoPermissions = () => {
       can('manage', 'units');
     } else {
       if (permissions.includes('unit:create')) {
-        cannot('create', 'units');
+        can('create', 'units');
       }
       if (permissions.includes('unit:update')) {
         can('update', 'units');
