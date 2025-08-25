@@ -85,6 +85,7 @@
     v-bind="manageAccountProps"
     :existing-accounts="accounts"
     :access-groups="accessGroups"
+    :roles="roles"
     @update:model-value="onManageAccountDialogInput"
   />
 
@@ -97,17 +98,17 @@
 </template>
 
 <script setup lang="ts">
-import { mdiPencilOutline, mdiTrashCanOutline, mdiPlus } from '@mdi/js';
-import { useQuery } from '~/composables/api/utils/query';
+import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
+import accessGroupsDefinition from '~/composables/api/queryDefinitions/accessGroups';
 import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import { useQuery } from '~/composables/api/utils/query';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
-import accessGroupsDefinition from '~/composables/api/queryDefinitions/accessGroups';
 import { hasFeature } from '~/utils/featureFlags';
 
 const { t } = useI18n();
-const { profile, userSettings } = useVeoUser();
+const { profile, userSettings, keycloak } = useVeoUser();
 const { ability } = useVeoPermissions();
 
 const { data: accounts, isFetching, refetch } = useQuery(accountQueryDefinition.queries.fetchAccounts);
@@ -142,9 +143,11 @@ const editAccountDialogProps = ref<Record<string, any>>({});
 
 const manageAccountDialogVisible = computed(() => createAccountDialogVisible.value || editAccountDialogVisible.value);
 
-const manageAccountProps = computed(() =>
-  editAccountDialogVisible.value ? editAccountDialogProps.value : { groups: ['veo-write-access'] }
-);
+const manageAccountProps = computed(() => (editAccountDialogVisible.value ? editAccountDialogProps.value : {}));
+
+const roles = computed(() => {
+  return keycloak.value?.tokenParsed?.realm_access?.roles ?? [];
+});
 
 const onManageAccountDialogInput = (newValue: boolean) => {
   if (!newValue) {
