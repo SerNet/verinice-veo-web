@@ -1,5 +1,21 @@
 <!--
    - verinice.veo web
+   - Copyright (C) 2025 Haneen Husin
+   - 
+   - This program is free software: you can redistribute it and/or modify it
+   - under the terms of the GNU Affero General Public License
+   - as published by the Free Software Foundation, either version 3 of the License,
+   - or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+   - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   - See the GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License along with this program.
+   - If not, see <http://www.gnu.org/licenses/>.
+-->
+<!--
+   - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Jessica Lühnen
    -
    - This program is free software: you can redistribute it and/or modify
@@ -177,9 +193,13 @@ export default defineComponent({
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const { data: translations } = useTranslations({ domain: route.params.domain as string });
     const { data: currentDomain } = useCurrentDomain();
+    // Table/filter logic
+    const filter = ref<Record<string, any>>({});
     const title = computed(() => {
       const { object, editParents } = props;
       const displayName = [object?.displayName];
+      if (filter.value.objectType === 'control' && filter.value.subType === 'CTL_MinimalMeasure')
+        return t('selectMeasures');
 
       if (object?.type === 'control' && object?.subType === 'CTL_Module') {
         return t('addTarget', [props.editRelationship]);
@@ -187,6 +207,9 @@ export default defineComponent({
 
       if (object?.type === 'control') {
         return t('addControls', displayName);
+      }
+      if (object?.type === 'process') {
+        return t('selectRequirementsObjects', displayName);
       }
 
       const editScopeRelationship = props.editRelationship === 'scope';
@@ -196,7 +219,7 @@ export default defineComponent({
       }
 
       if (editScopeRelationship) {
-        return t('editChildScopes', displayName);
+        return t('editChildScopes');
       }
 
       if (editParents) {
@@ -205,9 +228,6 @@ export default defineComponent({
 
       return t('editChildObjects', displayName);
     });
-
-    // Table/filter logic
-    const filter = ref<Record<string, any>>({});
 
     const page = ref(0);
     const sortBy = ref([{ key: 'name', order: 'asc' }]);
@@ -589,5 +609,4 @@ export default defineComponent({
   }
 });
 </script>
-
 <i18n src="~/locales/base/components/object-link-dialog.json"></i18n>

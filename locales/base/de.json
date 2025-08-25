@@ -192,6 +192,7 @@
   "linkObject": "{0} auswählen",
   "linkControl": "{0} auswählen",
   "addControls": "Maßnahmen hinzufügen",
+  "selectRequirementsObjects": "Teile über \"{0}\" bearbeiten",
 
   "inputPlaceholders": {
     "date": "tt.mm.jjjj"

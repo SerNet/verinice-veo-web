@@ -1,6 +1,7 @@
 {
   "addControls": "Baustein hinzufügen",
   "linkControl": "{0} modellieren",
+  "selectRequirementsObjects": "Bausteine auswählen",
   "riEditor": {
     "targetObject": "Zielobjekt",
     "description": "Beschreibung",
