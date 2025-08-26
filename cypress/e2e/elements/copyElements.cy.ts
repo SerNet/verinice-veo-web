@@ -50,9 +50,9 @@ describe('Copy elements', () => {
           });
 
           const abb = texts[4];
-          const status = texts[5];
-          const name = texts[3];
-
+          const status = texts[6];
+          const name = texts[5];
+          cy.log(abb, name, status);
           cy.wait('@cloneElement').its('response.statusCode').should('eq', 201);
           cy.wait('@getClonedElement').its('response.statusCode').should('eq', 200);
           verifyElementCopy(abb, name, status);
