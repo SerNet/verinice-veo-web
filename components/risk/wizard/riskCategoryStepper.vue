@@ -127,7 +127,25 @@
     <!-- Summary -->
     <v-window-item :value="4">
       <v-card class="pa-8">
+        <v-card-title class="text-h5 pb-2">
+          <i18n-t keypath="summaryHeader" tag="span">
+            <template #name>
+              <strong>{{ riskCategory.translations?.[locale]?.name ?? '' }}</strong>
+            </template>
+          </i18n-t>
+        </v-card-title>
+        <v-card-subtitle class="mb-6">
+          {{ t('summaryHint') }}
+        </v-card-subtitle>
+
+        <v-divider class="mb-6"></v-divider>
+
+        <div class="d-flex align-center justify-space-between mb-2">
+          <div class="text-subtitle-1 font-weight-medium">{{ t('riskMatrix') }}</div>
+        </div>
+
         <RiskMatrix
+          class="mt-2"
           :value-matrix="riskCategory.valueMatrix"
           :potential-impacts="potentialImpactsSingleCategory"
           :risk-values="riskValues"
@@ -172,7 +190,7 @@ function handleChange(_index: number, value: string) {
   props.validateNames(value, props.potentialImpactsSingleCategory);
 }
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 const step = defineModel<number>('step', { default: 1 });
 const { setStepperRef } = useSideScroll(step); // Make stepper side-scrollable
