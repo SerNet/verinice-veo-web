@@ -57,7 +57,7 @@ export const useVeoPermissions = () => {
     }
 
     // --- Unit permissions ---
-    const hasAccessRestrictions = permissions.includes('unit_access_restrictions');
+    const hasAccessRestrictions = permissions.includes('unit_access_restriction');
 
     // If 'unit_access_restrictions' is NOT present, all users can manage units.
     if (!hasAccessRestrictions) {
