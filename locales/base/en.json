@@ -248,6 +248,24 @@
     "elements": {
       "name": "Open {elementTypePlural}",
       "description": "Navigate to all {elementTypePlural}"
+    },
+    "objectAction": {
+      "hideObjectDetails": {
+        "name": "Hide Object Details",
+        "description": "Hide object details"
+      },
+      "displayObjectDetails": {
+        "name": "Display Object Details",
+        "description": "display object details"
+      },
+      "hideForm": {
+        "name": "Hide Form",
+        "description": "Hide the form"
+      },
+      "displayForm": {
+        "name": "Display Form",
+        "description": "Display the form"
+      }
     }
   }
 }

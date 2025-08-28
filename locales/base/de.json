@@ -252,6 +252,24 @@
     "elements": {
       "name": "{elementTypePlural} öffnen",
       "description": "Zu allen {elementTypePlural} navigieren"
+    },
+    "objectAction": {
+      "hideObjectDetails": {
+        "name": "Objektdetails verstecken",
+        "description": "Zum Verstecken der Objektdetails"
+      },
+      "displayObjectDetails": {
+        "name": "Objektdetails anzeigen",
+        "description": "Zum Anzeigen der Objektdetails"
+      },
+      "hideForm": {
+        "name": "Formular verstecken",
+        "description": "Zum Verstecken des Formulars"
+      },
+      "displayForm": {
+        "name": "Formular anzeigen",
+        "description": "Zum Anzeigen des Formulars"
+      }
     }
   }
 }

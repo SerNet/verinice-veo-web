@@ -6,10 +6,11 @@ steps:
   - title: 'Object view'
     element: '[data-component-name=object-details-page]'
     intro: The object view consists of the two areas object-details (left) and form (right).
-  - title: 'Show or hide areas'
+    # This has been implemented in the shortcut dialog and removed from here.
+    # - title: 'Show or hide areas'
     # element: '[data-component-name=object-details-page] > div:nth-child(2) > div > button'
     # element: '[data-component-name=object-details-page] > div:nth-child(2) > div:nth-child(2) > button'
-    intro: The object details on the left can be hidden or displayed by button or shortcut Alt/STRG + 1.<br>The form can be hidden or displayed by button or shortcut Alt/STRG + 2.
+    # intro: The object details on the left can be hidden or displayed by button or shortcut Alt/STRG + 1.<br>The form can be hidden or displayed by button or shortcut Alt/STRG + 2.
   # details
   - title: 'Object details'
     element: '[data-component-name=object-details-details]'

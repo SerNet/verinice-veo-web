@@ -46,11 +46,22 @@ export const STATIC_SHORTCUTS_CONFIG = {
     units: ['g', 'u']
   }
 };
-
+export const OBJECT_OVERVIEW_SHORTCUTS_CONFIG = {
+  objectAction: {
+    hideObjectDetails: ['Strg', '1'],
+    displayObjectDetails: ['Alt', '1'],
+    hideForm: ['Strg', '2'],
+    displayForm: ['Alt', '2']
+  }
+};
 export function getElementTypeKeys(elementType: keyof typeof VeoElementTypePlurals): string[] {
   return DOMAIN_SHORTCUTS_CONFIG.elementTypes[elementType];
 }
 
 export function getNavigationKeys(action: keyof typeof DOMAIN_SHORTCUTS_CONFIG.navigation): string[] {
   return DOMAIN_SHORTCUTS_CONFIG.navigation[action];
+}
+
+export function getObjectActionKeys(action: string): string[] {
+  return OBJECT_OVERVIEW_SHORTCUTS_CONFIG.objectAction[action];
 }

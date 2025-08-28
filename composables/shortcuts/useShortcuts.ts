@@ -1,5 +1,19 @@
 /*
  * verinice.veo web
+ * Copyright (C) 2025 Haneen Husin
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ * verinice.veo web
  * Copyright (C) 2025 jae
  *
  * This program is free software: you can redistribute it and/or modify it
@@ -16,7 +30,7 @@
  */
 import { useMagicKeys } from '@vueuse/core';
 import { useActiveElement } from '@vueuse/core';
-import { DOMAIN_SHORTCUTS_CONFIG, STATIC_SHORTCUTS_CONFIG } from './shortcutConfig';
+import { DOMAIN_SHORTCUTS_CONFIG, STATIC_SHORTCUTS_CONFIG, OBJECT_OVERVIEW_SHORTCUTS_CONFIG } from './shortcutConfig';
 
 export function useShortcuts() {
   const isDialogOpen = ref(false);
@@ -24,12 +38,14 @@ export function useShortcuts() {
   const modifiers = Object.values({
     ...DOMAIN_SHORTCUTS_CONFIG.navigation,
     ...DOMAIN_SHORTCUTS_CONFIG.elementTypes,
-    ...STATIC_SHORTCUTS_CONFIG.navigation
+    ...STATIC_SHORTCUTS_CONFIG.navigation,
+    ...OBJECT_OVERVIEW_SHORTCUTS_CONFIG.objectAction
   }).map(([modifier]) => modifier);
   const relevantKeys = Object.values({
     ...DOMAIN_SHORTCUTS_CONFIG.navigation,
     ...DOMAIN_SHORTCUTS_CONFIG.elementTypes,
-    ...STATIC_SHORTCUTS_CONFIG.navigation
+    ...STATIC_SHORTCUTS_CONFIG.navigation,
+    ...OBJECT_OVERVIEW_SHORTCUTS_CONFIG.objectAction
   }).map(([, relevantKey]) => relevantKey);
 
   const SEQUENCE_TIMEOUT_MS = 1000;
@@ -38,8 +54,10 @@ export function useShortcuts() {
   const { isInputElement } = useInputElementDetection();
   const { data: domainShortcuts } = useDomainShortcuts();
   const { data: staticShortcuts } = useStaticShortcuts();
-  const shortcuts = computed(() => [...domainShortcuts.value, ...staticShortcuts.value].filter((s) => !s.disabled));
-
+  const { data: actionObjectShortcuts } = useObjectViewShortcuts();
+  const shortcuts = computed(() =>
+    [...domainShortcuts.value, ...staticShortcuts.value, ...actionObjectShortcuts.value].filter((s) => !s.disabled)
+  );
   const keys = useMagicKeys();
   const current = keys.current;
 
@@ -55,6 +73,7 @@ export function useShortcuts() {
 
   function runShortcut(keySequence: string[], shortcuts) {
     const shortcut = shortcuts.find((s) => s.keys.join() === keySequence.join());
+    if (!shortcut) return;
     shortcut?.action?.();
   }
 
