@@ -91,7 +91,7 @@
                 <v-tooltip location="top" width="300">
                   <template #activator="{ props: tooltipProps }">
                     <v-select
-                      v-model="formData.roles"
+                      v-model="formData.groups"
                       clearable
                       multiple
                       v-bind="tooltipProps"
@@ -199,7 +199,7 @@ export default defineComponent({
       type: Boolean,
       default: true
     },
-    roles: {
+    groups: {
       type: Array as PropType<string[]>,
       default: () => []
     },
@@ -229,6 +229,7 @@ export default defineComponent({
       lastName?: string;
       enabled?: boolean;
       roles?: string[];
+      groups?: string[];
       accessGroups?: IVeoAccessGroup[];
       [key: string]: any;
     }>({});
@@ -256,7 +257,7 @@ export default defineComponent({
       () => props,
       (newValue) => {
         formData.value = cloneDeep(
-          pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'roles')
+          pick(newValue, 'username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups')
         );
         formData.value.accessGroups = props.existingAccounts.find((acc) => acc.id === props.id)?.accessGroups ?? [];
       },

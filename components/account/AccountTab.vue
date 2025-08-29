@@ -85,7 +85,6 @@
     v-bind="manageAccountProps"
     :existing-accounts="accounts"
     :access-groups="accessGroups"
-    :roles="roles"
     @update:model-value="onManageAccountDialogInput"
   />
 
@@ -107,11 +106,11 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { hasFeature } from '~/utils/featureFlags';
 
-const { t } = useI18n();
-const { profile, userSettings, keycloak } = useVeoUser();
 const { ability } = useVeoPermissions();
+const { t } = useI18n();
+const { profile, userSettings } = useVeoUser();
 
-const { data: accounts, isFetching, refetch } = useQuery(accountQueryDefinition.queries.fetchAccounts);
+const { data: accounts, isFetching } = useQuery(accountQueryDefinition.queries.fetchAccounts);
 const { data: accessGroups } = useQuery(accessGroupsDefinition.queries.fetchAccessGroups);
 const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
 
@@ -125,7 +124,6 @@ watchEffect(() => {
 const activeAccounts = computed(() => (accounts.value || []).filter((account) => account.enabled).length);
 
 const onEditAccount = (data: IVeoAccount) => {
-  refetch();
   editAccountDialogProps.value = data;
   editAccountDialogVisible.value = true;
 };
@@ -144,10 +142,6 @@ const editAccountDialogProps = ref<Record<string, any>>({});
 const manageAccountDialogVisible = computed(() => createAccountDialogVisible.value || editAccountDialogVisible.value);
 
 const manageAccountProps = computed(() => (editAccountDialogVisible.value ? editAccountDialogProps.value : {}));
-
-const roles = computed(() => {
-  return keycloak.value?.tokenParsed?.realm_access?.roles ?? [];
-});
 
 const onManageAccountDialogInput = (newValue: boolean) => {
   if (!newValue) {
