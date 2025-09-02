@@ -196,37 +196,12 @@ export default defineComponent({
     // Table/filter logic
     const filter = ref<Record<string, any>>({});
     const title = computed(() => {
-      const { object, editParents } = props;
-      const displayName = [object?.displayName];
-      if (filter.value.objectType === 'control' && filter.value.subType === 'CTL_MinimalMeasure')
-        return t('selectMeasures');
+      const objectTypeKey = filter.value.objectType as string;
+      const subTypeKey = filter.value.subType as string;
+      const translationKey = subTypeKey ? `${objectTypeKey}_${subTypeKey}_plural` : `${objectTypeKey}_plural`;
+      const translationTitle = upperFirst(translations.value?.lang[locale.value]?.[translationKey]);
 
-      if (object?.type === 'control' && object?.subType === 'CTL_Module') {
-        return t('addTarget', [props.editRelationship]);
-      }
-
-      if (object?.type === 'control') {
-        return t('addControls', displayName);
-      }
-      if (object?.type === 'process') {
-        return t('selectRequirementsObjects', displayName);
-      }
-
-      const editScopeRelationship = props.editRelationship === 'scope';
-
-      if (editParents && editScopeRelationship) {
-        return t('editParentScopes', displayName);
-      }
-
-      if (editScopeRelationship) {
-        return t('editChildScopes');
-      }
-
-      if (editParents) {
-        return t('editParentObjects', displayName);
-      }
-
-      return t('editChildObjects', displayName);
+      return t('select', [translationTitle]);
     });
 
     const page = ref(0);

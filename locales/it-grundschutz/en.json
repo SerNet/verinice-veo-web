@@ -1,7 +1,5 @@
 {
-  "addControls": "Add controls",
   "linkControl": "Model {0}",
-  "selectRequirementsObjects": "Select modules",
   "riEditor": {
     "targetObject": "Target object",
     "description": "Description",

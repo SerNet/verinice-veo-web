@@ -1,9 +1,5 @@
 {
   "en": {
-    "editChildObjects": "Edit parts of \"{0}\"",
-    "editChildScopes": "Select scope",
-    "editParentObjects": "Edit parent parts of \"{0}\"",
-    "editParentScopes": "Edit parent scopes of \"{0}\"",
     "object": "Object",
     "controlNoDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
     "nonControlNoDataText": "There is currently no {subType}. Please {correspondingObject}",
@@ -11,13 +7,9 @@
     "noSearchResults": "Your search did not match any results",
     "catalog": "Catalog",
     "addTarget": "Add {0}",
-    "selectMeasures": "Select minimal measures"
+    "select": "Select {0}"
   },
   "de": {
-    "editChildObjects": "Teile von \"{0}\" bearbeiten",
-    "editChildScopes": "Scopes auswählen",
-    "editParentObjects": "Teile über \"{0}\" bearbeiten",
-    "editParentScopes": "Scopes über \"{0}\" bearbeiten",
     "object": "Objekt",
     "controlNoDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
     "nonControlNoDataText": "Es gibt aktuell keine {subType}. Bitte {correspondingObject}",
@@ -25,6 +17,6 @@
     "noSearchResults": "Ihre Suche ergab keine Treffer",
     "catalog": "Katalog",
     "addTarget": "{0} hinzufügen",
-    "selectMeasures": "Mindestmaßnahmen auswählen"
+    "select": "{0} auswählen"
   }
 }

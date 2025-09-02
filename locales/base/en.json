@@ -188,8 +188,6 @@
 
   "linkObject": "Select {0}",
   "linkControl": "Select {0}",
-  "addControls": "Add Controls",
-  "selectRequirementsObjects": "Edit parts of \"{0}\"",
 
   "inputPlaceholders": {
     "date": "mm/dd/yyyy"
