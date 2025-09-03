@@ -51,6 +51,60 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </template>
       </BaseListItem>
     </template>
+
+    <template v-if="!units || units.length === 0">
+      <div class="py-16 text-center w-50">
+        <h3 class="text-h3">
+          {{ t('noUnitsText') }}
+        </h3>
+        <div class="mt-4">
+          <v-tooltip location="bottom" :aria-label="t('createUnit')">
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                data-veo-test="create-unit-btn"
+                data-component-name="create-unit-btn"
+                to="/units/create"
+                :prepend-icon="mdiPlus"
+                color="primary"
+                size="large"
+                :aria-label="t('createUnit')"
+                class="mr-4"
+              >
+                {{ t('createUnit') }}
+              </v-btn>
+            </template>
+            <template #default>
+              <span>
+                {{ t('createUnitHint') }}
+              </span>
+            </template>
+          </v-tooltip>
+
+          <v-tooltip location="bottom" :aria-label="t('firstStep')">
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                data-veo-test="first-step-btn"
+                data-component-name="first-step-btn"
+                :prepend-icon="mdiFootPrint"
+                to="/welcome"
+                color="gray"
+                size="large"
+                :aria-label="t('firstStep')"
+              >
+                {{ t('firstStep') }}
+              </v-btn>
+            </template>
+            <template #default>
+              <span>
+                {{ t('firstStepHint') }}
+              </span>
+            </template>
+          </v-tooltip>
+        </div>
+      </div>
+    </template>
   </v-row>
 
   <UnitDeleteDialog v-model="deleteDialogIsOpen" :unit="unitToDelete" />
@@ -64,7 +118,8 @@ import {
   mdiPencilOutline,
   mdiPlus,
   mdiPuzzle,
-  mdiShapeOutline
+  mdiShapeOutline,
+  mdiFootPrint
 } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { sortUnits } from '~/composables/units/useUnits';
@@ -97,7 +152,6 @@ const units = computed({
     newUnits.value = newValue;
   }
 });
-
 // Unit Actions
 const unitToEditId = ref<undefined | string>(undefined);
 const unitToDelete = ref<undefined | IVeoUnit>(undefined);

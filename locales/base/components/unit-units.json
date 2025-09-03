@@ -10,7 +10,12 @@
     "noDescription": "No description available",
     "permissions": {
       "missingPermissionTooltip": "Missing permission for this action."
-    }
+    },
+    "noUnitsText": "No units available yet – create your first unit or go to Welcome-Page to read about how to start.",
+    "createUnit": "create unit",
+    "firstStep": "first steps",
+    "firstStepHint": "Goto Welcome-Page to read about how to start",
+    "createUnitHint": "Create your first unit"
   },
   "de": {
     "addProfiles": "Profile anwenden",
@@ -23,6 +28,11 @@
     "noDescription": "Keine Beschreibung vorhanden",
     "permissions": {
       "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
-    }
+    },
+    "noUnitsText": "Noch keine Unit vorhanden – erstellen Sie Ihre erste Unit oder gehen Sie zur Willkommensseite, um zu lesen, wie Sie starten.",
+    "createUnit": "Unit erstellen",
+    "firstStep": "Erste Schritte",
+    "firstStepHint": "Gehen Sie zur Erste-Schritte-Seite",
+    "createUnitHint": "Legen Sie Ihre erste Unit an"
   }
 }

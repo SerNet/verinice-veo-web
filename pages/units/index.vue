@@ -27,9 +27,9 @@
     <BaseContainer>
       <UnitUnits ref="unitsRef" />
     </BaseContainer>
-
+    <!-- When no unit is available, hide the button here and show it in another place -->
     <template #footer>
-      <v-tooltip location="start" :aria-label="t('createUnit')">
+      <v-tooltip v-if="activeUnits !== 0" location="start" :aria-label="t('createUnit')">
         <template #activator="{ props }">
           <div class="d-flex">
             <div class="ml-auto my-6" v-bind="props">
