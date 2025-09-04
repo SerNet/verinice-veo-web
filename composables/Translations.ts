@@ -16,8 +16,9 @@
  */
 import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
-import translationsQueryDefinitions from './api/queryDefinitions/translations';
-import { useQuery, useQuerySync } from './api/utils/query';
+import { useQuery } from './api/utils/query';
+import { useQuery as useQuery5 } from 'vue-query-v5';
+import { read } from '~/requests/crud';
 
 type TranslateSubTypeParams = {
   domainSchema: IVeoDomain | undefined;
@@ -27,54 +28,51 @@ type TranslateSubTypeParams = {
   plural: boolean;
 };
 
-type UseTranslationsParams = { domain: string | string[]; languages?: string[] };
+type UseTranslationsParams = {
+  domain?: string | string[] | Ref<string>;
+  languages?: string[] | Ref<string[]>;
+};
 
-// Shared translation cache
-const translationCache = reactive({
-  data: null,
-  isLoading: false,
-  error: null,
-  isFetching: false,
-  fetchPromise: null
-});
+export function useTranslations(
+  { domain = ref(''), languages = ref(['en', 'de']) }: UseTranslationsParams = { domain: '' }
+) {
+  const route = useRoute();
 
-export function useTranslations({ domain }: UseTranslationsParams) {
-  const { data, isLoading, error } = toRefs(translationCache);
+  const _domain = computed(() => {
+    if (domain) return isRef(domain) ? domain.value : domain;
+    return route.params.domain ? (route.params.domain as string) : '';
+  });
 
-  function fetchTranslations({ domain }: UseTranslationsParams) {
-    if (translationCache.isFetching) {
-      return translationCache.fetchPromise;
-    }
+  const _languages = computed(() => {
+    if (Array.isArray(languages)) return languages.join(',');
+    if (isRef(languages)) return languages.value.join(',');
+    return languages;
+  });
 
-    if (data.value) return Promise.resolve(data.value);
-    translationCache.isFetching = true;
-    isLoading.value = true;
-    translationCache.fetchPromise = useQuerySync(translationsQueryDefinitions.queries.fetch, {
-      languages: ['en', 'de'],
-      domain
-    })
-      .then((fetchedData) => {
-        data.value = fetchedData;
-        return fetchedData;
-      })
-      .catch((err) => {
-        console.error(err);
-        error.value = err;
-        throw err;
-      })
-      .finally(() => {
-        translationCache.isFetching = false;
-        isLoading.value = false;
-        translationCache.fetchPromise = null;
-      });
-    return translationCache.fetchPromise;
-  }
+  const queryKey = ['translations', { domain: _domain, languages: _languages }];
 
-  fetchTranslations({ domain });
+  const isQueryEnabled = computed(() => !!_domain.value && _languages.value.length > 0);
+
+  const { data, isFetching, isLoading, isError, error, refetch } = useQuery5({
+    queryKey,
+    queryFn: ({ queryKey }) => {
+      const { domain, languages } = queryKey[1] as { domain: string; languages: string };
+
+      const path = `/translations?domain=${domain}&languages=${languages}`;
+
+      return domain && languages ? read({ path }) : Promise.reject('no domain id');
+    },
+    enabled: isQueryEnabled,
+    staleTime: 60 * 60 * 1000 // 60 minutes before refetch
+  });
+
   return {
     data,
     isLoading,
-    error
+    isFetching,
+    isError,
+    error,
+    refetch
   };
 }
 
