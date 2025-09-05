@@ -269,5 +269,6 @@
         "description": "Zum Anzeigen des Formulars"
       }
     }
-  }
+  },
+  "noValue": "Kein Wert"
 }

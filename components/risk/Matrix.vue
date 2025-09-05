@@ -99,7 +99,7 @@
                       />
                     </v-row>
                     <span v-else>
-                      {{ getRiskValue(rowIndex, cellIndex)?.translations?.[locale]?.name || t('missingValue') }}
+                      {{ getRiskValue(rowIndex, cellIndex)?.translations?.[locale]?.name || t('noValue') }}
                     </span>
                   </div>
                 </td>
