@@ -99,7 +99,7 @@ const { t, locale } = useI18n();
 const route = useRoute();
 const { isOverridingBreadcrumbs, breadcrumbs: customBreadcrumbs } = useVeoBreadcrumbs();
 const { subTypeTranslation } = useSubTypeTranslation();
-const { data: translations } = useTranslations({ domain: route.params.domain as string });
+const { data: translations } = useTranslations();
 // Breakpoints
 const { mdAndDown, smAndDown, xs } = useDisplay();
 
