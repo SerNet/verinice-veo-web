@@ -25,7 +25,6 @@ export interface IVeoUnit extends IVeoBaseObject {
   name: string;
   description: string;
   domains: IVeoLink[];
-  units: IVeoUnit[];
 }
 
 export interface IVeoExportedUnit {
