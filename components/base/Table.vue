@@ -438,7 +438,7 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
           e.stopPropagation();
         }
       },
-      [cellContent]
+      () => [cellContent]
     );
   }
 
@@ -678,15 +678,20 @@ const render = () => {
     };
   }
 
-  if (isPaginatedResponse(props.items)) {
-    // @ts-ignore TODO #3066 no overload matches the call
-    return h(VDataTableServer, dataTableProps, dataTableSlots);
-  } else {
-    const dataTableContent = props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : [];
+  // Vue 3 prefers function slot values. We have to ensure, that *dataTableSlots* doesn't contain non-function slot values
+  const allFuncSlots = Object.fromEntries(
+    Object.entries(dataTableSlots).map(([key, val]) => {
+      return [key, typeof val === 'function' ? val : () => val];
+    })
+  );
 
-    // @ts-ignore TODO #3066 no overload matches the call
-    return h('div', [...dataTableContent, h(VDataTable, dataTableProps, dataTableSlots)]);
-  }
+  const dataTableContent = props.loading ? [h(VProgressLinear, { indeterminate: true, color: 'primary' })] : [];
+
+  return isPaginatedResponse(props.items) ?
+      // @ts-ignore TODO #3066 no overload matches the call
+      h(VDataTableServer, dataTableProps, allFuncSlots)
+      // @ts-ignore TODO #3066 no overload matches the call
+    : h('div', {}, [...dataTableContent, h(VDataTable, dataTableProps, allFuncSlots)]);
 };
 </script>
 
