@@ -26,7 +26,7 @@ export async function read({
   callback?: () => Promise<void>;
 }) {
   const config = useRuntimeConfig();
-  const url = config.public.apiUrl + path;
+  const url = removeTrailingSlashes(config.public.apiUrl) + '/' + removeLeadingSlashes(path);
 
   const { token } = useVeoUser();
 
@@ -62,4 +62,12 @@ function generateHeaders(token: string, headers: RequestHeaders = {}, etag = '')
     Accept: 'application/json',
     ...headers
   };
+}
+
+function removeLeadingSlashes(str: string) {
+  return str.replace(/^[/\s]+/g, '');
+}
+
+function removeTrailingSlashes(str: string) {
+  return str.replace(/[/\s]+$/g, '');
 }
