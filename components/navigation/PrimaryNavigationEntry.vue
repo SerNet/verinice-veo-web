@@ -115,11 +115,13 @@ const _classes = computed(() => `${props.classes} primary-navigation-entry-level
 </script>
 
 <style lang="scss">
+@use 'assets/styles/_variables.scss';
+
 .veo-list-nav-item {
   border-left: 4px solid transparent;
 }
 
 .veo-active-list-nav-item {
-  border-left: 4px solid $primary;
+  border-left: 4px solid variables.$primary;
 }
 </style>

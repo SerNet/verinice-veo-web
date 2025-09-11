@@ -157,8 +157,10 @@ export default defineComponent({
 <i18n src="~/locales/base/components/dynamic-form-controls-links-field.json"></i18n>
 
 <style lang="scss" scoped>
+@use 'assets/styles/_variables.scss';
+
 .veo-links-field-border {
-  border: 1px solid $medium-grey;
+  border: 1px solid variables.$medium-grey;
   border-radius: 12px;
   overflow: hidden;
 }

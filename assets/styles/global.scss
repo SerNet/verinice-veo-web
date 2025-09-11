@@ -15,8 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-@import './_variables.scss';
-@import './intro.scss';
+@use 'sass:color';
+
+@use '_variables.scss';
+@use 'intro.scss';
 
 html {
   overflow: hidden !important;
@@ -36,7 +38,7 @@ main {
 
 // Only color non-vuetify links,as we would overwrite the color of buttons, etc otherwise
 a:not([class^='v-']) {
-  color: $primary;
+  color: variables.$primary;
 }
 
 .fill-width {
@@ -48,11 +50,11 @@ a:not([class^='v-']) {
 }
 
 .veo-border {
-  border: 1px solid darken($background-primary, 7%) !important;
+  border: 1px solid color.adjust(variables.$background-primary, $lightness: 7%) !important;
 }
 
 .veo-generated-fs-group-border {
-  border: 1px dashed darken($background-primary, 7%) !important;
+  border: 1px dashed color.adjust(variables.$background-primary, $lightness: 7%) !important;
   border-radius: 12px;
 }
 
@@ -98,8 +100,8 @@ a:not([class^='v-']) {
 
 pre,
 code {
-  background: $light-grey;
-  color: $code-black;
+  background: variables.$light-grey;
+  color: variables.$code-black;
 }
 
 pre {

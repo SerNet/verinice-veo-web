@@ -72,6 +72,8 @@ const { t } = useI18n();
 <i18n src="~/locales/base/components/editor-form-schema-playground-layout-element.json"></i18n>
 
 <style lang="scss" module>
+@use 'assets/styles/_variables.scss';
+
 .child-layout-wrapper {
   position: relative;
 }
@@ -93,7 +95,7 @@ const { t } = useI18n();
   background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='grey' stroke-width='2' stroke-dasharray='20' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
   border-radius: 12px;
   bottom: 0;
-  color: $medium-grey;
+  color: variables.$medium-grey;
   left: 0;
   position: absolute !important;
   right: 0;

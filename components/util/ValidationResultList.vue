@@ -95,6 +95,8 @@ const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INest
 <i18n src="~/locales/base/components/util-validation-result-list.json"></i18n>
 
 <style lang="scss" scoped>
+@use 'assets/styles/_variables.scss';
+
 .v-list {
   background-color: transparent;
 }
@@ -116,6 +118,6 @@ const formattedActions: (actions: VeoSchemaValidatorMessage['actions']) => INest
 }
 
 .veo-object-message--error {
-  border-left: 4px solid $primary;
+  border-left: 4px solid variables.$primary;
 }
 </style>

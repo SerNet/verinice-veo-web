@@ -432,17 +432,17 @@ const makeRiskObject = (
 <i18n src="~/locales/base/components/risk-create-dialog-single.json"></i18n>
 
 <style lang="scss" scoped>
-:deep .text-h2 {
+:deep(.text-h2) {
   margin-top: 16px !important;
 }
 
-:deep .veo-section-border {
+:deep(.veo-section-border) {
   border: 1px solid #d7d7d7;
   border-radius: 12px;
   overflow: hidden;
 }
 
-:deep .v-divider {
+:deep(.v-divider) {
   display: none;
 }
 </style>

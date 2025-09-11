@@ -53,6 +53,8 @@ const { t } = useI18n();
 <i18n src="~/locales/base/components/object-messages-message.json"></i18n>
 
 <style lang="scss" scoped>
+@use 'assets/styles/_variables.scss';
+
 .veo-object-message {
   border-left: 4px solid transparent;
 }
@@ -70,6 +72,6 @@ const { t } = useI18n();
 }
 
 .veo-object-message--error {
-  border-left: 4px solid $primary;
+  border-left: 4px solid variables.$primary;
 }
 </style>

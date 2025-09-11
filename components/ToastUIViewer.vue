@@ -3,10 +3,8 @@
 </template>
 <script setup lang="ts">
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
-import '@toast-ui/editor/dist/toastui-editor.css';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
-import '@toast-ui/editor/dist/toastui-editor.css';
 
 const props = withDefaults(
   defineProps<{
@@ -44,12 +42,13 @@ onBeforeUnmount(() => {
 });
 </script>
 <style lang="scss">
+@use '@toast-ui/editor/dist/toastui-editor';
+@use '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
+@use 'prismjs/themes/prism';
+
 .vf-markdown-editor {
   position: relative;
   z-index: 0;
-  @import '@toast-ui/editor/dist/toastui-editor';
-  @import 'prismjs/themes/prism';
-  @import '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
   .toastui-editor-contents h1,
   .toastui-editor-contents h2,
   .toastui-editor-contents h3,

@@ -150,8 +150,10 @@ const openCategory = () => {
 </script>
 
 <style lang="scss" scoped>
+@use 'assets/styles/_variables.scss';
+
 .border-top {
-  border-top: 1px solid $medium-grey;
+  border-top: 1px solid variables.$medium-grey;
 }
 
 .v-list-item--density-compact.primary-navigation-entry-level-1 {
@@ -171,6 +173,6 @@ const openCategory = () => {
 }
 
 .veo-active-list-nav-item {
-  border-left: 4px solid $primary;
+  border-left: 4px solid variables.$primary;
 }
 </style>

@@ -109,8 +109,10 @@ export default defineComponent({
 <i18n src="~/locales/base/components/editor-object-schema-status-list-item.json"></i18n>
 
 <style lang="scss" scoped>
+@use 'assets/styles/_variables.scss';
+
 .schema-details__status-list-item {
-  border: 1px solid $medium-grey;
+  border: 1px solid variables.$medium-grey;
   border-radius: 0px;
   overflow: hidden;
 
