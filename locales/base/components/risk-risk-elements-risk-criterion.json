@@ -1,12 +1,10 @@
 {
   "en": {
-    "categories": "Categories:",
     "noMatrix": "No risk matrix defined.",
     "createMatrix": "Create a risk matrix",
     "impact": "Potential impacts"
   },
   "de": {
-    "categories": "Kategorien:",
     "noMatrix": "Keine Risikomatrix definiert.",
     "createMatrix": "Matrix erstellen",
     "impact": "Mögliche Auswirkungen"
