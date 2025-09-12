@@ -47,7 +47,7 @@
           <v-col cols="12">
             <div class="d-flex justify-space-between align-center">
               <h2>{{ t('criterion') }}</h2>
-              <v-btn color="primary" variant="outlined" size="small" prepend-icon="mdi-cog" @click="addRiskCategory">
+              <v-btn color="primary" variant="outlined" size="small" :prepend-icon="mdiPlus" @click="addRiskCategory">
                 {{ t('manageCriteria') }}
               </v-btn>
             </div>
@@ -99,7 +99,7 @@ export const ROUTE_NAME = 'unit-domains-domain-risks-definition';
 </script>
 
 <script setup lang="ts">
-import { mdiPencil } from '@mdi/js';
+import { mdiPencil, mdiPlus } from '@mdi/js';
 import {
   createRiskCategory,
   deleteRiskCategory as deleteRiskCategoryHelper,
