@@ -3,7 +3,7 @@
   "description": "veo-web",
   "engines": {
     "node": "22.19.x",
-    "npm": "11.5.x"
+    "npm": "11.6.x"
   },
   "name": "veo-web",
   "private": true,
