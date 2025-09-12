@@ -5,6 +5,7 @@ const { defineConfig } = require('cypress');
 const fs = require('fs');
 const path = require('path');
 const yaml = require('js-yaml');
+const pdfParse = require('pdf-parse');
 /* eslint-enable @typescript-eslint/no-require-imports */
 
 module.exports = defineConfig({
@@ -29,6 +30,13 @@ module.exports = defineConfig({
           }
           const fileContent = fs.readFileSync(filePath, 'utf8');
           return yaml.load(fileContent);
+        },
+
+        parsePdf(pdfBuffer) {
+          return pdfParse(Buffer.from(pdfBuffer)).then((data) => ({
+            text: data.text,
+            pageCount: data.numpages
+          }));
         }
       });
       // Load cypress.env.[environment].json files for different environments
