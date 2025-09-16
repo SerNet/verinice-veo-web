@@ -31,18 +31,51 @@ describe('Threat Overview', () => {
   });
 });
 
-describe('Mitigation Measures', () => {
-  beforeEach(() => {
-    // Setup a unit with one module and pre-executed threat overview
-    setupVeo('risks').then(() => {
+describe('Net risk', () => {
+  before(() => {
+    setupVeo('netRisk').then(() => {
       applyCatalogItem()
         .then(() => addModule())
         .then(() => executeThreatOverview());
     });
   });
 
-  afterEach(() => {
-    cy.deleteUnit();
+  it('should set net risk', () => {
+    cy.visitObject();
+
+    // Navigate to Risks tab
+    cy.getCustom('[data-component-name="object-details-risks-tab"]').click();
+
+    // Select the first risk row → opens dialog
+    cy.get('[data-veo-test="loadedDataTable"] tbody tr td span').first().click();
+
+    // Verify dialog is open
+    cy.getCustom('[data-veo-test="base-dialog"]').should('be.visible');
+
+    // Needed to activate net risk
+    cy.get('[data-test-selector="risk-treatments"]').contains('Risk treatment').click({ force: true });
+    cy.get('div[role="listbox"]').contains('risk transfer').click();
+
+    // Set Net risk to High
+    cy.get('[data-test-selector="residual-risk"]').contains('Residual risk').click({ force: true });
+    cy.get('div[role="listbox"]').contains('High').click();
+
+    // Save evaluation
+    cy.get('button').last().contains('Save').should('be.visible').click();
+
+    // Check if the changes were made
+    cy.get('[data-test-selector="risk-treatments"] span').should('have.text', 'risk transfer');
+    cy.get('[data-test-selector="residual-risk"] span').should('have.text', 'High');
+  });
+});
+
+describe('Mitigation Measures', () => {
+  beforeEach(() => {
+    setupVeo('risks').then(() => {
+      applyCatalogItem()
+        .then(() => addModule())
+        .then(() => executeThreatOverview());
+    });
   });
 
   it('should add a mitigation to a risk', () => {
