@@ -172,9 +172,14 @@ docker_image:
       TAG_SUFFIX=
       if [ "$CI_COMMIT_REF_NAME" = "master" ]; then export TAG_SUFFIX="-prod"; fi;
       DESTINATION_ARG="--destination $IMAGE_NAME:git-${CI_COMMIT_SHA} --destination $IMAGE_NAME:pipeline-id-${CI_PIPELINE_ID}$TAG_SUFFIX"
-      if echo "$CI_COMMIT_TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$';
-        then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:$CI_COMMIT_TAG --destination $IMAGE_NAME:latest";
-      fi;
+      if echo "$CI_COMMIT_TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+        DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:$CI_COMMIT_TAG"
+        git fetch --tags
+        LATEST_TAG=$(git tag --list | sort -V | tail -n1)
+        if [ "$CI_COMMIT_TAG" = "$LATEST_TAG" ]; then
+          DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:latest"
+        fi
+      fi
       if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:develop"; fi;
     - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --cache=true $DESTINATION_ARG --build-arg VEO_DEBUG="${VEO_DEBUG}" --build-arg NODE_ENV="${NODE_ENV}" --build-arg CI_COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA} --build-arg CI_JOB_ID=${CI_JOB_ID} --label org.opencontainers.image.version="${PROJECT_VERSION}" --label org.opencontainers.image.revision=${CI_COMMIT_SHA} --build-arg "ftp_proxy=${ftp_proxy}" --build-arg "FTP_PROXY=${ftp_proxy}" --build-arg "http_proxy=${http_proxy}" --build-arg "HTTP_PROXY=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "HTTPS_PROXY=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "NO_PROXY=${no_proxy}"
   interruptible: true
