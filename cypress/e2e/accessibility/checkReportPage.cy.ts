@@ -4,9 +4,6 @@ describe('Report', () => {
   beforeEach(() => {
     setupVeo('Report');
   });
-  afterEach(() => {
-    cy.deleteUnit();
-  });
 
   it.skip('checks Accessibility in Report page', () => {
     // go to report page

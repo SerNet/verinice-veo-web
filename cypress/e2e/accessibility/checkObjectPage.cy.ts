@@ -43,9 +43,6 @@ describe('checks Accessibility', () => {
   beforeEach(() => {
     setupVeo('Object');
   });
-  afterEach(() => {
-    cy.deleteUnit();
-  });
 
   it('checks accessibility on the object detail page', () => {
     cy.visitObject();

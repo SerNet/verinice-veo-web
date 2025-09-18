@@ -5,9 +5,6 @@ describe('Catalogs', () => {
     setupVeo('Catalogs');
   });
 
-  afterEach(() => {
-    cy.deleteUnit();
-  });
   it('checks Accessibility in catalog ', () => {
     // go to catalog page
     const dynamicTestData = Cypress.env('dynamicTestData');

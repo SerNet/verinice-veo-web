@@ -70,7 +70,6 @@ function openFirstRI() {
 // GUI setup
 describe('Object details, modules tab: Content', () => {
   beforeEach(() => setupVeo('workWithRis'));
-  afterEach(() => cy.deleteUnit());
 
   it('checks user info (no modules were applied yet)', () => {
     // Navigate
@@ -105,8 +104,6 @@ describe('Object details, compliance tab: Actions', () => {
     cy.login();
     cy.acceptAllCookies();
   });
-
-  afterEach(() => cy.deleteUnit());
 
   it('adds a module to the test object', () => {
     const module = Cypress.env('dynamicTestData').modules[0];
@@ -186,8 +183,6 @@ describe('Requirement Implementations:  List', () => {
     });
   });
 
-  afterEach(() => cy.deleteUnit());
-
   it('checks if the list of requirement implementations is complete', () => {
     visitRIList();
     cy.checkPagination(['abbreviation, name, status']);
@@ -262,8 +257,6 @@ describe('Requirement Implementations: Editor', () => {
       });
     });
   });
-
-  afterEach(() => cy.deleteUnit());
 
   it('checks if editor shows the right information', () => {
     // Navigate

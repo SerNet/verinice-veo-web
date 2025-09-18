@@ -14,7 +14,6 @@ describe('Object Editor', () => {
     cy.login();
     cy.acceptAllCookies();
   });
-  after(() => cy.deleteUnit());
 
   it('should set up the editor to create a new object schema', () => {
     visitEditor();

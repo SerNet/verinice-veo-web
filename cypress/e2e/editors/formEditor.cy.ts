@@ -9,7 +9,6 @@ describe('Form Editor', () => {
     cy.login();
     cy.acceptAllCookies();
   });
-  after(() => cy.deleteUnit());
 
   it('should create a form editor', () => {
     visitEditor();
