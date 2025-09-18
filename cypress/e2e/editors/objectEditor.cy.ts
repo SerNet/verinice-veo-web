@@ -7,10 +7,8 @@ function assertEditorPage() {
 }
 
 describe('Object Editor', () => {
-  before(() => {
-    setupVeo('ObjectEditor');
-  });
   beforeEach(() => {
+    setupVeo('ObjectEditor');
     cy.login();
     cy.acceptAllCookies();
   });

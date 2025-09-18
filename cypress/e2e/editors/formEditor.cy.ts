@@ -2,10 +2,8 @@ import { visitEditor } from '../../commands/navigation';
 import { setupVeo } from '../../commands/setup';
 
 describe('Form Editor', () => {
-  before(() => {
-    setupVeo('FormEditor');
-  });
   beforeEach(() => {
+    setupVeo('FormEditor');
     cy.login();
     cy.acceptAllCookies();
   });

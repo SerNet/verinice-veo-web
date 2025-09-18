@@ -6,11 +6,8 @@ const REASONS = ['Manual', 'Distributive', 'Cumulative'] as const;
 const CRITERIA = ['Confidentiality', 'Integrity', 'Availability', 'Resilience'] as const;
 
 describe('Process Risk Impact', () => {
-  before(() => {
-    setupVeo('Process Risk Impact', ['DS-GVO']);
-  });
-
   beforeEach(() => {
+    setupVeo('Process Risk Impact', ['DS-GVO']);
     cy.login();
     cy.acceptAllCookies();
     visitProcess();

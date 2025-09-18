@@ -10,19 +10,17 @@ const reportListItem = 'Notification form for personal data breach';
 const downloadsFolder = Cypress.config('downloadsFolder');
 
 describe('Reports', () => {
-  before(() => {
-    setupVeo('Generate Reports', ['DS-GVO'], objectData);
-  });
-
   beforeEach(() => {
-    cy.login();
-    cy.acceptAllCookies();
-    cy.visit(
-      `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${
-        Cypress.env('dynamicTestData').unit.domains[0].id
-      }/reports/dp-privacy-incident`,
-      { failOnStatusCode: false }
-    );
+    setupVeo('Generate Reports', ['DS-GVO'], objectData).then(() => {
+      cy.login();
+      cy.acceptAllCookies();
+      cy.visit(
+        `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${
+          Cypress.env('dynamicTestData').unit.domains[0].id
+        }/reports/dp-privacy-incident`,
+        { failOnStatusCode: false }
+      );
+    });
   });
 
   it('should check if the reports table contains data', () => {
