@@ -100,7 +100,9 @@ export const ElementActions = {
       availableActions.forEach((action) => {
         if (!actions.includes(action as Actions)) throw new Error(`Action ${action} not found`);
         cy.getCustom('[data-component-name="object-details-actions-button"]').click();
-        cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action).click();
+        cy.getCustom('[data-veo-test="object-action-menu-list"]')
+          .contains('[data-veo-test="action-selection-nav-item"]', action)
+          .click();
         ElementActions.performAction(action as Actions);
         cy.get(`[data-component-name="object-details-${tab}-tab"]`).click();
       });

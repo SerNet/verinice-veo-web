@@ -41,7 +41,7 @@
             />
           </template>
           <template v-if="actions.length && !disabled" #default>
-            <v-list>
+            <v-list data-veo-test="object-action-menu-list">
               <v-list-item
                 v-for="action in actions"
                 :key="action.key"

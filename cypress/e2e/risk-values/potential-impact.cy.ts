@@ -1,4 +1,3 @@
-import { visitProcess } from '../../commands/navigation';
 import { setupVeo } from '../../commands/setup';
 
 const IMPACT_LEVELS = ['negligible', 'limited', 'considerable', 'existentially threatening'] as const;
@@ -7,13 +6,21 @@ const CRITERIA = ['Confidentiality', 'Integrity', 'Availability', 'Resilience'] 
 
 describe('Process Risk Impact', () => {
   beforeEach(() => {
-    setupVeo('Process Risk Impact', ['DS-GVO']);
-    cy.login();
-    cy.acceptAllCookies();
-    visitProcess();
+    setupVeo('Process-Risk-Impact', ['DS-GVO']).then(() => {
+      const unitId = Cypress.env('dynamicTestData').unit.unitId;
+      const domainId = Cypress.env('dynamicTestData').unit.domains[0].id;
 
-    cy.getCustom('[data-component-name="create-object-button"]').click();
-    cy.contains('[data-veo-test="action-selection-nav-item"] .v-list-item-title', 'Data processing').click();
+      cy.login();
+      cy.acceptAllCookies();
+
+      cy.visit(`/${unitId}/domains/${domainId}/processes/PRO_DataProcessing`, { failOnStatusCode: false });
+
+      // Wait for the page to load
+      cy.getCustom('[data-component-name="breadcrumbs"]');
+
+      // Open form to add a process
+      cy.getCustom('[data-component-name="create-object-button"]').click();
+    });
   });
 
   describe('Impact entry & levels', () => {
