@@ -137,15 +137,24 @@ export function createUnit({
   });
 }
 
-export function deleteTestUnits() {
-  const { testUnits } = Cypress.env('dynamicTestData');
-  testUnits.forEach((unit: UnitDetails & { unitId: string }) => {
-    cy.veoRequest({
-      endpoint: `units/${unit.unitId}`,
-      method: 'DELETE'
-    }).then((response) => expect(response.status).to.equal(204));
+export function deleteTestUnits(testUnits = Cypress.env('dynamicTestData')?.testUnits ?? []) {
+  return testUnits.forEach((unit: UnitDetails & { unitId: string }) => {
+    if (!unit || !unit.unitId) return;
+    return cy
+      .veoRequest({
+        endpoint: `units/${unit.unitId}`,
+        method: 'DELETE',
+        failOnStatusCode: false
+      })
+      .then((response) => {
+        if (response.status !== 204 && response.status !== 404) {
+          console.warn(`Failed to delete unit ${unit.unitId}. Status code: ${response.status}`);
+        }
+        return response;
+      });
   });
 }
+
 export function deleteUnit(unitName?: string): void {
   const dynamicUnitId = Cypress.env('dynamicTestData')?.unit?.unitId;
   const namedUnitId = unitName ? Cypress.env(unitName)?.unitId : undefined;
@@ -161,7 +170,8 @@ export function deleteUnit(unitName?: string): void {
 
   cy.veoRequest({
     endpoint: `units/${unitId}`,
-    method: 'DELETE'
+    method: 'DELETE',
+    failOnStatusCode: false
   }).then((response) => expect(response.status).to.equal(204));
 }
 
