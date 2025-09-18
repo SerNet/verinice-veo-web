@@ -35,7 +35,7 @@ declare global {
 type RequestHeaders = { Authorization?: string; 'Content-type'?: string; Accept?: string; 'If-Match'?: string };
 type RequestOptions = { endpoint: string; method?: string; headers?: RequestHeaders; body?: any };
 
-export function veoRequest(options: RequestOptions): Cypress.Chainable<any> {
+export function veoRequest(options: RequestOptions & { failOnStatusCode?: boolean }): Cypress.Chainable<any> {
   const url = `${Cypress.env('veoApiUrl')}/${options.endpoint}`;
   return getToken().then((token) => {
     const opts = { method: 'GET', headers: generateHeaders(token, options.headers), ...omit(options, 'headers'), url };
