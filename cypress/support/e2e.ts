@@ -63,6 +63,11 @@ before(() => {
   deleteUnitsOlderThan();
 });
 
+after(() => {
+  cy.log('--- GLOBAL AFTER ---');
+  cy.deleteTestUnits();
+});
+
 // Uncaught exeptions make cypress test runs fail
 // However, this is not always correct, some errors can be ignored
 Cypress.on('uncaught:exception', (err, _runnable) => {
