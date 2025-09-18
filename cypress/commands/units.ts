@@ -263,7 +263,7 @@ export function deleteUnitsOlderThan(hours: number = 3) {
 
     const oldUnits = units.filter((unit: any) => {
       const createdAt = new Date(unit.createdAt);
-      return createdAt < someTimeAgo;
+      return createdAt < someTimeAgo && unit.name.startsWith('CY-');
     });
 
     // Log info
