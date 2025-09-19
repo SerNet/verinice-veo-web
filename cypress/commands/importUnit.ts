@@ -18,6 +18,7 @@ export function importUnit(unitName: string, { fixturePath }: { fixturePath: str
     }).then((res) => {
       const unitDetails = { unitId: res.body.resourceId };
       Cypress.env('dynamicTestData').unit = unitDetails;
+      Cypress.env('dynamicTestData').testUnits.push(unitDetails);
     });
   });
 }
