@@ -10,7 +10,7 @@ declare global {
 }
 
 export function importUnit(unitName: string, { fixturePath }: { fixturePath: string }) {
-  cy.fixture(fixturePath).then((json) => {
+  return cy.fixture(fixturePath).then((json) => {
     cy.veoRequest({
       endpoint: 'units/import',
       method: 'POST',
