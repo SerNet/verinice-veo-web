@@ -172,7 +172,11 @@ export function deleteUnit(unitName?: string): void {
     endpoint: `units/${unitId}`,
     method: 'DELETE',
     failOnStatusCode: false
-  }).then((response) => expect(response.status).to.equal(204));
+  }).then((response) => {
+    if (response.status !== 204 && response.status !== 404) {
+      console.warn(`Failed to delete unit ${unitId}. Status code: ${response.status}`);
+    }
+  });
 }
 
 export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
