@@ -1,3 +1,5 @@
+import { generateUnitDetails } from '../support/setupHelpers';
+
 /// <reference types="cypress" />
 
 declare global {
@@ -9,16 +11,21 @@ declare global {
   }
 }
 
-export function importUnit(unitName: string, { fixturePath }: { fixturePath: string }) {
-  return cy.fixture(fixturePath).then((json) => {
-    cy.veoRequest({
-      endpoint: 'units/import',
-      method: 'POST',
-      body: prepareUnitData(json, unitName)
-    }).then((res) => {
-      const unitDetails = { unitId: res.body.resourceId };
-      Cypress.env('dynamicTestData').unit = unitDetails;
-      Cypress.env('dynamicTestData').testUnits.push(unitDetails);
+export function importUnit({ fixturePath }: { fixturePath: string }) {
+  return cy.deleteTestUnits().then(() => {
+    return cy.fixture(fixturePath).then((json) => {
+      const initialUnitDetails = generateUnitDetails('ElementsDetailsTab');
+
+      cy.veoRequest({
+        endpoint: 'units/import',
+        method: 'POST',
+        body: prepareUnitData(json, initialUnitDetails.name)
+      }).then((res) => {
+        const unitDetails = { ...initialUnitDetails, unitId: res.body.resourceId };
+        Cypress.env('dynamicTestData').unit = unitDetails;
+        Cypress.env('dynamicTestData').testUnits.push(unitDetails);
+        return res;
+      });
     });
   });
 }
