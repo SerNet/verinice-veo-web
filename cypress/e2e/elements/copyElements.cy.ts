@@ -1,28 +1,21 @@
 import { getRandomElementType } from '../../commands/utils';
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
-let unitDetails: UnitDetails;
-
 describe('Copy elements', () => {
   before(() => {
-    unitDetails = generateUnitDetails('copyElements');
     cy.login();
-    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
   });
 
   beforeEach(() => {
     cy.login();
     cy.acceptAllCookies();
     cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
+    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
   });
-
-  after(() => cy.deleteUnit(unitDetails.name));
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 
   elementTypeList.forEach((elementType) => {
     it('copies element in ' + elementType, () => {
-      cy.log(Cypress.env(unitDetails.name).unitId);
       cy.navigateTo({ group: 'objects', category: elementType });
 
       cy.selectFirstSubType(elementType, ($subType: JQuery<HTMLElement>) => {

@@ -1,22 +1,15 @@
 import { getRandomElementType, waitForLoadersToDisappear, waitForPageToLoad } from '../../commands/utils';
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
-let unitDetails: UnitDetails;
 
 describe('Elements Overview Table', () => {
   before(() => {
-    unitDetails = generateUnitDetails('checkElementsTable');
-    cy.login();
-    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
   });
-
   beforeEach(() => {
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit(unitDetails.name);
+    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
   });
-
-  after(() => cy.deleteUnit(unitDetails.name));
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];
 

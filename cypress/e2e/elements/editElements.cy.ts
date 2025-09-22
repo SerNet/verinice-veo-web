@@ -1,10 +1,6 @@
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
-let unitDetails: UnitDetails;
-
 describe('Edit elements', () => {
   before(() => {
-    unitDetails = generateUnitDetails('editElements');
-    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
     cy.login();
   });
 
@@ -12,11 +8,11 @@ describe('Edit elements', () => {
     cy.login();
     cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit(unitDetails.name);
+    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
     cy.selectDomain('DS-GVO');
   });
 
-  after(() => cy.deleteUnit(unitDetails.name));
+  after(() => cy.deleteUnit(Cypress.env('dynamicTestData').testUnits[0].name));
 
   it('edits an element in Scopes', () => {});
 });

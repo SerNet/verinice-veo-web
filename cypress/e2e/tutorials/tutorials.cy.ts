@@ -1,7 +1,3 @@
-import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
-
-let unitDetails: UnitDetails;
-
 const loadTutorialSteps = (fileName: string) => {
   return cy.task('readTutorialYaml', fileName).then((data: any) => data.steps);
 };
@@ -25,17 +21,15 @@ const runTutorial = (fileName: string) => {
 };
 describe('Tutorials', () => {
   before(() => {
-    unitDetails = generateUnitDetails('Tutorials');
-    cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
+    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
   });
   beforeEach(() => {
     cy.login();
     cy.acceptAllCookies();
     cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
+    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
     cy.handleLanguageBug();
   });
-  after(() => cy.deleteUnit(unitDetails.name));
 
   it('should go through application bar tutorial', () => {
     cy.get('[data-component-name=tutorial-select]').click();

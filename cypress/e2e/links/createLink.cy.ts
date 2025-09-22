@@ -1,23 +1,19 @@
 import { getRandomString } from '../../commands/utils';
-import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
-
-let unitDetails: UnitDetails;
 
 function setup() {
-  unitDetails = generateUnitDetails('createLink');
-  cy.importUnit(unitDetails.name, { fixturePath: 'units/test-unit-dsgvo.json' });
-  cy.login();
-  cy.acceptAllCookies();
+  cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' }).then(() => {
+    cy.login();
+    cy.acceptAllCookies();
+  });
 }
 
 describe('Create Link in Object and Save', () => {
   beforeEach(() => setup());
-  afterEach(() => cy.deleteUnit(unitDetails.name));
 
   it('Should create a link in an object and save', () => {
     // Go to object overview
     cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
+    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
     cy.navigateTo({ group: 'objects', category: 'Scopes', entry: 'Controllers, Art. 4 Nr.7 GDPR' });
 
     // Open the first object
