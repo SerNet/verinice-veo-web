@@ -14,10 +14,6 @@ describe('Threat Overview', () => {
     });
   });
 
-  afterEach(() => {
-    cy.deleteUnit();
-  });
-
   it('should generate threat overview', () => {
     cy.visitObject();
 
