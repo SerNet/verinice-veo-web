@@ -11,17 +11,22 @@ declare global {
   }
 }
 
-export function importUnit({ fixturePath }: { fixturePath: string }) {
+export function importUnit({ fixturePath }: { fixturePath: string }): Cypress.Chainable {
   return cy.deleteTestUnits().then(() => {
     return cy.fixture(fixturePath).then((json) => {
       const initialUnitDetails = generateUnitDetails('ElementsDetailsTab');
+      const body = prepareUnitData(json, initialUnitDetails.name);
 
       cy.veoRequest({
         endpoint: 'units/import',
         method: 'POST',
-        body: prepareUnitData(json, initialUnitDetails.name)
+        body
       }).then((res) => {
-        const unitDetails = { ...initialUnitDetails, unitId: res.body.resourceId };
+        const unitDetails = {
+          ...initialUnitDetails,
+          unitId: res.body.resourceId,
+          domains: body.domains
+        };
         Cypress.env('dynamicTestData').unit = unitDetails;
         Cypress.env('dynamicTestData').testUnits.push(unitDetails);
         return res;
