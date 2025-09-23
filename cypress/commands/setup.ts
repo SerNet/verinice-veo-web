@@ -1,5 +1,16 @@
+/// <reference types="cypress" />
+
 import { createObject } from '../requests/objects';
 import { generateUnitDetails } from '../support/setupHelpers';
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Cypress {
+    interface Chainable {
+      setupVeo: typeof setupVeo;
+    }
+  }
+}
 
 export const objectDataDefaults = {
   owner: {},

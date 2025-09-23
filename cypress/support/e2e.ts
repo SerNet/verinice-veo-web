@@ -24,6 +24,7 @@ import {
   deleteUnitsOlderThan
 } from '../commands/units';
 import '../commands/potential-impact-commands';
+import { setupVeo } from '../commands/setup';
 
 Cypress.Commands.addAll({
   veoRequest,
@@ -56,7 +57,8 @@ Cypress.Commands.addAll({
   visitObject,
   deleteTestUnits,
   visitDashboard,
-  checkAxeViolations
+  checkAxeViolations,
+  setupVeo
 });
 
 before(() => {
