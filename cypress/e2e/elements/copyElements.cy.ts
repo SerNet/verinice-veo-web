@@ -1,15 +1,12 @@
 import { getRandomElementType } from '../../commands/utils';
 describe('Copy elements', () => {
   before(() => {
-    cy.login();
     cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
   });
 
   beforeEach(() => {
     cy.login();
-    cy.acceptAllCookies();
-    cy.goToUnitSelection();
-    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
+    cy.goToUnitDashboard();
   });
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];

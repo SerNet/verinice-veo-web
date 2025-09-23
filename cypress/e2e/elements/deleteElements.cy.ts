@@ -7,9 +7,7 @@ describe('Delete elements', () => {
 
   beforeEach(() => {
     cy.login();
-    cy.goToUnitSelection();
-    cy.acceptAllCookies();
-    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
+    cy.goToUnitDashboard();
   });
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];

@@ -1,20 +1,17 @@
 describe('Edit elements', () => {
   before(() => {
     cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' });
-    cy.login();
   });
 
   beforeEach(() => {
     cy.login();
-    cy.goToUnitSelection();
     cy.acceptAllCookies();
-    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
-    cy.selectDomain('DS-GVO');
+    cy.goToUnitDashboard();
   });
 
-  after(() => cy.deleteUnit(Cypress.env('dynamicTestData').testUnits[0].name));
-
-  it('edits an element in Scopes', () => {});
+  it('edits a scope object/element', () => {
+    editElement({ typePlural: 'scopes', subTypePlural: 'scopes' });
+  });
 });
 // eslint-disable-next-line @typescript-eslint/no-unused-vars -- errorneous warning due to syntax mismatch between js and cypress; func used in *cy.wait* at line 52
 function editElement({ typePlural, subTypePlural }: { typePlural: string; subTypePlural: string }) {

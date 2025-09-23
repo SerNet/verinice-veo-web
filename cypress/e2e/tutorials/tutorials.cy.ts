@@ -26,9 +26,7 @@ describe('Tutorials', () => {
   beforeEach(() => {
     cy.login();
     cy.acceptAllCookies();
-    cy.goToUnitSelection();
-    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
-    cy.handleLanguageBug();
+    cy.goToUnitDashboard();
   });
 
   it('should go through application bar tutorial', () => {
