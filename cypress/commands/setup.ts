@@ -26,10 +26,13 @@ export function setupVeo(unitName?: string, domains: string[] = ['IT-Grundschutz
   return cy.deleteTestUnits().then(() => {
     const unitDetails = generateUnitDetails(unitName || 'Veo');
     cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: domains }).then(() => {
-      domains.forEach((domain) => {
+      const _domains = Cypress.env('dynamicTestData').testUnits[0]?.domains;
+      if (!_domains) return;
+      _domains.forEach((domain) => {
         createObject({
+          domainId: domain.id,
           objectData: {
-            riskDefinition: domain === 'DS-GVO' ? 'DSRA' : 'GSRA',
+            riskDefinition: domain.name === 'DS-GVO' ? 'DSRA' : 'GSRA',
             ...objectData
           }
         });
