@@ -207,7 +207,23 @@ export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { 
   cy.wait(['@deleteUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 204);
 }
 
-export function goToUnitDashboard({ isStoringUnitID = true, unitName = Cypress.env('unitDetails').name } = {}) {
+export function goToUnitDashboard({
+  isStoringUnitID = true,
+  unitName = Cypress.env('unitDetails')?.name,
+  domainName = Cypress.env('dynamicTestData')?.testUnits[0]?.domains[0].name,
+  useGUI = false
+} = {}) {
+  const unitId = Cypress.env('dynamicTestData')?.testUnits[0]?.unitId;
+  const domainId = Cypress.env('dynamicTestData')?.testUnits[0]?.domains.find((domain) => {
+    return domain.name === domainName;
+  })?.id;
+
+  if (!useGUI && unitId && domainId) {
+    cy.visit(`/${unitId}/domains/${domainId}`, { failOnStatusCode: false });
+    cy.getCustom('[data-veo-test="breadcrumbs"]');
+    return;
+  }
+
   cy.goToUnitSelection();
 
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('getUnitForDashboard');
