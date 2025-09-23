@@ -100,10 +100,10 @@
           </template>
           <template #default>
             <v-list dense>
-              <v-list-item @click="createMitigationDialogVisible = true">
+              <v-list-item data-veo-test="create-mitigation" @click="createMitigationDialogVisible = true">
                 <v-list-item-title>{{ t('createMitigation') }}</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="editMitigationsDialogVisible = true">
+              <v-list-item data-veo-test="add-mitigating-actions" @click="editMitigationsDialogVisible = true">
                 <v-list-item-title>{{ t('addMitigation') }}</v-list-item-title>
               </v-list-item>
             </v-list>
