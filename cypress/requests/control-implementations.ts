@@ -64,3 +64,21 @@ export function fetchRequirementImplementations({
       return ris;
     });
 }
+
+export function executeThreatOverview({ domainId = Cypress.env('dynamicTestData').unit.domains[0].id } = {}) {
+  return getObject().then((testObject) => {
+    const testObjectId = testObject.id;
+
+    const requestParams = {
+      endpoint: `domains/${domainId}/scopes/${testObjectId}/actions/threatOverview/execution`,
+      method: 'POST',
+      body: {}
+    };
+
+    return cy.veoRequest(requestParams).then((res) => {
+      logStatus('Execute Threat Overview', res);
+      expect(res.status).to.eq(200);
+      return res;
+    });
+  });
+}
