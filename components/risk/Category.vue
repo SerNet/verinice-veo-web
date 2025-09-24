@@ -28,7 +28,13 @@
               size="small"
               :to="`${route.path}/edit?id=${riskCategory.id ?? ''}`"
             />
-            <v-btn :icon="mdiTrashCan" variant="plain" size="small" @click="deleteRiskCategory(riskCategory.id)" />
+            <v-btn
+              :icon="mdiTrashCan"
+              variant="plain"
+              size="small"
+              data-veo-test="delete-category"
+              @click="deleteRiskCategory(riskCategory.id)"
+            />
           </v-card-actions>
         </div>
       </div>

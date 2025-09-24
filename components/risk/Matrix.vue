@@ -17,8 +17,8 @@
 <template>
   <v-card-text class="pd-0 overflow-x-auto">
     <div class="table-container">
-      <v-table class="veo-risk-matrix" density="compact">
-        <thead>
+      <v-table class="veo-risk-matrix" density="compact" data-veo-test="risk-matrix">
+        <thead data-veo-test="risk-matrix-probabilities">
           <tr>
             <th class="no-borders"></th>
             <th class="no-borders"></th>
@@ -51,7 +51,7 @@
             </v-tooltip>
           </tr>
         </thead>
-        <tbody class="flex-container">
+        <tbody class="flex-container" data-veo-test="risk-matrix-impacts-and-values">
           <tr>
             <th :rowspan="rowSpan" class="title-cell no-borders">
               <div class="impact-title text-capitalize">

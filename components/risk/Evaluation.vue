@@ -1,5 +1,12 @@
 <template>
-  <v-btn :disabled="!canSave" size="large" class="my-6" color="primary" variant="flat" @click="evaluateRiskDefinition"
+  <v-btn
+    :disabled="!canSave"
+    size="large"
+    class="my-6"
+    color="primary"
+    variant="flat"
+    data-veo-test="save-risk-definition-with-evaluation-button"
+    @click="evaluateRiskDefinition"
     >{{ t('saveRiskDefinition') }}
   </v-btn>
   <RiskInfoDialog

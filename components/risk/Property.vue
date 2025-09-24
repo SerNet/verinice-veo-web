@@ -20,7 +20,7 @@
       <v-card-subtitle class="pr-0">{{ title }} </v-card-subtitle>
     </div>
 
-    <div class="px-3">
+    <div class="px-3" :data-veo-test="`risk-property-container`">
       <v-tooltip
         v-for="(item, index) in items"
         :key="item.ordinalValue"
@@ -30,9 +30,17 @@
           (item.translations[locale] && item.translations[locale].description) ||
           Object.values(item.translations)[0].description
         "
+        :data-veo-test="`risk-property-tooltip-${index}`"
       >
         <template #activator="{ props }">
-          <v-chip v-bind="props" label outlined size="small" :style="itemStyles[index]">
+          <v-chip
+            v-bind="props"
+            label
+            outlined
+            size="small"
+            :style="itemStyles[index]"
+            :data-veo-test="`risk-property-${index}`"
+          >
             {{
               (item.translations[locale] && item.translations[locale].name) || Object.values(item.translations)[0].name
             }}&nbsp;</v-chip

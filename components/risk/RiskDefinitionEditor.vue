@@ -23,7 +23,11 @@
         <slot name="infoBox"></slot>
       </template>
       <v-tabs v-else v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
-        <v-tab v-for="translation in Object.keys(data?.[0]?.translations ?? {})" :key="translation">
+        <v-tab
+          v-for="translation in Object.keys(data?.[0]?.translations ?? {})"
+          :key="translation"
+          :data-veo-test="`risk-definition-editor-translation-tab-${translation}`"
+        >
           {{ translation }}
         </v-tab>
       </v-tabs>
@@ -37,6 +41,7 @@
               v-for="(item, idx) in data ?? []"
               :key="`${item.ordinalValue}-${idx}`"
               :text="item.translations[translation]?.name"
+              :data-veo-test="`risk-definition-editor-tab-${idx}`"
             >
               <template #prepend>
                 <v-icon :color="item.htmlColor" :icon="mdiSquare" size="large" />
@@ -45,11 +50,19 @@
           </v-tabs>
 
           <v-tabs-window v-model="tab">
-            <v-btn variant="outlined" class="add-btn" @click="addItem"> + {{ t('addItem') }} </v-btn>
+            <v-btn
+              variant="outlined"
+              class="add-btn"
+              @click="addItem"
+              data-veo-test="risk-definition-editor-add-button"
+            >
+              + {{ t('addItem') }}
+            </v-btn>
             <v-tabs-window-item
               v-for="(item, itemIndex) in data"
               :key="itemIndex"
               :text="item.translations[translation].name"
+              :data-veo-test="`risk-definition-editor-window-${itemIndex}`"
             >
               <v-container fluid>
                 <v-form>
@@ -58,6 +71,7 @@
                     v-model="item.translations[translation].name"
                     :label="t('inputLabel.name')"
                     :rules="[requiredRule]"
+                    :data-veo-test="`risk-definition-editor-input-name-${translation}`"
                     hide-details
                     required
                     @input="() => changeItem(itemIndex, item.translations[translation].name)"
@@ -66,6 +80,7 @@
                       <v-btn
                         :icon="mdiDeleteOutline"
                         :aria-label="t('removeItem')"
+                        :data-veo-test="`risk-definition-editor-remove-button-${item.translations[translation].name}`"
                         @click="() => removeItem(itemIndex)"
                       />
                     </template>
@@ -74,6 +89,7 @@
                   <!-- Description -->
                   <v-textarea
                     v-model="item.translations[translation].description"
+                    data-veo-test="risk-definition-editor-input-description"
                     :label="t('inputLabel.description')"
                   />
 

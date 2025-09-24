@@ -16,12 +16,18 @@
     </template>
 
     <template #dialog-options>
-      <v-btn variant="text" @click="emit('cancel')">
+      <v-btn variant="text" data-veo-test="save-risk-definition-cancel-button" @click="emit('cancel')">
         {{ $t('global.button.cancel') }}
       </v-btn>
 
       <v-spacer />
-      <v-btn color="primary" :disabled="false" variant="text" @click="emit('save')">
+      <v-btn
+        color="primary"
+        :disabled="false"
+        variant="text"
+        data-veo-test="save-risk-definition-confirm-button"
+        @click="emit('save')"
+      >
         {{ $t('global.button.save') }}
       </v-btn>
     </template>

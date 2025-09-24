@@ -31,7 +31,13 @@
               <div class="d-flex justify-space-between">
                 <v-card-title>{{ t('crossCategoryValues') }}</v-card-title>
                 <v-card-actions>
-                  <v-btn :icon="mdiPencil" variant="plain" size="small" :to="`${route.path}/edit`" />
+                  <v-btn
+                    :icon="mdiPencil"
+                    variant="plain"
+                    size="small"
+                    :to="`${route.path}/edit`"
+                    data-veo-test="risk-cross-category-edit"
+                  />
                 </v-card-actions>
               </div>
               <div class="d-flex align-center">
@@ -47,7 +53,14 @@
           <v-col cols="12">
             <div class="d-flex justify-space-between align-center">
               <h2>{{ t('criterion') }}</h2>
-              <v-btn color="primary" variant="outlined" size="small" :prepend-icon="mdiPlus" @click="addRiskCategory">
+              <v-btn
+                color="primary"
+                variant="outlined"
+                size="small"
+                :prepend-icon="mdiPlus"
+                data-veo-test="add-risk-category-button"
+                @click="addRiskCategory"
+              >
                 {{ t('manageCriteria') }}
               </v-btn>
             </div>

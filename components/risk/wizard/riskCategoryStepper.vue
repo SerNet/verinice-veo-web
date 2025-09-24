@@ -5,6 +5,7 @@
         :ref="(el) => setStepperRef(el, 0)"
         :title="t('categoryName')"
         :value="1"
+        :data-veo-test="'risk-category-translations-step'"
         editable
       ></v-stepper-item>
       <v-divider></v-divider>
@@ -13,6 +14,7 @@
         :ref="(el) => setStepperRef(el, 1)"
         :title="t('editRiskImpacts')"
         :value="2"
+        data-veo-test="risk-category-impacts-step"
         editable
       ></v-stepper-item>
 
@@ -20,6 +22,7 @@
       <v-stepper-item
         :ref="(el) => setStepperRef(el, 2)"
         :title="t('editRiskMatrix')"
+        :data-veo-test="'risk-category-matrix-step'"
         :value="3"
         editable
       ></v-stepper-item>
@@ -34,7 +37,12 @@
     <v-window-item :value="1">
       <v-card class="pa-8">
         <v-tabs v-model="activeLocaleTab" grow>
-          <v-tab v-for="localeObj in LOCALES" :key="localeObj.code" :value="localeObj.code">
+          <v-tab
+            v-for="localeObj in LOCALES"
+            :key="localeObj.code"
+            :value="localeObj.code"
+            :data-veo-test="`risk-category-translation-tab-${localeObj.code}`"
+          >
             {{ localeObj.name }}
           </v-tab>
         </v-tabs>
@@ -44,12 +52,14 @@
               v-model="localTranslations[localeObj.code].name"
               :label="`${t('inputLabel.name')} (${localeObj.name})`"
               class="mb-2"
+              :data-veo-test="`risk-category-editor-input-name-${localeObj.code}`"
               @input="onTranslationChange"
             />
             <v-textarea
               v-model="localTranslations[localeObj.code].description"
               :label="`${t('inputLabel.description')} (${localeObj.name})`"
               class="mb-2"
+              :data-veo-test="`risk-category-editor-input-description-${localeObj.code}`"
               @input="onTranslationChange"
             />
           </v-window-item>
@@ -70,7 +80,8 @@
             :buttons="[
               {
                 text: t('createPotentialImpact'),
-                onClick: () => createPotentialImpact()
+                onClick: () => createPotentialImpact(),
+                dataVeoTest: 'create-impact-button'
               }
             ]"
             :title="t('createPotentialImpact')"
