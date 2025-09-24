@@ -1,0 +1,612 @@
+{
+  "id": "DSA",
+  "probability": {
+    "id": "Prob",
+    "translations": {
+      "de": {
+        "name": "Vegetarische Gerichte",
+        "abbreviation": "VG",
+        "description": "Vielfalt fleischloser Küche"
+      },
+      "en": {
+        "name": "Vegetarian Dishes",
+        "abbreviation": "VG",
+        "description": "Variety of meatless cuisine"
+      }
+    },
+    "levels": [
+      {
+        "ordinalValue": 0,
+        "htmlColor": "#FF0000",
+        "translations": {
+          "de": {
+            "name": "Falafel",
+            "abbreviation": "FA",
+            "description": "Kichererbsenbällchen"
+          },
+          "en": {
+            "name": "Falafel",
+            "abbreviation": "FA",
+            "description": "Chickpea balls"
+          }
+        }
+      },
+      {
+        "ordinalValue": 1,
+        "htmlColor": "#00FF00",
+        "translations": {
+          "de": {
+            "name": "Ratatouille",
+            "abbreviation": "RT",
+            "description": "Französischer Gemüseeintopf"
+          },
+          "en": {
+            "name": "Ratatouille",
+            "abbreviation": "RT",
+            "description": "French vegetable stew"
+          }
+        }
+      },
+      {
+        "ordinalValue": 2,
+        "htmlColor": "#0000FF",
+        "translations": {
+          "de": {
+            "name": "Caprese",
+            "abbreviation": "CP",
+            "description": "Tomate-Mozzarella-Salat"
+          },
+          "en": {
+            "name": "Caprese",
+            "abbreviation": "CP",
+            "description": "Tomato mozzarella salad"
+          }
+        }
+      },
+      {
+        "ordinalValue": 3,
+        "htmlColor": "#FFFF00",
+        "translations": {
+          "de": {
+            "name": "Paneer Tikka",
+            "abbreviation": "PT",
+            "description": "Indischer Grillkäse"
+          },
+          "en": {
+            "name": "Paneer Tikka",
+            "abbreviation": "PT",
+            "description": "Indian grilled cheese"
+          }
+        }
+      }
+    ]
+  },
+  "implementationStateDefinition": {
+    "id": "Ctr",
+    "translations": {
+      "de": {
+        "name": "Vegetarische Spezialitäten",
+        "abbreviation": "VS",
+        "description": "Besondere fleischlose Gerichte"
+      },
+      "en": {
+        "name": "Vegetarian Specialties",
+        "abbreviation": "VS",
+        "description": "Special meatless dishes"
+      }
+    },
+    "levels": [
+      {
+        "ordinalValue": 0,
+        "htmlColor": "#FF69B4",
+        "translations": {
+          "de": {
+            "name": "Shakshuka",
+            "abbreviation": "SH",
+            "description": "Eier in Tomatensauce"
+          },
+          "en": {
+            "name": "Shakshuka",
+            "abbreviation": "SH",
+            "description": "Eggs in tomato sauce"
+          }
+        }
+      },
+      {
+        "ordinalValue": 1,
+        "htmlColor": "#8A2BE2",
+        "translations": {
+          "de": {
+            "name": "Moussaka",
+            "abbreviation": "MS",
+            "description": "Auberginenauflauf"
+          },
+          "en": {
+            "name": "Moussaka",
+            "abbreviation": "MS",
+            "description": "Eggplant casserole"
+          }
+        }
+      },
+      {
+        "ordinalValue": 2,
+        "htmlColor": "#FFD700",
+        "translations": {
+          "de": {
+            "name": "Dal",
+            "abbreviation": "DL",
+            "description": "Indischer Linseneintopf"
+          },
+          "en": {
+            "name": "Dal",
+            "abbreviation": "DL",
+            "description": "Indian lentil stew"
+          }
+        }
+      },
+      {
+        "ordinalValue": 3,
+        "htmlColor": "#00CED1",
+        "translations": {
+          "de": {
+            "name": "Gado-Gado",
+            "abbreviation": "GG",
+            "description": "Indonesischer Gemüsesalat"
+          },
+          "en": {
+            "name": "Gado-Gado",
+            "abbreviation": "GG",
+            "description": "Indonesian vegetable salad"
+          }
+        }
+      }
+    ]
+  },
+  "categories": [
+    {
+      "id": "C",
+      "translations": {
+        "de": {
+          "name": "Veggie Favoriten",
+          "abbreviation": "VF",
+          "description": "Beliebte vegetarische Gerichte"
+        },
+        "en": {
+          "name": "Veggie Favorites",
+          "abbreviation": "VF",
+          "description": "Popular vegetarian dishes"
+        }
+      },
+      "valueMatrix": [
+        [
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#E60012",
+            "translations": {
+              "de": {
+                "name": "Falafel Wrap",
+                "abbreviation": "FW",
+                "description": "Mit Hummus und Gemüse"
+              },
+              "en": {
+                "name": "Falafel Wrap",
+                "abbreviation": "FW",
+                "description": "With hummus and veggies"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          },
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#E60012",
+            "translations": {
+              "de": {
+                "name": "Gemüse-Lasagne",
+                "abbreviation": "GL",
+                "description": "Mit Zucchini und Tomaten"
+              },
+              "en": {
+                "name": "Veggie Lasagna",
+                "abbreviation": "GL",
+                "description": "With zucchini and tomatoes"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          },
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#E60012",
+            "translations": {
+              "de": {
+                "name": "Kichererbsen-Curry",
+                "abbreviation": "KC",
+                "description": "Mit Kokosmilch"
+              },
+              "en": {
+                "name": "Chickpea Curry",
+                "abbreviation": "KC",
+                "description": "With coconut milk"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          },
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#E60012",
+            "translations": {
+              "de": {
+                "name": "Auberginen-Pizza",
+                "abbreviation": "AP",
+                "description": "Mit Mozzarella"
+              },
+              "en": {
+                "name": "Eggplant Pizza",
+                "abbreviation": "AP",
+                "description": "With mozzarella"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          }
+        ],
+        [
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#228B22",
+            "translations": {
+              "de": {
+                "name": "Gemüse-Biryani",
+                "abbreviation": "GB",
+                "description": "Mit Safranreis"
+              },
+              "en": {
+                "name": "Veggie Biryani",
+                "abbreviation": "GB",
+                "description": "With saffron rice"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          },
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#228B22",
+            "translations": {
+              "de": {
+                "name": "Linsenbratling",
+                "abbreviation": "LB",
+                "description": "Mit Kräutern"
+              },
+              "en": {
+                "name": "Lentil Patty",
+                "abbreviation": "LB",
+                "description": "With herbs"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          },
+          {
+            "ordinalValue": 1,
+            "htmlColor": "#FFD700",
+            "translations": {
+              "de": {
+                "name": "Spinat-Quiche",
+                "abbreviation": "SQ",
+                "description": "Mit Feta"
+              },
+              "en": {
+                "name": "Spinach Quiche",
+                "abbreviation": "SQ",
+                "description": "With feta"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_2"
+          },
+          {
+            "ordinalValue": 2,
+            "htmlColor": "#4169E1",
+            "translations": {
+              "de": {
+                "name": "Rote-Bete-Salat",
+                "abbreviation": "RB",
+                "description": "Mit Walnüssen"
+              },
+              "en": {
+                "name": "Beetroot Salad",
+                "abbreviation": "RB",
+                "description": "With walnuts"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_3"
+          }
+        ],
+        [
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#FF4500",
+            "translations": {
+              "de": {
+                "name": "Tomatenrisotto",
+                "abbreviation": "TR",
+                "description": "Mit Basilikum"
+              },
+              "en": {
+                "name": "Tomato Risotto",
+                "abbreviation": "TR",
+                "description": "With basil"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          },
+          {
+            "ordinalValue": 1,
+            "htmlColor": "#FF4500",
+            "translations": {
+              "de": {
+                "name": "Kürbisgnocchi",
+                "abbreviation": "KG",
+                "description": "Mit Salbeibutter"
+              },
+              "en": {
+                "name": "Pumpkin Gnocchi",
+                "abbreviation": "KG",
+                "description": "With sage butter"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_2"
+          },
+          {
+            "ordinalValue": 2,
+            "htmlColor": "#FF4500",
+            "translations": {
+              "de": {
+                "name": "Zucchini-Frittata",
+                "abbreviation": "ZF",
+                "description": "Mit Parmesan"
+              },
+              "en": {
+                "name": "Zucchini Frittata",
+                "abbreviation": "ZF",
+                "description": "With parmesan"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_3"
+          },
+          {
+            "ordinalValue": 3,
+            "htmlColor": "#FF4500",
+            "translations": {
+              "de": {
+                "name": "Aloo Tikki",
+                "abbreviation": "AT",
+                "description": "Indische Kartoffelplätzchen"
+              },
+              "en": {
+                "name": "Aloo Tikki",
+                "abbreviation": "AT",
+                "description": "Indian potato patties"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_4"
+          }
+        ],
+        [
+          {
+            "ordinalValue": 0,
+            "htmlColor": "#9400D3",
+            "translations": {
+              "de": {
+                "name": "Bulgur-Salat",
+                "abbreviation": "BS",
+                "description": "Mit Granatapfel"
+              },
+              "en": {
+                "name": "Bulgur Salad",
+                "abbreviation": "BS",
+                "description": "With pomegranate"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_1"
+          },
+          {
+            "ordinalValue": 2,
+            "htmlColor": "#9400D3",
+            "translations": {
+              "de": {
+                "name": "Gemüse-Paella",
+                "abbreviation": "GP",
+                "description": "Mit Safran"
+              },
+              "en": {
+                "name": "Veggie Paella",
+                "abbreviation": "GP",
+                "description": "With saffron"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_3"
+          },
+          {
+            "ordinalValue": 3,
+            "htmlColor": "#9400D3",
+            "translations": {
+              "de": {
+                "name": "Auberginenröllchen",
+                "abbreviation": "AR",
+                "description": "Mit Ricotta"
+              },
+              "en": {
+                "name": "Eggplant Rolls",
+                "abbreviation": "AR",
+                "description": "With ricotta"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_4"
+          },
+          {
+            "ordinalValue": 3,
+            "htmlColor": "#9400D3",
+            "translations": {
+              "de": {
+                "name": "Gemüse-Samosa",
+                "abbreviation": "GS",
+                "description": "Mit Erbsen und Kartoffeln"
+              },
+              "en": {
+                "name": "Veggie Samosa",
+                "abbreviation": "GS",
+                "description": "With peas and potatoes"
+              }
+            },
+            "symbolicRisk": "symbolic_risk_4"
+          }
+        ]
+      ],
+      "potentialImpacts": [
+        {
+          "ordinalValue": 0,
+          "htmlColor": "#FF6347",
+          "translations": {
+            "de": {
+              "name": "Bruschetta",
+              "abbreviation": "BR",
+              "description": "Mit Tomaten"
+            },
+            "en": {
+              "name": "Bruschetta",
+              "abbreviation": "BR",
+              "description": "With tomatoes"
+            }
+          }
+        },
+        {
+          "ordinalValue": 1,
+          "htmlColor": "#FF6347",
+          "translations": {
+            "de": {
+              "name": "Tabouleh",
+              "abbreviation": "TB",
+              "description": "Petersiliensalat"
+            },
+            "en": {
+              "name": "Tabouleh",
+              "abbreviation": "TB",
+              "description": "Parsley salad"
+            }
+          }
+        },
+        {
+          "ordinalValue": 2,
+          "htmlColor": "#FF6347",
+          "translations": {
+            "de": {
+              "name": "Hummus",
+              "abbreviation": "HM",
+              "description": "Kichererbsenpüree"
+            },
+            "en": {
+              "name": "Hummus",
+              "abbreviation": "HM",
+              "description": "Chickpea puree"
+            }
+          }
+        },
+        {
+          "ordinalValue": 3,
+          "htmlColor": "#FF6347",
+          "translations": {
+            "de": {
+              "name": "Baba Ganoush",
+              "abbreviation": "BG",
+              "description": "Auberginenpüree"
+            },
+            "en": {
+              "name": "Baba Ganoush",
+              "abbreviation": "BG",
+              "description": "Eggplant puree"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "riskValues": [
+    {
+      "ordinalValue": 0,
+      "htmlColor": "#E60012",
+      "translations": {
+        "de": {
+          "name": "Vegetarische Pizza",
+          "abbreviation": "VP",
+          "description": "Mit Paprika und Pilzen"
+        },
+        "en": {
+          "name": "Veggie Pizza",
+          "abbreviation": "VP",
+          "description": "With peppers and mushrooms"
+        }
+      },
+      "symbolicRisk": "symbolic_risk_1"
+    },
+    {
+      "ordinalValue": 1,
+      "htmlColor": "#228B22",
+      "translations": {
+        "de": {
+          "name": "Gemüse-Curry",
+          "abbreviation": "GC",
+          "description": "Mit Kokosmilch"
+        },
+        "en": {
+          "name": "Veggie Curry",
+          "abbreviation": "GC",
+          "description": "With coconut milk"
+        }
+      },
+      "symbolicRisk": "symbolic_risk_2"
+    },
+    {
+      "ordinalValue": 2,
+      "htmlColor": "#FFD700",
+      "translations": {
+        "de": {
+          "name": "Spinat-Lasagne",
+          "abbreviation": "SL",
+          "description": "Mit Ricotta"
+        },
+        "en": {
+          "name": "Spinach Lasagna",
+          "abbreviation": "SL",
+          "description": "With ricotta"
+        }
+      },
+      "symbolicRisk": "symbolic_risk_3"
+    },
+    {
+      "ordinalValue": 3,
+      "htmlColor": "#4169E1",
+      "translations": {
+        "de": {
+          "name": "Auberginenauflauf",
+          "abbreviation": "AA",
+          "description": "Mit Tomaten und Käse"
+        },
+        "en": {
+          "name": "Eggplant Casserole",
+          "abbreviation": "AA",
+          "description": "With tomato and cheese"
+        }
+      },
+      "symbolicRisk": "symbolic_risk_4"
+    }
+  ],
+  "riskMethod": {
+    "translations": {
+      "de": {
+        "description": "Vegetarische Woche",
+        "impactMethod": "salatbuffet"
+      },
+      "en": {
+        "description": "Vegetarian Week",
+        "impactMethod": "saladbar"
+      }
+    }
+  }
+}
