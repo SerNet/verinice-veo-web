@@ -21,7 +21,7 @@
       {{ protectionGoal.translations[locale]?.name }}
     </h3>
     <v-select
-      data-test-selector="risk-treatments"
+      data-veo-test="risk-treatments"
       :model-value="riskTreatments"
       multiple
       color="primary"
@@ -39,13 +39,13 @@
           {{ item.title }}
         </span>
         <!-- @vue-ignore TODO #3066 possibly undefined -->
-        <v-chip v-else-if="index === 1" size="small"> +{{ riskTreatments.length - 1 }} {{ t('more') }} </v-chip>
+        <v-chip v-else-if="index === 1" size="small"> +{{ riskTreatments.length - 1 }} {{ t('more') }}</v-chip>
       </template>
     </v-select>
     <v-edit-dialog>
       <template #default="{ props: dialogProps }">
         <v-text-field
-          data-test-selector="risk-treatment-explanation-text-field"
+          data-veo-test="risk-treatment-explanation-text-field"
           :model-value="riskTreatmentExplanation"
           :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"
@@ -59,7 +59,7 @@
       </template>
       <template #input>
         <v-textarea
-          data-test-selector="risk-treatment-explanation-textarea"
+          data-veo-test="risk-treatment-explanation-textarea"
           :model-value="riskTreatmentExplanation"
           :disabled="disabled"
           :label="upperFirst(t('explanation').toString())"

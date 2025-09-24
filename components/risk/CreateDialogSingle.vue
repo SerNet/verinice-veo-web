@@ -88,13 +88,20 @@
       </v-form>
     </template>
     <template #dialog-options>
-      <v-btn variant="text" color="primary" :disabled="savingRisk" @click="$emit('update:model-value', false)">
+      <v-btn
+        data-veo-test="dialog-risk-close"
+        variant="text"
+        color="primary"
+        :disabled="savingRisk"
+        @click="$emit('update:model-value', false)"
+      >
         {{ globalT('global.button.close') }}
       </v-btn>
 
       <v-spacer />
 
       <v-btn
+        data-veo-test="dialog-risk-save"
         variant="text"
         color="primary"
         :loading="savingRisk"

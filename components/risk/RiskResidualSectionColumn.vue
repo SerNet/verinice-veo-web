@@ -21,7 +21,7 @@
       {{ protectionGoal.translations[locale].name }}
     </h3>
     <v-select
-      data-test-selector="residual-risk"
+      data-veo-test="residual-risk"
       :model-value="userDefinedResidualRiskPresent ? userDefinedResidualRisk : residualRisk"
       color="primary"
       :label="upperFirst(t('residualRisk').toString())"
@@ -51,7 +51,7 @@
     <v-edit-dialog>
       <template #default="{ props: dialogProps }">
         <v-text-field
-          data-test-selector="residual-risk-explanation-text-field"
+          data-veo-test="residual-risk-explanation-text-field"
           :model-value="residualRiskExplanation"
           :label="upperFirst(t('explanation').toString())"
           :disabled="!riskTreatments.length || disabled"
@@ -64,7 +64,7 @@
       </template>
       <template #input>
         <v-textarea
-          data-test-selector="residual-risk-explanation-textarea"
+          data-veo-test="residual-risk-explanation-textarea"
           :disabled="!riskTreatments.length || disabled"
           :model-value="residualRiskExplanation"
           :label="upperFirst(t('explanation').toString())"
