@@ -6,7 +6,7 @@ import { setupVeo } from '../../commands/setup';
 import { applyCatalogItem } from '../../requests/catalogs';
 import { addModule, executeThreatOverview } from '../../requests/control-implementations';
 
-describe.skip('Threat Overview', () => {
+describe('Threat Overview', () => {
   beforeEach(() => {
     // Setup a unit with a IT-GS domain and one module
     setupVeo('threatOverview').then(() => {
@@ -95,6 +95,16 @@ describe('Mitigation Measures', () => {
 
     cy.getCustom('[data-veo-test="dialog-card"] tbody tr input').first().check();
 
+    // Save mitigation in controls dialog
+    cy.get('button').last().contains('Save').should('be.visible').click();
+
+    // Save change in the risk dialog
     cy.getCustom('[data-veo-test="dialog-risk-save"]').should('be.visible').click();
+
+    // Close dialog
+    cy.getCustom('[data-veo-test="dialog-risk-close"]').should('be.visible').click();
+
+    // When Mitigation action is added this button should not be disabled
+    cy.getCustom('[data-veo-test="object-details-action-btn-implementations"]').should('not.be.disabled');
   });
 });
