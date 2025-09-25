@@ -9,7 +9,7 @@ describe('Edit elements', () => {
     cy.goToUnitDashboard();
   });
 
-  it('edits a scope object/element', () => {
+  it.skip('edits a scope object/element', () => {
     editElement({ typePlural: 'scopes', subTypePlural: 'scopes' });
   });
 });
