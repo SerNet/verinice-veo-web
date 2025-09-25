@@ -239,7 +239,6 @@
 </template>
 
 <script lang="ts">
-import { upperFirst, pickBy } from 'lodash';
 import {
   mdiAlertCircleOutline,
   mdiContentSave,
@@ -250,19 +249,20 @@ import {
   mdiTranslate,
   mdiWrench
 } from '@mdi/js';
+import { pickBy, upperFirst } from 'lodash';
 import { useDisplay } from 'vuetify';
 
-import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
-import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
-import { useVeoPermissions } from '~/composables/VeoPermissions';
-import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import type { LocaleObject } from '@nuxtjs/i18n';
-import { useQuery } from '~/composables/api/utils/query';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useVeoPermissions } from '~/composables/VeoPermissions';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
+import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
+import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
+import { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',
@@ -309,6 +309,18 @@ export default defineComponent({
       (newValue) => Object.assign(translations, newValue?.lang || {}),
       { deep: true, immediate: true }
     );
+
+    watch(
+      () => translations,
+      () => {
+        if (objectSchemaHelper.value) {
+          for (const [languageKey, languageTranslations] of Object.entries(schemaSpecificTranslations.value)) {
+            objectSchemaHelper.value.updateTranslations(languageKey, languageTranslations);
+          }
+        }
+      },
+      { deep: true, immediate: true }
+    );
     const availableLanguages = computed(() => Object.keys(translations));
 
     const code = ref('');
@@ -350,10 +362,8 @@ export default defineComponent({
           objectSchemaHelper.value.setDescription(data.meta.description);
         }
 
-        if (objectSchemaHelper.value.getLanguages().length === 0) {
-          for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations.value)) {
-            objectSchemaHelper.value.updateTranslations(languageKey, translations);
-          }
+        for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations.value)) {
+          objectSchemaHelper.value.updateTranslations(languageKey, translations);
         }
         code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
         validate();
