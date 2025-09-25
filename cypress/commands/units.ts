@@ -256,7 +256,8 @@ export function deleteUnitsOlderThan(hours: number = 3) {
   // Get units, and find the ones older than $hours
   cy.veoRequest({
     endpoint: `units`,
-    method: 'GET'
+    method: 'GET',
+    failOnStatusCode: false
   }).then((response) => {
     const units = response.body;
     console.log(`%cFound ${units.length} units.`, logStyles);
@@ -278,7 +279,8 @@ export function deleteUnitsOlderThan(hours: number = 3) {
     oldUnits.forEach((unit: IVeoUnit, index: number) => {
       cy.veoRequest({
         endpoint: `units/${unit.id}`,
-        method: 'DELETE'
+        method: 'DELETE',
+        failOnStatusCode: false
       }).then((response) => {
         if (response.status === 204) {
           console.info(`%c${index + 1}: Deleted unit ${unit.id}`, logStyles);
