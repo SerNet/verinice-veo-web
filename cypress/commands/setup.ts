@@ -22,13 +22,22 @@ export const objectDataDefaults = {
   status: 'NEW'
 };
 
-export function setupVeo(unitName?: string, domains: string[] = ['IT-Grundschutz'], objectData = objectDataDefaults) {
+export function setupVeo(
+  unitName?: string,
+  domains: string[] = ['IT-Grundschutz'],
+  objectData: false | typeof objectDataDefaults = objectDataDefaults
+) {
   return cy.deleteTestUnits().then(() => {
     const unitDetails = generateUnitDetails(unitName || 'Veo');
     cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: domains }).then(() => {
       const _domains = Cypress.env('dynamicTestData').testUnits[0]?.domains;
       if (!_domains) return;
       _domains.forEach((domain) => {
+        if (!objectData) {
+          cy.login();
+          cy.acceptAllCookies();
+          return;
+        }
         createObject({
           domainId: domain.id,
           objectData: {
