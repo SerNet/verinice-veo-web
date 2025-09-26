@@ -16,8 +16,16 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div v-if="!hideSerNetReferences" class="wrapper">
-    <VeriniceCloudLogo />
+  <div class="wrapper">
+    <nuxt-link :to="logoLink" target="_blank">
+      <div v-if="oprem">
+        <LayoutAppLogoOnPrem />
+      </div>
+      <div v-else>
+        <LayoutVeriniceCloudLogo width="100%" />
+      </div>
+    </nuxt-link>
+
     <BaseAlert
       :model-value="!!route.query.client_disabled"
       class="my-4"
@@ -30,84 +38,53 @@
 
     <BaseCard class="mt-2 bg-surface">
       <v-card-text class="d-flex justify-space-around">
-        <div style="flex-basis: 0; flex-grow: 1">
-          <h4 class="text-h4 cta">
-            {{ t('loginCTA') }}
+        <div class="flex-grow-1 text-center">
+          <h4 v-if="loginInstruction" class="text-h4 cta">
+            {{ loginInstruction }}
           </h4>
-          <div class="text-center">
-            <v-btn color="primary" data-veo-test="login-btn-login" flat size="x-large" @click="login">
-              {{ t('login') }}
-            </v-btn>
-          </div>
+          <v-btn
+            v-if="loginInstruction"
+            color="primary"
+            class="mt-2"
+            data-veo-test="login-btn-login"
+            size="x-large"
+            @click="login"
+          >
+            {{ t('login') }}
+          </v-btn>
         </div>
-        <v-divider class="mx-7" vertical light />
-        <div style="flex-basis: 0; flex-grow: 1">
-          <h4 class="text-h4 cta">
-            {{ t('subscribeCTA') }}
+        <v-divider v-if="registrationInstruction" vertical light />
+        <div class="flex-grow-1 text-center" :class="{ 'd-flex justify-center align-center': !registrationAction }">
+          <h4 v-if="registrationInstruction" class="text-h4 cta">
+            {{ registrationInstruction }}
           </h4>
-          <div class="text-center">
-            <v-btn
-              v-if="context.$config.public.accountPath"
-              variant="tonal"
-              size="x-large"
-              :href="context.$config.public.accountPath"
-            >
-              {{ t('subscribe') }}
-            </v-btn>
-          </div>
+          <v-btn
+            v-if="registrationLink && registrationAction"
+            variant="tonal"
+            size="x-large"
+            class="mt-2"
+            :href="registrationLink"
+          >
+            {{ registrationAction }}
+          </v-btn>
         </div>
       </v-card-text>
     </BaseCard>
-    <div class="text-center mt-2">
-      <a :href="dataProtectionRegulationLink" target="_blank">
-        {{ t('dataProtectionRegulations') }}
-      </a>
-      <span class="mx-1">|</span>
-      <a :href="imprintLink" target="_blank">
-        {{ t('imprint') }}
-      </a>
-      <span class="mx-1">|</span>
-      <nuxt-link to="/security" target="_blank">
-        {{ t('policy') }}
-      </nuxt-link>
+    <div v-if="localizedLinks" class="d-flex justify-center mt-3">
+      <div v-for="(link, index) in localizedLinks" :key="link.url" class="d-flex">
+        <nuxt-link :href="link.url" target="_blank">
+          {{ link.label }}
+        </nuxt-link>
+        <span v-if="index < localizedLinks.length - 1" class="mx-1">|</span>
+      </div>
     </div>
-  </div>
-  <div v-else class="wrapper">
-    <LayoutAppLogoDesktop />
-    <BaseAlert
-      :model-value="!!route.query.client_disabled"
-      class="my-4"
-      flat
-      no-close-button
-      :type="VeoAlertType.ERROR"
-      :title="t('access')"
-      :text="t('error-message')"
-    />
-    <BaseCard class="mt-4 bg-surface">
-      <v-card-text class="d-flex">
-        <div style="flex-basis: 0; flex-grow: 1">
-          <h4 class="text-h4 cta" style="height: 60px">
-            {{ t('loginV') }}
-          </h4>
-          <div class="text-center">
-            <v-btn color="primary" data-veo-test="login-btn-login" flat size="x-large" @click="login">
-              {{ t('login') }}
-            </v-btn>
-          </div>
-        </div>
-        <v-divider class="mx-7" vertical light />
-        <div style="min-width: 250px; flex-basis: 0; flex-grow: 1" class="text-center text-body-1 d-flex align-center">
-          <h4 class="text-h4 cta">
-            {{ t('Wenn sie noch keine Anmeldedaten haben, wenden Sie sich an Ihre Administrator*innen') }}
-          </h4>
-        </div>
-      </v-card-text>
-    </BaseCard>
+    <div class="d-flex justify-end w-25 mt-4">
+      <v-img :src="customLogo" alt="Logo" />
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import VeriniceCloudLogo from '~/components/layout/VeriniceCloudLogo.vue';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 
@@ -127,15 +104,24 @@ if (!keycloakInitialized.value) {
 
 // Needed as a separate function, as _login would be undefined if directly called from within the template.
 const login = () => _login((route.query.redirect_uri as string | undefined) || '/');
+const { data: customerConfig } = await useFetch<any>('/customer/config.json');
+function useLocalizedField(key: string) {
+  return computed(() => customerConfig.value?.[key]?.[locale.value]);
+}
+const oprem = customerConfig.value?.['oprem'];
+const logoLink = useLocalizedField('logoLink');
+const loginInstruction = useLocalizedField('loginInstruction');
+const registrationInstruction = useLocalizedField('registrationInstruction');
+const registrationAction = useLocalizedField('registrationAction');
+const registrationLink = useLocalizedField('registrationLink');
+const customLogo = customerConfig.value?.['customLogo'];
 
-const dataProtectionRegulationLink = computed(() =>
-  locale.value === 'en' ? 'https://www.sernet.de/en/data-protection-declaration/' : 'https://www.sernet.de/datenschutz/'
+const localizedLinks = computed(() =>
+  (customerConfig.value?.links ?? []).map((link) => ({
+    label: link.label[locale.value],
+    url: link.link[locale.value]
+  }))
 );
-const imprintLink = computed(() =>
-  locale.value === 'en' ? 'https://account.verinice.com/en/left/Imprint/' : 'https://account.verinice.com/impressum/'
-);
-const config = useRuntimeConfig();
-const hideSerNetReferences = config.public.hideSerNetReferences === 'true';
 </script>
 
 <i18n src="~/locales/base/pages/login.json"></i18n>
@@ -154,7 +140,6 @@ const hideSerNetReferences = config.public.hideSerNetReferences === 'true';
   }
 
   .cta {
-    height: 75px;
     text-align: center;
     white-space: pre-line;
   }

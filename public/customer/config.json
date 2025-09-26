@@ -1,0 +1,55 @@
+{
+  "oprem": true,
+  "logoLink": {
+    "de": "https://verinice.com",
+    "en": "https://verinice.com/en"
+  },
+  "loginInstruction": {
+    "de": "Direkt zur\n verinice.cloud",
+    "en": "Enter the\n verinice.cloud"
+  },
+  "registrationInstruction": {
+    "de": "Abonnieren Sie die\n verinice.cloud",
+    "en": "Subscribe to\n verinice.cloud"
+  },
+  "registrationAction": {
+    "de": "Abonnieren",
+    "en": "Subscribe"
+  },
+  "registrationLink": {
+    "de": "https://account.verinice.com",
+    "en": "https://account.verinice.com/en"
+  },
+  "links": [
+    {
+      "label": {
+        "de": "Datenschutzerklärung",
+        "en": "Data protection regulations"
+      },
+      "link": {
+        "de": "https://www.sernet.de/datenschutz",
+        "en": "https://www.sernet.de/en/data-protection-declaration/"
+      }
+    },
+    {
+      "label": {
+        "de": "Impressum",
+        "en": "Imprint"
+      },
+      "link": {
+        "de": "https://account.verinice.com/impressum/",
+        "en": "https://account.verinice.com/en/left/Imprint/"
+      }
+    },
+    {
+      "label": {
+        "de": "Sicherheitsrichtlinie",
+        "en": "Security policy"
+      },
+      "link": {
+        "de": "https://veo-web.staging.verinice.com/security",
+        "en": "https://veo-web.staging.verinice.com/security"
+      }
+    }
+  ]
+}
