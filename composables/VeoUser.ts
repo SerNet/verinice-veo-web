@@ -45,8 +45,6 @@ const keycloakInitialized = ref(false);
 const tablePageSize = ref<number>(25);
 
 export const useVeoUser: () => IVeoUserComposable = () => {
-  const { updatePermissions } = useVeoPermissions();
-
   const initialize = async (context: any) => {
     if (keycloakInitialized.value || keycloakInitializationStarted.value) {
       return;
@@ -80,12 +78,6 @@ export const useVeoUser: () => IVeoUserComposable = () => {
       if (keycloak.value.authenticated) {
         await keycloak.value.loadUserProfile();
       }
-
-      // Update permissions immediately as the middleware can't wait for the next tick
-      updatePermissions([
-        ...(keycloak.value?.tokenParsed?.realm_access?.roles || []),
-        ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])
-      ]);
     } catch (error) {
       throw new Error(`Error while setting up authentication provider: ${JSON.stringify(error)}`);
     }
@@ -162,13 +154,6 @@ export const useVeoUser: () => IVeoUserComposable = () => {
   if (authenticated.value && accountDisabled.value) {
     logout('/login', { client_disabled: true });
   }
-
-  watch(
-    () => roles.value,
-    (newValue) => {
-      updatePermissions(newValue);
-    }
-  );
 
   return {
     authenticated,

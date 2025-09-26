@@ -32,7 +32,7 @@
           <template #activator="{ props: menuProps }">
             <v-btn
               :icon="speedDialIsOpen && !disabled && actions.length ? mdiClose : mdiPlus"
-              :disabled="!actions.length || disabled || canManageUnits"
+              :disabled="!actions.length || disabled || ability.cannot('manage', 'units')"
               class="veo-primary-action-fab mr-2"
               color="primary"
               data-component-name="object-details-actions-button"
@@ -104,7 +104,6 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuerySync } from '~/composables/api/utils/query';
 import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 
 export default defineComponent({
   props: {
@@ -131,8 +130,7 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const speedDialIsOpen = ref(false);
-    const { unitAbility } = useUnitWriteAccess();
-    const canManageUnits = computed(() => unitAbility.value.can('manage', 'units'));
+    const { ability } = useVeoPermissions();
 
     const addEntityDialog = ref<{
       object: IVeoEntity | undefined;
@@ -276,7 +274,7 @@ export default defineComponent({
       linkDialogKey,
       onParentCreateObjectSuccess,
       onChildCreateObjectSuccess,
-      canManageUnits
+      ability
     };
   }
 });

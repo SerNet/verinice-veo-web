@@ -24,7 +24,7 @@
           variant="tonal"
           size="xs"
           :loading="isLoadingActions"
-          :disabled="!visibleItems.length || $props.disabled || unitAbility.can('manage', 'units')"
+          :disabled="!visibleItems.length || $props.disabled || ability.cannot('manage', 'units')"
           :aria-label="t('expandOptions')"
           data-component-name="object-form-more-actions-button"
           :icon="mdiDotsVertical"
@@ -52,7 +52,6 @@ import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { IVeoEntity } from '~/types/VeoTypes';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import type { TVeoAction } from '~/composables/actions/useActions';
-import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 
 const props = withDefaults(
   defineProps<{
@@ -102,7 +101,8 @@ const subType = computed(() => props.object?.subType);
 
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { locale } = useI18n();
-const { unitAbility } = useUnitWriteAccess();
+const { ability } = useVeoPermissions();
+
 type TActionItems = INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] };
 const items = computed<TActionItems[]>(() => {
   return [

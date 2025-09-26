@@ -26,7 +26,13 @@ can('view', 'documentation');
 // @ts-ignore Some casl typing error, however the docs show this is the right way and it works
 ability.value.update(rules);
 
+let isWatcherInitialized = false;
+
 export const useVeoPermissions = () => {
+  const route = useRoute();
+  const unitId = computed(() => route?.params?.unit);
+  const { keycloak, roles } = useVeoUser();
+
   const updatePermissions = (permissions: string[]) => {
     const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
 
@@ -59,10 +65,18 @@ export const useVeoPermissions = () => {
     // --- Unit permissions ---
     const hasAccessRestrictions = permissions.includes('unit_access_restriction');
     const hasReadWriteAllUnits = permissions?.includes('read_write_all_units');
+    const unitWriteAccess = keycloak.value?.tokenParsed?.unit_write_access ?? [];
     // If 'unit_access_restrictions' is NOT present, all users can manage units.
     if (!hasAccessRestrictions || hasReadWriteAllUnits) {
       can('manage', 'units');
     } else {
+      // Check if user has write access to the current unit
+      if (unitId && unitWriteAccess.includes(unitId.value)) {
+        can('manage', 'units');
+      } else {
+        cannot('manage', 'units');
+      }
+
       if (permissions.includes('unit:create')) {
         can('create', 'units');
       }
@@ -77,5 +91,20 @@ export const useVeoPermissions = () => {
     ability.value.update(rules);
   };
 
+  // This ensures permissions are refreshed when the selected unit changes or Roles
+  if (!isWatcherInitialized) {
+    isWatcherInitialized = true;
+
+    watch(
+      [() => unitId.value, () => roles.value],
+      () => {
+        updatePermissions([
+          ...(keycloak.value?.tokenParsed?.realm_access?.roles || []),
+          ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])
+        ]);
+      },
+      { immediate: true }
+    );
+  }
   return { ability, updatePermissions };
 };

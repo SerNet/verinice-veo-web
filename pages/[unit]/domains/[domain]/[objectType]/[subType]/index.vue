@@ -185,9 +185,7 @@
                 data-component-name="create-object-button"
                 data-veo-test="create-object-button"
                 size="large"
-                :disabled="
-                  !nestedActions.length || ability.cannot('manage', 'objects') || unitAbility.can('manage', 'units')
-                "
+                :disabled="!nestedActions.length || cannotManageObjects || cannotManageUnits"
                 :aria-label="t('createObject', [createObjectLabel])"
                 :icon="mdiPlus"
               />
@@ -197,7 +195,7 @@
             v-else
             color="primary"
             flat
-            :disabled="ability.cannot('manage', 'objects') || unitAbility.can('manage', 'units')"
+            :disabled="cannotManageObjects || cannotManageUnits"
             :icon="mdiPlus"
             class="veo-primary-action-fab"
             data-component-name="create-object-button"
@@ -245,7 +243,6 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import CsvImportCard from '~/components/object/CsvImportCard.vue';
 import type { VeoSearch } from '~/types/VeoSearch';
-import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 enum FILTER_SOURCE {
   QUERY,
   PARAMS,
@@ -269,7 +266,6 @@ const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
-const { unitAbility } = useUnitWriteAccess();
 // CardView Feature
 const hasCardView = hasFeature('cardView');
 const fetchTranslationsQueryParameters = computed(() => ({
@@ -280,7 +276,8 @@ const { data: translations, isFetching: translationsLoading } = useQuery(
   translationQueryDefinitions.queries.fetch,
   fetchTranslationsQueryParameters
 );
-
+const cannotManageObjects = ability.value.cannot('manage', 'objects');
+const cannotManageUnits = ability.value.cannot('manage', 'units');
 const fetchUnitDomainsQueryParameters = computed(() => ({
   unitId: route.params.unit as string
 }));
@@ -573,11 +570,11 @@ const onCloseDeleteDialog = (
 const objectAssignDialogVisible = ref(false);
 
 const actions = computed(() => {
-  const canManageUnits = unitAbility.value.can('manage', 'units');
+  const cannotManageUnits = ability.value.cannot('manage', 'units');
 
   return [
     {
-      disabled: canManageUnits,
+      disabled: cannotManageUnits,
       id: 'clone',
       label: upperFirst(t('cloneObject')),
       icon: mdiContentCopy,
@@ -606,7 +603,7 @@ const actions = computed(() => {
       }
     },
     {
-      disabled: canManageUnits,
+      disabled: cannotManageUnits,
       id: 'delete',
       label: upperFirst(t('deleteObject')),
       icon: mdiTrashCanOutline,
@@ -616,7 +613,7 @@ const actions = computed(() => {
       }
     },
     {
-      disabled: domains.value?.length <= 1 || canManageUnits,
+      disabled: domains.value?.length <= 1 || cannotManageUnits,
       id: 'assign',
       label: t('assignObject'),
       icon: mdiPuzzleOutline,
