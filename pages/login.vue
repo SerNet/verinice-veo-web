@@ -18,7 +18,7 @@
 <template>
   <div class="wrapper">
     <nuxt-link :to="logoLink" target="_blank">
-      <div v-if="oprem">
+      <div v-if="onprem">
         <LayoutAppLogoOnPrem />
       </div>
       <div v-else>
@@ -37,9 +37,9 @@
     />
 
     <BaseCard class="mt-2 bg-surface">
-      <v-card-text class="d-flex justify-space-around">
-        <div class="flex-grow-1 text-center">
-          <h4 v-if="loginInstruction" class="text-h4 cta">
+      <v-card-text class="d-flex justify-center align-center gap-4">
+        <div v-if="loginInstruction" class="text-center">
+          <h4 class="text-h4 cta">
             {{ loginInstruction }}
           </h4>
           <v-btn
@@ -53,13 +53,13 @@
             {{ t('login') }}
           </v-btn>
         </div>
-        <v-divider v-if="registrationInstruction" vertical light />
-        <div class="flex-grow-1 text-center" :class="{ 'd-flex justify-center align-center': !registrationAction }">
-          <h4 v-if="registrationInstruction" class="text-h4 cta">
+        <v-divider v-if="registrationInstruction && loginInstruction" vertical light class="mx-6" />
+        <div v-if="registrationInstruction" class="text-center">
+          <h4 class="text-h4 cta">
             {{ registrationInstruction }}
           </h4>
           <v-btn
-            v-if="registrationLink && registrationAction"
+            v-if="registrationAction && registrationLink"
             variant="tonal"
             size="x-large"
             class="mt-2"
@@ -108,7 +108,7 @@ const { data: customerConfig } = await useFetch<any>('/customer/config.json');
 function useLocalizedField(key: string) {
   return computed(() => customerConfig.value?.[key]?.[locale.value]);
 }
-const oprem = customerConfig.value?.['oprem'];
+const onprem = customerConfig.value?.['onprem'];
 const logoLink = useLocalizedField('logoLink');
 const loginInstruction = useLocalizedField('loginInstruction');
 const registrationInstruction = useLocalizedField('registrationInstruction');
