@@ -24,7 +24,7 @@
           variant="tonal"
           size="xs"
           :loading="isLoadingActions"
-          :disabled="!visibleItems.length || $props.disabled"
+          :disabled="!visibleItems.length || $props.disabled || unitAbility.can('manage', 'units')"
           :aria-label="t('expandOptions')"
           data-component-name="object-form-more-actions-button"
           :icon="mdiDotsVertical"
@@ -52,6 +52,7 @@ import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { IVeoEntity } from '~/types/VeoTypes';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import type { TVeoAction } from '~/composables/actions/useActions';
+import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 
 const props = withDefaults(
   defineProps<{
@@ -101,65 +102,67 @@ const subType = computed(() => props.object?.subType);
 
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { locale } = useI18n();
-
+const { unitAbility } = useUnitWriteAccess();
 type TActionItems = INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] };
-const items = computed<TActionItems[]>(() => [
-  {
-    key: 'delete',
-    title: t('deleteObject').toString(),
-    icon: mdiTrashCanOutline,
-    color: 'primary',
-    component: ObjectDeleteDialog,
-    componentProps: {
-      items: [props.object],
-      onSuccess: navigateToObjectOverview,
-      onError: (error: any) => displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
+const items = computed<TActionItems[]>(() => {
+  return [
+    {
+      key: 'delete',
+      title: t('deleteObject').toString(),
+      icon: mdiTrashCanOutline,
+      color: 'primary',
+      component: ObjectDeleteDialog,
+      componentProps: {
+        items: [props.object],
+        onSuccess: navigateToObjectOverview,
+        onError: (error: any) => displayErrorMessage(t('delteObjectFailed'), JSON.stringify(error))
+      }
+    },
+    ...(actions.value ?
+      actions.value.map((action: TVeoAction) => ({
+        icon: mdiCreation,
+        key: action.id,
+        title: action.name?.[locale?.value as keyof { en: string; de: string }] ?? t('noActionNameAvailable'),
+        callback: () => {
+          generateMessages(action.name);
+          performVeoAction({
+            actionId: action.id,
+            affectedRessources: action.affectedRessources
+          });
+        }
+      }))
+    : []),
+    {
+      key: 'dpia',
+      title: t('dpia').toString(),
+      children: [
+        {
+          key: 'create_dpia',
+          title: t('createDPIA').toString(),
+          component: ObjectCreateDialog,
+          componentProps: {
+            domainId: route.params.domain,
+            objectType: 'process',
+            subType: 'PRO_DPIA',
+            onSuccess: onCreateObjectSuccess
+          }
+        },
+        {
+          key: 'link_dpia',
+          title: t('linkDPIA').toString(),
+          component: ObjectLinkDialog,
+          componentProps: {
+            object: props.object,
+            preselectedFilters: { subType: 'PRO_DPIA' },
+            onSuccess: () => emit('reload')
+          }
+        }
+      ],
+      objectTypes: ['process'],
+      subTypes: ['PRO_DataProcessing']
     }
-  },
-  ...(actions.value ?
-    actions.value.map((action: TVeoAction) => ({
-      icon: mdiCreation,
-      key: action.id,
-      title: action.name?.[locale?.value as keyof { en: string; de: string }] ?? t('noActionNameAvailable'),
-      callback: () => {
-        generateMessages(action.name);
-        performVeoAction({
-          actionId: action.id,
-          affectedRessources: action.affectedRessources
-        });
-      }
-    }))
-  : []),
-  {
-    key: 'dpia',
-    title: t('dpia').toString(),
-    children: [
-      {
-        key: 'create_dpia',
-        title: t('createDPIA').toString(),
-        component: ObjectCreateDialog,
-        componentProps: {
-          domainId: route.params.domain,
-          objectType: 'process',
-          subType: 'PRO_DPIA',
-          onSuccess: onCreateObjectSuccess
-        }
-      },
-      {
-        key: 'link_dpia',
-        title: t('linkDPIA').toString(),
-        component: ObjectLinkDialog,
-        componentProps: {
-          object: props.object,
-          preselectedFilters: { subType: 'PRO_DPIA' },
-          onSuccess: () => emit('reload')
-        }
-      }
-    ],
-    objectTypes: ['process'],
-    subTypes: ['PRO_DataProcessing']
-  }
-]);
+  ];
+});
 
 // filter allowed actions for current object type & sub type
 const visibleItems = computed(() =>

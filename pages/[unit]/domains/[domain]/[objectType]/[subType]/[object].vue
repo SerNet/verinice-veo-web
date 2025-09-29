@@ -129,7 +129,13 @@
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    :disabled="loading || !isFormDirty || !isFormValid || ability.cannot('manage', 'objects')"
+                    :disabled="
+                      loading ||
+                      !isFormDirty ||
+                      !isFormValid ||
+                      ability.cannot('manage', 'objects') ||
+                      unitAbility.can('manage', 'units')
+                    "
                     class="mb-4"
                     :color="wasSavedSuccessfully ? 'success' : 'primary'"
                     flat
@@ -192,6 +198,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
+import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 import type { IVeoEntity, IVeoLink, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { VeoAlertType, VeoElementTypesSingular } from '~/types/VeoTypes';
 
@@ -221,7 +228,7 @@ const { displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
 const { link } = useLinkObject();
 const { ability } = useVeoPermissions();
 const { mutateAsync: _updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
-
+const { unitAbility } = useUnitWriteAccess();
 const domainId = computed(() => route.params.domain as string);
 
 const modifiedObject = ref<IVeoEntity | undefined>(undefined);

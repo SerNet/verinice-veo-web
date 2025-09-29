@@ -58,9 +58,9 @@ export const useVeoPermissions = () => {
 
     // --- Unit permissions ---
     const hasAccessRestrictions = permissions.includes('unit_access_restriction');
-
+    const hasReadWriteAllUnits = permissions?.includes('read_write_all_units');
     // If 'unit_access_restrictions' is NOT present, all users can manage units.
-    if (!hasAccessRestrictions) {
+    if (!hasAccessRestrictions || hasReadWriteAllUnits) {
       can('manage', 'units');
     } else {
       if (permissions.includes('unit:create')) {

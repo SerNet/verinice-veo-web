@@ -185,7 +185,9 @@
                 class="veo-primary-action-fab"
                 data-component-name="create-object-button"
                 size="large"
-                :disabled="!nestedActions.length || ability.cannot('manage', 'objects')"
+                :disabled="
+                  !nestedActions.length || ability.cannot('manage', 'objects') || unitAbility.can('manage', 'units')
+                "
                 :aria-label="t('createObject', [createObjectLabel])"
                 :icon="mdiPlus"
               />
@@ -195,7 +197,7 @@
             v-else
             color="primary"
             flat
-            :disabled="ability.cannot('manage', 'objects')"
+            :disabled="ability.cannot('manage', 'objects') || unitAbility.can('manage', 'units')"
             :icon="mdiPlus"
             class="veo-primary-action-fab"
             data-component-name="create-object-button"
@@ -243,6 +245,7 @@ import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import CsvImportCard from '~/components/object/CsvImportCard.vue';
 import { useCurrentDomainUtils } from '~/composables/domains/useDomains';
 import type { VeoSearch } from '~/types/VeoSearch';
+import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 enum FILTER_SOURCE {
   QUERY,
   PARAMS,
@@ -267,6 +270,7 @@ const { data: currentDomain } = useCurrentDomain();
 const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
+const { unitAbility } = useUnitWriteAccess();
 // CardView Feature
 const hasCardView = hasFeature('cardView');
 const fetchTranslationsQueryParameters = computed(() => ({
@@ -572,55 +576,61 @@ const onCloseDeleteDialog = (
 
 const objectAssignDialogVisible = ref(false);
 
-const actions = computed(() => [
-  {
-    id: 'clone',
-    label: upperFirst(t('cloneObject')),
-    icon: mdiContentCopy,
-    async action(item: any) {
-      try {
-        const { resourceId: clonedObjectId } = await clone(item);
-        displaySuccessMessage(t('cloneSuccess'), {
-          actions: [
-            {
-              text: t('open'),
-              onClick: () => {
-                return navigateTo({
-                  name: OBJECT_DETAIL_ROUTE,
-                  params: {
-                    ...route.params,
-                    object: clonedObjectId
-                  }
-                });
+const actions = computed(() => {
+  const canManageUnits = unitAbility.value.can('manage', 'units');
+
+  return [
+    {
+      disabled: canManageUnits,
+      id: 'clone',
+      label: upperFirst(t('cloneObject')),
+      icon: mdiContentCopy,
+      async action(item: any) {
+        try {
+          const { resourceId: clonedObjectId } = await clone(item);
+          displaySuccessMessage(t('cloneSuccess'), {
+            actions: [
+              {
+                text: t('open'),
+                onClick: () => {
+                  return navigateTo({
+                    name: OBJECT_DETAIL_ROUTE,
+                    params: {
+                      ...route.params,
+                      object: clonedObjectId
+                    }
+                  });
+                }
               }
-            }
-          ]
-        });
-      } catch (e: any) {
-        showError('clone', e);
+            ]
+          });
+        } catch (e: any) {
+          showError('clone', e);
+        }
+      }
+    },
+    {
+      disabled: canManageUnits,
+      id: 'delete',
+      label: upperFirst(t('deleteObject')),
+      icon: mdiTrashCanOutline,
+      action(item: any) {
+        selectedOperationItems.value = [item];
+        showDeleteDialog.value = true;
+      }
+    },
+    {
+      disabled: domains.value?.length <= 1 || canManageUnits,
+      id: 'assign',
+      label: t('assignObject'),
+      icon: mdiPuzzleOutline,
+      action(item: any) {
+        selectedOperationItems.value = [item];
+        objectAssignDialogVisible.value = true;
       }
     }
-  },
-  {
-    id: 'delete',
-    label: upperFirst(t('deleteObject')),
-    icon: mdiTrashCanOutline,
-    action(item: any) {
-      selectedOperationItems.value = [item];
-      showDeleteDialog.value = true;
-    }
-  },
-  {
-    disabled: domains.value?.length <= 1,
-    id: 'assign',
-    label: t('assignObject'),
-    icon: mdiPuzzleOutline,
-    action(item: any) {
-      selectedOperationItems.value = [item];
-      objectAssignDialogVisible.value = true;
-    }
-  }
-]);
+  ];
+});
 
 // Additional headers
 const SUBTYPES_WITH_VDA = ['CTL_Requirement', 'CTL_PartialRequirement', 'CTL_Safeguard', '-'];

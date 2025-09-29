@@ -33,6 +33,7 @@
           :class="{ 'drop-zone-active': isDragging }"
           :aria-label="t('import.dropzone.label')"
           data-component-name="csv-button"
+          :disabled="unitAbility.can('manage', 'units')"
           @dragenter.prevent="isDragging = true"
           @dragleave.prevent="isDragging = false"
           @update:model-value="handleFileUpload"
@@ -70,6 +71,7 @@ import { mdiUpload } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
+import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 const { t } = useI18n();
@@ -77,6 +79,7 @@ const { parseCsv } = useCsvImporter();
 const { displayErrorMessage } = useVeoAlerts();
 
 const isProcessing = ref(false);
+const { unitAbility } = useUnitWriteAccess();
 
 const _props = defineProps({
   objectType: {

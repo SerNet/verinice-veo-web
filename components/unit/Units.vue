@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <BookmarkFavorite :is-favorite="u?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(u)" />
         </template>
         <template #bottom-right="{ item: u }">
-          <ApplyProfiles :profiles-url="u?.profilesUrl" />
+          <ApplyProfiles :profiles-url="u?.profilesUrl" :unit="u" />
         </template>
       </BaseListItem>
     </template>
@@ -138,9 +138,19 @@ const { t } = useI18n();
 const { data: veoUnits, isLoading: isLoadingUnits, invalidateUnitCache } = useUnits();
 const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
+const { keycloak } = useVeoUser();
+const unitWriteAccess = keycloak.value?.tokenParsed?.unit_write_access ?? [];
 
 const canUpdateUnit = computed(() => ability.value.can('update', 'units'));
 const canDeleteUnit = computed(() => ability.value.can('delete', 'units'));
+function canManageUnit(unit: TVeoUnit) {
+  if (!unit.id) return false;
+
+  if (unitWriteAccess.includes(unit.id)) {
+    return unitWriteAccess.includes(unit.id);
+  }
+}
+
 const canEditDomains = computed(() => canUpdateUnit.value);
 
 const units = computed({
@@ -369,9 +379,9 @@ const BookmarkFavorite: TInlineComponent = {
     </v-tooltip>
   `
 };
-
 const ApplyProfiles: TInlineComponent = {
-  props: ['profilesUrl'],
+  props: ['profilesUrl', 'unit'],
+  methods: { canManageUnit },
   data: () => ({ mdiShapeOutline, t }),
 
   template: `
@@ -386,6 +396,7 @@ const ApplyProfiles: TInlineComponent = {
           variant="outlined"
           color="primary"
           size="small"
+          :disabled="canManageUnit(this.unit)"
         >
           {{ t('addProfiles') }}
         </v-btn>
