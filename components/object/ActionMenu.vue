@@ -36,6 +36,7 @@
               class="veo-primary-action-fab mr-2"
               color="primary"
               data-component-name="object-details-actions-button"
+              data-veo-test="object-details-actions-button"
               :aria-label="t('add')"
               v-bind="menuProps"
             />
@@ -65,6 +66,7 @@
       color="primary"
       :aria-label="t('add')"
       data-component-name="object-details-actions-button"
+      data-veo-test="object-details-actions-button"
     />
 
     <!-- @vue-ignore TODO #3066 not assignable -->

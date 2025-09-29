@@ -28,6 +28,7 @@
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
     data-component-name="object-details-page"
+    data-veo-test="object-details-page"
     @page-collapsed="onPageCollapsed"
   >
     <template #default>
@@ -35,6 +36,7 @@
         :title="`${object?.abbreviation ? object.abbreviation + ' ' : ''}${object?.name}`"
         sticky-footer
         data-component-name="object-details-details"
+        data-veo-test="object-details-details"
         no-padding
       >
         <template #title>
@@ -73,7 +75,13 @@
         </template>
       </BasePage>
 
-      <BasePage content-class="fill-height" no-padding no-padding-top data-component-name="object-details-form">
+      <BasePage
+        content-class="fill-height"
+        no-padding
+        no-padding-top
+        data-component-name="object-details-form"
+        data-veo-test="object-details-form"
+      >
         <template #default>
           <ObjectForm
             v-if="objectType"
@@ -104,7 +112,11 @@
               />
             </template>
             <template #append-form-outer>
-              <div class="d-flex object-details-actions pt-4" data-component-name="object-details-actions">
+              <div
+                class="d-flex object-details-actions pt-4"
+                data-component-name="object-details-actions"
+                data-veo-test="object-details-actions"
+              >
                 <template v-if="!formDataIsRevision">
                   <v-btn
                     :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
