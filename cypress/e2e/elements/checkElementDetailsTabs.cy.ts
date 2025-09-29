@@ -1,59 +1,49 @@
-import { Actions, ElementActions, Tabs } from '../../commands/elementHelpers';
-import { createObject } from '../../requests/objects';
+import { setupVeo } from '../../commands/setup';
 
-type TabConfig = {
-  tab: Tabs;
-  actions?: Actions[];
-};
-
-describe('Elements Details Tabs', () => {
+describe('Scope Details Tabs', () => {
   beforeEach(() => {
-    cy.importUnit({ fixturePath: 'units/test-unit-dsgvo.json' }).then(() => {
-      cy.login();
-      cy.acceptAllCookies();
-      createObject({
-        objectData: {
-          owner: {},
-          riskDefinition: 'DSRA',
-          name: 'test-object-name',
-          objectType: 'scope',
-          objectTypePlural: 'scopes',
-          subType: 'SCP_Scope',
-          subTypePlural: 'Scopes',
-          status: 'NEW'
-        }
-      });
-    });
+    setupVeo('detailsTabs');
     cy.visitObject();
   });
 
-  it('should verify actions in all scope tabs', () => {
-    const tabConfigs: TabConfig[] = [
-      {
-        tab: 'parentScopes',
-        actions: ['Create scope', 'Select scope']
-      },
-      {
-        tab: 'links'
-      },
-      {
-        tab: 'risks',
-        actions: ['Create risk']
-      },
-      {
-        tab: 'childScopes',
-        actions: ['Create scope', 'Select scope']
-      },
-      {
-        tab: 'childObjects',
-        actions: ['Create Object', 'Select Object']
-      }
-    ];
+  const tabConfigs = [
+    {
+      tab: 'childScopes',
+      action: 'Create scope'
+    },
+    {
+      tab: 'childObjects',
+      action: 'Create Object'
+    },
+    {
+      tab: 'parentScopes',
+      action: 'Create scope'
+    },
+    {
+      tab: 'links'
+    },
+    {
+      tab: 'controls',
+      action: 'Model Modules'
+    },
+    {
+      tab: 'risks',
+      action: 'Create risk'
+    }
+  ];
 
-    tabConfigs.forEach(({ tab, actions }) => {
-      cy.get(`[data-component-name="object-details-${tab}-tab"]`).click();
-      if (actions?.length) {
-        ElementActions.verifyAndPerformTabActions(tab, actions);
+  it('should verify actions in all scope tabs', () => {
+    tabConfigs.forEach(({ tab, action }) => {
+      cy.getCustom(`[data-component-name="object-details-${tab}-tab"]`).scrollIntoView().should('be.visible').click();
+      if (tab === 'links') {
+        // Links tab button is disabled
+        cy.get('[data-veo-test="object-details-actions-button"]').should('be.disabled');
+      } else {
+        cy.getCustom('[data-component-name="object-details-actions-button"]').should('be.visible').click();
+        cy.getCustom('[data-veo-test="loadedDataTable"]').should('be.visible');
+        cy.getCustom('[data-veo-test="object-action-menu-list"]')
+          .contains('[data-veo-test="action-selection-nav-item"]', action)
+          .should('be.visible');
       }
     });
   });
