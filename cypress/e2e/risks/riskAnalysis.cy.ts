@@ -88,11 +88,14 @@ describe('Mitigation Measures', () => {
     cy.visitObject();
     cy.getCustom('[data-component-name="object-details-risks-tab"]').click();
 
+    // Open risk dialog
     cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').should('be.visible').click();
 
+    // Add mitigation
     cy.getCustom('[data-veo-test="add-mitigation"]').click();
     cy.contains('[data-veo-test="add-mitigating-actions"]', 'Add mitigating action').click();
 
+    // Select the first item
     cy.getCustom('[data-veo-test="dialog-card"] tbody tr input').first().check();
 
     // Save mitigation in controls dialog
@@ -104,7 +107,15 @@ describe('Mitigation Measures', () => {
     // Close dialog
     cy.getCustom('[data-veo-test="dialog-risk-close"]').should('be.visible').click();
 
-    // When Mitigation action is added this button should not be disabled
-    cy.getCustom('[data-veo-test="object-details-action-btn-implementations"]').should('not.be.disabled');
+    // Reopen dialog
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').should('be.visible').click();
+
+    // Confirm mitigation is added in the dialog table
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tr').should('be.visible');
+
+    // Confirm the item is checked
+    cy.getCustom('[data-veo-test="add-mitigation"]').click();
+    cy.contains('[data-veo-test="add-mitigating-actions"]', 'Add mitigating action').click();
+    cy.getCustom('[data-veo-test="dialog-card"] tbody tr input').first().should('be.checked');
   });
 });
