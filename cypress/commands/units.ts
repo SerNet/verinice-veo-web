@@ -149,6 +149,10 @@ export function deleteTestUnits(testUnits = Cypress.env('dynamicTestData')?.test
       .then((response) => {
         if (response.status !== 204 && response.status !== 404) {
           console.warn(`Failed to delete unit ${unit.unitId}. Status code: ${response.status}`);
+        } else {
+          // Clean up old test unit data
+          Cypress.env('dynamicTestData').testUnits = [];
+          Cypress.env('dynamicTestData').unit = null;
         }
         return response;
       });
@@ -270,40 +274,43 @@ export function deleteUnitsOlderThan(hours: number = 3) {
   const someTimeAgo = new Date(Date.now() - hours * 60 * 60 * 1000);
 
   // Get units, and find the ones older than $hours
-  cy.veoRequest({
-    endpoint: `units`,
-    method: 'GET',
-    failOnStatusCode: false
-  }).then((response) => {
-    const units = response.body;
-    console.log(`%cFound ${units.length} units.`, logStyles);
+  return cy
+    .veoRequest({
+      endpoint: `units`,
+      method: 'GET',
+      failOnStatusCode: false
+    })
+    .then((response) => {
+      const units = response.body;
+      console.log(`%cFound ${units.length} units.`, logStyles);
 
-    const oldUnits = units.filter((unit: any) => {
-      const createdAt = new Date(unit.createdAt);
-      return createdAt < someTimeAgo && unit.name.startsWith('CY-');
-    });
-
-    // Log info
-    if (oldUnits.length > 0) {
-      console.log(`%cStarting to delete ${oldUnits.length} units older than ${hours} hours...`, logStyles);
-    } else {
-      console.log(`%cNo units are older than ${hours} hours.`, logStyles);
-      return;
-    }
-
-    // Delete units
-    oldUnits.forEach((unit: IVeoUnit, index: number) => {
-      cy.veoRequest({
-        endpoint: `units/${unit.id}`,
-        method: 'DELETE',
-        failOnStatusCode: false
-      }).then((response) => {
-        if (response.status === 204) {
-          console.info(`%c${index + 1}: Deleted unit ${unit.id}`, logStyles);
-        } else {
-          console.error(`Failed to delete unit ${unit.name} | ${unit.id}. Status: ${response.status}`);
-        }
+      const oldUnits = units.filter((unit: any) => {
+        const createdAt = new Date(unit.createdAt);
+        return createdAt < someTimeAgo && unit.name.startsWith('CY-');
       });
+
+      // Log info
+      if (oldUnits.length > 0) {
+        console.log(`%cStarting to delete ${oldUnits.length} units older than ${hours} hours...`, logStyles);
+      } else {
+        console.log(`%cNo units are older than ${hours} hours.`, logStyles);
+        return;
+      }
+
+      // Delete units
+      const deletionRequests = oldUnits.forEach((unit: IVeoUnit, index: number) => {
+        cy.veoRequest({
+          endpoint: `units/${unit.id}`,
+          method: 'DELETE',
+          failOnStatusCode: false
+        }).then((response) => {
+          if (response.status === 204) {
+            console.info(`%c${index + 1}: Deleted unit ${unit.id}`, logStyles);
+          } else {
+            console.error(`Failed to delete unit ${unit.name} | ${unit.id}. Status: ${response.status}`);
+          }
+        });
+      });
+      return Cypress.Promise.all(deletionRequests ?? []);
     });
-  });
 }

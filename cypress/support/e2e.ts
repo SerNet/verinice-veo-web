@@ -24,8 +24,8 @@ import {
   deleteUnitsOlderThan
 } from '../commands/units';
 import { setupVeo } from '../commands/setup';
-import { createDomain, deleteDomain } from '../commands/requests/domains';
 import '../commands/potentialImpact';
+import { createDomain, deleteDomain, deleteDomainsOlderThan } from '../commands/requests/domains';
 import { createRiskDefinition } from '../commands/requests/risk-definitions';
 
 Cypress.Commands.addAll({
@@ -63,11 +63,12 @@ Cypress.Commands.addAll({
   setupVeo,
   createDomain,
   deleteDomain,
+  deleteDomainsOlderThan,
   createRiskDefinition
 });
 
 before(() => {
-  deleteUnitsOlderThan();
+  deleteUnitsOlderThan().then(() => deleteDomainsOlderThan());
 
   // Initialize env var to share test data between tests
   Cypress.env('dynamicTestData', { testUnits: [], testDomain: null });
@@ -75,7 +76,8 @@ before(() => {
 
 after(() => {
   cy.log('--- GLOBAL AFTER ---');
-  cy.deleteTestUnits();
+  const domainId = Cypress.env('dynamicTestData')?.testUnits[0]?.domains[0]?.id;
+  cy.deleteTestUnits().then(() => cy.deleteDomain(domainId));
 });
 
 // Uncaught exeptions make cypress test runs fail

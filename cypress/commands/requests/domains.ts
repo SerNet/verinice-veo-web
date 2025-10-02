@@ -16,6 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { IVeoDomain } from '../../../composables/api/queryDefinitions/domains';
+
 /// <reference types="cypress" />
 
 import { v4 as uuid } from 'uuid';
@@ -26,6 +28,7 @@ declare global {
     interface Chainable {
       createDomain: typeof createDomain;
       deleteDomain: typeof deleteDomain;
+      deleteDomainsOlderThan: typeof deleteDomainsOlderThan;
     }
   }
   interface Window {
@@ -76,4 +79,50 @@ export function deleteDomain(domainId: string = Cypress.env('dynamicTestData')?.
     // `failOnStatusCode: false` prevents the test from failing in these cases
     failOnStatusCode: false
   });
+}
+
+export function deleteDomainsOlderThan(hours = 3) {
+  const logStyles = 'color: deepPink; font-weight: bold;';
+  const someTimeAgo = new Date(Date.now() - hours * 60 * 60 * 1000);
+
+  // Get domains, and find the ones older than $hours
+  return cy
+    .veoRequest({
+      endpoint: `domains`,
+      method: 'GET',
+      failOnStatusCode: false
+    })
+    .then((response) => {
+      const domains = response.body;
+      console.log(`%cFound ${domains.length} domains.`, logStyles);
+
+      const oldDomains = domains.filter((domain: any) => {
+        const createdAt = new Date(domain.createdAt);
+        return createdAt < someTimeAgo && domain.name.startsWith('CY-');
+      });
+
+      // Log info
+      if (oldDomains.length > 0) {
+        console.log(`%cStarting to delete ${oldDomains.length} domains older than ${hours} hours...`, logStyles);
+      } else {
+        console.log(`%cNo domains are older than ${hours} hours.`, logStyles);
+        return;
+      }
+
+      // Delete domains
+      const deletionRequests = oldDomains.forEach((domain: IVeoDomain, index: number) => {
+        cy.veoRequest({
+          endpoint: `content-creation/domains/${domain.id}`,
+          method: 'DELETE',
+          failOnStatusCode: false
+        }).then((response) => {
+          if (response.status === 204) {
+            console.info(`%c${index + 1}: Deleted domain ${domain.id}`, logStyles);
+          } else {
+            console.error(`Failed to delete domain ${domain.name} | ${domain.id}. Status: ${response.status}`);
+          }
+        });
+      });
+      return Cypress.Promise.all(deletionRequests ?? []);
+    });
 }
