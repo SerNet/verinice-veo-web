@@ -26,6 +26,7 @@ import {
 import { setupVeo } from '../commands/setup';
 import { createDomain, deleteDomain } from '../commands/requests/domains';
 import '../commands/potentialImpact';
+import { createRiskDefinition } from '../commands/requests/risk-definitions';
 
 Cypress.Commands.addAll({
   veoRequest,
@@ -62,6 +63,7 @@ Cypress.Commands.addAll({
   setupVeo,
   createDomain,
   deleteDomain,
+  createRiskDefinition
 });
 
 before(() => {
