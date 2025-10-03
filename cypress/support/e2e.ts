@@ -7,7 +7,7 @@ import { importUnit } from '../commands/importUnit';
 import { handleLanguageBug, languageTo } from '../commands/language';
 import { login } from '../commands/login';
 import { navigateTo, selectFirstSubType, visitObject, visitDashboard } from '../commands/navigation';
-import { veoRequest } from '../commands/requests';
+import { veoRequest } from '../commands/requests/veoRequest';
 import { checkPagination } from '../commands/table/pagination';
 import 'cypress-axe';
 import { checkAxeViolations } from '../commands/axe';
