@@ -68,6 +68,9 @@ Cypress.Commands.addAll({
 
 before(() => {
   deleteUnitsOlderThan();
+
+  // Initialize env var to share test data between tests
+  Cypress.env('dynamicTestData', { testUnits: [], testDomain: null });
 });
 
 after(() => {
