@@ -116,6 +116,7 @@
       v-if="editMitigationsDialogVisible"
       v-model="editMitigationsDialogVisible"
       v-model:preselected-items="selectedItems"
+      :preselected-filters="{ subType: 'CTL_Safeguard' }"
       :object="editedObject"
       return-objects
     >

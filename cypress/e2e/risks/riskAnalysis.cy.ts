@@ -95,6 +95,9 @@ describe('Mitigation Measures', () => {
     cy.getCustom('[data-veo-test="add-mitigation"]').click();
     cy.contains('[data-veo-test="add-mitigating-actions"]', 'Add mitigating action').click();
 
+    // Workaround the Safeguard filter
+    cy.get('[data-testid="close-chip"]').click();
+
     // Select the first item
     cy.getCustom('[data-veo-test="dialog-card"] tbody tr input').first().check();
 
@@ -116,6 +119,8 @@ describe('Mitigation Measures', () => {
     // Confirm the item is checked
     cy.getCustom('[data-veo-test="add-mitigation"]').click();
     cy.contains('[data-veo-test="add-mitigating-actions"]', 'Add mitigating action').click();
+    // Workaround the Safeguard filter
+    cy.get('[data-testid="close-chip"]').click();
     cy.getCustom('[data-veo-test="dialog-card"] tbody tr input').first().should('be.checked');
   });
 });
