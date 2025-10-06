@@ -78,7 +78,6 @@
     "@types/lodash": "^4.14.191",
     "@types/node": "^22.0.0",
     "@types/prismjs": "^1.26.4",
-    "@types/uuid": "^10.0.0",
     "@typescript-eslint/eslint-plugin": "^8.0.0",
     "@vitejs/plugin-vue": "^6.0.0",
     "@vue/test-utils": "^2.4.6",
