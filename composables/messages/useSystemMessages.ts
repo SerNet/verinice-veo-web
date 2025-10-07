@@ -194,7 +194,7 @@ class DisplayProps {
     this.isUrgent = isUrgent(message);
     this.alertType = this.isUrgent ? 'URGENT' : message.level;
     this.isDismissable = this.alertType == 'INFO' || false;
-    this.effectiveDate = new Date(message.effective) ?? new Date();
+    this.effectiveDate = new Date(message.effective);
     this.effectiveTimer = this.setSystemMessageTimer(SystemMessageEvents.SYSTEM_MESSAGE_EXPIRED, urgencyInterval);
     this.urgencyTimer = this.setSystemMessageTimer(
       SystemMessageEvents.SYSTEM_MESSAGE_BECAME_URGENT,
