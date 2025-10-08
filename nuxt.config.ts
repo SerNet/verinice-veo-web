@@ -9,6 +9,9 @@ export default defineNuxtConfig({
   // Base configuration
   //==============================================================
   telemetry: false,
+  experimental: {
+    entryImportMap: false
+  },
 
   sourcemap: {
     server: true,
