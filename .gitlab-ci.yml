@@ -45,6 +45,34 @@ store_project_version:
     reports:
       dotenv: variables.env
 
+determine-destinations:
+  before_script: []
+  image:
+    name: alpine/git
+    entrypoint: ['']
+  stage: setup
+  script:
+    - |-
+      IMAGE_NAME="eu.gcr.io/veo-projekt/veo-web"
+      DESTINATION_ARG="--destination $IMAGE_NAME:git-${CI_COMMIT_SHA} --destination $IMAGE_NAME:pipeline-id-${CI_PIPELINE_ID}"
+      if echo "$CI_COMMIT_TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+        DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:$CI_COMMIT_TAG"
+        git fetch --tags
+        LATEST_TAG=$(git tag --list | grep -E '^[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n1)
+        if [ "$CI_COMMIT_TAG" = "$LATEST_TAG" ]; then
+          DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:latest"
+        fi
+      fi
+      if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then
+        DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:develop"
+      fi
+
+      echo "DESTINATION_ARG=$DESTINATION_ARG" > destinations.env
+  artifacts:
+    reports:
+      dotenv: destinations.env
+    expire_in: 1 hour
+
 type_check:
   stage: test
   rules:
@@ -152,12 +180,11 @@ docker_image:
   stage: build
   rules:
     - when: on_success
-  needs: ['store_project_version']
+  needs: ['store_project_version', 'determine-destinations']
   image:
     name: gcr.io/kaniko-project/executor:v1.24.0-debug
     entrypoint: ['']
   variables:
-    IMAGE_NAME: eu.gcr.io/veo-projekt/veo-web
     # this does not work in Gitlab < 15.7, so we need the before_script workaround
     # GOOGLE_APPLICATION_CREDENTIALS: $GCR_ACCESS_TOKEN
   before_script:
@@ -170,18 +197,6 @@ docker_image:
         export VEO_DEBUG="true"
         export NODE_ENV="development"
       fi
-      TAG_SUFFIX=
-      if [ "$CI_COMMIT_REF_NAME" = "master" ]; then export TAG_SUFFIX="-prod"; fi;
-      DESTINATION_ARG="--destination $IMAGE_NAME:git-${CI_COMMIT_SHA} --destination $IMAGE_NAME:pipeline-id-${CI_PIPELINE_ID}$TAG_SUFFIX"
-      if echo "$CI_COMMIT_TAG" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$'; then
-        DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:$CI_COMMIT_TAG"
-        git fetch --tags
-        LATEST_TAG=$(git tag --list | sort -V | tail -n1)
-        if [ "$CI_COMMIT_TAG" = "$LATEST_TAG" ]; then
-          DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:latest"
-        fi
-      fi
-      if [ "$CI_COMMIT_REF_NAME" = "develop" ]; then export DESTINATION_ARG="$DESTINATION_ARG --destination $IMAGE_NAME:develop"; fi;
     - /kaniko/executor --context "${CI_PROJECT_DIR}" --dockerfile "${CI_PROJECT_DIR}/Dockerfile" --cache=true $DESTINATION_ARG --build-arg VEO_DEBUG="${VEO_DEBUG}" --build-arg NODE_ENV="${NODE_ENV}" --build-arg CI_COMMIT_SHORT_SHA=${CI_COMMIT_SHORT_SHA} --build-arg CI_JOB_ID=${CI_JOB_ID} --label org.opencontainers.image.version="${PROJECT_VERSION}" --label org.opencontainers.image.revision=${CI_COMMIT_SHA} --build-arg "ftp_proxy=${ftp_proxy}" --build-arg "FTP_PROXY=${ftp_proxy}" --build-arg "http_proxy=${http_proxy}" --build-arg "HTTP_PROXY=${http_proxy}" --build-arg "https_proxy=${https_proxy}" --build-arg "HTTPS_PROXY=${https_proxy}" --build-arg "no_proxy=${no_proxy}" --build-arg "NO_PROXY=${no_proxy}"
   interruptible: true
 
