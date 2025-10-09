@@ -23,8 +23,8 @@ import {
   deleteTestUnits,
   deleteUnitsOlderThan
 } from '../commands/units';
-import '../commands/potential-impact-commands';
 import { setupVeo } from '../commands/setup';
+import '../commands/potentialImpact';
 
 Cypress.Commands.addAll({
   veoRequest,
