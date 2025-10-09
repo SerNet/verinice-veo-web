@@ -184,6 +184,7 @@
                 flat
                 class="veo-primary-action-fab"
                 data-component-name="create-object-button"
+                data-veo-test="create-object-button"
                 size="large"
                 :disabled="
                   !nestedActions.length || ability.cannot('manage', 'objects') || unitAbility.can('manage', 'units')
@@ -201,6 +202,7 @@
             :icon="mdiPlus"
             class="veo-primary-action-fab"
             data-component-name="create-object-button"
+            data-veo-test="create-object-button"
             v-bind="props"
             :aria-label="t('createObject', [createObjectLabel])"
             size="large"
