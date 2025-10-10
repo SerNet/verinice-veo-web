@@ -12,8 +12,6 @@ describe('Unit details', () => {
     setup();
   });
 
-  afterEach(() => cy.deleteUnit(Cypress.env('dynamicTestData').unit));
-
   it('checks if unit details are displayed correctly', () => {
     const testUnit = Cypress.env('dynamicTestData').unit;
 
