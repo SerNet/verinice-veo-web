@@ -24,6 +24,7 @@ import {
   deleteUnitsOlderThan
 } from '../commands/units';
 import { setupVeo } from '../commands/setup';
+import { createDomain, deleteDomain } from '../commands/requests/domains';
 import '../commands/potentialImpact';
 
 Cypress.Commands.addAll({
@@ -58,7 +59,9 @@ Cypress.Commands.addAll({
   deleteTestUnits,
   visitDashboard,
   checkAxeViolations,
-  setupVeo
+  setupVeo,
+  createDomain,
+  deleteDomain,
 });
 
 before(() => {
