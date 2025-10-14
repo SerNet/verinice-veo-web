@@ -24,6 +24,5 @@ export const LOCAL_STORAGE_KEYS = {
   LAST_UNIT: 'last-unit',
   PRIMARY_NAV_MINI_VARIANT: 'primary-navigation-drawer--mini-variant',
   FAVORITE_UNIT: 'favorite-unit',
-  FAVORITE_UNIT_DOMAIN: 'favorite-unit-domain',
-  FEATURE_FLAGS: 'feature-flags'
+  FAVORITE_UNIT_DOMAIN: 'favorite-unit-domain'
 };
