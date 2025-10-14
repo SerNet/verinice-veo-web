@@ -71,7 +71,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               {{ t('goToRiskDefintion') }}
             </v-btn>
             <RiskEvaluation
-              v-if="hasFeature('riskDefinitionEvaluation')"
               :risk-definition="riskDefinition"
               :risk-categories="riskCategories"
               :probability-levels="probabilityLevels"
@@ -79,9 +78,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               :save="save"
               :can-save="canSave"
             />
-            <v-btn v-else size="large" class="my-6" color="primary" variant="flat" :disabled="!canSave" @click="save">
-              {{ t('saveRiskDefinition') }}
-            </v-btn>
           </div>
 
           <div class="d-flex ga-2">
@@ -126,8 +122,6 @@ import type {
   IVeoRiskProbabilityLevel,
   IVeoRiskValueLevel
 } from '~/types/VeoTypes';
-
-import { hasFeature } from '~/utils/featureFlags';
 
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { t, locale } = useI18n();

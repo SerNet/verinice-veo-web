@@ -1,7 +1,6 @@
 const flagNames = {
   userSettings: 'VEO_FEATURE_FLAG_USER_SETTINGS',
   cardView: 'VEO_FEATURE_FLAG_CARD_VIEW',
-  riskDefinitionEvaluation: 'VEO_FEATURE_FLAG_RISK_DEFINITION_EVALUATION',
   shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS',
   urlParams: 'VEO_FEATURE_FLAG_URL_PARAMS',
   accessGroups: 'VEO_FEATURE_FLAG_ACCESS_GROUPS'
