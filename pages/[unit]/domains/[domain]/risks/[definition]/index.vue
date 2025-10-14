@@ -103,14 +103,30 @@ import { mdiPencil, mdiPlus } from '@mdi/js';
 import {
   createRiskCategory,
   deleteRiskCategory as deleteRiskCategoryHelper,
-  getUpdatedRiskDefinition
+  getUpdatedRiskDefinition,
+  cleanUpValueMatrix
 } from '~/components/risk/wizard/helpers';
 import { useRiskDefinitionUpdate } from '~/composables/useRiskDefinitions';
 const { t } = useVeoI18n();
-const { data: riskDefinition, reload } = useRiskDefinition();
 const route = useRoute();
 const closeConfirmationDialogVisible = ref(false);
 const categoryToDelete = ref<string | null>(null);
+
+// Handle risk definition
+const { data, reload } = useRiskDefinition();
+const riskDefinition = ref();
+
+watch(data, (newData) => {
+  if (!newData) return;
+
+  riskDefinition.value = {
+    ...data.value,
+    categories: newData.categories?.map((category) => ({
+      ...category,
+      valueMatrix: cleanUpValueMatrix(category.valueMatrix, newData.riskValues)
+    }))
+  };
+});
 
 const addRiskCategory = () => {
   const newRiskCategory = createRiskCategory();

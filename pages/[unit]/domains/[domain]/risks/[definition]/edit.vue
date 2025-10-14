@@ -106,6 +106,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <script setup lang="ts">
 import { cloneDeep, isEqual } from 'lodash';
 import {
+  cleanUpValueMatrix,
   createNewMatrixRow,
   createRiskCategory,
   getUpdatedRiskDefinition,
@@ -134,7 +135,21 @@ const route = useRoute();
 const router = useRouter();
 
 const riskCategoryId = computed(() => (route?.query.id as string) ?? '');
-const { data: riskDefinition } = useRiskDefinition();
+const { data } = useRiskDefinition();
+
+const riskDefinition = ref();
+
+watch(data, (newData) => {
+  if (!newData) return;
+
+  riskDefinition.value = {
+    ...data.value,
+    categories: newData.categories?.map((category) => ({
+      ...category,
+      valueMatrix: cleanUpValueMatrix(category.valueMatrix, newData.riskValues)
+    }))
+  };
+});
 
 const step = ref(1);
 let hasInitialData = false;

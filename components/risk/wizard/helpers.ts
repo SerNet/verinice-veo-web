@@ -163,3 +163,13 @@ export function getUpdatedRiskDefinition(
     riskValues: newRiskValues
   };
 }
+
+export function cleanUpValueMatrix(valueMatrix: IVeoRiskValueLevel[][], riskValues: IVeoRiskValueLevel[]) {
+  if (!valueMatrix?.length || !riskValues?.length) return valueMatrix;
+  return valueMatrix.map((row) =>
+    row.map((cell: IVeoRiskValueLevel) => {
+      const updatedCell = riskValues.find((r) => r?.ordinalValue === cell?.ordinalValue);
+      return updatedCell;
+    })
+  );
+}
