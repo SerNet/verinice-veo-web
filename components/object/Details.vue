@@ -39,7 +39,10 @@
       </template>
       <template #items>
         <v-window-item v-for="tab in tabs" :key="tab.key">
-          <BaseCard>
+          <BaseCard v-if="tab.key == 'graph' && graphEnabled">
+            <GraphView />
+          </BaseCard>
+          <BaseCard v-else>
             <ObjectDetailsTab
               v-if="object"
               :type="tab.key"
@@ -57,6 +60,8 @@
 
 <script setup lang="ts">
 import type { IVeoEntity } from '~/types/VeoTypes';
+import { hasFeature } from '~/utils/featureFlags';
+const graphEnabled = hasFeature('graph');
 
 const props = withDefaults(
   defineProps<{
@@ -81,7 +86,6 @@ const emit = defineEmits<{
 
 const { data: config } = useConfiguration();
 const { data: currentDomain } = useCurrentDomain();
-
 const { t, locale } = useI18n();
 const complianceControlSubTypes = computed(
   () => currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubTypes ?? []
@@ -133,6 +137,11 @@ const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; toolt
     disabled: isRiskTabDisabled.value,
     tooltip: t('risksDisabledTooltip'),
     hidden: !hasRiskTab.value
+  },
+  {
+    key: 'graph',
+    id: 'graphId',
+    hidden: !graphEnabled
   }
 ]);
 

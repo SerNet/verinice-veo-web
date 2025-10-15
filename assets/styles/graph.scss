@@ -1,0 +1,57 @@
+/*
+ * verinice.veo web
+ * Copyright (C) 2025 sernet
+ * 
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+
+.graphContainerRef {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - 215px);
+  overflow: hidden;
+}
+
+@media (min-width: 2000px) {
+  .graphContainerRef {
+    height: calc(100vh - 150px);
+  }
+}
+
+@media (min-width: 1600px) {
+  .graphContainerRef {
+    height: calc(100vh - 210px);
+  }
+}
+
+:root {
+  --graph-node-radius: 2px;
+  --graph-node-font-size: 12px;
+  --graph-node-text-color: rgba(0, 0, 0, 0.85);
+
+  --graph-bg: #ffffff;
+
+  --node-color-process: #62e4cc;
+  --node-color-control: #89c4eb;
+  --node-color-asset: #ec7265;
+  --node-color-scope: #32f47c;
+  --node-color-document: #c4c4c4;
+  --node-color-person: #fff675;
+  --node-color-incident: #ff6161;
+  --node-color-scenario: #ffa8ff;
+  --node-color-default: #655353;
+
+  --graph-link-text-color: #595959;
+  --graph-link-bg: rgba(255, 255, 255, 0.8);
+}

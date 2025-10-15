@@ -1,4 +1,5 @@
 const flagNames = {
+  graph: 'VEO_FEATURE_FLAG_GRAPH',
   userSettings: 'VEO_FEATURE_FLAG_USER_SETTINGS',
   cardView: 'VEO_FEATURE_FLAG_CARD_VIEW',
   shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS',

@@ -102,6 +102,7 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_FEATURE_FLAG_RISK_DEFINITION_EVALUATION` | `false` | If set to true, changing risk definitions will be evaluated before saving. |
 | `VEO_FEATURE_FLAG_SHORTCUTS` | `false` | If set to true, keyboard shortcuts become available |
 | `VEO_HIDE_SERNET_REFERENCES` | `false` | If set to true, logos, URLs, and images related to SerNet will be disabled. |
+| `VEO_FEATURE_FLAG_GRAPH` | `false` | If set to true, the toggle for feature flag graph gets enabled |
 
 Required env variables (prod preset):
 

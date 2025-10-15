@@ -1,0 +1,48 @@
+{
+  "nodes": [
+    {
+      "id": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/processes/0d1dc049-5825-43f2-a43e-9fdba7e99e0a",
+      "displayName": "PRO-193 Important process A",
+      "elementType": "process",
+      "elementId": "0d1dc049-5825-43f2-a43e-9fdba7e99e0a"
+    },
+    {
+      "id": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/processes/f30178b1-d97f-4f1f-9152-149ca1d6d783",
+      "displayName": "PRO-192 Important SUB process vom process A",
+      "elementType": "process",
+      "elementId": "f30178b1-d97f-4f1f-9152-149ca1d6d783"
+    },
+    {
+      "id": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/assets/359b1db5-e24f-4745-a340-b85ca3c14b0d",
+      "displayName": "AST-457 Important asset B",
+      "elementType": "asset",
+      "elementId": "359b1db5-e24f-4745-a340-b85ca3c14b0d"
+    },
+    {
+      "id": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/scopes/2bd45e31-8973-463c-959f-63733723106e",
+      "displayName": "SCP-119 Main Scope",
+      "elementType": "scope",
+      "elementId": "2bd45e31-8973-463c-959f-63733723106e"
+    }
+  ],
+  "links": [
+    {
+      "type": "CUSTOMLINKS",
+      "source": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/processes/0d1dc049-5825-43f2-a43e-9fdba7e99e0a",
+      "target": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/assets/359b1db5-e24f-4745-a340-b85ca3c14b0d",
+      "label": "notwendige Daten"
+    },
+    {
+      "type": "PART_OR_MEMBER",
+      "source": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/scopes/2bd45e31-8973-463c-959f-63733723106e",
+      "target": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/processes/0d1dc049-5825-43f2-a43e-9fdba7e99e0a",
+      "label": "enthält"
+    },
+    {
+      "type": "PART_OR_MEMBER",
+      "source": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/processes/0d1dc049-5825-43f2-a43e-9fdba7e99e0a",
+      "target": "http://localhost:8070/domains/6b506327-2f99-4319-afea-319802ad7491/processes/f30178b1-d97f-4f1f-9152-149ca1d6d783",
+      "label": "enthält"
+    }
+  ]
+}
