@@ -100,7 +100,6 @@ lint:
   needs: []
   variables:
     DEBUG: 'eslint:cli-engine'
-    ESLINT_USE_FLAT_CONFIG: false
   script:
     - npm run lint
     - if [[ ${?} -ne 0 ]]; then echo "Linting errors were found"; exit 1; fi
