@@ -36,11 +36,9 @@
 }
 
 :root {
-  --graph-node-radius: 2px;
+  --graph-font-family: 'Roboto', sans-serif;
   --graph-node-font-size: 12px;
   --graph-node-text-color: rgba(0, 0, 0, 0.85);
-
-  --graph-bg: #ffffff;
 
   --node-color-process: #62e4cc;
   --node-color-control: #89c4eb;
@@ -51,7 +49,18 @@
   --node-color-incident: #ff6161;
   --node-color-scenario: #ffa8ff;
   --node-color-default: #655353;
+}
 
+/* Graph color for light theme */
+.graphContainerRef.layer-dark {
+  --graph-link-color: #bdbdbd;
+  --graph-link-text-color: #ffffff;
+  --graph-link-bg: rgba(28, 28, 28, 0.75);
+}
+
+/* Graph color for dark theme */
+.graphContainerRef.layer-light {
+  --graph-link-color: #969696;
   --graph-link-text-color: #595959;
   --graph-link-bg: rgba(255, 255, 255, 0.8);
 }

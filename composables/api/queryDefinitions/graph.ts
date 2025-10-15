@@ -52,10 +52,7 @@ export default {
           elementId: String(params.elementId),
           elementType: String(params.elementType)
         }
-      }),
-      onDataFetched: (result) => {
-        return result;
-      }
+      })
     } as IVeoQueryDefinition<GraphParams, IGraphResult>
   }
 };

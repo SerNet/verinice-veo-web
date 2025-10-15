@@ -280,5 +280,8 @@
     "no": "Nein",
 
     "and": "Und"
+  },
+  "graph": {
+    "tooManyElements": "Zu viele benachbarte Objekte"
   }
 }

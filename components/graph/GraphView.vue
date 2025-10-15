@@ -15,12 +15,14 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <template v-if="isGraphReady">
-    <v-col cols="12">
-      <LoadingWrapper />
-    </v-col>
-  </template>
-  <div ref="graphContainerRef" class="graphContainerRef"></div>
+  <div>
+    <v-alert v-if="isTooManyElements" type="error" variant="tonal" color="primary">
+      {{ t('graph.tooManyElements') }}
+    </v-alert>
+
+    <LoadingWrapper v-else-if="isGraphReady" />
+    <div ref="graphContainerRef" class="graphContainerRef"></div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -29,10 +31,12 @@ import { ref } from 'vue';
 import { useQuery } from '~/composables/api/utils/query';
 import graphQueryDefinition from '~/composables/api/queryDefinitions/graph';
 import LoadingWrapper from '../layout/LoadingWrapper.vue';
+import { useI18n } from 'vue-i18n';
 
 const route = useRoute();
 const graphContainerRef = ref<HTMLDivElement | null>(null);
 const isload = ref(true);
+const { t } = useI18n();
 
 const graphParameters = computed(() => ({
   elementId: String(route.params.object),
@@ -40,16 +44,22 @@ const graphParameters = computed(() => ({
   domainId: String(route.params.domain)
 }));
 
-const { data } = useQuery(graphQueryDefinition.queries.fetchElementRelations, graphParameters);
+const { data, error } = useQuery(graphQueryDefinition.queries.fetchElementRelations, graphParameters, { retry: false });
 
-const graphData = computed(() => data.value);
+const isTooManyElements = computed(() => {
+  return error.value?.message?.includes('Too many related elements');
+});
+
+const graphData = computed(() => {
+  return data.value;
+});
+
 const { destroy } = useGraph(graphContainerRef, graphData, isload);
 
+// Ensure graph resources are released when component is unmounted
 onUnmounted(() => {
   destroy();
 });
 
-const isGraphReady = computed(() => isload.value && graphContainerRef);
-
-useGraph(graphContainerRef, graphData, isload);
+const isGraphReady = computed(() => isload.value && graphContainerRef.value);
 </script>
