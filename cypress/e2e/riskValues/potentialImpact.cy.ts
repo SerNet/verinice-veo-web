@@ -12,6 +12,7 @@ describe('Process Risk Impact', () => {
 
       cy.visit(`/${unitId}/domains/${domainId}/processes/PRO_DataProcessing`, { failOnStatusCode: false });
       cy.getCustom('[data-veo-test="create-object-button"]').click();
+      cy.getCustom('[data-veo-test="base-dialog"]').should('be.visible');
     });
   });
 

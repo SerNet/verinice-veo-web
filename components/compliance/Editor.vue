@@ -230,6 +230,7 @@ const { request } = useRequest();
 const { updateItem } = useRequirementImplementationQuery();
 const { data: config } = useConfiguration();
 const { data: currentDomain } = useCurrentDomain();
+
 // ===== Constants =====
 enum Status {
   Unknown = 'UNKNOWN',
