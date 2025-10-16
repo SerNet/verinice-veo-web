@@ -34,29 +34,6 @@ export type TVeoDomain = {
   raw: IVeoDomain;
 };
 
-export function useCurrentDomainUtils() {
-  const { data: currentDomain } = useCurrentDomain();
-  const { locale } = useI18n();
-  const elementTypeDefinitions = computed(() => currentDomain.value?.raw?.elementTypeDefinitions);
-
-  const getSubType = (elementType: string) =>
-    computed(() => {
-      return Object.keys(currentDomain.value?.raw?.elementTypeDefinitions?.[elementType]?.subTypes || {}).map(
-        (subType) =>
-          currentDomain.value?.raw?.elementTypeDefinitions[elementType].translations[locale.value][
-            `${elementType}_${subType}_singular`
-          ]
-      );
-    });
-  const domainColor = computed(() => currentDomain.value?.color);
-
-  return {
-    elementTypeDefinitions,
-    getSubType,
-    domainColor
-  };
-}
-
 export function useCurrentDomain() {
   const data = ref<TVeoDomain | undefined>();
   const isLoading = ref<boolean>(true);

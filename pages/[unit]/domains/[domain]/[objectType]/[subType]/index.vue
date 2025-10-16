@@ -26,7 +26,6 @@
             :domain-id="domainId"
             :filter="filter"
             :required-fields="['objectType']"
-            :available-object-types="availableSubTypes"
             @update:filter="updateRoute"
           />
         </div>
@@ -245,7 +244,6 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import CsvImportCard from '~/components/object/CsvImportCard.vue';
-import { useCurrentDomainUtils } from '~/composables/domains/useDomains';
 import type { VeoSearch } from '~/types/VeoSearch';
 import { useUnitWriteAccess } from '~/composables/useUnitWriteAccess';
 enum FILTER_SOURCE {
@@ -269,7 +267,6 @@ const { ability } = useVeoPermissions();
 
 const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
-const { getSubType } = useCurrentDomainUtils();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
 const { unitAbility } = useUnitWriteAccess();
@@ -453,9 +450,6 @@ const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, 
 
 const selectedSubtypeForCreateDialog = ref<string>('');
 
-const availableSubTypes = computed(() => {
-  return getSubType(filter.value.objectType).value;
-});
 const nestedActions = computed<INestedMenuEntries[]>(() => {
   return formSchemas.value
     ?.filter((formschema) => formschema.modelType === filter.value.objectType)
