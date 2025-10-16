@@ -150,7 +150,19 @@ watch(
 );
 
 const step = ref(1);
+
+type InitialData = {
+  probabilityLevels: IVeoRiskProbabilityLevel[];
+  riskValues: IVeoRiskValueLevel[];
+  riskCategories: IVeoRiskCategory[];
+};
+
 let hasInitialData = false;
+const initialData: InitialData = {
+  probabilityLevels: [],
+  riskValues: [],
+  riskCategories: []
+};
 
 function goForward() {
   step.value++;
@@ -404,18 +416,7 @@ function validateNames(
 }
 
 // Dirty state
-type InitialData = {
-  probabilityLevels: IVeoRiskProbabilityLevel[];
-  riskValues: IVeoRiskValueLevel[];
-  riskCategories: IVeoRiskCategory[];
-};
-
 const isDirty = ref(false);
-const initialData: InitialData = {
-  probabilityLevels: [],
-  riskValues: [],
-  riskCategories: []
-};
 
 function assignInitialData() {
   hasInitialData = true;
