@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { trim } from 'lodash';
+import validator from 'validator';
 
 export const useFormatters = () => {
   const { locale } = useI18n();
@@ -92,15 +93,28 @@ export const useRules = () => {
   };
 
   const banSpecialChars = (v: string) => (hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar'));
+
   function hasNoSpecialChar(s: string): boolean {
     if (s === '') return true; // do not test empty strings
     const re = /^[a-zA-Z0-9_-]+$/; // allowed characters
     return re.test(s);
   }
 
+  const mailValidator = (v: string) => {
+    if (typeof v !== 'string' || v.length > 254) return false;
+
+    const isValid = validator.isEmail(v, {
+      allow_utf8_local_part: false,
+      require_tld: true
+    });
+
+    return isValid || t('global.input.invalidEmail');
+  };
+
   return {
     requiredRule,
-    banSpecialChars
+    banSpecialChars,
+    mailValidator
   };
 };
 
@@ -108,6 +122,7 @@ export const useRules = () => {
  * generic helper handling error messages
  */
 export type TVeoError = Error | { message: string; cause: string };
+
 export function handleErrorMessage(err: unknown) {
   if (err instanceof Error) return { message: err.message, cause: err.cause } as Error;
   else return { message: String(err), cause: 'unknown' };
