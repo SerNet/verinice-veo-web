@@ -42,7 +42,6 @@
   "editor.schema.download": "Download schema",
   "editor.schema.warnings": "Warnings",
   "editor.schema.properties": "Schema properties",
-
   "global.button.back": "Go back",
   "global.button.cancel": "Cancel",
   "global.button.close": "Close",
@@ -59,10 +58,10 @@
   "global.input.required": "The field is required",
   "global.input.requiredfields": "* Required fields",
   "global.input.hasSpecialChar": "Input contains invalid characters! Only \"A-Z a-z 0-9 _ -\" are accepted.",
+  "global.input.invalidEmail": "Please enter a valid email address.",
   "global.logout": "Logout",
   "global.menu.collapse": "Collapse menu",
   "global.menu.expand": "Fix menu",
-
   "userMessages": {
     "info": {
       "title": "Hint"
@@ -74,7 +73,6 @@
       "title": "Error"
     }
   },
-
   "objectlist": {
     "abbreviation": "Abbreviation",
     "createdAt": "Created at",
@@ -92,12 +90,9 @@
     "actions": "Actions",
     "source": "Source"
   },
-
   "sourceTooltip": "Custom",
-
   "domain.index.title": "Dashboard",
   "unit-selection": "Unit Selection",
-
   "breadcrumbs": {
     "administration": "Account management",
     "catalog": "Catalog",
@@ -122,7 +117,6 @@
     "user-settings": "Settings",
     "edit": "Edit"
   },
-
   "compliance": {
     "status": {
       "NO": "No",
@@ -135,14 +129,12 @@
       "SYSTEM_SPECIFIC": "system specific"
     }
   },
-
   "potentialImpactsCalculated": "Calculated (High water mark)",
   "potentialImpacts": "User specified",
   "potentialImpactsEffective": "Effective",
   "potentialImpactReasons": "Reason",
   "potentialImpactExplanations": "Explanation",
   "potentialImpactEffectiveReasons": "Reason",
-
   "error": {
     "additionalProperties": "The field \"{field}\" contains attributes that aren\"t part of the object schema",
     "enum": "The field \"{field}\" contains an invalid value",
@@ -150,30 +142,22 @@
     "required": "The field \"{field}\" is required",
     "required_link": "The {position} link in \"{field}\" has to point to an object or must be removed"
   },
-
   "createEntitiesCTA": "Many paths lead to the goal... record the {0}, name your {1} or create a {2}.",
   "dashboardCTA": "One step at a time... the {0} provides you with an overall view and leads you along the lifecycle of your assets directly to the next tasks or the last activities.",
   "demoUnitCTA": "You prefer to get your bearings first? Then take a look at the {0}.",
   "lastLine": "Good luck!{0}Your verinice.TEAM",
-
   "piaMandatoryText": "Based on the data of this object, a privacy impact assessment is required.{0}Please create one using the button in the warnings tab on the right.",
-
   "mitigationAreaOfApplicationExplanation": "Mitigating actions are applied across protection goals and risk definitions.{lineBreak} All selected mitigating actions are available under the action \"Mitigating action for {risk}\"",
-
   "furtherDomainInformation": "The verinice.TEAM will successively provide further domains for verinice.veo click {here} for further information.",
-
   "residualRiskHint": "The displayed residual risk has been derived from the input data.{0}You can overwrite it with a custom value",
-
   "deleteText": "Do you really want to delete the element \"{0}\"? This action cannot be undone.",
   "fix": "Fix",
-
   "userDataExport": {
     "hint": {
       "text": "Here you can exercise your right to data portability. { linebreak } Download your data recorded in verinice to save it or use it in an external service (JSON-format, ZIP-compressed).",
       "href": "https://dsgvo-gesetz.de/art-20-dsgvo/"
     }
   },
-
   "firstSteps": {
     "channel": "On our { 0 } you can find videos about verinice.",
     "documentation": "The { 0 } describes in detail all functions of verinice.veo and explains the technical aspects. You can open this documentation at any time via the icon in the application bar at the top right.",
@@ -181,18 +165,14 @@
     "tutorial": "Context-sensitive { 0 } are available on each page for quick orientation. Available tutorials can be accessed at any time via the icon in the application bar at the top right.",
     "webinar": "You can register anytime for our regular free { 0 }."
   },
-
   "formSchemaTranslations": {
     "formSchemaTranslationNotFoundSearchAll": "No fitting formschema translation found. {0} to search all translations."
   },
-
   "linkObject": "Select {0}",
   "linkControl": "Select {0}",
-
   "inputPlaceholders": {
     "date": "mm/dd/yyyy"
   },
-
   "inputLabel": {
     "name": "Name",
     "description": "Description"
@@ -200,7 +180,6 @@
   "VdA": "Protection\u00a0approach",
   "na": "N/A",
   "CatalogItemsApplied": "catalog items applied",
-
   "unit": {
     "isAssociatingDomain": "Associating domain...",
     "isApplyingProfile": "Applying profile...",
@@ -211,7 +190,6 @@
   "keys": {
     "shift": "Shift key, used with other keys"
   },
-
   "shortcuts": {
     "navigation": {
       "home": {

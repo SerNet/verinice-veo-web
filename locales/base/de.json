@@ -42,9 +42,7 @@
   "editor.schema.download": "Schema herunterladen",
   "editor.schema.properties": "Schema-Eigenschaften",
   "editor.schema.warnings": "Hinweise",
-
   "error.title": "Es ist ein Fehler aufgetreten",
-
   "global.button.back": "Zurück",
   "global.button.cancel": "Abbrechen",
   "global.button.close": "Schließen",
@@ -61,10 +59,10 @@
   "global.input.required": "Das Feld muss ausgefüllt werden",
   "global.input.requiredfields": "* Pflichtfelder",
   "global.input.hasSpecialChar": "Eingabe enthält ungültige Zeichen. Nur \"A-Z a-z 0-9 _ -\" sind zulässig.",
+  "global.input.invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
   "global.logout": "Logout",
   "global.menu.collapse": "Menü verstecken",
   "global.menu.expand": "Menü fixieren",
-
   "userMessages": {
     "info": {
       "title": "Hinweis"
@@ -76,7 +74,6 @@
       "title": "Fehler"
     }
   },
-
   "objectlist": {
     "abbreviation": "Abkürzung",
     "createdAt": "Erstellzeitpunkt",
@@ -95,12 +92,9 @@
     "actions": "Aktionen",
     "source": "Quelle"
   },
-
   "sourceTooltip": "Benutzerdefiniert",
-
   "domain.index.title": "Dashboard",
   "unit-selection": " Auswahl der Unit",
-
   "breadcrumbs": {
     "administration": "Benutzerverwaltung",
     "catalog": "Katalog",
@@ -125,7 +119,6 @@
     "user-settings": "Einstellungen",
     "edit": "Bearbeiten"
   },
-
   "compliance": {
     "status": {
       "NO": "Nein",
@@ -138,14 +131,12 @@
       "SYSTEM_SPECIFIC": "Systemspezifisch"
     }
   },
-
   "potentialImpactsCalculated": "Berechnet (Maximumprinzip)",
   "potentialImpacts": "Nutzervorgabe",
   "potentialImpactsEffective": "Effektiv",
   "potentialImpactReasons": "Begründung",
   "potentialImpactExplanations": "Erläuterung",
   "potentialImpactEffectiveReasons": "Begründung",
-
   "error": {
     "additionalProperties": "Das Feld \"{field}\" besitzt nicht im Objektschema erlaubte Attribute.",
     "enum": "Das Feld \"{field}\" besitzt einen nicht erlaubten Wert",
@@ -153,30 +144,22 @@
     "required": "Das Feld \"{field}\" muss ausgefüllt sein",
     "required_link": "Der {position} Link in \"{field}\" muss auf ein Objekt zeigen oder entfernt werden"
   },
-
   "createEntitiesCTA": "Viele Wege führen zum Ziel... erfassen Sie die {0}, benennen Sie Ihre {1} oder legen Sie eine {2} an.",
   "dashboardCTA": "Ein Schritt nach dem anderen... Das {0} bietet Ihnen einen Gesamtüberblick und führt Sie entlang des Lebebenszyklus Ihrer Assets direkt zu den nächsten Aufgaben oder den letzten Aktivitäten.",
   "demoUnitCTA": "Sie möchten sich lieber erst orientieren? Dann werfen Sie einen Blick auf die {0}.",
   "lastLine": "Viel Erfolg wünscht!{0}Ihr verinice.TEAM",
-
   "piaMandatoryText": "Basierend auf Daten in diesem Objekt ist eine Datenschutz-Folgeabschätzung verpflichtend.{0}Bitte erstellen Sie diese über die Warnungsleiste rechts.",
-
   "mitigationAreaOfApplicationExplanation": "Mitigierende Maßnahmen gelten über Schutzziele und Risikodefinitionen hinweg.{lineBreak} Alle hier ausgewählten Maßnahmen sind unter der Maßnahme \"Mitigierende Maßnahme für {risk}\" zu finden",
-
   "furtherDomainInformation": "Das verinice.TEAM wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen, klicken Sie {here} für mehr Informationen.",
-
   "residualRiskHint": "Das angezeigte Nettorisiko wurde automatisch berechnet.{0}Sie können es allerdings überschreiben.",
-
   "deleteText": "Möchten Sie das Element \"{0}\" wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden.",
   "fix": "Beheben",
-
   "userDataExport": {
     "hint": {
       "text": "Hier können Sie Ihr Recht auf Datenübertragbarkeit wahrnehmen. { linebreak } Laden Sie Ihre in verinice erfassten Daten herunter, um sie zu sichern oder in einem externen Dienst zu verwenden (JSON-Format, ZIP-komprimiert).",
       "href": "https://dsgvo-gesetz.de/art-20-dsgvo/"
     }
   },
-
   "firstSteps": {
     "channel": "Auf unserem { 0 } finden Sie Videos zu verinice.",
     "documentation": "Die { 0 } beschreibt ausführlich alle Funktionen von verinice.veo und erläutert die technischen Aspekte. Sie können diese Dokumentation jederzeit über das Symbol in der Anwendungsleiste rechts oben öffnen.",
@@ -184,18 +167,14 @@
     "tutorial": "Zur schnellen Orientierung stehen auf jeder Seite kontextbezogene { 0 } zur Verfügung. Verfügbare Tutorials können Sie jederzeit über das Symbol in der Anwendungsleiste rechts oben aufrufen.",
     "webinar": "Sie können sich jederzeit zu unseren regelmäßigen, kostenlosen { 0 } anmelden."
   },
-
   "formSchemaTranslations": {
     "formSchemaTranslationNotFoundSearchAll": "Keine passende Formschema-Übersetzung gefunden. {0}, um alle Übersetzungen zu durchsuchen."
   },
-
   "linkObject": "{0} auswählen",
   "linkControl": "{0} auswählen",
-
   "inputPlaceholders": {
     "date": "tt.mm.jjjj"
   },
-
   "inputLabel": {
     "name": "Name",
     "description": "Beschreibung"
@@ -203,7 +182,6 @@
   "VdA": "Vorgehensweise",
   "na": "N/A",
   "CatalogItemsApplied": "Katalogartikel angewendet",
-
   "unit": {
     "isAssociatingDomain": "Verknüpfe Domäne...",
     "isApplyingProfile": "Wende Profil an...",
@@ -211,11 +189,9 @@
     "isAssociatingDomains": "Assoziiere Domänen...",
     "isCreatingUnit": "Erstelle Unit..."
   },
-
   "keys": {
     "shift": "Shift-Taste, verwendet mit anderen Tasten"
   },
-
   "shortcuts": {
     "navigation": {
       "home": {
