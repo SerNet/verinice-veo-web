@@ -60,7 +60,7 @@
                   v-model="formData.emailAddress"
                   :label="`${t('email')}*`"
                   :prepend-inner-icon="mdiEmailOutline"
-                  :rules="[requiredRule, mailAddressIsDuplicateRule, mailRegexRule]"
+                  :rules="[requiredRule, mailAddressIsDuplicateRule, mailValidator]"
                   variant="underlined"
                 />
               </v-col>
@@ -168,6 +168,7 @@ import { VeoAlertType } from '~/types/VeoTypes';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
 import { hasFeature } from '~/utils/featureFlags';
+import { useRules } from '~/composables/utils';
 
 export default defineComponent({
   props: {
@@ -240,10 +241,9 @@ export default defineComponent({
     const mailAddressIsDuplicateRule = (v: any) =>
       !props.existingAccounts.find((account) => account.emailAddress === trim(v) && account.id !== props.id) ||
       t('emailAddressAlreadyTaken').toString();
-    const mailRegexRule = (v: string) =>
-      (typeof v === 'string' && /^\w+([+.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(v)) ||
-      t('emailAddressWrongFormat').toString();
     const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
+
+    const { mailValidator } = useRules();
 
     const availableRoles = ref([
       {
@@ -329,10 +329,10 @@ export default defineComponent({
       formIsValid,
       isLoading,
       mailAddressIsDuplicateRule,
-      mailRegexRule,
       profile,
       requiredRule,
       usernameIsDuplicateRule,
+      mailValidator,
 
       t,
       globalT,
