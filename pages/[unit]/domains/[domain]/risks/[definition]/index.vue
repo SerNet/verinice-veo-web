@@ -126,20 +126,24 @@ const closeConfirmationDialogVisible = ref(false);
 const categoryToDelete = ref<string | null>(null);
 
 // Handle risk definition
-const { data, reload } = useRiskDefinition();
+const { data } = useRiskDefinition();
 const riskDefinition = ref();
 
-watch(data, (newData) => {
-  if (!newData) return;
+watch(
+  data,
+  (newData) => {
+    if (!newData) return;
 
-  riskDefinition.value = {
-    ...data.value,
-    categories: newData.categories?.map((category) => ({
-      ...category,
-      valueMatrix: cleanUpValueMatrix(category.valueMatrix, newData.riskValues)
-    }))
-  };
-});
+    riskDefinition.value = {
+      ...data.value,
+      categories: newData.categories?.map((category) => ({
+        ...category,
+        valueMatrix: cleanUpValueMatrix(category.valueMatrix, newData.riskValues)
+      }))
+    };
+  },
+  { immediate: true }
+);
 
 const addRiskCategory = () => {
   const newRiskCategory = createRiskCategory();
@@ -172,7 +176,6 @@ const confirmDeleteRiskCategory = async () => {
   // Persist the change
   await saveRiskDefinition(updatedRiskDefinition);
   categoryToDelete.value = null;
-  reload();
 };
 
 const cancelDeleteRiskCategory = () => {

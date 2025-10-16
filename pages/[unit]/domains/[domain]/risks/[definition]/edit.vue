@@ -133,17 +133,21 @@ const { data } = useRiskDefinition();
 
 const riskDefinition = ref();
 
-watch(data, (newData) => {
-  if (!newData) return;
+watch(
+  data,
+  (newData) => {
+    if (!newData) return;
 
-  riskDefinition.value = {
-    ...data.value,
-    categories: newData.categories?.map((category) => ({
-      ...category,
-      valueMatrix: cleanUpValueMatrix(category.valueMatrix, newData.riskValues)
-    }))
-  };
-});
+    riskDefinition.value = {
+      ...data.value,
+      categories: newData.categories?.map((category) => ({
+        ...category,
+        valueMatrix: cleanUpValueMatrix(category.valueMatrix, newData.riskValues)
+      }))
+    };
+  },
+  { immediate: true }
+);
 
 const step = ref(1);
 let hasInitialData = false;
