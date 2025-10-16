@@ -46,7 +46,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <script setup lang="ts">
 import { mdiPuzzle } from '@mdi/js';
 import type { TVeoDomain } from '~/composables/domains/useDomains';
-const { t } = useI18n();
 const { data: currentUnit } = useCurrentUnit();
 
 interface Props {
