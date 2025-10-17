@@ -19,6 +19,7 @@
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuerySync } from '~/composables/api/utils/query';
 import { customKebabCase } from '~/composables/useConfiguration';
+import { config as baseConfig } from '~/configuration/base/config';
 
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import type { IVeoDomainRiskDefinition } from '~/types/VeoTypes';
@@ -109,14 +110,9 @@ export function useDomains() {
   };
 }
 
-const colors = ref();
 export function useDomainColor(domainName: string): string {
-  if (!colors.value) {
-    const { data: config } = useConfiguration();
-    colors.value = config.value?.domains?.colors;
-  }
-
-  return colors.value?.[customKebabCase(domainName)] ?? colors.value.default;
+  if (!domainName) return baseConfig.domains.colors.default;
+  return baseConfig.domains.colors[customKebabCase(domainName)];
 }
 
 function map(domains: IVeoDomain[]): TVeoDomain[] {
@@ -127,7 +123,7 @@ function map(domains: IVeoDomain[]): TVeoDomain[] {
     riskDefinitions: domain.riskDefinitions,
     complianceControlSubTypes: domain.controlImplementationConfiguration?.complianceControlSubTypes || [],
     description: domain.description,
-    color: useDomainColor(domain?.name)!,
+    color: useDomainColor(domain?.name),
     raw: domain
   }));
 }
