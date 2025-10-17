@@ -33,7 +33,7 @@
     "@mdi/font": "^7.0.0",
     "@mdi/js": "^7.0.96",
     "@nuxt/kit": "^4.0.0",
-    "@nuxtjs/i18n": "^9.5.5",
+    "@nuxtjs/i18n": "^10.0.0",
     "@tanstack/vue-query": "^4.37.1",
     "@toast-ui/editor": "^3.1.0",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
