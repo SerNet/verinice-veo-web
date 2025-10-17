@@ -62,13 +62,17 @@ export function useProfiles() {
     );
   }
 
-  watch(domains, async () => {
-    // Clone domains, because they are readonly
-    const _domains = JSON.parse(JSON.stringify(domains.value));
-    const profilesPerDomain = await getProfiles({ domains: _domains });
-    profiles.value = map(profilesPerDomain);
-    isLoading.value = false;
-  });
+  watch(
+    domains,
+    async () => {
+      // Clone domains, because they are readonly
+      const _domains = JSON.parse(JSON.stringify(domains.value));
+      const profilesPerDomain = await getProfiles({ domains: _domains });
+      profiles.value = map(profilesPerDomain);
+      isLoading.value = false;
+    },
+    { immediate: true }
+  );
 
   return {
     profiles,

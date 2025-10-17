@@ -16,10 +16,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import { useQuerySync } from '~/composables/api/utils/query';
-import { customKebabCase } from '~/composables/useConfiguration';
+import { useQuery } from 'vue-query-v5';
+import { read } from '~/requests/crud';
 import { config as baseConfig } from '~/configuration/base/config';
+import { customKebabCase } from '~/composables/useConfiguration';
 
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import type { IVeoDomainRiskDefinition } from '~/types/VeoTypes';
@@ -36,75 +36,49 @@ export type TVeoDomain = {
 };
 
 export function useCurrentDomain() {
-  const data = ref<TVeoDomain | undefined>();
-  const isLoading = ref<boolean>(true);
-  const error = ref<Error | null>(null);
-  const route = useRoute();
+  const domainId = computed(() => useRoute().params.domain);
+  const queryKey = ['domains', { domainId }];
+  const enabled = computed(() => !!domainId.value);
 
-  async function getDomain() {
-    try {
-      isLoading.value = true;
-      const result = await useQuerySync(domainQueryDefinitions.queries.fetchDomain, {
-        id: route.params.domain as string
-      });
-      if (result) {
-        data.value = {
-          name: result.name,
-          abbreviation: result.abbreviation,
-          riskDefinitions: result.riskDefinitions,
-          id: result.id,
-          description: result.description,
-          complianceControlSubTypes: result.controlImplementationConfiguration?.complianceControlSubTypes || [],
-          color: useDomainColor(result.name)!,
-          raw: result
-        };
-      }
-    } catch (e: any) {
-      console.error('Error fetching domain:', e);
-      error.value = e;
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  const { data, isLoading, error } = useQuery({
+    queryKey,
+    queryFn: ({ queryKey }) => {
+      const { domainId } = queryKey[1] as { domainId: string };
+      const path = `/domains/${domainId}`;
+      return domainId ? read({ path }) : Promise.reject('no domain id');
+    },
+    enabled
+  });
 
-  if (route.params.domain) getDomain();
-
-  watch(
-    () => route.params.domain,
-    () => {
-      if (route.params.domain) getDomain();
-    }
-  );
+  const currentDomain = computed(() => {
+    if (!data.value) return;
+    return map([data.value])[0];
+  });
 
   return {
-    data,
+    data: currentDomain,
     isLoading,
-    error,
-    refresh: getDomain
+    error
   };
 }
 
 export function useDomains() {
-  const data = ref<TVeoDomain[]>([]);
-  const isLoading = ref<boolean>(true);
-  const error = ref<Error | null>(null);
-
-  async function getDomains() {
-    try {
-      isLoading.value = true;
-      const result = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
-      data.value = map(result);
-    } catch (e: any) {
-      error.value = e;
-    } finally {
-      isLoading.value = false;
+  const queryKey = ['domains'];
+  const { data, isLoading, error } = useQuery({
+    queryKey,
+    queryFn: () => {
+      const path = '/domains';
+      return read({ path });
     }
-  }
+  });
 
-  getDomains();
+  const domains = computed(() => {
+    if (!data.value) return [];
+    return map(data.value);
+  });
 
   return {
-    data,
+    data: domains,
     isLoading,
     error
   };
