@@ -67,7 +67,8 @@ export function createDomain(domainData: TestDomain = { ...defaultTestDomain, na
 }
 
 export function deleteDomain(domainId: string = Cypress.env('dynamicTestData')?.testUnits[0]?.domains[0]?.id) {
-  if (!domainId) return;
+  const isTestDomain = Cypress.env('dynamicTestData')?.testUnits[0]?.domain?.name.startsWith('CY-TEST-DOMAIN-');
+  if (!domainId || !isTestDomain) return;
   return cy.veoRequest({
     endpoint: `content-creation/domains/${domainId}`,
     method: 'DELETE',
