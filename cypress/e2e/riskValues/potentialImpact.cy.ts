@@ -1,6 +1,6 @@
 import { setupVeo } from '../../commands/setup';
 
-const IMPACT_LEVELS = ['negligible', 'limited', 'considerable', 'existentially threatening'] as const;
+const IMPACT_LEVELS = ['Negligible', 'Limited', 'Considerable', 'Existentially threatening'] as const;
 const REASONS = ['Manual', 'Distributive', 'Cumulative'] as const;
 const CRITERIA = ['Confidentiality', 'Integrity', 'Availability', 'Resilience'] as const;
 
