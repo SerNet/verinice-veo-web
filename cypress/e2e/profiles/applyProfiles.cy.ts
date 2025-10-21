@@ -1,30 +1,19 @@
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
-
-let unitDetails: UnitDetails;
-
 describe('Apply Profiles', () => {
   beforeEach(() => {
-    unitDetails = generateUnitDetails('profiles');
-    cy.login();
-    cy.createUnit(unitDetails);
+    cy.setupVeo('profiles', ['DS-GVO']);
   });
-
-  afterEach(() => cy.deleteUnit(unitDetails.name));
 
   it('applies the DS-GVO demo profile to the test unit', () => {
     const profileName = 'Beispieldaten';
-    const unitId = Cypress.env(unitDetails.name).unitId;
-    const domainId = Cypress.env(unitDetails.name).domains[0].id;
-
-    cy.log(JSON.stringify(Cypress.env(unitDetails.name)));
+    const testUnit = Cypress.env('dynamicTestData').testUnits[0];
 
     // Per default test units are associated with the DS-GVO Domain
     cy.acceptAllCookies();
     cy.goToUnitSelection();
-    cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
+    cy.getVeoTestUnitCard(testUnit.name).as('testUnitCard');
 
     // Go to profiles
-    cy.getCustom('@testUnitCard').within((_card) => {
+    cy.getCustom('@testUnitCard').within((_card: JQuery<HTMLElement>) => {
       cy.getCustom('[data-veo-test="apply-profiles-link"]').click();
     });
 
@@ -40,7 +29,7 @@ describe('Apply Profiles', () => {
     cy.wait(['@applyProfile']).its('response.statusCode').should('eq', 204);
 
     // Check redirect to unit dashboard
-    cy.url().should('be.equal', `${Cypress.config('baseUrl')}/${unitId}/domains/${domainId}`);
+    cy.url().should('be.equal', `${Cypress.config('baseUrl')}/${testUnit.unitId}/domains/${testUnit.domains[0].id}`);
 
     cy.testDashboardWidgets();
   });
