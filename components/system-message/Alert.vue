@@ -30,7 +30,7 @@
         :no-close-button="!message.displayProps.isDismissable"
         @update:model-value="message.displayProps.isShown = false"
       >
-        <div class="d-flex">
+        <div v-if="dateIsValid(message.displayProps.effectiveDate)" class="d-flex">
           <v-icon :icon="mdiAlarm" />
           <span>&nbsp;</span>
           <span>{{ formatTime(message.displayProps.effectiveDate).value }}</span>
@@ -46,6 +46,8 @@ import { useFormatters } from '~/composables/utils';
 import { TSystemMessage } from '~/composables/messages/useSystemMessages';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { mdiAlarm } from '@mdi/js';
+import { dateIsValid } from '~/lib/utils';
+
 defineProps<{ messages: TSystemMessage[] }>();
 const { locale } = useI18n();
 const { formatTime } = useFormatters();

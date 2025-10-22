@@ -77,10 +77,8 @@ export function useSystemMessages() {
     async () => {
       if (!data.value?.length) return;
       if (messages.value.length) await killTimers(messages.value);
-
       window.addEventListener(SystemMessageEvents.SYSTEM_MESSAGE_BECAME_URGENT, makeMesssageUrgentHandler);
       window.addEventListener(SystemMessageEvents.SYSTEM_MESSAGE_EXPIRED, hideMessageHandler);
-
       messages.value = handleMessages(data.value);
     },
     { immediate: true }
@@ -135,7 +133,6 @@ function handleMessages(newMessages: IVeoSystemMessage[]): TSystemMessage[] {
     if (oldMessage) {
       return addDisplayProps(newMessage, { isShown: oldMessage.displayProps.isShown });
     }
-
     return addDisplayProps(newMessage);
   });
 
@@ -145,7 +142,11 @@ function handleMessages(newMessages: IVeoSystemMessage[]): TSystemMessage[] {
 /** @description Removes messages users do not need to see. E.g because they are past their effective date. */
 function getRelevantMessages(message: TSystemMessage) {
   const now = new Date();
-  return now.valueOf() < message.displayProps.effectiveDate.valueOf();
+  const effectiveDate = message.displayProps?.effectiveDate;
+
+  if (!effectiveDate || isNaN(effectiveDate.valueOf())) return true; // returns true even if 'Invalid date' or null/undefined
+
+  return effectiveDate.valueOf() >= now.valueOf();
 }
 
 /** @description Determines if a message is urgent. **/
