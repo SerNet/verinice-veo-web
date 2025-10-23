@@ -102,11 +102,11 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
     <template #footer>
       <div class="d-flex justify-space-between">
-        <v-btn v-if="step > 1" size="large" class="my-6" variant="outlined" @click="handleBackClick">
-          <h1 style="font-size: unset">{{ globalT('global.button.back') }}</h1>
+        <v-btn v-if="step > 1" size="large" class="my-6" @click="handleBackClick">
+          {{ globalT('global.button.back') }}
         </v-btn>
 
-        <v-btn v-if="step === 1" to="/units" size="large" class="my-6" variant="outlined" @click="blurActiveElement">
+        <v-btn v-if="step === 1" to="/units" size="large" class="my-6" @click="blurActiveElement">
           {{ t('goToUnitAdmin') }}
         </v-btn>
 
@@ -118,7 +118,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           size="large"
           class="my-6"
           color="primary"
-          variant="outlined"
           :disabled="!canClickNext"
           @click="handleNextClick"
         >
@@ -268,37 +267,42 @@ const Description: TInlineComponent = {
   props: ['step'],
   data: () => ({ t }),
   template: `
-  <v-card class="my-3">
+    <v-card class="my-3">
       <v-alert
-  type="info"
-  variant="tonal"
-  :title="t(\`explanation.\${this.step}\`)"
-  :text="t(\`hint.\${this.step}\`)"
-></v-alert>
+        type="info"
+        variant="tonal"
+        :title="t(\`explanation.\${this.step}\`)"
+        :text="t(\`hint.\${this.step}\`)"
+      ></v-alert>
     </v-card>
   `
 };
+
 // Event listener for Enter key
 function handleBackClick() {
   step.value--;
   blurActiveElement();
 }
+
 function handleNextClick() {
   if (canClickNext) {
     step.value++;
   }
   blurActiveElement();
 }
+
 function handleCreateClick() {
   createUnit();
   blurActiveElement();
 }
+
 function blurActiveElement() {
   const activeElement = document.activeElement as HTMLElement;
   if (activeElement) {
     activeElement.blur();
   }
 }
+
 const handleEnterPress = (event: KeyboardEvent) => {
   if (event.key === 'Enter') {
     event.preventDefault();
