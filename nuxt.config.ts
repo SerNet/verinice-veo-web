@@ -83,14 +83,7 @@ export default defineNuxtConfig({
       featureFlags: createFeatureFlags(process.env)
     }
   },
-  // Modules are buildtime only. Can be used to modify build behaviour
-  modules: [
-    '@nuxt/content',
-    '@nuxtjs/i18n',
-    './modules/vuetify-sass-variables.ts',
-    'nuxt-font-loader',
-    '@nuxt/test-utils/module'
-  ],
+  modules: ['@nuxt/content', '@nuxtjs/i18n', 'nuxt-font-loader', '@nuxt/test-utils/module'],
 
   build: {
     transpile: ['vuetify', 'hast-util-to-string', 'micromark']

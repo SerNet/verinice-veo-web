@@ -297,7 +297,7 @@ const render = () =>
         },
         (slots.default ? slots.default() : [])
           // @ts-ignore TODO #3066 __name does not exist?
-          .filter((slot) => slot.type.__name === 'Page')
+          .filter((slot) => slot.type.__name === 'BasePage')
           .map((slotItem, index) => {
             if (slotItem.props) {
               slotItem.props.isPageWrapperChild = true;
