@@ -21,18 +21,17 @@ import { read } from '~/requests/crud';
 import { config as baseConfig } from '~/configuration/base/config';
 import { customKebabCase } from '~/composables/useConfiguration';
 
-import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import type { IVeoDomain, IVeoDomainTranslations } from '~/composables/api/queryDefinitions/domains';
 import type { IVeoDomainRiskDefinition } from '~/types/VeoTypes';
 
 export type TVeoDomain = {
   name: string;
   id: string;
-  abbreviation: string;
-  description: string;
   riskDefinitions: { [key: string]: IVeoDomainRiskDefinition };
   complianceControlSubTypes: string[];
   color: string;
   raw: IVeoDomain;
+  translations: IVeoDomainTranslations;
 };
 
 export function useCurrentDomain() {
@@ -92,12 +91,11 @@ export function useDomainColor(domainName: string): string {
 function map(domains: IVeoDomain[]): TVeoDomain[] {
   return domains.map((domain) => ({
     name: domain.name,
-    abbreviation: domain.abbreviation,
     id: domain.id,
     riskDefinitions: domain.riskDefinitions,
     complianceControlSubTypes: domain.controlImplementationConfiguration?.complianceControlSubTypes || [],
-    description: domain.description,
     color: useDomainColor(domain?.name),
-    raw: domain
+    raw: domain,
+    translations: domain.translations
   }));
 }

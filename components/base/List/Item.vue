@@ -85,6 +85,7 @@ interface Props {
   hasLabel?: boolean;
   itemUrl?: string;
 }
+const { t, locale } = useI18n();
 withDefaults(defineProps<Props>(), {
   hasLabel: false,
   itemUrl: undefined
@@ -93,15 +94,26 @@ withDefaults(defineProps<Props>(), {
 const slots = useSlots();
 const hasDetailsSlot = computed(() => !!slots?.['details']);
 const hasBottomSlots = computed(() => !!(slots?.['bottom-right'] || slots?.['bottom-left']));
-const { t } = useI18n();
+function getItemField(item: any, field: 'name' | 'description'): string {
+  if (!item) return '';
+  return !item.domainId ? item?.translations?.[locale.value]?.[field] : item?.[field];
+}
 
 const ItemDetails: TInlineComponent = {
   props: ['item'],
-  data: () => ({ t }),
+  data: () => ({ t, locale }),
+  computed: {
+    itemName(): string {
+      return getItemField(this.item, 'name');
+    },
+    itemDescription(): string {
+      return getItemField(this.item, 'description') ?? t('noDescription');
+    }
+  },
   template: `
-    <v-card-title v-text="item.name"></v-card-title>
-    <v-card-subtitle v-if="item.metaData" v-text="item.metaData"></v-card-subtitle>
-    <v-card-text data-veo-test="item-card-text" v-text="item.description || t('noDescription')"></v-card-text>
+    <v-card-title v-text="itemName"></v-card-title>
+    <v-card-subtitle v-if="item?.metaData" v-text="item.metaData"></v-card-subtitle>
+    <v-card-text data-veo-test="item-card-text"  v-text="itemDescription"></v-card-text>
 `
 };
 </script>

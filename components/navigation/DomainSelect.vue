@@ -100,7 +100,7 @@ defineEmits<{
 }>();
 
 const route = useRoute();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
 const fetchUnitDomainsQueryParameters = computed(() => ({
@@ -115,12 +115,15 @@ const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
 const closeMenu = ref();
 
 const items = computed(
-  () => (domains.value || []).find((domain: any) => domain.id === route.params.domain)?.name || []
+  () =>
+    (domains.value || []).find((domain: any) => domain.id === route.params.domain)?.name ||
+    (domains.value || []).find((domain: any) => domain.id === route.params.domain)?.translations?.[locale.value].name ||
+    []
 );
 const itemSelection = computed(() =>
   (domains.value || []).map((domain: any) => ({
     value: domain.id,
-    title: domain.name
+    title: domain?.name || domain?.translations?.[locale.value].name
   }))
 );
 

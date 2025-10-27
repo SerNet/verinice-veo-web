@@ -254,10 +254,10 @@ const onStatusChange = (newValue: string, domainId: string) => {
 const availableDomains = computed(
   () =>
     domains.value?.map((domain) => ({
-      abbreviation: domain.abbreviation,
-      description: domain.description,
+      abbreviation: domain?.translations?.[locale.value].abbreviation,
+      description: domain?.translations?.[locale.value].description,
       id: domain.id,
-      name: domain.name
+      name: domain?.translations?.[locale.value].name || domain?.name
     })) ?? []
 );
 

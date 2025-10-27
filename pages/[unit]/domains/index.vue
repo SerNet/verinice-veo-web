@@ -35,7 +35,7 @@
             v-for="item in allUnitDomains"
             :key="item.id"
             :title="item.name"
-            :subtitle="item.description"
+            :subtitle="item?.translations?.[locale]?.description"
             :to="`/${route.params.unit}/domains/${item.id}`"
           />
         </v-list>
@@ -73,7 +73,7 @@ const fetchUnitDomainsQueryParameters = computed(() => ({
 }));
 const { data: allUnitDomains, isFetching: domainsFetching } = useFetchUnitDomains(fetchUnitDomainsQueryParameters);
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-index.json"></i18n>

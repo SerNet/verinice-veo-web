@@ -61,12 +61,16 @@ export interface IProfile {
   elements: IVeoEntity[];
   risks: IVeoRisk[];
 }
-
+export interface IVeoDomainTranslations {
+  [lang: string]: {
+    name: string;
+    abbreviation: string;
+    description: string;
+  };
+}
 export interface IVeoDomain extends IVeoBaseObject {
   _self: string;
   name: string;
-  abbreviation: string;
-  description: string;
   catalogs: any[];
   riskDefinitions: {
     [key: string]: IVeoDomainRiskDefinition;
@@ -85,6 +89,7 @@ export interface IVeoDomain extends IVeoBaseObject {
     complianceControlSubTypes?: string[];
     mitigationControlSubType?: string;
   };
+  translations: IVeoDomainTranslations;
 }
 
 export function getSubTypes(domain: IVeoDomain, elementType: string): string[] {

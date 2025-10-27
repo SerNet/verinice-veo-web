@@ -17,7 +17,7 @@ describe('Add domains', () => {
     // DS-GVO is associated on creating the test unit,
     // IT-Grundschutz will be added in this test, thus we check against both
     const domainNames = ['DS-GVO', 'IT-Grundschutz'];
-    const selectors = ['[data-veo-test="domain-card-checkbox-itgs"]'];
+    const selectors = ['[data-veo-test="domain-card-checkbox-it-grundschutz"]'];
 
     // Get the test unit
     cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');

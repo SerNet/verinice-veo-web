@@ -158,7 +158,7 @@ export default defineComponent({
   setup(props) {
     const config = useRuntimeConfig();
     const route = useRoute();
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { link } = useLinkObject();
@@ -314,7 +314,7 @@ export default defineComponent({
       },
       // TODO #3866: Remove this once we have a proper ISO group control
       subType:
-        domain.value?.abbreviation === 'ISO' ?
+        domain.value?.translations?.[locale.value]?.abbreviation === 'ISO' ?
           'CTL_ISOGroup'
         : domain.value?.controlImplementationConfiguration?.mitigationControlSubType,
       status: 'NEW',

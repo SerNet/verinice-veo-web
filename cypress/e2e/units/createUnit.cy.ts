@@ -9,7 +9,10 @@ describe('create units', () => {
     unitName: `TEST-NAME-${Math.random()}`,
     unitDesc: 'TEST DESCRIPTION FROM `createUnit.cy.ts`',
     domains: ['DS-GVO', 'IT-Grundschutz'],
-    domainSelectors: ['[data-veo-test="domain-card-checkbox-ds-gvo"]', '[data-veo-test="domain-card-checkbox-itgs"]']
+    domainSelectors: [
+      '[data-veo-test="domain-card-checkbox-ds-gvo"]',
+      '[data-veo-test="domain-card-checkbox-it-grundschutz"]'
+    ]
   };
 
   type TestData = typeof testData;

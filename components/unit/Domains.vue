@@ -31,7 +31,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <template #prepend="{ item: d }">
           <v-checkbox
             v-model="selected"
-            :data-veo-test="`domain-card-checkbox-${d?.abbreviation ? d.abbreviation.toLowerCase() : ''}`"
+            :data-veo-test="`domain-card-checkbox-${d?.name ? d?.name.toLowerCase() : ''}`"
             color="primary"
             :value="d"
             :aria-label="`domain-${domain.name}`"

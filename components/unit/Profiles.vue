@@ -51,7 +51,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           </template>
 
           <template #bottom-left="{ item: p }">
-            <DomainChip :domain-name="p.domainName" />
+            <DomainChip :domain-id="p.domainId" />
           </template>
 
           <template #prepend="{ item: p }">
@@ -92,8 +92,8 @@ withDefaults(defineProps<Props>(), {
 });
 
 // Helper
-const { t } = useI18n();
-
+const { t, locale } = useI18n();
+const { data: allDomains } = useDomains();
 // State
 const selectedProfile = defineModel<TVeoProfile>();
 
@@ -113,17 +113,26 @@ const LanguageChip: TInlineComponent = {
 };
 
 const DomainChip: TInlineComponent = {
-  props: ['domainName'],
-  data: () => ({ mdiPuzzle, useDomainColor }),
+  props: ['domainId'],
+  data: () => ({ mdiPuzzle, useDomainColor, allDomains, locale }),
+
+  // This computed property replaces each domain with its matching full domain from allDomains based on id.
+  computed: {
+    renderedDomain(): any[] {
+      const allDomainsArray = Array.isArray(this.allDomains) ? this.allDomains : [];
+      const fullDomain = allDomainsArray.find((ad: any) => ad.id === this.domainId);
+      return fullDomain;
+    }
+  },
   template: `
     <v-chip
       label
       :prepend-icon="mdiPuzzle"
       variant="outlined"
       size="small"
-      :color="useDomainColor(domainName)"
+       :color="useDomainColor(renderedDomain?.translations?.[locale]?.name)"
     >
-      {{ domainName }}
+      {{ renderedDomain?.translations?.[locale]?.name ||  renderedDomain?.name}} 
     </v-chip>
   `
 };

@@ -132,7 +132,7 @@ import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import type { TVeoUnit } from '~/composables/units/useUnits';
 import type { TInlineComponent } from '~/types/utils';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 // Unit Data
 const { data: veoUnits, isLoading: isLoadingUnits, invalidateUnitCache } = useUnits();
@@ -140,7 +140,7 @@ const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
 const { keycloak } = useVeoUser();
 const unitWriteAccess = keycloak.value?.tokenParsed?.unit_write_access ?? [];
-
+const { data: allDomains } = useDomains();
 const canUpdateUnit = computed(() => ability.value.can('update', 'units'));
 const canDeleteUnit = computed(() => ability.value.can('delete', 'units'));
 function canManageUnit(unit: TVeoUnit) {
@@ -300,7 +300,14 @@ const UnitActions: TInlineComponent = {
 
 const DomainActions: TInlineComponent = {
   props: ['domains', 'domainsUrl', 'canEditDomains'],
-  data: () => ({ mdiPuzzle, mdiPlus, t, useDomainColor }),
+  data: () => ({ mdiPuzzle, mdiPlus, t, useDomainColor, allDomains, locale }),
+
+  methods: {
+    getDomainLabel(domain) {
+      const raw = (this.allDomains as any)?.find((d: any) => d.id === domain?.id);
+      return raw?.translations?.[(this as any).locale]?.name || domain?.name || '';
+    }
+  },
   template: `
     <!-- Display domain chips -->
     <v-chip
@@ -313,7 +320,7 @@ const DomainActions: TInlineComponent = {
       class="domain-btn"
       size="x-small"
     >
-      {{ domain.name }}
+     {{ getDomainLabel(domain) }}
     </v-chip>
 
     <!-- Edit/Add Domains button with tooltip -->
