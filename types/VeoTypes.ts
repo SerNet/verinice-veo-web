@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { MaybeRef } from '@vueuse/core';
+import type { MaybeRef } from 'vue';
 import { JSONSchema7TypeName } from 'json-schema';
 
 import { IAlertButton } from '~/components/base/Alert.vue';
