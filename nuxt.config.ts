@@ -1,4 +1,5 @@
 import { resolve } from 'path';
+import vuetify from 'vite-plugin-vuetify';
 
 // Types
 import { LOCALES } from './types/locales';
@@ -101,7 +102,14 @@ export default defineNuxtConfig({
           additionalData: '@use "@/assets/styles/global.scss" as *;'
         }
       }
-    }
+    },
+    plugins: [
+      vuetify({
+        styles: {
+          configFile: 'assets/styles/settings.scss'
+        }
+      })
+    ]
   },
 
   //==============================================================
