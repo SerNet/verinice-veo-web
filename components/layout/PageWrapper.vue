@@ -23,8 +23,7 @@
 import { PropType } from 'vue';
 import { isObject } from 'lodash';
 import { useDisplay } from 'vuetify';
-
-import VSkeletonLoader from '~/components/VSkeletonLoader.vue'; // TODO: import { VSkeletonLoader } from 'vuetify/components'; as soon as vuetify adds it back
+import { VSkeletonLoader } from 'vuetify/components';
 import LayoutCollapseButton from '~/components/layout/CollapseButton.vue';
 
 const props = defineProps({
