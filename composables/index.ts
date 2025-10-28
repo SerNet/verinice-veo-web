@@ -19,7 +19,7 @@
 /** Auto import nested exports */
 export { useDomains, useDomainColor, useCurrentDomain } from '~/composables/domains/useDomains';
 export { useProfiles } from '~/composables/profiles/useProfiles';
-export { useUnits, useCurrentUnit } from '~/composables/units/useUnits';
+export { useUnit, useUnits } from '~/composables/units/useUnits';
 export { useMutation } from '~/composables/api/utils/mutation';
 export { useActions, usePerformActions } from '~/composables/actions/useActions';
 export { useSearch, getSearchQueryParameters, useUrlFilters } from '~/composables/search/useSearch';

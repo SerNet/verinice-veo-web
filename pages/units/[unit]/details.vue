@@ -63,21 +63,25 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 const { update, isLoading: isUpdatingUnit } = useUpdateUnit();
 
 // State
-const { data: currentUnit, isLoading: isLoadingCurrentUnit } = useCurrentUnit();
+const { data: currentUnit, isLoading: isLoadingCurrentUnit } = useUnit();
 
 const { setLoading, clearLoading } = useGlobalLoadingState();
 
 // Component state
 const unitDetails = ref<UnitDetails>();
-watch(isLoadingCurrentUnit, (): void => {
-  if (isLoadingCurrentUnit.value) return;
+watch(
+  isLoadingCurrentUnit,
+  (): void => {
+    if (isLoadingCurrentUnit.value) return;
 
-  // unitDetails: set initial values
-  unitDetails.value = {
-    name: currentUnit.value?.name,
-    description: currentUnit.value?.description
-  };
-});
+    // unitDetails: set initial values
+    unitDetails.value = {
+      name: currentUnit.value?.name,
+      description: currentUnit.value?.description
+    };
+  },
+  { immediate: true }
+);
 
 // Data to be posted
 const unit = computed(() => ({

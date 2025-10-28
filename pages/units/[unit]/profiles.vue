@@ -98,7 +98,7 @@ const { createLink } = useCreateLink();
 const { setLoading, clearLoading } = useGlobalLoadingState();
 
 // Data
-const { data: currentUnit } = useCurrentUnit();
+const { data: currentUnit } = useUnit();
 const { profiles } = useProfiles();
 
 // State

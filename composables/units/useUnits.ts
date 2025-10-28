@@ -16,11 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { useQuerySync, useQuery } from '~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+
+import { useQuery as useQuery5 } from 'vue-query-v5';
+import { read } from '~/requests/crud';
 
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
@@ -48,39 +51,34 @@ export type TVeoUnit = {
   raw: IVeoUnit;
 };
 
-const queryKey = ['units', 'unit'];
+export function useUnit(id?: Ref<string>) {
+  const unitId = computed(() => (id?.value ? id.value : useRoute().params.unit));
+  const queryKey = ['units', { unitId }];
+  const enabled = computed(() => !!unitId.value);
 
-export function useCurrentUnit() {
-  const data = ref<TVeoUnit | null>(null);
-  const isLoading = ref(false);
-  const queryClient = useQueryClient();
+  const { data, isLoading, error } = useQuery5({
+    queryKey,
+    queryFn: ({ queryKey }) => {
+      const { unitId } = queryKey[1] as { unitId: string };
+      const path = `/units/${unitId}`;
+      return unitId ? read({ path }) : Promise.reject('no unit id');
+    },
+    enabled
+  });
 
-  async function fetchCurrentUnit() {
-    const route = useRoute();
-    isLoading.value = true;
-
-    watch(
-      () => route.params.unit,
-      async () => {
-        if (!route.params.unit) return;
-        // @ts-ignore TODO #3066 not assignable
-        const result = await useQuerySync(unitQueryDefinitions.queries.fetch, { id: route.params.unit });
-        data.value = mapUnitValues({ unit: result });
-        isLoading.value = false;
-      },
-      { immediate: true }
-    );
-  }
-
-  fetchCurrentUnit();
+  const unit = computed(() => {
+    if (!data.value) return;
+    return mapUnitValues({ unit: data.value });
+  });
 
   return {
-    data,
+    data: unit,
     isLoading,
-    invalidateUnitCache: () => queryClient.invalidateQueries({ queryKey }, { cancelRefetch: true })
+    error
   };
 }
 
+const queryKey = ['units', 'unit'];
 export function useUnits() {
   const units = ref<TVeoUnit[] | null>(null);
   const queryClient = useQueryClient();
