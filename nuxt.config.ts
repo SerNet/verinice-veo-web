@@ -84,7 +84,7 @@ export default defineNuxtConfig({
       featureFlags: createFeatureFlags(process.env)
     }
   },
-  modules: ['@nuxt/content', '@nuxtjs/i18n', 'nuxt-font-loader', '@nuxt/test-utils/module'],
+  modules: ['@nuxt/content', '@nuxtjs/i18n', '@nuxt/test-utils/module', '@nuxt/fonts'],
 
   build: {
     transpile: ['vuetify', 'hast-util-to-string', 'micromark']
@@ -147,18 +147,5 @@ export default defineNuxtConfig({
     locales: LOCALES,
     defaultLocale: 'de',
     langDir: '../locales/base/'
-  },
-
-  fontLoader: {
-    local: [
-      {
-        src: '/Roboto-Regular.ttf',
-        family: 'Roboto'
-      },
-      {
-        src: '/OpenSans-Regular.ttf',
-        family: 'Open Sans'
-      }
-    ]
   }
 });
