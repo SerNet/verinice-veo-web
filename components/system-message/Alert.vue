@@ -48,7 +48,8 @@ import { VeoAlertType } from '~/types/VeoTypes';
 import { mdiAlarm } from '@mdi/js';
 import { dateIsValid } from '~/lib/utils';
 
-defineProps<{ messages: TSystemMessage[] }>();
+const props = defineProps<{ messages: TSystemMessage[] }>();
+const messages = ref(props.messages.map((msg) => reactive({ ...msg })));
 const { locale } = useI18n();
 const { formatTime } = useFormatters();
 </script>

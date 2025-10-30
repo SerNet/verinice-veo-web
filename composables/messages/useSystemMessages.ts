@@ -125,11 +125,12 @@ function handleMessages(newMessages: IVeoSystemMessage[]): TSystemMessage[] {
 
   const messages = newMessages?.map((newMessage) => {
     const oldMessage = oldMessages.find((om) => om.id == newMessage.id);
-
     if (isUrgent(newMessage)) {
       return addDisplayProps(newMessage, { isShown: true });
     }
-
+    if (!newMessage.effective) {
+      return addDisplayProps(newMessage, { isShown: true });
+    }
     if (oldMessage) {
       return addDisplayProps(newMessage, { isShown: oldMessage.displayProps.isShown });
     }
@@ -142,11 +143,9 @@ function handleMessages(newMessages: IVeoSystemMessage[]): TSystemMessage[] {
 /** @description Removes messages users do not need to see. E.g because they are past their effective date. */
 function getRelevantMessages(message: TSystemMessage) {
   const now = new Date();
-  const effectiveDate = message.displayProps?.effectiveDate;
-
-  if (!effectiveDate || isNaN(effectiveDate.valueOf())) return true; // returns true even if 'Invalid date' or null/undefined
-
-  return effectiveDate.valueOf() >= now.valueOf();
+  const effectiveDate = message.effective;
+  if (!effectiveDate) return true;
+  return new Date(effectiveDate) >= now;
 }
 
 /** @description Determines if a message is urgent. **/
@@ -177,7 +176,7 @@ class DisplayProps {
   isUrgent: boolean;
   alertType: IVeoSystemMessageAlertType;
   isDismissable: boolean;
-  effectiveDate: Date;
+  effectiveDate: Date | null;
   effectiveTimer: SystemMessageTimer;
   urgencyTimer: SystemMessageTimer;
 
@@ -210,13 +209,18 @@ class DisplayProps {
   }
 
   calculateTimeToEffectiveDate(date: Date) {
+    if (!date) return null;
     const now = new Date();
     return date.valueOf() - now.valueOf();
   }
 
   setSystemMessageTimer(eventType: string, urgencyInterval: number, timeOffset = 0) {
+    if (!this.effectiveDate) return;
+
     const timers = eventType == SystemMessageEvents.SYSTEM_MESSAGE_EXPIRED ? effectiveTimeouts : urgencyTimeouts;
-    const timeout = this.calculateTimeToEffectiveDate(this.effectiveDate) - timeOffset;
+    const timeToEffective = this.calculateTimeToEffectiveDate(this.effectiveDate);
+    if (timeToEffective === null) return;
+    const timeout = timeToEffective - timeOffset;
 
     // Do not set up new timer if a message already has a running timer
     if (timers.value.find((t) => t.messageId == this.messageId)) return;

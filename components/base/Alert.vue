@@ -50,8 +50,8 @@
           :key="index"
           class="mt-4"
           variant="outlined"
-          @click="button.onClick"
           :data-veo-test="button.dataVeoTest ?? `alert-button-${index}`"
+          @click="button.onClick"
         >
           {{ button.text }}
         </v-btn>
