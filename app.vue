@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-import { addHolidayTheme } from '~/components/holidayThemes';
 import { useLocale } from 'vuetify';
 const { current } = useLocale();
 const lang = computed(() => current.value);
@@ -32,5 +31,4 @@ useHead({
 
   link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
 });
-addHolidayTheme();
 </script>
