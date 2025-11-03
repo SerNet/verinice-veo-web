@@ -15,7 +15,8 @@
     "createUnit": "create unit",
     "firstStep": "first steps",
     "firstStepHint": "Goto Welcome-Page to read about how to start",
-    "createUnitHint": "Create your first unit"
+    "createUnitHint": "Create your first unit",
+    "cannotCreateUnitHint": "Unfortunately, you do not have permission to create a unit. Please contact your administrator."
   },
   "de": {
     "addProfiles": "Profile anwenden",
@@ -33,6 +34,7 @@
     "createUnit": "Unit erstellen",
     "firstStep": "Erste Schritte",
     "firstStepHint": "Gehen Sie zur Erste-Schritte-Seite",
-    "createUnitHint": "Legen Sie Ihre erste Unit an"
+    "createUnitHint": "Legen Sie Ihre erste Unit an",
+    "cannotCreateUnitHint": "Sie haben leider nicht die Berechtigung, eine Unit anzulegen. Wenden Sie sich an Ihren Administrator"
   }
 }

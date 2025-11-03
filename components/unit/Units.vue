@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <template v-if="!units || units.length === 0">
       <div class="py-16 text-center w-50">
         <h3 class="text-h3">
-          {{ t('noUnitsText') }}
+          {{ !ability.can('create', 'units') ? t('cannotCreateUnitHint') : t('noUnitsText') }}
         </h3>
         <div class="mt-4">
           <v-tooltip location="bottom" :aria-label="t('createUnit')">
@@ -63,6 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               <v-btn
                 v-bind="props"
                 data-veo-test="create-unit-btn"
+                :disabled="!ability.can('create', 'units')"
                 data-component-name="create-unit-btn"
                 to="/units/create"
                 :prepend-icon="mdiPlus"

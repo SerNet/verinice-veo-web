@@ -38,7 +38,7 @@
                 data-component-name="create-unit-btn"
                 to="/units/create"
                 :prepend-icon="mdiPlus"
-                :disabled="maxUnitsExceeded || ability.cannot('manage', 'units') || !canCreateUnit"
+                :disabled="maxUnitsExceeded || !canCreateUnit"
                 color="primary"
                 size="large"
                 :aria-label="t('createUnit')"
