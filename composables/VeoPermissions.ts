@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { AbilityBuilder, createMongoAbility } from '@casl/ability';
+import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
 
 const ability = ref(createMongoAbility());
 
@@ -26,85 +26,139 @@ can('view', 'documentation');
 // @ts-ignore Some casl typing error, however the docs show this is the right way and it works
 ability.value.update(rules);
 
-let isWatcherInitialized = false;
+/**
+ * @description Permissions for global unit actions, e.g. create, update, delete a whole unit,
+ * `update` in this sense means updating a unit's' metadata like name, description as well as domains etc.
+ */
+function buildGlobalUnitPermissions(permissions: string[]) {
+  const { can, rules } = new AbilityBuilder(createMongoAbility);
+  const hasAccessRestriction = permissions?.includes('unit_access_restriction');
 
-export const useVeoPermissions = () => {
-  const route = useRoute();
-  const unitId = computed(() => route?.params?.unit);
-  const { keycloak, roles } = useVeoUser();
-
-  const updatePermissions = (permissions: string[]) => {
-    const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
-
-    can('view', 'all');
-
-    if (permissions.includes('veo-write')) {
-      can('manage', 'all');
-    } else {
-      cannot('manage', 'all');
+  if (hasAccessRestriction) {
+    if (permissions.includes('unit:create')) {
+      can('create', 'unit');
     }
-    if (permissions.includes('veo-content-creator')) {
-      can('view', 'editors');
-      can('manage', 'editors');
-    } else {
-      cannot('view', 'editors');
-      cannot('manage', 'editors');
+    if (permissions.includes('unit:update')) {
+      can('update', 'unit');
     }
+    if (permissions.includes('unit:delete')) {
+      can('delete', 'unit');
+    }
+    return rules;
+  }
 
-    if (permissions.includes('account:read')) {
-      can('view', 'accounts');
-    } else {
-      cannot('view', 'accounts');
-    }
-    if (permissions.includes('account:manage')) {
-      can('manage', 'accounts');
-    } else {
-      cannot('manage', 'accounts');
-    }
+  // The key `unit_access_restriction` is not present -> full access for everyone!
+  can('create', 'unit');
+  can('update', 'unit');
+  can('delete', 'unit');
+  return rules;
+}
 
-    // --- Unit permissions ---
-    const hasAccessRestrictions = permissions.includes('unit_access_restriction');
-    const hasReadWriteAllUnits = permissions?.includes('read_write_all_units');
-    const unitWriteAccess = keycloak.value?.tokenParsed?.unit_write_access ?? [];
-    // If 'unit_access_restrictions' is NOT present, all users can manage units.
-    if (!hasAccessRestrictions || hasReadWriteAllUnits) {
-      can('manage', 'units');
-    } else {
-      // Check if user has write access to the current unit
-      if (unitId && unitWriteAccess.includes(unitId.value)) {
-        can('manage', 'units');
+/** @description Permissions for unit-specific actions, e.g. create, update, delete objects, currently you may either do everything or nothing. That's why we use `manage` */
+function buildLocalUnitPermissions(permissions: string[], unitWriteAccess: string[], unitIds: string[]) {
+  const { can, rules } = new AbilityBuilder(createMongoAbility);
+
+  const hasAccessRestriction = permissions?.includes('unit_access_restriction');
+  const hasReadWriteAllUnits = permissions?.includes('read_write_all_units');
+  const hasVeoWriteRole = permissions.includes('veo-write');
+
+  if (hasVeoWriteRole) {
+    if (hasAccessRestriction) {
+      if (hasReadWriteAllUnits) {
+        unitIds.forEach((id) => can('manage', 'units', { id }));
       } else {
-        cannot('manage', 'units');
+        // prettier-ignore
+        unitIds.forEach((id) => (
+        (unitWriteAccess.includes(id)) ?
+          can('manage', 'units', { id }) :
+          null
+      ));
       }
-
-      if (permissions.includes('unit:create')) {
-        can('create', 'units');
-      }
-      if (permissions.includes('unit:update')) {
-        can('update', 'units');
-      }
-      if (permissions.includes('unit:delete')) {
-        can('delete', 'units');
-      }
+      return rules;
     }
-    // @ts-ignore For some reason the rules and update types are incompatible, they work however
-    ability.value.update(rules);
-  };
+    // The key `unit_access_restriction` is not present -> full access for all people with `veo-write` role!
+    unitIds.forEach((id) => can('manage', 'units', { id }));
+  }
+  return rules;
+}
 
-  // This ensures permissions are refreshed when the selected unit changes or Roles
-  if (!isWatcherInitialized) {
-    isWatcherInitialized = true;
+function updateUnitPermissions(permissions: string[], unitWriteAccess: string[], unitIds: string[]) {
+  return [
+    ...buildGlobalUnitPermissions(permissions),
+    ...buildLocalUnitPermissions(permissions, unitWriteAccess, unitIds)
+  ];
+}
 
-    watch(
-      [() => unitId.value, () => roles.value],
-      () => {
-        updatePermissions([
+function updatePermissions(permissions: string[], unitWriteAccess: string[], unitIds: string[]) {
+  const { can, cannot, rules } = new AbilityBuilder(createMongoAbility);
+  const hasAccessRestrictions = permissions?.includes('unit_access_restriction');
+
+  can('view', 'all');
+
+  if (permissions.includes('veo-write') && !hasAccessRestrictions) {
+    can('manage', 'all');
+  } else {
+    cannot('manage', 'all');
+  }
+  if (permissions.includes('veo-content-creator')) {
+    can('view', 'editors');
+    can('manage', 'editors');
+  } else {
+    cannot('view', 'editors');
+    cannot('manage', 'editors');
+  }
+
+  if (permissions.includes('account:read')) {
+    can('view', 'accounts');
+  } else {
+    cannot('view', 'accounts');
+  }
+  if (permissions.includes('account:manage')) {
+    can('manage', 'accounts');
+  } else {
+    cannot('manage', 'accounts');
+  }
+
+  const unitPermissionRules = updateUnitPermissions(permissions, unitWriteAccess, unitIds);
+
+  ability.value.update([...rules, ...unitPermissionRules]);
+}
+
+export const createVeoPermissions = () => {
+  const { data: units } = useUnits();
+  const unitIds = computed(() => units.value?.map((unit) => unit.id) || []);
+
+  const { keycloak, initialize: isKeycloakInitilized } = useVeoUser();
+  const unitWriteAccess = computed(() => keycloak.value?.tokenParsed?.unit_write_access ?? []);
+
+  const unwatch = watch(
+    [unitWriteAccess, unitIds],
+    async () => {
+      if (!isKeycloakInitilized) return;
+      updatePermissions(
+        [
           ...(keycloak.value?.tokenParsed?.realm_access?.roles || []),
           ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])
-        ]);
-      },
-      { immediate: true }
-    );
-  }
-  return { ability, updatePermissions };
+        ],
+        unitWriteAccess.value,
+        unitIds.value
+      );
+    },
+    { immediate: true }
+  );
+
+  onScopeDispose(() => {
+    unwatch();
+  });
+
+  return { ability, subject };
 };
+
+let veoPermissionsInstance: ReturnType<typeof createVeoPermissions> | null = null;
+
+export function useVeoPermissions() {
+  if (!veoPermissionsInstance) {
+    veoPermissionsInstance = createVeoPermissions();
+  }
+  return veoPermissionsInstance;
+}
