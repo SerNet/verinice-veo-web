@@ -209,7 +209,7 @@ class DisplayProps {
   }
 
   calculateTimeToEffectiveDate(date: Date) {
-    if (!date) return null;
+    if (!date) return 0;
     const now = new Date();
     return date.valueOf() - now.valueOf();
   }
