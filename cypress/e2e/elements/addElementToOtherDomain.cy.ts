@@ -16,17 +16,12 @@ describe('Add Elements to other Domain', () => {
 
     cy.get('@container').within(() => {
       // Regex matches exact text
-      cy.get('.v-list-item')
-        .contains(new RegExp('^' + targetDomain + '$', 'g'))
-        .parent()
-        .parent()
-        .as('DomainItem');
+      cy.contains('.v-list-item', targetDomain).closest('.v-list-item').as('DomainItem');
     });
-
     // Select domain
     cy.get('@DomainItem')
       .within(() => {
-        cy.get('.v-icon--clickable').click();
+        cy.get('.v-icon--clickable').first().click();
       })
       .as('DomainItemSelected');
 
