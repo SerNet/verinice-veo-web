@@ -59,7 +59,7 @@ const URGENCY_OFFSET = 1000 * 60 * 60; // 60 minuntes
 
 export function useSystemMessages() {
   debug.value = useRuntimeConfig().public.debug;
-  const makeMesssageUrgentHandler = ((event: CustomEvent) => makeMesssageUrgent(event.detail)) as EventListener;
+  const makeMessageUrgentHandler = ((event: CustomEvent) => makeMessageUrgent(event.detail)) as EventListener;
   const hideMessageHandler = ((event: CustomEvent) => hideMessage(event.detail)) as EventListener;
 
   /** @description Fetches, caches and refetches system messages. */
@@ -77,7 +77,7 @@ export function useSystemMessages() {
     async () => {
       if (!data.value?.length) return;
       if (messages.value.length) await killTimers(messages.value);
-      window.addEventListener(SystemMessageEvents.SYSTEM_MESSAGE_BECAME_URGENT, makeMesssageUrgentHandler);
+      window.addEventListener(SystemMessageEvents.SYSTEM_MESSAGE_BECAME_URGENT, makeMessageUrgentHandler);
       window.addEventListener(SystemMessageEvents.SYSTEM_MESSAGE_EXPIRED, hideMessageHandler);
       messages.value = handleMessages(data.value);
     },
@@ -89,11 +89,11 @@ export function useSystemMessages() {
 
   /** @description Removes event listeners. */
   onBeforeUnmount(async () => {
-    window.removeEventListener(SystemMessageEvents.SYSTEM_MESSAGE_BECAME_URGENT, makeMesssageUrgentHandler);
+    window.removeEventListener(SystemMessageEvents.SYSTEM_MESSAGE_BECAME_URGENT, makeMessageUrgentHandler);
     window.removeEventListener(SystemMessageEvents.SYSTEM_MESSAGE_EXPIRED, hideMessageHandler);
   });
 
-  function makeMesssageUrgent(id: number) {
+  function makeMessageUrgent(id: number) {
     messages.value = messages.value.map((message) => {
       if (message.id == id)
         return {
