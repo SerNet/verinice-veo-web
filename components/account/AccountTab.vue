@@ -18,17 +18,13 @@
 <template>
   <BaseAlert
     v-if="allUnitsHaveAccessAccountTab && showAccessGroupsFeature"
+    :title="t('allUsersHaveAccessHint')"
     :model-value="true"
     :type="VeoAlertType.INFO"
     class="mt-6 mb-4 d-flex align-center"
     no-close-button
     flat
-    style="width: max-content"
-  >
-    <template #default>
-      {{ t('allUsersHaveAccessHint') }}
-    </template>
-  </BaseAlert>
+  />
   <BaseCard class="mb-16">
     <v-card-title class="bg-accent small-caps text-h4">
       <span>{{ t('accounts') }}</span>
