@@ -39,6 +39,7 @@ export interface IVeoUserComposable {
 }
 
 const keycloak = ref<Keycloak | undefined>(undefined);
+const _keycloak = ref<Keycloak | undefined>(undefined);
 const keycloakInitializationStarted = ref(false);
 const keycloakInitialized = ref(false);
 const tablePageSize = ref<number>(25);
@@ -80,13 +81,14 @@ export const useVeoUser: () => IVeoUserComposable = () => {
     } catch (error) {
       throw new Error(`Error while setting up authentication provider: ${JSON.stringify(error)}`);
     }
-
+    _keycloak.value = keycloak.value;
     keycloakInitialized.value = true;
   };
 
   const refreshKeycloakSession = async () => {
     if (keycloak.value) {
       await keycloak.value.updateToken(300);
+      _keycloak.value = { ...keycloak.value };
     } else {
       throw new Error("Couldn't refresh session: Keycloak not initialized");
     }
@@ -157,7 +159,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
   return {
     authenticated,
     initialize,
-    keycloak,
+    keycloak: _keycloak,
     keycloakInitialized,
     login,
     logout,
