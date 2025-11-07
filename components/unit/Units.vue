@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <BookmarkFavorite :is-favorite="u?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(u)" />
         </template>
         <template #bottom-right="{ item: u }">
-          <ApplyProfiles :profiles-url="u?.profilesUrl" :unit="u" />
+          <ApplyProfiles :profiles-url="u?.profilesUrl" :canUpdateUnit />
         </template>
       </BaseListItem>
     </template>
@@ -139,13 +139,9 @@ const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
 const { data: allDomains } = useDomains();
 
-const { ability, subject } = useVeoPermissions();
+const { ability } = useVeoPermissions();
 const canUpdateUnit = computed(() => ability.value.can('update', 'unit'));
 const canDeleteUnit = computed(() => ability.value.can('delete', 'unit'));
-
-function canManageUnitContent(unit: TVeoUnit) {
-  return ability.value.can('manage', subject('units', { id: unit.id }));
-}
 
 const units = computed({
   get() {
@@ -288,7 +284,7 @@ const UnitActions: TInlineComponent = {
 };
 
 const DomainActions: TInlineComponent = {
-  props: ['domains', 'domainsUrl', 'canEditDomains'],
+  props: ['domains', 'domainsUrl', 'canUpdateUnit'],
   data: () => ({ mdiPuzzle, mdiPlus, t, useDomainColor, allDomains, locale }),
 
   methods: {
@@ -367,8 +363,7 @@ const BookmarkFavorite: TInlineComponent = {
   `
 };
 const ApplyProfiles: TInlineComponent = {
-  props: ['profilesUrl', 'unit'],
-  methods: { canManageUnitContent },
+  props: ['profilesUrl', 'unit', 'canUpdateUnit'],
   data: () => ({ mdiShapeOutline, t }),
 
   template: `
@@ -383,7 +378,7 @@ const ApplyProfiles: TInlineComponent = {
           variant="outlined"
           color="primary"
           size="small"
-          :disabled="!canManageUnitContent(this.unit)"
+          :disabled="!canUpdateUnit"
         >
           {{ t('addProfiles') }}
         </v-btn>
