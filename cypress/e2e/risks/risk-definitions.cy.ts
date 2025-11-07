@@ -398,7 +398,9 @@ describe('Risk Definitions with one category', () => {
 
     // Create matrix
     cy.get('[data-veo-test="risk-category-matrix-step"]').click();
-    cy.get('[data-veo-test="alert-button-0"]').click();
+    cy.get('[data-component-name="risk-definition-wizard"]').within(() => {
+      cy.get('[data-veo-test="alert-button-0"]').click();
+    });
 
     // Fill matrix cells with risk values
     cy.getCustom('[data-veo-test="risk-matrix"]').within(() => {
