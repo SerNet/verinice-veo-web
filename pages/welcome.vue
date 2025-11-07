@@ -63,9 +63,9 @@
             <v-btn
               v-if="!maxUnitsExceeded"
               color="primary"
-              :disabled="maxUnitsExceeded"
               style="width: 200px"
               to="/units/create"
+              :disabled="maxUnitsExceeded || !ability.can('create', 'unit')"
             >
               {{ t('unitCreation') }}
             </v-btn>
@@ -217,6 +217,7 @@ import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, 
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~~/composables/api/utils/query';
 
+const { ability } = useVeoPermissions();
 const { userSettings } = useVeoUser();
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useDisplay } from 'vuetify';
