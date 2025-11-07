@@ -244,5 +244,9 @@
       }
     }
   },
-  "noValue": "No Value"
+  "noValue": "No Value",
+
+  "permissions": {
+    "missingPermissionTooltip": "Missing permission for this action."
+  }
 }

@@ -42,16 +42,30 @@
         >
           {{ globalT('global.button.cancel') }}
         </v-btn>
-        <v-btn
-          data-veo-test="catalogs-btn-apply"
-          flat
-          color="primary"
-          :disabled="selectedItems.length === 0 || isApplyingItems || ability.cannot('manage', 'catalogs')"
-          :loading="props.isApplyingItems"
-          @click="$emit('applyItems')"
-        >
-          {{ t('apply') }}
-        </v-btn>
+        <v-tooltip location="start" :aria-label="t('apply')">
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                data-veo-test="catalogs-btn-apply"
+                flat
+                color="primary"
+                :disabled="selectedItems.length === 0 || isApplyingItems || !canManageUnitContent"
+                :loading="props.isApplyingItems"
+                @click="$emit('applyItems')"
+              >
+                {{ t('apply') }}
+              </v-btn>
+            </span>
+          </template>
+          <template #default>
+            <span v-if="!canManageUnitContent">
+              {{ t('permissions.missingPermissionTooltip') }}
+            </span>
+            <span v-else>
+              {{ t('apply') }}
+            </span>
+          </template>
+        </v-tooltip>
       </v-col>
     </v-row>
   </div>
@@ -86,7 +100,7 @@ const emit = defineEmits<Emits>();
 
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { ability } = useVeoPermissions();
+const { ability, subject } = useVeoPermissions();
 const { data: currentDomain } = useCurrentDomain();
 const route = useRoute();
 const { data: translations } = useTranslations({ domain: route.params.domain as string });
@@ -183,6 +197,10 @@ watch(
     );
     selectedItems.value = newValues;
   }
+);
+
+const canManageUnitContent = computed(() =>
+  ability.value.can('manage', subject('units', { id: route.params.unit as string }))
 );
 </script>
 

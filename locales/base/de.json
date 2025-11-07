@@ -246,5 +246,9 @@
       }
     }
   },
-  "noValue": "Kein Wert"
+  "noValue": "Kein Wert",
+
+  "permissions": {
+    "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
+  }
 }
