@@ -32,7 +32,8 @@ describe('Threat Overview', () => {
 });
 
 describe('Net risk', () => {
-  before(() => {
+  beforeEach(() => {
+    cy.viewport(3000, 1500);
     setupVeo('netRisk').then(() => {
       applyCatalogItem()
         .then(() => addModule())
@@ -47,7 +48,7 @@ describe('Net risk', () => {
     cy.getCustom('[data-component-name="object-details-risks-tab"]').click();
 
     // Select the first risk row → opens dialog
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible').should('be.visible').click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').first().click();
 
     // Verify dialog is open
     cy.getCustom('[data-veo-test="base-dialog"]').should('be.visible');
@@ -67,7 +68,7 @@ describe('Net risk', () => {
     cy.getCustom('[data-veo-test="dialog-risk-close"]').should('be.visible').click();
 
     // Open the dialog again to check if change were saved
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible').should('be.visible').click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').first().click();
 
     // Check if the changes were made
     cy.get('[data-veo-test="risk-treatments"] span').first().should('have.text', 'risk transfer');
@@ -77,6 +78,7 @@ describe('Net risk', () => {
 
 describe('Mitigation Measures', () => {
   beforeEach(() => {
+    cy.viewport(3000, 1500);
     setupVeo('risks').then(() => {
       applyCatalogItem()
         .then(() => addModule())
