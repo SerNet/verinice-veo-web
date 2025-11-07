@@ -80,7 +80,7 @@ const { displayErrorMessage } = useVeoAlerts();
 const isProcessing = ref(false);
 const { ability } = useVeoPermissions();
 
-const _props = defineProps({
+defineProps({
   objectType: {
     type: String,
     default: ''
@@ -94,6 +94,7 @@ const _props = defineProps({
     default: () => ['name']
   }
 });
+
 const emit = defineEmits<{
   (event: 'navigate', objectType: string, subType: string): void;
 }>();

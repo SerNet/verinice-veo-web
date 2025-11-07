@@ -84,11 +84,6 @@ const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | 
 const activeUnits = computed(() => unitsRef?.value?.activeUnits || 0);
 const maxUnitsExceeded = computed(() => (activeUnits?.value || 0) >= userSettings.value.maxUnits);
 
-function _createUnit() {
-  if (!unitsRef.value) return null;
-  unitsRef.value.createUnit();
-}
-
 useHead({
   title: globalT('breadcrumbs.units')
 });

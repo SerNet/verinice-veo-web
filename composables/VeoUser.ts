@@ -17,7 +17,6 @@
  */
 import Keycloak from 'keycloak-js';
 import { ComputedRef, Ref } from 'vue';
-import { useVeoPermissions } from '~/composables/VeoPermissions';
 
 export interface IVeoUserSettings {
   maxUnits: number;
