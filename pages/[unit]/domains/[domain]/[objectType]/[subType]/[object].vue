@@ -67,7 +67,7 @@
 
           <ObjectActionMenu
             color="primary"
-            :disabled="ability.cannot('manage', 'objects')"
+            :disabled="!canManageUnitContent"
             :object="object"
             :type="activeTab"
             @reload="updateObjectRelationships"
@@ -89,7 +89,7 @@
             v-model="modifiedObject"
             v-model:valid="isFormValid"
             class="pb-4"
-            :disabled="formDataIsRevision || ability.cannot('manage', 'objects')"
+            :disabled="formDataIsRevision || !canManageUnitContent"
             :object-type="objectType"
             :original-object="object"
             :loading="loading || !modifiedObject"
@@ -119,7 +119,7 @@
               >
                 <template v-if="!formDataIsRevision">
                   <v-btn
-                    :disabled="loading || !isFormDirty || ability.cannot('manage', 'objects')"
+                    :disabled="loading || !isFormDirty || !canManageUnitContent"
                     class="mb-4"
                     color="primary"
                     flat
@@ -129,13 +129,7 @@
                   </v-btn>
                   <v-spacer />
                   <v-btn
-                    :disabled="
-                      loading ||
-                      !isFormDirty ||
-                      !isFormValid ||
-                      ability.cannot('manage', 'objects') ||
-                      ability.cannot('manage', 'units')
-                    "
+                    :disabled="loading || !isFormDirty || !isFormValid || !canManageUnitContent"
                     class="mb-4"
                     :color="wasSavedSuccessfully ? 'success' : 'primary'"
                     flat
@@ -151,7 +145,7 @@
                 </template>
                 <template v-else>
                   <v-spacer />
-                  <v-btn :disabled="ability.cannot('manage', 'objects')" color="primary" flat @click="restoreObject">
+                  <v-btn :disabled="!canManageUnitContent" color="primary" flat @click="restoreObject">
                     {{ t('restore') }}
                   </v-btn>
                 </template>
@@ -225,9 +219,13 @@ const route = useRoute();
 const router = useRouter();
 const { displayErrorMessage, expireAlert, displayInfoMessage } = useVeoAlerts();
 const { link } = useLinkObject();
-const { ability } = useVeoPermissions();
+const { ability, subject } = useVeoPermissions();
 const { mutateAsync: _updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 const domainId = computed(() => route.params.domain as string);
+
+const canManageUnitContent = computed(() =>
+  ability.value.can('manage', subject('units', { id: route.params.unit as string }))
+);
 
 const modifiedObject = ref<IVeoEntity | undefined>(undefined);
 // Data that should get merged back into modifiedObject after the object has been reloaded, useful to persist children of objects while keeping form changes

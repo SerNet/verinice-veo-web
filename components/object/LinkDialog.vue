@@ -95,7 +95,7 @@
         variant="text"
         color="primary"
         :loading="savingObject"
-        :disabled="ability.cannot('manage', 'objects') || !isDirty"
+        :disabled="!canManageUnitContent || !isDirty"
         @click="linkObjects"
       >
         {{ globalT('global.button.save') }}
@@ -187,12 +187,17 @@ export default defineComponent({
     const { tablePageSize } = useVeoUser();
     const { link } = useLinkObject();
     const { unlink } = useUnlinkObject();
-    const { ability } = useVeoPermissions();
     const queryClient = useQueryClient();
     const { createLink } = useCreateLink();
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const { data: translations } = useTranslations();
     const { data: currentDomain } = useCurrentDomain();
+
+    const { ability, subject } = useVeoPermissions();
+    const canManageUnitContent = computed(() =>
+      ability.value.can('manage', subject('units', { id: route.params.unit }))
+    );
+
     // Table/filter logic
     const filter = ref<Record<string, any>>({});
     const title = computed(() => {
@@ -382,7 +387,7 @@ export default defineComponent({
     // Linking logic
     const savingObject = ref(false); // saving status for adding entities
     const linkObjects = async () => {
-      if (ability.value.cannot('manage', 'objects')) return;
+      if (!canManageUnitContent.value) return;
       if (props.returnObjects) {
         handleReturnObjects();
       } else {
@@ -557,7 +562,7 @@ export default defineComponent({
 
     return {
       navigateToCatalog,
-      ability,
+      canManageUnitContent,
       availableObjectTypes,
       childrenLoading,
       filter,

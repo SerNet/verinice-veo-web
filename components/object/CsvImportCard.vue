@@ -33,7 +33,7 @@
           :class="{ 'drop-zone-active': isDragging }"
           :aria-label="t('import.dropzone.label')"
           data-component-name="csv-button"
-          :disabled="ability.cannot('manage', 'units')"
+          :disabled="!canManageUnitContent"
           @dragenter.prevent="isDragging = true"
           @dragleave.prevent="isDragging = false"
           @update:model-value="handleFileUpload"
@@ -73,12 +73,17 @@ import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
+const route = useRoute();
 const { t } = useI18n();
 const { parseCsv } = useCsvImporter();
 const { displayErrorMessage } = useVeoAlerts();
 
 const isProcessing = ref(false);
-const { ability } = useVeoPermissions();
+
+const { ability, subject } = useVeoPermissions();
+const canManageUnitContent = computed(() => {
+  return ability.value.can('manage', subject('units', { id: route.params.unit }));
+});
 
 defineProps({
   objectType: {

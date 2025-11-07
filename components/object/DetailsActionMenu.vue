@@ -24,7 +24,11 @@
           variant="tonal"
           size="xs"
           :loading="isLoadingActions"
-          :disabled="!visibleItems.length || $props.disabled || ability.cannot('manage', 'units')"
+          :disabled="
+            !visibleItems.length ||
+            $props.disabled ||
+            !ability.can('manage', subject('units', { id: route.params.unit }))
+          "
           :aria-label="t('expandOptions')"
           data-component-name="object-form-more-actions-button"
           :icon="mdiDotsVertical"
@@ -101,7 +105,7 @@ const subType = computed(() => props.object?.subType);
 
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { locale } = useI18n();
-const { ability } = useVeoPermissions();
+const { ability, subject } = useVeoPermissions();
 
 type TActionItems = INestedMenuEntries & { objectTypes?: string[]; subTypes?: string[] };
 const items = computed<TActionItems[]>(() => {

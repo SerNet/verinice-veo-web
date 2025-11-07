@@ -93,7 +93,7 @@ export default defineComponent({
     const config = useRuntimeConfig();
     const route = useRoute();
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { ability } = useVeoPermissions();
+    const { ability, subject } = useVeoPermissions();
 
     const fetchTranslationsQueryParameters = computed(() => ({
       languages: [locale.value],
@@ -228,7 +228,11 @@ export default defineComponent({
       }
     });
     const onSubmit = async () => {
-      if (!isFormValid.value || !isFormDirty.value || ability.value.cannot('manage', 'objects')) {
+      if (
+        !isFormValid.value ||
+        !isFormDirty.value ||
+        !ability.value.can('manage', subject('units', { id: route.params.unit }))
+      ) {
         return;
       }
       try {

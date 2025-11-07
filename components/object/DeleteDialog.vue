@@ -34,7 +34,7 @@
       <v-btn
         variant="text"
         color="primary"
-        :disabled="!deleteButtonEnabled || ability.cannot('manage', 'objects') || deleting"
+        :disabled="!deleteButtonEnabled || !canManageUnitContent || deleting"
         @click="deleteObjects"
       >
         {{ globalT('global.button.delete') }}
@@ -68,8 +68,7 @@ const emit = defineEmits<{
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const route = useRoute();
-const { ability } = useVeoPermissions();
-
+const { ability, subject } = useVeoPermissions();
 const { mutateAsync: doDelete } = useMutation(objectQueryDefinitions.mutations.deleteObject);
 const { mutateAsync: deleteWithoutInvalidating } = useMutation(
   objectQueryDefinitions.mutations.deleteObject,
@@ -79,6 +78,7 @@ const { mutateAsync: deleteWithoutInvalidating } = useMutation(
 
 const displayName = computed(() => props.items[0]?.displayName ?? '');
 const deleteButtonEnabled = computed(() => !!props.items?.length);
+const canManageUnitContent = computed(() => ability.value.can('manage', subject('units', { id: route.params.unit })));
 
 const deleting = ref(false);
 const deletingMultiple = ref(false);
@@ -105,7 +105,7 @@ const deleteObjects = async () => {
   }
 };
 const deleteSingleObject = async () => {
-  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || props.items.length !== 1) return;
+  if (!deleteButtonEnabled.value || !canManageUnitContent.value || props.items.length !== 1) return;
 
   const { type, id } = props.items[0];
   const endpoint = VeoElementTypePlurals[type];
@@ -122,7 +122,7 @@ const deleteSingleObject = async () => {
 };
 
 const deleteMultipleObjects = async () => {
-  if (!deleteButtonEnabled.value || ability.value.cannot('manage', 'objects') || !props.items) return;
+  if (!deleteButtonEnabled.value || !canManageUnitContent.value || !props.items) return;
 
   const totalItems = props.items.length;
   let deletedItems = 0;

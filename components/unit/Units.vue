@@ -41,7 +41,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           />
         </template>
         <template #bottom-left="{ item: u }">
-          <DomainActions :domains="u.domains" :domains-url="u.domainsUrl" :can-edit-domains="canEditDomains" />
+          <DomainActions :domains="u.domains" :domains-url="u.domainsUrl" :can-update-unit="canUpdateUnit" />
         </template>
         <template #prepend="{ item: u }">
           <BookmarkFavorite :is-favorite="u?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(u)" />
@@ -55,7 +55,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <template v-if="!units || units.length === 0">
       <div class="py-16 text-center w-50">
         <h3 class="text-h3">
-          {{ !ability.can('create', 'units') ? t('cannotCreateUnitHint') : t('noUnitsText') }}
+          {{ !ability.can('create', 'unit') ? t('cannotCreateUnitHint') : t('noUnitsText') }}
         </h3>
         <div class="mt-4">
           <v-tooltip location="bottom" :aria-label="t('createUnit')">
@@ -63,7 +63,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
               <v-btn
                 v-bind="props"
                 data-veo-test="create-unit-btn"
-                :disabled="!ability.can('create', 'units')"
+                :disabled="!ability.can('create', 'unit')"
                 data-component-name="create-unit-btn"
                 to="/units/create"
                 :prepend-icon="mdiPlus"
@@ -126,8 +126,6 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { sortUnits } from '~/composables/units/useUnits';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-const { ability } = useVeoPermissions();
-
 // Types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import type { TVeoUnit } from '~/composables/units/useUnits';
@@ -139,20 +137,15 @@ const { t, locale } = useI18n();
 const { data: veoUnits, isLoading: isLoadingUnits, invalidateUnitCache } = useUnits();
 const activeUnits = computed(() => veoUnits.value?.length || null);
 const newUnits = ref<any>(null);
-const { keycloak } = useVeoUser();
-const unitWriteAccess = keycloak.value?.tokenParsed?.unit_write_access ?? [];
 const { data: allDomains } = useDomains();
-const canUpdateUnit = computed(() => ability.value.can('update', 'units'));
-const canDeleteUnit = computed(() => ability.value.can('delete', 'units'));
-function canManageUnit(unit: TVeoUnit) {
-  if (!unit.id) return false;
 
-  if (unitWriteAccess.includes(unit.id)) {
-    return unitWriteAccess.includes(unit.id);
-  }
+const { ability, subject } = useVeoPermissions();
+const canUpdateUnit = computed(() => ability.value.can('update', 'unit'));
+const canDeleteUnit = computed(() => ability.value.can('delete', 'unit'));
+
+function canManageUnitContent(unit: TVeoUnit) {
+  return ability.value.can('manage', subject('units', { id: unit.id }));
 }
-
-const canEditDomains = computed(() => canUpdateUnit.value);
 
 const units = computed({
   get() {
@@ -324,7 +317,7 @@ const DomainActions: TInlineComponent = {
       <template #activator="{ props }">
         <span v-bind="props">
           <v-btn
-            v-if="canEditDomains"
+            :disabled="!canUpdateUnit"
             :to="domainsUrl"
             :prepend-icon="mdiPlus"
             variant="text"
@@ -334,20 +327,11 @@ const DomainActions: TInlineComponent = {
           >
             {{ t('editDomains') }}
           </v-btn>
-          <v-btn
-            v-else
-            disabled
-            :prepend-icon="mdiPlus"
-            variant="text"
-            size="x-small"
-          >
-            {{ t('editDomains') }}
-          </v-btn>
         </span>
       </template>
 
       <template #default>
-        <span v-if="!canEditDomains">
+        <span v-if="!canUpdateUnit">
           {{ t('permissions.missingPermissionTooltip') }}
         </span>
         <span v-else>
@@ -384,7 +368,7 @@ const BookmarkFavorite: TInlineComponent = {
 };
 const ApplyProfiles: TInlineComponent = {
   props: ['profilesUrl', 'unit'],
-  methods: { canManageUnit },
+  methods: { canManageUnitContent },
   data: () => ({ mdiShapeOutline, t }),
 
   template: `
@@ -399,7 +383,7 @@ const ApplyProfiles: TInlineComponent = {
           variant="outlined"
           color="primary"
           size="small"
-          :disabled="canManageUnit(this.unit)"
+          :disabled="!canManageUnitContent(this.unit)"
         >
           {{ t('addProfiles') }}
         </v-btn>

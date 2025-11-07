@@ -46,7 +46,7 @@
             <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
               <template #activator="{ props }">
                 <v-btn
-                  :disabled="ability.cannot('manage', 'objects') || btn.disabled"
+                  :disabled="!ability.can('manage', subject('units', { id: route.params.unit })) || btn.disabled"
                   :icon="btn.icon"
                   v-bind="props"
                   variant="text"
@@ -121,7 +121,7 @@ const emit = defineEmits(['update:sortBy']);
 const route = useRoute();
 const { t: globalT, locale } = useI18n({ useScope: 'global' });
 const { tablePageSize } = useVeoUser();
-const { ability } = useVeoPermissions();
+const { ability, subject } = useVeoPermissions();
 
 const cardsPage = ref(1);
 const localSortBy = ref(props.sortBy);

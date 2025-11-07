@@ -105,7 +105,7 @@
         variant="text"
         color="primary"
         :loading="savingRisk"
-        :disabled="formIsValid === false || !formModified || ability.cannot('manage', 'objects')"
+        :disabled="formIsValid === false || !formModified || !canManageUnitContent"
         @click="saveRisk"
       >
         {{ globalT('global.button.save') }}
@@ -163,12 +163,17 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { link } = useLinkObject();
     const { createLink } = useCreateLink();
-    const { ability } = useVeoPermissions();
     const { mutateAsync: createObject } = useMutation(elementQueryDefinitions.mutations.createObject);
     const { requiredRule } = useRules();
     const queryClient = useQueryClient();
 
-    const formDisabled = computed(() => ability.value.cannot('manage', 'objects'));
+    const { ability, subject } = useVeoPermissions();
+    const canManageUnitContent = computed(() =>
+      ability.value.can('manage', subject('units', { id: route.params.unit }))
+    );
+
+    const formDisabled = computed(() => !canManageUnitContent.value);
+    watch(formDisabled, () => console.log({ formDisabled: formDisabled.value }), { immediate: true, deep: true });
 
     // Domain stuff, used for risk definitions
     const data = ref<IVeoRisk | undefined>(undefined);
@@ -244,7 +249,7 @@ export default defineComponent({
     const { mutateAsync: createRisk } = useMutation(elementQueryDefinitions.mutations.createRisk);
     const { mutateAsync: updateRisk } = useMutation(elementQueryDefinitions.mutations.updateRisk);
     const saveRisk = async () => {
-      if (ability.value.cannot('manage', 'objects') || !data.value) return;
+      if (!canManageUnitContent.value || !data.value) return;
 
       savingRisk.value = true;
 
@@ -322,7 +327,7 @@ export default defineComponent({
     }));
 
     return {
-      ability,
+      canManageUnitContent,
       data,
       dirtyFields,
       domain,

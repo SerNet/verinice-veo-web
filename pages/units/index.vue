@@ -78,7 +78,7 @@ const { userSettings } = useVeoUser();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
-const canCreateUnit = computed(() => ability.value.can('create', 'units'));
+const canCreateUnit = computed(() => ability.value.can('create', 'unit'));
 
 const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | null>(null);
 const activeUnits = computed(() => unitsRef?.value?.activeUnits || 0);

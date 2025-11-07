@@ -64,7 +64,7 @@
         variant="text"
         color="primary"
         :loading="creatingRisks"
-        :disabled="!selectedScenarios.length || ability.cannot('manage', 'objects')"
+        :disabled="!selectedScenarios.length || !canManageUnitContent"
         @click="onSubmit"
       >
         {{
@@ -113,11 +113,15 @@ export default defineComponent({
     const { t } = useI18n();
     const { t: globalT } = useI18n();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-    const { ability } = useVeoPermissions();
+    const { ability, subject } = useVeoPermissions();
 
     const { mutateAsync: createRisk } = useMutation(objectQueryDefinitions.mutations.createRisk);
     const fetchDomainQueryParameters = computed(() => ({ id: props.domainId }));
     const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters);
+
+    const canManageUnitContent = computed(() =>
+      ability.value.can('manage', subject('units', { id: route.params.unit }))
+    );
 
     // Layout stuff
     const dialog = computed({
@@ -211,7 +215,7 @@ export default defineComponent({
     const creatingRisks = ref(false);
 
     const onSubmit = async () => {
-      if (ability.value.cannot('manage', 'objects')) {
+      if (!canManageUnitContent.value) {
         return;
       }
       creatingRisks.value = true;
@@ -256,7 +260,7 @@ export default defineComponent({
     };
 
     return {
-      ability,
+      canManageUnitContent,
       creatingRisks,
       dialog,
       filter,

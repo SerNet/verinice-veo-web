@@ -32,7 +32,9 @@
           <template #activator="{ props: menuProps }">
             <v-btn
               :icon="speedDialIsOpen && !disabled && actions.length ? mdiClose : mdiPlus"
-              :disabled="!actions.length || disabled || ability.cannot('manage', 'units')"
+              :disabled="
+                !actions.length || disabled || !ability.can('manage', subject('units', { id: route.params.unit }))
+              "
               class="veo-primary-action-fab mr-2"
               color="primary"
               data-component-name="object-details-actions-button"
@@ -130,7 +132,7 @@ export default defineComponent({
     const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const speedDialIsOpen = ref(false);
-    const { ability } = useVeoPermissions();
+    const { ability, subject } = useVeoPermissions();
 
     const addEntityDialog = ref<{
       object: IVeoEntity | undefined;
@@ -274,7 +276,9 @@ export default defineComponent({
       linkDialogKey,
       onParentCreateObjectSuccess,
       onChildCreateObjectSuccess,
-      ability
+      ability,
+      subject,
+      route
     };
   }
 });

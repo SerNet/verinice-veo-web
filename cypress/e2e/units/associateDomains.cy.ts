@@ -24,9 +24,7 @@ describe('Add domains', () => {
 
     // Go to /units/**/domains
     cy.getCustom('@testUnitCard').within((_card) => {
-      cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains`).as('domains');
       cy.getCustom('[data-veo-test="units-add-domains-button"]').click();
-      cy.wait(['@domains']).its('response.statusCode').should('eq', 200);
     });
 
     // In /domains: select domain

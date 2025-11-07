@@ -39,7 +39,7 @@
                   size="small"
                   variant="flat"
                   :readonly="btn.isDisabled(item)"
-                  :disabled="ability.cannot('manage', 'objects')"
+                  :disabled="!canManageUnitContent"
                   :data-veo-test="`object-details-action-btn-${btn.id}`"
                   :aria-label="btn.label(item)"
                   @click="btn.action(item)"
@@ -162,7 +162,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     // Permissions and User Settings
-    const { ability } = useVeoPermissions();
+    const { ability, subject } = useVeoPermissions();
     const { tablePageSize } = useVeoUser();
     // Alerts
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -188,6 +188,9 @@ export default defineComponent({
 
     // Computed Properties
     const tableSize = computed(() => (tablePageSize?.value === -1 ? 1000 : tablePageSize.value));
+    const canManageUnitContent = computed(() =>
+      ability.value.can('manage', subject('units', { id: route.params.unit }))
+    );
 
     const children = computed(() => (props.object?.type === 'scope' ? scopeChildren.value : objectChildren.value));
 
@@ -1058,7 +1061,6 @@ export default defineComponent({
     );
 
     return {
-      ability,
       additionalHeaders,
       confirmationDialogCallBack,
       confirmationDialogVisible,
@@ -1081,7 +1083,8 @@ export default defineComponent({
       sortBy,
 
       t,
-      upperFirst
+      upperFirst,
+      canManageUnitContent
     };
   }
 });

@@ -120,7 +120,7 @@
                     <v-btn
                       :data-component-name="`object-overview-${btn.id}-button`"
                       :data-veo-test="`object-overview-${btn.id}-button`"
-                      :disabled="ability.cannot('manage', 'objects') || btn.disabled"
+                      :disabled="!canManageUnitContent || btn.disabled"
                       :icon="btn.icon"
                       v-bind="props"
                       variant="text"
@@ -185,7 +185,7 @@
                 data-component-name="create-object-button"
                 data-veo-test="create-object-button"
                 size="large"
-                :disabled="!nestedActions.length || cannotManageObjects || cannotManageUnits"
+                :disabled="!nestedActions.length || !canManageUnitContent"
                 :aria-label="t('createObject', [createObjectLabel])"
                 :icon="mdiPlus"
               />
@@ -195,7 +195,7 @@
             v-else
             color="primary"
             flat
-            :disabled="cannotManageObjects || cannotManageUnits"
+            :disabled="!canManageUnitContent"
             :icon="mdiPlus"
             class="veo-primary-action-fab"
             data-component-name="create-object-button"
@@ -260,7 +260,6 @@ const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
 const { tablePageSize } = useVeoUser();
-const { ability } = useVeoPermissions();
 
 const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
@@ -276,8 +275,7 @@ const { data: translations, isFetching: translationsLoading } = useQuery(
   translationQueryDefinitions.queries.fetch,
   fetchTranslationsQueryParameters
 );
-const cannotManageObjects = ability.value.cannot('manage', 'objects');
-const cannotManageUnits = ability.value.cannot('manage', 'units');
+
 const fetchUnitDomainsQueryParameters = computed(() => ({
   unitId: route.params.unit as string
 }));
@@ -569,8 +567,13 @@ const onCloseDeleteDialog = (
 
 const objectAssignDialogVisible = ref(false);
 
+const { ability, subject } = useVeoPermissions();
+const canManageUnitContent = computed(() =>
+  ability.value.can('manage', subject('units', { id: route.params.unit as string }))
+);
+
 const actions = computed(() => {
-  const cannotManageUnits = ability.value.cannot('manage', 'units');
+  const cannotManageUnits = !canManageUnitContent.value;
 
   return [
     {
