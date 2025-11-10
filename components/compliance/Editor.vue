@@ -100,12 +100,12 @@
             prepend-inner-icon="$calendar"
             clearable
             role="combobox"
+            :aria-expanded="!!form.implementationUntil"
             @click:clear="form.implementationUntil = undefined"
-          >
-          </v-date-input>
+          />
 
           <!-- Status -->
-          <v-radio-group v-model="form.status" inline>
+          <v-radio-group v-model="form.status" inline :aria-label="t('riEditor.status')">
             <template #label>
               <div>{{ t('riEditor.status') }}</div>
             </template>
