@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2024 jae
+ * Copyright (C) 2024 jae & djm
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -128,24 +128,19 @@ function handleMessages(newMessages: IVeoSystemMessage[]): TSystemMessage[] {
     if (isUrgent(newMessage)) {
       return addDisplayProps(newMessage, { isShown: true });
     }
-    if (!newMessage.effective) {
-      return addDisplayProps(newMessage, { isShown: true });
-    }
     if (oldMessage) {
       return addDisplayProps(newMessage, { isShown: oldMessage.displayProps.isShown });
     }
     return addDisplayProps(newMessage);
   });
-
   return messages?.filter(getRelevantMessages) ?? [];
 }
 
 /** @description Removes messages users do not need to see. E.g because they are past their effective date. */
 function getRelevantMessages(message: TSystemMessage) {
   const now = new Date();
-  const effectiveDate = message.effective;
-  if (!effectiveDate) return true;
-  return new Date(effectiveDate) >= now;
+  const effectiveDate = message.effective ? new Date(message.effective) : null;
+  return !effectiveDate || isNaN(effectiveDate.valueOf()) || effectiveDate >= now;
 }
 
 /** @description Determines if a message is urgent. **/
@@ -215,9 +210,13 @@ class DisplayProps {
   }
 
   setSystemMessageTimer(eventType: string, urgencyInterval: number, timeOffset = 0) {
-    if (!this.effectiveDate) return;
-
     const timers = eventType == SystemMessageEvents.SYSTEM_MESSAGE_EXPIRED ? effectiveTimeouts : urgencyTimeouts;
+
+    if (!this.effectiveDate || isNaN(this.effectiveDate.valueOf())) {
+      // Always visible messages – no timer
+      return null;
+    }
+
     const timeToEffective = this.calculateTimeToEffectiveDate(this.effectiveDate);
     if (timeToEffective === null) return;
     const timeout = timeToEffective - timeOffset;
