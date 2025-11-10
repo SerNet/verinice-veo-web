@@ -77,6 +77,7 @@
             v-model="form.responsible"
             :label="t('riEditor.responsible')"
             :items="persons"
+            :disabled="!canManageUnitContent"
             clearable
             item-title="name"
             item-value="name"
@@ -95,6 +96,7 @@
             v-model="form.implementationUntil"
             :label="t('riEditor.implementationUntil')"
             :aria-label="t('riEditor.implementationUntil')"
+            :disabled="!canManageUnitContent"
             data-veo-test="compliance-editor-ri-implementation-date"
             prepend-icon=""
             prepend-inner-icon="$calendar"
@@ -105,7 +107,12 @@
           />
 
           <!-- Status -->
-          <v-radio-group v-model="form.status" inline :aria-label="t('riEditor.status')">
+          <v-radio-group
+            v-model="form.status"
+            :disabled="!canManageUnitContent"
+            :aria-label="t('riEditor.status')"
+            inline
+          >
             <template #label>
               <div>{{ t('riEditor.status') }}</div>
             </template>
@@ -122,6 +129,7 @@
           <v-textarea
             v-model="form.implementationStatement"
             :label="t('riEditor.description')"
+            :disabled="!canManageUnitContent"
             variant="underlined"
             data-veo-test="compliance-editor-description"
           />
@@ -141,7 +149,7 @@
         variant="plain"
         color="primary"
         :loading="view.isLoading"
-        :disabled="view.isLoading"
+        :disabled="view.isLoading || !canManageUnitContent"
         @click="
           () =>
             void (
@@ -519,6 +527,9 @@ watch(
   () => updateAdditionalInfo(control.value, targetObject.value, protectionApproachTranslation.value),
   { immediate: true }
 );
+
+const { ability, subject } = useVeoPermissions();
+const canManageUnitContent = computed(() => ability.value.can('manage', subject('units', { id: route.params.unit })));
 </script>
 
 <i18n src="~/locales/base/components/compliance-editor.json"></i18n>

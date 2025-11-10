@@ -39,7 +39,6 @@
                   size="small"
                   variant="flat"
                   :readonly="btn.isDisabled(item)"
-                  :disabled="!canManageUnitContent"
                   :data-veo-test="`object-details-action-btn-${btn.id}`"
                   :aria-label="btn.label(item)"
                   @click="btn.action(item)"
@@ -796,7 +795,7 @@ export default defineComponent({
               name: 'risks',
               label: (item: any) => (!item.mitigation ? t('noImplementations') : t('implementations')),
               icon: mdiTextBoxCheckOutline,
-              isDisabled: (item: any) => !item.mitigation, // Disable if mitigation exists (coerce to boolean)
+              isDisabled: (item: any) => !item.mitigation,
               async action(item: any) {
                 // Check for mitigation and navigate accordingly
                 if (item.mitigation) {
@@ -815,7 +814,7 @@ export default defineComponent({
               id: 'delete',
               label: (_item: any) => upperFirst(t('deleteRisk').toString()),
               icon: mdiTrashCanOutline,
-              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
+              isDisabled: (_item: any) => !canManageUnitContent.value, // Disable if mitigation exists (coerce to boolean)
               async action(item: IVeoRisk) {
                 try {
                   await deleteRisk({
@@ -837,8 +836,7 @@ export default defineComponent({
               name: 'controls',
               label: (_item: any) => t('implementations'),
               icon: mdiTextBoxCheckOutline,
-              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
-
+              isDisabled: (_item: any) => false,
               async action(item: IVeoLink) {
                 return navigateTo({
                   name: 'unit-domains-domain-compliance',
@@ -854,7 +852,7 @@ export default defineComponent({
               id: 'delete',
               label: (_item: any) => upperFirst(t('deleteDialogTitle').toString()),
               icon: mdiLinkOff,
-              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
+              isDisabled: (_item: any) => !canManageUnitContent.value, // Disable if mitigation exists (coerce to boolean)
 
               async action(item: any) {
                 controlNameToUnlink.value = item.name;
@@ -870,8 +868,7 @@ export default defineComponent({
               id: 'clone',
               label: (_item: any) => upperFirst(t('cloneObject').toString()),
               icon: mdiContentCopy,
-              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
-
+              isDisabled: (_item: any) => !canManageUnitContent.value,
               async action(item: IVeoEntity) {
                 try {
                   const clonedObjectId = (
@@ -913,8 +910,7 @@ export default defineComponent({
                   ).toString()
                 ),
               icon: mdiLinkOff,
-              isDisabled: (_item: any) => false, // Disable if mitigation exists (coerce to boolean)
-
+              isDisabled: (_item: any) => !canManageUnitContent.value,
               action: async (item: IVeoEntity) => {
                 const parent = await useQuerySync(
                   objectQueryDefinitions.queries.fetch,
