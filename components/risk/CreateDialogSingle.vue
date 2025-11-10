@@ -173,7 +173,6 @@ export default defineComponent({
     );
 
     const formDisabled = computed(() => !canManageUnitContent.value);
-    watch(formDisabled, () => console.log({ formDisabled: formDisabled.value }), { immediate: true, deep: true });
 
     // Domain stuff, used for risk definitions
     const data = ref<IVeoRisk | undefined>(undefined);
