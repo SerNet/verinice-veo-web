@@ -17,8 +17,8 @@
       "editors": "Editors"
     },
     "tooltips": {
-      "roles": "Roles define which actions are possible in a unit. Membership in a matching access group is also required.",
-      "accessGroups": "Access groups control access to specific units. Performing actions in a unit also requires a matching role."
+      "roles": "Roles define which actions are permitted. Membership in a matching access group is also required to access objects.",
+      "accessGroups": "Access groups control access to objects. Performing specific actions additionally requires a matching role."
     },
     "updateAccount": "Update account",
     "updatingAccountFailed": "Couldn't update account",
@@ -45,8 +45,8 @@
       "editors": "Bearbeitende"
     },
     "tooltips": {
-      "roles": "Rollen bestimmen, welche Aktionen in einer Unit möglich sind. Zusätzlich ist die Mitgliedschaft in einer passenden Zugriffsgruppe erforderlich.",
-      "accessGroups": "Zugriffsgruppen regeln den Zugriff auf bestimmte Units. Für Aktionen in einer Unit ist außerdem eine passende Rolle nötig."
+      "roles": "Rollen bestimmen, welche Aktionen zugelassen sind. Für Zugriff auf Objekte ist zusätzlich die Mitgliedschaft in einer passenden Zugriffsgruppe erforderlich.",
+      "accessGroups": "Zugriffsgruppen regeln den Zugriff auf bestimmte Objekte. Für die Ausführung spezifischer Aktionen ist zusätzlich eine passende Rolle nötig."
     },
     "updateAccount": "Account aktualisieren",
     "updatingAccountFailed": "Account konnte nicht aktualisiert werden",
