@@ -65,7 +65,7 @@
     "vue-query-v5": "npm:@tanstack/vue-query@^5.81.5",
     "vue-router": "^4.1.6",
     "vuedraggable": "^4.1.0",
-    "vuetify": "^3.3.23",
+    "vuetify": "^3.10.9",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
   "devDependencies": {
