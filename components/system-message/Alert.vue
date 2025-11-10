@@ -28,7 +28,11 @@
         class="mt-2"
         flat
         :no-close-button="!message.displayProps.isDismissable"
-        @update:model-value="message.displayProps.isShown = false"
+        @update:model-value="
+          (val) => {
+            message.displayProps.isShown = val;
+          }
+        "
       >
         <div v-if="dateIsValid(message.displayProps.effectiveDate)" class="d-flex">
           <v-icon :icon="mdiAlarm" />
