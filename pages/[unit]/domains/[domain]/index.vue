@@ -17,7 +17,7 @@
 -->
 <template>
   <BasePage
-    :title="`Dashboard: ${domain?.name}`"
+    :title="`Dashboard: ${domain?.translations?.[locale]?.name || domain?.name}`"
     :loading="!domain"
     data-component-name="domain-dashboard-page"
     padding
@@ -84,7 +84,7 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const { t } = useI18n();
+    const { t, locale } = useI18n();
     const { t: tGlobal } = useI18n({ useScope: 'global' });
 
     // Domain specific stuff
@@ -165,7 +165,7 @@ export default defineComponent({
       elementStatusCountIsFetching,
       onBarClicked,
       unit,
-
+      locale,
       t,
       tGlobal,
       route

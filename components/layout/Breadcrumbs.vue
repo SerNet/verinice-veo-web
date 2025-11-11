@@ -16,7 +16,12 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div class="crumbs" data-component-name="breadcrumbs" data-veo-test="breadcrumbs">
+  <div
+    class="crumbs"
+    data-component-name="breadcrumbs"
+    data-veo-test="breadcrumbs"
+    :data-current-domain="currentDomainName"
+  >
     <v-breadcrumbs>
       <!-- Breadcrumbs hidden in a ... menu -->
       <template v-if="menuCrumbs">
@@ -165,7 +170,7 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
       queriedText: {
         query: ':domain',
         parameterTransformationFn: (_param, value) => ({ id: value }),
-        resultTransformationFn: (_param, _value, data) => data.abbreviation
+        resultTransformationFn: (_param, _value, data) => data.translations[locale.value]?.abbreviation
       }
     }
   ],
@@ -295,6 +300,8 @@ const queryResultMap = computed<{ [key: string]: any }>(() => ({
 }));
 
 const pathTemplate = computed(() => last(route.matched)?.path || '');
+
+const currentDomainName = computed(() => domain.value?.name);
 
 const breadcrumbParts = computed(() => pathTemplate.value.replaceAll('()', '').split('/'));
 

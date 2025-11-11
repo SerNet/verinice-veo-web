@@ -130,7 +130,7 @@ const DomainChip: TInlineComponent = {
       :prepend-icon="mdiPuzzle"
       variant="outlined"
       size="small"
-       :color="useDomainColor(renderedDomain?.translations?.[locale]?.name)"
+       :color="useDomainColor(renderedDomain?.name)"
     >
       {{ renderedDomain?.translations?.[locale]?.name ||  renderedDomain?.name}} 
     </v-chip>

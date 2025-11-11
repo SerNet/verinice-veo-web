@@ -1,4 +1,4 @@
-describe.skip('create units', () => {
+describe('create units', () => {
   beforeEach(() => {
     cy.login();
     cy.acceptAllCookies();
@@ -12,7 +12,8 @@ describe.skip('create units', () => {
     domainSelectors: [
       '[data-veo-test="domain-card-checkbox-ds-gvo"]',
       '[data-veo-test="domain-card-checkbox-it-grundschutz"]'
-    ]
+    ],
+    ChipSelectors: ['domain-card-chip-ds-gvo', 'domain-card-chip-it-grundschutz']
   };
 
   type TestData = typeof testData;
@@ -138,10 +139,10 @@ describe.skip('create units', () => {
       cy.getCustom('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
     });
     cy.getCustom('@domainButtons').each((button) => {
-      expect(testData.domains).to.includes(button.text());
+      const attr = button.attr('data-veo-test');
+      expect(testData.ChipSelectors).to.include(attr);
     });
   }
-
   function clickNext() {
     cy.getCustom('[data-veo-test="create-unit-next-btn"]').click();
   }

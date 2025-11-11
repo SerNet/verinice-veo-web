@@ -192,7 +192,7 @@ describe('Requirement Implementations:  List', () => {
     const dynamicTestData = Cypress.env('dynamicTestData');
 
     const unitName = dynamicTestData.unit.name;
-    const domainName = 'ITGS';
+    const domainName = 'IT-Grundschutz';
     const objectTypePlural = dynamicTestData.testObject.objectTypePlural;
     const subType = dynamicTestData.testObject.subTypePlural;
     const displayName = Cypress.env('dynamicTestData').ris[0].origin.displayName;
@@ -214,10 +214,7 @@ describe('Requirement Implementations:  List', () => {
       .invoke('text')
       // Slice off the `...` part of a truncated breadcrumb
       .then((text: string) => expect(unitName).to.include(text.slice(0, -3)));
-    cy.get('@breadcrumbsInMenu')
-      .eq(1)
-      .invoke('text')
-      .then((text: string) => expect(domainName).to.include(text));
+    cy.getCustom('[data-component-name="breadcrumbs"]').should('have.attr', 'data-current-domain', domainName);
     cy.get('@breadcrumbsInMenu')
       .eq(2)
       .invoke('text')

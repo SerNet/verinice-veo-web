@@ -217,7 +217,7 @@ describe('Risk Definitions with one category', () => {
     // Check if risk values have been updated
     cy.getCustom('[data-veo-test="risk-property-0"]').should('contain.text', testString);
     cy.get('td').then(($tds) => {
-      const texts = [...$tds].map((td) => td.innerText.trim());
+      const texts = $tds.map((index, td) => td.innerText.trim()).get();
       expect(texts).to.include(testString);
     });
   });

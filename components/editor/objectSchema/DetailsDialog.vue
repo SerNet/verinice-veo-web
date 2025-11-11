@@ -28,7 +28,7 @@
       <v-row class="d-flex justify-space-between align-center mx-2">
         <v-col cols="9">
           <h2 class="text-h2 small-caps">
-            {{ t('subtypesForDomain', { domain: domain?.name }) }}
+            {{ t('subtypesForDomain', { domain: domain?.translations?.[locale]?.name || domain.name }) }}
           </h2>
         </v-col>
 
@@ -208,7 +208,7 @@ export default defineComponent({
   },
   emits: ['schema-updated', 'update:model-value'],
   setup(props, { emit }) {
-    const { t, locales } = useI18n();
+    const { t, locales, locale } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const route = useRoute();
 
@@ -420,7 +420,7 @@ export default defineComponent({
       requiredRule,
       subTypeForms,
       subTypes,
-
+      locale,
       t,
       globalT,
       mdiMenu,

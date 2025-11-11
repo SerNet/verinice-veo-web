@@ -304,6 +304,7 @@ const DomainActions: TInlineComponent = {
       :color="useDomainColor(domain.name)"
       class="domain-btn"
       size="x-small"
+      :data-veo-test="'domain-card-chip-' + (domain?.name).toLowerCase()"
     >
      {{ getDomainLabel(domain) }}
     </v-chip>

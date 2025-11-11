@@ -2,7 +2,7 @@ import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 
 let unitDetails: UnitDetails;
 
-describe.skip('Add domains', () => {
+describe('Add domains', () => {
   before(() => {
     unitDetails = generateUnitDetails('associateDomains');
     cy.login();
@@ -18,6 +18,8 @@ describe.skip('Add domains', () => {
     // IT-Grundschutz will be added in this test, thus we check against both
     const domainNames = ['DS-GVO', 'IT-Grundschutz'];
     const selectors = ['[data-veo-test="domain-card-checkbox-it-grundschutz"]'];
+
+    const ChipSelectors = ['domain-card-chip-ds-gvo', 'domain-card-chip-it-grundschutz'];
 
     // Get the test unit
     cy.getVeoTestUnitCard(unitDetails.name).as('testUnitCard');
@@ -43,7 +45,8 @@ describe.skip('Add domains', () => {
       cy.getCustom('[data-veo-test="item-card-slot-left"] .v-chip').as('domainButtons');
     });
     cy.getCustom('@domainButtons').each((button) => {
-      expect(domainNames).to.includes(button.text());
+      const attr = button.attr('data-veo-test');
+      expect(ChipSelectors).to.include(attr);
     });
   });
 });

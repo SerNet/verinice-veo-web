@@ -39,14 +39,9 @@ export function addDomain(unitName: string, _domainName: string): void {
 
 export function selectDomain(domainName: string): void {
   cy.getCustom('[data-veo-test="domain-select"] .v-autocomplete__menu-icon').click();
-  cy.getCustom('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
+  cy.getCustom(`[data-veo-test="domain-selection-nav-item-${domainName}"]`).should('be.visible');
   cy.wait(500);
-  cy.getCustom('[data-veo-test="domain-selection-nav-item"]').each(($el) => {
-    if ($el.text().trim() === domainName) {
-      cy.wrap($el).click();
-      return false; // Exit the .each() loop early
-    }
-  });
+  cy.getCustom(`[data-veo-test="domain-selection-nav-item-${domainName}"]`).click({ force: true });
 }
 
 export function selectRandomDomain(unitName: string): void {

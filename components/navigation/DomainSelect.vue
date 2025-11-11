@@ -44,6 +44,7 @@
     :label="items.length ? t('domain') : t('select')"
     :aria-label="t('domain')"
     data-veo-test="domain-select"
+    :data-selected-domain="selectedDomainName"
   >
     <template #item="{ props, item }">
       <v-list-item
@@ -51,7 +52,7 @@
         v-bind="props"
         :active="domainId === item.value"
         color="primary"
-        data-veo-test="domain-selection-nav-item"
+        :data-veo-test="`domain-selection-nav-item-${item.raw.name}`"
         width="500"
         :title="item.title"
         :value="item.value"
@@ -114,18 +115,23 @@ const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
 // v-select's append-item slot has no events (!), hence we have to reference it
 const closeMenu = ref();
 
-const items = computed(
-  () =>
-    (domains.value || []).find((domain: any) => domain.id === route.params.domain)?.name ||
-    (domains.value || []).find((domain: any) => domain.id === route.params.domain)?.translations?.[locale.value].name ||
-    []
-);
+const items = computed(() => {
+  const domain = (domains.value || []).find((d) => d.id === route.params.domain);
+  return domain?.translations?.[locale.value]?.name || domain?.name || '';
+});
+
 const itemSelection = computed(() =>
   (domains.value || []).map((domain: any) => ({
     value: domain.id,
-    title: domain?.name || domain?.translations?.[locale.value].name
+    title: domain?.translations?.[locale.value]?.name || domain?.name,
+    name: domain?.name
   }))
 );
+
+const selectedDomainName = computed(() => {
+  const selectedItem = itemSelection.value.find((item) => item.value === domainId.value);
+  return selectedItem?.name || '';
+});
 
 const domainId = computed({
   get() {

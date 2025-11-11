@@ -3,7 +3,7 @@ import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 let unitDetails: UnitDetails;
 
 describe('Domain Selection Functionality', () => {
-  before(() => {
+  beforeEach(() => {
     unitDetails = generateUnitDetails('domains');
     cy.login();
     cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: ['IT-Grundschutz', 'DS-GVO'] });
@@ -26,24 +26,30 @@ describe('Domain Selection Functionality', () => {
     { name: 'scenario', numOfElements: 1 }
   ];
 
-  it('should switch domain and verify domain selection', () => {
+  it('should switch to IT-Grundschutz domain and verify domain selection', () => {
     cy.selectDomain('IT-Grundschutz');
 
-    cy.getCustom('[data-veo-test="domain-select"] span')
-      .invoke('text')
-      .then((text) => {
-        expect(text.trim()).to.equal('IT-Grundschutz');
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains('ITGS');
+    cy.getCustom('[data-veo-test="domain-select"]')
+      .invoke('attr', 'data-selected-domain')
+      .then(($selectedDomain) => {
+        expect($selectedDomain).to.equal('IT-Grundschutz');
+        cy.getCustom('[data-component-name="breadcrumbs"]').should(
+          'have.attr',
+          'data-current-domain',
+          'IT-Grundschutz'
+        );
         cy.testEmptyDashboard(itgs_widgets);
       });
+  });
 
+  it('should switch to DS-GVO domain and verify domain selection', () => {
     cy.selectDomain('DS-GVO');
 
-    cy.getCustom('[data-veo-test="domain-select"] span')
-      .invoke('text')
-      .then((text: string) => {
-        expect(text.trim()).to.equal('DS-GVO');
-        cy.getCustom('[data-component-name="breadcrumbs"]').contains('DS-GVO');
+    cy.getCustom('[data-veo-test="domain-select"]')
+      .invoke('attr', 'data-selected-domain')
+      .then(($selectedDomain) => {
+        expect($selectedDomain).to.equal('DS-GVO');
+        cy.getCustom('[data-component-name="breadcrumbs"]').should('have.attr', 'data-current-domain', 'DS-GVO');
         cy.testEmptyDashboard();
       });
   });
