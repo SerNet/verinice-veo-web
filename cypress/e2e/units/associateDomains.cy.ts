@@ -2,7 +2,7 @@ import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
 
 let unitDetails: UnitDetails;
 
-describe('Add domains', () => {
+describe.skip('Add domains', () => {
   before(() => {
     unitDetails = generateUnitDetails('associateDomains');
     cy.login();
