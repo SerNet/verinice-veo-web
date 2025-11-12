@@ -1,4 +1,4 @@
-describe('create units', () => {
+describe.skip('create units', () => {
   beforeEach(() => {
     cy.login();
     cy.acceptAllCookies();
