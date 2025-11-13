@@ -117,6 +117,7 @@ export default defineNuxtConfig({
   //==============================================================
   // Nuxt content configuration
   content: {
+    experimental: { nativeSqlite: true },
     build: {
       markdown: {
         toc: {
