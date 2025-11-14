@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental
-FROM node:24-alpine AS builder
+FROM node:25-alpine AS builder
 
 # Install Git & Install Python for node-14
 RUN apk --no-cache add git python3 make g++
