@@ -86,14 +86,14 @@
   </BaseDialog>
 </template>
 <script lang="ts">
-import { PropType, Ref } from 'vue';
+import type { PropType, Ref } from 'vue';
 import { merge } from 'lodash';
 import type { LocaleObject } from '@nuxtjs/i18n';
 
-import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
+import type ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
-import { IVeoTranslationCollection } from '~/types/VeoTypes';
+import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import type { IVeoTranslationCollection } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {

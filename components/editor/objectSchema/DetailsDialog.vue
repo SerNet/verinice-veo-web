@@ -185,9 +185,9 @@ import { mdiMenu, mdiPlus, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 import Draggable from 'vuedraggable';
 import { cloneDeep, isEqual } from 'lodash';
 
-import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
+import type ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import { CHART_COLORS } from '~/lib/utils';
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 import type { LocaleObject } from '@nuxtjs/i18n';

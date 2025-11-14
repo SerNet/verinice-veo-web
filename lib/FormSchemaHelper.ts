@@ -16,9 +16,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import FormSchemaValidator from './FormSchemaValidator';
-import { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
+import type { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import type { IVeoDomainSpecificObjectSchema, IVeoFormSchemaTranslationCollection } from '~/types/VeoTypes';
-import { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchema, IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { cloneDeep } from 'lodash';
 
 export function generateSchema(

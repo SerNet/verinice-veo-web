@@ -59,23 +59,25 @@
 
 <script setup lang="ts">
 import { Bar } from 'vue-chartjs';
+import type {
+  ChartOptions
+} from 'chart.js';
 import {
   Chart as ChartJS,
   BarController,
   Tooltip,
   CategoryScale,
   BarElement,
-  LinearScale,
-  ChartOptions
+  LinearScale
 } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { CHART_COLORS } from '~/lib/utils';
+import type { IVeoDomainStatusCount } from '~/composables/api/queryDefinitions/domains';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { IVeoDomainStatusCount } from '~/composables/api/queryDefinitions/domains';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Tooltip);

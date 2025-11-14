@@ -154,7 +154,7 @@ import { VeoAlertType } from '~/types/VeoTypes';
 import type { UnitDetails } from '~/components/unit/Details.vue';
 import type { TVeoDomain } from '~/composables/domains/useDomains';
 import type { TVeoProfile } from '~/composables/profiles/useProfiles';
-import { TInlineComponent } from '~/types/utils';
+import type { TInlineComponent } from '~/types/utils';
 
 // Helper
 const { t } = useI18n();
@@ -211,11 +211,7 @@ const canClickNext = computed(() => {
 });
 
 // Actions
-const {
-  mutateAsync: create,
-  isLoading: isCreatingUnit,
-  data: createResponse
-} = useMutation(unitQueryDefinitions.mutations.create);
+const { mutateAsync: create, data: createResponse } = useMutation(unitQueryDefinitions.mutations.create);
 
 const { setLoading, clearLoading } = useGlobalLoadingState();
 

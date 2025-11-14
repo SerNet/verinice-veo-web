@@ -55,7 +55,7 @@ export async function read({
 }
 
 // Utils
-function generateHeaders(token: string, headers: RequestHeaders = {}, etag = ''): RequestHeaders {
+function generateHeaders(token: string, headers: RequestHeaders = {}): RequestHeaders {
   return {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json',

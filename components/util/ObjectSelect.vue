@@ -74,7 +74,8 @@ import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAILS_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import { IVeoEntity, IVeoLink, IVeoPaginatedResponse, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoLink, IVeoPaginatedResponse} from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 interface Props {
   objectType: string;

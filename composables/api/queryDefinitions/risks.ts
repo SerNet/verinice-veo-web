@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoAPIMessage } from '~/types/VeoTypes';
-import { IVeoMutationDefinition } from '../utils/mutation';
+import type { IVeoAPIMessage } from '~/types/VeoTypes';
+import type { IVeoMutationDefinition } from '../utils/mutation';
 
 export interface IVeoUpdateRiskMatrixValuesParameters {
   domainId: string;

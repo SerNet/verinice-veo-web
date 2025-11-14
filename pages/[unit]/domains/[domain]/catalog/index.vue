@@ -81,7 +81,8 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useSubTypeTranslation } from '~/composables/Translations';
 // Types
 import type { VeoSearch } from '~/types/VeoSearch';
-import { IVeoLink, VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { IVeoLink} from '~/types/VeoTypes';
+import { VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();

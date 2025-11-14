@@ -25,7 +25,7 @@ export default defineComponent({
     const fittingComponent = computed(() => AVAILABLE_WIDGETS.find((widget) => widget.name === props.name));
 
     if (!fittingComponent) {
-      // eslint-disable-next-line no-console
+       
       console.warn(`VeoForm::Widget: Couldn't find widget ${props.name}`);
       return null;
     }

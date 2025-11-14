@@ -61,9 +61,9 @@
 
 <script setup lang="ts">
 import { isArray } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
-import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import type { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 const props = defineProps({

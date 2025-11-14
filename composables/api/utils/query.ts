@@ -15,18 +15,20 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 import {
   useQuery as vueQueryUseQuery,
   useQueries as VueQueryUseQueries,
-  useQueryClient,
+  useQueryClient
+} from '@tanstack/vue-query';
+import type { UseQueryOptions ,
   QueryClient
 } from '@tanstack/vue-query';
-import type { UseQueryOptions } from '@tanstack/vue-query';
 import type { QueryObserverResult } from '@tanstack/query-core';
 import { omit } from 'lodash';
 
-import { useRequest, VeoApiResponseType } from './request';
+import type { VeoApiResponseType } from './request';
+import { useRequest } from './request';
 
 export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
 
@@ -127,7 +129,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
       (newValue) => {
         if (newValue && result.isStale.value) {
           const staleTime = combinedOptions.value?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
-          // eslint-disable-next-line no-console
+           
           console.log(
             `[vueQuery] data for query "${JSON.stringify(
               queryDefinition.primaryQueryKey
@@ -138,7 +140,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
             ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
           );
         } else if (newValue) {
-          // eslint-disable-next-line no-console
+           
           console.log(
             `[vueQuery] data for query "${JSON.stringify(
               queryDefinition.primaryQueryKey

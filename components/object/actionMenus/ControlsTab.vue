@@ -24,7 +24,7 @@
 import { mdiLinkPlus } from '@mdi/js';
 import { computed, inject } from 'vue';
 import { useCurrentDomain } from '~/composables/index';
-import { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+import type { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 const { locale } = useI18n();
 
 // Define props

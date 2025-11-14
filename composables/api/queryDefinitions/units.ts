@@ -15,13 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnationDescriptions } from '~/types/VeoTypes';
-import { IVeoMutationDefinition } from '../utils/mutation';
-import { IVeoQueryDefinition, STALE_TIME } from '../utils/query';
+import type { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnationDescriptions } from '~/types/VeoTypes';
+import type { IVeoMutationDefinition } from '../utils/mutation';
+import type { IVeoQueryDefinition} from '../utils/query';
+import { STALE_TIME } from '../utils/query';
 import { VeoApiResponseType } from '../utils/request';
 import { omit } from 'lodash';
 
 export interface IVeoUnit extends IVeoBaseObject {
+  id: string;
   name: string;
   description: string;
   domains: IVeoLink[];

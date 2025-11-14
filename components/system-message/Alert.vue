@@ -47,7 +47,7 @@
 </template>
 <script setup lang="ts">
 import { useFormatters } from '~/composables/utils';
-import { TSystemMessage } from '~/composables/messages/useSystemMessages';
+import type { TSystemMessage } from '~/composables/messages/useSystemMessages';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { mdiAlarm } from '@mdi/js';
 import { dateIsValid } from '~/lib/utils';

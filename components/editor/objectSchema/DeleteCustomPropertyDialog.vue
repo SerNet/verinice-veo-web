@@ -32,7 +32,7 @@
   </BaseDialog>
 </template>
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
 export default defineComponent({
   props: {

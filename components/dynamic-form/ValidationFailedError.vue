@@ -27,10 +27,10 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
-import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
+import type { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 
 defineProps({
   errors: {

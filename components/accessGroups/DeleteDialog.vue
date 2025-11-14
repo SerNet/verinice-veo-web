@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
+import type { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });

@@ -1,4 +1,5 @@
-import { UnitDetails, generateUnitDetails } from '../../support/setupHelpers';
+import type { UnitDetails} from '../../support/setupHelpers';
+import { generateUnitDetails } from '../../support/setupHelpers';
 
 function setup() {
   const unitDetails: UnitDetails = generateUnitDetails('workWithRis');

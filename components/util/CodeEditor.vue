@@ -25,7 +25,7 @@
   />
 </template>
 <script setup lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { Codemirror } from 'vue-codemirror';
 import { json } from '@codemirror/lang-json';
 

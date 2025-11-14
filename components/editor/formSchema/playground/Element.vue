@@ -105,13 +105,14 @@ export interface IPlaygroundElement {
 import { cloneDeep } from 'lodash';
 import Draggable from 'vuedraggable';
 
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import ControlElement from './ControlElement.vue';
-import { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
+import type { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 import ImpactGroupElement from './ImpactGroupElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
-import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
+import type { FormSchemaElementMap} from './Playground.vue';
+import { PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
 
 const props = withDefaults(
   defineProps<{

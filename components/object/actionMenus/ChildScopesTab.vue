@@ -35,7 +35,7 @@
 import { mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { computed, inject } from 'vue';
 import { useDialogManager } from '~/composables/dialogs/useDialogManager';
-import { IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 const props = defineProps<{
   object?: IVeoEntity;

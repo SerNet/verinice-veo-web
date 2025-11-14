@@ -1,4 +1,4 @@
-import { IVeoDomain } from '../../composables/api/queryDefinitions/domains';
+import type { IVeoDomain } from '../../composables/api/queryDefinitions/domains';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

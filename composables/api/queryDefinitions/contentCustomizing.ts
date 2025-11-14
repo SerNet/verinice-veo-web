@@ -15,8 +15,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { IVeoAPIMessage } from '~/types/VeoTypes';
-import { IVeoMutationDefinition } from '../utils/mutation';
+import type { IVeoAPIMessage } from '~/types/VeoTypes';
+import type { IVeoMutationDefinition } from '../utils/mutation';
 export interface IVeoCustomizeContentParameters {
   domainId: string;
   riskDefinitionId: string;

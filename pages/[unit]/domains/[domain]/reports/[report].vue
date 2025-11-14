@@ -91,15 +91,16 @@
 <script lang="ts">
 import { omit, upperCase, upperFirst } from 'lodash';
 
-import { QueryClient } from '@tanstack/vue-query';
-import { RouteRecordName } from 'vue-router';
+import type { QueryClient } from '@tanstack/vue-query';
+import type { RouteRecordName } from 'vue-router';
 import { useFetchObjects } from '~/composables/api/objects';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
-import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoEntity} from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 export default defineComponent({

@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export const DOMAIN_SHORTCUTS_CONFIG = {
   // Base navigation shortcuts

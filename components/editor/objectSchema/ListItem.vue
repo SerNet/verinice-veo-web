@@ -23,10 +23,10 @@
   </EditorListItem>
 </template>
 <script lang="ts">
-import { PropType, Ref } from 'vue';
+import type { PropType, Ref } from 'vue';
 
-import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { IInputType } from '~/types/VeoEditor';
+import type ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
+import type { IInputType } from '~/types/VeoEditor';
 
 export default defineComponent({
   props: {

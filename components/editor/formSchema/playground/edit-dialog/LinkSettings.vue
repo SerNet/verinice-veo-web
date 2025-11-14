@@ -62,13 +62,13 @@
 
 <script setup lang="ts">
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiInformationOutline, mdiListBoxOutline } from '@mdi/js';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
 import { difference, last } from 'lodash';
 
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { FORMSCHEMA_PLAYGROUND_NAMESPACE } from '../Playground.vue';
-import { IPlaygroundElement } from '../Element.vue';
+import type { IPlaygroundElement } from '../Element.vue';
 import type { IVeoObjectSchemaCustomLink } from '~/types/VeoTypes';
 
 const props = defineProps({

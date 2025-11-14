@@ -16,10 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { omit } from 'lodash';
-import { Ref } from 'vue';
-import { IVeoPaginationOptions } from '~/types/VeoTypes';
-import objectQueryDefinitions, { IVeoFetchObjectsParameters } from './queryDefinitions/objects';
-import { QueryOptions, useQuery } from './utils/query';
+import type { Ref } from 'vue';
+import type { IVeoPaginationOptions } from '~/types/VeoTypes';
+import type { IVeoFetchObjectsParameters } from './queryDefinitions/objects';
+import objectQueryDefinitions from './queryDefinitions/objects';
+import type { QueryOptions} from './utils/query';
+import { useQuery } from './utils/query';
 
 export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions {
   parentEndpoint: string;

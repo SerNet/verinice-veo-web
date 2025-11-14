@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ComputedRef } from 'vue';
+import type { ComputedRef } from 'vue';
 import { maxBy } from 'lodash';
 import { JsonPointer } from 'json-ptr';
 
@@ -73,7 +73,7 @@ export default defineComponent({
         const definition = control.CONTROL_DEFINITION;
         if (definition) {
           if (process.dev && props.debug) {
-            // eslint-disable-next-line no-console
+             
             console.log(
               `VeoForm::Control: Checking whether ${
                 definition.name[locale.value] || definition.name[0]
@@ -86,10 +86,10 @@ export default defineComponent({
           if (process.dev && props.debug) {
             for (let j = 0; j < evaluatedConditions.length; j++) {
               if (evaluatedConditions[j]) {
-                // eslint-disable-next-line no-console
+                 
                 console.log(`VeoForm::Control: Condition ${j} is met`);
               } else {
-                // eslint-disable-next-line no-console
+                 
                 console.log(`VeoForm::Control: Condition ${j} is NOT met`);
               }
             }
@@ -105,7 +105,7 @@ export default defineComponent({
 
     if (process.dev && props.debug) {
       for (const control of controls.value) {
-        // eslint-disable-next-line no-console
+         
         console.log(
           `Control ${
             control.control.CONTROL_DEFINITION.name[locale.value] || control.control.CONTROL_DEFINITION.name[0]

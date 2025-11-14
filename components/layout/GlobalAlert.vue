@@ -40,10 +40,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { VeoAlertType, IVeoGlobalAlertParams } from '~/types/VeoTypes';
+import type { IVeoGlobalAlertParams } from '~/types/VeoTypes';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {

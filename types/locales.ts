@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { LocaleObject } from '@nuxtjs/i18n';
+import type { LocaleObject } from '@nuxtjs/i18n';
 
 export const LOCALES: LocaleObject<'de' | 'en'>[] = [
   { code: 'de', file: 'de.json', name: 'Deutsch' },

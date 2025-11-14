@@ -19,7 +19,7 @@
 import { useQuerySync } from '~/composables/api/utils/query';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import type { VeoSearch, VeoSearchQueryParameters, VeoSearchFilters } from '~/types/VeoSearch';
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 type UseSearchParams<T> = {
   baseQueryParameters: Ref<T & { endpoint?: string; page?: number }>;

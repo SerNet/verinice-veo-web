@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { IVeoDomain } from '../../../composables/api/queryDefinitions/domains';
+import type { IVeoDomain } from '../../../composables/api/queryDefinitions/domains';
 
 /// <reference types="cypress" />
 
@@ -31,6 +31,7 @@ declare global {
       deleteDomainsOlderThan: typeof deleteDomainsOlderThan;
     }
   }
+
   interface Window {
     request: (url: string, options: any) => Record<any, any>;
   }
@@ -95,7 +96,7 @@ export function deleteDomainsOlderThan(hours = 3) {
     })
     .then((response) => {
       const domains = response.body;
-      console.log(`%cFound ${domains.length} domains.`, logStyles);
+      console.warn(`%cFound ${domains.length} domains.`, logStyles);
 
       const oldDomains = domains.filter((domain: any) => {
         const createdAt = new Date(domain.createdAt);
@@ -104,9 +105,9 @@ export function deleteDomainsOlderThan(hours = 3) {
 
       // Log info
       if (oldDomains.length > 0) {
-        console.log(`%cStarting to delete ${oldDomains.length} domains older than ${hours} hours...`, logStyles);
+        console.warn(`%cStarting to delete ${oldDomains.length} domains older than ${hours} hours...`, logStyles);
       } else {
-        console.log(`%cNo domains are older than ${hours} hours.`, logStyles);
+        console.warn(`%cNo domains are older than ${hours} hours.`, logStyles);
         return;
       }
 
@@ -118,7 +119,7 @@ export function deleteDomainsOlderThan(hours = 3) {
           failOnStatusCode: false
         }).then((response) => {
           if (response.status === 204) {
-            console.info(`%c${index + 1}: Deleted domain ${domain.id}`, logStyles);
+            console.warn(`%c${index + 1}: Deleted domain ${domain.id}`, logStyles);
           } else {
             console.error(`Failed to delete domain ${domain.name} | ${domain.id}. Status: ${response.status}`);
           }

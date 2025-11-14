@@ -68,7 +68,7 @@
 import { mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep, last } from 'lodash';
 
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {

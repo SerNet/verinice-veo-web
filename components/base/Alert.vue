@@ -71,7 +71,7 @@
 
 <script lang="ts">
 // @ts-ignore // conflicting type definitions
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { mdiAlertCircleOutline, mdiCheckCircleOutline, mdiInformationOutline } from '@mdi/js';
 
 import { VeoAlertType } from '~/types/VeoTypes';

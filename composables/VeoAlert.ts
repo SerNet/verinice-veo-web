@@ -15,9 +15,10 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 
-import { IVeoGlobalAlert, IVeoGlobalAlertParams, VeoAlertType } from '~/types/VeoTypes';
+import type { IVeoGlobalAlert, IVeoGlobalAlertParams} from '~/types/VeoTypes';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);
 

@@ -113,11 +113,12 @@
 import { cloneDeep } from 'lodash';
 import { mdiAlphabetical, mdiFormTextbox, mdiMagicStaff, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 
-import { FormSchemaElementMap, PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '../Playground.vue';
+import type { FormSchemaElementMap} from '../Playground.vue';
+import { PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from '../Playground.vue';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 
 const props = withDefaults(
   defineProps<{

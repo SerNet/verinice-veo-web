@@ -36,10 +36,10 @@
   </BaseDialog>
 </template>
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
-import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 
 export default defineComponent({
   props: {

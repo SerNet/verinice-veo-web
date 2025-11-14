@@ -55,7 +55,7 @@ export const ROUTE_NAME = 'units-unit-details';
 import { mdiUpdate } from '@mdi/js';
 import { useUpdateUnit } from '~/components/unit/unit-module';
 import type { UnitDetails } from '~/components/unit/Details.vue';
-import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 // Helper
 const { t } = useI18n();

@@ -36,8 +36,8 @@
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
-import { IPlaygroundElement } from './Element.vue';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IPlaygroundElement } from './Element.vue';
 
 defineProps<{
   playgroundElement: IPlaygroundElement;

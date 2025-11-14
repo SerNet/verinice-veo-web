@@ -154,16 +154,18 @@
 </template>
 
 <script lang="ts">
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 import { mdiPlus } from '@mdi/js';
 
-import ObjectSchemaHelper, {
+import type {
   IVeoOSHCustomAspect,
   IVeoOSHCustomLink,
   IVeoOSHCustomProperty
 } from '~/lib/ObjectSchemaHelper2';
+import type ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import { IInputType, INPUT_TYPES } from '~/types/VeoEditor';
+import type { IInputType} from '~/types/VeoEditor';
+import { INPUT_TYPES } from '~/types/VeoEditor';
 import { useQuery } from '~/composables/api/utils/query';
 
 interface EditorPropertyItem {

@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import { VeoFormsElementProps } from '../util';
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 
 export const GROUP_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-accordion',

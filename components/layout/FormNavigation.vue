@@ -54,7 +54,7 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 
 interface IItem {
   initialId: string;

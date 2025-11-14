@@ -76,7 +76,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   'update:activeTab': [value: string];
-  reload: [value: void];
+  reload: any;
 }>();
 
 const { data: config } = useConfiguration();

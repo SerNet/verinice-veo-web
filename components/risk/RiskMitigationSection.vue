@@ -160,17 +160,16 @@
 </template>
 
 <script lang="ts">
-import { mdiInformationOutline, mdiLinkOff, mdiPencilOutline } from '@mdi/js';
+import { mdiInformationOutline, mdiLinkOff, mdiPencilOutline, mdiArrowRightCircleOutline  } from '@mdi/js';
 import { upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
-import { mdiArrowRightCircleOutline } from '@mdi/js';
 import { useQueryClient } from '@tanstack/vue-query';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuerySync } from '~/composables/api/utils/query';
 import { useCurrentDomain } from '~/composables/index';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
-import { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {

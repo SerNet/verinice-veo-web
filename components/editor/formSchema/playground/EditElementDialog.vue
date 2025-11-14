@@ -55,9 +55,9 @@ import { cloneDeep, isEqual } from 'lodash';
 import EditorFormSchemaPlaygroundEditDialogControlElementSettings from './edit-dialog/ControlElementSettings.vue';
 import EditorFormSchemaPlaygroundEditDialogLabelElementSettings from './edit-dialog/LabelElementSettings.vue';
 import EditorFormSchemaPlaygroundEditDialogLayoutElementSettings from './edit-dialog/LayoutElementSettings.vue';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IPlaygroundElement } from './Element.vue';
+import type { IPlaygroundElement } from './Element.vue';
 
 const props = withDefaults(
   defineProps<{

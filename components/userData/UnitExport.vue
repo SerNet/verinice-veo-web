@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 import { downloadZIP } from '~/lib/jsonToZip';
 import { logError } from './modules/HandleError';
 
@@ -38,7 +38,7 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 
 // Types
-import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();

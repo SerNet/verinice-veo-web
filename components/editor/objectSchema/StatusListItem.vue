@@ -60,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiMenu, mdiTranslate, mdiTrashCanOutline } from '@mdi/js';
 

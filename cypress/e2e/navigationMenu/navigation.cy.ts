@@ -1,5 +1,6 @@
 import { truncate } from 'lodash';
-import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
+import type { UnitDetails } from '../../support/setupHelpers';
+import { generateUnitDetails } from '../../support/setupHelpers';
 
 const crumbDefaultLength = 22;
 

@@ -98,11 +98,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 
-import { IDirtyFields } from './CreateDialogSingle.vue';
-import { IVeoDomainRiskDefinition, IVeoRisk, IVeoRiskCategory } from '~/types/VeoTypes';
+import type { IDirtyFields } from './CreateDialogSingle.vue';
+import type { IVeoDomainRiskDefinition, IVeoRisk, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -116,7 +116,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+       
       default: () => {}
     },
     potentialImpact: {

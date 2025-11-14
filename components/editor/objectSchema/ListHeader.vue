@@ -39,11 +39,12 @@
 </template>
 <script setup lang="ts">
 import { upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { mdiPencil, mdiTrashCanOutline } from '@mdi/js';
 
-import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
-import { IInputType } from '~/types/VeoEditor';
+import type { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
+import type ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
+import type { IInputType } from '~/types/VeoEditor';
 
 const props = defineProps({
   item: {

@@ -26,7 +26,7 @@ import {
   mdiNumeric,
   mdiViewList
 } from '@mdi/js';
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 
 import { CONTROL_DEFINITION as AUTOCOMPLETE_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/Autocomplete.vue';
 import { CONTROL_DEFINITION as CHECKBOX_CONTROL_DEFINITION } from '~/components/dynamic-form/controls/Checkbox.vue';

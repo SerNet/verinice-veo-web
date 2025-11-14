@@ -1,8 +1,8 @@
 /// <reference types="cypress" />
 
-import { UnitDetails } from '../support/setupHelpers';
-import { TCYVeoUnitNames } from './domains';
-import { IVeoUnit } from '../../composables/api/queryDefinitions/units';
+import type { UnitDetails } from '../support/setupHelpers';
+import type { TCYVeoUnitNames } from './domains';
+import type { IVeoUnit } from '../../composables/api/queryDefinitions/units';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -238,7 +238,8 @@ export function goToUnitDashboard({
 
   // Store unit id to make it accessible in tests and other commands
   cy.url().then((url) => {
-    const unitDetails = { ...Cypress.env('unitDetails'), unitId: url.split('/').at(3) };
+    const unitId = url.split('/')[3];
+    const unitDetails = { ...Cypress.env('unitDetails'), unitId };
     Cypress.env('unitDetails', unitDetails);
   });
 }
@@ -282,7 +283,7 @@ export function deleteUnitsOlderThan(hours: number = 3) {
     })
     .then((response) => {
       const units = response.body;
-      console.log(`%cFound ${units.length} units.`, logStyles);
+      console.warn(`%cFound ${units.length} units.`, logStyles);
 
       const oldUnits = units.filter((unit: any) => {
         const createdAt = new Date(unit.createdAt);
@@ -291,9 +292,9 @@ export function deleteUnitsOlderThan(hours: number = 3) {
 
       // Log info
       if (oldUnits.length > 0) {
-        console.log(`%cStarting to delete ${oldUnits.length} units older than ${hours} hours...`, logStyles);
+        console.warn(`%cStarting to delete ${oldUnits.length} units older than ${hours} hours...`, logStyles);
       } else {
-        console.log(`%cNo units are older than ${hours} hours.`, logStyles);
+        console.warn(`%cNo units are older than ${hours} hours.`, logStyles);
         return;
       }
 
@@ -305,7 +306,7 @@ export function deleteUnitsOlderThan(hours: number = 3) {
           failOnStatusCode: false
         }).then((response) => {
           if (response.status === 204) {
-            console.info(`%c${index + 1}: Deleted unit ${unit.id}`, logStyles);
+            console.warn(`%c${index + 1}: Deleted unit ${unit.id}`, logStyles);
           } else {
             console.error(`Failed to delete unit ${unit.name} | ${unit.id}. Status: ${response.status}`);
           }

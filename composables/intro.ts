@@ -15,13 +15,13 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Ref, WatchStopHandle } from 'vue';
+import type { Ref, WatchStopHandle } from 'vue';
 // @ts-ignore TODO #3066 has no exported member
-import { TutorialsCollectionItem } from '@nuxt/content';
+import type { TutorialsCollectionItem } from '@nuxt/content';
 import { useIsFetching } from '@tanstack/vue-query';
 import introJs from 'intro.js';
-import { Hint } from 'intro.js/src/packages/hint';
-import { Tour } from 'intro.js/src/packages/tour';
+import type { Hint } from 'intro.js/src/packages/hint';
+import type { Tour } from 'intro.js/src/packages/tour';
 import { last } from 'lodash';
 import { useTheme } from 'vuetify';
 

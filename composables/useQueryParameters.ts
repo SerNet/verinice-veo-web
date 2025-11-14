@@ -1,4 +1,4 @@
-import { LocationQuery } from 'vue-router';
+import type { LocationQuery } from 'vue-router';
 import { isEqual } from 'lodash';
 
 export interface QueryParams extends LocationQuery {

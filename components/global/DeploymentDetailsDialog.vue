@@ -46,7 +46,15 @@
               &copy; {{ currentYear }} &hyphen;
               <a :href="serNetLink" target="_blank">SerNet GmbH</a>
               &hyphen;&nbsp;
-              <span v-html="footerText"></span>
+              <span>
+                <a :href="privacyPolicyLink" target="_blank">
+                  {{ footerText.privacy }}
+                </a>
+                &nbsp;|&nbsp;
+                <a :href="imprintLink" target="_blank">
+                  {{ footerText.imprint }}
+                </a>
+              </span>
             </div>
           </v-card-text>
         </BaseCard>
@@ -104,7 +112,8 @@
 </template>
 
 <script setup lang="ts">
-import monitoringQueryDefintions, { IVeoDeploymentInformation } from '~/composables/api/queryDefinitions/monitoring';
+import type { IVeoDeploymentInformation } from '~/composables/api/queryDefinitions/monitoring';
+import monitoringQueryDefintions from '~/composables/api/queryDefinitions/monitoring';
 import { useQuery } from '~/composables/api/utils/query';
 
 const config = useRuntimeConfig();
@@ -192,12 +201,10 @@ const privacyPolicyLink = computed(() =>
     'https://www.sernet.de/datenschutz-verinicecloud'
   : 'https://www.sernet.de/en/data-protection-verinicecloud'
 );
-const footerText = computed(() =>
-  t('footerNote', {
-    privacyLink: `<a href='${privacyPolicyLink.value}' target='_blank'>${t('privacyPolicy')}</a>`,
-    imprintLink: `<a href='${imprintLink.value}' target='_blank'>${t('imprint')}</a>`
-  })
-);
+const footerText = computed(() => ({
+  privacy: t('privacyPolicy'),
+  imprint: t('imprint')
+}));
 
 const hideSerNetReferences = config.public.hideSerNetReferences === 'true';
 </script>

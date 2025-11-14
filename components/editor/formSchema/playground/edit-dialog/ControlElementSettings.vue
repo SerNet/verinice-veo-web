@@ -84,14 +84,14 @@
 </template>
 
 <script setup lang="ts">
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 import { JsonPointer } from 'json-ptr';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~/types/VeoEditor';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { getFormSchemaControlType } from '~/lib/utils';
-import { IPlaygroundElement } from '../Element.vue';
+import type { IPlaygroundElement } from '../Element.vue';
 import type { Ref } from 'vue';
 import type { IVeoObjectSchemaCustomLink } from '~/types/VeoTypes';
 

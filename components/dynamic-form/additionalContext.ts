@@ -16,13 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { JsonPointer } from 'json-ptr';
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 import { cloneDeep } from 'lodash';
 import { addConditionalSchemaPropertiesToControlSchema } from './util';
-import { IVeoFormsAdditionalContext } from '~/components/dynamic-form/types';
-import { IVeoTranslationCollection } from '~/types/VeoTypes';
-import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormsAdditionalContext } from '~/components/dynamic-form/types';
+import type { IVeoTranslationCollection } from '~/types/VeoTypes';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 
 export default {};
 

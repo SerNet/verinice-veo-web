@@ -76,10 +76,11 @@
 
 <script lang="ts">
 import { trim } from 'lodash';
-import { PropType, Ref } from 'vue';
+import type { PropType, Ref } from 'vue';
 import type { LocaleObject } from '@nuxtjs/i18n';
 
-import ObjectSchemaHelper, { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
+import type { IVeoOSHCustomAspect, IVeoOSHCustomLink } from '~/lib/ObjectSchemaHelper2';
+import type ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 
 import { VeoAlertType } from '~/types/VeoTypes';
 

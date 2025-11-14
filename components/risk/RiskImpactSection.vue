@@ -42,10 +42,10 @@
 
 <script lang="ts">
 import { cloneDeep, upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
-import { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition } from '~/types/VeoTypes';
-import { IDirtyFields } from './CreateDialogSingle.vue';
+import type { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition } from '~/types/VeoTypes';
+import type { IDirtyFields } from './CreateDialogSingle.vue';
 
 export default defineComponent({
   props: {
@@ -63,7 +63,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+       
       default: () => {}
     },
     disabled: {

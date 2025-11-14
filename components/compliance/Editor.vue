@@ -182,14 +182,17 @@ import ComplianceEditorRiMetaData from './editorRiMetaData.vue';
 
 // ===== API and composables =====
 import { useRequest } from '@/composables/api/utils/request';
-import domainQueryDefinitions, {
+import type {
   IVeoFetchPersonsInDomainParameters,
   IVeoPersonInDomain
 } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import controlQueryDefinitions, { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
+import type { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
+import controlQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 
 // ===== Types and interfaces =====

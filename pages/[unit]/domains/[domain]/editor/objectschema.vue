@@ -256,13 +256,14 @@ import type { LocaleObject } from '@nuxtjs/i18n';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
-import { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoObjectSchema } from '~/types/VeoTypes';
 
 export default defineComponent({
   name: 'ObjectSchemaEditor',

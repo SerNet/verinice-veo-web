@@ -37,7 +37,8 @@
 
 <script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import { IVeoLegacyObjectHistoryEntry, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoLegacyObjectHistoryEntry} from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 const { t, locale } = useI18n();

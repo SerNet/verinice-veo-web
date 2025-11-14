@@ -85,10 +85,11 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import objectQueryDefinitions, { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
+import type { IVeoFetchRisksParameters } from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
-import { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {

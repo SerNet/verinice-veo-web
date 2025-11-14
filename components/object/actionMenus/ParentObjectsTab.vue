@@ -60,7 +60,7 @@
 import { mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { computed, inject, ref } from 'vue';
 import { useDialogManager } from '~/composables/dialogs/useDialogManager';
-import { IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 // Define props
 const props = defineProps<{

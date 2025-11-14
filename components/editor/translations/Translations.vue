@@ -50,8 +50,9 @@
 import { VBtn, VTextField, VTooltip } from 'vuetify/lib/components/index.mjs';
 import type { LocaleObject } from '@nuxtjs/i18n';
 
-import { TableHeader } from '~/components/base/Table.vue';
-import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
+import type { TableHeader } from '~/components/base/Table.vue';
+import type { IEditorTranslations} from './types';
+import { TRANSLATION_SOURCE } from './types';
 import { mdiContentCopy, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 

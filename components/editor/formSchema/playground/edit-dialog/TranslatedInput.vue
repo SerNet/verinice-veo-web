@@ -39,8 +39,9 @@ import { cloneDeep } from 'lodash';
 import { v4 as UUIDv4 } from 'uuid';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
-import { IEditorTranslations, TRANSLATION_SOURCE } from '~/components/editor/translations/types';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IEditorTranslations} from '~/components/editor/translations/types';
+import { TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 
 const props = withDefaults(
   defineProps<{

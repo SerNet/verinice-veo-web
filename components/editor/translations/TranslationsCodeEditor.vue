@@ -35,9 +35,10 @@
 
 <script setup lang="ts">
 import { VeoAlertType } from '~/types/VeoTypes';
-import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
+import type { IEditorTranslations} from './types';
+import { TRANSLATION_SOURCE } from './types';
 import { editorTranslationsToFormsTranslations, formsTranslationsToEditorTranslations } from './util';
-import { IVeoFormsTranslations } from '~/components/dynamic-form/types';
+import type { IVeoFormsTranslations } from '~/components/dynamic-form/types';
 
 const props = withDefaults(
   defineProps<{

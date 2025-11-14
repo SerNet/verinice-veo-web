@@ -95,7 +95,8 @@
 <script setup lang="ts">
 import { mdiPencilOutline, mdiPlus, mdiTrashCanOutline } from '@mdi/js';
 import accessGroupsDefinition from '~/composables/api/queryDefinitions/accessGroups';
-import accountQueryDefinition, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import type { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import accountQueryDefinition from '~/composables/api/queryDefinitions/accounts';
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';

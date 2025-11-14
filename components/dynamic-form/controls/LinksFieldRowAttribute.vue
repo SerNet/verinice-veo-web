@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsControlProps } from '../util';
 import type { IVeoCustomLink } from '~/types/VeoTypes';
 

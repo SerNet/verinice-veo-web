@@ -100,7 +100,8 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 
-import { IVeoEntity, IVeoEntityLegacy, VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoEntityLegacy} from '~/types/VeoTypes';
+import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{

@@ -1,4 +1,4 @@
-import { Options } from 'cypress-axe';
+import type { Options } from 'cypress-axe';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

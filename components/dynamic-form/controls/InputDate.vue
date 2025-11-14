@@ -83,7 +83,7 @@ import { last } from 'lodash';
 import { mdiCalendar } from '@mdi/js';
 import { formatISO } from 'date-fns';
 
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import { useFormatters } from '~/composables/utils';
 import { dateIsValid } from '~/lib/utils';
@@ -119,7 +119,7 @@ export default defineComponent({
         }
         return undefined;
       } catch (e) {
-        // eslint-disable-next-line no-console
+         
         console.warn(e);
         return undefined;
       }

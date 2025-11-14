@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',

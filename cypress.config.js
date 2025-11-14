@@ -1,6 +1,6 @@
 // import { defineConfig } from 'cypress';
 
-/* eslint-disable @typescript-eslint/no-require-imports -- use *require* to prevent issues in cypress docker (Gitlab) */
+ 
 const { defineConfig } = require('cypress');
 const fs = require('fs');
 const path = require('path');
@@ -40,7 +40,7 @@ module.exports = defineConfig({
       });
       const environment = config.env.environment || 'local';
       // load env from json
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+       
       config.env = require(`cypress/config/cypress.env.${environment}.json`);
       // change baseUrl
       config.baseUrl = config.env.baseUrl;

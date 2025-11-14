@@ -36,10 +36,10 @@
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
 import { JsonPointer } from 'json-ptr';
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 
-import { IPlaygroundElement } from './Element.vue';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IPlaygroundElement } from './Element.vue';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { eligibleInputElements, INPUT_TYPES as CONTROL_APPEARANCE_DEFINITIONS } from '~/types/VeoEditor';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { getFormSchemaControlType } from '~/lib/utils';

@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 import { cloneDeep, isArray } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
 
 export interface IProminentSelectionListItem {

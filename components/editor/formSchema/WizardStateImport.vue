@@ -85,10 +85,11 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { isObject } from 'lodash';
 
-import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import { VeoAlertType, VeoElementTypePlurals, RI_CONTROL_VIEW_CONTEXT } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -159,8 +160,8 @@ export default defineComponent({
         props.formSchema &&
         !(
           (props.formSchema.context === RI_CONTROL_VIEW_CONTEXT && props.formSchema.modelType == null) ||
-          Object.keys(VeoElementTypePlurals).some(
-            (elementType) => elementType === (props.formSchema?.modelType as string)
+          Object.keys(VeoElementTypePlurals).includes(
+            (props.formSchema?.modelType as string)
           )
         )
     );

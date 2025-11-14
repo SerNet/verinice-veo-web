@@ -82,11 +82,11 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline } from '@mdi/js';
 
-import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
+import type { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
 const props = defineProps({
   disabled: {

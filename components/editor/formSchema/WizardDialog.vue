@@ -87,11 +87,15 @@
 <script lang="ts">
 import type { LocaleObject } from '@nuxtjs/i18n';
 import { JsonPointer } from 'json-ptr';
-import { Dictionary, isEqual, merge, pick } from 'lodash';
+import type { Dictionary} from 'lodash';
+import { isEqual, merge, pick } from 'lodash';
 
-import formsQueryDefinitions, { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import schemaQueryDefinitions, { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
-import translationQueryDefinitions, { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFetchSchemaParameters } from '~/composables/api/queryDefinitions/schemas';
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { generateSchema, validate } from '~/lib/FormSchemaHelper';
 import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchemaTranslations } from '~/types/VeoTypes';
@@ -316,7 +320,7 @@ export default defineComponent({
 
     function createFormSchema() {
       if (!objectSchema.value) {
-        // eslint-disable-next-line no-console
+         
         console.warn('VeoFseWiardDialog::Object schema missing. Cannot create form schema');
         return;
       }

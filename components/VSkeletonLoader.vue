@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
 type SKELETON_TYPE = 'text' | 'image' | 'paragraph' | 'heading';
 

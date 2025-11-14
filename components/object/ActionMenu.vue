@@ -87,7 +87,8 @@
 <script lang="ts">
 import { mdiClose, mdiPlus } from '@mdi/js';
 import { cloneDeep, upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType} from 'vue';
+import { computed, ref  } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ObjectActionMenusChildObjectsTab from '~/components/object/actionMenus/ChildObjectsTab.vue';
 import ObjectActionMenusChildScopesTab from '~/components/object/actionMenus/ChildScopesTab.vue';
@@ -98,7 +99,6 @@ import ObjectActionMenusRisksTab from '~/components/object/actionMenus/RisksTab.
 import ObjectActionMenusTargetsTab from '~/components/object/actionMenus/TargetsTab.vue';
 
 import { useQueryClient } from '@tanstack/vue-query';
-import { computed, ref } from 'vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';

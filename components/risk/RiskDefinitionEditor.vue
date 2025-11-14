@@ -53,8 +53,8 @@
             <v-btn
               variant="outlined"
               class="add-btn"
-              @click="addItem"
               data-veo-test="risk-definition-editor-add-button"
+              @click="addItem"
             >
               + {{ t('addItem') }}
             </v-btn>
@@ -140,7 +140,7 @@
 
 <script setup lang="ts">
 import { mdiDeleteOutline, mdiSquare } from '@mdi/js';
-import { IVeoRiskPotentialImpact } from '~/types/VeoTypes';
+import type { IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 
 const emit = defineEmits<{
   (e: 'close'): void;

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from 'vitest';
-import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
+import { mountSuspended } from '@nuxt/test-utils/runtime';
 
 // @ts-ignore // TS thinks this file would not exist
 import SystemMessageAlert from '~/components/system-message/Alert';

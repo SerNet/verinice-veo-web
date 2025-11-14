@@ -15,15 +15,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import {
+import type {
   QueryClient,
+  UseMutationOptions} from '@tanstack/vue-query';
+import {
   useMutation as vueQueryUseMutation,
-  UseMutationOptions,
   useQueryClient
 } from '@tanstack/vue-query';
 import { omit } from 'lodash';
 
-import { debugCacheAsArrayIncludesPrimaryKey, IVeoQueryDefinition, IVeoQueryParameters } from './query';
+import type { IVeoQueryDefinition, IVeoQueryParameters } from './query';
+import { debugCacheAsArrayIncludesPrimaryKey } from './query';
 import { useRequest } from './request';
 
 export interface MutationOptions<_TVariables, TResult = unknown>
@@ -101,7 +103,7 @@ export const useMutation = <TVariables, TResult>(
         $config.public.debugCache === 'true' ||
         debugCacheAsArrayIncludesPrimaryKey($config.public.debugCache, mutationDefinition.primaryQueryKey)
       ) {
-        // eslint-disable-next-line no-console
+         
         console.log(
           `[vueQuery] Mutation "${mutationDefinition.primaryQueryKey}" is running with parameters "${JSON.stringify(
             mutationParameters

@@ -75,7 +75,7 @@
 import type { SortItem } from '~/components/base/Table.vue';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
-import { TableHeader } from '../base/Table.vue';
+import type { TableHeader } from '../base/Table.vue';
 
 const props = withDefaults(
   defineProps<{

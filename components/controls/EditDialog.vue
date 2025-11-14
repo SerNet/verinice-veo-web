@@ -76,7 +76,8 @@ import { mdiAccount, mdiPencil } from '@mdi/js';
 
 import { cloneDeep, isEqual } from 'lodash';
 
-import domainQueryDefinitions, { IVeoFetchPersonsInDomainParameters } from '~/composables/api/queryDefinitions/domains';
+import type { IVeoFetchPersonsInDomainParameters } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';

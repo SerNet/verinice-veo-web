@@ -51,8 +51,6 @@ import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
 import ObjectDeleteDialog from '~/components/object/DeleteDialog.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
-
 import type { IVeoEntity } from '~/types/VeoTypes';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import type { TVeoAction } from '~/composables/actions/useActions';

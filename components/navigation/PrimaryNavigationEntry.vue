@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { _RouteLocationBase } from 'vue-router';
 
-import { INavItem } from './PrimaryNavigation.vue';
+import type { INavItem } from './PrimaryNavigation.vue';
 
 const props = withDefaults(
   defineProps<

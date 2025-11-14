@@ -62,10 +62,11 @@
 </template>
 
 <script setup lang="ts">
-import { isEmpty, last, pick } from 'lodash';
+import { isEmpty, last, pick, truncate  } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal } from '@mdi/js';
 
-import { IVeoBreadcrumb, useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
+import type { IVeoBreadcrumb} from '~/composables/VeoBreadcrumbs';
+import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { useQuery } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -73,7 +74,6 @@ import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects'
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useSubTypeTranslation, useTranslations } from '~/composables/Translations';
-import { truncate } from 'lodash';
 import { useDisplay } from 'vuetify';
 import type { TInlineComponent } from '~/types/utils';
 

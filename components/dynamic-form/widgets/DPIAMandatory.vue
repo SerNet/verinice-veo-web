@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 import { VeoFormsWidgetProps } from '../util';
 import { VeoAlertType } from '~/types/VeoTypes';
 

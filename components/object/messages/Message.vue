@@ -41,7 +41,7 @@
 import { mergeProps } from 'vue';
 import { mdiLightbulbOutline } from '@mdi/js';
 
-import { Message } from '~/components/object/messages/Messages.vue';
+import type { Message } from '~/components/object/messages/Messages.vue';
 
 defineProps<{
   message: Message;

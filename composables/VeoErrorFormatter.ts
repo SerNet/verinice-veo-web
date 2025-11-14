@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import { last } from 'lodash';
 
 export const useVeoErrorFormatter = () => {
@@ -81,7 +81,7 @@ export const useVeoErrorFormatter = () => {
 
     switch (error.keyword) {
       case 'required':
-        // eslint-disable-next-line no-case-declarations
+         
         affectedProperty = (error.params as Record<string, any>).missingProperty;
         objectSchemaPointer = `${(isRequiredRule as RegExpMatchArray)[0]}${
           indexMatch ? indexMatch[0] : ''

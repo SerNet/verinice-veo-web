@@ -15,7 +15,8 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { QueryOptions, useQueries, useQuery } from './utils/query';
+import type { QueryOptions} from './utils/query';
+import { useQueries } from './utils/query';
 
 import schemaQueryDefinitions from './queryDefinitions/schemas';
 import type { MaybeRef } from 'vue';

@@ -60,11 +60,12 @@
 </template>
 
 <script setup lang="ts">
-import { mergeProps, PropType } from 'vue';
+import type { PropType } from 'vue';
+import { mergeProps } from 'vue';
 import { mdiLightbulbOutline } from '@mdi/js';
 
-import { INestedMenuEntries } from './NestedMenu.vue';
-import { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
+import type { INestedMenuEntries } from './NestedMenu.vue';
+import type { VeoSchemaValidatorMessage } from '~/lib/ObjectSchemaValidator';
 import { isFunction } from 'lodash';
 
 defineProps({

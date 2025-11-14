@@ -18,7 +18,7 @@
 /** @deprecated Use elements.ts instead. `objects.ts` uses the `useRoute` composable in global scope. This makes it unusable in other composables. */
 
 import { cloneDeep, omit } from 'lodash';
-import {
+import type {
   IVeoAPIMessage,
   IVeoControlImplementation,
   IVeoDecisionEvaluation,
@@ -28,8 +28,8 @@ import {
   IVeoPaginationOptions,
   IVeoRisk
 } from '~/types/VeoTypes';
-import { IVeoMutationDefinition } from '../utils/mutation';
-import { IVeoQueryDefinition } from '../utils/query';
+import type { IVeoMutationDefinition } from '../utils/mutation';
+import type { IVeoQueryDefinition } from '../utils/query';
 import { VeoApiResponseType } from '../utils/request';
 
 const route = useRoute();

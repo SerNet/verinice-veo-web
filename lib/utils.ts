@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { JsonPointer } from 'json-ptr';
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 
 import { isEqual, isPlainObject } from 'lodash';
-import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import { IVeoCustomLink, IVeoDomainSpecificObjectSchema, IVeoEntity, IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoCustomLink, IVeoDomainSpecificObjectSchema, IVeoEntity, IVeoObjectSchema } from '~/types/VeoTypes';
 
 export const CHART_COLORS = ['#666', '#ffc107', '#3f51b5', '#8bc34a', '#bbb'];
 // export const CHART_COLORS = ['#5c3f5a', '#304655', '#2892e4', '#8d9ac5', '#36384c'];

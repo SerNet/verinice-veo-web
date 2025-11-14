@@ -16,12 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { MaybeRef } from 'vue';
-import { JSONSchema7TypeName } from 'json-schema';
+import type { JSONSchema7TypeName } from 'json-schema';
 
-import { IAlertButton } from '~/components/base/Alert.vue';
-import { Mode } from '~/components/dynamic-form/util';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
-import { UISchemaElement } from './UISchema';
+import type { IAlertButton } from '~/components/base/Alert.vue';
+import type { Mode } from '~/components/dynamic-form/util';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { UISchemaElement } from './UISchema';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 

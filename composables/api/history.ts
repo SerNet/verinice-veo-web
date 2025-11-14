@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Ref } from 'vue';
-import { QueryOptions, useQuery } from './utils/query';
+import type { Ref } from 'vue';
+import type { QueryOptions} from './utils/query';
+import { useQuery } from './utils/query';
 import historyQueryDefinitions from './queryDefinitions/history';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 

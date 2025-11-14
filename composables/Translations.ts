@@ -14,7 +14,8 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import domainQueryDefinitions, { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
 import { useQuery } from './api/utils/query';
 import { useQuery as useQuery5 } from 'vue-query-v5';

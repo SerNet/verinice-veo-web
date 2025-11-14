@@ -15,7 +15,7 @@ describe('A very simple example test suite', () => {
       }
     });
 
-    // eslint-disable-next-line
+     
     //console.log(wrapper.html());
 
     // Assert rendered text

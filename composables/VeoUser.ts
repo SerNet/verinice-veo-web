@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Keycloak from 'keycloak-js';
-import { ComputedRef, Ref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
 
 export interface IVeoUserSettings {
   maxUnits: number;

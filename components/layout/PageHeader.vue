@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { ComputedRef, PropType } from 'vue';
+import type { ComputedRef, PropType } from 'vue';
 import VSkeletonLoader from '~/components/VSkeletonLoader.vue'; // TODO: import { VSkeletonLoader } from 'vuetify/components'; as soon as vuetify adds it back
 
 export enum PageHeaderAlignment {

@@ -54,7 +54,8 @@
 import { upperFirst, toUpper } from 'lodash';
 
 import domainQueryDefinitions, { getSubTypes } from '~/composables/api/queryDefinitions/domains';
-import reportQueryDefinitions, { IVeoReportMeta, IVeoReportsMeta } from '~/composables/api/queryDefinitions/reports';
+import type { IVeoReportMeta, IVeoReportsMeta } from '~/composables/api/queryDefinitions/reports';
+import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import { useQuery } from '~/composables/api/utils/query';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
@@ -115,7 +116,7 @@ function filterReports({ _domain, _allReports, _locale }: TFilterReportsParams) 
           // if there is no subType, the report exists in the current domain
           if (!subTypes) return true;
           const subTypesInDomain = getSubTypes(_domain, modelType);
-          return subTypesInDomain.some((subTypeInDomain) => subTypes.indexOf(subTypeInDomain) >= 0);
+          return subTypesInDomain.some((subTypeInDomain) => subTypes.includes(subTypeInDomain));
         });
       });
 

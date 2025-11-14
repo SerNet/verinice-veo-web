@@ -12,11 +12,11 @@ declare global {
 export function checkPagination(columnSelectors: string[] = ['name', 'status', 'updatedAt', 'updatedBy']) {
   const paginationRegex = /(\d+)-(\d+)\s+of\s+(\d+)/;
 
-  function verifyAndNavigate(pages, itemsShown) {
+  function verifyAndNavigate(pages: any) {
     for (let page = 1; page <= pages; cy.getCustom('.v-pagination__next').click(), page++)
       cy.getCustom('.v-data-table-footer__info > div')
         .invoke('text')
-        .then((footerText) => {
+        .then((footerText: any) => {
           const matches = footerText.match(paginationRegex);
 
           expect(matches).to.have.length(4);
@@ -55,6 +55,6 @@ export function checkPagination(columnSelectors: string[] = ['name', 'status', '
       const itemsShown = endItem - startItem + 1;
       const pages = Math.ceil(totalItems / itemsShown);
 
-      verifyAndNavigate(pages, itemsShown);
+      verifyAndNavigate(pages);
     });
 }

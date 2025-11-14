@@ -51,7 +51,7 @@ import { last } from 'lodash';
 
 import { mdiOpenInNew } from '@mdi/js';
 
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {

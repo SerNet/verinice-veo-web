@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 withDefaults(
   defineProps<{

@@ -17,9 +17,9 @@
  */
 import { JsonPointer } from 'json-ptr';
 
-import { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
+import type { VeoSchemaValidatorMessage, VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
-import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 
 export type VeoSchemaValidatorRequiredProperty = string | { key: string; value: any };
 

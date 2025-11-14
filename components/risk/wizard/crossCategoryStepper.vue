@@ -99,7 +99,7 @@
   </v-window>
 </template>
 <script setup lang="ts">
-import {
+import type {
   IVeoRiskValueLevel,
   IVeoRiskCategory,
   IVeoRiskProbabilityLevel,

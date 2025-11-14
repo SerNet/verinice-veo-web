@@ -125,7 +125,8 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { IVeoDomainRiskDefinition, IVeoEntity, IVeoLink, IVeoRisk, VeoAlertType } from '~/types/VeoTypes';
+import type { IVeoDomainRiskDefinition, IVeoEntity, IVeoLink, IVeoRisk} from '~/types/VeoTypes';
+import { VeoAlertType } from '~/types/VeoTypes';
 
 export interface IDirtyFields {
   [field: string]: boolean;

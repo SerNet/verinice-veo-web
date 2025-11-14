@@ -47,7 +47,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <BookmarkFavorite :is-favorite="u?.isFavorite" @bookmark-favorite="() => bookmarkFavoriteUnit(u)" />
         </template>
         <template #bottom-right="{ item: u }">
-          <ApplyProfiles :profiles-url="u?.profilesUrl" :canUpdateUnit />
+          <ApplyProfiles :profiles-url="u?.profilesUrl" :can-update-unit="canUpdateUnit" />
         </template>
       </BaseListItem>
     </template>
@@ -306,7 +306,7 @@ const DomainActions: TInlineComponent = {
       size="x-small"
       :data-veo-test="'domain-card-chip-' + (domain?.name).toLowerCase()"
     >
-     {{ getDomainLabel(domain) }}
+      {{ getDomainLabel(domain) }}
     </v-chip>
 
     <!-- Edit/Add Domains button with tooltip -->

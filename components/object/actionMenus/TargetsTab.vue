@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { mdiLinkPlus } from '@mdi/js';
 import { computed, inject, ref } from 'vue';
-import { IVeoEntity } from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 // Define props
 const props = defineProps<{

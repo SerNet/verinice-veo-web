@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { IVeoFormsTranslations } from '~/components/dynamic-form/types';
-import { IEditorTranslations, TRANSLATION_SOURCE } from './types';
+import type { IVeoFormsTranslations } from '~/components/dynamic-form/types';
+import type { IEditorTranslations} from './types';
+import { TRANSLATION_SOURCE } from './types';
 import { cloneDeep } from 'lodash';
 
 /**

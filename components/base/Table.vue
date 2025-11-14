@@ -27,7 +27,7 @@
  */
 
 import { cloneDeep, omit } from 'lodash';
-import { Slot, VNode, VNodeArrayChildren } from 'vue';
+import type { Slot, VNode, VNodeArrayChildren } from 'vue';
 import { VCheckbox, VIcon, VProgressLinear, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 

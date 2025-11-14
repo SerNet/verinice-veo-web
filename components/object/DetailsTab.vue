@@ -95,26 +95,26 @@ import {
   mdiLinkOff,
   mdiTransitDetour,
   mdiTrashCanOutline,
-  mdiUpload
+  mdiUpload, mdiTextBoxCheckOutline 
 } from '@mdi/js';
 import { cloneDeep, upperFirst } from 'lodash';
 import type { ComputedRef, PropType, Ref } from 'vue';
 import { VIcon, VTooltip } from 'vuetify/components';
 
-import { mdiTextBoxCheckOutline } from '@mdi/js';
 import { useQueryClient } from '@tanstack/vue-query';
-import { TableHeader } from '~/components/base/Table.vue';
+import type { TableHeader } from '~/components/base/Table.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import elementsQueryDefinitions from '~/composables/api/queryDefinitions/elements';
-import objectQueryDefinitions, {
+import type {
   IVeoFetchControlImplementationsParameters,
   IVeoFetchRisksParameters,
   IVeoFetchScopeChildrenParameters
 } from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';

@@ -83,7 +83,7 @@
 
 <script setup lang="ts">
 import { mdiChevronRight } from '@mdi/js';
-import { ComposerTranslation } from 'vue-i18n';
+import type { ComposerTranslation } from 'vue-i18n';
 
 export interface INestedMenuEntries {
   key: string;

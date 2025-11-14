@@ -1,4 +1,5 @@
-import { generateUnitDetails, UnitDetails } from '../../support/setupHelpers';
+import type { UnitDetails } from '../../support/setupHelpers';
+import { generateUnitDetails } from '../../support/setupHelpers';
 
 const featureEnabled = Cypress.env('VEO_FEATURE_FLAG_USER_SETTINGS') === 'true';
 

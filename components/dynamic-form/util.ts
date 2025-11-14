@@ -18,14 +18,14 @@
 import addFormats from 'ajv-formats';
 import Ajv2019 from 'ajv/dist/2019';
 import { JsonPointer } from 'json-ptr';
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import type { IVeoLink } from '~/types/VeoTypes';
 
-import { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
-import { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
-import { IDynamicFormElementOptions, IVeoFormElementFormSchemaRule, IVeoFormElementRule } from './types';
+import type { IVeoFormSchemaControl, UISchemaElement } from '~/types/UISchema';
+import type { IVeoFormSchemaGeneratorOptions } from '~/types/VeoTypes';
+import type { IDynamicFormElementOptions, IVeoFormElementFormSchemaRule, IVeoFormElementRule } from './types';
 
 export const VeoFormsElementProps = {
   metaData: {
@@ -131,7 +131,7 @@ export const evaluateRule = (value: any, rule: IVeoFormElementFormSchemaRule | u
   }
 
   if (!['HIDE', 'SHOW', 'DISABLE', 'ENABLE'].includes(rule.effect)) {
-    // eslint-disable-next-line no-console
+     
     console.error(
       `Your rule effect "${rule.effect}" is not available!`,
       'Only these rule effects are permitted: "SHOW", "HIDE", "ENABLED", "DISABLED".'

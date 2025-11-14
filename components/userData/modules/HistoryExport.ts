@@ -17,8 +17,8 @@
  */
 import { createZIP } from '~/lib/jsonToZip';
 import { chunk } from 'lodash';
-import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
-import { IVeoPagedRevision } from '~/composables/api/queryDefinitions/history';
+import type { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import type { IVeoPagedRevision } from '~/composables/api/queryDefinitions/history';
 import { format } from 'date-fns';
 
 // Types

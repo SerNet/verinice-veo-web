@@ -103,11 +103,11 @@
 
 <script lang="ts">
 import { cloneDeep } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
-import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { IVeoDomainRiskDefinition, IVeoEntity, IVeoRisk, IVeoRiskCategory } from '~/types/VeoTypes';
-import { IDirtyFields } from './CreateDialogSingle.vue';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import type { IVeoDomainRiskDefinition, IVeoEntity, IVeoRisk, IVeoRiskCategory } from '~/types/VeoTypes';
+import type { IDirtyFields } from './CreateDialogSingle.vue';
 
 export default defineComponent({
   props: {
@@ -121,7 +121,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
+       
       default: () => {}
     },
     mitigations: {

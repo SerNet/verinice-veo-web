@@ -100,9 +100,10 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { mdiTranslate } from '@mdi/js';
-import { read, WorkBook, WorkSheet } from 'xlsx';
+import type { WorkBook, WorkSheet } from 'xlsx';
+import { read } from 'xlsx';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import type { LocaleObject } from '@nuxtjs/i18n';
@@ -211,7 +212,7 @@ export default defineComponent({
 
         // If first char is a value between A and Z, continue
         if (firstChar >= 65 && firstChar <= 90) {
-          const row = Number((cell || '').replace(/[^0-9]/g, '')) - 1; // Extract the number out of a key like A123. -1 as xlsx starts with row 1 instead of 0
+          const row = Number((cell || '').replace(/\D/g, '')) - 1; // Extract the number out of a key like A123. -1 as xlsx starts with row 1 instead of 0
           const arrayIndex = firstChar - 65; // A is index 0 in our array, B is 1...
           if (!toReturn[arrayIndex]) {
             toReturn[arrayIndex] = [];
@@ -223,7 +224,7 @@ export default defineComponent({
       availableColumns.value = columns
         .filter((column) => column[0])
         .map((column, index) => ({
-          title: column[0].replace(/[^\w]/g, ''), // Remove special characters from column names
+          title: column[0].replace(/\W/g, ''), // Remove special characters from column names
           value: index
         }))
         .filter((array) => array); // Filter out empty columns

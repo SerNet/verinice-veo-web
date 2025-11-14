@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 
-// eslint-disable-next-line no-use-before-define
+ 
 export type UISchemaElement = Layout | IVeoFormSchemaControl | Label | Widget;
 
 export type UISchema = UISchemaElement;

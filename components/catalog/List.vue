@@ -35,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { IVeoCatalog } from '~/composables/api/queryDefinitions/catalogs';
+import type { IVeoCatalog } from '~/composables/api/queryDefinitions/catalogs';
 
 interface Props {
   catalogs: IVeoCatalog[];

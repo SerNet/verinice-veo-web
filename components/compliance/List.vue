@@ -52,8 +52,9 @@
 <script setup lang="ts">
 import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
 import { useRequirementImplementationList } from '~/composables/requirementImplementations';
-import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
-import { TableHeader } from '../base/Table.vue';
+import type { IVeoEntity} from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { TableHeader } from '../base/Table.vue';
 
 const props = defineProps<{
   containerControl?: Partial<IVeoEntity>;

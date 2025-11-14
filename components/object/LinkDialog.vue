@@ -107,7 +107,7 @@
 <script lang="ts">
 import { useQueryClient } from '@tanstack/vue-query';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
 import { useLinkObject, useUnlinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -118,7 +118,7 @@ import { useNavigation } from '~/composables/navigation';
 import type { VeoSearch } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import { TableHeader } from '../base/Table.vue';
+import type { TableHeader } from '../base/Table.vue';
 
 export default defineComponent({
   props: {

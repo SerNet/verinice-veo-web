@@ -84,7 +84,8 @@
 </template>
 
 <script setup lang="ts">
-import unitQueryDefinitions, { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { VeoAlertType } from '~/types/VeoTypes';
 

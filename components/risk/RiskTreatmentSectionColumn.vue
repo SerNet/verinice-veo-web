@@ -78,9 +78,9 @@
 
 <script lang="ts">
 import { upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
-import { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
+import type { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {

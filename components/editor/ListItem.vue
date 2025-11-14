@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { upperFirst } from 'lodash';
-import { IInputType } from '~/types/VeoEditor';
+import type { IInputType } from '~/types/VeoEditor';
 
 interface Props {
   scope?: string;

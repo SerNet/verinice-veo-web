@@ -97,9 +97,10 @@
 
 <script setup lang="ts">
 import { mdiChevronDown } from '@mdi/js';
-import { VList } from 'vuetify/components';
+import type { VList } from 'vuetify/components';
 
-import { INavItem, PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS } from './PrimaryNavigation.vue';
+import type { INavItem} from './PrimaryNavigation.vue';
+import { PROVIDE_KEYS as PRIMARY_NAVIGATION_KEYS } from './PrimaryNavigation.vue';
 
 const props = withDefaults(
   defineProps<

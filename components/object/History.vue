@@ -69,9 +69,11 @@
 <script lang="ts">
 import { cloneDeep } from 'lodash';
 
-import { IVeoFetchVersionsParameters, useFetchVersions } from '~/composables/api/history';
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
-import { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import type { IVeoFetchVersionsParameters} from '~/composables/api/history';
+import { useFetchVersions } from '~/composables/api/history';
+import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
+import type { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {

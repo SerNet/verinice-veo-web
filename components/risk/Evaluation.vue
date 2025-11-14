@@ -20,7 +20,7 @@
 </template>
 <script setup lang="ts">
 import { getUpdatedRiskDefinition } from './wizard/helpers';
-import {
+import type {
   IVeoDomainRiskDefinition,
   IVeoRiskCategory,
   IVeoRiskProbabilityLevel,

@@ -17,7 +17,7 @@
  */
 import { trim } from 'lodash';
 
-import { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
+import type { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 
 export function useVeoReactiveFormActions() {
   const route = useRoute();

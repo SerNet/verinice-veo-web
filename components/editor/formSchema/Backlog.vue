@@ -197,7 +197,7 @@ import Draggable from 'vuedraggable';
 import type { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
 import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { INPUT_TYPES } from '~/types/VeoEditor';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 

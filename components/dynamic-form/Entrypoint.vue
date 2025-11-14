@@ -16,11 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <script lang="ts">
-import { ErrorObject } from 'ajv';
+import type { ErrorObject } from 'ajv';
 import { JsonPointer } from 'json-ptr';
-import { JSONSchema7 } from 'json-schema';
+import type { JSONSchema7 } from 'json-schema';
 import { cloneDeep, debounce, merge, take, takeRight } from 'lodash';
-import { ComputedRef, PropType } from 'vue';
+import type { ComputedRef, PropType } from 'vue';
 
 import {
   generateFormSchema,
@@ -29,17 +29,17 @@ import {
   Mode
 } from '~/components/dynamic-form/util';
 import { updateRiskDefinitionsFormSchema } from '~/components/risk/Utils';
-import { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
-import { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
+import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import { useVeoErrorFormatter } from '~/composables/VeoErrorFormatter';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import FormSchemaValidator from '~/lib/FormSchemaValidator';
-import { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import Control from './controls/Control';
 import Label from './labels/Label.vue';
 import Layout from './layouts/Layout';
-import {
+import type {
   IVeoFormControlFormSchema,
   IVeoFormElementFormSchema,
   IVeoFormLabelFormSchema,
@@ -349,7 +349,7 @@ export default defineComponent({
       let scope = cloneDeep(element.scope);
       if (!scope) {
         if (process.dev && props.debug) {
-          // eslint-disable-next-line no-console
+           
           console.warn(`VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(element)}`);
         }
         return;
@@ -358,7 +358,7 @@ export default defineComponent({
       // Special handling for link attributes, as they don't have a complete pointer in the form schema as they can only exist inside of their link
       if (scope.startsWith('#/properties/attributes')) {
         if (process.dev && props.debug) {
-          // eslint-disable-next-line no-console
+           
           console.warn(
             `VeoForm::createControl: Custom Link attribute detected: ${scope}. Searching for custom link...`
           );

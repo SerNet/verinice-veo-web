@@ -38,7 +38,7 @@
 <script lang="ts">
 import { last } from 'lodash';
 
-import { IVeoFormsElementDefinition } from '../types';
+import type { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {

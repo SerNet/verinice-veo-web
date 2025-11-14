@@ -43,5 +43,5 @@ const _skeletons = [
   }
 ];
 
-const skeletons = new Array(3).fill(_skeletons).flat();
+const skeletons = Array.from({length: 3}).fill(_skeletons).flat();
 </script>

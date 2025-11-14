@@ -120,7 +120,7 @@ import {
 } from '@mdi/js';
 import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { useDisplay } from 'vuetify';
+import { useDisplay, useTheme  } from 'vuetify';
 
 import { extractSubTypesFromObjectSchema, OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
@@ -142,7 +142,6 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { useTheme } from 'vuetify';
 
 const props = withDefaults(
   defineProps<{

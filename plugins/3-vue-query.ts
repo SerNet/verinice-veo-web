@@ -19,7 +19,7 @@ import type { DehydratedState, VueQueryPluginOptions } from '@tanstack/vue-query
 import { QueryClient, VueQueryPlugin, dehydrate, hydrate } from '@tanstack/vue-query';
 
 import { STALE_TIME } from '~/composables/api/utils/query';
-import { VeoApiError } from '~/composables/api/utils/request';
+import type { VeoApiError } from '~/composables/api/utils/request';
 
 export default defineNuxtPlugin((nuxtApp) => {
   const vueQueryState = useState<DehydratedState | null>('vue-query');

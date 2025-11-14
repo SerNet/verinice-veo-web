@@ -36,7 +36,7 @@ import { useQuerySync } from '~/composables/api/utils/query';
 import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
 
 // Types
-import { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import type { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 
 // Composables
 const { t } = useI18n();

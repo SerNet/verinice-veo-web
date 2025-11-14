@@ -40,9 +40,9 @@
 
 <script lang="ts">
 import { cloneDeep, upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
-import { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition } from '~/types/VeoTypes';
+import type { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {

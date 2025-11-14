@@ -21,7 +21,9 @@ export type TInlineComponent = {
   props?: string[];
   emits?: string[];
   data?: () => Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   methods?: Record<string, (args: any) => void | any>;
+  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   computed?: Record<string, (args: any) => void | any>;
   template?: string;
 };

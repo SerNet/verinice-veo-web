@@ -61,7 +61,7 @@ import { computed, inject } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
 import { useDialogManager } from '~/composables/dialogs/useDialogManager';
-import { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 
 const props = defineProps<{
   object?: IVeoEntity;

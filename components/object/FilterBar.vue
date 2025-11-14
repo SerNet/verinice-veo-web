@@ -48,9 +48,10 @@
 <script lang="ts">
 import { mdiFilter } from '@mdi/js';
 import { upperFirst } from 'lodash';
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 
-import formQueryDefinitions, { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 

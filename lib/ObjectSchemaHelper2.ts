@@ -17,8 +17,9 @@
  */
 import { cloneDeep, merge, trim } from 'lodash';
 
-import ObjectSchemaValidator, { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
-import {
+import type { VeoSchemaValidatorValidationResult } from './ObjectSchemaValidator';
+import ObjectSchemaValidator from './ObjectSchemaValidator';
+import type {
   IVeoObjectSchema,
   IVeoObjectSchemaCustomAspect,
   IVeoObjectSchemaCustomLink,

@@ -19,7 +19,8 @@ import { cloneDeep, isString } from 'lodash';
 
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 
-import { IVeoEntity, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoEntity} from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useMutation } from './api/utils/mutation';
 
 const route = useRoute();

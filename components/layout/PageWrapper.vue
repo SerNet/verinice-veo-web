@@ -20,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { isObject } from 'lodash';
 import { useDisplay } from 'vuetify';
 import { VSkeletonLoader } from 'vuetify/components';

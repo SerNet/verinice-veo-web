@@ -34,8 +34,9 @@
 
 <script setup lang="ts">
 import { upperFirst } from 'lodash';
-import { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import { ELEMENT_DETAILS_CONTEXT, IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoObjectSchema } from '~/types/VeoTypes';
+import { ELEMENT_DETAILS_CONTEXT } from '~/types/VeoTypes';
 
 const props = withDefaults(
   defineProps<{

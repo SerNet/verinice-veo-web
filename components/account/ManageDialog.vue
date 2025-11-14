@@ -155,18 +155,19 @@
 </template>
 
 <script lang="ts">
-import { PropType } from 'vue';
+import type { PropType } from 'vue';
 import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
 import { cloneDeep, pick, trim } from 'lodash';
 
-import accountQueryDefinitions, { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import type { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
+import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useMutation } from '~/composables/api/utils/mutation';
-import { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
+import type { IVeoAccessGroup } from '~/composables/api/queryDefinitions/accessGroups';
 import { hasFeature } from '~/utils/featureFlags';
 import { useRules } from '~/composables/utils';
 

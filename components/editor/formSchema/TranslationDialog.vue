@@ -126,12 +126,13 @@
 import type { LocaleObject } from '@nuxtjs/i18n';
 import { cloneDeep, isEqual } from 'lodash';
 
-import { IEditorTranslations, TRANSLATION_SOURCE } from '../translations/types';
+import type { IEditorTranslations} from '../translations/types';
+import { TRANSLATION_SOURCE } from '../translations/types';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { mdiUpload } from '@mdi/js';
-import { IVeoFormsTranslations } from '~/components/dynamic-form/types';
+import type { IVeoFormsTranslations } from '~/components/dynamic-form/types';
 import { formsTranslationsToEditorTranslations } from '../translations/util';
-import { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { JsonPointer } from 'json-ptr';
 
 const props = withDefaults(

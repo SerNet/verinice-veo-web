@@ -17,11 +17,11 @@
  */
 import Cookies from 'js-cookie';
 import { defaultsDeep } from 'lodash';
-import { Ref } from 'vue';
+import type { Ref } from 'vue';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import { sanitizeURLParams } from '~/lib/utils';
-import { IVeoPaginationOptions } from '~/types/VeoTypes';
+import type { IVeoPaginationOptions } from '~/types/VeoTypes';
 
 export enum VeoApiResponseType {
   JSON,
@@ -144,7 +144,7 @@ export const useRequest = () => {
     const raw = await res.text();
 
     if (!raw) {
-      // eslint-disable-next-line no-console
+       
       console.warn(`API Plugin::parseJson: Empty response body for request ${res.url} with response type JSON`);
       return undefined;
     }
@@ -196,7 +196,7 @@ export const useRequest = () => {
     const etag = ETAG_MAP.get(etagMapKey);
 
     if (options.method !== 'GET' && etag) {
-      defaults.headers['If-Match'] = etag.replace(/["]+/g, '').replace(/^(.*)W\//gi, '');
+      defaults.headers['If-Match'] = etag.replace(/"+/g, '').replace(/^(.*)W\//gi, '');
     }
 
     if (options.json) {
