@@ -250,5 +250,8 @@
 
   "permissions": {
     "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
+  },
+  "i18n-t_messages": {
+    "preSelectedDomainBody": "Weil Sie Objekte aus dem Profil { profile } importieren, ist die Domäne { domain } vorausgewählt."
   }
 }

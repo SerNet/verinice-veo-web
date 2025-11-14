@@ -139,11 +139,8 @@
     <v-window-item :value="4">
       <v-card class="pa-8">
         <v-card-title class="text-h5 pb-2">
-          <i18n-t keypath="summaryHeader" tag="span">
-            <template #name>
-              <strong>{{ riskCategory.translations?.[locale]?.name ?? '' }}</strong>
-            </template>
-          </i18n-t>
+          <span>{{ t('summaryHeader') }}</span>
+          <strong>{{ riskCategory.translations?.[locale]?.name ?? '' }}</strong>
         </v-card-title>
         <v-card-subtitle class="mb-6">
           {{ t('summaryHint') }}

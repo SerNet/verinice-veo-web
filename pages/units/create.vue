@@ -65,7 +65,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             :title="t('preSelectedDomainTitle')"
             :type="VeoAlertType.INFO"
           >
-            <i18n-t tag="div" keypath="preSelectedDomainBody">
+            <i18n-t tag="div" keypath="i18n-t_messages.preSelectedDomainBody" scope="global">
               <template #profile>
                 <strong>
                   {{ selectedProfile?.name }}
