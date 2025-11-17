@@ -97,10 +97,11 @@
     "prettier": "^3.2.5",
     "sass": "1.94.1",
     "vite-tsconfig-paths": "^5.1.4",
-    "vitest": "^3.0.5",
+    "vitest": "^4.0.9",
     "vue-tsc": "3.1.4"
   },
   "overrides": {
-    "vue": "^3.5.16"
+    "vue": "^3.5.16",
+    "vitest": "^4.0.9"
   }
 }
