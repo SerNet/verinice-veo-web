@@ -14,7 +14,7 @@
     "noPassword": "The password can be set by the user after verifying his email address.",
     "password": "Password",
     "permissions": {
-      "editors": "Editors"
+      "editors": "Write access"
     },
     "tooltips": {
       "roles": "Roles define which actions are permitted. Membership in a matching access group is also required to access objects.",
@@ -42,7 +42,7 @@
     "noPassword": "Das Passwort kann vom Benutzer nach dem Verifizieren der E-Mail-Adresse gesetzt werden.",
     "password": "Passwort",
     "permissions": {
-      "editors": "Bearbeitende"
+      "editors": "Schreibzugriff"
     },
     "tooltips": {
       "roles": "Rollen bestimmen, welche Aktionen zugelassen sind. Für Zugriff auf Objekte ist zusätzlich die Mitgliedschaft in einer passenden Zugriffsgruppe erforderlich.",

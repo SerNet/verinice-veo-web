@@ -36,7 +36,7 @@
     "successfullyDeletedAccessGroup": "Access group deleted successfully.",
     "failedToDeleteAccessGroup": "Failed to delete access group.",
     "permissions": {
-      "editors": "Editors"
+      "editors": "Write access"
     }
   },
   "de": {
@@ -76,7 +76,7 @@
     "successfullyDeletedAccessGroup": "Zugriffsgruppe erfolgreich gelöscht.",
     "failedToDeleteAccessGroup": "Fehler beim Löschen der Zugriffsgruppe.",
     "permissions": {
-      "editors": "Bearbeitende"
+      "editors": "Schreibzugriff"
     }
   }
 }
