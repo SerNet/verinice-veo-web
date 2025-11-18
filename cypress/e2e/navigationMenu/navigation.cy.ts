@@ -46,12 +46,7 @@ describe('Navigation Menu', () => {
       },
       {
         name: 'Reports',
-        entry: [
-          'record of processing activities (processor) according to art. 30 ii gdpr',
-          'Overview of requests from data subjects',
-          'Notification form for personal data breach',
-          'Request from data subject'
-        ]
+        entry: []
       },
       {
         name: 'Risk definitions',
@@ -111,15 +106,7 @@ describe('Navigation Menu', () => {
       },
       {
         name: 'reports',
-        // Empty reports for now
-        entry: [
-          //   'A.1 Strukturanalyse',
-          //   'A.2 Schutzbedarfsfeststellung',
-          //   'A.4 Ergebnis des IT-Grundschutz-Checks',
-          //   'A.5 Risikoanalyse',
-          //   'A.6 Realisierungsplan',
-          //   'A.3 Modellierung'
-        ]
+        entry: []
       },
       {
         name: 'Risk definitions',

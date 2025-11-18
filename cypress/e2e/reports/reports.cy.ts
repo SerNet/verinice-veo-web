@@ -17,9 +17,10 @@ describe('Reports', () => {
       cy.visit(
         `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${
           Cypress.env('dynamicTestData').unit.domains[0].id
-        }/reports/dp-privacy-incident`,
+        }/reports`,
         { failOnStatusCode: false }
       );
+      cy.get('[data-veo-test^="report-dp-privacy-incident"]').first().click();
     });
   });
 

@@ -16,13 +16,16 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :loading="reportsFetching" data-component-name="report-page" :title="t('breadcrumbs.reports')">
+  <BasePage :loading="reportsFetching" data-component-name="report-page">
     <template #header>
       <v-row dense class="justify-space-between mt-6">
-        <v-col cols="auto">
-          <p v-if="report" class="mb-0 text-body-1 font-italic" data-component-name="report-description">
-            {{ report.description[locale] }}
-          </p>
+        <v-col cols="12">
+          <ReportItem
+            :name="report.name[reportLang]"
+            :description="report.description[reportLang]"
+            :language="reportLang"
+            data-component-name="report-selected"
+          />
         </v-col>
       </v-row>
     </template>
@@ -101,6 +104,7 @@ import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
 import type { IVeoEntity } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 export default defineComponent({
@@ -110,19 +114,9 @@ export default defineComponent({
     const route = useRoute();
     const { displayErrorMessage } = useVeoAlerts();
     const { tablePageSize } = useVeoUser();
-
-    const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
-
-    const title = computed(() =>
-      t('create', {
-        type: report.value?.name?.[locale.value] || '',
-        format: upperCase(outputType.value.split('/').pop())
-      }).toString()
-    );
-
+    const reportLang = localStorage.getItem(LOCAL_STORAGE_KEYS.REPORT_LANG) || '';
     // Fetching the right report
     const requestedReportName = computed(() => route.params.report as string);
-
     const { data: reports, isFetching: reportsFetching } = useQuery(reportQueryDefinitions.queries.fetchAll);
     const report = computed(() => reports.value?.[requestedReportName.value]);
 
@@ -133,6 +127,14 @@ export default defineComponent({
       () =>
         (report.value?.targetTypes || []).find((targetType) => targetType.modelType === filter.value.objectType)
           ?.subTypes || []
+    );
+    const outputType = computed<string>(() => report.value?.outputTypes?.[0] || '');
+
+    const title = computed(() =>
+      t('create', {
+        type: report.value?.name?.[reportLang] || '',
+        format: upperCase(outputType.value.split('/').pop())
+      }).toString()
     );
 
     // Table stuff
@@ -243,6 +245,7 @@ export default defineComponent({
       type: requestedReportName.value,
       body: {
         outputType: outputType.value,
+        language: reportLang,
         targets: selectedObjects.value,
         timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
       }
@@ -290,7 +293,7 @@ export default defineComponent({
       title,
       updateRouteQuery,
       t,
-      locale,
+      reportLang,
       upperFirst
     };
   }

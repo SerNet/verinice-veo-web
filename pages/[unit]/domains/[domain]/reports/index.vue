@@ -23,14 +23,13 @@
       </p>
     </template>
     <template #default>
-      <BaseCard>
-        <ReportList @create-report="createReport" />
-      </BaseCard>
+      <ReportList @create-report="createReport" />
     </template>
   </BasePage>
 </template>
 
 <script lang="ts">
+export const ROUTE_NAME = 'unit-domains-domain-reports';
 export default defineComponent({
   setup() {
     const { t } = useI18n();

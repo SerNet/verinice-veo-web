@@ -41,9 +41,11 @@ export interface IVeoReportsMeta {
 
 export interface IVeoCreateReportParameters {
   type: string;
+  language: string;
   body: {
     outputType: string;
     timeZone: string;
+    language: string;
     targets: {
       type: string;
       id: string;
@@ -76,7 +78,10 @@ export default {
       responseType: VeoApiResponseType.BLOB,
       mutationParameterTransformationFn: (mutationParameters) => ({
         json: mutationParameters.body,
-        params: { type: mutationParameters.type }
+        params: { type: mutationParameters.type },
+        headers: {
+          'Accept-Language': mutationParameters.body.language || 'en'
+        }
       }),
       staticMutationOptions: {
         onSuccess() {

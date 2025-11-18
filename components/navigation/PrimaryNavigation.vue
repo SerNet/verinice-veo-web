@@ -128,7 +128,7 @@ import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
-import { ROUTE_NAME as REPORTS_REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/[report].vue';
+import { ROUTE_NAME as REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/index.vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[definition]/index.vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
@@ -139,7 +139,6 @@ import { useFetchSchemasDetailed } from '~/composables/api/schemas';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 
@@ -334,41 +333,6 @@ const { data: domain, isFetching: riskDefinitionsLoading } = useQuery(
   { enabled: fetchDomainQueryEnabled }
 );
 
-// report specific stuff
-
-const fetchReportsQueryParameters = computed(() => ({
-  domain: domain.value?.name as string
-}));
-
-const fetchReportsQueryEnabled = computed(() => !!domain.value);
-
-const { data: reports, isFetching: reportsEntriesLoading } = useQuery(
-  reportQueryDefinitions.queries.fetchAll,
-  fetchReportsQueryParameters,
-  { enabled: fetchReportsQueryEnabled }
-);
-
-const reportsEntriesChildItems = computed<INavItem[]>(() =>
-  sortBy(
-    Object.entries(reports.value || {})
-      .map(([reportId, report]) => ({
-        id: reportId,
-        name: report.name[locale.value],
-        exact: true,
-        to: {
-          name: REPORTS_REPORT_ROUTE_NAME,
-          params: {
-            unit: props.unitId,
-            domain: props.domainId,
-            report: reportId
-          }
-        }
-      }))
-      .filter((entry) => entry.name), // Don't show reports which aren't translated in the users language);
-    'name'
-  )
-);
-
 // risk specific stuff
 const riskDefinitions = computed(() => domain.value?.riskDefinitions || {});
 
@@ -425,9 +389,15 @@ const reportsNavEntry = computed<INavItem>(() => ({
   id: 'reports',
   name: $t('breadcrumbs.reports').toString(),
   icon: mdiFileChartOutline,
-  children: reportsEntriesChildItems.value,
-  childrenLoading: riskDefinitionsLoading.value || reportsEntriesLoading.value,
-  componentName: 'reports-nav-item'
+  to: {
+    name: REPORT_ROUTE_NAME,
+    params: {
+      unit: props.unitId,
+      domain: props.domainId
+    }
+  },
+  componentName: 'reports-nav-item',
+  exact: true
 }));
 
 const risksNavEntry = computed<INavItem>(() => ({
@@ -459,8 +429,8 @@ const items = computed<INavItem[]>(() => [
       domainDashboardNavEntry.value,
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
+      reportsNavEntry.value,
       ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
-      ...(!isEmpty(reportsEntriesChildItems.value) ? [reportsNavEntry.value] : []),
       ...(!isEmpty(riskChildItems.value) ? [risksNavEntry.value] : [])
     ]
   : [])

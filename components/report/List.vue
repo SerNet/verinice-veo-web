@@ -16,49 +16,33 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseTable
-    :items="displayedItems"
-    item-key="id"
-    :additional-headers="headers"
-    class="veo-report-list"
-    :items-per-page="tablePageSize"
-    :loading="isFetchingReports || isFetchingDomains"
-    @click:row="onRowClicked"
-  >
-    <template #no-data>
-      <span class="text-center">
-        {{ t('noReports') }}
-      </span>
+  <v-row align="center" justify="center">
+    <template v-if="isFetchingReports || isFetchingDomains">
+      <v-col cols="12">
+        <VSkeletonLoader v-for="i in 5" :key="i" type="image" elevation="2" class="my-6" height="160px" />
+      </v-col>
     </template>
-    <template #item.description="{ item }">
-      <div class="veo-report-list__description">
-        <v-tooltip v-if="item.descriptionShort" location="bottom">
-          <template #activator="{ props: tooltipProps }">
-            <span v-bind="tooltipProps" class="veo-report-list__description--description">{{
-              item.descriptionShort
-            }}</span>
-          </template>
-          <template #default>
-            <span>{{ item.raw.description }}</span>
-          </template>
-        </v-tooltip>
-        <span v-else>{{ item.raw.description }}</span>
-      </div>
-    </template>
-    <template #item.outputTypes="{ item }">
-      {{ toUpper(item.raw.outputTypes) }}
-    </template>
-  </BaseTable>
+    <div v-if="displayedItems && displayedItems.length" class="veo-report-list">
+      <template v-for="report in displayedItems" :key="report.id">
+        <ReportItem
+          :name="report.name"
+          :description="report.description"
+          :language="report.language"
+          :description-short="report.descriptionShort"
+          :data-veo-test="`report-${report.id}`"
+          @click="emit('create-report', report)"
+        />
+      </template>
+    </div>
+  </v-row>
 </template>
 <script setup lang="ts">
-import { upperFirst, toUpper } from 'lodash';
-
+import { upperFirst } from 'lodash';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import domainQueryDefinitions, { getSubTypes } from '~/composables/api/queryDefinitions/domains';
 import type { IVeoReportMeta, IVeoReportsMeta } from '~/composables/api/queryDefinitions/reports';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import { useQuery } from '~/composables/api/utils/query';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
-import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 interface IReport {
   id: string;
@@ -67,16 +51,15 @@ interface IReport {
   multipleTargetsSupported: boolean;
   outputTypes: string;
   targetTypes: string;
+  language: string;
 }
 
 const emit = defineEmits<{
   (e: 'create-report', report: IReport): void;
 }>();
 
-const { t, locale } = useI18n();
-const { tablePageSize } = useVeoUser();
-
 const route = useRoute();
+const { locale } = useI18n();
 const fetchDomainQueryParameters = computed(() => ({
   id: route?.params.domain as string
 }));
@@ -87,100 +70,81 @@ const { data: domain, isFetching: isFetchingDomains } = useQuery(
   { enabled: fetchDomainQueryEnabled }
 );
 const { data: reports, isFetching: isFetchingReports } = useQuery(reportQueryDefinitions.queries.fetchAll);
-const fetchTranslationsQueryParameters = computed(() => ({
-  languages: [locale.value],
-  domain: route.params.domain
-}));
-const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
-/**
- * Filter reports according to domain and GUI language.
- * @param _domain {IVeoDomain} - The currently active veo domain.
- * @param _allReports {IVeoReportMeta[]} - All reports from all domains.
- * @param _locale {string} - The current GUI language.
- */
-type TFilterReportsParams = {
-  _domain: IVeoDomain;
-  _allReports: IVeoReportsMeta;
-  _locale: string;
-};
-function filterReports({ _domain, _allReports, _locale }: TFilterReportsParams) {
+
+// Filter reports according to domain only
+function filterReportsByDomain(_domain: IVeoDomain, _allReports: IVeoReportsMeta) {
   if (!_domain || !_allReports) return [];
 
-  const allReports = Object.entries(_allReports || {});
-  const reportsInCurrentDomain =
-    domain.value === null ?
-      []
-    : allReports.filter(([, report]) => {
-        const targetTypesForReport = report.targetTypes;
-        return targetTypesForReport.some(({ modelType, subTypes }) => {
-          // if there is no subType, the report exists in the current domain
-          if (!subTypes) return true;
-          const subTypesInDomain = getSubTypes(_domain, modelType);
-          return subTypesInDomain.some((subTypeInDomain) => subTypes.includes(subTypeInDomain));
-        });
-      });
-
-  // Return reports in current GUI language only
-  return reportsInCurrentDomain.filter((r) => {
-    const [, report] = r;
-    return report.name?.[_locale] !== undefined;
+  const allReports = Object.entries(_allReports);
+  const reportsInCurrentDomain = allReports.filter(([, report]) => {
+    const targetTypesForReport = report.targetTypes || [];
+    return targetTypesForReport.some(({ modelType, subTypes }) => {
+      // if there is no subType, the report exists in the current domain
+      if (!subTypes) return true;
+      const subTypesInDomain = getSubTypes(_domain, modelType);
+      return subTypesInDomain.some((subTypeInDomain) => subTypes.includes(subTypeInDomain));
+    });
   });
+
+  return reportsInCurrentDomain;
 }
 
-/*
- * Prepare report data so it can be rendered into a table.
- * @param reports {TReports} - An array of reports.
- * @param locale {string}- The current locale.
- */
-type TMapFilteredReportsParams = {
-  reports: [id: string, report: IVeoReportMeta][];
-  locale: string;
-};
-const getTargetType = (targetTypes?: string): string => {
-  if (!targetTypes) return '';
-  const langData = translations.value?.lang?.[locale.value];
-  return langData?.[targetTypes] ?? '';
-};
+function prepareReportsData(reports: [id: string, report: IVeoReportMeta][]) {
+  if (!reports) return [];
 
-function mapFilterdReports({ reports, locale }: TMapFilteredReportsParams) {
-  if (!reports || !locale) return [];
-  return reports.map((r) => {
-    const [id, report] = r;
+  const result = [];
 
-    const name = report.name[locale] || Object.values(report.name)[0];
-    const targetTypes = report.targetTypes
-      .map((type) => {
-        const translated = getTargetType(type.modelType);
-        return upperFirst(translated) || translated;
-      })
-      .join(', ');
-    const outputTypes = report.outputTypes
-      .map((type) => {
-        const formatParts = type.split('/');
-        return formatParts[formatParts.length - 1];
-      })
-      .join(', ');
-
-    // For some reason setting a max width on a table cell gets ignored when calculating each columns width, so we have to manipulate the data
-    let descriptionShort;
-    let description = report.description[locale] || Object.values(report.description)[0] || t('noDescriptionAvailable');
-    if (description.length > 80) {
-      descriptionShort = description.substring(0, 80) + '...';
-
-      if (description.length > 1000) {
-        description = description.substring(0, 1000) + '...';
-      }
+  for (const [id, report] of reports) {
+    // Create entries for each available language
+    const availableLanguages = [];
+    if (report.name.en || report.description.en) {
+      availableLanguages.push('en');
+    }
+    if (report.name.de || report.description.de) {
+      availableLanguages.push('de');
     }
 
-    return {
-      id,
-      name,
-      description,
-      multipleTargetsSupported: report.multipleTargetsSupported,
-      outputTypes,
-      targetTypes,
-      descriptionShort
-    };
+    // If no specific languages, use default
+    if (availableLanguages.length === 0) {
+      availableLanguages.push('en');
+    }
+
+    for (const lang of availableLanguages) {
+      const name = report.name[lang] || report.name.en || Object.values(report.name)[0];
+      const description = report.description[lang] || report.description.en || Object.values(report.description)[0];
+
+      const descriptionShort = description.length > 80 ? description.substring(0, 80) + '...' : description;
+
+      const targetTypes = report.targetTypes
+        .map((type) => {
+          return upperFirst(type.modelType) || type.modelType;
+        })
+        .join(', ');
+      const outputTypes = report.outputTypes
+        .map((type) => {
+          const formatParts = type.split('/');
+          return formatParts[formatParts.length - 1];
+        })
+        .join(', ');
+
+      result.push({
+        id,
+        name,
+        description,
+        descriptionShort,
+        multipleTargetsSupported: report.multipleTargetsSupported,
+        outputTypes,
+        targetTypes,
+        language: lang
+      });
+    }
+  }
+
+  return result.sort((a, b) => {
+    // Current language items first
+    if (a.language === locale.value && b.language !== locale.value) return -1;
+    if (a.language !== locale.value && b.language === locale.value) return 1;
+    return a.name.localeCompare(b.name);
   });
 }
 
@@ -188,74 +152,20 @@ const displayedItems = computed(() => {
   if (!domain.value || !reports.value) {
     return;
   }
-  const _locale = locale.value;
-  const filteredReports = filterReports({
-    _domain: toRaw(domain.value),
-    _allReports: toRaw(reports.value),
-    _locale
-  });
 
-  if (filterReports.length === 0) return;
+  const filteredReports = filterReportsByDomain(toRaw(domain.value), toRaw(reports.value));
 
-  return mapFilterdReports({ reports: filteredReports, locale: _locale });
+  if (filteredReports.length === 0) return;
+
+  return prepareReportsData(filteredReports);
 });
-
-const headers = computed(() => {
-  return [
-    {
-      title: t('reportName'),
-      value: 'name',
-      key: 'name',
-      cellClass: ['font-weight-bold'],
-      width: 300,
-      truncate: true,
-      sortable: true,
-      priority: 100,
-      order: 10
-    },
-    {
-      text: t('targetTypes'),
-      value: 'targetTypes',
-      key: 'targetTypes',
-      priority: 90,
-      order: 20
-    },
-    {
-      title: t('reportDescription'),
-      value: 'description',
-      key: 'description',
-      sortable: false,
-      width: 600,
-      truncate: true,
-      tooltip: ({ internalItem: item }: { internalItem: any }) => item.raw.description || '',
-      priority: 30,
-      order: 30
-    },
-    {
-      text: t('outputTypes'),
-      value: 'outputTypes',
-      key: 'outputTypes',
-      priority: 80,
-      order: 40
-    }
-  ];
-});
-
-const onRowClicked = (_event: PointerEvent, context: any) => {
-  emit('create-report', context.internalItem.raw);
-};
 </script>
-
 <i18n src="~/locales/base/components/report-list.json"></i18n>
-
 <style lang="scss" scoped>
-.veo-report-list__description {
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.veo-report-list__description--description {
-  overflow: hidden;
-  text-overflow: ellipsis;
+.veo-report-list {
+  width: 80%;
+  display: grid;
+  gap: 16px;
+  padding: 16px;
 }
 </style>

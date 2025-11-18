@@ -1,8 +1,10 @@
 {
   "en": {
-    "all": "All"
+    "all": "All",
+    "selectObject": "Select Object"
   },
   "de": {
-    "all": "Alle"
+    "all": "Alle",
+    "selectObject": "Objekt Auswählen"
   }
 }

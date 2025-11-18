@@ -71,12 +71,10 @@ import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 import { useQuery } from '~/composables/api/utils/query';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
 import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useSubTypeTranslation, useTranslations } from '~/composables/Translations';
 import { useDisplay } from 'vuetify';
 import type { TInlineComponent } from '~/types/utils';
-
 type SupportedQuery = ':unit' | ':domain' | ':report' | ':objectType' | ':object';
 
 interface IVeoBreadcrumbReplacementMapBreadcrumb {
@@ -132,7 +130,6 @@ const title = ref('');
 useHead(() => ({
   title
 }));
-
 const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbReplacementMapBreadcrumb>([
   [
     '',
@@ -206,12 +203,7 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
   [
     ':report',
     {
-      queriedText: {
-        query: ':report',
-        parameterTransformationFn: (_param, _value) => ({}),
-        resultTransformationFn: (_param, value, data) =>
-          data ? data[value as string]?.name?.[locale.value] : undefined
-      }
+      dynamicText: () => t('selectObject')
     }
   ],
   [
@@ -254,8 +246,6 @@ const { data: object } = useQuery(objectsQueryDefinitions.queries.fetch, objectQ
   enabled: objectQueryEnabled
 });
 
-const { data: report } = useQuery(reportQueryDefinitions.queries.fetchAll);
-
 const queryResultMap = computed<{ [key: string]: any }>(() => ({
   ':domain':
     domain.value ?
@@ -281,14 +271,7 @@ const queryResultMap = computed<{ [key: string]: any }>(() => ({
         object.value
       )
     : undefined,
-  ':report':
-    report.value ?
-      BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':report')?.queriedText?.resultTransformationFn(
-        ':report',
-        route.params.report as string,
-        report.value
-      )
-    : undefined,
+
   ':unit':
     unit.value ?
       BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':unit')?.queriedText?.resultTransformationFn(

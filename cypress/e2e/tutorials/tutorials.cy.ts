@@ -94,7 +94,7 @@ describe('Tutorials', () => {
       const url = new URL(fullUrl);
       cy.visit(`${url.pathname}/reports`, { failOnStatusCode: false });
     });
-    cy.getCustom('.v-data-table__tr').first().click();
+    cy.get('[data-veo-test^="report-"]').first().click();
     cy.get('[data-component-name=tutorial-select]').click();
     cy.contains('The reports').click();
     runTutorial('9.reports.en.yaml');
