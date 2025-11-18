@@ -70,7 +70,7 @@ const { setLoading, clearLoading } = useGlobalLoadingState();
 // Component state
 const unitDetails = ref<UnitDetails>();
 watch(
-  isLoadingCurrentUnit,
+  currentUnit,
   (): void => {
     if (isLoadingCurrentUnit.value) return;
 
