@@ -28,7 +28,7 @@
         flat
       />
     </v-col>
-    <slot name="controls" />
+    <slot name="controls"></slot>
   </v-row>
   <BaseCard>
     <div ref="tableWrapper">
@@ -39,7 +39,7 @@
         :sort-by="[{ key: 'key', order: 'asc' }]"
       >
         <template #no-data>
-          <slot name="no-data" v-bind="{ searchQuery }" />
+          <slot name="no-data" v-bind="{ searchQuery }"></slot>
         </template>
       </BaseTable>
     </div>

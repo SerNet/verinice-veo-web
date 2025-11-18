@@ -36,7 +36,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             :value="d"
             :aria-label="`domain-${domain.name}`"
             :disabled="isDisabled || d.id === mandatoryDomain?.id || isDomainExisting(d)"
-          ></v-checkbox>
+          />
         </template>
       </BaseListItem>
     </template>

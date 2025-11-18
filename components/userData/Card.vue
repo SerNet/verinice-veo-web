@@ -36,7 +36,7 @@
         flat
       />
 
-      <slot v-if="slots.prepareData" name="prepareData" />
+      <slot v-if="slots.prepareData" name="prepareData"></slot>
 
       <template v-if="!slots.prepareData">
         <!-- Downloads -->

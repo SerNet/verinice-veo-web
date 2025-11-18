@@ -27,7 +27,7 @@
         @remove="(elementPointer: string) => emit('remove', elementPointer)"
         @set-translation="setPendingTranslation"
       >
-        <slot />
+        <slot></slot>
       </component>
       <EditorFormSchemaPlaygroundEditDialogElementConditionalVisibility
         v-model:form-schema-element="localFormSchemaElement"

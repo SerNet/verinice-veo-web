@@ -1,5 +1,5 @@
 <template>
-  <div ref="viewerRef" />
+  <div ref="viewerRef"></div>
 </template>
 <script setup lang="ts">
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';

@@ -37,7 +37,7 @@
           : $style['child-layout-wrapper--vertical']
         ]"
       >
-        <slot />
+        <slot></slot>
         <span
           v-if="!playgroundElement.children.length"
           :class="$style.dragarea__placeholder"

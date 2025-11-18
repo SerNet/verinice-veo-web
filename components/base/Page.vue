@@ -19,15 +19,15 @@
   <v-col :class="['veo-page', 'bg-basepage', noPaddingTop ? 'pt-0' : 'pt-6', noPadding ? 'px-0' : 'px-2']" cols="12">
     <LayoutPageHeader v-bind="omit(props, 'contentClass', 'stickyFooter', 'height', 'noPadding', 'noPaddingTop')">
       <template v-if="$slots.title" #title>
-        <slot name="title" />
+        <slot name="title"></slot>
       </template>
       <template v-if="$slots.header" #header>
-        <slot name="header" />
+        <slot name="header"></slot>
       </template>
     </LayoutPageHeader>
     <v-row no-gutters :style="{ 'max-height': '100%', 'min-height': 0, height }" class="pa-0 flex-column flex-nowrap">
       <v-col :class="contentClass">
-        <slot name="default" />
+        <slot name="default"></slot>
       </v-col>
       <v-col
         v-if="$slots.footer"
@@ -37,7 +37,7 @@
           'flex-grow': 0
         }"
       >
-        <slot name="footer" />
+        <slot name="footer"></slot>
       </v-col>
     </v-row>
   </v-col>

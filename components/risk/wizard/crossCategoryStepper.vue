@@ -1,17 +1,16 @@
 <template>
   <v-stepper v-model="step" style="width: 100%" non-linear>
     <v-stepper-header>
-      <v-stepper-item :ref="(el) => setStepperRef(el, 0)" :title="t('editRiskValues')" :value="1" editable>
-      </v-stepper-item>
-      <v-divider></v-divider>
+      <v-stepper-item :ref="(el) => setStepperRef(el, 0)" :title="t('editRiskValues')" :value="1" editable/>
+      <v-divider/>
 
       <v-stepper-item
         :ref="(el) => setStepperRef(el, 1)"
         :title="t('editProbabilities')"
         :value="2"
         editable
-      ></v-stepper-item>
-      <v-divider></v-divider>
+      />
+      <v-divider/>
 
       <template v-for="(_riskCategory, index) in riskCategories" :key="_riskCategory.id">
         <v-stepper-item
@@ -19,11 +18,11 @@
           :title="t('edit', { item: riskCategories?.[index]?.translations?.[locale]?.name ?? '' })"
           :value="index + stepOffset"
           editable
-        ></v-stepper-item>
-        <v-divider></v-divider>
+        />
+        <v-divider/>
       </template>
 
-      <v-stepper-item :title="t('summary')" :value="riskCategories?.length + stepOffset" editable> </v-stepper-item>
+      <v-stepper-item :title="t('summary')" :value="riskCategories?.length + stepOffset" editable/>
     </v-stepper-header>
   </v-stepper>
 

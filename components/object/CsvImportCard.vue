@@ -45,11 +45,11 @@
             </v-btn>
           </template>
           <template #item="{ props: itemProps }">
-            <v-file-upload-item v-bind="itemProps" lines="one" nav> </v-file-upload-item>
+            <v-file-upload-item v-bind="itemProps" lines="one" nav />
           </template>
         </v-file-upload>
 
-        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" />
+        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" >
       </v-card>
     </div>
 
@@ -223,6 +223,7 @@ const handleNavigate = (objectType: string, subType: string) => {
   white-space: nowrap;
   border: 0;
 }
+
 ::v-deep(.v-divider__content) {
   color: #555555 !important;
 }

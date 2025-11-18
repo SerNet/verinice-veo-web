@@ -22,16 +22,16 @@
         <v-skeleton-loader data-veo-test="loader" type="heading" width="400" />
       </v-card-title>
       <v-card-text>
-        <slot v-if="!!$slots.skeleton" name="skeleton" />
+        <slot v-if="!!$slots.skeleton" name="skeleton"></slot>
         <v-skeleton-loader v-else data-veo-test="loader" type="image" />
       </v-card-text>
     </template>
     <template v-else>
       <v-card-title v-if="title" class="bg-accent mb-2">
-        <h2 class="text-h2 small-caps" v-text="title" />
+        <h2 class="text-h2 small-caps" v-text="title"></h2>
       </v-card-title>
       <v-card-text>
-        <slot />
+        <slot></slot>
       </v-card-text>
     </template>
   </BaseCard>

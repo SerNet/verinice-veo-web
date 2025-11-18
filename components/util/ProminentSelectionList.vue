@@ -30,7 +30,7 @@
       @click="checkBoxSelectionOnly ? undefined : onItemSelected(item)"
     >
       <template #default>
-        <slot :name="`item-${item.value}`" />
+        <slot :name="`item-${item.value}`"></slot>
       </template>
 
       <template #prepend>

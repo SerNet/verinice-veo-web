@@ -18,7 +18,7 @@
 <template>
   <EditorListItem :title="title" :styling="styling" :translate="translate" lines="two">
     <template #description>
-      <v-list-item-subtitle><span v-text="localizedDescription" /></v-list-item-subtitle>
+      <v-list-item-subtitle><span v-text="localizedDescription"></span></v-list-item-subtitle>
     </template>
   </EditorListItem>
 </template>

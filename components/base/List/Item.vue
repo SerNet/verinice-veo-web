@@ -18,7 +18,7 @@
   <v-col cols="12" class="flex-1-1-100">
     <v-card :loading="false" data-veo-test="veo-card">
       <div data-veo-test="item-card-slot-prepend" class="veo-base-card__slot-prepend" style="padding: 0">
-        <slot :item="item" name="prepend" />
+        <slot :item="item" name="prepend"></slot>
       </div>
 
       <div class="veo-base-card__slot-center" data-veo-test="item-card-slot-center">

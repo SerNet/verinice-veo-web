@@ -49,13 +49,13 @@
         style="position: relative"
         data-veo-test="dialog-card"
       >
-        <slot />
+        <slot></slot>
         <v-card-actions v-if="!!$slots['dialog-options'] && !fixedFooter" class="pt-3 pb-0 px-0 d-flex">
-          <slot name="dialog-options" />
+          <slot name="dialog-options"></slot>
         </v-card-actions>
       </v-card-text>
       <v-card-actions v-if="!!$slots['dialog-options'] && fixedFooter" class="bg-accent px-4 py-3 d-flex">
-        <slot name="dialog-options" />
+        <slot name="dialog-options"></slot>
       </v-card-actions>
     </v-card>
   </v-dialog>

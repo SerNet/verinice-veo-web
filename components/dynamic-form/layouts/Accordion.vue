@@ -26,7 +26,7 @@
     <v-expansion-panel :title="options?.label || 'accordion'">
       <template #text>
         <div dense class="d-flex" :class="isHorizontal ? 'flex-row' : 'flex-column'">
-          <slot />
+          <slot></slot>
         </div>
       </template>
     </v-expansion-panel>

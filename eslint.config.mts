@@ -26,7 +26,18 @@ export default createConfigForNuxt({
       'vue/no-required-prop-with-default': 'off', // disabled: valid defaults allowed
       'vue/return-in-computed-property': 'error',
       'vue/no-parsing-error': 'error',
-      'vue/html-self-closing': 'off', // disabled: project formatting preference
+      'vue/html-self-closing': [
+        'error',
+        {
+          html: {
+            void: 'any', // <br> OR <br /> allowed
+            normal: 'never', // <div></div> (but not <div />)
+            component: 'any' // Allow <MyComp /> or <MyComp></MyComp>
+          },
+          svg: 'always',
+          math: 'always'
+        }
+      ],
       'vue/define-props-declaration': ['off', 'type-based'], // pending: #4345
       'vue/define-emits-declaration': ['off', 'type-based'] // pending: #4346
     }

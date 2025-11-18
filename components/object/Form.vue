@@ -21,7 +21,7 @@
     <template #default>
       <BasePage :id="scrollWrapperId" data-component-name="object-form-form" sticky-footer no-padding>
         <template #default>
-          <slot name="prepend-form" />
+          <slot name="prepend-form"></slot>
           <BaseCard>
             <v-card-text>
               <DynamicFormEntrypoint
@@ -43,7 +43,7 @@
           </BaseCard>
         </template>
         <template #footer>
-          <slot name="append-form-outer" />
+          <slot name="append-form-outer"></slot>
         </template>
       </BasePage>
       <BasePage content-class="fill-height" height="100%" no-padding data-component-name="object-form-sidebar">

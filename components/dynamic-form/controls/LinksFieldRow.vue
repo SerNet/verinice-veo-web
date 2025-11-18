@@ -54,7 +54,7 @@
     <div>
       <!-- @vue-ignore TODO #3066 not assignable -->
       <DynamicFormControlsLinksFieldRowAttribute v-bind="$props">
-        <slot name="default" />
+        <slot name="default"></slot>
       </DynamicFormControlsLinksFieldRowAttribute>
     </div>
   </div>

@@ -18,7 +18,7 @@
 <template>
   <v-menu v-model="menu" v-bind="$attrs" :close-on-content-click="false">
     <template v-if="!!$slots.activator" #activator="slotListeners">
-      <slot name="activator" v-bind="slotListeners" />
+      <slot name="activator" v-bind="slotListeners"></slot>
     </template>
     <template #default>
       <v-list density="compact">
@@ -40,7 +40,7 @@
               >
                 <template v-if="anyItemHasIcon" #prepend>
                   <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
-                  <div v-else style="width: 54px" />
+                  <div v-else style="width: 54px"></div>
                 </template>
                 <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
                   {{ item.title }}
@@ -59,7 +59,7 @@
           >
             <template v-if="anyItemHasIcon" #prepend>
               <v-icon v-if="item.icon" :icon="item.icon" :color="item.color" />
-              <div v-else style="width: 54px" />
+              <div v-else style="width: 54px"></div>
             </template>
             <v-list-item-title :class="{ [`text-${item.color}`]: !!item.color }">
               {{ item.title }}
@@ -72,7 +72,7 @@
               @update:model-value="onUpdateComponentModelValue(`1_${item.key}`, $event)"
             />
             <template v-if="anyItemHasChildren" #append>
-              <div style="width: 54px" />
+              <div style="width: 54px"></div>
             </template>
           </v-list-item>
         </template>

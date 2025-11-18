@@ -25,7 +25,7 @@
       <span class="text-body-1">
         {{ t('text', { displayName: item && item.displayName }) }}
       </span>
-      <slot name="append" />
+      <slot name="append"></slot>
     </template>
 
     <template #dialog-options>

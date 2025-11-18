@@ -63,7 +63,7 @@
           />
         </template>
         <template #footer>
-          <div style="height: 36px" />
+          <div style="height: 36px"></div>
 
           <ObjectActionMenu
             color="primary"

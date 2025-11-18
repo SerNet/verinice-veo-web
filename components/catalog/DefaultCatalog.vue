@@ -18,7 +18,7 @@
 <template>
   <div>
     <p class="text-body-1">
-      <slot name="header" />
+      <slot name="header"></slot>
     </p>
     <BaseCard>
       <BaseTable

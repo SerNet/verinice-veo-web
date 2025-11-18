@@ -26,16 +26,16 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <BaseContainer>
       <v-stepper v-model="step" style="width: 100%">
         <v-stepper-header>
-          <v-stepper-item :title="t('enterUnitDetails')" :value="1"></v-stepper-item>
-          <v-divider></v-divider>
+          <v-stepper-item :title="t('enterUnitDetails')" :value="1"/>
+          <v-divider/>
 
-          <v-stepper-item :title="t('chooseProfile')" :value="2"></v-stepper-item>
-          <v-divider></v-divider>
+          <v-stepper-item :title="t('chooseProfile')" :value="2"/>
+          <v-divider/>
 
-          <v-stepper-item :title="t('chooseDomains')" :value="3"></v-stepper-item>
-          <v-divider></v-divider>
+          <v-stepper-item :title="t('chooseDomains')" :value="3"/>
+          <v-divider/>
 
-          <v-stepper-item :title="t('summary')" :value="4"></v-stepper-item>
+          <v-stepper-item :title="t('summary')" :value="4"/>
         </v-stepper-header>
       </v-stepper>
 
@@ -110,7 +110,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           {{ t('goToUnitAdmin') }}
         </v-btn>
 
-        <v-spacer></v-spacer>
+        <v-spacer/>
 
         <v-btn
           v-if="step < 4"

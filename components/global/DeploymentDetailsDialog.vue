@@ -34,12 +34,12 @@
         <BaseCard class="mt-0">
           <v-card-text>
             <span>{{ t('version.header') }}</span
-            ><br /><br />
+            ><br ><br >
 
             <p>{{ t('version.paragraph.1') }}</p
-            ><br />
+            ><br >
             <p>{{ t('version.paragraph.2') }}</p
-            ><br />
+            ><br >
             <p>{{ t('version.paragraph.3') }}</p>
 
             <div v-if="!hideSerNetReferences" class="mt-6 text-center">

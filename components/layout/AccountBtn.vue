@@ -53,7 +53,7 @@
               {{ profile.firstName }}
               {{ profile.lastName }}
             </span>
-            <span v-else v-text="t('notAvailable')" />
+            <span v-else v-text="t('notAvailable')"></span>
           </v-list-item-title>
           <v-list-item-subtitle>{{ (profile && profile.email) || t('notAvailable') }}</v-list-item-subtitle>
         </v-list-item>

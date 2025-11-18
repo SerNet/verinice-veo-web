@@ -38,7 +38,7 @@
           :index="index"
           @update:model-value="onLinksFieldRowInput(index, $event)"
         >
-          <slot name="default" />
+          <slot name="default"></slot>
         </DynamicFormControlsLinksFieldRow>
         <div class="d-flex justify-end mt-2">
           <v-btn

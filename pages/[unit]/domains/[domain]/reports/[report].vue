@@ -81,7 +81,7 @@
           >
             {{ t('generateReport') }}
           </v-btn>
-          <a ref="downloadButton" :aria-label="t('generateReport')" href="#" />
+          <a ref="downloadButton" :aria-label="t('generateReport')" href="#"></a>
         </v-col>
       </v-row>
     </template>

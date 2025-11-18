@@ -21,7 +21,7 @@
     <span>{{ timeToEffective.minutes }}:</span>
     <span>{{ timeToEffective.seconds }}</span>
   </div>
-  <v-progress-linear :model-value="secondsToEffective" data-test-veo="timerInstance"> </v-progress-linear>
+  <v-progress-linear :model-value="secondsToEffective" data-test-veo="timerInstance"/>
 </template>
 
 <script setup lang="ts">

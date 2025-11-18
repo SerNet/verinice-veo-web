@@ -24,7 +24,7 @@
     <p class="mt-2 text-body-1">
       {{ t('notFound').toString() }}
     </p>
-    <slot />
+    <slot></slot>
   </div>
 </template>
 

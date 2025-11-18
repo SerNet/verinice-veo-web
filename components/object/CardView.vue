@@ -78,7 +78,7 @@
             variant="outlined"
             style="height: 60px; min-width: 20%"
             outlined
-          ></v-select>
+          />
         </v-col>
 
         <v-col cols="9" class="d-flex justify-end">
@@ -91,7 +91,7 @@
             class="mr-4"
             style="text-align: right; min-width: 40%; border: 2px solid #ccc; border-radius: 4px; padding: 1px"
             @update:model-value="cardsPageChange"
-          ></v-pagination>
+          />
         </v-col>
       </v-row>
     </v-card>

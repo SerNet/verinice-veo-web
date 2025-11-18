@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     required
                     :aria-label="t('unitName')"
                     @keydown.enter.prevent
-                  ></v-text-field>
+                  />
                 </v-col>
 
                 <v-col cols="12">
@@ -62,7 +62,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                     counter
                     :aria-label="t('unitDescription')"
                     maxlength="5000"
-                  ></v-textarea>
+                  />
                 </v-col>
               </v-row>
             </v-container>

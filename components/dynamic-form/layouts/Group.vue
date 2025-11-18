@@ -21,7 +21,7 @@
       {{ options.label }}
     </h2>
     <div dense class="d-flex" :class="isHorizontal ? 'flex-row' : 'flex-column'">
-      <slot />
+      <slot></slot>
     </div>
   </div>
 </template>

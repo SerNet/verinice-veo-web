@@ -26,7 +26,7 @@
     <v-list-item-subtitle v-if="scope">
       {{ pointer }}
     </v-list-item-subtitle>
-    <slot name="description" />
+    <slot name="description"></slot>
     <template #append>
       <v-list-item-action class="ml-3">
         <v-chip v-if="styling" :color="styling.color" class="mr-2" small label outlined>

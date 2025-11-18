@@ -50,7 +50,7 @@
               <v-col v-if="shortcuts.length" cols="12">
                 <v-card flat>
                   <v-card-title class="text-subtitle-2 py-2">{{ t('domainNavigation') }}</v-card-title>
-                  <v-divider></v-divider>
+                  <v-divider/>
                   <v-list density="compact">
                     <template v-for="shortcut in shortcuts" :key="shortcut.id">
                       <v-list-item v-if="!shortcut?.disabled" class="text-body-2">

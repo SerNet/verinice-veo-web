@@ -205,7 +205,7 @@
             size="large"
             @click="createObjectDialogVisible = true"
           />
-          <div style="height: 76px" />
+          <div style="height: 76px"></div>
         </template>
         <template #default>
           <span>{{ t('createObject', [createObjectLabel]) }}</span>

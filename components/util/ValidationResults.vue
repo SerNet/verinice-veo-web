@@ -34,7 +34,7 @@
         flat
         :title="t('validationErrors', [messages.errors.length])"
       >
-        {{ t('validationErrorsText') }}<br />{{ t('validationErrorsAutoFixHint') }}
+        {{ t('validationErrorsText') }}<br >{{ t('validationErrorsAutoFixHint') }}
       </BaseAlert>
       <template
         v-for="level of levels"

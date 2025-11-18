@@ -55,7 +55,7 @@
         </v-menu>
       </div>
     </template>
-    <span v-text="t(visible ? 'hideHelp' : 'showHelp')" />
+    <span v-text="t(visible ? 'hideHelp' : 'showHelp')"></span>
   </v-tooltip>
 </template>
 

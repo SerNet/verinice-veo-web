@@ -33,7 +33,7 @@
     @click:clear="onClearClicked"
   >
     <template #prepend-item>
-      <slot name="prepend-item" />
+      <slot name="prepend-item"></slot>
     </template>
     <template v-if="moreItemsAvailable" #append-item>
       <v-list-item>

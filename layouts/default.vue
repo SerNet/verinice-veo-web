@@ -73,7 +73,7 @@
 
     <v-main :class="$style.main">
       <SystemMessageAlert v-if="messages.length" :messages="messages" />
-      <slot />
+      <slot></slot>
       <LayoutCookieBanner />
     </v-main>
 

@@ -30,7 +30,7 @@
     @click="emit('click', $event)"
   >
     <template v-for="(_, name) in slots" #[name]="slotData">
-      <slot :name="name" v-bind="slotData" />
+      <slot :name="name" v-bind="slotData"></slot>
     </template>
   </BaseTable>
 </template>

@@ -22,7 +22,7 @@
       <code
         class="language-json"
         v-html="textAsHighlighterHTML"
-      />
+      ></code>
     <!-- eslint-enable -->
     </pre>
   </div>

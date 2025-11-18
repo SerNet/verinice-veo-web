@@ -28,10 +28,10 @@
     rounded
   >
     <v-card-text v-if="padding" class="pa-3 px-4">
-      <slot />
+      <slot></slot>
     </v-card-text>
     <template v-else>
-      <slot />
+      <slot></slot>
     </template>
   </VCard>
 </template>

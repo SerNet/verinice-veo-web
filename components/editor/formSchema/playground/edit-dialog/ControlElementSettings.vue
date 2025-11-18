@@ -72,7 +72,7 @@
                   @add="(elementPointer, element) => emit('add', elementPointer, element)"
                   @remove="(elementPointer) => emit('remove', elementPointer)"
                 >
-                  <slot />
+                  <slot></slot>
                 </EditorFormSchemaPlaygroundEditDialogLinkSettings>
               </v-col>
             </v-row>

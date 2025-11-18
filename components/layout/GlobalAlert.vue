@@ -33,7 +33,7 @@
         <v-btn variant="text" @click="downloadDetails">
           {{ t('downloadDetails') }}
         </v-btn>
-        <a ref="downloadButton" href="#" />
+        <a ref="downloadButton" href="#"></a>
       </div>
     </template>
   </BaseAlert>

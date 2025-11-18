@@ -18,12 +18,12 @@
 <template>
   <v-chip :closable="close" data-component-name="veo-object-chip" label>
     <div v-if="label || $slots.label" tabindex="0" role="button" :aria-label="label">
-      <span v-if="label" v-text="label" />
-      <slot v-else name="label" />
+      <span v-if="label" v-text="label"></span>
+      <slot v-else name="label"></slot>
     </div>
     <div v-if="value !== true" class="chip-value" tabindex="0" role="button" :aria-label="label">
-      <span v-if="value" v-text="value" />
-      <slot v-else />
+      <span v-if="value" v-text="value"></span>
+      <slot v-else></slot>
     </div>
   </v-chip>
 </template>

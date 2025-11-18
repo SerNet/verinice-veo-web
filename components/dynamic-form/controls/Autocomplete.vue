@@ -64,7 +64,7 @@
       </v-list-item>
     </template>
     <template v-else #item="{ props: _props }">
-      <v-list-item v-bind="_props" data-veo-test="object-select-item"> </v-list-item>
+      <v-list-item v-bind="_props" data-veo-test="object-select-item"/>
     </template>
   </v-autocomplete>
 </template>

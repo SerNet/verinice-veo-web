@@ -68,7 +68,7 @@
       </v-btn>
     </v-app-bar>
     <v-main class="main bg-basepage">
-      <slot />
+      <slot></slot>
       <LayoutCookieBanner />
     </v-main>
   </v-app>

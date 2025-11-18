@@ -41,7 +41,7 @@
             </template>
             <template #default>
               <i18n-t tag="span" keypath="residualRiskHint" scope="global">
-                <br />
+                <br >
               </i18n-t>
             </template>
           </v-tooltip>

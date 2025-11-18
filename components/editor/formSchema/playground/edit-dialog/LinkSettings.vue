@@ -56,7 +56,7 @@
         </template>
       </v-tooltip>
     </div>
-    <slot />
+    <slot></slot>
   </div>
 </template>
 

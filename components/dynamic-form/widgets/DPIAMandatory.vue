@@ -24,7 +24,7 @@
     :title="piaMandatory ? t('piaMandatory') : t('piaNotMandatory')"
   >
     <span v-if="piaMandatory">
-      <i18n-t keypath="piaMandatoryText" tag="span" scope="global"><br /></i18n-t>
+      <i18n-t keypath="piaMandatoryText" tag="span" scope="global"><br ></i18n-t>
     </span>
     <span v-else>
       {{ t('piaNotMandatoryText') }}

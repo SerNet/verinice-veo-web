@@ -92,7 +92,7 @@
               </v-btn>
             </div>
           </v-form>
-          <slot />
+          <slot></slot>
         </v-card-text>
       </template>
     </BaseCard>

@@ -34,16 +34,16 @@
   >
     <v-row no-gutters class="justify-lg-space-between">
       <v-col cols="auto" class="d-flex justify-center flex-column">
-        <h3 class="text-h3 small-caps mb-3" v-text="title" />
-        <slot />
-        <p v-if="text" class="mb-0 text-body-2" style="white-space: pre-line" v-text="text" />
+        <h3 class="text-h3 small-caps mb-3" v-text="title"></h3>
+        <slot></slot>
+        <p v-if="text" class="mb-0 text-body-2" style="white-space: pre-line" v-text="text"></p>
         <p v-if="dismissOnClick" class="caption mt-2">
           {{ t('clickToDismiss') }}
         </p>
       </v-col>
 
       <v-col class="d-flex justify-end">
-        <slot name="secondary-buttons" />
+        <slot name="secondary-buttons"></slot>
 
         <v-btn
           v-for="(button, index) in localButtons"

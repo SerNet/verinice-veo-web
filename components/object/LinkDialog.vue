@@ -45,7 +45,7 @@
   >
     <template #default>
       <p v-if="!!$slots.header">
-        <slot name="header" />
+        <slot name="header"></slot>
       </p>
 
       <!-- @vue-ignore TODO #3066 $route does not exist -->
