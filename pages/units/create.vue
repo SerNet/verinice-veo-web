@@ -204,7 +204,7 @@ const unitParameters = computed(() => ({
 }));
 
 const canClickNext = computed(() => {
-  if (!hasRightToCreateUnits) return false;
+  if (!hasRightToCreateUnits.value) return false;
   if (step.value === 1) return !!unitDetails.value.name;
   if (step.value === 3) return !!selectedDomains.value.length;
   return true;
@@ -216,7 +216,7 @@ const { mutateAsync: create, data: createResponse } = useMutation(unitQueryDefin
 const { setLoading, clearLoading } = useGlobalLoadingState();
 
 async function createUnit() {
-  if (!canClickNext) {
+  if (!canClickNext.value) {
     return;
   }
 
@@ -281,7 +281,7 @@ function handleBackClick() {
 }
 
 function handleNextClick() {
-  if (canClickNext) {
+  if (canClickNext.value) {
     step.value++;
   }
   blurActiveElement();

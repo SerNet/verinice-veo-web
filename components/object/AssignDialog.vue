@@ -188,7 +188,7 @@ const { data: legacyObject } = useQuery(objectQueryDefinitions.queries.fetchLega
       prePolluteList(data);
     }
   },
-  enabled: schemaParametersEnabled && !isBulkMode.value
+  enabled: schemaParametersEnabled.value && !isBulkMode.value
 });
 
 const isDirty = computed(() => {

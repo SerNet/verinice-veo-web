@@ -318,7 +318,7 @@ async function save() {
 
 // State: Single category mode (riskCategoryStepper)
 const riskCategory = computed<IVeoRiskCategory>(() => {
-  if (!riskCategoryId || !riskDefinition) return {} as IVeoRiskCategory;
+  if (!riskCategoryId.value || !riskDefinition.value) return {} as IVeoRiskCategory;
   const category = riskCategories.value?.find((cat) => cat.id === riskCategoryId.value);
   return category ?? ({} as IVeoRiskCategory);
 });

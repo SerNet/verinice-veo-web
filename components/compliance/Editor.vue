@@ -298,7 +298,7 @@ const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameter
   size: '1'
 }));
 
-const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount);
+const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount.value);
 const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
   domainId: currentDomainId.value as string,
   unitId: unitId.value as string,
@@ -309,7 +309,7 @@ const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainPar
 const formsQueryParameters = computed(() => ({
   domainId: route.params.domain as string
 }));
-const formsQueryEnabled = computed(() => !!currentDomainId);
+const formsQueryEnabled = computed(() => !!currentDomainId.value);
 
 const fetchSchemaQueryParameters = computed(() => ({
   type: 'controls',
