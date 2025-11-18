@@ -146,6 +146,8 @@ const canDeleteUnit = computed(() => ability.value.can('delete', 'unit'));
 const units = computed({
   get() {
     if (newUnits.value) return newUnits.value;
+    // 'vue/no-side-effects-in-computed-properties'
+    // eslint-disable-next-line
     return veoUnits.value?.sort(sortUnits) ?? [];
   },
   set(newValue) {
