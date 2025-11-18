@@ -3,7 +3,11 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
-type Messages = { success: string; error: { title?: string; text: string } };
+export type Messages = {
+  success: string;
+  error: { title?: string; text: string };
+  loading?: string;
+};
 
 export function redirectToUnits() {
   const router = useRouter();

@@ -17,6 +17,7 @@
  */
 
 import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
+import type { TVeoUnit } from '~/composables/units/useUnits';
 
 /**
  * @description Permissions for global unit actions, e.g. create, update, delete a whole unit,
@@ -116,10 +117,10 @@ function updatePermissions(permissions: string[], unitWriteAccess: string[], uni
   return [...rules, ...unitPermissionRules];
 }
 
-export const createVeoPermissions = () => {
+function createVeoPermissions() {
   const ability = ref(createMongoAbility());
   const { data: units } = useUnits();
-  const unitIds = computed(() => units.value?.map((unit) => unit.id) || []);
+  const unitIds = computed(() => units.value?.map((unit: TVeoUnit) => unit.id) || []);
 
   const { keycloak, initialize: isKeycloakInitilized } = useVeoUser();
   const unitWriteAccess = computed(() => keycloak.value?.tokenParsed?.unit_write_access ?? []);
@@ -147,7 +148,7 @@ export const createVeoPermissions = () => {
   });
 
   return { ability, subject };
-};
+}
 
 let veoPermissionsInstance: ReturnType<typeof createVeoPermissions> | null = null;
 

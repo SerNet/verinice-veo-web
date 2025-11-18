@@ -38,7 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           class="my-6"
           :disabled="canUpdate"
           :prepend-icon="mdiUpdate"
-          @click="() => handleClick(unit as IVeoUnit, messages)"
+          @click="() => handleUpdate(unit as IVeoUnit, messages)"
         >
           {{ t('updateUnitDetails') }}
         </v-btn>
@@ -54,27 +54,23 @@ export const ROUTE_NAME = 'units-unit-details';
 <script setup lang="ts">
 import { mdiUpdate } from '@mdi/js';
 import { useUpdateUnit } from '~/components/unit/unit-module';
-import type { UnitDetails } from '~/components/unit/Details.vue';
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { UnitDetails } from '~/components/unit/Details.vue';
+import type { Messages } from '~/components/unit/unit-module';
 
-// Helper
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { update, isLoading: isUpdatingUnit } = useUpdateUnit();
 
-// State
 const { data: currentUnit, isLoading: isLoadingCurrentUnit } = useUnit();
-
 const { setLoading, clearLoading } = useGlobalLoadingState();
 
-// Component state
 const unitDetails = ref<UnitDetails>();
 watch(
   currentUnit,
   (): void => {
     if (isLoadingCurrentUnit.value) return;
 
-    // unitDetails: set initial values
     unitDetails.value = {
       name: currentUnit.value?.name,
       description: currentUnit.value?.description
@@ -100,9 +96,8 @@ const messages = computed(() => ({
   loading: t('unit.isUpdatingDetails')
 }));
 
-//handel updateUnit and the loadingscreen
-async function handleClick(unit, messages) {
-  let loadId;
+async function handleUpdate(unit: IVeoUnit, messages: Messages) {
+  let loadId: symbol;
   try {
     loadId = setLoading(messages.loading);
     await update(unit as IVeoUnit, messages);
