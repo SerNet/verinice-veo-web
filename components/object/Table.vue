@@ -40,7 +40,7 @@ import { mdiAccountEdit, mdiBookOpenPageVariantOutline } from '@mdi/js';
 import { mergeProps } from 'vue';
 
 import type { SortItem, TableFormatter, TableHeader, TableRenderer } from '~/components/base/Table.vue';
-import Icon from '~/components/Icon.vue';
+import VeoIcon from '~/components/VeoIcon.vue';
 import ObjectIcon from '~/components/object/Icon.vue';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
@@ -143,7 +143,7 @@ const renderObjectIcon: TableRenderer = ({ item }) => {
  */
 const renderSourceIcon: TableRenderer = ({ item }) => {
   return h(
-    Icon,
+    VeoIcon,
     item.appliedCatalogItem ?
       {
         icon: mdiBookOpenPageVariantOutline,

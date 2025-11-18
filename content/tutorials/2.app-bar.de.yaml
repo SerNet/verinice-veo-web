@@ -14,7 +14,7 @@ steps:
     intro: Über die Breadcrumbs navigieren Sie jederzeit zu vorab aufgerufenen Objekten.
   - title: 'Theme-Switch'
     element: '[data-component-name=theme-switch]'
-    intro: Mit Klick auf das Icon wechseln Sie komfortabel zwischen <i>Hell-</i> und <i>Dunkel-Modus</i>.
+    intro: Mit Klick auf das VeoIcon wechseln Sie komfortabel zwischen <i>Hell-</i> und <i>Dunkel-Modus</i>.
   - title: 'Sprachauswahl'
     element: '[data-component-name=language-select]'
     intro: Mit dem Sprachumschalter wählen Sie eine der verfügbaren Sprachen.
