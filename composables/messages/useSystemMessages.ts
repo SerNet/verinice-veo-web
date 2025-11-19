@@ -143,7 +143,7 @@ function getRelevantMessages(message: TSystemMessage) {
   return !effectiveDate || isNaN(effectiveDate.valueOf()) || effectiveDate >= now;
 }
 
-/** @description Determines if a message is urgent. **/
+/** @description Determines if a message is urgent. */
 function isUrgent(message: IVeoSystemMessage, timeToUrgent = URGENCY_OFFSET) {
   if (!message) return false;
   const timeToEffective = Math.floor(new Date(message.effective).valueOf() - new Date().valueOf());

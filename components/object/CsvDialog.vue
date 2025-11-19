@@ -189,7 +189,7 @@ interface MappedHeader {
   width?: string;
 }
 
-/** Props & Emits **/
+/** Props & Emits */
 defineSlots();
 const props = defineProps({
   headers: { type: Array as () => string[], required: true },
@@ -208,7 +208,7 @@ const emit = defineEmits<{
 
 const isOpen = toRef(props.modelValue);
 
-/** Dependencies **/
+/** Dependencies */
 const { t, locale } = useI18n();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const route = useRoute();
@@ -216,7 +216,7 @@ const { data: currentDomain } = useCurrentDomain();
 const { createLink } = useCreateLink();
 const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject);
 
-/** Reactive Variables **/
+/** Reactive Variables */
 const items = ref<Record<string, any>[]>();
 const globalObjectType = ref<string>(props.preselectedType);
 const globalSubType = ref<string>(props.preselectedSubType);
@@ -240,7 +240,7 @@ const originalState = ref({
   globalSubType: ''
 });
 
-/** Computed Properties **/
+/** Computed Properties */
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
@@ -324,7 +324,7 @@ const confirmCloseMessage = computed(() => {
   return mappingsChanged || itemsChanged || typeChanged || subTypeChanged ? t('importObjects.confirmClose') : '';
 });
 
-/** Watchers **/
+/** Watchers */
 
 watchEffect(() => {
   items.value = props.data.map((item) => ({ ...item })); // Shallow copy
@@ -335,7 +335,7 @@ watch(globalObjectType, (newType) => {
   globalSubType.value = firstSubType || '';
 });
 
-/** Methods **/
+/** Methods */
 
 // Initialize the original state to track changes
 const initializeOriginalState = () => {
@@ -401,7 +401,7 @@ function requiredRule(value: string) {
   return !!value || t('global.input.required').toString();
 }
 
-/** Event Handlers **/
+/** Event Handlers */
 const onSubmit = async (data: any[], originalData: any[]) => {
   isImporting.value = true;
   isCancelled.value = false;
