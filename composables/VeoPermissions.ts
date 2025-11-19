@@ -18,8 +18,6 @@
 
 import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
 
-const ability = ref(createMongoAbility());
-
 /**
  * @description Permissions for global unit actions, e.g. create, update, delete a whole unit,
  * `update` in this sense means updating a unit's' metadata like name, description as well as domains etc.
@@ -115,10 +113,11 @@ function updatePermissions(permissions: string[], unitWriteAccess: string[], uni
 
   const unitPermissionRules = updateUnitPermissions(permissions, unitWriteAccess, unitIds);
 
-  ability.value.update([...rules, ...unitPermissionRules]);
+  return [...rules, ...unitPermissionRules];
 }
 
 export const createVeoPermissions = () => {
+  const ability = ref(createMongoAbility());
   const { data: units } = useUnits();
   const unitIds = computed(() => units.value?.map((unit) => unit.id) || []);
 
@@ -129,13 +128,15 @@ export const createVeoPermissions = () => {
     [unitWriteAccess, unitIds],
     async () => {
       if (!isKeycloakInitilized) return;
-      updatePermissions(
-        [
-          ...(keycloak.value?.tokenParsed?.realm_access?.roles || []),
-          ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])
-        ],
-        unitWriteAccess.value,
-        unitIds.value
+      ability.value.update(
+        updatePermissions(
+          [
+            ...(keycloak.value?.tokenParsed?.realm_access?.roles || []),
+            ...(keycloak.value?.tokenParsed?.resource_access?.['veo-accounts']?.roles || [])
+          ],
+          unitWriteAccess.value,
+          unitIds.value
+        )
       );
     },
     { immediate: true }
