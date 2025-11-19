@@ -49,7 +49,7 @@
           </template>
         </v-file-upload>
 
-        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" >
+        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" />
       </v-card>
     </div>
 

@@ -63,7 +63,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
-       
+
       default: () => {}
     },
     disabled: {

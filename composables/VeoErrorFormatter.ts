@@ -81,7 +81,6 @@ export const useVeoErrorFormatter = () => {
 
     switch (error.keyword) {
       case 'required':
-         
         affectedProperty = (error.params as Record<string, any>).missingProperty;
         objectSchemaPointer = `${(isRequiredRule as RegExpMatchArray)[0]}${
           indexMatch ? indexMatch[0] : ''

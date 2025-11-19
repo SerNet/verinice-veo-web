@@ -20,7 +20,7 @@ import type { Ref } from 'vue';
 import type { IVeoPaginationOptions } from '~/types/VeoTypes';
 import type { IVeoFetchObjectsParameters } from './queryDefinitions/objects';
 import objectQueryDefinitions from './queryDefinitions/objects';
-import type { QueryOptions} from './utils/query';
+import type { QueryOptions } from './utils/query';
 import { useQuery } from './utils/query';
 
 export interface IVeoFetchParentObjectsParameters extends IVeoPaginationOptions {

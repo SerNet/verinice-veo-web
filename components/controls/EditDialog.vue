@@ -35,7 +35,7 @@
             <v-col>
               <v-select v-model="person" clearable :items="personNames" :label="t('responsible')" variant="solo-filled">
                 <template #prepend>
-                  <v-icon :icon="mdiAccount"/>
+                  <v-icon :icon="mdiAccount" />
                 </template>
               </v-select>
             </v-col>

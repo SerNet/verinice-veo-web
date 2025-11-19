@@ -17,7 +17,7 @@
 <template>
   <v-data-table :headers="headers" :items="items" dense fixed-header height="600" class="elevation-1 editable-table">
     <template v-for="(_, name) in $slots" #[name]="slotProps">
-      <slot :name="name" v-bind="slotProps || {}"></slot>
+      <slot :name="name" v-bind="slotProps || {}" />
     </template>
   </v-data-table>
 </template>

@@ -87,7 +87,7 @@
 <script lang="ts">
 import type { LocaleObject } from '@nuxtjs/i18n';
 import { JsonPointer } from 'json-ptr';
-import type { Dictionary} from 'lodash';
+import type { Dictionary } from 'lodash';
 import { isEqual, merge, pick } from 'lodash';
 
 import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
@@ -320,7 +320,6 @@ export default defineComponent({
 
     function createFormSchema() {
       if (!objectSchema.value) {
-         
         console.warn('VeoFseWiardDialog::Object schema missing. Cannot create form schema');
         return;
       }

@@ -59,17 +59,8 @@
 
 <script setup lang="ts">
 import { Bar } from 'vue-chartjs';
-import type {
-  ChartOptions
-} from 'chart.js';
-import {
-  Chart as ChartJS,
-  BarController,
-  Tooltip,
-  CategoryScale,
-  BarElement,
-  LinearScale
-} from 'chart.js';
+import type { ChartOptions } from 'chart.js';
+import { Chart as ChartJS, BarController, Tooltip, CategoryScale, BarElement, LinearScale } from 'chart.js';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 
 import { CHART_COLORS } from '~/lib/utils';

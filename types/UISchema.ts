@@ -17,7 +17,6 @@
  */
 import type { JSONSchema7 } from 'json-schema';
 
- 
 export type UISchemaElement = Layout | IVeoFormSchemaControl | Label | Widget;
 
 export type UISchema = UISchemaElement;

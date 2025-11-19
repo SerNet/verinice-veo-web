@@ -111,7 +111,7 @@ import type { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 import ImpactGroupElement from './ImpactGroupElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
-import type { FormSchemaElementMap} from './Playground.vue';
+import type { FormSchemaElementMap } from './Playground.vue';
 import { PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
 
 const props = withDefaults(

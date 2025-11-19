@@ -42,7 +42,12 @@
 import { cloneDeep, upperFirst } from 'lodash';
 import type { PropType } from 'vue';
 
-import type { IVeoDomainRiskDefinition, IVeoRiskCategory, IVeoRiskDefinition, VeoRiskTreatment } from '~/types/VeoTypes';
+import type {
+  IVeoDomainRiskDefinition,
+  IVeoRiskCategory,
+  IVeoRiskDefinition,
+  VeoRiskTreatment
+} from '~/types/VeoTypes';
 import type { IDirtyFields } from './CreateDialogSingle.vue';
 
 export default defineComponent({
@@ -61,7 +66,7 @@ export default defineComponent({
     },
     dirtyFields: {
       type: Object as PropType<IDirtyFields>,
-       
+
       default: () => {}
     },
     disabled: {

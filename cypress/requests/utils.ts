@@ -24,6 +24,5 @@ export function logStatus(
 ) {
   const styles = 'background: rgb(161,0,0); color: #fff; border-radius: 2px';
 
-   
   console.log(`%c${msg}... `, styles, res.status, res.statusText);
 }

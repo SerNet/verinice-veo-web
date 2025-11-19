@@ -16,7 +16,7 @@
 -->
 <template>
   <div class="child-objects-tab">
-    <slot :actions="actions"></slot>
+    <slot :actions="actions" />
     <!-- Create Object Dialog -->
     <ObjectSelectObjectTypeDialog
       v-if="isCreateMode"

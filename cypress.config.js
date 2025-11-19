@@ -1,6 +1,5 @@
 // import { defineConfig } from 'cypress';
 
- 
 const { defineConfig } = require('cypress');
 const fs = require('fs');
 const path = require('path');
@@ -40,7 +39,7 @@ module.exports = defineConfig({
       });
       const environment = config.env.environment || 'local';
       // load env from json
-       
+
       config.env = require(`cypress/config/cypress.env.${environment}.json`);
       // change baseUrl
       config.baseUrl = config.env.baseUrl;

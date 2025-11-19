@@ -45,7 +45,7 @@
                   Wir erlauben ethischen Hackern ausdrücklich unsere Anwendung zu testen, aber nur unter den folgenden
                   Bedingungen:
                 </p>
-                <br >
+                <br />
 
                 <ul class="mx-4">
                   <li>
@@ -72,10 +72,10 @@
                   <strong>account.verinice.com</strong>
                   testen und nichts anderes.
                 </p>
-                <br >
+                <br />
 
                 <p>Und natürlich können Sie den Open-Source-Code in unseren und anderen Repositories verwenden:</p>
-                <br >
+                <br />
 
                 <ul class="mx-4">
                   <li v-for="(link, key, index) in links" :key="index">
@@ -98,10 +98,10 @@
                   <strong>security@verinice.com</strong>, wenn Sie glauben, dass Sie ein Sicherheitsproblem in
                   verinice.veo gefunden haben.
                 </p>
-                <br >
+                <br />
 
                 <p>Versuchen Sie bitte in Ihrem Fehlerbericht die folgenden Informationen anzugeben:</p>
-                <br >
+                <br />
 
                 <ul class="mx-4">
                   <li>Proof of Concept: genaue Schritte zur Reproduktion des Fehlers</li>
@@ -109,7 +109,7 @@
                   <li>Ihre Abschätzung der Auswirkungen</li>
                   <li>Vorschläge für eine Behebung</li>
                 </ul>
-                <br >
+                <br />
 
                 <p class="text-justify">
                   Wenn wir einen Fehlerbericht erhalten, werden wir ihn intern prüfen, bevor wir ihn beantworten;
@@ -177,7 +177,7 @@
 
               <v-card-text class="mt-6 text-justify">
                 <p>We explicitly allow ethical hackers to test our application, but only under the following terms:</p>
-                <br >
+                <br />
 
                 <ul class="mx-4">
                   <li>Do not use off-the-shelf scanners, try to avoid useless traffic</li>
@@ -201,10 +201,10 @@
                   <strong>account.verinice.com</strong>
                   and nothing else.
                 </p>
-                <br >
+                <br />
 
                 <p>And of course you can use the open source code in our and other repositories:</p>
-                <br >
+                <br />
 
                 <ul class="mx-4">
                   <li v-for="(link, key, index) in links" :key="index">
@@ -226,10 +226,10 @@
                   Please e-mail to <strong>security@verinice.com</strong> if you believe you have found a security issue
                   in verinice.veo.
                 </p>
-                <br >
+                <br />
 
                 <p>In your bug report, please try to cover the following info:</p>
-                <br >
+                <br />
 
                 <ul class="mx-4">
                   <li>Proof of Concept: exact steps to reproduce the bug</li>
@@ -237,7 +237,7 @@
                   <li>Your estimation of impact</li>
                   <li>Suggestions for a fix</li>
                 </ul>
-                <br >
+                <br />
 
                 <p class="text-justify">
                   When receiving a bug report, we will look at it internally before answering, so expect some delay

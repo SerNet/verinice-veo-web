@@ -17,7 +17,7 @@
  */
 import type { IVeoTranslationCollection } from '~/types/VeoTypes';
 import type { IVeoMutationDefinition } from '../utils/mutation';
-import type { IVeoQueryDefinition} from '../utils/query';
+import type { IVeoQueryDefinition } from '../utils/query';
 import { STALE_TIME } from '../utils/query';
 
 export interface IVeoFormSchemaMeta {

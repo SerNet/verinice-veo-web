@@ -87,7 +87,7 @@ export function useCsvImporter() {
    * Pure function that parses CSV text and returns structured data.
    *
    * @param {string} csvText - The pre-processed CSV text to parse.
-   * @param {ParserOptions} [options={}] - Optional parser options to customize the parsing behavior.
+   * @param {ParserOptions} [options] - Optional parser options to customize the parsing behavior.
    * @returns {Promise<CsvData>} A promise that resolves with the parsed CSV data.
    */
   const parseCSVData = (csvText: string, options: ParserOptions = {}): Promise<CsvData> => {
@@ -97,11 +97,7 @@ export function useCsvImporter() {
         dynamicTyping: true,
         skipEmptyLines: true,
         ...(options.delimiter ? { delimiter: options.delimiter } : {}),
-        transformHeader: (header) =>
-          header
-            .trim()
-            .replace(/\s+/g, '_')
-            .replace(/[^a-zA-Z0-9_]/g, ''),
+        transformHeader: (header) => header.trim().replace(/\s+/g, '_').replace(/\W/g, ''),
         complete: (results) => {
           resolve({
             records: results.data,
@@ -119,7 +115,7 @@ export function useCsvImporter() {
    * Parses a CSV file and processes its content.
    *
    * @param {File} file - The CSV file to be parsed.
-   * @param {ParserOptions} [options={}] - Optional parser options to customize the parsing behavior.
+   * @param {ParserOptions} [options] - Optional parser options to customize the parsing behavior.
    * @returns {Promise<void>} A promise that resolves when the CSV parsing is complete.
    */
   const parseCsv = async (file: File, options: ParserOptions = {}): Promise<Ref<CsvData>> => {

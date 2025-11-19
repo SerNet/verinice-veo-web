@@ -33,7 +33,6 @@ export default defineComponent({
         const definition = layout.GROUP_DEFINITION;
         if (definition) {
           if (process.dev && props.debug) {
-             
             console.log(
               `VeoForm::Layout: Checking whether ${
                 definition.name[locale.value] || definition.name[0]
@@ -46,10 +45,8 @@ export default defineComponent({
           if (process.dev && props.debug) {
             for (let j = 0; j < evaluatedConditions.length; j++) {
               if (evaluatedConditions[j]) {
-                 
                 console.log(`VeoForm::Layout: Condition ${j} is met`);
               } else {
-                 
                 console.log(`VeoForm::Layout: Condition ${j} is NOT met`);
               }
             }
@@ -65,7 +62,6 @@ export default defineComponent({
 
     if (process.dev && props.debug) {
       for (const layout of layouts.value) {
-         
         console.log(
           `layout ${layout.layout.GROUP_DEFINITION.name[locale.value] || layout.layout.GROUP_DEFINITION.name[0]} has ${
             layout.truthyConditions

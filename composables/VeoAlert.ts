@@ -17,7 +17,7 @@
  */
 import type { Ref } from 'vue';
 
-import type { IVeoGlobalAlert, IVeoGlobalAlertParams} from '~/types/VeoTypes';
+import type { IVeoGlobalAlert, IVeoGlobalAlertParams } from '~/types/VeoTypes';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 const alerts: Ref<IVeoGlobalAlert[]> = ref([]);

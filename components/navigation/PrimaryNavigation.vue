@@ -120,7 +120,7 @@ import {
 } from '@mdi/js';
 import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage } from '@vueuse/core';
-import { useDisplay, useTheme  } from 'vuetify';
+import { useDisplay, useTheme } from 'vuetify';
 
 import { extractSubTypesFromObjectSchema, OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';

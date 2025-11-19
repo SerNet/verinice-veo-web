@@ -89,7 +89,7 @@ import { useQuerySync } from '~/composables/api/utils/query';
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
 
 // Types
-import type { HistoryZipArchive} from './modules/HistoryExport';
+import type { HistoryZipArchive } from './modules/HistoryExport';
 import { PrepPhase } from './modules/HistoryExport';
 
 interface IHistoryState {

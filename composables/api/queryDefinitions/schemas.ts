@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { IVeoDomainSpecificObjectSchema, IVeoObjectSchema } from '~/types/VeoTypes';
-import type { IVeoQueryDefinition} from '../utils/query';
+import type { IVeoQueryDefinition } from '../utils/query';
 import { STALE_TIME } from '../utils/query';
 
 export interface IVeoFetchSchemaParameters {

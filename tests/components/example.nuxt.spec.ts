@@ -15,7 +15,6 @@ describe('A very simple example test suite', () => {
       }
     });
 
-     
     //console.log(wrapper.html());
 
     // Assert rendered text

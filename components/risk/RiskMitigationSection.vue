@@ -36,7 +36,7 @@
         <template #default>
           <i18n-t keypath="mitigationAreaOfApplicationExplanation" tag="span" scope="global">
             <template #lineBreak>
-              <br >
+              <br />
             </template>
             <template #risk>
               {{ data?.scenario?.displayName }}
@@ -160,7 +160,7 @@
 </template>
 
 <script lang="ts">
-import { mdiInformationOutline, mdiLinkOff, mdiPencilOutline, mdiArrowRightCircleOutline  } from '@mdi/js';
+import { mdiInformationOutline, mdiLinkOff, mdiPencilOutline, mdiArrowRightCircleOutline } from '@mdi/js';
 import { upperFirst } from 'lodash';
 import type { PropType } from 'vue';
 

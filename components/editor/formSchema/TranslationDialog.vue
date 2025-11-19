@@ -126,7 +126,7 @@
 import type { LocaleObject } from '@nuxtjs/i18n';
 import { cloneDeep, isEqual } from 'lodash';
 
-import type { IEditorTranslations} from '../translations/types';
+import type { IEditorTranslations } from '../translations/types';
 import { TRANSLATION_SOURCE } from '../translations/types';
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { mdiUpload } from '@mdi/js';

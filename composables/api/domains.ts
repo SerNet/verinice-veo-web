@@ -19,7 +19,7 @@ import type { Ref } from 'vue';
 
 import domainQueryDefinitions from './queryDefinitions/domains';
 import unitQueryDefinitions from './queryDefinitions/units';
-import type { QueryOptions} from './utils/query';
+import type { QueryOptions } from './utils/query';
 import { useQuery } from './utils/query';
 
 export interface IVeoFetchUnitDomainsParameters {

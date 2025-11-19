@@ -29,7 +29,7 @@
   >
     <template #default>
       <div class="text-pre-wrap">{{ t('question', { name: unit?.name }) }}</div
-      ><br >
+      ><br />
       <h2 style="color: #c00000; font-size: unset">
         {{ t('hint') }}
       </h2>

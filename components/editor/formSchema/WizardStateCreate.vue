@@ -25,7 +25,7 @@
       @update:model-value="$emit('update:valid', $event)"
       @submit.prevent="() => (valid ? $emit('submit') : () => {})"
     >
-      <input type="submit" role="submit" class="d-none" >
+      <input type="submit" role="submit" class="d-none" />
       <BaseCard class="mb-4">
         <v-card-text>
           <v-row no-gutters class="align-center mt-4">

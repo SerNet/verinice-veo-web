@@ -16,7 +16,7 @@
 -->
 <template>
   <div class="targets-tab">
-    <slot :actions="actions"></slot>
+    <slot :actions="actions" />
   </div>
 </template>
 

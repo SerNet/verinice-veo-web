@@ -17,7 +17,7 @@
  */
 import type { IVeoAPIMessage, IVeoBaseObject, IVeoLink, IVeoUnitIncarnationDescriptions } from '~/types/VeoTypes';
 import type { IVeoMutationDefinition } from '../utils/mutation';
-import type { IVeoQueryDefinition} from '../utils/query';
+import type { IVeoQueryDefinition } from '../utils/query';
 import { STALE_TIME } from '../utils/query';
 import { VeoApiResponseType } from '../utils/request';
 import { omit } from 'lodash';

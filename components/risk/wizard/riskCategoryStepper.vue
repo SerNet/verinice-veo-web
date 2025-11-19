@@ -8,7 +8,7 @@
         :data-veo-test="'risk-category-translations-step'"
         editable
       />
-      <v-divider/>
+      <v-divider />
 
       <v-stepper-item
         :ref="(el) => setStepperRef(el, 1)"
@@ -18,7 +18,7 @@
         editable
       />
 
-      <v-divider/>
+      <v-divider />
       <v-stepper-item
         :ref="(el) => setStepperRef(el, 2)"
         :title="t('editRiskMatrix')"
@@ -26,9 +26,9 @@
         :value="3"
         editable
       />
-      <v-divider/>
+      <v-divider />
 
-      <v-stepper-item :ref="(el) => setStepperRef(el, 3)" :title="t('summary')" :value="4" editable/>
+      <v-stepper-item :ref="(el) => setStepperRef(el, 3)" :title="t('summary')" :value="4" editable />
     </v-stepper-header>
   </v-stepper>
 
@@ -146,7 +146,7 @@
           {{ t('summaryHint') }}
         </v-card-subtitle>
 
-        <v-divider class="mb-6"/>
+        <v-divider class="mb-6" />
 
         <div class="d-flex align-center justify-space-between mb-2">
           <div class="text-subtitle-1 font-weight-medium">{{ t('riskMatrix') }}</div>

@@ -102,7 +102,7 @@
           </v-card>
         </v-dialog>
       </template>
-      <v-skeleton-loader v-else type="heading"/>
+      <v-skeleton-loader v-else type="heading" />
     </BaseContainer>
   </BasePage>
 </template>

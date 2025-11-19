@@ -160,9 +160,7 @@ export default defineComponent({
         props.formSchema &&
         !(
           (props.formSchema.context === RI_CONTROL_VIEW_CONTEXT && props.formSchema.modelType == null) ||
-          Object.keys(VeoElementTypePlurals).includes(
-            (props.formSchema?.modelType as string)
-          )
+          Object.keys(VeoElementTypePlurals).includes(props.formSchema?.modelType as string)
         )
     );
 

@@ -1,6 +1,6 @@
 /** Used to make a vuetify stepper scroll to the current step smoothly.
  * Hint: Assign all stepper items to the `stepperItems` array using the `setStepperRef` function.
- * */
+ */
 export function useSideScroll(step: Ref<number>) {
   const stepperItems = ref<(HTMLElement | null)[]>([]);
   watch(step, (newStep: number) => {

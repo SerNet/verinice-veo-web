@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
-import type { IEditorTranslations} from './types';
+import type { IEditorTranslations } from './types';
 import { TRANSLATION_SOURCE } from './types';
 import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 

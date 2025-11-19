@@ -107,14 +107,8 @@ import {
 } from '~/components/dynamic-form/additionalContext';
 import type { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import type {
-  IVeoDecisionResults,
-  IVeoEntity,
-  IVeoInspectionResult,
-  IVeoObjectHistoryEntry} from '~/types/VeoTypes';
-import {
-  VeoElementTypePlurals
-} from '~/types/VeoTypes';
+import type { IVeoDecisionResults, IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';

@@ -62,10 +62,10 @@
 </template>
 
 <script setup lang="ts">
-import { isEmpty, last, pick, truncate  } from 'lodash';
+import { isEmpty, last, pick, truncate } from 'lodash';
 import { mdiChevronRight, mdiDotsHorizontal } from '@mdi/js';
 
-import type { IVeoBreadcrumb} from '~/composables/VeoBreadcrumbs';
+import type { IVeoBreadcrumb } from '~/composables/VeoBreadcrumbs';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { useQuery } from '~/composables/api/utils/query';

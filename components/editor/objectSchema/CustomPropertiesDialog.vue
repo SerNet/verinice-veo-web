@@ -137,11 +137,7 @@ import { cloneDeep, isEqual, trim, upperFirst } from 'lodash';
 import { mdiPlus } from '@mdi/js';
 
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import type {
-  IVeoOSHCustomAspect,
-  IVeoOSHCustomLink,
-  IVeoOSHCustomProperty
-} from '~/lib/ObjectSchemaHelper2';
+import type { IVeoOSHCustomAspect, IVeoOSHCustomLink, IVeoOSHCustomProperty } from '~/lib/ObjectSchemaHelper2';
 import type ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
 import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import type { PropType } from 'vue';

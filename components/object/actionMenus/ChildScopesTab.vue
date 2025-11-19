@@ -16,7 +16,7 @@
 -->
 <template>
   <div class="child-scopes-tab">
-    <slot :actions="actions"></slot>
+    <slot :actions="actions" />
 
     <!-- @vue-ignore TODO #3066 $route does not exist -->
     <ObjectCreateDialog

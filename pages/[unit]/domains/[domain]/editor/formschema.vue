@@ -313,7 +313,7 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import type { LocaleObject } from '@nuxtjs/i18n';
 import type { PENDING_TRANSLATIONS } from '~/components/editor/formSchema/playground/EditElementDialog.vue';
-import type { IEditorTranslations} from '~/components/editor/translations/types';
+import type { IEditorTranslations } from '~/components/editor/translations/types';
 import { TRANSLATION_SOURCE } from '~/components/editor/translations/types';
 import { editorTranslationsToFormsTranslations } from '~/components/editor/translations/util';
 import type { IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';

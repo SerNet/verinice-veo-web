@@ -13,7 +13,7 @@ describe('Edit elements', () => {
     editElement({ typePlural: 'scopes', subTypePlural: 'scopes' });
   });
 });
- 
+
 function editElement({ typePlural, subTypePlural }: { typePlural: string; subTypePlural: string }) {
   const testData = {
     abbreviation: 'test-abbreviation',

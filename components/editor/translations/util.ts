@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { IVeoFormsTranslations } from '~/components/dynamic-form/types';
-import type { IEditorTranslations} from './types';
+import type { IEditorTranslations } from './types';
 import { TRANSLATION_SOURCE } from './types';
 import { cloneDeep } from 'lodash';
 

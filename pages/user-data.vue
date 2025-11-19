@@ -19,7 +19,7 @@
   <BasePage sticky-footer>
     <i18n-t keypath="userDataExport.hint.text" class="mt-6" tag="p" scope="global">
       <template #linebreak>
-        <br >
+        <br />
       </template>
     </i18n-t>
 

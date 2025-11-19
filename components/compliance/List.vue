@@ -52,7 +52,7 @@
 <script setup lang="ts">
 import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
 import { useRequirementImplementationList } from '~/composables/requirementImplementations';
-import type { IVeoEntity} from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { TableHeader } from '../base/Table.vue';
 

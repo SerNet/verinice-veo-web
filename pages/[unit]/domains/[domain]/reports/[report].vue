@@ -99,7 +99,7 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
-import type { IVeoEntity} from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';

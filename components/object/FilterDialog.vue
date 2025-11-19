@@ -86,7 +86,7 @@ import type { PropType } from 'vue';
 import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
 import { clone, omitBy, upperFirst } from 'lodash';
 
-import type { IVeoFilterDivider, IVeoFilterOption} from './Filter.vue';
+import type { IVeoFilterDivider, IVeoFilterOption } from './Filter.vue';
 import { IVeoFilterOptionType } from './Filter.vue';
 import { extractSubTypesFromObjectSchema } from '~/lib/utils';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';

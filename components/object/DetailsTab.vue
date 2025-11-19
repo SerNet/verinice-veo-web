@@ -95,7 +95,8 @@ import {
   mdiLinkOff,
   mdiTransitDetour,
   mdiTrashCanOutline,
-  mdiUpload, mdiTextBoxCheckOutline 
+  mdiUpload,
+  mdiTextBoxCheckOutline
 } from '@mdi/js';
 import { cloneDeep, upperFirst } from 'lodash';
 import type { ComputedRef, PropType, Ref } from 'vue';

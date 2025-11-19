@@ -1,5 +1,5 @@
 import { LOCAL_STORAGE_KEYS } from '../../../types/localStorage';
-import type { UnitDetails} from '../../support/setupHelpers';
+import type { UnitDetails } from '../../support/setupHelpers';
 import { generateUnitDetails } from '../../support/setupHelpers';
 let unitDetails: UnitDetails;
 

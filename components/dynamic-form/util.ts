@@ -131,7 +131,6 @@ export const evaluateRule = (value: any, rule: IVeoFormElementFormSchemaRule | u
   }
 
   if (!['HIDE', 'SHOW', 'DISABLE', 'ENABLE'].includes(rule.effect)) {
-     
     console.error(
       `Your rule effect "${rule.effect}" is not available!`,
       'Only these rule effects are permitted: "SHOW", "HIDE", "ENABLED", "DISABLED".'

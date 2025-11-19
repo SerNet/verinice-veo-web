@@ -16,14 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { Ref } from 'vue';
-import {
-  useQuery as vueQueryUseQuery,
-  useQueries as VueQueryUseQueries,
-  useQueryClient
-} from '@tanstack/vue-query';
-import type { UseQueryOptions ,
-  QueryClient
-} from '@tanstack/vue-query';
+import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient } from '@tanstack/vue-query';
+import type { UseQueryOptions, QueryClient } from '@tanstack/vue-query';
 import type { QueryObserverResult } from '@tanstack/query-core';
 import { omit } from 'lodash';
 
@@ -129,7 +123,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
       (newValue) => {
         if (newValue && result.isStale.value) {
           const staleTime = combinedOptions.value?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
-           
+
           console.log(
             `[vueQuery] data for query "${JSON.stringify(
               queryDefinition.primaryQueryKey
@@ -140,7 +134,6 @@ export const useQuery = <TVariables = undefined, TResult = any>(
             ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
           );
         } else if (newValue) {
-           
           console.log(
             `[vueQuery] data for query "${JSON.stringify(
               queryDefinition.primaryQueryKey

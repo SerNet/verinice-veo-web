@@ -24,7 +24,7 @@ import type {
   IVeoRisk
 } from '../../../types/VeoTypes';
 import type { IVeoMutationDefinition } from '../utils/mutation';
-import type { IVeoQueryDefinition} from '../utils/query';
+import type { IVeoQueryDefinition } from '../utils/query';
 import { STALE_TIME } from '../utils/query';
 
 import { VeoApiResponseType } from '../utils/request';
@@ -252,7 +252,7 @@ export default {
       responseType: VeoApiResponseType.VOID,
       staticMutationOptions: {
         // no invalidation needed
-         
+
         onSuccess: (_queryClient, _data, _variables, _context) => {}
       }
     } as IVeoMutationDefinition<IVeoApplyProfilesParameters, void>,

@@ -34,12 +34,12 @@
         <BaseCard class="mt-0">
           <v-card-text>
             <span>{{ t('version.header') }}</span
-            ><br ><br >
+            ><br /><br />
 
             <p>{{ t('version.paragraph.1') }}</p
-            ><br >
+            ><br />
             <p>{{ t('version.paragraph.2') }}</p
-            ><br >
+            ><br />
             <p>{{ t('version.paragraph.3') }}</p>
 
             <div v-if="!hideSerNetReferences" class="mt-6 text-center">
@@ -48,11 +48,11 @@
               &hyphen;&nbsp;
               <span>
                 <a :href="privacyPolicyLink" target="_blank">
-                  {{ footerText.privacy }}
+                  {{ t('privacyPolicy') }}
                 </a>
                 &nbsp;|&nbsp;
                 <a :href="imprintLink" target="_blank">
-                  {{ footerText.imprint }}
+                  {{ t('imprint') }}
                 </a>
               </span>
             </div>
@@ -201,10 +201,6 @@ const privacyPolicyLink = computed(() =>
     'https://www.sernet.de/datenschutz-verinicecloud'
   : 'https://www.sernet.de/en/data-protection-verinicecloud'
 );
-const footerText = computed(() => ({
-  privacy: t('privacyPolicy'),
-  imprint: t('imprint')
-}));
 
 const hideSerNetReferences = config.public.hideSerNetReferences === 'true';
 </script>

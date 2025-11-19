@@ -181,7 +181,6 @@ export default defineComponent({
         }
         return undefined;
       } catch (e) {
-         
         console.warn(e);
         return undefined;
       }

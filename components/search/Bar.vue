@@ -38,7 +38,7 @@
     <template #prepend-inner>
       <div v-for="s in search" :key="s.searchFilter" class="d-flex">
         <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
-          <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start/>
+          <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start />
           {{ translateItem(s.searchFilter) }}
         </v-chip>
         <v-chip v-if="s.operator" size="large" class="mr-1" color="green">{{ s.operator }}</v-chip>

@@ -87,8 +87,8 @@
 <script lang="ts">
 import { mdiClose, mdiPlus } from '@mdi/js';
 import { cloneDeep, upperFirst } from 'lodash';
-import type { PropType} from 'vue';
-import { computed, ref  } from 'vue';
+import type { PropType } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ObjectActionMenusChildObjectsTab from '~/components/object/actionMenus/ChildObjectsTab.vue';
 import ObjectActionMenusChildScopesTab from '~/components/object/actionMenus/ChildScopesTab.vue';

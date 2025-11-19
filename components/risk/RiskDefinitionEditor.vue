@@ -20,7 +20,7 @@
   <v-card min-width="640" class="pb-4">
     <div class="d-flex flex-column">
       <template v-if="!data.length">
-        <slot name="infoBox"></slot>
+        <slot name="infoBox" />
       </template>
       <v-tabs v-else v-model="translationTab" color="primary" direction="horizontal" class="mb-4">
         <v-tab
@@ -110,7 +110,7 @@
                               <div
                                 v-bind="props"
                                 :style="{ ...swatchStyle, backgroundColor: item.htmlColor || defaultSwatchColor }"
-                              ></div>
+                              />
                             </template>
                             <v-card>
                               <v-card-text class="pa-0">
@@ -143,7 +143,9 @@ import { mdiDeleteOutline, mdiSquare } from '@mdi/js';
 import type { IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 
 const emit = defineEmits<{
-  (e: 'close' | 'save-editor' | 'add-item'): void;
+  (e: 'close'): void;
+  (e: 'save-editor'): void;
+  (e: 'add-item'): void;
   (e: 'remove-item', index: number): void;
   (e: 'change-item', index: number, value: string): void;
 }>();

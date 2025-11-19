@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { Ref } from 'vue';
-import type { QueryOptions} from './utils/query';
+import type { QueryOptions } from './utils/query';
 import { useQuery } from './utils/query';
 import historyQueryDefinitions from './queryDefinitions/history';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
