@@ -18,7 +18,7 @@ import { config as baseConfig } from '~/configuration/base/config';
 import { words } from 'lodash';
 
 export function customKebabCase(str) {
-  return words(str, /[a-zA-Z0-9+]+/g)
+  return words(str, /[a-z0-9+]+/gi)
     .join('-')
     .toLowerCase();
 }
