@@ -24,6 +24,7 @@ import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import type { IVeoCustomLink, IVeoDomainSpecificObjectSchema, IVeoEntity, IVeoObjectSchema } from '~/types/VeoTypes';
 
 export const CHART_COLORS = ['#666', '#ffc107', '#3f51b5', '#8bc34a', '#bbb'];
+
 // export const CHART_COLORS = ['#5c3f5a', '#304655', '#2892e4', '#8d9ac5', '#36384c'];
 
 export interface IForm {
@@ -34,7 +35,7 @@ export interface IForm {
 }
 
 export function sanitizeURLParams(url: string) {
-  return url.replaceAll(/(\/|[^\w-])/g, '');
+  return url.replaceAll(/([^\w-])/g, '');
 }
 
 export function extractSubTypesFromObjectSchema(
