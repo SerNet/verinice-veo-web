@@ -96,7 +96,7 @@ export const useRules = () => {
 
   function hasNoSpecialChar(s: string): boolean {
     if (s === '') return true; // do not test empty strings
-    const re = /^[a-z0-9_-]+$/i; // allowed characters
+    const re = /^[\w-]+$/; // allowed characters
     return re.test(s);
   }
 
