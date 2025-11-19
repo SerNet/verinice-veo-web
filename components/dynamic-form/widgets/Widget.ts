@@ -25,7 +25,7 @@ export default defineComponent({
     const fittingComponent = computed(() => AVAILABLE_WIDGETS.find((widget) => widget.name === props.name));
 
     if (!fittingComponent) {
-      console.warn(`VeoForm::Widget: Couldn't find widget ${props.name}`);
+      console.info(`VeoForm::Widget: Couldn't find widget ${props.name}`);
       return null;
     }
     return () => h(fittingComponent.value, { ...props });

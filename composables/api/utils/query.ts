@@ -55,7 +55,7 @@ export const debugCacheAsArrayIncludesPrimaryKey = (configValue: string | undefi
   try {
     return JSON.parse(configValue).includes(primaryQueryKey);
   } catch (error) {
-    console.warn("Couldn't parse debug cache: ", error);
+    console.info("Couldn't parse debug cache: ", error);
     return false;
   }
 };
@@ -124,7 +124,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
         if (newValue && result.isStale.value) {
           const staleTime = combinedOptions.value?.staleTime || queryClient.getDefaultOptions().queries?.staleTime;
 
-          console.log(
+          console.info(
             `[vueQuery] data for query "${JSON.stringify(
               queryDefinition.primaryQueryKey
             )}" with parameters "${JSON.stringify(
@@ -134,7 +134,7 @@ export const useQuery = <TVariables = undefined, TResult = any>(
             ).toLocaleTimeString()}, now is ${new Date().toLocaleTimeString()}. Fetching...`
           );
         } else if (newValue) {
-          console.log(
+          console.info(
             `[vueQuery] data for query "${JSON.stringify(
               queryDefinition.primaryQueryKey
             )}" with parameters "${JSON.stringify(
@@ -185,7 +185,7 @@ export const useQuerySync = async <TVariables = undefined, TResult = any>(
     try {
       queryClient.setQueryData([queryDefinition.primaryQueryKey, queryParameters], result);
     } catch (e) {
-      console.warn("Couldn't set queried data:", e);
+      console.info("Couldn't set queried data:", e);
     }
   }
 

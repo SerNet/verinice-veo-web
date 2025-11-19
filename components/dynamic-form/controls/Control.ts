@@ -73,7 +73,7 @@ export default defineComponent({
         const definition = control.CONTROL_DEFINITION;
         if (definition) {
           if (process.dev && props.debug) {
-            console.log(
+            console.info(
               `VeoForm::Control: Checking whether ${
                 definition.name[locale.value] || definition.name[0]
               } meets all conditions...`
@@ -85,9 +85,9 @@ export default defineComponent({
           if (process.dev && props.debug) {
             for (let j = 0; j < evaluatedConditions.length; j++) {
               if (evaluatedConditions[j]) {
-                console.log(`VeoForm::Control: Condition ${j} is met`);
+                console.info(`VeoForm::Control: Condition ${j} is met`);
               } else {
-                console.log(`VeoForm::Control: Condition ${j} is NOT met`);
+                console.info(`VeoForm::Control: Condition ${j} is NOT met`);
               }
             }
           }
@@ -102,7 +102,7 @@ export default defineComponent({
 
     if (process.dev && props.debug) {
       for (const control of controls.value) {
-        console.log(
+        console.info(
           `Control ${
             control.control.CONTROL_DEFINITION.name[locale.value] || control.control.CONTROL_DEFINITION.name[0]
           } has ${control.truthyConditions} truthy conditions`

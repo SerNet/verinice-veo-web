@@ -98,7 +98,7 @@ export const useMutation = <TVariables, TResult>(
         $config.public.debugCache === 'true' ||
         debugCacheAsArrayIncludesPrimaryKey($config.public.debugCache, mutationDefinition.primaryQueryKey)
       ) {
-        console.log(
+        console.info(
           `[vueQuery] Mutation "${mutationDefinition.primaryQueryKey}" is running with parameters "${JSON.stringify(
             mutationParameters
           )}". Fetching...\nOptions: "${JSON.stringify(combinedOptions.value)}"`

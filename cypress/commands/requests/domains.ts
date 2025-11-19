@@ -96,7 +96,7 @@ export function deleteDomainsOlderThan(hours = 3) {
     })
     .then((response) => {
       const domains = response.body;
-      console.warn(`%cFound ${domains.length} domains.`, logStyles);
+      console.info(`%cFound ${domains.length} domains.`, logStyles);
 
       const oldDomains = domains.filter((domain: any) => {
         const createdAt = new Date(domain.createdAt);
@@ -105,9 +105,9 @@ export function deleteDomainsOlderThan(hours = 3) {
 
       // Log info
       if (oldDomains.length > 0) {
-        console.warn(`%cStarting to delete ${oldDomains.length} domains older than ${hours} hours...`, logStyles);
+        console.info(`%cStarting to delete ${oldDomains.length} domains older than ${hours} hours...`, logStyles);
       } else {
-        console.warn(`%cNo domains are older than ${hours} hours.`, logStyles);
+        console.info(`%cNo domains are older than ${hours} hours.`, logStyles);
         return;
       }
 
@@ -119,7 +119,7 @@ export function deleteDomainsOlderThan(hours = 3) {
           failOnStatusCode: false
         }).then((response) => {
           if (response.status === 204) {
-            console.warn(`%c${index + 1}: Deleted domain ${domain.id}`, logStyles);
+            console.info(`%c${index + 1}: Deleted domain ${domain.id}`, logStyles);
           } else {
             console.error(`Failed to delete domain ${domain.name} | ${domain.id}. Status: ${response.status}`);
           }

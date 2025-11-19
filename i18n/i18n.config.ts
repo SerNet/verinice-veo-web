@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-// disable console warnings for "missing translations" (intlify). Seems to be an issue between @nuxt/i18n and @vue-i18n, since all the translations are working fine.
+// disable console.infoings for "missing translations" (intlify). Seems to be an issue between @nuxt/i18n and @vue-i18n, since all the translations are working fine.
 export default defineI18nConfig(() => {
   return {
     fallbackWarn: false,

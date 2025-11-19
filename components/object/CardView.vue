@@ -128,9 +128,11 @@ const localSortBy = ref(props.sortBy);
 
 // Card View
 const { formatDateTime } = useFormatters();
+
 function updateSortBy(key: string) {
   emit('update:sortBy', { key, order: localSortBy.value.order === 'asc' ? 'desc' : 'asc' });
 }
+
 const pageCount = computed(() => {
   return Math.max(1, props.fetchedItems?.pageCount);
 });
@@ -207,7 +209,7 @@ const setObjectDetails = (object: ObjectDetails, keys: string[]) => {
         break;
 
       default:
-        console.warn(`Unexpected updated key: ${key}`);
+        console.info(`Unexpected updated key: ${key}`);
     }
   });
 
@@ -267,8 +269,8 @@ const Status = {
   },
   template: `
 
- <div style="display: flex; justify-content: flex-end; width: 100%; gap: 4px">
-       <v-chip
+    <div style="display: flex; justify-content: flex-end; width: 100%; gap: 4px">
+      <v-chip
         v-for="(value, key) in state"
         :key="key"
         data-veo-test="item-card-text-state"
@@ -325,20 +327,20 @@ const Details = {
     };
   },
   template: `
-     <v-card-title v-text="name"></v-card-title>
-  <v-card-subtitle v-if="meta" v-text="meta"></v-card-subtitle>
- <v-card-text
-  v-if="description && Object.keys(description).length > 0"
-  data-veo-test="item-card-text" class="overflow-y-auto text-body-2" >
+    <v-card-title v-text="name"></v-card-title>
+    <v-card-subtitle v-if="meta" v-text="meta"></v-card-subtitle>
+    <v-card-text
+      v-if="description && Object.keys(description).length > 0"
+      data-veo-test="item-card-text" class="overflow-y-auto text-body-2">
   <span
     v-if="description && Object.values(description).every((value) => typeof value === 'string')"
     v-for="(value, key) in description"
     :key="key"
-        class="overflow-y-auto text-body-2 custom-pre"
+    class="overflow-y-auto text-body-2 custom-pre"
   >
     <p style="white-space: pre-wrap">{{ value }}</p>
       </span>
-</v-card-text>
+    </v-card-text>
   `
 };
 </script>

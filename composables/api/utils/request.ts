@@ -144,7 +144,7 @@ export const useRequest = () => {
     const raw = await res.text();
 
     if (!raw) {
-      console.warn(`API Plugin::parseJson: Empty response body for request ${res.url} with response type JSON`);
+      console.info(`API Plugin::parseJson: Empty response body for request ${res.url} with response type JSON`);
       return undefined;
     }
     const parsed = JSON.parse(raw);

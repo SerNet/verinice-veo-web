@@ -349,7 +349,7 @@ export default defineComponent({
       let scope = cloneDeep(element.scope);
       if (!scope) {
         if (process.dev && props.debug) {
-          console.warn(`VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(element)}`);
+          console.info(`VeoForm::createControl: Control ${formSchemaPointer} has no scope: ${JSON.stringify(element)}`);
         }
         return;
       }
@@ -357,7 +357,7 @@ export default defineComponent({
       // Special handling for link attributes, as they don't have a complete pointer in the form schema as they can only exist inside of their link
       if (scope.startsWith('#/properties/attributes')) {
         if (process.dev && props.debug) {
-          console.warn(
+          console.info(
             `VeoForm::createControl: Custom Link attribute detected: ${scope}. Searching for custom link...`
           );
         }
