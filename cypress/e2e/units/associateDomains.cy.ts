@@ -17,7 +17,6 @@ describe('Add domains', () => {
   it('associates a test unit with the IT-GS domain', () => {
     // DS-GVO is associated on creating the test unit,
     // IT-Grundschutz will be added in this test, thus we check against both
-    const domainNames = ['DS-GVO', 'IT-Grundschutz'];
     const selectors = ['[data-veo-test="domain-card-checkbox-it-grundschutz"]'];
 
     const ChipSelectors = ['domain-card-chip-ds-gvo', 'domain-card-chip-it-grundschutz'];
