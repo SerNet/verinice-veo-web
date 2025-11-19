@@ -20,12 +20,6 @@ import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
 
 const ability = ref(createMongoAbility());
 
-// Base permissions that gets overwritten IF the user is authenticated & entering a protected route
-const { can, rules } = new AbilityBuilder(createMongoAbility);
-can('view', 'documentation');
-// @ts-ignore Some casl typing error, however the docs show this is the right way and it works
-ability.value.update(rules);
-
 /**
  * @description Permissions for global unit actions, e.g. create, update, delete a whole unit,
  * `update` in this sense means updating a unit's' metadata like name, description as well as domains etc.

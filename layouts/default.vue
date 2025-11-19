@@ -38,11 +38,7 @@
 
       <LayoutTutorialButton v-if="!$route.path.startsWith('/login')" />
 
-      <v-tooltip
-        v-if="ability.can('view', 'documentation')"
-        location="bottom"
-        :aria-label="t('openDocumentationInNewTab')"
-      >
+      <v-tooltip location="bottom" :aria-label="t('openDocumentationInNewTab')">
         <template #activator="{ props }">
           <v-btn
             class="mr-3"
@@ -99,14 +95,12 @@ import 'intro.js/minified/introjs.min.css';
 import { useDisplay, useTheme } from 'vuetify';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { hasFeature } from '~/utils/featureFlags';
 
 const { xs } = useDisplay();
 const { authenticated } = useVeoUser();
 const route = useRoute();
-const { ability } = useVeoPermissions();
 
 const { alerts } = useVeoAlerts();
 const { t } = useI18n();
