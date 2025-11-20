@@ -20,6 +20,19 @@ export function waitForPageToLoad() {
   });
 }
 
+export function waitForBrowserToIdle() {
+  return cy.window().then((win) => {
+    return new Cypress.Promise((resolve) => {
+      win.requestIdleCallback(
+        () => {
+          resolve();
+        },
+        { timeout: 4000 }
+      );
+    });
+  });
+}
+
 export function pluralizeElementType(elementType: string) {
   return elementType.toLowerCase() + (elementType === 'Process' ? 'es' : 's');
 }

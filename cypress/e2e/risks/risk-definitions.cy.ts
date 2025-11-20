@@ -1,3 +1,4 @@
+import { waitForBrowserToIdle } from '../../commands/utils';
 let testDomain;
 let testUnit;
 const baseUrl = Cypress.config().baseUrl;
@@ -41,6 +42,27 @@ function fillCategoryBasics(name: string, description: string) {
   });
   cy.getCustom('[data-veo-test="risk-category-editor-input-description-en"]').within(() => {
     cy.get('textarea, input').first().click().clear().type(description);
+  });
+}
+
+// Fill the new matrix column - find all cells containing N.N.
+function fillInRiskMatrix() {
+  const fillInCell = ($td: JQuery<HTMLElement>) => {
+    cy.wrap($td).within(() => {
+      cy.get('.v-autocomplete').as('riskValueSelect');
+      cy.get('@riskValueSelect').click();
+      cy.get('@riskValueSelect').type('{downArrow}{enter}');
+    });
+  };
+
+  cy.getCustom('[data-veo-test="risk-matrix"]').within(() => {
+    cy.get('td').each(($td) => {
+      if ($td.text().includes('N.N.')) {
+        waitForBrowserToIdle().then(() => {
+          fillInCell($td);
+        });
+      }
+    });
   });
 }
 
@@ -315,18 +337,7 @@ describe('Risk Definitions with one category', () => {
     // Move to next step (criteria) to find the matrix
     cy.get('[data-veo-test="next-btn"]').click();
 
-    // Fill the new matrix column - find all cells containing N.N.
-    cy.getCustom('[data-veo-test="risk-matrix"]').within(() => {
-      // Each td that contains N.N. needs to be clicked and filled
-      cy.get('td').each(($td) => {
-        if ($td.text().includes('N.N.')) {
-          cy.wrap($td).within(() => {
-            cy.get('.v-autocomplete').click();
-            cy.get('input').type('{downArrow}{enter}');
-          });
-        }
-      });
-    });
+    fillInRiskMatrix();
 
     saveAndMaybeConfirm();
     verifyRedirectToRiskDefinition();
@@ -406,11 +417,13 @@ describe('Risk Definitions with one category', () => {
     cy.getCustom('[data-veo-test="risk-matrix"]').within(() => {
       // For each cell in the matrix, select a risk value
       cy.get('.v-autocomplete').each(($select, index) => {
-        // Pick different risk values in a cycle (0,1,2,3,0,1,2,3,...)
-        const valueIndex = index % 4;
-        cy.wrap($select)
-          .click()
-          .type(`{downArrow}`.repeat(valueIndex + 1) + `{enter}`);
+        waitForBrowserToIdle().then(() => {
+          // Pick different risk values in a cycle (0,1,2,3,0,1,2,3,...)
+          const valueIndex = index % 4;
+          cy.wrap($select)
+            .click()
+            .type(`{downArrow}`.repeat(valueIndex + 1) + `{enter}`);
+        });
       });
     });
 
