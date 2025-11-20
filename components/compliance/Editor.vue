@@ -297,8 +297,8 @@ const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameter
   unitId: unitId.value as string,
   size: '1'
 }));
-
-const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount.value);
+// eslint-disable-next-line vue/no-ref-as-operand
+const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount);
 const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
   domainId: currentDomainId.value as string,
   unitId: unitId.value as string,
