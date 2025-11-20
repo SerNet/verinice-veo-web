@@ -143,9 +143,7 @@ import { mdiDeleteOutline, mdiSquare } from '@mdi/js';
 import type { IVeoRiskPotentialImpact } from '~/types/VeoTypes';
 
 const emit = defineEmits<{
-  (e: 'close'): void;
-  (e: 'save-editor'): void;
-  (e: 'add-item'): void;
+  (e: 'close' | 'save-editor' | 'add-item'): void;
   (e: 'remove-item', index: number): void;
   (e: 'change-item', index: number, value: string): void;
 }>();

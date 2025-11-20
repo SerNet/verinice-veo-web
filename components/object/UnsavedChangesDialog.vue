@@ -57,8 +57,7 @@ withDefaults(
 );
 
 const emit = defineEmits<{
-  (event: 'update:model-value', value: boolean): void;
-  (event: 'exit', value: boolean): void;
+  (event: 'update:model-value' | 'exit', value: boolean): void;
 }>();
 
 const { t } = useI18n();

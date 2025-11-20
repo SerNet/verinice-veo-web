@@ -122,8 +122,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (event: 'expand-menu'): void;
-  (event: 'click'): void;
+  (event: 'expand-menu' | 'click'): void;
 }>();
 
 const route = useRoute();

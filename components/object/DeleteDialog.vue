@@ -62,6 +62,7 @@ const props = withDefaults(
 const emit = defineEmits<{
   (event: 'update:model-value', value: boolean): void;
   (event: 'error', error: Error): void;
+  // eslint-disable-next-line @typescript-eslint/unified-signatures
   (event: 'success', multiple: boolean): void;
 }>();
 

@@ -110,8 +110,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   (e: 'update:sort-by', newSorting: SortItem[]): void;
-  (e: 'update:page', newPage: number): void;
-  (e: 'update:items-per-page', newItemsPerPage: number): void;
+  (e: 'update:page' | 'update:items-per-page', newPage: number): void;
   (e: 'click', event: any): void;
   (e: 'update:model-value', newValue: any[]): void;
 }>();

@@ -28,8 +28,8 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <div class="text-pre-wrap">{{ t('question', { name: unit?.name }) }}</div
-      ><br />
+      <div class="text-pre-wrap">{{ t('question', { name: unit?.name }) }} </div>
+      <br />
       <h2 style="color: #c00000; font-size: unset">
         {{ t('hint') }}
       </h2>
@@ -101,8 +101,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (event: 'success'): void;
-  (event: 'error'): void;
+  (event: 'success' | 'error'): void;
   (event: 'update:model-value', value: boolean): void;
 }>();
 

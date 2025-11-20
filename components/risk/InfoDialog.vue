@@ -35,6 +35,7 @@
 </template>
 <script setup lang="ts">
 import { VeoAlertType } from '~/types/VeoTypes';
+
 const { t, locale } = useI18n();
 defineProps<{
   hasInfoDialog: boolean;
@@ -44,8 +45,7 @@ defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e: 'save'): void;
-  (e: 'cancel'): void;
+  (e: 'save' | 'cancel'): void;
 }>();
 </script>
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>

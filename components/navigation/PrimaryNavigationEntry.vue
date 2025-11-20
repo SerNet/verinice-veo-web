@@ -72,8 +72,7 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (event: 'expand-menu'): void;
-  (event: 'open-parent'): void;
+  (event: 'expand-menu' | 'open-parent'): void;
 }>();
 
 const router = useRouter();
