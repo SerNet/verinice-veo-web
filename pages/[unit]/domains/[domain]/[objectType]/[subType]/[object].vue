@@ -41,7 +41,7 @@
       >
         <template #title>
           <div class="d-inline-flex align-center ml-2">
-            <Icon
+            <veo-icon
               v-if="object"
               :icon="sourceIconName"
               :tooltip-translation="sourceTooltipText"

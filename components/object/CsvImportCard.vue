@@ -72,6 +72,7 @@ import { useI18n } from 'vue-i18n';
 import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { VFileUploadItem } from 'vuetify/labs/VFileUpload';
 
 const route = useRoute();
 const { t } = useI18n();
