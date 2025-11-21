@@ -44,11 +44,11 @@
         <template #center-aside>
           <div class="d-flex justify-end">
             <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
-              <template #activator="{ props }">
+              <template #activator="{ props: properties }">
                 <v-btn
                   :disabled="!ability.can('manage', subject('units', { id: route.params.unit })) || btn.disabled"
                   :icon="btn.icon"
-                  v-bind="props"
+                  v-bind="properties"
                   variant="text"
                   :aria-label="btn.label"
                   @click="btn.action(object)"

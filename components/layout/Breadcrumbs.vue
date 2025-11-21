@@ -27,9 +27,9 @@
       <template v-if="menuCrumbs">
         <li class="crumb__menu">
           <v-menu v-if="true">
-            <template #activator="{ props }">
+            <template #activator="{ props: properties }">
               <v-btn
-                v-bind="props"
+                v-bind="properties"
                 color="primary"
                 :icon="mdiDotsHorizontal"
                 :aria-label="t('showBreadcrumbs')"

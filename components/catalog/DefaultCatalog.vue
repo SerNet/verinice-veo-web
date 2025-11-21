@@ -43,14 +43,14 @@
           {{ globalT('global.button.cancel') }}
         </v-btn>
         <v-tooltip location="start" :aria-label="t('apply')">
-          <template #activator="{ props }">
-            <span v-bind="props">
+          <template #activator="{ props: properties }">
+            <span v-bind="properties">
               <v-btn
                 data-veo-test="catalogs-btn-apply"
                 flat
                 color="primary"
                 :disabled="selectedItems.length === 0 || isApplyingItems || !canManageUnitContent"
-                :loading="props.isApplyingItems"
+                :loading="properties.isApplyingItems"
                 @click="$emit('applyItems')"
               >
                 {{ t('apply') }}

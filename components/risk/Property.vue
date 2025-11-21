@@ -32,9 +32,9 @@
         "
         :data-veo-test="`risk-property-tooltip-${index}`"
       >
-        <template #activator="{ props }">
+        <template #activator="{ props: properties }">
           <v-chip
-            v-bind="props"
+            v-bind="properties"
             label
             outlined
             size="small"

@@ -41,8 +41,8 @@
               :text="probability?.translations?.[locale]?.description"
               :disabled="isEditMode"
             >
-              <template #activator="{ props }">
-                <th v-bind="props" :style="probabilityStyles[probabilityIndex]">
+              <template #activator="{ props: properties }">
+                <th v-bind="properties" :style="probabilityStyles[probabilityIndex]">
                   <div>
                     {{ probability?.translations?.[locale]?.name }}
                   </div>
@@ -68,8 +68,8 @@
               :text="getImpact(rowIndex)?.translations?.[locale]?.description || t('noDescription')"
               :disabled="isEditMode"
             >
-              <template #activator="{ props }">
-                <td v-bind="props" :style="potentialImpactStyles.at(-1 - rowIndex)">
+              <template #activator="{ props: properties }">
+                <td v-bind="properties" :style="potentialImpactStyles.at(-1 - rowIndex)">
                   <div>
                     {{ getImpact(rowIndex)?.translations?.[locale]?.name ?? t('noValue') }}
                   </div>
@@ -85,8 +85,8 @@
               max-width="400px"
               top
             >
-              <template #activator="{ props }">
-                <td v-bind="props" class="text-center px-0 py-0 risk-matrix-border">
+              <template #activator="{ props: properties }">
+                <td v-bind="properties" class="text-center px-0 py-0 risk-matrix-border">
                   <div :style="tableCellInnerStyles?.at(-1 - rowIndex)?.[cellIndex]">
                     <v-row v-if="isEditMode">
                       <v-autocomplete
