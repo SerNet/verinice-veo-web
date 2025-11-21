@@ -173,7 +173,7 @@ export default defineComponent({
         // Remove all no longer supported languages from the translations object.
         Object.keys(translations).forEach((language) => {
           if (!newValue.includes(language)) {
-            delete translations[language];
+            Reflect.deleteProperty(translations, language);
           }
         });
 

@@ -269,7 +269,7 @@ export default defineComponent({
       // Iterate over every element in the new object. If set to undefined, delete the key, else set the value for the update.
       for (const key in newObject) {
         if (newObject[key] === undefined) {
-          delete object[key];
+          Reflect.deleteProperty(object, key);
         } else {
           object[key] = newObject[key];
         }
@@ -285,7 +285,7 @@ export default defineComponent({
         // Iterate over new
         for (const key in object) {
           if (oldProperties[key] && !newProperties[key]) {
-            delete object[key];
+            Reflect.deleteProperty(object, key);
           }
         }
       }

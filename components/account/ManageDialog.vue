@@ -302,7 +302,10 @@ export default defineComponent({
         }
 
         if (formData.value[key] === undefined || formData.value[key] === '') {
-          delete formData.value[key];
+          // In Vue 3 the recommended pattern is to rebuild the object without that key, instead of deleting it to keep reactivity ...
+          const { [key]: _, ...values } = formData.value;
+          // ... and reassign the filtered(!) object
+          formData.value = values;
         }
       });
       try {

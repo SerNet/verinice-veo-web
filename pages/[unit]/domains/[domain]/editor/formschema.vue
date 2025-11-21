@@ -554,7 +554,7 @@ const setElementTranslation = (translations: PENDING_TRANSLATIONS) => {
         formSchema.value.translation[translationLocale] &&
         formSchema.value.translation[translationLocale][translationKey]
       ) {
-        delete formSchema.value.translation[translationLocale][translationKey];
+        Reflect.deleteProperty(formSchema.value.translation[translationLocale], translationKey);
       }
     });
   });
@@ -577,7 +577,7 @@ const validationActions: Record<string, (errorCode: string, details: Record<stri
             if (isArray(partToModify)) {
               partToModify.splice(parseInt(lastPart), 1);
             } else {
-              delete partToModify[lastPart];
+              Reflect.deleteProperty(partToModify, lastPart);
             }
             JsonPointer.set(toModify.content, parts.join('/'), partToModify);
           }

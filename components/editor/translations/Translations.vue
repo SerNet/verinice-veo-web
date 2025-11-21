@@ -291,7 +291,7 @@ const headers = computed<TableHeader[]>(() => [
               variant: 'plain',
               onClick: () => {
                 const toReturn = cloneDeep(props.modelValue);
-                delete toReturn[itemProps.item.key][itemSource as any as TRANSLATION_SOURCE];
+                Reflect.deleteProperty(toReturn[itemProps.item.key], itemSource as any as TRANSLATION_SOURCE);
                 emit('update:modelValue', toReturn);
                 emit('translation-deleted', {
                   key: itemProps.item.key,

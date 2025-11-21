@@ -218,7 +218,7 @@ export default defineComponent({
       );
       const query = { ...route.query, ...newValues };
       // obsolete params need to be removed from the query to match the route exactly in the NavigationDrawer
-      Object.keys(query).forEach((key) => query[key] === undefined && delete query[key]);
+      Object.keys(query).forEach((key) => query[key] === undefined && Reflect.deleteProperty(query, key));
       await navigateTo({
         ...route,
         // @ts-ignore TODO #3066 does not exist

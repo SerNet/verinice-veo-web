@@ -280,7 +280,7 @@ export default class ObjectSchemaHelper {
     for (const language of Object.keys(this._translations)) {
       // Update exact key (for example scnario_threat)
       this._translations[language][newKey] = this._translations[language][oldKey];
-      delete this._translations[language][oldKey];
+      Reflect.deleteProperty(this._translations[language], oldKey);
 
       // Update child translations (for example scenario_threat_type)
       this._translations[language] = Object.fromEntries(
@@ -296,10 +296,10 @@ export default class ObjectSchemaHelper {
 
   public removeTranslation(key: string, language?: string) {
     if (language) {
-      delete this._translations[language][key];
+      Reflect.deleteProperty(this._translations[language], key);
     } else {
       for (const language of Object.keys(this._translations)) {
-        delete this._translations[language][key];
+        Reflect.deleteProperty(this._translations[language], key);
       }
     }
   }
@@ -309,7 +309,7 @@ export default class ObjectSchemaHelper {
       for (const translationKey of Object.keys(this._translations[language])) {
         // we use the lower dash to make sure that we don't remove language keys for an aspect that has the key as a substring
         if (translationKey.includes(`${key}_`)) {
-          delete this._translations[language][translationKey];
+          Reflect.deleteProperty(this._translations[language], translationKey);
         }
       }
     }

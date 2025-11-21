@@ -83,7 +83,7 @@ export const deleteFormSchemaElementTranslations = (
     if (!possibleTranslationKey) {
       return;
     }
-    delete _formSchema.translation[locale][possibleTranslationKey];
+    Reflect.deleteProperty(_formSchema.translation[locale], possibleTranslationKey);
   });
   return _formSchema;
 };
