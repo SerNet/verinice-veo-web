@@ -18,7 +18,7 @@
   <v-col cols="12" class="flex-1-1-100">
     <v-card :loading="false" data-veo-test="veo-card">
       <div data-veo-test="item-card-slot-prepend" class="veo-base-card__slot-prepend" style="padding: 0">
-        <slot :item="item" name="prepend" />
+        <slot :item="item" name="prepend"></slot>
       </div>
 
       <div class="veo-base-card__slot-center" data-veo-test="item-card-slot-center">
@@ -32,7 +32,7 @@
             data-component-name="item-card-slot-center-link"
           >
             <ItemDetails v-if="!hasDetailsSlot" :item="item" />
-            <slot :item="item" name="details" />
+            <slot :item="item" name="details"></slot>
           </NuxtLink>
 
           <!-- Item details are a label -->
@@ -45,7 +45,7 @@
             data-component-name="item-card-slot-center-link"
           >
             <ItemDetails v-if="!hasDetailsSlot" :item="item" />
-            <slot :item="item" name="details" />
+            <slot :item="item" name="details"></slot>
           </label>
 
           <!-- Item details are text -->
@@ -56,21 +56,21 @@
             data-component-name="item-card-slot-center-link"
           >
             <ItemDetails v-if="!hasDetailsSlot" :item="item" />
-            <slot :item="item" name="details" />
+            <slot :item="item" name="details"></slot>
           </div>
 
           <div data-veo-test="item-card-slot-center-aside" class="veo-base-card__slot-center__aside">
-            <slot :item="item" name="center-aside" />
+            <slot :item="item" name="center-aside"></slot>
           </div>
         </div>
 
         <v-card-actions v-if="hasBottomSlots" class="veo-card-actions">
           <div data-veo-test="item-card-slot-left" class="veo-card-actions__slot-left">
-            <slot :item="item" name="bottom-left" />
+            <slot :item="item" name="bottom-left"></slot>
           </div>
 
           <div class="veo-base-card-actions__slot-append">
-            <slot :item="item" name="bottom-right" />
+            <slot :item="item" name="bottom-right"></slot>
           </div>
         </v-card-actions>
       </div>

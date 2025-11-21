@@ -20,8 +20,8 @@
       <v-table class="veo-risk-matrix" density="compact" data-veo-test="risk-matrix">
         <thead data-veo-test="risk-matrix-probabilities">
           <tr>
-            <th class="no-borders" />
-            <th class="no-borders" />
+            <th class="no-borders"></th>
+            <th class="no-borders"></th>
 
             <th class="title-cell no-borders">
               <div class="probability-title text-capitalize">
@@ -31,8 +31,8 @@
           </tr>
 
           <tr>
-            <th class="no-borders" />
-            <th class="no-borders" />
+            <th class="no-borders"></th>
+            <th class="no-borders"></th>
             <v-tooltip
               v-for="(probability, probabilityIndex) in probabilityLevels"
               :key="probability.ordinalValue"

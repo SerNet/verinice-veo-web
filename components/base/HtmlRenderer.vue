@@ -16,7 +16,7 @@
 -->
 <template>
   <!-- eslint-disable-next-line vue/no-v-html -->
-  <div @click.prevent="handleClick" v-html="sanitizedContent" />
+  <div @click.prevent="handleClick" v-html="sanitizedContent"></div>
 </template>
 
 <script setup lang="ts">

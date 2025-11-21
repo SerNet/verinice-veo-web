@@ -1,5 +1,5 @@
 <template>
-  <div ref="editorRef" />
+  <div ref="editorRef"></div>
 </template>
 <script setup lang="ts">
 import '@toast-ui/editor/dist/toastui-editor.css';

@@ -16,7 +16,7 @@
 -->
 <template>
   <div class="risks-tab">
-    <slot :actions="actions" />
+    <slot :actions="actions"></slot>
 
     <!-- @vue-ignore TODO #3066 $route does not exist -->
     <RiskCreateDialog

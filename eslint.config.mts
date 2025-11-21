@@ -33,9 +33,7 @@ export default createConfigForNuxt({
             void: 'any', // <br> OR <br /> allowed
             normal: 'never', // <div></div> (but not <div />)
             component: 'any' // Allow <MyComp /> or <MyComp></MyComp>
-          },
-          svg: 'always',
-          math: 'always'
+          }
         }
       ],
       'vue/define-props-declaration': ['off', 'type-based'], // pending: #4345

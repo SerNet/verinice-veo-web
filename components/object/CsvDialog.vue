@@ -41,7 +41,7 @@
           </v-list>
 
           <v-divider v-if="unmappedRequiredFields.length > 0 && items.length" class="mt-4 mb-6" />
-          <div v-else class="mb-4" />
+          <div v-else class="mb-4"></div>
           <div v-if="items.length" class="global-selection">
             <v-select
               v-model="globalObjectType"

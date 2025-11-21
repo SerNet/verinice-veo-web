@@ -16,7 +16,7 @@
 -->
 <template>
   <div class="controls-tab">
-    <slot :actions="actions" />
+    <slot :actions="actions"></slot>
   </div>
 </template>
 
