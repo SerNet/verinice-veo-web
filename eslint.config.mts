@@ -9,7 +9,7 @@ export default createConfigForNuxt({
       '@typescript-eslint/no-explicit-any': 'off', // permitted: intentional escape hatch
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-invalid-void-type': 'error',
-      '@typescript-eslint/no-dynamic-delete': 'off', // pending: #4351
+      '@typescript-eslint/no-dynamic-delete': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '^_' }
