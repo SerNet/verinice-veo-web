@@ -20,7 +20,7 @@ export default createConfigForNuxt({
   // Vue rules
   .override('nuxt/vue/rules', {
     rules: {
-      'vue/no-template-shadow': ['off', { allow: ['props'] }], // pending default revert: #4349
+      'vue/no-template-shadow': 'error',
       'vue/no-v-text-v-html-on-component': 'error',
       'vue/valid-v-slot': ['error', { allowModifiers: true }],
       'vue/no-required-prop-with-default': 'off', // disabled: valid defaults allowed
@@ -31,8 +31,8 @@ export default createConfigForNuxt({
         {
           html: {
             void: 'any', // <br> OR <br /> allowed
-            normal: 'never', // <div></div> (but not <div />)
-            component: 'any' // Allow <MyComp /> or <MyComp></MyComp>
+            normal: 'never', // <div></div> allowed but not <div />
+            component: 'any' // <MyComp /> OR <MyComp></MyComp> allowed
           }
         }
       ],
