@@ -45,7 +45,6 @@
         color="primary"
         data-veo-test="unit-selection-nav-item"
         width="500"
-        :subtitle="item.raw.description"
         :title="item.title"
         :value="item.value"
         @click="unitId = item.value"
@@ -74,9 +73,6 @@
 import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as ROUTE_UNITS } from '~/pages/units/index.vue';
 
-import { useQuery } from '~/composables/api/utils/query';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-
 import { mdiUnity } from '@mdi/js';
 
 withDefaults(
@@ -99,9 +95,7 @@ const { t } = useI18n();
 // v-select's append-item slot has no events (!), hence we have to reference it
 const closeMenu = ref();
 
-// fetch all client units
-const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
-
+const { data: units } = useUnits();
 const items = computed(() => (units.value || []).find((unit) => unit.id === route.params.unit)?.name || []);
 const itemSelection = computed(() =>
   (units.value || []).map((unit) => ({
