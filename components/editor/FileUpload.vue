@@ -63,7 +63,7 @@ withDefaults(defineProps<Props>(), {
   submitButtonText: undefined
 });
 
-const emit = defineEmits(['schema-uploaded']);
+const emit = defineEmits<{ 'schema-uploaded': [schema: IVeoObjectSchema | IVeoFormSchema] }>();
 
 const { displayErrorMessage } = useVeoAlerts();
 const { t } = useI18n();

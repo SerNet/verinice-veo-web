@@ -107,7 +107,10 @@ const props = withDefaults(defineProps<Props>(), {
   numOfCols: 4
 });
 
-const emit = defineEmits(['update:residual-risk-explanation', 'update:user-defined-residual-risk']);
+const emit = defineEmits<{
+  'update:residual-risk-explanation': [value: string];
+  'update:user-defined-residual-risk': [value: number];
+}>();
 
 const { t, locale } = useI18n();
 

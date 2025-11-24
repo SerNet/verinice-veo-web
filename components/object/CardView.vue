@@ -115,7 +115,7 @@ const props = defineProps<{
   cardsPageChange: (page: number) => void;
   isCardViewVisible: boolean;
 }>();
-const emit = defineEmits(['update:sortBy']);
+const emit = defineEmits<{ 'update:sortBy': [sort: { key: string; order: string }] }>();
 
 // Use the custom feature flag composable
 const route = useRoute();

@@ -65,7 +65,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const emit = defineEmits(['update:model-value', 'success']);
+const emit = defineEmits<{ 'update:model-value': [value: boolean]; success: [] }>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });

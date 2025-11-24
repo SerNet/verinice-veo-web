@@ -46,7 +46,7 @@ const props = withDefaults(defineProps<Props>(), {
   modelValue: false
 });
 
-const emit = defineEmits(['update:model-value', 'delete']);
+const emit = defineEmits<{ 'update:model-value': [value: boolean]; delete: [] }>();
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });

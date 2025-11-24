@@ -1,16 +1,16 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2024 Aziz Khalledi
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
    - as published by the Free Software Foundation, either version 3 of the License,
    - or (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
    - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
    - See the GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License along with this program.
    - If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -61,6 +61,7 @@ import { mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { computed, inject, ref } from 'vue';
 import { useDialogManager } from '~/composables/dialogs/useDialogManager';
 import type { IVeoEntity } from '~/types/VeoTypes';
+import type { AddEntityDialogPayload } from './types';
 
 // Define props
 const props = defineProps<{
@@ -69,7 +70,11 @@ const props = defineProps<{
 }>();
 
 // Define emits
-const emit = defineEmits(['reload', 'update:addEntityDialog', 'parent-create-success']);
+const emit = defineEmits<{
+  reload: [];
+  'update:addEntityDialog': [dialog: AddEntityDialogPayload];
+  'parent-create-success': [id: string, dialog: any];
+}>();
 
 // Composables & Utilities
 const route = useRoute();

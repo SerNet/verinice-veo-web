@@ -35,6 +35,7 @@ import { mdiLinkPlus, mdiPlus } from '@mdi/js';
 import { computed, inject } from 'vue';
 import { useDialogManager } from '~/composables/dialogs/useDialogManager';
 import type { IVeoEntity } from '~/types/VeoTypes';
+import type { AddEntityDialogPayload } from './types';
 
 // Define props
 const props = defineProps<{
@@ -43,7 +44,11 @@ const props = defineProps<{
 }>();
 
 // Define emits
-const emit = defineEmits(['reload', 'update:addEntityDialog', 'parent-create-success']);
+const emit = defineEmits<{
+  reload: [];
+  'update:addEntityDialog': [dialog: AddEntityDialogPayload];
+  'parent-create-success': [id: string, dialog: typeof createObjectDialog.value];
+}>();
 
 // Composables & Utilities
 const t: any = inject('t');

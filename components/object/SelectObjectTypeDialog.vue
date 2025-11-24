@@ -63,7 +63,20 @@ const props = withDefaults(defineProps<Props>(), {
   eventPayload: () => ({})
 });
 
-const emit = defineEmits(['create-entity', 'update:model-value', 'select-entity']);
+interface SelectEntityPayload {
+  type?: string;
+  [key: string]: unknown;
+}
+
+interface CreateEntityPayload {
+  [key: string]: unknown;
+}
+
+const emit = defineEmits<{
+  'create-entity': [payload: CreateEntityPayload];
+  'update:model-value': [value: boolean];
+  'select-entity': [payload: SelectEntityPayload];
+}>();
 
 const { locale } = useI18n();
 const route = useRoute();
@@ -88,6 +101,16 @@ const options = computed<{ title: string; value: string }[]>(() => {
 });
 
 const handleAction = () => {
-  emit(props.action, { type: type.value, ...props.eventPayload });
+  switch (props.action) {
+    case 'update:model-value':
+      emit('update:model-value', true);
+      break;
+    case 'create-entity':
+      emit('create-entity', { type: type.value, ...props.eventPayload });
+      break;
+    case 'select-entity':
+      emit('select-entity', { type: type.value, ...props.eventPayload });
+      break;
+  }
 };
 </script>

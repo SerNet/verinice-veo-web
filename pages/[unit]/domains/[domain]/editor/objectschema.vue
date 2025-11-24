@@ -353,7 +353,7 @@ export default defineComponent({
       return translationsToReturn;
     });
 
-    const setSchema = (data: { schema?: IVeoObjectSchema; meta: { type: string; description: string } }) => {
+    const setSchema = (data: { schema?: IVeoObjectSchema; meta?: { type: string; description: string } }) => {
       objectSchemaHelper.value =
         data.schema || data.meta ? new ObjectSchemaHelper(data.schema, route.params.domain as string) : undefined;
 

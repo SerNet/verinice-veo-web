@@ -53,7 +53,7 @@ interface Props {
 
 defineProps<Props>();
 
-const emit = defineEmits(['create', 'import']);
+const emit = defineEmits<{ create: []; import: [] }>();
 
 const { t } = useI18n();
 

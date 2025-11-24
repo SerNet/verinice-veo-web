@@ -170,8 +170,14 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const emit = defineEmits(['update:model-value', 'completed']);
+interface CompletedPayload {
+  schema?: any;
+  meta?: {
+    type: string;
+    description: string;
+  };
+}
+const emit = defineEmits<{ 'update:model-value': [value: boolean]; completed: [data: CompletedPayload] }>();
 
 const route = useRoute();
 const router = useRouter();

@@ -47,7 +47,7 @@ withDefaults(defineProps<Props>(), {
   modelValue: false
 });
 
-const emit = defineEmits(['update:model-value']);
+const emit = defineEmits<{ 'update:model-value': [value: boolean] }>();
 
 const { t } = useI18n();
 </script>

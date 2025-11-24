@@ -53,7 +53,7 @@ const props = withDefaults(defineProps<Props>(), {
   unresponsivePageWidths: false
 });
 
-const emit = defineEmits(['page-collapsed']);
+const emit = defineEmits<{ 'page-collapsed': [states: boolean[]] }>();
 
 const attrs = useAttrs();
 const slots = useSlots();

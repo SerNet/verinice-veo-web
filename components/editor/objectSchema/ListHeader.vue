@@ -56,7 +56,7 @@ const props = withDefaults(defineProps<Props>(), {
   translate: false
 });
 
-defineEmits(['delete-item', 'edit-item']);
+defineEmits<{ 'delete-item': [event: Event]; 'edit-item': [event: Event] }>();
 
 const { t, locale } = useI18n();
 const objectSchemaHelper: Ref<ObjectSchemaHelper | undefined> | undefined = inject('objectSchemaHelper');
