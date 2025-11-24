@@ -28,7 +28,11 @@ export async function read({
   const config = useRuntimeConfig();
   const url = removeTrailingSlashes(config.public.apiUrl) + '/' + removeLeadingSlashes(path);
 
-  const { token } = useVeoUser();
+  const { token, refreshKeycloakSession } = useVeoUser();
+
+  if (!token.value) {
+    await refreshKeycloakSession();
+  }
 
   const opts: RequestOptions = {
     method: 'GET',
