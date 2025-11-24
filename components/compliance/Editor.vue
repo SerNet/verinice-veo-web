@@ -289,21 +289,33 @@ const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
   endpoint: 'controls'
 }));
 
-// Domain and persons queries
-const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
-const fetchPersonsForTotalItemCountEnabled = computed(() => !!currentDomainId.value && !!unitId.value);
+// ===== API data fetching =====
+
+// Fetch persons
 const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
   domainId: currentDomainId.value as string,
   unitId: unitId.value as string,
   size: '1'
 }));
-// eslint-disable-next-line vue/no-ref-as-operand
-const isFetchingPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount);
+
+const fetchPersonsForTotalItemCountEnabled = computed(() => !!currentDomainId.value && !!unitId.value);
+
+const { data: _personsForTotalItemCount } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  totalItemCountQueryParameters,
+  { enabled: fetchPersonsForTotalItemCountEnabled }
+);
+
+// Domain and persons queries
+const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
+
 const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
   domainId: currentDomainId.value as string,
   unitId: unitId.value as string,
-  size: totalItemCount.value
+  size: totalItemCount.value as string
 }));
+
+const canFetchPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount.value);
 
 // Forms and schemas queries
 const formsQueryParameters = computed(() => ({
@@ -316,14 +328,6 @@ const fetchSchemaQueryParameters = computed(() => ({
   domainId: currentDomainId.value as string
 }));
 const fetchSchemaQueryEnabled = computed(() => !!currentDomainId.value);
-
-// ===== API data fetching =====
-// Fetch persons
-const { data: _personsForTotalItemCount } = useQuery(
-  domainQueryDefinitions.queries.fetchPersonsInDomain,
-  totalItemCountQueryParameters,
-  { enabled: fetchPersonsForTotalItemCountEnabled.value }
-);
 
 const { data: translations } = useTranslations({ domain: currentDomainId.value });
 
@@ -404,7 +408,7 @@ const { data: controlFormSchema } = useQuery(formQueryDefinitions.queries.fetchF
 const { data: _persons } = useQuery(
   domainQueryDefinitions.queries.fetchPersonsInDomain,
   fetchPersonsInDomainQueryParameters,
-  { enabled: isFetchingPersons.value }
+  { enabled: canFetchPersons }
 );
 
 // ===== Computed properties =====
