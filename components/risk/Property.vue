@@ -17,7 +17,7 @@
 <template>
   <div class="my-2">
     <div class="my-2 d-flex align-center">
-      <v-card-subtitle class="pr-0">{{ title }} </v-card-subtitle>
+      <v-card-subtitle class="pr-0">{{ title }}</v-card-subtitle>
     </div>
 
     <div class="px-3" :data-veo-test="`risk-property-container`">
@@ -43,8 +43,8 @@
           >
             {{
               (item.translations[locale] && item.translations[locale].name) || Object.values(item.translations)[0].name
-            }}&nbsp;</v-chip
-          >
+            }}&nbsp;
+          </v-chip>
         </template>
       </v-tooltip>
     </div>
@@ -55,16 +55,13 @@
 import { getMostContrastyColor } from '~/lib/utils';
 import type { IVeoRiskPotentialImpact, IVeoRiskProbabilityLevel } from '~/types/VeoTypes';
 
-const props = defineProps({
-  items: {
-    type: (Array as PropType<IVeoRiskPotentialImpact[]>) || (Array as PropType<IVeoRiskProbabilityLevel[]>),
-    required: true
-  },
-  title: {
-    type: String,
-    required: true
-  }
-});
+interface Props {
+  items: IVeoRiskPotentialImpact[] | IVeoRiskProbabilityLevel[];
+  title: string;
+}
+
+const props = defineProps<Props>();
+
 const { locale } = useI18n();
 
 const itemStyles = computed(() =>

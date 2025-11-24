@@ -45,55 +45,31 @@
 <script setup lang="ts">
 import { omit } from 'lodash';
 import { PageHeaderAlignment } from '~/components/layout/PageHeader.vue';
-import type { PropType } from 'vue';
 
-const props = defineProps({
-  contentClass: {
-    type: String,
-    default: ''
-  },
-  headingLevel: {
-    type: [Number, String],
-    default: 1
-  },
-  stickyHeader: {
-    type: Boolean,
-    default: false
-  },
-  stickyFooter: {
-    type: Boolean,
-    default: false
-  },
-  height: {
-    type: String,
-    default: 'auto'
-  },
-  /**
-   * Shows a skeleton for the title if set to true
-   */
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  noPadding: {
-    type: Boolean,
-    default: false
-  },
-  noPaddingTop: {
-    type: Boolean,
-    default: false
-  },
-  /**
-   * The title of the page. Used to standardtize headings
-   */
-  title: {
-    type: String,
-    default: undefined
-  },
-  titlebarAlignment: {
-    type: Number as PropType<PageHeaderAlignment>,
-    default: PageHeaderAlignment.LEFT
-  }
+interface Props {
+  contentClass?: string;
+  headingLevel?: number | string;
+  stickyHeader?: boolean;
+  stickyFooter?: boolean;
+  height?: string;
+  loading?: boolean;
+  noPadding?: boolean;
+  noPaddingTop?: boolean;
+  title?: string;
+  titlebarAlignment?: PageHeaderAlignment;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  contentClass: '',
+  headingLevel: 1,
+  stickyHeader: false,
+  stickyFooter: false,
+  height: 'auto',
+  loading: false,
+  noPadding: false,
+  noPaddingTop: false,
+  title: undefined,
+  titlebarAlignment: PageHeaderAlignment.LEFT
 });
 </script>
 

@@ -191,13 +191,21 @@ interface MappedHeader {
 
 /** Props & Emits */
 defineSlots();
-const props = defineProps({
-  headers: { type: Array as () => string[], required: true },
-  data: { type: Array as () => Record<string, any>[], required: true },
-  requiredFields: { type: Array as () => string[], default: () => ['name'] },
-  preselectedType: { type: String, default: '' },
-  preselectedSubType: { type: String, default: '' },
-  modelValue: { type: Boolean, default: false }
+
+interface Props {
+  headers: string[];
+  data: Record<string, any>[];
+  requiredFields?: string[];
+  preselectedType?: string;
+  preselectedSubType?: string;
+  modelValue?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  requiredFields: () => ['name'],
+  preselectedType: '',
+  preselectedSubType: '',
+  modelValue: false
 });
 
 const emit = defineEmits<{
@@ -645,6 +653,7 @@ function toggleAndHighlight() {
 .error-text {
   color: red;
 }
+
 .object-side-container-select {
   flex-direction: column;
   height: auto !important;

@@ -58,16 +58,12 @@ import { useVeoUser } from '~/composables/VeoUser';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useMutation } from '~/composables/api/utils/mutation';
 
-const props = defineProps({
-  id: {
-    type: String,
-    required: true
-  },
-  username: {
-    type: String,
-    required: true
-  }
-});
+interface Props {
+  id: string;
+  username: string;
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits(['update:model-value', 'success']);
 

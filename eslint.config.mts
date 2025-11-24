@@ -36,7 +36,7 @@ export default createConfigForNuxt({
           }
         }
       ],
-      'vue/define-props-declaration': ['off', 'type-based'], // pending: #4345
+      'vue/define-props-declaration': ['error', 'type-based'],
       'vue/define-emits-declaration': ['off', 'type-based'] // pending: #4346
     }
   })

@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -20,60 +20,37 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
 import { isObject } from 'lodash';
 import { useDisplay } from 'vuetify';
 import { VSkeletonLoader } from 'vuetify/components';
 import LayoutCollapseButton from '~/components/layout/CollapseButton.vue';
 
-const props = defineProps({
-  title: {
-    type: String,
-    default: undefined
-  },
-  titleClass: {
-    type: String,
-    default: undefined
-  },
-  /**
-   * Shows a skeleton for the title if set to true
-   */
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  collapsableLeft: {
-    type: Boolean,
-    default: false
-  },
-  collapsableRight: {
-    type: Boolean,
-    default: false
-  },
-  headingLevel: {
-    type: Number,
-    default: 1
-  },
-  pageWidths: {
-    type: Array as PropType<(string | number)[]>,
-    default: () => []
-  },
-  pageWidthsLg: {
-    type: Array as PropType<(string | number)[]>,
-    default: () => []
-  },
-  pageWidthsXl: {
-    type: Array as PropType<(string | number)[]>,
-    default: () => []
-  },
-  pageTitles: {
-    type: Array as PropType<string[]>,
-    default: () => []
-  },
-  unresponsivePageWidths: {
-    type: Boolean,
-    default: false
-  }
+interface Props {
+  title?: string;
+  titleClass?: string;
+  loading?: boolean;
+  collapsableLeft?: boolean;
+  collapsableRight?: boolean;
+  headingLevel?: number;
+  pageWidths?: (string | number)[];
+  pageWidthsLg?: (string | number)[];
+  pageWidthsXl?: (string | number)[];
+  pageTitles?: string[];
+  unresponsivePageWidths?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  title: undefined,
+  titleClass: undefined,
+  loading: false,
+  collapsableLeft: false,
+  collapsableRight: false,
+  headingLevel: 1,
+  pageWidths: () => [],
+  pageWidthsLg: () => [],
+  pageWidthsXl: () => [],
+  pageTitles: () => [],
+  unresponsivePageWidths: false
 });
 
 const emit = defineEmits(['page-collapsed']);

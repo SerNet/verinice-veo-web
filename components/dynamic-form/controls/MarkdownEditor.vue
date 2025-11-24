@@ -63,7 +63,8 @@ import { VeoFormsControlProps } from '../util';
 defineOptions({
   name: CONTROL_DEFINITION.code
 });
-
+// we’re intentionally using a runtime prop object here.
+// eslint-disable-next-line vue/define-props-declaration
 const props = defineProps(VeoFormsControlProps);
 const emit = defineEmits<{
   'update:model-value': [value: string | undefined];

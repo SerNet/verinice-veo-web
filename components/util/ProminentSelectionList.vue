@@ -53,7 +53,6 @@
 
 <script setup lang="ts">
 import { cloneDeep, isArray } from 'lodash';
-import type { PropType } from 'vue';
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiRadioboxBlank, mdiRadioboxMarked } from '@mdi/js';
 
 export interface IProminentSelectionListItem {
@@ -63,23 +62,18 @@ export interface IProminentSelectionListItem {
   value: string | number;
 }
 
-const props = defineProps({
-  items: {
-    type: Array as PropType<IProminentSelectionListItem[]>,
-    default: () => []
-  },
-  modelValue: {
-    type: [String, Number, Array],
-    default: undefined
-  },
-  multiple: {
-    type: Boolean,
-    default: false
-  },
-  checkBoxSelectionOnly: {
-    type: Boolean,
-    default: false
-  }
+interface Props {
+  items?: IProminentSelectionListItem[];
+  modelValue?: string | number | Array<string | number>;
+  multiple?: boolean;
+  checkBoxSelectionOnly?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  items: () => [],
+  modelValue: undefined,
+  multiple: false,
+  checkBoxSelectionOnly: false
 });
 
 const emit = defineEmits<{

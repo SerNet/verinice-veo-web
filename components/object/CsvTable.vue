@@ -23,8 +23,10 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  headers: { type: Array as () => Record<string, any>[], required: true },
-  items: { type: Array as () => Record<string, any>[], required: true }
-});
+interface Props {
+  headers: Record<string, any>[];
+  items: Record<string, any>[];
+}
+
+defineProps<Props>();
 </script>

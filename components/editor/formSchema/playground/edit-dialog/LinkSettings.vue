@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2023  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -62,7 +62,6 @@
 
 <script setup lang="ts">
 import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiInformationOutline, mdiListBoxOutline } from '@mdi/js';
-import type { PropType } from 'vue';
 import { v5 as UUIDv5 } from 'uuid';
 import { difference, last } from 'lodash';
 
@@ -71,24 +70,14 @@ import { FORMSCHEMA_PLAYGROUND_NAMESPACE } from '../Playground.vue';
 import type { IPlaygroundElement } from '../Element.vue';
 import type { IVeoObjectSchemaCustomLink } from '~/types/VeoTypes';
 
-const props = defineProps({
-  formSchemaElement: {
-    type: Object as PropType<IVeoFormSchemaItem>,
-    required: true
-  },
-  objectSchemaElement: {
-    type: Object as PropType<IVeoObjectSchemaCustomLink>,
-    required: true
-  },
-  playgroundElement: {
-    type: Object as PropType<IPlaygroundElement>,
-    required: true
-  },
-  pointer: {
-    type: String,
-    required: true
-  }
-});
+interface Props {
+  formSchemaElement: IVeoFormSchemaItem;
+  objectSchemaElement: IVeoObjectSchemaCustomLink;
+  playgroundElement: IPlaygroundElement;
+  pointer: string;
+}
+
+const props = defineProps<Props>();
 
 const emit = defineEmits<{
   (event: 'add', pointer: string, element: IVeoFormSchemaItem): void;

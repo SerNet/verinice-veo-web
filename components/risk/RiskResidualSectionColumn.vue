@@ -82,45 +82,29 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
 import { upperFirst } from 'lodash';
 import { mdiInformationOutline } from '@mdi/js';
 
 import type { IVeoDomainRiskDefinition, IVeoRiskCategory } from '~/types/VeoTypes';
 
-const props = defineProps({
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  riskDefinition: {
-    type: Object as PropType<IVeoDomainRiskDefinition>,
-    required: true
-  },
-  protectionGoal: {
-    type: Object as PropType<IVeoRiskCategory>,
-    required: true
-  },
-  riskTreatments: {
-    type: Array as PropType<string[]>,
-    default: undefined
-  },
-  userDefinedResidualRisk: {
-    type: Number,
-    default: undefined
-  },
-  residualRisk: {
-    type: Number,
-    default: undefined
-  },
-  residualRiskExplanation: {
-    type: String,
-    default: undefined
-  },
-  numOfCols: {
-    type: Number,
-    default: 4
-  }
+interface Props {
+  disabled?: boolean;
+  riskDefinition: IVeoDomainRiskDefinition;
+  protectionGoal: IVeoRiskCategory;
+  riskTreatments?: string[] | undefined;
+  userDefinedResidualRisk?: number | undefined;
+  residualRisk?: number | undefined;
+  residualRiskExplanation?: string | undefined;
+  numOfCols?: number;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  disabled: false,
+  riskTreatments: undefined,
+  userDefinedResidualRisk: undefined,
+  residualRisk: undefined,
+  residualRiskExplanation: undefined,
+  numOfCols: 4
 });
 
 const emit = defineEmits(['update:residual-risk-explanation', 'update:user-defined-residual-risk']);

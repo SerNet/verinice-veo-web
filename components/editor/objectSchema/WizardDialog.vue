@@ -165,12 +165,12 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-const props = defineProps({
-  modelValue: {
-    type: Boolean,
-    required: true
-  }
-});
+interface Props {
+  modelValue: boolean;
+}
+
+const props = defineProps<Props>();
+
 const emit = defineEmits(['update:model-value', 'completed']);
 
 const route = useRoute();

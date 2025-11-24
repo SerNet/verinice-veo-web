@@ -85,19 +85,16 @@ const canManageUnitContent = computed(() => {
   return ability.value.can('manage', subject('units', { id: route.params.unit }));
 });
 
-defineProps({
-  objectType: {
-    type: String,
-    default: ''
-  },
-  subType: {
-    type: String,
-    default: ''
-  },
-  requiredFields: {
-    type: Array as () => string[],
-    default: () => ['name']
-  }
+interface Props {
+  objectType?: string;
+  subType?: string;
+  requiredFields?: string[];
+}
+
+withDefaults(defineProps<Props>(), {
+  objectType: '',
+  subType: '',
+  requiredFields: () => ['name']
 });
 
 const emit = defineEmits<{

@@ -30,24 +30,15 @@
 </template>
 
 <script setup lang="ts">
-import type { PropType } from 'vue';
-
 type SKELETON_TYPE = 'text' | 'image' | 'paragraph' | 'heading';
 
-const props = defineProps({
-  height: {
-    type: String,
-    default: undefined
-  },
-  type: {
-    type: String as PropType<SKELETON_TYPE>,
-    required: true
-  },
-  width: {
-    type: String,
-    default: undefined
-  }
-});
+interface Props {
+  height?: string;
+  type: SKELETON_TYPE;
+  width?: string;
+}
+
+const props = defineProps<Props>();
 
 const type = computed(() => props.type.split('@')[0]);
 const instances = computed(() => Number(props.type.split('@')[1]) || 1);

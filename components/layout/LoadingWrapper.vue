@@ -23,11 +23,12 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  text: {
-    type: String,
-    default: undefined
-  }
+interface Props {
+  text?: string;
+}
+
+withDefaults(defineProps<Props>(), {
+  text: undefined
 });
 </script>
 
