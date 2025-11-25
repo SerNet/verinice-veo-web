@@ -15,15 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-import { useQuery } from '~/composables/api/utils/query';
-import { useQueryClient } from '@tanstack/vue-query';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { format } from 'date-fns';
-import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-
 import { useQuery as useQuery5 } from 'vue-query-v5';
 import { read } from '~/requests/crud';
+
+import { format } from 'date-fns';
+import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
@@ -78,20 +74,27 @@ export function useUnit(id?: Ref<string>) {
   };
 }
 
-const queryKey = ['units', 'unit'];
 export function useUnits() {
-  const units = ref<TVeoUnit[] | null>(null);
-  const queryClient = useQueryClient();
+  const {
+    data,
+    isLoading,
+    error,
 
-  const { data: _data, isFetching, error } = useQuery(unitQueryDefinitions.queries.fetchAll);
-  units.value = _data.value ? _data.value.map((unit) => mapUnitValues({ unit })) : [];
-  watch(_data, () => (_data.value ? (units.value = _data.value.map((unit) => mapUnitValues({ unit }))) : []));
+    refetch
+  } = useQuery5({
+    queryKey: ['units'],
+    refetchOnMount: false,
+    queryFn: async () => {
+      const rawData = await read({ path: '/units' });
+      return rawData.map((unit: IVeoUnit) => mapUnitValues({ unit }));
+    }
+  });
 
   return {
-    data: units,
-    isLoading: isFetching,
+    data,
+    isLoading,
     error,
-    invalidateUnitCache: () => queryClient.invalidateQueries({ queryKey }, { cancelRefetch: true })
+    refetch
   };
 }
 
@@ -118,7 +121,7 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
       color: useDomainColor(d.name),
       targetUri: d.targetUri
     })),
-    raw: toRaw(unit)
+    raw: unit
   };
 }
 
