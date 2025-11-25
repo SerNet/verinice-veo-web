@@ -72,6 +72,7 @@ export interface IVeoDomainTranslations {
 export interface IVeoDomain extends IVeoBaseObject {
   _self: string;
   name: string;
+  abbreviation: string;
   catalogs: any[];
   riskDefinitions: {
     [key: string]: IVeoDomainRiskDefinition;

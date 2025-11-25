@@ -69,9 +69,7 @@ import type { IVeoBreadcrumb } from '~/composables/VeoBreadcrumbs';
 import { useVeoBreadcrumbs } from '~/composables/VeoBreadcrumbs';
 
 import { useQuery } from '~/composables/api/utils/query';
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import objectsQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useSubTypeTranslation, useTranslations } from '~/composables/Translations';
 import { useDisplay } from 'vuetify';
 import type { TInlineComponent } from '~/types/utils';
@@ -228,17 +226,9 @@ const BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP = new Map<string, IVeoBreadcrumbRepl
 
 // Queried text. For now we assume that every query type will only be used once (at most one object, one domain, one report is part of the path).
 // Must be refactored if for example two objects are part of the path.
-const unitQueryParameters = ref<any>({});
-const unitQueryEnabled = computed(() => !isEmpty(unitQueryParameters.value));
-const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, unitQueryParameters, {
-  enabled: unitQueryEnabled
-});
 
-const domainQueryParameters = ref<any>({});
-const domainQueryEnabled = computed(() => !isEmpty(domainQueryParameters.value));
-const { data: domain } = useQuery(domainQueryDefinitions.queries.fetchDomain, domainQueryParameters, {
-  enabled: domainQueryEnabled
-});
+const { data: unit } = useUnit();
+const { data: domain } = useCurrentDomain();
 
 const objectQueryParameters = ref<any>({});
 const objectQueryEnabled = computed(() => !isEmpty(objectQueryParameters.value));
@@ -247,14 +237,8 @@ const { data: object } = useQuery(objectsQueryDefinitions.queries.fetch, objectQ
 });
 
 const queryResultMap = computed<{ [key: string]: any }>(() => ({
-  ':domain':
-    domain.value ?
-      BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':domain')?.queriedText?.resultTransformationFn(
-        ':domain',
-        route.params.domain as string,
-        domain.value
-      )
-    : undefined,
+  ':domain': domain.value?.raw.abbreviation,
+  ':unit': unit.value?.name,
   ':objectType':
     translations.value ?
       BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':objectType')?.queriedText?.resultTransformationFn(
@@ -269,15 +253,6 @@ const queryResultMap = computed<{ [key: string]: any }>(() => ({
         ':object',
         route.params.object as string,
         object.value
-      )
-    : undefined,
-
-  ':unit':
-    unit.value ?
-      BREADCRUMB_CUSTOMIZED_REPLACEMENT_MAP.get(':unit')?.queriedText?.resultTransformationFn(
-        ':unit',
-        route.params.unit as string,
-        unit.value
       )
     : undefined
 }));
@@ -389,16 +364,9 @@ watch(
           breadcrumb.param,
           route.params[breadcrumb.param.replace(/^:/, '')] as string
         );
-        switch (replacementMapEntry.queriedText.query) {
-          case ':domain':
-            domainQueryParameters.value = transformedParameters;
-            break;
-          case ':object':
-            objectQueryParameters.value = transformedParameters;
-            break;
-          case ':unit':
-            unitQueryParameters.value = transformedParameters;
-            break;
+
+        if (replacementMapEntry.queriedText?.query === ':object') {
+          objectQueryParameters.value = transformedParameters;
         }
       }
     }
@@ -547,14 +515,12 @@ const Crumb: TInlineComponent = {
 }
 
 :deep(.crumb__link) {
-  text-decoration: none;
   color: rgb(var(--v-theme-on-basepage));
   cursor: pointer;
-  opacity: var(--v-disabled-opacity) !important;
 
   &[disabled='true'] {
-    pointer-events: none; //disable clicking on the current breadcrumb
-    opacity: 1 !important;
+    text-decoration: none;
+    pointer-events: none;
     color: rgb(var(--v-theme-on-basepage));
   }
 }
