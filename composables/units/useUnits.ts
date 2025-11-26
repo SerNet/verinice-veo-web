@@ -44,6 +44,7 @@ export type TVeoUnit = {
     abbreviation: string;
     color: string;
     targetUri: string;
+    dashboardUrl: string;
   }>;
   raw: IVeoUnit;
 };
@@ -168,7 +169,8 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
       name: d.name ?? '',
       abbreviation: d.abbreviation ?? '',
       color: useDomainColor(d.name),
-      targetUri: d.targetUri
+      targetUri: d.targetUri,
+      dashboardUrl: `/${unit.id}/domains/${d.id}`
     })),
     raw: toRaw(unit)
   };

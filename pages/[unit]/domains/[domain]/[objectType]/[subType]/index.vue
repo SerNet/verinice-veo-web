@@ -223,7 +223,6 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 import { mdiContentCopy, mdiPlus, mdiPuzzleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { mergeProps } from 'vue';
-import { useFetchUnitDomains } from '~/composables/api/domains';
 
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
@@ -277,13 +276,8 @@ const { data: translations, isFetching: translationsLoading } = useQuery(
   fetchTranslationsQueryParameters
 );
 
-const fetchUnitDomainsQueryParameters = computed(() => ({
-  unitId: route.params.unit as string
-}));
-const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
-const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
-  enabled: fetchUnitDomainsQueryEnabled
-});
+const { data: currentUnit } = useUnit();
+const domains = computed(() => currentUnit.value?.domains || []);
 
 const domainId = computed(() => route.params.domain as string);
 

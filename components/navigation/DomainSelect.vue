@@ -80,9 +80,6 @@
 <script setup lang="ts">
 import { ROUTE_NAME as ROUTE_MORE_DOMAINS } from '~/pages/[unit]/domains/more.vue';
 import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
-
-import { useFetchUnitDomains } from '~/composables/api/domains';
-
 import { mdiPuzzle } from '@mdi/js';
 
 withDefaults(
@@ -101,29 +98,24 @@ defineEmits<{
 }>();
 
 const route = useRoute();
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-
-const fetchUnitDomainsQueryParameters = computed(() => ({
-  unitId: route.params.unit as string
-}));
-const fetchUnitDomainsQueryEnabled = computed(() => !!route.params.unit);
-const { data: domains } = useFetchUnitDomains(fetchUnitDomainsQueryParameters, {
-  enabled: fetchUnitDomainsQueryEnabled
-});
 
 // v-select's append-item slot has no events (!), hence we have to reference it
 const closeMenu = ref();
 
+const { data: currentUnit } = useUnit();
+const domains = computed(() => currentUnit.value?.domains || []);
+
 const items = computed(() => {
   const domain = (domains.value || []).find((d) => d.id === route.params.domain);
-  return domain?.translations?.[locale.value]?.name || domain?.name || '';
+  return domain?.name || '';
 });
 
 const itemSelection = computed(() =>
   (domains.value || []).map((domain: any) => ({
     value: domain.id,
-    title: domain?.translations?.[locale.value]?.name || domain?.name,
+    title: domain?.name,
     name: domain?.name
   }))
 );
