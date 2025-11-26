@@ -39,7 +39,7 @@ export function useCurrentDomain() {
   const queryKey = ['domains', { domainId }];
   const enabled = computed(() => !!domainId.value);
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey,
     queryFn: ({ queryKey }) => {
       const { domainId } = queryKey[1] as { domainId: string };
@@ -57,13 +57,14 @@ export function useCurrentDomain() {
   return {
     data: currentDomain,
     isLoading,
+    isFetching,
     error
   };
 }
 
 export function useDomains() {
   const queryKey = ['domains'];
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey,
     queryFn: () => {
       const path = '/domains';
@@ -79,6 +80,7 @@ export function useDomains() {
   return {
     data: domains,
     isLoading,
+    isFetching,
     error
   };
 }

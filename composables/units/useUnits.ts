@@ -52,7 +52,7 @@ export function useUnit(id?: Ref<string>) {
   const queryKey = ['units', { unitId }];
   const enabled = computed(() => !!unitId.value);
 
-  const { data, isLoading, error } = useQuery5({
+  const { data, isLoading, isFetching, error } = useQuery5({
     queryKey,
     queryFn: ({ queryKey }) => {
       const { unitId } = queryKey[1] as { unitId: string };
@@ -70,6 +70,7 @@ export function useUnit(id?: Ref<string>) {
   return {
     data: unit,
     isLoading,
+    isFetching,
     error
   };
 }
@@ -78,6 +79,7 @@ export function useUnits() {
   const {
     data,
     isLoading,
+    isFetching,
     error,
 
     refetch
@@ -93,6 +95,7 @@ export function useUnits() {
   return {
     data,
     isLoading,
+    isFetching,
     error,
     refetch
   };
