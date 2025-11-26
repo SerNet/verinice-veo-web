@@ -1,25 +1,40 @@
-export function waitForData(data: Ref<any>) {
-  return new Promise<void>((resolve) => {
+export function waitForData<T>(data: Ref<T>, timeout = 20000): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    let isSettled = false;
+    let timer: ReturnType<typeof setTimeout> = undefined;
+    let stopWatcher: () => void = undefined;
+
+    const handleResolve = (reason: 'data-loaded' | 'timeout') => {
+      if (isSettled) return;
+      isSettled = true;
+      clearTimeout(timer);
+      stopWatcher?.();
+
+      if (reason === 'timeout') {
+        reject(new Error(`Data loading timed out after ${timeout}ms`));
+      } else {
+        resolve();
+      }
+    };
+
     if (data.value) {
-      resolve();
+      handleResolve('data-loaded');
       return;
     }
 
-    const stopWatcher = watch(
+    stopWatcher = watch(
       data,
       (newValue) => {
         if (newValue) {
-          stopWatcher();
-          resolve();
+          handleResolve('data-loaded');
         }
       },
       { immediate: true }
     );
 
-    setTimeout(() => {
-      stopWatcher();
-      resolve();
-    }, 20000);
+    timer = setTimeout(() => {
+      handleResolve('timeout');
+    }, timeout);
   });
 }
 

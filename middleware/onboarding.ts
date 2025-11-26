@@ -17,10 +17,9 @@
  */
 
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-
-import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useQuerySync } from '~/composables/api/utils/query';
+import { waitForData } from '~/composables/helpers';
+import type { TVeoDomain } from '~/composables/domains/useDomains';
+import type { TVeoUnit } from '~/composables/units/useUnits';
 
 /**
  * After a successful login users are redirected to the `/` route.
@@ -28,13 +27,18 @@ import { useQuerySync } from '~/composables/api/utils/query';
  * a localStorage key `IS_FRESH_LOGIN` is absent (new user)
  * or to the dashboard if the user is recurring.
  */
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
   if (to.path !== '/') return;
+
+  const { data: domains } = useDomains();
+  const { data: units } = useUnits();
 
   const isRecurringUser = localStorage.getItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN) === 'false';
 
   if (isRecurringUser) {
-    return showDashBoard();
+    await waitForData(domains);
+    await waitForData(units);
+    return showDashBoard(domains.value, units.value);
   } else {
     // Set 'IS_FRESH_LOGIN' to false to not show the welcome page a second time
     localStorage.setItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN, 'false');
@@ -42,27 +46,24 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 });
 
-async function hasDomain(id: string) {
-  const domains = await useQuerySync(domainQueryDefinitions.queries.fetchDomains);
+function hasDomain(domains: TVeoDomain[], id: string) {
   return !!domains.find((domain) => domain.id === id);
 }
 
-async function hasUnit(id: string) {
-  const units = await useQuerySync(unitQueryDefinitions.queries.fetchAll);
+function hasUnit(units: TVeoUnit[], id: string) {
   return !!units.find((unit) => unit.id === id);
 }
 
 const removeStorageKeys = (keys: string[]) => keys.forEach((k) => localStorage.removeItem(k));
 
-async function showDashBoard() {
-  // check localStorage for unit- and domainkey
+function showDashBoard(domains: TVeoDomain[], units: TVeoUnit[]) {
   const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
   const storageDomainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
   const favoriteUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
   const favoriteUnitDomain = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN);
 
   if (favoriteUnitId && favoriteUnitDomain) {
-    if ((await hasUnit(favoriteUnitId)) && (await hasDomain(favoriteUnitDomain))) {
+    if (hasUnit(units, favoriteUnitId) && hasDomain(domains, favoriteUnitDomain)) {
       return navigateTo(`/${favoriteUnitId}/domains/${favoriteUnitDomain}`);
     }
     removeStorageKeys([LOCAL_STORAGE_KEYS.FAVORITE_UNIT, LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN]);
@@ -71,7 +72,7 @@ async function showDashBoard() {
 
   // if the keys are present, link to the appropriate dashboard
   if (storageUnitId && storageDomainId) {
-    if ((await hasUnit(storageUnitId)) && (await hasDomain(storageDomainId))) {
+    if (hasUnit(units, storageUnitId) && hasDomain(domains, storageDomainId)) {
       return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
     }
     removeStorageKeys([LOCAL_STORAGE_KEYS.LAST_UNIT, LOCAL_STORAGE_KEYS.LAST_DOMAIN]);

@@ -17,7 +17,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <v-row align="center" justify="center">
-    <template v-if="!domains.length">
+    <template v-if="!domains">
       <v-col cols="12">
         <VSkeletonLoader v-for="i in 5" :key="i" type="image" elevation="2" class="my-6" height="160px" />
       </v-col>
@@ -75,7 +75,7 @@ watch([() => props.domains, () => currentUnit.value?.raw?.domains], () => {
   const allDomains = props.domains;
 
   unitDomains.forEach((unitDomain) => {
-    const matchingDomain = allDomains.find((d) => d.id === unitDomain.id);
+    const matchingDomain = allDomains?.find((d) => d.id === unitDomain.id);
     if (matchingDomain && !selected.value?.some((s) => s.id === matchingDomain.id)) {
       selected.value?.push(matchingDomain);
     }

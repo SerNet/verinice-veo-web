@@ -73,7 +73,7 @@ export function useDomains() {
   });
 
   const domains = computed(() => {
-    if (!data.value) return [];
+    if (!data.value) return;
     return map(data.value);
   });
 

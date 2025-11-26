@@ -178,7 +178,7 @@ const selectedProfile = ref<TVeoProfile | null>(null);
 
 const mandatoryDomain = computed<TVeoDomain>(() => {
   if (!selectedProfile.value) return;
-  return domains.value.find((d) => d.id === selectedProfile.value?.domainId);
+  return domains.value?.find((d) => d.id === selectedProfile.value?.domainId);
 });
 
 const selectedDomains = ref<TVeoDomain[]>([]);
