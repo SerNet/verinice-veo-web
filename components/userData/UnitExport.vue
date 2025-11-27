@@ -23,22 +23,15 @@
     :show-alert="state.showAlert"
     :alert-header="t('alertHeader')"
     :alert-body="t('alertBody')"
-    :items="relevantUnits"
+    :items="units"
     :is-loading="state.isLoading"
     :handle-click="exportUnit"
   />
 </template>
 
 <script setup lang="ts">
-import type { Ref } from 'vue';
 import { downloadZIP } from '~/lib/jsonToZip';
 import { logError } from './modules/HandleError';
-
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-
-// Types
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -51,31 +44,19 @@ const state = reactive({
 });
 
 const username = computed(() => profile.value?.username as string);
+const { data: units } = useUnits();
 
-// Get metadata on all units
-const { data: unitsMeta } = useQuery(unitQueryDefinitions.queries.fetchAll);
+const id = ref();
+const { data: unit, isFetching: isFetchingUnit } = useUnit(id);
 
-// Filter for relevant IDs (we want to export every unit but 'Demo')
-const relevantUnits = computed(() => {
-  if (!unitsMeta) return [];
-  else return removeDemoUnit(unitsMeta);
-});
-
-function removeDemoUnit(units: Ref<IVeoUnit[]>) {
-  if (!units) return [];
-  return units.value?.filter((unit: IVeoUnit) => unit.name !== 'Demo');
-}
-
-// Export a single unit
 async function exportUnit(index: number) {
   state.isLoading[index] = true;
   try {
-    const unitId = relevantUnits.value[index].id;
-    const unit = await useQuerySync(unitQueryDefinitions.queries.exportUnit, {
-      unitId
-    });
-    const fileName = `${username.value}_${unit.unit.name}`;
-    await downloadZIP(unit, fileName);
+    id.value = units.value[index].id;
+    await waitForBooleanToUpdate(isFetchingUnit, false);
+
+    const fileName = `${username.value}_${unit.value.name}`;
+    await downloadZIP(unit.value, fileName);
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
     handleError(error);
