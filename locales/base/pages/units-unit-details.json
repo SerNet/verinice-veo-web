@@ -7,7 +7,7 @@
   },
   "de": {
     "updateUnitDetails": "Unit-Details aktualisieren",
-    "unitSuccessfullyUpdated": "Unit wurde erfolgreich aktualisiert.",
+    "unitUpdateSuccess": "Unit wurde erfolgreich aktualisiert.",
     "unitUpdateErrorTitle": "Ein Fehler ist passiert.",
     "unitUpdateErrorBody": "Unit konnte nicht aktualisiert werden"
   }
