@@ -170,7 +170,7 @@ const { profiles, isLoading: isLoadingProfiles } = useProfiles();
 
 // State
 const step = ref(1);
-const hasRightToCreateUnits = computed(() => ability.value.can('manage', 'units'));
+const hasRightToCreateUnits = computed(() => ability.value.can('create', 'unit'));
 
 const unitDetails = ref<UnitDetails>({ name: '' });
 
