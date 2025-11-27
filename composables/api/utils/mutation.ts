@@ -23,20 +23,26 @@ import type { IVeoQueryDefinition, IVeoQueryParameters } from './query';
 import { debugCacheAsArrayIncludesPrimaryKey } from './query';
 import { useRequest } from './request';
 
-export interface MutationOptions<_TVariables, TResult = unknown>
-  extends Omit<UseMutationOptions<TResult, unknown, void, unknown>, 'queryFn' | 'onSuccess'> {
+export interface MutationOptions<_TVariables, TResult = unknown> extends Omit<
+  UseMutationOptions<TResult, unknown, void, unknown>,
+  'queryFn' | 'onSuccess'
+> {
   onSuccess: (queryClient: QueryClient, data: TResult, variables: IVeoMutationParameters, context: any) => any;
 }
 
-export interface IVeoMutationDefinition<TVariables, TResult>
-  extends Omit<IVeoQueryDefinition<TVariables, TResult>, 'queryParameterTransformationFn' | 'staticQueryOptions'> {
+export interface IVeoMutationDefinition<TVariables, TResult> extends Omit<
+  IVeoQueryDefinition<TVariables, TResult>,
+  'queryParameterTransformationFn' | 'staticQueryOptions'
+> {
   method?: 'POST' | 'PATCH' | 'PUT' | 'DELETE' | 'OPTIONS';
   mutationParameterTransformationFn: (_queryParameters: TVariables) => IVeoMutationParameters;
   staticMutationOptions: MutationOptions<TVariables, TResult>;
 }
 
-export interface IVeoMutationParameters<TParams = Record<string, any>, TQuery = Record<string, any>>
-  extends IVeoQueryParameters<TParams, TQuery> {
+export interface IVeoMutationParameters<
+  TParams = Record<string, any>,
+  TQuery = Record<string, any>
+> extends IVeoQueryParameters<TParams, TQuery> {
   body?: any;
   json?: any;
 }
