@@ -15,8 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useQuery as useQuery5 } from 'vue-query-v5';
-import { read } from '~/requests/crud';
+import { useQuery as useQuery5, useMutation, useQueryClient } from 'vue-query-v5';
+
+import { read, mutate } from '~/requests/crud';
 
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
@@ -101,6 +102,51 @@ export function useUnits() {
   };
 }
 
+type Method = 'POST' | 'PUT' | 'DELETE';
+export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
+  const queryClient = useQueryClient();
+
+  const options = computed(() =>
+    unit.value && method ?
+      {
+        ...(method !== 'DELETE' ? { body: unit.value } : {}),
+        method
+      }
+    : {}
+  );
+
+  const {
+    status,
+    isError,
+    error,
+    isSuccess,
+    mutate: _mutate
+  } = useMutation({
+    mutationFn: () =>
+      mutate({
+        path: `/units/${unit.value.id}`,
+        options: options.value
+      }),
+    onSuccess: () =>
+      queryClient.invalidateQueries({
+        queryKey: ['units']
+      })
+  });
+
+  return {
+    /** @todo fix when vue-query types are fixed */
+    // @ts-ignore there is a type mismatch in vue-query (5.92.0) types,
+    // status "loading" should not exist,
+    // because it does, "isPending" (which is returned by `useMutation`) is not working properly, and
+    // we roll our own interpretation of isPending here
+    isPending: computed(() => status.value === 'loading'),
+    isError,
+    error,
+    isSuccess,
+    mutate: _mutate
+  };
+}
+
 export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
   const favoriteUnitId: string | null = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
   return {
@@ -124,7 +170,7 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
       color: useDomainColor(d.name),
       targetUri: d.targetUri
     })),
-    raw: unit
+    raw: toRaw(unit)
   };
 }
 
