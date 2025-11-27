@@ -213,15 +213,12 @@
 
 <script setup lang="ts">
 import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, mdiInformationOutline } from '@mdi/js';
-
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useQuery } from '~~/composables/api/utils/query';
+import { VeoAlertType } from '~/types/VeoTypes';
+import { useDisplay } from 'vuetify';
 
 const { ability } = useVeoPermissions();
 const { userSettings } = useVeoUser();
-import { VeoAlertType } from '~/types/VeoTypes';
-import { useDisplay } from 'vuetify';
-const { data: units } = useQuery(unitQueryDefinitions.queries.fetchAll);
+const { data: units } = useUnits();
 
 const maxUnitsExceeded = computed(() => (units.value?.length || 0) >= userSettings.value.maxUnits);
 
