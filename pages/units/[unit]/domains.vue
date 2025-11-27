@@ -17,7 +17,7 @@
 <template>
   <BasePage :title="pageTitle" class="pt-6" data-component-name="domain-selection-page" sticky-footer>
     <BaseContainer>
-      <UnitDomains v-model="selectedDomains" :domains="domains" :is-associating-domains="isAssociatingDomains" />
+      <UnitDomains v-model="selectedDomains" :domains="domains" :is-associating-domains="isUpdatingUnit" />
     </BaseContainer>
 
     <template #footer>
@@ -32,7 +32,7 @@
           class="my-6"
           :prepend-icon="mdiPlus"
           :disabled="canAssociateDomains"
-          @click="() => handleClick(unit as IVeoUnit, messages)"
+          @click="updateUnit"
         >
           {{ t('associateDomains') }}
         </v-btn>
@@ -47,15 +47,11 @@ export const ROUTE_NAME = 'units-domain-domains';
 
 <script setup lang="ts">
 import { mdiPlus } from '@mdi/js';
-import { useUpdateUnit } from '~/components/unit/unit-module';
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 const { createLink } = useCreateLink();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { update, isLoading: isAssociatingDomains } = useUpdateUnit();
-
-const { setLoading, clearLoading } = useGlobalLoadingState();
 
 // Data
 const { data: domains } = useDomains();
@@ -71,26 +67,31 @@ const domainsToAssociate = computed(() =>
 );
 const canAssociateDomains = computed(() => !domainsToAssociate.value.length);
 
-const unit = computed(() => ({
-  ...(currentUnit.value?.raw ?? {}),
-  domains: [...(currentUnit.value?.raw.domains ?? []), ...domainsToAssociate.value]
-}));
+// Associate domains
+const unit = computed(
+  () =>
+    ({
+      ...(currentUnit.value?.raw ?? {}),
+      domains: [...(currentUnit.value?.raw.domains ?? []), ...domainsToAssociate.value]
+    }) as IVeoUnit
+);
 
 const messages = computed(() => ({
   success: t('associateDomainsSuccess'),
-  error: { text: t('associateDomainsErrorText') },
+  error: { title: t('associateDomainsErrorText') },
   loading: t('unit.isAssociatingDomains')
 }));
 
-async function handleClick(unit, messages) {
-  let loadId;
-  try {
-    loadId = setLoading(messages.loading);
-    await update(unit as IVeoUnit, messages);
-  } finally {
-    clearLoading(loadId);
-  }
-}
+const { mutate: updateUnit, isPending: isUpdatingUnit, isSuccess, isError } = useUnitMutation(unit);
+
+const router = useRouter();
+useUserFeedback({
+  isLoading: isUpdatingUnit,
+  isSuccess,
+  isError,
+  messages,
+  callback: () => router.push({ name: 'units' })
+});
 </script>
 
 <i18n src="~/locales/base/pages/units-unit-domains.json"></i18n>

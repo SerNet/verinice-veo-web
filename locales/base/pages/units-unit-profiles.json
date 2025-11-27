@@ -12,7 +12,13 @@
     "warningAssociateDomainBody": "Action cannot be reversed. Applying this profile requires associating a new domain with your unit. This cannot be undone!",
     "applyProfiles": "Apply Profiles",
     "applyProfileSuccess": "Profile successfully applied.",
-    "applyProfileErrorText": "Could not apply profile."
+    "applyProfileErrorText": "Could not apply profile.",
+    "isAssociatingDomain": "Associating domain...",
+    "domainAssociatedSuccess": "Domain successfully associated.",
+    "domainAssociatedError": {
+      "title": "Something went wrong",
+      "text": "Could not associate domain"
+    }
   },
   "de": {
     "profiles": "Profile",
@@ -27,6 +33,12 @@
     "warningAssociateDomainBody": " Aktion kann nicht rückgängig gemacht werden. Die Anwendung dieses Profils erfordert die Verknüpfung einer neuen Domäne mit Ihrer Unit. Dies kann nicht rückgängig gemacht werden!",
     "applyProfiles": "Profile anwenden",
     "applyProfileSuccess": "Das Profil wurde erfolgreich angewendet.",
-    "applyProfileErrorText": " Das Profil konnte nicht angewendet werden."
+    "applyProfileErrorText": " Das Profil konnte nicht angewendet werden.",
+    "isAssociatingDomain": "Verknüpfe Domäne...",
+    "domainAssociatedSuccess": "Domäne erfolgreich verknüpft.",
+    "domainAssociatedError": {
+      "title": "Fehler",
+      "text": "Domäne konnte nicht verknüpft werden"
+    }
   }
 }

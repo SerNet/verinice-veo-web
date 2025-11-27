@@ -84,7 +84,7 @@ export const ROUTE_NAME = 'profiles';
 </script>
 
 <script setup lang="ts">
-import { useUpdateUnit, useApplyProfile } from '~/components/unit/unit-module';
+import { useApplyProfile } from '~/components/unit/unit-module';
 import { mdiShapeOutline } from '@mdi/js';
 import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 
@@ -92,9 +92,7 @@ import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { applyProfile, isLoading: isApplyingProfile } = useApplyProfile();
-const { update: updateUnit } = useUpdateUnit();
 const { createLink } = useCreateLink();
-
 const { setLoading, clearLoading } = useGlobalLoadingState();
 
 // Data
@@ -108,7 +106,6 @@ const canApplyProfile = computed(() => !!selectedProfile.value);
 const wantsToAssociateNewDomain = ref(false);
 
 const isDialogOpen = ref(false);
-const isAssociatingDomain = ref(false);
 
 const applyProfileParams = computed(() => ({
   profileId: selectedProfile?.value?.id,
@@ -128,6 +125,32 @@ async function closeDialog() {
   });
 }
 
+// Associate domain if necessary
+const unit = computed(() => {
+  const domainId = profiles.value.find((p) => p.id === selectedProfile.value.id)?.domainId ?? '';
+  if (!domainId) return { ...currentUnit.value?.raw };
+  return {
+    ...currentUnit.value?.raw,
+    domains: [...(currentUnit.value?.raw.domains ?? []), createLink('domains', domainId)]
+  };
+});
+
+const { mutate: associateDomain, isPending: isAssociatingDomain, isSuccess, isError } = useUnitMutation(unit);
+
+// User Feedback for associating domain
+const associateDomainMessages = computed(() => ({
+  loading: t('isAssociatingDomain'),
+  success: t('domainAssociatedSuccess'),
+  error: { title: t('domainAssociatedError.title'), text: t('domainAssociatedError.text') }
+}));
+
+useUserFeedback({
+  isLoading: isAssociatingDomain,
+  isSuccess,
+  isError,
+  messages: associateDomainMessages
+});
+
 async function initApplyProfile() {
   if (!currentUnit.value?.domains) return;
 
@@ -138,14 +161,8 @@ async function initApplyProfile() {
     await closeDialog();
 
     if (wantsToAssociateNewDomain.value) {
-      const domainId = profiles.value.find((p) => p.id === selectedProfile.value.id)?.domainId ?? '';
-      const unit = {
-        ...currentUnit.value?.raw,
-        domains: [...(currentUnit.value?.raw.domains ?? []), createLink('domains', domainId)]
-      };
-      const loadingId = setLoading(t('unit.isAssociatingDomain'));
-      await updateUnit(unit, unitMessages.value);
-      clearLoading(loadingId);
+      associateDomain();
+      await waitForBooleanToUpdate(isSuccess);
     }
   }
 
@@ -158,11 +175,6 @@ async function initApplyProfile() {
 const messages = computed(() => ({
   success: t('applyProfileSuccess'),
   error: { title: t('applyProfileErrorTitle'), body: t('applyProfileErrorBody') }
-}));
-
-const unitMessages = computed(() => ({
-  success: t('applyProfileSuccess'),
-  error: { text: t('applyProfileErrorText') }
 }));
 
 useHead({

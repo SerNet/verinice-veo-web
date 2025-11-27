@@ -36,9 +36,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           color="primary"
           size="large"
           class="my-6"
-          :disabled="canUpdate"
+          :disabled="!canUpdate"
           :prepend-icon="mdiUpdate"
-          @click="() => handleUpdate(unit as IVeoUnit, messages)"
+          @click="updateUnit"
         >
           {{ t('updateUnitDetails') }}
         </v-btn>
@@ -53,18 +53,13 @@ export const ROUTE_NAME = 'units-unit-details';
 
 <script setup lang="ts">
 import { mdiUpdate } from '@mdi/js';
-import { useUpdateUnit } from '~/components/unit/unit-module';
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 import type { UnitDetails } from '~/components/unit/Details.vue';
-import type { Messages } from '~/components/unit/unit-module';
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { update, isLoading: isUpdatingUnit } = useUpdateUnit();
 
+// Set initial unit data
 const { data: currentUnit, isLoading: isLoadingCurrentUnit } = useUnit();
-const { setLoading, clearLoading } = useGlobalLoadingState();
-
 const unitDetails = ref<UnitDetails>();
 watch(
   currentUnit,
@@ -86,25 +81,29 @@ const unit = computed(() => ({
   description: unitDetails.value?.description
 }));
 
-const canUpdate = computed(() => {
-  return !unitDetails.value?.name?.trim() || !isLoadingCurrentUnit || !isUpdatingUnit;
-});
+// Mutation
+const router = useRouter();
 
 const messages = computed(() => ({
   success: t('unitUpdateSuccess'),
-  error: { title: t('unitUpdateErrorTitle'), body: t('unitUpdateErrorBody') },
+  error: { title: t('unitUpdateErrorTitle'), text: t('unitUpdateErrorBody') },
   loading: t('unit.isUpdatingDetails')
 }));
 
-async function handleUpdate(unit: IVeoUnit, messages: Messages) {
-  let loadId: symbol;
-  try {
-    loadId = setLoading(messages.loading);
-    await update(unit as IVeoUnit, messages);
-  } finally {
-    clearLoading(loadId);
-  }
-}
+const { mutate: updateUnit, isPending: isUpdatingUnit, isSuccess, isError } = useUnitMutation(unit);
+
+useUserFeedback({
+  isLoading: isUpdatingUnit,
+  isSuccess,
+  isError,
+  messages,
+  callback: () => router.push({ name: 'units' })
+});
+
+// Component state
+const canUpdate = computed(() => {
+  return !!unitDetails.value?.name?.trim() && !isLoadingCurrentUnit.value && !isUpdatingUnit.value;
+});
 </script>
 
 <i18n src="~/locales/base/pages/units-unit-details.json"></i18n>

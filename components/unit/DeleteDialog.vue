@@ -22,7 +22,7 @@
     data-veo-test="units-delete-dialog"
     :aria-label="t('dialogTitle')"
     :title="t('dialogTitle')"
-    :close-disabled="deletionInProgress"
+    :close-disabled="isDeletingUnit"
     :close-function="closeDeleteDialog"
     width="600px"
     @update:model-value="emit('update:model-value', $event)"
@@ -47,7 +47,7 @@
       </BaseAlert>
 
       <BaseCard class="mt-4">
-        <v-form @submit.prevent="deleteUnit">
+        <v-form>
           <v-text-field
             v-model="unitName"
             autofocus
@@ -74,7 +74,7 @@
         color="primary"
         data-veo-test="units-delete-dialog-btn-delete"
         :disabled="unitDeletionDisabled"
-        :loading="deletionInProgress"
+        :loading="isDeletingUnit"
         @click="deleteUnit"
       >
         {{ globalT('global.button.delete') }}
@@ -85,10 +85,7 @@
 
 <script setup lang="ts">
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useMutation } from '~/composables/api/utils/mutation';
 import { VeoAlertType } from '~/types/VeoTypes';
-
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 const props = withDefaults(
@@ -107,51 +104,53 @@ const emit = defineEmits<{
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
-
-const { mutateAsync: doDelete, isLoading: deletionInProgress } = useMutation(unitQueryDefinitions.mutations.delete);
 
 const unitName = ref('');
 const unitNameIsValid = computed(() => unitName.value === props.unit?.name);
 const nameRules = [(name: any) => !!name || 'Unit name required'];
 
+const unit = computed(() => props.unit);
+const { mutate: deleteUnit, isPending: isDeletingUnit, isSuccess, isError } = useUnitMutation(unit, 'DELETE');
+
 const unitDeletionDisabled = computed(
-  () => deletionInProgress.value || ability.value.cannot('manage', 'units') || !unitNameIsValid.value
+  () => isDeletingUnit.value || ability.value.cannot('manage', 'units') || !unitNameIsValid.value
 );
-const closeDeleteDialog = () => {
+
+function cleanUpLocalStorage() {
+  const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+  if (props.unit?.id === storageUnitId) {
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+    localStorage.removeItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
+  }
+}
+
+function closeDeleteDialog() {
   emit('update:model-value', false);
   unitName.value = '';
-};
+}
 
-const deleteUnit = async () => {
-  if (unitDeletionDisabled.value) {
-    return;
+function userFeedbackCallback() {
+  cleanUpLocalStorage();
+  closeDeleteDialog();
+}
+
+const messages = computed(() => ({
+  loading: t('deletingUnit'),
+  success: t('unitDeleted'),
+  error: {
+    title: t('unitDeletionFailedTitle'),
+    text: t('unitDeletionFailedText')
   }
-  try {
-    await doDelete({ id: props.unit?.id });
-    // if the unit's to be deleted equals the unit ID in the storage, we delete it from the storage to circumvent a 404 code at login
-    const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
+}));
 
-    if (props.unit?.id === storageUnitId) {
-      localStorage.removeItem('last-unit');
-      localStorage.removeItem('last-domain');
-    }
-
-    // if the Demo-Unit is about to be deleted, we have to manipulate the storageKey to ensure, that a profile can be applied again (welcomePage) for another unit created with the same name ("Demo")
-    if (props.unit?.name === 'Demo') {
-      localStorage.removeItem('demo-unit-profile-applied');
-    }
-
-    displaySuccessMessage(t('unitDeleted'));
-    emit('success');
-  } catch (e: any) {
-    emit('error');
-    displayErrorMessage(t('unitDeletionError'), e.message);
-  } finally {
-    closeDeleteDialog();
-  }
-};
+useUserFeedback({
+  isLoading: isDeletingUnit,
+  isSuccess,
+  isError,
+  messages,
+  callback: userFeedbackCallback
+});
 
 function navigateToUserData() {
   navigateTo('/user-data');

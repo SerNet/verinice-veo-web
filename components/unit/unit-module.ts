@@ -1,7 +1,4 @@
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
 export type Messages = {
   success: string;
@@ -26,23 +23,6 @@ export function redirectToUnit({ unitId, domainId }: { unitId: string; domainId:
       domain: domainId
     }
   });
-}
-
-export function useUpdateUnit() {
-  const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-  const { mutateAsync: mutate, isLoading, error } = useMutation(unitQueryDefinitions.mutations.update);
-
-  async function update(unit: IVeoUnit, messages: Messages): Promise<void> {
-    try {
-      await mutate(unit);
-      displaySuccessMessage(messages.success);
-      redirectToUnits();
-    } catch (error) {
-      console.error(error);
-      displayErrorMessage({ text: messages.error.text });
-    }
-  }
-  return { update, isLoading, error };
 }
 
 type ApplyProfileParams = { profileId: string; unitId: string; domainId: string };
