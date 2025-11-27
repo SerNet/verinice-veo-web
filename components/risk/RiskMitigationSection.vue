@@ -117,6 +117,7 @@
       v-model="editMitigationsDialogVisible"
       v-model:preselected-items="selectedItems"
       :object="editedObject"
+      :preselected-filters="{ subType: currentDomain.raw.controlImplementationConfiguration?.mitigationControlSubType }"
       return-objects
     >
       <template #header>
