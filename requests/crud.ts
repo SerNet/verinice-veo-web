@@ -16,26 +16,25 @@ type RequestOptions = {
 
 const etags = new Map<string, string>();
 
-export async function read({
+async function request({
   path,
-  options = {},
+  options,
   callback
 }: {
   path: string;
-  options?: RequestOptions;
+  options: RequestOptions;
   callback?: () => Promise<void>;
 }) {
+  const { token, refreshKeycloakSession } = useVeoUser();
   const config = useRuntimeConfig();
   const url = removeTrailingSlashes(config.public.apiUrl) + '/' + removeLeadingSlashes(path);
-
-  const { token, refreshKeycloakSession } = useVeoUser();
 
   if (!token.value) {
     await refreshKeycloakSession();
   }
 
   const opts: RequestOptions = {
-    method: 'GET',
+    method: options.method,
     headers: generateHeaders(token.value, options.headers ? options.headers : {}),
     ...omit(options, 'headers')
   };
@@ -51,11 +50,44 @@ export async function read({
     });
   }
 
-  // Store etag for later use (e.g. in update)
+  // Store etag for later use (e.g. in put)
   const etag = response.headers.get('ETag') || '';
   etags.set(path, etag);
 
-  return await response.json();
+  const contentType = response.headers.get('Content-Type') || '';
+  if (contentType.includes('application/json')) {
+    return await response.json();
+  }
+
+  return response;
+}
+
+type CrudParams = {
+  path: string;
+  options?: RequestOptions;
+  callback?: () => Promise<void>;
+};
+
+export async function read({ path, options = {}, callback }: CrudParams) {
+  if (!options.method) {
+    options.method = 'GET';
+  }
+
+  return await request({ path, options, callback });
+}
+
+export async function mutate({ path, options = {}, callback }: CrudParams) {
+  options = {
+    method: 'PUT',
+    ...options,
+    headers: {
+      ...options.headers,
+      ['If-Match']: etags.get(path) || ''
+    },
+    body: options.body ? JSON.stringify(options.body) : undefined
+  };
+
+  return await request({ path, options, callback });
 }
 
 // Utils
