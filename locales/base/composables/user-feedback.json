@@ -1,0 +1,26 @@
+{
+  "en": {
+    "loading": {
+      "text": "Loading..."
+    },
+    "success": {
+      "text": "Operation completed successfully"
+    },
+    "error": {
+      "title": "Error",
+      "text": "An error occurred"
+    }
+  },
+  "de": {
+    "loading": {
+      "text": "Lädt..."
+    },
+    "success": {
+      "text": "Vorgang erfolgreich abgeschlossen"
+    },
+    "error": {
+      "title": "Fehler",
+      "text": "Ein Fehler ist aufgetreten"
+    }
+  }
+}
