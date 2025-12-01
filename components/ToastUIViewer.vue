@@ -1,3 +1,19 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2025 Aziz Khalledi
+   -
+   - This program is free software: you can redistribute it and/or modify it
+   - under the terms of the GNU Affero General Public License
+   - as published by the Free Software Foundation, either version 3 of the License,
+   - or (at your option) any later version.
+   -
+   - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+   - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   - See the GNU Affero General Public License for more details.
+   -
+   - You should have received a copy of the GNU Affero General Public License along with this program.
+   - If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <div ref="viewerRef"></div>
 </template>
@@ -5,6 +21,7 @@
 import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
+import { useTheme } from 'vuetify';
 
 const props = withDefaults(
   defineProps<{
@@ -13,36 +30,49 @@ const props = withDefaults(
   { modelValue: '' }
 );
 
-let viewer = null;
+const viewer = ref<Viewer | null>(null);
 const viewerRef = ref<HTMLDivElement | null>(null);
-const viewerOptions = {
-  el: null,
-  initialValue: '',
-  usageStatistics: false,
-  plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]]
+const vuetifyTheme = useTheme();
+
+const applyThemeClass = () => {
+  if (!viewerRef.value) return;
+
+  const isDark = vuetifyTheme.global.current.value.dark;
+  viewerRef.value.className = isDark ? 'toastui-editor-dark' : 'toastui-editor-default';
 };
 
 onMounted(() => {
-  viewer = new Viewer({ ...viewerOptions, el: viewerRef.value });
-  viewer.setMarkdown(props.modelValue);
+  applyThemeClass();
+
+  viewer.value = new Viewer({
+    el: viewerRef.value,
+    initialValue: props.modelValue || '',
+    usageStatistics: false,
+    plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]]
+  });
 });
 
 watch(
   () => props.modelValue,
-  () => {
-    if (viewer && props.modelValue) {
-      viewer.setMarkdown(props.modelValue);
+  (newValue) => {
+    if (viewer.value) {
+      viewer.value.setMarkdown(newValue ?? '');
     }
-  },
-  { immediate: true }
+  }
+);
+
+watch(
+  () => vuetifyTheme.global.current.value.dark,
+  () => applyThemeClass()
 );
 
 onBeforeUnmount(() => {
-  viewer?.destroy();
+  viewer.value?.destroy();
 });
 </script>
 <style lang="scss">
 @use '@toast-ui/editor/dist/toastui-editor';
+@use '@toast-ui/editor/dist/theme/toastui-editor-dark';
 @use '@toast-ui/editor-plugin-code-syntax-highlight/dist/toastui-editor-plugin-code-syntax-highlight';
 @use 'prismjs/themes/prism';
 
