@@ -30,7 +30,7 @@
 
       <div class="px-4">
         <div>
-          <v-tooltip v-if="descriptionShort" location="bottom">
+          <v-tooltip v-if="descriptionShort" location="bottom" :aria-label="`report-${name}`">
             <template #activator="{ props: tooltipProps }">
               <span v-bind="tooltipProps">
                 {{ descriptionShort }}

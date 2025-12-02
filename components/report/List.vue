@@ -110,6 +110,7 @@ function prepareReportsData(reports: [id: string, report: IVeoReportMeta][]) {
     }
 
     for (const lang of availableLanguages) {
+      const uniqueId = `${id}_${lang}`;
       const name = report.name[lang] || report.name.en || Object.values(report.name)[0];
       const description = report.description[lang] || report.description.en || Object.values(report.description)[0];
 
@@ -128,7 +129,8 @@ function prepareReportsData(reports: [id: string, report: IVeoReportMeta][]) {
         .join(', ');
 
       result.push({
-        id,
+        id: uniqueId,
+        originalId: id,
         name,
         description,
         descriptionShort,

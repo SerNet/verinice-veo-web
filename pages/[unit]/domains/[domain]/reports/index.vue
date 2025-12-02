@@ -18,7 +18,7 @@
 <template>
   <BasePage>
     <template #header>
-      <p class="mt-8 mb-4 text-body-1">
+      <p class="mt-8 mb-4 mx-6">
         {{ t('hint') }}
       </p>
     </template>
@@ -36,7 +36,7 @@ export default defineComponent({
     const route = useRoute();
 
     const createReport = async (report: any) => {
-      await navigateTo(`/${route.params.unit}/domains/${route.params.domain}/reports/${report.id}`);
+      await navigateTo(`/${route.params.unit}/domains/${route.params.domain}/reports/${report.originalId}`);
     };
 
     return {
