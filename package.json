@@ -104,6 +104,6 @@
   },
   "overrides": {
     "vue": "^3.5.16",
-    "vitest": "^4.0.9"
+    "vitest": "$vitest"
   }
 }
