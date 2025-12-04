@@ -37,8 +37,7 @@
 
 <script setup lang="ts">
 import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import type { IVeoLegacyObjectHistoryEntry } from '~/types/VeoTypes';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { type IVeoLegacyObjectHistoryEntry, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 const { t, locale } = useI18n();
@@ -50,10 +49,14 @@ const latestChangesQueryParameters = computed(() => ({
 const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
 
 const createUrl = (revision: IVeoLegacyObjectHistoryEntry) => {
-  const subType = revision.content.domains[route.params.domain as string]?.subType || '-';
-  return `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[revision.content.type]}/${subType}/${
-    revision.content.id
-  }/`;
+  const unitId = revision.content?.owner?.id;
+  // for now we assume, the object is associated to a single domain. So we pick the first and only one
+  const domainIdContainingObject = Object.keys(revision.content?.domains)?.[0];
+  const objectType = VeoElementTypePlurals[revision.content?.type];
+  const subType = revision.content?.domains?.[domainIdContainingObject]?.subType || '-';
+  const objectId = revision.content?.id;
+
+  return `/${unitId}/domains/${domainIdContainingObject}/${objectType}/${subType}/${objectId}/`;
 };
 </script>
 

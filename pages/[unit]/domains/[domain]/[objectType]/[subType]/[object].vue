@@ -189,7 +189,7 @@ import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import type { IVeoEntity, IVeoLink, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
