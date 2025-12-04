@@ -39,7 +39,6 @@
       :cancel-text="$t('global.button.cancel')"
       :action-button-text="t('select')"
       :action="'select-entity'"
-      :target-element-type="objectType"
       @select-entity="linkObjectCallback($event.type)"
     />
 
@@ -94,7 +93,6 @@ const linkDialogKey = ref(0);
 
 // Computed Properties
 const isCreateMode = computed(() => createEntityDialog.value.value);
-const objectType = computed(() => props.object?.type);
 const subType = computed(() => (props.object?.type !== 'scope' ? props.object?.subType : undefined));
 
 const actions = computed(() => [

@@ -1,6 +1,6 @@
 import { setupVeo } from '../../commands/setup';
 
-export type Tabs = 'childScopes' | 'childObjects' | 'parentScopes' | 'links' | 'controls' | 'risks';
+export type Tabs = 'childObjects' | 'parentScopes' | 'links' | 'controls' | 'risks';
 export type Actions =
   | 'Create scope'
   | 'Select scope'
@@ -14,10 +14,6 @@ type TabConfig = {
   actions?: Actions[];
 };
 const tabConfigs: TabConfig[] = [
-  {
-    tab: 'childScopes',
-    actions: ['Create scope', 'Select scope']
-  },
   {
     tab: 'childObjects',
     actions: ['Create Object', 'Select Object']

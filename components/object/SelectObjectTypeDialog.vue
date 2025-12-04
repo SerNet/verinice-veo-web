@@ -48,7 +48,6 @@ interface Props {
   descriptionText?: string;
   cancelText?: string;
   actionButtonText?: string;
-  targetElementType?: string;
   action?: 'create-entity' | 'update:model-value' | 'select-entity';
   eventPayload?: Record<string, unknown>;
 }
@@ -58,7 +57,6 @@ const props = withDefaults(defineProps<Props>(), {
   descriptionText: 'Please specify the type of the new object.',
   cancelText: 'Cancel',
   actionButtonText: 'Create',
-  targetElementType: '',
   action: 'create-entity',
   eventPayload: () => ({})
 });
@@ -90,9 +88,7 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 const type = ref<string | undefined>();
 
 const options = computed<{ title: string; value: string }[]>(() => {
-  const objectSchemaNames = Object.keys(VeoElementTypePlurals).filter((item) =>
-    props.targetElementType ? item !== props.targetElementType : true
-  );
+  const objectSchemaNames = Object.keys(VeoElementTypePlurals);
 
   return objectSchemaNames.map((schemaName) => ({
     value: schemaName,

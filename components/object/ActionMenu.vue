@@ -91,7 +91,6 @@ import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ObjectActionMenusChildObjectsTab from '~/components/object/actionMenus/ChildObjectsTab.vue';
-import ObjectActionMenusChildScopesTab from '~/components/object/actionMenus/ChildScopesTab.vue';
 import ObjectActionMenusControlsTab from '~/components/object/actionMenus/ControlsTab.vue';
 import ObjectActionMenusParentObjectsTab from '~/components/object/actionMenus/ParentObjectsTab.vue';
 import ObjectActionMenusParentScopesTab from '~/components/object/actionMenus/ParentScopesTab.vue';
@@ -213,7 +212,6 @@ export default defineComponent({
         childObjects: ObjectActionMenusChildObjectsTab,
         parentObjects: ObjectActionMenusParentObjectsTab,
         controls: ObjectActionMenusControlsTab,
-        childScopes: ObjectActionMenusChildScopesTab,
         parentScopes: ObjectActionMenusParentScopesTab,
         risks: ObjectActionMenusRisksTab,
         targets: ObjectActionMenusTargetsTab
@@ -239,6 +237,7 @@ export default defineComponent({
         );
 
         await linkObjects(props.object, createdObject);
+        await queryClient.invalidateQueries({ queryKey: ['childScopes'] });
         displaySuccessMessage(t('objectLinked').toString());
         handleReload();
       } catch (e: any) {

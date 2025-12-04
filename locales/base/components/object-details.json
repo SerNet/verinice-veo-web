@@ -2,7 +2,6 @@
   "en": {
     "by": "by",
     "childObjects": "Parts",
-    "childScopes": "Scopes",
     "createdAt": "Created",
     "links": "Links",
     "parentObjects": "Part of",
@@ -15,7 +14,6 @@
   "de": {
     "by": "von",
     "childObjects": "Teile",
-    "childScopes": "Scopes",
     "createdAt": "Erstellt",
     "links": "Verknüpfungen",
     "parentObjects": "Teil von",

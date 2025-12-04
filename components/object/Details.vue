@@ -108,10 +108,6 @@ const hasControlsTab = computed(() => hasComplianceControlSubTypes.value && isRi
 
 const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; tooltip?: string }[]>(() => [
   {
-    key: 'childScopes',
-    hidden: !isScope.value
-  },
-  {
     key: 'childObjects'
   },
   {

@@ -245,7 +245,6 @@ export default defineComponent({
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]> | IVeoPaginatedResponse<VeoLinkItem[]>>(
       () => {
         switch (props.type) {
-          case 'childScopes':
           case 'childObjects':
             return children.value;
           case 'parentScopes':
@@ -399,10 +398,6 @@ export default defineComponent({
     const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({
       id: props.object?.id || '',
       domain: (route.params.domain as string) || '',
-      elementType:
-        props.type === 'childObjects' ?
-          ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
-        : ['scope'],
       sortBy: sortBy.value[0]?.key,
       sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,
@@ -420,10 +415,6 @@ export default defineComponent({
       id: props.object?.id || '',
       endpoint: VeoElementTypePlurals[props.object?.type || ''] || '',
       domain: (route.params.domain as string) || '',
-      elementType:
-        props.type === 'childObjects' ?
-          ['asset', 'person', 'incident', 'process', 'document', 'scenario', 'control']
-        : ['scope'],
       sortBy: sortBy.value[0]?.key,
       sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
       page: page.value,

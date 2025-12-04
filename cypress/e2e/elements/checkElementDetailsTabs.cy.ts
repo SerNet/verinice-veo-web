@@ -8,10 +8,6 @@ describe('Scope Details Tabs', () => {
 
   const tabConfigs = [
     {
-      tab: 'childScopes',
-      action: 'Create scope'
-    },
-    {
       tab: 'childObjects',
       action: 'Create Object'
     },

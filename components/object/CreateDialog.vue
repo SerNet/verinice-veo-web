@@ -209,12 +209,6 @@ export default defineComponent({
                 id: scope
               }
             ]);
-            queryClient.invalidateQueries([
-              'childScopes',
-              {
-                id: scope
-              }
-            ]);
           }
         }
         emit('update:model-value', false);
