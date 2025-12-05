@@ -21,8 +21,8 @@
       <v-row dense class="justify-space-between mt-6">
         <v-col cols="12">
           <ReportItem
-            :name="report.name[reportLang]"
-            :description="report.description[reportLang]"
+            :name="report?.name[reportLang]"
+            :description="report?.description[reportLang]"
             :language="reportLang"
             data-component-name="report-selected"
           />

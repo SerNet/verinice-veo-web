@@ -25,11 +25,11 @@
     <div v-if="displayedItems && displayedItems.length" class="veo-report-list">
       <template v-for="report in displayedItems" :key="report.id">
         <ReportItem
-          :name="report.name"
-          :description="report.description"
-          :language="report.language"
-          :description-short="report.descriptionShort"
-          :data-veo-test="`report-${report.id}`"
+          :name="report?.name"
+          :description="report?.description"
+          :language="report?.language"
+          :description-short="report?.descriptionShort"
+          :data-veo-test="`report-${report?.id}`"
           @click="emit('create-report', report)"
         />
       </template>
