@@ -1,11 +1,18 @@
 import { writeFileSync, readFile } from 'fs';
+import crypto from 'node:crypto';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { glob } from 'glob';
-import hash from 'hash-sum';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+
+function hash(stringToHash) {
+  if (typeof stringToHash !== 'string') {
+    throw new TypeError('Input must be a string');
+  }
+  return crypto.createHash('sha256').update(stringToHash).digest('hex');
+}
 
 const name = () => {
   const BUILD_OUTPUT_DIR = resolve(__dirname, '.output', 'public');
