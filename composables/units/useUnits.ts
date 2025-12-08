@@ -15,9 +15,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useQuery as useQuery5, useMutation, useQueryClient } from 'vue-query-v5';
+import { useQuery } from 'vue-query-v5';
 
-import { read, mutate } from '~/requests/crud';
+import { read } from '~/requests/crud';
 
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
@@ -54,7 +54,7 @@ export function useUnit(id?: Ref<string>) {
   const queryKey = ['units', { unitId }];
   const enabled = computed(() => !!unitId.value);
 
-  const { data, isLoading, isFetching, error } = useQuery5({
+  const { data, isLoading, isFetching, error } = useQuery({
     queryKey,
     queryFn: ({ queryKey }) => {
       const { unitId } = queryKey[1] as { unitId: string };
@@ -85,7 +85,7 @@ export function useUnits() {
     error,
 
     refetch
-  } = useQuery5({
+  } = useQuery({
     queryKey: ['units'],
     refetchOnMount: false,
     queryFn: async () => {
@@ -105,8 +105,7 @@ export function useUnits() {
 
 type Method = 'POST' | 'PUT' | 'DELETE';
 export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
-  const queryClient = useQueryClient();
-
+  const path = computed(() => `/units/${unit.value?.id}`);
   const options = computed(() =>
     unit.value && method ?
       {
@@ -116,23 +115,7 @@ export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
     : {}
   );
 
-  const {
-    status,
-    isError,
-    error,
-    isSuccess,
-    mutate: _mutate
-  } = useMutation({
-    mutationFn: () =>
-      mutate({
-        path: `/units/${unit.value.id}`,
-        options: options.value
-      }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({
-        queryKey: ['units']
-      })
-  });
+  const query = useDataMutation(path, options, ['units']);
 
   return {
     /** @todo fix when vue-query types are fixed */
@@ -140,11 +123,11 @@ export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
     // status "loading" should not exist,
     // because it does, "isPending" (which is returned by `useMutation`) is not working properly, and
     // we roll our own interpretation of isPending here
-    isPending: computed(() => status.value === 'loading'),
-    isError,
-    error,
-    isSuccess,
-    mutate: _mutate
+    isPending: computed(() => query.status.value === 'loading'),
+    isError: query.isError,
+    error: query.error,
+    isSuccess: query.isSuccess,
+    mutate: query.mutate
   };
 }
 

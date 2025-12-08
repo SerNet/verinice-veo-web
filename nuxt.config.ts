@@ -27,7 +27,8 @@ export default defineNuxtConfig({
     dirs: [
       // Auto import composables from subdirs too
       'composables',
-      'composables/shortcuts'
+      'composables/shortcuts',
+      'composables/requests'
     ]
   },
 
