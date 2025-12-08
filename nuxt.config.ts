@@ -1,5 +1,6 @@
 import { resolve } from 'path';
 import vuetify from 'vite-plugin-vuetify';
+import { EnvHttpProxyAgent, setGlobalDispatcher } from 'undici';
 
 // Types
 import { LOCALES } from './types/locales';
@@ -148,5 +149,17 @@ export default defineNuxtConfig({
     locales: LOCALES,
     defaultLocale: 'de',
     langDir: '../locales/base/'
+  },
+
+  hooks: {
+    'modules:before': () => {
+      if (process.env.HTTP_PROXY) {
+        console.info('Hook modules:before', 'Setting up proxy agent', process.env.HTTP_PROXY);
+        const envHttpProxyAgent = new EnvHttpProxyAgent();
+        setGlobalDispatcher(envHttpProxyAgent);
+      } else {
+        console.info('Hook modules:before', 'No proxy agent was used.');
+      }
+    }
   }
 });
