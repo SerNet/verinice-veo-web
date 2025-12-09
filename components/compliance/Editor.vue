@@ -131,7 +131,7 @@
                     :aria-label="t('riEditor.cost')"
                     :disabled="!canManageUnitContent"
                     variant="underlined"
-                    :rules="[costRule]"
+                    :rules="[numberValidator]"
                     data-veo-test="riEditor-cost"
                   />
                 </v-col>
@@ -695,7 +695,7 @@ function updateAdditionalInfo(control: IVeoEntity, targetObject: IVeoEntity, pro
 }
 
 // ===== Rules =====
-const costRule = (v: any) => (v && !isNaN(Number(v)) && isFinite(Number(v))) || t('riEditor.validation.invalidNumber');
+const { numberValidator } = useRules();
 
 // ===== Event handlers =====
 async function submitForm({

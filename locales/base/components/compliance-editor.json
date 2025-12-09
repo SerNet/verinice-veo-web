@@ -11,9 +11,6 @@
         "Inherited": "Vererbung",
         "Organisation": "Organisation"
       },
-      "validation": {
-        "invalidNumber": "Bitte geben Sie eine gültige Zahl ein."
-      },
       "status": "Status",
       "statusValues": {
         "UNKNOWN": "Unbearbeitet",
@@ -60,9 +57,6 @@
         "SystemSpecific": "System specific",
         "Inherited": "Inheritance",
         "Organisation": "Organization"
-      },
-      "validation": {
-        "invalidNumber": "Please enter a valid number."
       },
       "status": "Status",
       "statusValues": {
