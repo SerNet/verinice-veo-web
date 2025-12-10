@@ -32,7 +32,7 @@ export default defineNuxtPlugin((nuxtApp) => {
         refetchOnWindowFocus: false,
         retry: (failureCount, error) => {
           const fetchError = error as VeoApiError;
-          if (fetchError.code === 404) return false;
+          if (fetchError?.code === 404) return false;
           // Default retry count of useQuery
           return failureCount < 3;
         }

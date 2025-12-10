@@ -135,7 +135,7 @@ onBeforeMount(() => {
   if (window.matchMedia && window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
     // if user prefers light mode switch to it
     if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-      theme.global.name.value = 'light';
+      theme.change('light');
     }
   }
 });

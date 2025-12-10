@@ -41,21 +41,17 @@ import { mdiThemeLightDark } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
 const { t } = useI18n();
-
-const DARK = 'dark';
-const LIGHT = 'light';
-
 const theme = useTheme();
-
-const darkModeSet = localStorage.getItem(LOCAL_STORAGE_KEYS.DARK_MODE);
-
-if (darkModeSet === 'true' && theme.global.name.value === LIGHT) {
-  theme.global.name.value = DARK;
+// determine the dark mode state from the previous session ('true' | 'false')
+const darkModeState = localStorage.getItem(LOCAL_STORAGE_KEYS.DARK_MODE);
+// if dark mode has been set before but the current theme is set to 'light', switch to dark mode
+if (darkModeState === 'true' && theme.global.name.value === 'light') {
+  theme.change('dark');
 }
-
+// alternate between modes ('dark' | 'light') and update the storage key accordingly
 const _switch = () => {
-  theme.global.name.value = theme.global.current.value.dark ? LIGHT : DARK;
-  localStorage.setItem(LOCAL_STORAGE_KEYS.DARK_MODE, (theme.global.name.value === DARK).toString());
+  theme.change(theme.global.current.value.dark ? 'light' : 'dark');
+  localStorage.setItem(LOCAL_STORAGE_KEYS.DARK_MODE, (theme.global.name.value === 'dark').toString());
 };
 </script>
 
