@@ -21,7 +21,7 @@ workflow:
     - when: on_success
 
 default:
-  image: node:25-alpine
+  image: node:25-alpine@sha256:fd164609b5ab0c6d49bac138ae06c347e72261ec6ae1de32b6aa9f5ee2271110
   cache: # Cache modules in between jobs
     key:
       files:
@@ -48,7 +48,7 @@ store_project_version:
 determine-destinations:
   before_script: []
   image:
-    name: alpine/git
+    name: alpine/git@sha256:c0280cf9572316299b08544065d3bf35db65043d5e3963982ec50647d2746e26
     entrypoint: ['']
   stage: setup
   script:
@@ -130,7 +130,7 @@ build_test_app:
   interruptible: true
 
 .test_template:
-  image: cypress/base:25.0.0
+  image: cypress/base:25.0.0@sha256:43bc659f825c1a9e4aa540fcdf35065de3e20e0b463589bfccd1ecb717cfc0fb
   needs: ['build_test_app']
   stage: test
   tags:
@@ -181,7 +181,7 @@ docker_image:
     - when: on_success
   needs: ['store_project_version', 'determine-destinations']
   image:
-    name: gcr.io/kaniko-project/executor:v1.24.0-debug
+    name: gcr.io/kaniko-project/executor:v1.24.0-debug@sha256:2562c4fe551399514277ffff7dcca9a3b1628c4ea38cb017d7286dc6ea52f4cd
     entrypoint: ['']
   variables:
     # this does not work in Gitlab < 15.7, so we need the before_script workaround

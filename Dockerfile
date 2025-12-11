@@ -1,5 +1,5 @@
-# syntax = docker/dockerfile:experimental
-FROM node:25-alpine AS builder
+# syntax = docker/dockerfile:experimental@sha256:600e5c62eedff338b3f7a0850beb7c05866e0ef27b2d2e8c02aa468e78496ff5
+FROM node:25-alpine@sha256:fd164609b5ab0c6d49bac138ae06c347e72261ec6ae1de32b6aa9f5ee2271110 AS builder
 
 # Install Git & Install Python for node-14
 RUN apk --no-cache add git python3 make g++
@@ -37,7 +37,7 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/
 
 RUN npm run generate && node externalize-scripts.mjs
 
-FROM nginx:1.29 AS release
+FROM nginx:1.29@sha256:fb01117203ff38c2f9af91db1a7409459182a37c87cced5cb442d1d8fcc66d19 AS release
 
 COPY --from=builder /usr/src/app/.output/public /usr/src/app
 
