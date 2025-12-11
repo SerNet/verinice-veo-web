@@ -16,12 +16,12 @@
 -->
 <template>
   <BaseContainer v-if="isCardViewVisible" class="pt-0">
-    <template v-for="object in cardItems" :key="object.value">
+    <template v-for="object in cardItems" :key="object.id">
       <BaseListItem
         v-model:sort-by="localSortBy"
         :item="object"
         :item-url="getObjectUrl(object)"
-        title=""
+        :title="object.displayName"
         select
         class="pt-0"
         @update:sort-by="updateSortBy"
@@ -32,7 +32,7 @@
         <template #prepend>
           <div class="d-flex justify-center prepend-icon ml-2">
             <v-icon :icon="renderIcon(object)" :size="'x-small'" />
-            <Icon
+            <veo-icon
               :icon="getSourceIcon(object)"
               :tooltip-translation="getSourceTooltip(object)"
               :color="getSourceColor(object)"
@@ -101,6 +101,7 @@
 <script setup lang="ts">
 import { mdiAccountEdit, mdiBookOpenPageVariantOutline } from '@mdi/js';
 import ObjectIcon from '~/components/object/Icon.vue';
+import VeoIcon from '~/components/VeoIcon.vue';
 import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import type { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';

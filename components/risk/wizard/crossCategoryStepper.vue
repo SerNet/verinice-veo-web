@@ -67,7 +67,7 @@
     </template>
 
     <v-window-item :value="riskCategories?.length + stepOffset">
-      <template v-for="(_category, rcIndex) in riskCategories?.length" :key="_category.id">
+      <template v-for="(category, rcIndex) in riskCategories" :key="category.id">
         <v-card class="pa-2 mb-4">
           <v-card-title>{{ riskCategories?.[rcIndex]?.translations?.[locale]?.name ?? '' }} </v-card-title>
 

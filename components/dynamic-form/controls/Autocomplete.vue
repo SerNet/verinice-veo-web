@@ -64,6 +64,7 @@
       </v-list-item>
     </template>
     <template v-else #item="{ props: _props }">
+      <!-- @vue-ignore - property does not exist on type -->
       <v-list-item v-bind="_props" data-veo-test="object-select-item" />
     </template>
   </v-autocomplete>
