@@ -101,9 +101,11 @@ function generateHeaders(token: string, headers: RequestHeaders = {}): RequestHe
 }
 
 function removeLeadingSlashes(str: string) {
+  if (typeof str !== 'string') return str;
   return str.replace(/^[/\s]+/g, '');
 }
 
 function removeTrailingSlashes(str: string) {
+  if (typeof str !== 'string') return str;
   return str.replace(/[/\s]+$/g, '');
 }
