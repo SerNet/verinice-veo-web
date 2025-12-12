@@ -12,7 +12,8 @@
     "TOMsApplied": "TOMs were applied",
     "itemsApplied": "Successfully applied catalog elements.",
     "applyItemsError": "Could not apply catalog elements.",
-    "itemsAlreadyApplied": "Catalog elements have already been applied. No new elements have been created."
+    "itemsAlreadyApplied": "Catalog elements have already been applied. No new elements have been created.",
+    "applyingItems": "Applying items..."
   },
   "de": {
     "all": "Alle",
@@ -27,6 +28,7 @@
     "TOMsApplied": "TOM wurden angewendet",
     "itemsApplied": "Katalogelemente wurden erfolgreich angewendet.",
     "applyItemsError": "Katalogelemente konnten nicht angewandt werden.",
-    "itemsAlreadyApplied": "Katalogelemente wurden bereits angewandt. Es wurden keinen neuen Elemente erzeugt."
+    "itemsAlreadyApplied": "Katalogelemente wurden bereits angewandt. Es wurden keinen neuen Elemente erzeugt.",
+    "applyingItems": "Wende Katalogelemente an..."
   }
 }
