@@ -21,6 +21,7 @@ import { read } from '~/requests/crud';
 
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { getIsPending } from '~/composables/helpers';
 
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
 
@@ -118,12 +119,7 @@ export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
   const query = useDataMutation(path, options, ['units']);
 
   return {
-    /** @todo fix when vue-query types are fixed */
-    // @ts-ignore there is a type mismatch in vue-query (5.92.0) types,
-    // status "loading" should not exist,
-    // because it does, "isPending" (which is returned by `useMutation`) is not working properly, and
-    // we roll our own interpretation of isPending here
-    isPending: computed(() => query.status.value === 'loading'),
+    isPending: computed(() => getIsPending(query.status.value)),
     isError: query.isError,
     error: query.error,
     isSuccess: query.isSuccess,
