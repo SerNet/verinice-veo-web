@@ -27,8 +27,8 @@
         class="mt-2 mb-4"
         :catalog-items="catalogItems"
         :is-loading="catalogItemsAreFetching || isLoadingSearchResults"
-        :is-applying-items="isApplyingItems"
-        @apply-items="applyItems"
+        :is-applying-items="isPending"
+        @apply-items="maybeCreateObjects()"
       >
         <span class="my-2">{{ t('selectScenariosCTA') }}</span>
       </CatalogDefaultCatalog>
@@ -75,14 +75,11 @@ export const ROUTE_NAME = 'unit-domains-domain-catalog';
 <script setup lang="ts">
 import { onBeforeRouteLeave } from 'vue-router';
 import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDefinitions/catalogs';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
-import { useMutation } from '~/composables/api/utils/mutation';
-import { useQuery, useQuerySync } from '~/composables/api/utils/query';
+import { useQuery } from '~/composables/api/utils/query';
 import { useSubTypeTranslation } from '~/composables/Translations';
 import type { VeoSearch } from '~/types/VeoSearch';
 import { VeoElementTypePlurals, type IVeoLink, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
-const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { t, locale } = useI18n();
 const route = useRoute();
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
@@ -174,46 +171,36 @@ onBeforeRouteLeave(async (_to, _from) => {
   clearCustomBreadcrumbs();
 });
 
-// Incarnate, create objects, from selected catalog items
-const { mutateAsync: incarnate } = useMutation(unitQueryDefinitions.mutations.updateIncarnations);
+// Create objects from selected catalog items
+const unitId = computed(() => route.params.unit as string);
+const itemIds = computed(() => selectedItems.value.map((item) => item.id));
 const selectedItems = ref<IVeoEntity[]>([]);
-const isApplyingItems = ref(false);
 const createdObjectsBySubtype = ref<Array<{ name: string; items: IVeoLink[] }>>([]);
 
-async function applyItems() {
-  isApplyingItems.value = true;
-  try {
-    // Fetch incarnations for all selected items
-    const fetchParameters = {
-      unitId: route.params.unit as string,
-      domainId: route.params.domain as string,
-      itemIds: selectedItems.value.map((item) => item.id)
-    };
+const {
+  mutate: maybeCreateObjects,
+  data: incarnatedObjects,
+  isPending,
+  isSuccess,
+  isError
+} = useCatalogItems(unitId, currentDomainId, itemIds);
 
-    const incarnations = await useQuerySync(unitQueryDefinitions.queries.fetchIncarnationDescriptions, fetchParameters);
+const messages = computed(() => ({
+  loading: t('applyingItems'),
+  success: incarnatedObjects.value?.length ? t('itemsApplied') : t('itemsAlreadyApplied'),
+  error: { title: t('applyItemsError') }
+}));
 
-    // API sends back an array of catalog elements, which can be incarnated in the following
-    // If this array is empty, there is nothing to incarnate and we return from the function
-    if (!incarnations.parameters.length) {
-      displaySuccessMessage(t('itemsAlreadyApplied'));
-      return;
-    }
-
-    // Apply incarnations
-    const response = await incarnate({ incarnations, unitId: route.params.unit });
-    displaySuccessMessage(t('itemsApplied'));
-    const itemsToAdd: IVeoLink[] = response;
-
-    createdObjectsBySubtype.value = groupNewObjects(itemsToAdd);
-
+// Open dialog with references if new objects were created
+watch(incarnatedObjects, (newVal) => {
+  if (newVal?.length) {
+    createdObjectsBySubtype.value = groupNewObjects(newVal);
     showDialog.value = true;
     selectedItems.value = [];
-  } catch (e: any) {
-    displayErrorMessage(t('applyItemsError'), e.message);
-  } finally {
-    isApplyingItems.value = false;
   }
-}
+});
+
+useUserFeedback({ isLoading: isPending, isSuccess, isError, messages });
 
 // Group items based on subType and assign translated names to each group
 function groupNewObjects(itemsToAdd: IVeoLink[]) {
