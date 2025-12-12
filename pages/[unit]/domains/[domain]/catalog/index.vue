@@ -79,22 +79,17 @@ import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useSubTypeTranslation } from '~/composables/Translations';
-// Types
 import type { VeoSearch } from '~/types/VeoSearch';
-import type { IVeoLink } from '~/types/VeoTypes';
-import { VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { VeoElementTypePlurals, type IVeoLink, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
-// Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
 const { clearCustomBreadcrumbs, addCustomBreadcrumb } = useVeoBreadcrumbs();
 
-// State
 const currentDomainId = computed(() => route.params.domain as string);
 const currentSubType = computed(() => (route.query.subType === 'all' ? undefined : (route.query.subType as string)));
 const { data: currentDomain } = useCurrentDomain();
-const { locale } = useI18n();
 
 // Always show query params in url
 // This ensures an active state in the navbar (e.g. after a reload)
@@ -161,8 +156,6 @@ const customBreadcrumbArgs = computed(() => ({
   disabled: true
 }));
 
-// Actions
-
 onMounted(() => addCustomBreadcrumb(customBreadcrumbArgs.value));
 const generateRoute = ({ item }: { item: any }) =>
   `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.items[0].type as keyof typeof VeoElementTypePlurals]}/${item.items[0].subType}`;
@@ -211,28 +204,7 @@ async function applyItems() {
     displaySuccessMessage(t('itemsApplied'));
     const itemsToAdd: IVeoLink[] = response;
 
-    // Group items based on subType and assign translated names to each group
-    createdObjectsBySubtype.value = Object.values(
-      itemsToAdd.reduce(
-        (groups, item) => {
-          // Get the translated name for the subtype
-          const subType =
-            currentDomain.value.raw.elementTypeDefinitions[item.type]?.translations[locale.value]?.[
-              `${item.type}_${item.subType}_plural`
-            ];
-          const sortKey = currentDomain.value.raw.elementTypeDefinitions[item.type].subTypes[item.subType].sortKey ?? 0;
-
-          // If the group for this subtype doesn't exist, create it
-          if (!groups[subType]) {
-            groups[subType] = { name: subType, items: [], sortKey };
-          }
-          groups[subType].items.push(item);
-
-          return groups;
-        },
-        {} as Record<string, { name: string; items: IVeoLink[]; sortKey: number }>
-      )
-    ).sort((a, b) => a.sortKey - b.sortKey);
+    createdObjectsBySubtype.value = groupNewObjects(itemsToAdd);
 
     showDialog.value = true;
     selectedItems.value = [];
@@ -241,6 +213,31 @@ async function applyItems() {
   } finally {
     isApplyingItems.value = false;
   }
+}
+
+// Group items based on subType and assign translated names to each group
+function groupNewObjects(itemsToAdd: IVeoLink[]) {
+  return Object.values(
+    itemsToAdd.reduce(
+      (groups, item) => {
+        // Get the translated name for the subtype
+        const subType =
+          currentDomain.value.raw.elementTypeDefinitions[item.type]?.translations[locale.value]?.[
+            `${item.type}_${item.subType}_plural`
+          ];
+        const sortKey = currentDomain.value.raw.elementTypeDefinitions[item.type].subTypes[item.subType].sortKey ?? 0;
+
+        // If the group for this subtype doesn't exist, create it
+        if (!groups[subType]) {
+          groups[subType] = { name: subType, items: [], sortKey };
+        }
+        groups[subType].items.push(item);
+
+        return groups;
+      },
+      {} as Record<string, { name: string; items: IVeoLink[]; sortKey: number }>
+    )
+  ).sort((a, b) => a.sortKey - b.sortKey);
 }
 </script>
 
