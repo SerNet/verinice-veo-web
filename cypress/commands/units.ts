@@ -2,7 +2,7 @@
 
 import type { UnitDetails } from '../support/setupHelpers';
 import type { TCYVeoUnitNames } from './domains';
-import type { IVeoUnit } from '../../composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '../../composables/requests/useUnits';
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace

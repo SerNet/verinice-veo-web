@@ -84,7 +84,7 @@
 </template>
 
 <script setup lang="ts">
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/requests/useUnits';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 

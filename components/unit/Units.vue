@@ -126,7 +126,7 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { sortUnits, type TVeoUnit } from '~/composables/requests/useUnits';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/requests/useUnits';
 import type { TInlineComponent } from '~/types/utils';
 
 const { t, locale } = useI18n();

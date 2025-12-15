@@ -69,7 +69,7 @@ import type {
   IVeoCreateAccessGroupParameters,
   IVeoUpdateAccessGroupParameters
 } from '~/composables/api/queryDefinitions/accessGroups';
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/requests/useUnits';
 
 const props = defineProps<{
   modelValue: boolean;

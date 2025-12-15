@@ -47,7 +47,7 @@ export const ROUTE_NAME = 'units-domain-domains';
 
 <script setup lang="ts">
 import { mdiPlus } from '@mdi/js';
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/requests/useUnits';
 
 const { createLink } = useCreateLink();
 const { t } = useI18n();

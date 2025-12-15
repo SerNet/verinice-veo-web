@@ -20,7 +20,7 @@ import type { JSONSchema7 } from 'json-schema';
 
 import { isEqual, isPlainObject } from 'lodash';
 import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/requests/useUnits';
 import type { IVeoCustomLink, IVeoDomainSpecificObjectSchema, IVeoEntity, IVeoObjectSchema } from '~/types/VeoTypes';
 
 export const CHART_COLORS = ['#666', '#ffc107', '#3f51b5', '#8bc34a', '#bbb'];

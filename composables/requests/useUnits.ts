@@ -22,8 +22,14 @@ import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { getIsPending } from '~/composables/helpers';
 
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import type { IVeoLink } from '~/types/VeoTypes';
+import type { IVeoBaseObject, IVeoLink } from '~/types/VeoTypes';
+
+export interface IVeoUnit extends IVeoBaseObject {
+  id: string;
+  name: string;
+  description?: string;
+  domains: IVeoLink[];
+}
 
 export type TVeoUnit = {
   id: string;
