@@ -109,8 +109,7 @@ import type {
   IVeoUpdateAccessGroupParameters
 } from '~/composables/api/queryDefinitions/accessGroups';
 import accessGroupsDefinition from '~/composables/api/queryDefinitions/accessGroups';
-import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import unitsDefinition from '~/composables/api/queryDefinitions/units';
+import type { IVeoUnit } from '~/composables/requests/useUnits';
 import ManageDialog from './ManageDialog.vue';
 import DeleteDialog from '~/components/accessGroups/DeleteDialog.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -125,7 +124,7 @@ const {
   refetch: refetchAccessGroups
 } = useQuery(accessGroupsDefinition.queries.fetchAccessGroups);
 
-const { data: unitsData, isFetching: isFetchingUnits } = useQuery(unitsDefinition.queries.fetchAll);
+const { data: unitsData, isFetching: isFetchingUnits } = useUnits();
 const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
 
 const { mutateAsync: updateRestrictUnitAccess, isLoading: isLoadingAccess } = useMutation(
