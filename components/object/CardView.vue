@@ -180,8 +180,8 @@ type ObjectDetails = {
   designator: string;
   status: string;
   abbreviation?: string;
-  updatedBy: string;
-  updatedAt: string;
+  updatedBy?: string;
+  updatedAt?: string;
   description?: string;
   appliedCatalogItem?: IVeoLink;
 };

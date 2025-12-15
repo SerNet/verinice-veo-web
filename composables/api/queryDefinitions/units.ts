@@ -25,7 +25,7 @@ import { omit } from 'lodash';
 export interface IVeoUnit extends IVeoBaseObject {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   domains: IVeoLink[];
 }
 

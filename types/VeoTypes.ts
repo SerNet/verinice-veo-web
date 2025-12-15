@@ -30,10 +30,10 @@ export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
  */
 export interface IVeoBaseObject {
   id: string;
-  createdAt: string;
-  createdBy: string;
-  updatedAt: string;
-  updatedBy: string;
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
 }
 
 export interface IVeoLink {

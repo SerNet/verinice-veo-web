@@ -7,7 +7,7 @@ type RequestHeaders = {
   Accept?: string;
 };
 
-type RequestOptions = {
+export type RequestOptions = {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE';
   headers?: RequestHeaders;
   token?: string;
