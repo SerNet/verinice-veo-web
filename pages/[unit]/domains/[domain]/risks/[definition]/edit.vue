@@ -105,7 +105,6 @@ import {
   cleanUpValueMatrix,
   createNewMatrixRow,
   createRiskCategory,
-  getUpdatedRiskDefinition,
   hasUnsetRiskValues,
   Impact,
   ProbabilityLevel,
@@ -116,6 +115,7 @@ import {
   updateRiskMatrixValues
 } from '~/components/risk/wizard/helpers';
 import type {
+  IVeoDomainRiskDefinition,
   IVeoRiskCategory,
   IVeoRiskDefinitionItemTranslations,
   IVeoRiskPotentialImpact,
@@ -304,15 +304,8 @@ function deleteProbabilityLevel(index: number) {
 
 // PUT
 const { saveRiskDefinition } = useRiskDefinitionUpdate();
-async function save() {
-  const newRiskDefinition = getUpdatedRiskDefinition(
-    riskDefinition.value,
-    riskCategories.value,
-    probabilityLevels.value,
-    riskValues.value
-  );
-
-  await saveRiskDefinition(newRiskDefinition);
+async function save(evaluatedRiskDefinition: IVeoDomainRiskDefinition) {
+  await saveRiskDefinition(evaluatedRiskDefinition);
   router.push(riskDefinitionRoute.value);
 }
 
