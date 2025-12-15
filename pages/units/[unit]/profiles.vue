@@ -84,16 +84,13 @@ export const ROUTE_NAME = 'profiles';
 </script>
 
 <script setup lang="ts">
-import { useApplyProfile } from '~/components/unit/unit-module';
 import { mdiShapeOutline } from '@mdi/js';
 import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 
 // Helper
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { applyProfile, isLoading: isApplyingProfile } = useApplyProfile();
 const { createLink } = useCreateLink();
-const { setLoading, clearLoading } = useGlobalLoadingState();
 
 // Data
 const { data: currentUnit } = useUnit();
@@ -101,19 +98,10 @@ const { profiles } = useProfiles();
 
 // State
 const selectedProfile = ref<TVeoProfile | null>(null);
-
 const canApplyProfile = computed(() => !!selectedProfile.value);
 const wantsToAssociateNewDomain = ref(false);
-
 const isDialogOpen = ref(false);
 
-const applyProfileParams = computed(() => ({
-  profileId: selectedProfile?.value?.id,
-  unitId: currentUnit.value?.id,
-  domainId: selectedProfile.value?.domainId
-}));
-
-// Actions
 async function closeDialog() {
   return new Promise<void>((resolve) => {
     watch(
@@ -125,7 +113,7 @@ async function closeDialog() {
   });
 }
 
-// Associate domain if necessary
+// Mutate unit (associate domain + apply profile)
 const unit = computed(() => {
   const domainId = profiles.value.find((p) => p.id === selectedProfile.value.id)?.domainId ?? '';
   if (!domainId) return { ...currentUnit.value?.raw };
@@ -135,20 +123,56 @@ const unit = computed(() => {
   };
 });
 
+const unitId = computed(() => currentUnit.value?.id ?? '');
+
+const profile = computed(() => ({
+  id: selectedProfile.value?.id ?? '',
+  domainId: selectedProfile.value?.domainId ?? ''
+}));
+
+// Associate Domain if necessary
 const { mutate: associateDomain, isPending: isAssociatingDomain, isSuccess, isError } = useUnitMutation(unit);
 
-// User Feedback for associating domain
-const associateDomainMessages = computed(() => ({
+// Apply Profile
+const {
+  mutate: applyProfile,
+  isPending: isApplyingProfile,
+  isSuccess: isSuccessApplyProfile,
+  isError: isErrorApplyProfile
+} = useApplyProfile(unitId, profile);
+
+const messagesAssociateDomain = computed(() => ({
   loading: t('isAssociatingDomain'),
   success: t('domainAssociatedSuccess'),
   error: { title: t('domainAssociatedError.title'), text: t('domainAssociatedError.text') }
+}));
+
+const messagesApplyProfile = computed(() => ({
+  loading: t('isApplyingProfile'),
+  success: t('applyProfileSuccess'),
+  error: { title: t('applyProfileErrorTitle'), body: t('applyProfileErrorBody') }
 }));
 
 useUserFeedback({
   isLoading: isAssociatingDomain,
   isSuccess,
   isError,
-  messages: associateDomainMessages
+  messages: messagesAssociateDomain
+});
+
+useUserFeedback({
+  isLoading: isApplyingProfile,
+  isSuccess: isSuccessApplyProfile,
+  isError: isErrorApplyProfile,
+  messages: messagesApplyProfile,
+  callback: () =>
+    useRouter().push({
+      name: 'unit-domains-domain',
+      params: {
+        unit: unitId.value,
+        domain: profile.value.domainId
+      }
+    })
 });
 
 async function initApplyProfile() {
@@ -162,20 +186,11 @@ async function initApplyProfile() {
 
     if (wantsToAssociateNewDomain.value) {
       associateDomain();
-      await waitForBooleanToUpdate(isSuccess);
+      await waitForBooleanToUpdate(isSuccess, true);
     }
   }
-
-  const loadingId = setLoading(t('unit.isApplyingProfile'));
-  // @ts-ignore TODO #3066 not assignable
-  await applyProfile(applyProfileParams.value, messages.value);
-  clearLoading(loadingId);
+  applyProfile();
 }
-
-const messages = computed(() => ({
-  success: t('applyProfileSuccess'),
-  error: { title: t('applyProfileErrorTitle'), body: t('applyProfileErrorBody') }
-}));
 
 useHead({
   title: globalT('breadcrumbs.profiles')
