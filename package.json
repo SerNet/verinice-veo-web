@@ -94,7 +94,7 @@
     "mocha-junit-reporter": "2.2.1",
     "nuxt": "4.2.2",
     "prettier": "3.7.4",
-    "sass": "1.95.0",
+    "sass": "1.96.0",
     "typescript-eslint": "8.49.0",
     "undici": "7.16.0",
     "vite-tsconfig-paths": "5.1.4",
