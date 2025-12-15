@@ -23,7 +23,8 @@
     "deleteDialogBody": "Are you sure you want to delete this criterion? In all units where this criterion is used, all associated impact and risk values will also be removed. This action cannot be undone.",
     "summaryHeader": "Summary for: {name}",
     "summaryHint": "Review the risk matrix and details before saving.",
-    "riskMatrix": "Risk matrix"
+    "riskMatrix": "Risk matrix",
+    "deletionDisabled": "You cannot delete the last criterion. At least one criterion is required."
   },
   "de": {
     "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten.",
@@ -49,6 +50,7 @@
     "deleteDialogBody": "Möchten Sie dieses Kriterium wirklich löschen? In allen Units, in denen dieses Kriterium verwendet wird, werden alle zugehörigen Auswirkungs- und Risikowerte ebenfalls entfernt. Diese Aktion kann nicht rückgängig gemacht werden.",
     "summaryHeader": "Zusammenfassung für: {name}",
     "summaryHint": "Prüfen Sie die Risikomatrix und Details vor dem Speichern.",
-    "riskMatrix": "Risikomatrix"
+    "riskMatrix": "Risikomatrix",
+    "deletionDisabled": "Sie können das letzte Kriterium nicht löschen. Es wird zumindest ein Kriterium benötigt."
   }
 }

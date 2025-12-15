@@ -77,12 +77,19 @@
                     @input="() => changeItem(itemIndex, item.translations[translation].name)"
                   >
                     <template #append-inner>
-                      <v-btn
-                        :icon="mdiDeleteOutline"
-                        :aria-label="t('removeItem')"
-                        :data-veo-test="`risk-definition-editor-remove-button-${item.translations[translation].name}`"
-                        @click="() => removeItem(itemIndex)"
-                      />
+                      <v-tooltip :disabled="data.length > 1" location="top" :text="t('deletionDisabled')">
+                        <template #activator="{ props }">
+                          <span v-bind="props">
+                            <v-btn
+                              :icon="mdiDeleteOutline"
+                              :aria-label="t('removeItem')"
+                              :data-veo-test="`risk-definition-editor-remove-button-${item.translations[translation].name}`"
+                              :disabled="data.length <= 1"
+                              @click="removeItem(itemIndex)"
+                            />
+                          </span>
+                        </template>
+                      </v-tooltip>
                     </template>
                   </v-text-field>
 
@@ -201,6 +208,7 @@ function removeItem(itemIndex: number) {
   });
 }
 </script>
+<i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
 <style scoped lang="scss">
 .add-btn {
   margin: auto;
