@@ -127,6 +127,31 @@ export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
   };
 }
 
+export function useApplyProfile(unitId: Ref<string>, profile: Ref<{ id: string; domainId: string }>) {
+  const queryClient = useQueryClient();
+
+  const query = useMutation({
+    mutationFn: () => {
+      const profilePath = computed(
+        () => `/domains/${profile.value.domainId}/profiles/${profile.value.id}/incarnation?unit=${unitId.value}`
+      );
+
+      return mutate({
+        path: profilePath.value,
+        options: { method: 'POST' }
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['units'] });
+    }
+  });
+
+  return {
+    ...query,
+    isPending: computed(() => getIsPending(query.status.value))
+  };
+}
+
 export function useCreateUnitAndMaybeApplyProfile(
   unit: Ref<{ name: string; description?: string; domains: IVeoLink[] }>,
   profile?: Ref<{ id: string; domainId: string }>
