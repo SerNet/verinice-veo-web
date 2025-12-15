@@ -49,6 +49,8 @@ export function waitForBooleanToUpdate(bool: Ref<boolean>, expectedValue?: boole
             resolve();
             return;
           }
+        }
+        if (newValue) {
           stopWatcher();
           resolve();
           return;
