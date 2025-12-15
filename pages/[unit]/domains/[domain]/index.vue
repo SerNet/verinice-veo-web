@@ -74,7 +74,6 @@
 import { OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { useQuery } from '~/composables/api/utils/query';
 
 export const ROUTE_NAME = 'unit-domains-domain';
@@ -149,22 +148,12 @@ export default defineComponent({
       });
     };
 
-    const fetchUnitQueryParams = computed(() => ({
-      id: route.params.unit as string
-    }));
-    const fetchUnitQueryEnabled = computed(() => !!route.params.unit);
-
-    const { data: unit } = useQuery(unitQueryDefinitions.queries.fetch, fetchUnitQueryParams, {
-      enabled: fetchUnitQueryEnabled
-    });
-
     return {
       chartData,
       domain,
       domainNotFound,
       elementStatusCountIsFetching,
       onBarClicked,
-      unit,
       locale,
       t,
       tGlobal,
