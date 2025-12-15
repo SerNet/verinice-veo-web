@@ -50,7 +50,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           <UnitProfiles
             v-model="selectedProfile"
             :profiles="profiles"
-            :is-applying-profile="isApplyingProfile"
+            :is-applying-profile="isPending"
             :is-loading-profiles="isLoadingProfiles"
           />
         </v-window-item>
@@ -146,8 +146,6 @@ export const ROUTE_NAME = 'unit-create';
 
 <script setup lang="ts">
 import { mdiPlus } from '@mdi/js';
-import { redirectToUnits, useApplyProfile } from '~/components/unit/unit-module';
-import unitQueryDefinitions from '~/composables/api/queryDefinitions/units';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 // Types
@@ -159,10 +157,8 @@ import type { TInlineComponent } from '~/types/utils';
 // Helper
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { createLink } = useCreateLink();
 const { ability } = useVeoPermissions();
-const { applyProfile, isLoading: isApplyingProfile } = useApplyProfile();
 
 // Data
 const { data: domains } = useDomains();
@@ -192,15 +188,15 @@ watch(
       selectedDomains.value.push(newVal);
       return;
     }
-    selectedDomains.value = selectedDomains.value.filter((d) => d.id !== oldVal[0]?.id);
+    selectedDomains.value = selectedDomains.value?.filter((d) => d.id !== oldVal[0]?.id) ?? [];
   },
   { immediate: true }
 );
 
-const unitParameters = computed(() => ({
-  name: unitDetails.value.name,
+const newUnit = computed(() => ({
+  name: unitDetails.value?.name,
   description: unitDetails.value.description ?? '',
-  domains: selectedDomains.value.map((domain: TVeoDomain) => createLink('domains', domain.id) ?? [])
+  domains: selectedDomains.value.map((domain: TVeoDomain) => createLink('domains', domain.id)) ?? []
 }));
 
 const canClickNext = computed(() => {
@@ -210,53 +206,20 @@ const canClickNext = computed(() => {
   return true;
 });
 
-// Actions
-const { mutateAsync: create, data: createResponse } = useMutation(unitQueryDefinitions.mutations.create);
+// Create a new unit and maybe add a profile
+const {
+  mutate: createUnit,
+  isPending,
+  isSuccess,
+  isError
+} = useCreateUnitAndMaybeApplyProfile(newUnit, selectedProfile);
 
-const { setLoading, clearLoading } = useGlobalLoadingState();
-
-async function createUnit() {
-  if (!canClickNext.value) {
-    return;
-  }
-
-  try {
-    let loadingId = setLoading(t('unit.isCreatingUnit'));
-
-    await create(unitParameters);
-
-    clearLoading(loadingId);
-
-    if (selectedProfile.value && createResponse.value?.success) {
-      const profileParams = {
-        unitId: createResponse.value.resourceId,
-        domainId: selectedProfile.value.domainId,
-        profileId: selectedProfile.value.id
-      };
-
-      // New unit with a profile
-      loadingId = setLoading(t('unit.isApplyingProfile'));
-
-      await applyProfile(profileParams, messages.value);
-
-      clearLoading(loadingId);
-
-      return;
-    }
-
-    // New unit without a profile
-    redirectToUnits();
-    displaySuccessMessage(t('createUnitSuccess'));
-  } catch (error: any) {
-    displayErrorMessage({ text: t('createUnitErrorText') });
-  }
-}
-
-// Pass these messages to `applyProfile` to display user messages
-const messages = computed(() => ({
-  success: t('applyProfileSuccess'),
-  error: { text: t('applyProfileError') }
-}));
+useUserFeedback({
+  isLoading: isPending,
+  isSuccess,
+  isError,
+  callback: () => useRouter().push({ name: 'units' })
+});
 
 // Description field providing assistance for unit creation
 const Description: TInlineComponent = {
