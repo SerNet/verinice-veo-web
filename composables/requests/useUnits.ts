@@ -138,7 +138,7 @@ export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
     profilesUrl: `/units/${unit.id}/profiles`,
     domainsUrl: `/units/${unit.id}/domains`,
     detailsUrl: `/units/${unit.id}/details`,
-    isFavorite: unit.id === favoriteUnitId ? true : false,
+    isFavorite: unit.id === favoriteUnitId,
     metaData: {
       createdBy: unit.createdBy,
       createdAt: format(unit.createdAt, 'dd.MM.yyyy')

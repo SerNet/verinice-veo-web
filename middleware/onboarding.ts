@@ -19,7 +19,7 @@
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { waitForData } from '~/composables/helpers';
 import type { TVeoDomain } from '~/composables/domains/useDomains';
-import type { TVeoUnit } from '~/composables/units/useUnits';
+import type { TVeoUnit } from '~/composables/requests/useUnits';
 
 /**
  * After a successful login users are redirected to the `/` route.

@@ -17,7 +17,7 @@
  */
 
 import { AbilityBuilder, createMongoAbility, subject } from '@casl/ability';
-import type { TVeoUnit } from '~/composables/units/useUnits';
+import type { TVeoUnit } from '~/composables/requests/useUnits';
 
 /**
  * @description Permissions for global unit actions, e.g. create, update, delete a whole unit,

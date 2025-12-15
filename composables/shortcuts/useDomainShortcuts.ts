@@ -19,7 +19,7 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { getElementTypeKeys, getNavigationKeys } from './shortcutConfig';
 import { CATEGORY_DOMAIN_NAVIGATION, type Shortcut } from './types';
-import { sortUnits } from '~/composables/units/useUnits';
+import { sortUnits } from '~/composables/requests/useUnits';
 
 // Route name imports
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';

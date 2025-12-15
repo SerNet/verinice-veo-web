@@ -123,12 +123,10 @@ import {
   mdiFootPrint
 } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { sortUnits } from '~/composables/units/useUnits';
+import { sortUnits, type TVeoUnit } from '~/composables/requests/useUnits';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
-// Types
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
-import type { TVeoUnit } from '~/composables/units/useUnits';
 import type { TInlineComponent } from '~/types/utils';
 
 const { t, locale } = useI18n();

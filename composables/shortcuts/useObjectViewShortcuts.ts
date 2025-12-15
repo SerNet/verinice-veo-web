@@ -16,7 +16,7 @@
  */
 import { getObjectActionKeys } from './shortcutConfig';
 import { OBJECT_OVERVIEW_SHORTCUT, type Shortcut } from './types';
-import { sortUnits } from '~/composables/units/useUnits';
+import { sortUnits } from '~/composables/requests/useUnits';
 
 export function useObjectViewShortcuts() {
   const route = useRoute();

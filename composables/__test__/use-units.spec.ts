@@ -19,7 +19,7 @@
 import { describe, it, expect } from 'vitest';
 import { isEqual } from 'lodash';
 import { unit0 } from '~/test/data/units';
-import { mapUnitValues } from '~/composables/units/useUnits';
+import { mapUnitValues } from '~/composables/requests/useUnits';
 
 const testUnit = unit0.data;
 
