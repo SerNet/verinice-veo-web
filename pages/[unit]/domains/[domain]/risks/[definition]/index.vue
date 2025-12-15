@@ -74,6 +74,7 @@
             :probability-levels="riskDefinition.probability.levels ?? []"
             :risk-category="riskCategory"
             :delete-risk-category="() => requestDeleteRiskCategory(riskCategory.id)"
+            :can-delete="riskDefinition.categories.length > 1"
           />
         </v-row>
         <v-dialog v-model="closeConfirmationDialogVisible" width="450px">

@@ -2,11 +2,15 @@
   "en": {
     "noMatrix": "No risk matrix defined.",
     "createMatrix": "Create a risk matrix",
-    "impact": "Potential impacts"
+    "impact": "Potential impacts",
+    "deleteHint": "You cannot delete the last criterion. At least one criterion is required.",
+    "delete": "Delete"
   },
   "de": {
     "noMatrix": "Keine Risikomatrix definiert.",
     "createMatrix": "Matrix erstellen",
-    "impact": "Mögliche Auswirkungen"
+    "impact": "Mögliche Auswirkungen",
+    "deleteHint": "Sie können das letzte Kriterium nicht löschen. Es wird zumindest ein Kriterium benötigt.",
+    "delete": "Löschen"
   }
 }

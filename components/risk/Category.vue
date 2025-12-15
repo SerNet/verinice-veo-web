@@ -28,14 +28,24 @@
               size="small"
               :to="`${route.path}/edit?id=${riskCategory.id ?? ''}`"
             />
-            <v-btn
-              :icon="mdiTrashCan"
-              variant="plain"
-              size="small"
-              data-veo-test="delete-category"
-              @click="deleteRiskCategory(riskCategory.id)"
-            />
-          </v-card-actions>
+            <v-tooltip location="start" :disabled="canDelete" :aria-label="t('delete')">
+              <template #activator="{ props: tooltipProps }">
+                <div v-bind="tooltipProps">
+                  <v-btn
+                    :icon="mdiTrashCan"
+                    variant="plain"
+                    size="small"
+                    data-veo-test="delete-category"
+                    :disabled="!canDelete"
+                    @click="deleteRiskCategory(riskCategory.id)"
+                  />
+                </div>
+              </template>
+              <template #default>
+                {{ t('deleteHint') }}
+              </template>
+            </v-tooltip></v-card-actions
+          >
         </div>
       </div>
 
@@ -74,6 +84,7 @@ defineProps<{
   riskValues: IVeoRiskValueLevel[];
   probabilityLevels: IVeoRiskProbabilityLevel[];
   riskCategory: IVeoRiskCategory;
+  canDelete: boolean;
   deleteRiskCategory: (categoryId: string) => void;
 }>();
 
