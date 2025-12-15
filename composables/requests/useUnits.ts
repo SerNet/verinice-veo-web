@@ -91,7 +91,7 @@ export function useUnits() {
     refetchOnMount: false,
     queryFn: async () => {
       const rawData = await read({ path: '/units' });
-      return rawData.map((unit: IVeoUnit) => mapUnitValues(unit));
+      return rawData.map((unit: IVeoUnit) => mapUnitValues(unit))?.sort(sortUnits);
     }
   });
 
