@@ -15,15 +15,15 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useQuery } from 'vue-query-v5';
-
-import { read } from '~/requests/crud';
+import { useQuery, useQueryClient, useMutation } from 'vue-query-v5';
+import { read, mutate, type RequestOptions } from '~/requests/crud';
 
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { getIsPending } from '~/composables/helpers';
 
 import type { IVeoUnit } from '~/composables/api/queryDefinitions/units';
+import type { IVeoLink } from '~/types/VeoTypes';
 
 export type TVeoUnit = {
   id: string;
@@ -124,6 +124,53 @@ export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
     error: query.error,
     isSuccess: query.isSuccess,
     mutate: query.mutate
+  };
+}
+
+export function useCreateUnitAndMaybeApplyProfile(
+  unit: Ref<{ name: string; description?: string; domains: IVeoLink[] }>,
+  profile?: Ref<{ id: string; domainId: string }>
+) {
+  const queryClient = useQueryClient();
+
+  const mutationFn = async () => {
+    const path = '/units';
+    const options: Ref<RequestOptions> = computed(() =>
+      unit.value?.name && unit.value?.domains.length ?
+        {
+          body: unit.value,
+          method: 'POST'
+        }
+      : {}
+    );
+
+    const response = await mutate({ path, options: options.value });
+
+    if (!profile?.value?.id) {
+      return response;
+    }
+
+    const unitId = response.resourceId;
+    const profilePath = computed(
+      () => `/domains/${profile.value.domainId}/profiles/${profile.value.id}/incarnation?unit=${unitId}`
+    );
+
+    return mutate({
+      path: profilePath.value,
+      options: { method: 'POST' }
+    });
+  };
+
+  const query = useMutation({
+    mutationFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['units'] });
+    }
+  });
+
+  return {
+    ...query,
+    isPending: computed(() => getIsPending(query.status.value))
   };
 }
 
