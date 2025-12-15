@@ -67,7 +67,7 @@ export function useUnit(id?: Ref<string>) {
 
   const unit = computed(() => {
     if (!data.value) return;
-    return mapUnitValues({ unit: data.value });
+    return mapUnitValues(data.value);
   });
 
   return {
@@ -91,7 +91,7 @@ export function useUnits() {
     refetchOnMount: false,
     queryFn: async () => {
       const rawData = await read({ path: '/units' });
-      return rawData.map((unit: IVeoUnit) => mapUnitValues({ unit }));
+      return rawData.map((unit: IVeoUnit) => mapUnitValues(unit));
     }
   });
 
@@ -174,7 +174,7 @@ export function useCreateUnitAndMaybeApplyProfile(
   };
 }
 
-export function mapUnitValues({ unit }: { unit: IVeoUnit }): TVeoUnit {
+export function mapUnitValues(unit: IVeoUnit): TVeoUnit {
   const favoriteUnitId: string | null = localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
   return {
     id: unit.id,
