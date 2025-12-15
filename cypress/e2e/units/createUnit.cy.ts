@@ -1,3 +1,11 @@
+function saveUnitId() {
+  cy.get('[data-veo-test="item-card-slot-center-link"]')
+    .invoke('attr', 'href')
+    .then((href) => {
+      const id = href.split('/')[1];
+      Cypress.env('dynamicTestData').testUnits = [{ unitId: id }];
+    });
+}
 describe('create units', () => {
   beforeEach(() => {
     cy.login();
@@ -5,8 +13,12 @@ describe('create units', () => {
     cy.goToUnitSelection();
   });
 
+  afterEach(() => {
+    cy.deleteTestUnits();
+  });
+
   const testData = {
-    unitName: `TEST-NAME-${Math.random()}`,
+    unitName: `CY-TEST-NAME-${Math.random()}`,
     unitDesc: 'TEST DESCRIPTION FROM `createUnit.cy.ts`',
     domains: ['DS-GVO', 'IT-Grundschutz'],
     domainSelectors: [
@@ -27,25 +39,12 @@ describe('create units', () => {
 
     chooseDomains(testData);
     createUnit();
-    testUnitCard(testData);
 
-    cy.getCustom('div.v-card-title')
-      .contains(testData.unitName)
-      .first()
-      .then(($el) => {
-        if ($el.length) {
-          cy.wrap($el)
-            .parent('a')
-            .then(($a) => {
-              const href = $a.attr('href');
-              const idBeforeDomains = href.match(/\/([^/]+)\/domains/)[1];
-              cy.veoRequest({
-                endpoint: `units/${idBeforeDomains}`,
-                method: 'DELETE'
-              }).then((res) => expect(res.status).to.eq(204));
-            });
-        }
-      });
+    // Redirect to /units
+    cy.getCustom('[data-veo-test="breadcrumbs"]'); // make sure view is loaded
+    saveUnitId(); // for deletion/cleanup
+
+    testUnitCard(testData);
   });
 
   it('creates a unit, associates it with the `IT-Security` domain and applies the `Beispieldaten (GDPR)` profile', () => {
@@ -58,31 +57,18 @@ describe('create units', () => {
     // domainSelectors[0] is preselected when choosing profile `Beispieldata` (cp. above)
     chooseDomains({ ...testData, domainSelectors: [testData.domainSelectors[1]] });
     createUnit({ hasProfile: true });
-    cy.testDashboardWidgets();
 
-    // Check if the unit card is rendered correctly
-    cy.goToUnitSelection();
+    // Redirect to /units
+    cy.getCustom('[data-veo-test="breadcrumbs"]'); // make sure view is loaded
+    saveUnitId(); // for deletion/cleanup
+
     testUnitCard(testData);
+    cy.selectUnit(testData.unitName);
 
-    cy.getCustom('div.v-card-title')
-      .contains(testData.unitName)
-      .first()
-      .then(($el) => {
-        if ($el.length) {
-          cy.wrap($el)
-            .parent('a')
-            .then(($a) => {
-              const href = $a.attr('href');
-              const idBeforeDomains = href.match(/\/([^/]+)\/domains/)[1];
-              cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
-              cy.veoRequest({
-                endpoint: `units/${idBeforeDomains}`,
-                method: 'DELETE'
-              }).then((res) => expect(res.status).to.eq(204));
-            });
-        }
-      });
+    cy.selectDomain(testData.domains[0]);
+    cy.testDashboardWidgets();
   });
+
   function enterUnitDetails(testData: TestData) {
     cy.log('enter unit details!');
     // Go to details page of the test unit
