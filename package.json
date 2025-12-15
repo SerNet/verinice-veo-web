@@ -80,7 +80,7 @@
     "@types/node": "24.10.3",
     "@types/prismjs": "1.26.5",
     "@typescript-eslint/eslint-plugin": "8.49.0",
-    "@vitejs/plugin-vue": "6.0.2",
+    "@vitejs/plugin-vue": "6.0.3",
     "@vue/test-utils": "2.4.6",
     "cypress": "14.5.4",
     "cypress-axe": "1.7.0",
