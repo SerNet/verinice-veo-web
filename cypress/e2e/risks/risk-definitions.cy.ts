@@ -276,7 +276,7 @@ describe('Risk Definitions with one category', () => {
     // Store probability level name from fixture for later comparison
     let probabilityToDelete: string;
     cy.fixture('risk-definition.json').then((fixture) => {
-      probabilityToDelete = fixture.probability.levels[2].translations.en.name;
+      probabilityToDelete = fixture.probability.levels[3].translations.en.name;
 
       // Go probabilities tab
       cy.getCustom('[data-veo-test="risk-cross-category-edit"]').click();

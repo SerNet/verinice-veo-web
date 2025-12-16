@@ -40,11 +40,29 @@
             <v-tab
               v-for="(item, idx) in data ?? []"
               :key="`${item.ordinalValue}-${idx}`"
-              :text="item.translations[translation]?.name"
               :data-veo-test="`risk-definition-editor-tab-${idx}`"
+              class="d-flex justify-space-between"
             >
               <template #prepend>
                 <v-icon :color="item.htmlColor" :icon="mdiSquare" size="large" />
+                <span class="ml-2">{{ item.translations[translation]?.name }}</span>
+              </template>
+
+              <template #append>
+                <v-tooltip :disabled="data.length > 1" location="top" :text="t('deletionDisabled')">
+                  <template #activator="{ props }">
+                    <span v-bind="props">
+                      <v-btn
+                        v-if="idx === data.length - 1"
+                        :icon="mdiDeleteOutline"
+                        :aria-label="t('removeItem')"
+                        :data-veo-test="`risk-definition-editor-remove-button-${item.translations[translation].name}`"
+                        :disabled="data.length <= 1"
+                        @click="removeItem(idx)"
+                      />
+                    </span>
+                  </template>
+                </v-tooltip>
               </template>
             </v-tab>
           </v-tabs>
@@ -75,24 +93,7 @@
                     hide-details
                     required
                     @input="() => changeItem(itemIndex, item.translations[translation].name)"
-                  >
-                    <template #append-inner>
-                      <v-tooltip :disabled="data.length > 1" location="top" :text="t('deletionDisabled')">
-                        <template #activator="{ props }">
-                          <span v-bind="props">
-                            <v-btn
-                              :icon="mdiDeleteOutline"
-                              :aria-label="t('removeItem')"
-                              :data-veo-test="`risk-definition-editor-remove-button-${item.translations[translation].name}`"
-                              :disabled="data.length <= 1"
-                              @click="removeItem(itemIndex)"
-                            />
-                          </span>
-                        </template>
-                      </v-tooltip>
-                    </template>
-                  </v-text-field>
-
+                  />
                   <!-- Description -->
                   <v-textarea
                     v-model="item.translations[translation].description"
@@ -208,7 +209,9 @@ function removeItem(itemIndex: number) {
   });
 }
 </script>
+
 <i18n src="~/locales/base/pages/unit-domains-domain-risks.json"></i18n>
+
 <style scoped lang="scss">
 .add-btn {
   margin: auto;

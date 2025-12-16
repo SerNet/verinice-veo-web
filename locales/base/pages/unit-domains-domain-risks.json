@@ -24,7 +24,8 @@
     "summaryHeader": "Summary for: {name}",
     "summaryHint": "Review the risk matrix and details before saving.",
     "riskMatrix": "Risk matrix",
-    "deletionDisabled": "You cannot delete the last criterion. At least one criterion is required."
+    "deletionDisabled": "You cannot delete the last criterion. At least one criterion is required.",
+    "addItem": "Add probability level"
   },
   "de": {
     "selectRiskMatrixToView": "Bitte wählen Sie die Risikodefinition aus, die Sie betrachten möchten.",
@@ -51,6 +52,7 @@
     "summaryHeader": "Zusammenfassung für: {name}",
     "summaryHint": "Prüfen Sie die Risikomatrix und Details vor dem Speichern.",
     "riskMatrix": "Risikomatrix",
-    "deletionDisabled": "Sie können das letzte Kriterium nicht löschen. Es wird zumindest ein Kriterium benötigt."
+    "deletionDisabled": "Sie können das letzte Kriterium nicht löschen. Es wird zumindest ein Kriterium benötigt.",
+    "addItem": "Risikostufe hinzufügen"
   }
 }
