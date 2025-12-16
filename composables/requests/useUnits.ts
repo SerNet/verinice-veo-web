@@ -58,41 +58,24 @@ export type TVeoUnit = {
 
 export function useUnit(id?: Ref<string>) {
   const unitId = computed(() => (id?.value ? id.value : useRoute().params.unit));
+
   const queryKey = ['units', { unitId }];
   const enabled = computed(() => !!unitId.value);
 
-  const { data, isLoading, isFetching, error } = useQuery({
+  return useQuery({
     queryKey,
-    queryFn: ({ queryKey }) => {
+    queryFn: async ({ queryKey }) => {
       const { unitId } = queryKey[1] as { unitId: string };
       const path = `/units/${unitId}`;
-      return unitId ? read({ path }) : Promise.reject('no unit id');
+      const response = unitId ? await read({ path }) : Promise.reject('no unit id');
+      return mapUnitValues(response);
     },
     enabled
   });
-
-  const unit = computed(() => {
-    if (!data.value) return;
-    return mapUnitValues(data.value);
-  });
-
-  return {
-    data: unit,
-    isLoading,
-    isFetching,
-    error
-  };
 }
 
 export function useUnits() {
-  const {
-    data,
-    isLoading,
-    isFetching,
-    error,
-
-    refetch
-  } = useQuery({
+  return useQuery({
     queryKey: ['units'],
     refetchOnMount: false,
     queryFn: async () => {
@@ -100,14 +83,6 @@ export function useUnits() {
       return rawData.map((unit: IVeoUnit) => mapUnitValues(unit))?.sort(sortUnits);
     }
   });
-
-  return {
-    data,
-    isLoading,
-    isFetching,
-    error,
-    refetch
-  };
 }
 
 type Method = 'POST' | 'PUT' | 'DELETE';
@@ -125,11 +100,8 @@ export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
   const query = useDataMutation(path, options, ['units']);
 
   return {
-    isPending: computed(() => getIsPending(query.status.value)),
-    isError: query.isError,
-    error: query.error,
-    isSuccess: query.isSuccess,
-    mutate: query.mutate
+    ...query,
+    isPending: computed(() => getIsPending(query.status.value))
   };
 }
 
