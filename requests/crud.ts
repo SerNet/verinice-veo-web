@@ -25,8 +25,6 @@ async function request({
   options: RequestOptions;
   callback?: () => Promise<void>;
 }) {
-  const config = useRuntimeConfig();
-  const url = removeTrailingSlashes(config.public.apiUrl) + '/' + removeLeadingSlashes(path);
   const token = await getAuthToken();
 
   const opts: RequestOptions = {
@@ -36,7 +34,7 @@ async function request({
   };
 
   // Do we need more error handling?
-  const response = await fetch(url, opts);
+  const response = await fetch(getUrl(path), opts);
 
   await callback?.();
 
@@ -93,6 +91,24 @@ async function getAuthToken() {
     await refreshKeycloakSession();
   }
   return token.value || '';
+}
+
+function getUrl(path: string) {
+  const config = useRuntimeConfig();
+
+  const baseUrls = {
+    veo: config.public.apiUrl,
+    history: config.public.historyApiUrl,
+    accounts: config.public.accountsApiUrl,
+    default: config.public.apiUrl
+  };
+
+  const cleanedPath = removeLeadingSlashes(path);
+  const [apiPrefix, ...rest] = cleanedPath.split('/');
+
+  return Object.hasOwn(baseUrls, apiPrefix) ?
+      removeTrailingSlashes(baseUrls[apiPrefix]) + '/' + rest.join('/')
+    : removeTrailingSlashes(baseUrls['default']) + '/' + cleanedPath;
 }
 
 function getHeaders(token: string, headers: RequestHeaders = {}): RequestHeaders {
