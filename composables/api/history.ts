@@ -36,7 +36,7 @@ export function useRevisions(
   return useQuery({
     queryKey: ['revisions', { objectType, objectId, domainId }],
     queryFn: () => read({ path: path.value }),
-    refetchInterval: 2000,
+    refetchInterval: 10000,
     enabled
   });
 }
