@@ -25,17 +25,13 @@ async function request({
   options: RequestOptions;
   callback?: () => Promise<void>;
 }) {
-  const { token, refreshKeycloakSession } = useVeoUser();
   const config = useRuntimeConfig();
   const url = removeTrailingSlashes(config.public.apiUrl) + '/' + removeLeadingSlashes(path);
-
-  if (!token.value) {
-    await refreshKeycloakSession();
-  }
+  const token = await getAuthToken();
 
   const opts: RequestOptions = {
     method: options.method,
-    headers: generateHeaders(token.value, options.headers ? options.headers : {}),
+    headers: generateHeaders(token, options.headers ? options.headers : {}),
     ...omit(options, 'headers')
   };
 
@@ -72,7 +68,6 @@ export async function read({ path, options = {}, callback }: CrudParams) {
   if (!options.method) {
     options.method = 'GET';
   }
-
   return await request({ path, options, callback });
 }
 
@@ -91,6 +86,14 @@ export async function mutate({ path, options = {}, callback }: CrudParams) {
 }
 
 // Utils
+async function getAuthToken() {
+  const { token, refreshKeycloakSession } = useVeoUser();
+  if (!token.value) {
+    await refreshKeycloakSession();
+  }
+  return token.value || '';
+}
+
 function generateHeaders(token: string, headers: RequestHeaders = {}): RequestHeaders {
   return {
     Authorization: `Bearer ${token}`,
