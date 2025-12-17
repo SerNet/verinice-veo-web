@@ -31,7 +31,7 @@ async function request({
 
   const opts: RequestOptions = {
     method: options.method,
-    headers: generateHeaders(token, options.headers ? options.headers : {}),
+    headers: getHeaders(token, options.headers ? options.headers : {}),
     ...omit(options, 'headers')
   };
 
@@ -77,6 +77,7 @@ export async function mutate({ path, options = {}, callback }: CrudParams) {
     ...options,
     headers: {
       ...options.headers,
+      ['Content-Type']: 'application/json',
       ['If-Match']: etags.get(path) || ''
     },
     body: options.body ? JSON.stringify(options.body) : undefined
@@ -94,10 +95,9 @@ async function getAuthToken() {
   return token.value || '';
 }
 
-function generateHeaders(token: string, headers: RequestHeaders = {}): RequestHeaders {
+function getHeaders(token: string, headers: RequestHeaders = {}): RequestHeaders {
   return {
     Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json',
     Accept: 'application/json',
     ...headers
   };
