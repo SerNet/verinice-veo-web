@@ -194,6 +194,7 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import type { IVeoEntity, IVeoLink, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { VeoAlertType, VeoElementTypesSingular } from '~/types/VeoTypes';
+import { useQueryClient } from 'vue-query-v5';
 
 onBeforeRouteLeave((to, _from, next) => {
   // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
@@ -371,6 +372,8 @@ const expireOptimisticLockingAlert = () => {
   }
 };
 
+const queryClient = useQueryClient();
+
 async function updateObject(successText: string, errorText: string, callback?: () => void) {
   expireOptimisticLockingAlert();
   try {
@@ -380,9 +383,21 @@ async function updateObject(successText: string, errorText: string, callback?: (
         endpoint: route.params.objectType,
         object: modifiedObject.value
       });
-      refetch();
+      await refetch();
       formDataIsRevision.value = false;
       callback?.();
+
+      // Get updated object history (revisions)
+      queryClient.invalidateQueries({
+        queryKey: [
+          'revisions',
+          {
+            objectType: route.params.objectType,
+            objectId: route.params.object,
+            domainId: route.params.domain
+          }
+        ]
+      });
     }
   } catch (e: any) {
     if (e.code === 412) {
