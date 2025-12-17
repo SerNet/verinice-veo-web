@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2022  Jonas Heitmann
+ * Copyright (C) 2025 jae
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -15,33 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import type { Ref } from 'vue';
-import type { QueryOptions } from './utils/query';
-import { useQuery } from './utils/query';
-import historyQueryDefinitions from './queryDefinitions/history';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { useQuery } from 'vue-query-v5';
+import { read } from '~/requests/crud';
+import type { VeoElementTypesSingular } from '~/types/VeoTypes';
 
-export interface IVeoFetchVersionsParameters {
-  id: string;
-  objectType: string;
-  domainId: string;
+function getPath(domainId: string, objectType: keyof typeof VeoElementTypesSingular, objectId: string) {
+  if (!domainId || !objectType || !objectId) return '';
+  return `history/revisions?uri=/domains/${domainId}/${objectType}/${objectId}`;
 }
 
-export const useFetchVersions = (queryParameters: Ref<IVeoFetchVersionsParameters>, queryOptions?: QueryOptions) => {
-  const endpoint = computed(() => VeoElementTypePlurals[queryParameters.value.objectType]);
-  const queryEnabled = computed(() =>
-    // @ts-ignore TODO #3066 not assignable
-    !!endpoint.value && queryOptions?.enabled ? unref(queryOptions?.enabled) : true
-  );
+export function useRevisions(
+  domainId: Ref<string>,
+  objectType: Ref<keyof typeof VeoElementTypesSingular>,
+  objectId: Ref<string>
+) {
+  const enabled = computed(() => !!objectType.value && !!objectId.value && !!domainId.value);
 
-  const combinedQueryParameters = computed(() => ({
-    domainId: queryParameters.value.domainId,
-    id: queryParameters.value.id,
-    endpoint: endpoint.value as string
-  }));
+  const path = computed(() => (enabled.value ? getPath(domainId.value, objectType.value, objectId.value) : ''));
 
-  return useQuery(historyQueryDefinitions.queries.fetchVersions, combinedQueryParameters, {
-    ...queryOptions,
-    enabled: queryEnabled
+  return useQuery({
+    queryKey: ['revisions', { objectType, objectId, domainId }],
+    queryFn: () => read({ path: path.value }),
+    refetchInterval: 2000,
+    enabled
   });
-};
+}

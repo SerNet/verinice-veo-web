@@ -69,11 +69,10 @@
 <script lang="ts">
 import { cloneDeep } from 'lodash';
 
-import type { IVeoFetchVersionsParameters } from '~/composables/api/history';
-import { useFetchVersions } from '~/composables/api/history';
+import { useRevisions } from '~/composables/api/history';
 import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
-import type { IVeoObjectHistoryEntry } from '~/types/VeoTypes';
+import { type IVeoObjectHistoryEntry, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -95,15 +94,11 @@ export default defineComponent({
     const { t, locale } = useI18n();
     const route = useRoute();
 
-    const fetchVersionsQueryParameters = computed<IVeoFetchVersionsParameters>(() => ({
-      id: props.objectId,
-      objectType: props.objectType,
-      domainId: route.params.domain as string
-    }));
-    const { data: history, isLoading } = useFetchVersions(fetchVersionsQueryParameters, {
-      keepPreviousData: true,
-      refetchInterval: 2000 // The history service gets updated asynchronusly, but as soon as an object gets saved, the history gets refetched. To avoid using outdated data, we refetch ever 2 seconds.
-    });
+    const domainId = computed(() => route.params.domain as string);
+    const objectType = computed(() => VeoElementTypePlurals[props.objectType as keyof typeof VeoElementTypePlurals]);
+    const objectId = computed(() => props.objectId);
+
+    const { data: history, isFetching: isLoading } = useRevisions(domainId, objectType, objectId);
 
     const historyEntries = computed(() =>
       cloneDeep(history.value || []).sort((a, b) => {
