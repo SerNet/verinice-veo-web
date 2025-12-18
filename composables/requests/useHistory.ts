@@ -15,20 +15,22 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useQuery } from 'vue-query-v5';
+import { useQuery, type UseQueryReturnType } from 'vue-query-v5';
 import { read } from '~/requests/crud';
-import type { VeoElementTypesSingular } from '~/types/VeoTypes';
+import type { VeoElementTypesSingular, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
 function getPath(domainId: string, objectType: keyof typeof VeoElementTypesSingular, objectId: string) {
   if (!domainId || !objectType || !objectId) return '';
   return `history/revisions?uri=/domains/${domainId}/${objectType}/${objectId}`;
 }
 
+type UseHistoryReturnType<T> = UseQueryReturnType<T, Error>;
+
 export function useRevisions(
   domainId: Ref<string>,
   objectType: Ref<keyof typeof VeoElementTypesSingular>,
   objectId: Ref<string>
-) {
+): UseHistoryReturnType<IVeoObjectHistoryEntry[]> {
   const enabled = computed(() => !!objectType.value && !!objectId.value && !!domainId.value);
 
   const path = computed(() => (enabled.value ? getPath(domainId.value, objectType.value, objectId.value) : ''));
