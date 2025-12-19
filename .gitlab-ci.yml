@@ -48,7 +48,7 @@ store_project_version:
 determine-destinations:
   before_script: []
   image:
-    name: alpine/git@sha256:c0280cf9572316299b08544065d3bf35db65043d5e3963982ec50647d2746e26
+    name: alpine/git@sha256:f951cb5a23a5be670adc22a73a50df8e8df2a53e16a5dabb8973279e4341f34d
     entrypoint: ['']
   stage: setup
   script:
