@@ -172,6 +172,7 @@ build_test_app:
 test:
   extends: .test_template
   script:
+    - npm run prepare
     - ./run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
     - pkill -f Xvfb # Kill Xvfb after tests
 
