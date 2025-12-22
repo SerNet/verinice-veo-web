@@ -183,7 +183,9 @@ export default {
           unit: queryParameters.unitId,
           sortBy: queryParameters.sortBy || 'name',
           sortOrder: queryParameters.sortOrder || 'asc',
-          size: queryParameters.size || '20'
+          // No pagination if no size is specified.
+          // This is a workaround, better solution would be to handle no pagination in the backend.
+          size: queryParameters.size || '5000'
         }
       }),
       staticQueryOptions: {
