@@ -13,6 +13,8 @@ dist
 .DS_Store
 .history
 
+pnpm-lock.yaml
+
 # Vitest
 coverage
 
