@@ -85,12 +85,9 @@
 import { download } from '~/lib/jsonToZip';
 import { loadHistory, chunkHistory, createZipArchives } from './modules/HistoryExport';
 import { logError } from './modules/HandleError';
-import { useQuerySync } from '~/composables/api/utils/query';
-import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-
-// Types
-import type { HistoryZipArchive } from './modules/HistoryExport';
 import { PrepPhase } from './modules/HistoryExport';
+import { read } from '~/requests/crud';
+import type { HistoryZipArchive } from './modules/HistoryExport';
 
 interface IHistoryState {
   zipArchives: HistoryZipArchive[];
@@ -162,10 +159,7 @@ async function prepareData() {
 }
 
 async function fetchHistoryData({ size = 10000, afterId }: { size?: number; afterId?: string | undefined } = {}) {
-  return useQuerySync(historyQueryDefinitions.queries.fetchPagedRevisions, {
-    size: size.toString(),
-    afterId
-  });
+  return read({ path: `history/revisions/paged?size=${size ?? ''}&afterId=${afterId ?? ''}` });
 }
 
 async function downloadZip(index: number) {
