@@ -68,8 +68,6 @@
 
 <script lang="ts">
 import { cloneDeep } from 'lodash';
-
-import { useRevisions } from '~/composables/api/history';
 import ObjectSchemaValidator from '~/lib/ObjectSchemaValidator';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { IVeoObjectHistoryEntry } from '~/types/history';

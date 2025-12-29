@@ -36,17 +36,12 @@
 </template>
 
 <script setup lang="ts">
-import historyQueryDefinitions from '~/composables/api/queryDefinitions/history';
-import { type IVeoLegacyObjectHistoryEntry, VeoElementTypePlurals } from '~/types/VeoTypes';
-import { useQuery } from '~/composables/api/utils/query';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoLegacyObjectHistoryEntry } from '~/types/history';
 
 const { t, locale } = useI18n();
-const route = useRoute();
 
-const latestChangesQueryParameters = computed(() => ({
-  unitId: route.params.unit as string
-}));
-const { data: revisions } = useQuery(historyQueryDefinitions.queries.fetchLatestVersions, latestChangesQueryParameters);
+const { data: revisions } = useLatestRevisions();
 
 const createUrl = (revision: IVeoLegacyObjectHistoryEntry) => {
   const unitId = revision.content?.owner?.id;

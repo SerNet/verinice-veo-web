@@ -17,12 +17,9 @@
  */
 import { useQuery, type UseQueryReturnType } from 'vue-query-v5';
 import { read } from '~/requests/crud';
-import type { VeoElementTypesSingular, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 
-function getPath(domainId: string, objectType: keyof typeof VeoElementTypesSingular, objectId: string) {
-  if (!domainId || !objectType || !objectId) return '';
-  return `history/revisions?uri=/domains/${domainId}/${objectType}/${objectId}`;
-}
+import type { VeoElementTypesSingular } from '~/types/VeoTypes';
+import type { IVeoObjectHistoryEntry, IVeoLegacyObjectHistoryEntry } from '~/types/history';
 
 type UseHistoryReturnType<T> = UseQueryReturnType<T, Error>;
 
@@ -31,6 +28,11 @@ export function useRevisions(
   objectType: Ref<keyof typeof VeoElementTypesSingular>,
   objectId: Ref<string>
 ): UseHistoryReturnType<IVeoObjectHistoryEntry[]> {
+  const getPath = (domainId: string, objectType: keyof typeof VeoElementTypesSingular, objectId: string) => {
+    if (!domainId || !objectType || !objectId) return '';
+    return `history/revisions?uri=/domains/${domainId}/${objectType}/${objectId}`;
+  };
+
   const enabled = computed(() => !!objectType.value && !!objectId.value && !!domainId.value);
 
   const path = computed(() => (enabled.value ? getPath(domainId.value, objectType.value, objectId.value) : ''));
@@ -40,5 +42,18 @@ export function useRevisions(
     queryFn: () => read({ path: path.value }),
     refetchInterval: 10000,
     enabled
+  });
+}
+
+export function useLatestRevisions(unitId?: Ref<string>): UseHistoryReturnType<IVeoLegacyObjectHistoryEntry[]> {
+  const getPath = (unitId: string) => `history/revisions/my-latest?owner=/units/${unitId}`;
+
+  const path = computed(() => getPath(unitId?.value ? unitId.value : (useRoute().params.unit as string)));
+
+  return useQuery({
+    queryKey: ['latestRevisions'],
+    refetchOnMount: 'always',
+    queryFn: () => read({ path: path.value }),
+    enabled: !!path.value
   });
 }
