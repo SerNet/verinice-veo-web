@@ -187,14 +187,17 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
 import { mdiAccountEdit, mdiBookOpenPageVariantOutline, mdiCheck } from '@mdi/js';
 import { cloneDeep, isEqual, omit, upperFirst } from 'lodash';
 import { useVeoAlerts } from '~/composables/VeoAlert';
+import { VeoAlertType } from '~/types/VeoTypes';
 import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
-import type { IVeoEntity, IVeoLink, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
-import { VeoAlertType, VeoElementTypesSingular } from '~/types/VeoTypes';
 import { useQueryClient } from 'vue-query-v5';
+import { VeoElementTypesSingular } from '~/types/VeoTypes';
+
+import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
+import type { IVeoObjectHistoryEntry } from '~/types/history';
 
 onBeforeRouteLeave((to, _from, next) => {
   // If the form was modified and the dialog is open, the user wanted to proceed with his navigation

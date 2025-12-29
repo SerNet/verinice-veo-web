@@ -561,20 +561,6 @@ export interface IVeoFormSchemaItemDeleteEvent {
   name?: string;
 }
 
-export type IVeoLegacyObjectHistoryEntry = IVeoHistoryEntry<IVeoEntityLegacy>;
-
-export type IVeoObjectHistoryEntry = IVeoHistoryEntry<IVeoEntity>;
-
-interface IVeoHistoryEntry<T> {
-  author: string;
-  content: T;
-  time: string;
-  type: string;
-  changeNumber: number;
-  uri: string;
-  id: string;
-}
-
 export enum VeoAlertType {
   ERROR,
   INFO,

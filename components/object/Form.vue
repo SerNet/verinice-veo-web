@@ -95,8 +95,6 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
-
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
 import { debounce, isEmpty, merge, upperFirst } from 'lodash';
 
@@ -105,26 +103,29 @@ import {
   getStatusAdditionalContext,
   getSubTypeTranslation
 } from '~/components/dynamic-form/additionalContext';
-import type { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
-import type { IVeoDecisionResults, IVeoEntity, IVeoInspectionResult, IVeoObjectHistoryEntry } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
-import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 
 import LayoutFormNavigation from '~/components/layout/FormNavigation.vue';
 import ObjectDisplayOptions from '~/components/object/DisplayOptions.vue';
 import ObjectHistory from '~/components/object/History.vue';
-import type { Message } from '~/components/object/messages/Messages.vue';
 import Messages from '~/components/object/messages/Messages.vue';
 
 import { useQuery } from '~/composables/api/utils/query';
+
+import type { PropType } from 'vue';
+import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
+import type { IVeoDecisionResults, IVeoEntity, IVeoInspectionResult } from '~/types/VeoTypes';
+import type { IVeoObjectHistoryEntry } from '~/types/history';
+import type { Message } from '~/components/object/messages/Messages.vue';
 import type { INestedMenuEntries } from '../util/NestedMenu.vue';
 import type { SideBarAction } from './SideBarAction.vue';
 
