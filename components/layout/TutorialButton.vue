@@ -47,7 +47,7 @@
             <v-list dense>
               <v-list-item v-for="tutorial of tutorialsForRoute" :key="tutorial.id" @click="load(tutorial.path)">
                 <v-list-item-title>
-                  {{ tutorial.body['title'] }}
+                  {{ tutorial?.['title'] ?? '' }}
                 </v-list-item-title>
               </v-list-item>
             </v-list>

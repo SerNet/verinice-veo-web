@@ -468,15 +468,12 @@ export function useTutorials() {
   const tutorials = computed(() => {
     return (
       (docs.value || [])?.map((tutorial) => {
+        // Find tutorials for a specific route, e.g. `/units`
         const routeToMatch = last(route.matched)?.path || '';
-        // Use the content's path directly for matching
         return {
           ...tutorial,
-          // Implement a new logic based on path comparison
           applicable:
-            tutorial.body['exact'] ?
-              routeToMatch === tutorial.body['route']
-            : routeToMatch.startsWith(tutorial.body['route'])
+            tutorial?.['exact'] ? routeToMatch === tutorial?.['route'] : routeToMatch.startsWith(tutorial?.['route'])
         };
       }) || []
     );
@@ -500,8 +497,7 @@ export function useTutorials() {
       const _find: TutorialPredicate = typeof predicate === 'function' ? predicate : (_) => _.path === predicate;
 
       const tutorial = computed(() => (predicate ? tutorials.value?.find(_find) : tutorialsForRoute.value?.[0]));
-      // @ts-ignore Some sort of type error, however intro js seems to work
-      intro.configure(tutorial.value.body);
+      intro.configure(tutorial.value);
       if (autoplay) {
         stepsVisible.value = true;
       }
