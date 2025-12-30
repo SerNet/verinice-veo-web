@@ -116,7 +116,7 @@ const registrationAction = useLocalizedField('registrationAction');
 const registrationLink = useLocalizedField('registrationLink');
 const customLogo = customerConfig.value?.['customLogo'];
 
-const localizedLinks = computed(() =>
+const localizedLinks = computed<{ label: string; url: string }[]>(() =>
   (customerConfig.value?.links ?? []).map((link) => ({
     label: link.label[locale.value],
     url: link.link[locale.value]
