@@ -29,7 +29,9 @@ export function useRevisions(
   objectId: Ref<string>
 ): UseHistoryReturnType<IVeoObjectHistoryEntry[]> {
   const getPath = (domainId: string, objectType: keyof typeof VeoElementTypesSingular, objectId: string) => {
-    if (!domainId || !objectType || !objectId) return '';
+    if (!domainId || !objectType || !objectId) {
+      throw new Error('Missing parameters to build revisions path');
+    }
     return `history/revisions?uri=/domains/${domainId}/${objectType}/${objectId}`;
   };
 
@@ -46,7 +48,12 @@ export function useRevisions(
 }
 
 export function useLatestRevisions(unitId?: Ref<string>): UseHistoryReturnType<IVeoLegacyObjectHistoryEntry[]> {
-  const getPath = (unitId: string) => `history/revisions/my-latest?owner=/units/${unitId}`;
+  const getPath = (unitId: string) => {
+    if (!unitId) {
+      throw new Error('Missing unitId to build latest revisions path');
+    }
+    return `history/revisions/my-latest?owner=/units/${unitId}`;
+  };
 
   const path = computed(() => getPath(unitId?.value ? unitId.value : (useRoute().params.unit as string)));
 
