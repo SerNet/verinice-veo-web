@@ -84,6 +84,10 @@ export default defineComponent({
     parentScopeIds: {
       type: Array as PropType<string[]>,
       default: () => []
+    },
+    displaySuccessMessage: {
+      type: Boolean,
+      default: false
     }
   },
   emits: ['success', 'update:model-value'],
@@ -214,11 +218,13 @@ export default defineComponent({
         emit('update:model-value', false);
         emit('success', data.resourceId);
         await nextTick(); // Wait for dialog begin closing
-        setTimeout(() => {
-          displaySuccessMessage(
-            upperFirst(t('objectCreated', { name: objectName || upperFirst(t('object').toString()) }).toString())
-          );
-        }, 100); // Need to wait for dialog closing animation
+        if (props.displaySuccessMessage) {
+          setTimeout(() => {
+            displaySuccessMessage(
+              upperFirst(t('objectCreated', { name: objectName || upperFirst(t('object').toString()) }).toString())
+            );
+          }, 100);
+        } // Need to wait for dialog closing animation
       }
     });
     const onSubmit = async () => {

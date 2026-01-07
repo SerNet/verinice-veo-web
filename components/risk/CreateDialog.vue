@@ -250,7 +250,7 @@ export default defineComponent({
             })
           )
         );
-        displaySuccessMessage(t('risksCreated', selectedScenarios.value.length));
+        displaySuccessMessage(upperFirst(t('risksCreated', newRisks.length)));
         selectedScenarios.value = [];
         emit('success');
       } catch (e: any) {

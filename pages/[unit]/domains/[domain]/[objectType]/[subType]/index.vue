@@ -171,6 +171,7 @@
         v-model="createObjectDialogVisible"
         :domain-id="domainId"
         :object-type="filter.objectType"
+        :display-success-message="true"
         :sub-type="filter.subType || selectedSubtypeForCreateDialog"
       />
       <v-tooltip v-if="filter.objectType" location="start" :aria-label="t('createObject', [createObjectLabel])">

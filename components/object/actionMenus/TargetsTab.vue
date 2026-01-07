@@ -57,6 +57,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import { useCreateLink } from '~/composables/VeoObjectUtilities';
 import type { IVeoEntity } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { upperFirst } from 'lodash';
 
 const props = defineProps<{
   object?: IVeoEntity;
@@ -144,9 +145,7 @@ const onSuccess = (objectIds: string[]) => {
   });
 
   emit('reload');
-  displaySuccessMessage(
-    objectIds.length > 1 ? t('linkedToMultipleTargets', { count: objectIds.length }) : t('linkedToTarget')
-  );
+  displaySuccessMessage(upperFirst(t('successfullyAdded', { name: t('targetObjects', objectIds.length) })));
 
   selectedObjectType.value = undefined;
 };

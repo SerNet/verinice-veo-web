@@ -2,11 +2,11 @@
   "en": {
     "createRisk": "Create risk | Create risk | Create {count} risks",
     "createRiskError": "Couldn't create risk | Couldn't create risks",
-    "risksCreated": "The risk was created successfully | The risks were created successfully"
+    "risksCreated": "Risk successfully added | Risks successfully added"
   },
   "de": {
     "createRisk": "Risiko erstellen | Risiko erstellen | {count} Risiken erstellen",
     "createRiskError": "Das Risiko konnte nicht erstellt werden | Die Risiken konnten nicht erstellt werden",
-    "risksCreated": "Das Risiko wurde erstellt | Die Risiken wurden erstellt"
+    "risksCreated": "Risiko erfolgreich hinzugefügt | Risiken erfolgreich hinzugefügt"
   }
 }

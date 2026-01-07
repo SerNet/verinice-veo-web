@@ -202,7 +202,7 @@ const router = useRouter();
 const queryClient = useQueryClient();
 const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+const { displayErrorMessage } = useVeoAlerts();
 const { tablePageSize } = useVeoUser();
 const { ability, subject } = useVeoPermissions();
 const config = useRuntimeConfig();
@@ -416,7 +416,6 @@ const handleSelectObjects = async () => {
     emit('select', objectsToLink);
     emit('success', objectIds);
     handleDialogClose(false);
-    displaySuccessMessage(t('objectsLinked'));
   } catch (error: any) {
     displayErrorMessage(t('linkError'), error.message);
     emit('error', error);
@@ -488,7 +487,6 @@ const createAndFetchObject = async (endpoint: string) => {
 const emitSuccess = (id: string, openEditor: boolean) => {
   emit('create', id, openEditor);
   emit('success', [id]);
-  displaySuccessMessage(t('objectCreatedSuccess', { name: createFormName.value }));
 };
 
 const navigateToCreatedObject = async (endpoint: string, id: string) => {

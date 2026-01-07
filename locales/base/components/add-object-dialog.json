@@ -17,7 +17,6 @@
     "selectCount": "Select ({count})",
     "fieldRequired": "This field is required",
     "objectsLinked": "Objects were successfully linked.",
-    "objectCreatedSuccess": "\"{name}\" was successfully created!",
     "linkError": "Could not link objects",
     "createError": "Could not create object"
   },
@@ -39,7 +38,6 @@
     "selectCount": "Auswählen ({count})",
     "fieldRequired": "Dieses Feld ist erforderlich",
     "objectsLinked": "Objekte wurden erfolgreich verknüpft.",
-    "objectCreatedSuccess": "\"{name}\" wurde erfolgreich erstellt!",
     "linkError": "Objekte konnten nicht verknüpft werden",
     "createError": "Objekt konnte nicht erstellt werden"
   }

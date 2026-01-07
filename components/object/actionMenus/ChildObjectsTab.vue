@@ -57,6 +57,7 @@ import { useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import type { IVeoEntity } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { upperFirst } from 'lodash';
 
 const props = defineProps<{
   object?: IVeoEntity;
@@ -137,9 +138,7 @@ const handleLink = async (objects: IVeoEntity[]) => {
 
 const onSuccess = (objectIds: string[]) => {
   emit('reload');
-  displaySuccessMessage(
-    objectIds.length > 1 ? t('childMultipleObjectsLinked', { count: objectIds.length }) : t('childObjectLinked')
-  );
+  displaySuccessMessage(upperFirst(t('successfullyAdded', { name: t('childObjects', objectIds.length) })));
 };
 
 const onCreate = (objectId: string, openEditor: boolean) => {

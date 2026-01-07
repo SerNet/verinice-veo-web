@@ -146,6 +146,7 @@ const items = computed<TActionItems[]>(() => {
             domainId: route.params.domain,
             objectType: 'process',
             subType: 'PRO_DPIA',
+            displaySuccessMessage: false,
             onSuccess: onCreateObjectSuccess
           }
         },

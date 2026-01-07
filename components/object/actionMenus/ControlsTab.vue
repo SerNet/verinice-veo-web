@@ -48,6 +48,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import { useCreateLink } from '~/composables/VeoObjectUtilities';
 import type { IVeoEntity, IVeoControlImplementation } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { upperFirst } from 'lodash';
 
 const props = defineProps<{
   object?: IVeoEntity;
@@ -149,8 +150,13 @@ const handleLink = async (controls: IVeoEntity[]) => {
 
 const onSuccess = (objectIds: string[]) => {
   emit('reload');
+  const subTypeName = selectedSubType.value ? getSubTypeName(selectedSubType.value) : '';
   displaySuccessMessage(
-    objectIds.length > 1 ? t('linkedMultipleControls', { count: objectIds.length }) : t('linkedControl')
+    upperFirst(
+      t('successfullyAdded', {
+        name: t('CI', [subTypeName], objectIds.length)
+      })
+    )
   );
 };
 
