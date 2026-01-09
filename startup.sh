@@ -1,5 +1,8 @@
 #!/bin/bash
-file=$(find /usr/src/app -type f -print0 | xargs -0 grep -l api.veo.example)
+
+cp -r /usr/src/app /tmp/veo/
+
+file=$(find /tmp/veo/app -type f -print0 | xargs -0 grep -l api.veo.example)
 sed -i "s,https://api\.veo\.example/veo,$VEO_DEFAULT_API_URL,g" $file
 sed -i "s,https://api\.veo\.example/forms,$VEO_FORMS_API_URL,g" $file
 sed -i "s,https://api\.veo\.example/history,$VEO_HISTORY_API_URL,g" $file
