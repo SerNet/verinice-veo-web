@@ -98,7 +98,7 @@
     "prettier": "3.7.4",
     "sass": "1.97.1",
     "typescript-eslint": "8.52.0",
-    "undici": "7.16.0",
+    "undici": "7.18.0",
     "vite-tsconfig-paths": "6.0.3",
     "vitest": "4.0.16",
     "vue-tsc": "3.2.1"
