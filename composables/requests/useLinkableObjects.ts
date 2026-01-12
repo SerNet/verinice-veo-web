@@ -97,7 +97,7 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
   const parentEndpoint = computed(() => resolveEndpoint(parentObject?.value?.type));
 
   const childrenQueryEnabled = computed(
-    () => !!parentEndpoint.value && !!parentObject?.value?.id && !editParents.value
+    () => !!parentEndpoint.value && !!parentObject?.value?.id && !editParents.value && parentEndpoint.value !== 'scopes'
   );
 
   const baseChildrenParams = computed(() => ({

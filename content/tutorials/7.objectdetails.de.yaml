@@ -22,9 +22,6 @@ steps:
   - title: 'Teile'
     element: '[data-component-name=object-details-childObjects-tab]'
     intro: In diesem Abschnitt sehen Sie alle Objekte des betrachteten Scopes oder Objektes.
-  - title: 'In Scope'
-    element: '[data-component-name=object-details-parentScopes-tab]'
-    intro: In diesem Abschnitt sehen Sie, in welchen Scopes das ausgewählte Objekt enthalten ist.
   - title: 'Teil von'
     element: '[data-component-name=object-details-parentObjects-tab]'
     intro: In diesem Abschnitt sehen Sie, in welchen Objekten das gewählte Objekt enthalten ist.

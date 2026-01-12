@@ -107,13 +107,13 @@ import type { TableHeader } from '~/components/base/Table.vue';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject, useLinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { useFetchParentObjects } from '~/composables/api/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import elementsQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import type {
   IVeoFetchControlImplementationsParameters,
   IVeoFetchRisksParameters,
-  IVeoFetchScopeChildrenParameters
+  IVeoFetchScopeChildrenParameters,
+  IVeoFetchObjectParentsParameters
 } from '~/composables/api/queryDefinitions/objects';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
@@ -196,9 +196,8 @@ export default defineComponent({
 
     const tableIsLoading = computed(
       () =>
-        parentScopesIsFetching.value ||
-        parentObjectsIsFetching.value ||
         childScopesIsFetching.value ||
+        parentObjectIsFetching.value ||
         childObjectsIsFetching.value ||
         risksIsFetching.value ||
         domainIsFetching.value ||
@@ -247,10 +246,8 @@ export default defineComponent({
         switch (props.type) {
           case 'childObjects':
             return children.value;
-          case 'parentScopes':
-            return cloneDeep(parentScopes.value || []);
           case 'parentObjects':
-            return parentObjects.value || [];
+            return cloneDeep(objectParents.value || []);
           case 'risks':
             // TODO #3066 find out why on earth this even compiles
             return risks.value || [];
@@ -289,22 +286,6 @@ export default defineComponent({
       domainQueryDefinitions.queries.fetchDomain,
       fetchDomainQueryParameters
     );
-
-    const parentScopesQueryParameters = computed(() => ({
-      parentEndpoint: 'scopes',
-      childObjectId: props.object?.id || '',
-      unitId: route.params.unit as string,
-      sortBy: sortBy.value[0]?.key,
-      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
-      page: page.value
-    }));
-    const parentScopesQueryEnabled = computed(() => props.type === 'parentScopes');
-    const { data: parentScopes, isFetching: parentScopesIsFetching } = useFetchParentObjects(
-      parentScopesQueryParameters,
-      {
-        enabled: parentScopesQueryEnabled
-      }
-    ); // Used by table and cloning objects
 
     const linksQueryParameters = computed(() => ({
       id: props.object?.id || '',
@@ -380,21 +361,6 @@ export default defineComponent({
       }
     }
 
-    const parentObjectsQueryParameters = computed(() => ({
-      parentEndpoint: VeoElementTypePlurals[props.object?.type || ''] || '',
-      childObjectId: props.object?.id || '',
-      unitId: route.params.unit as string,
-      sortBy: sortBy.value[0]?.key,
-      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
-      page: page.value
-    }));
-    const parentObjectsQueryEnabled = computed(() => props.type === 'parentObjects');
-    const { data: parentObjects, isFetching: parentObjectsIsFetching } = useFetchParentObjects(
-      parentObjectsQueryParameters,
-      {
-        enabled: parentObjectsQueryEnabled
-      }
-    );
     const childScopesQueryParameters = computed<IVeoFetchScopeChildrenParameters>(() => ({
       id: props.object?.id || '',
       domain: (route.params.domain as string) || '',
@@ -411,6 +377,21 @@ export default defineComponent({
       { enabled: childScopesQueryEnabled }
     );
 
+    // fetch the parent elements
+    const parentsObjectQueryEnabled = computed(() => props.type == 'parentObjects');
+    const parentsObjectQueryParameters = computed<IVeoFetchObjectParentsParameters>(() => ({
+      id: props.object?.id,
+      endpoint: VeoElementTypePlurals[props.object?.type],
+      sortBy: sortBy.value[0]?.key,
+      sortOrder: sortBy.value[0]?.order as 'asc' | 'desc',
+      page: page.value,
+      size: tableSize.value
+    }));
+    const { data: objectParents, isFetching: parentObjectIsFetching } = useQuery(
+      objectQueryDefinitions.queries.fetchObjectParents,
+      parentsObjectQueryParameters,
+      { enabled: parentsObjectQueryEnabled }
+    );
     const childObjectsQueryParameters = computed(() => ({
       id: props.object?.id || '',
       endpoint: VeoElementTypePlurals[props.object?.type || ''] || '',
@@ -863,12 +844,8 @@ export default defineComponent({
               isDisabled: (_item: any) => !canManageUnitContent.value,
               async action(item: IVeoEntity) {
                 try {
-                  const clonedObjectId = (
-                    await clone(
-                      item,
-                      (parentScopes.value?.items || []).map((item) => item.id)
-                    )
-                  ).resourceId;
+                  const parentObjectIds = objectParents.value?.items?.map((item) => item.id) ?? [];
+                  const clonedObjectId = (await clone(item, parentObjectIds)).resourceId;
                   const clonedObject = await useQuerySync(
                     objectQueryDefinitions.queries.fetch,
                     {
@@ -885,6 +862,7 @@ export default defineComponent({
                       await link(clonedObject, props.object);
                     }
                   }
+                  queryClient.invalidateQueries({ queryKey: ['objectParents'] });
                   displaySuccessMessage(upperFirst(t('objectCloned').toString()));
                 } catch (e: any) {
                   displayErrorMessage(upperFirst(t('errors.clone').toString()), e.message);
@@ -893,14 +871,7 @@ export default defineComponent({
             },
             {
               id: 'unlink',
-              label: (_item: any) =>
-                upperFirst(
-                  t(
-                    props.object?.type === 'scope' || props.type === 'parentScopes' ?
-                      'removeFromScope'
-                    : 'removeFromObject'
-                  ).toString()
-                ),
+              label: (_item: any) => upperFirst(t('removeFromObject')),
               icon: mdiLinkOff,
               isDisabled: (_item: any) => !canManageUnitContent.value,
               action: async (item: IVeoEntity) => {
@@ -913,7 +884,7 @@ export default defineComponent({
                   },
                   queryClient
                 );
-                if (['parentScopes', 'parentObjects'].includes(props.type)) {
+                if (props.type === 'parentObjects') {
                   unlinkEntityDialog.value.objectToRemove = props.object;
                   unlinkEntityDialog.value.parent = parent;
                 } else {
@@ -939,30 +910,14 @@ export default defineComponent({
 
     const onUnlinkEntitySuccess = () => {
       unlinkEntityDialog.value.value = false;
-      displaySuccessMessage(
-        upperFirst(
-          t(
-            props.type === 'parentScopes' && props.object?.type === 'scope' ? 'removeScopeFromScopeSuccess'
-            : props.type === 'parentScopes' ? 'removeObjectFromScopeSuccess'
-            : 'removeObjectFromObjectSuccess'
-          ).toString()
-        )
-      );
+      displaySuccessMessage(upperFirst(t('removeObjectFromObjectSuccess')));
+      queryClient.invalidateQueries({ queryKey: ['objectParents'] });
       onRelatedObjectModified();
     };
 
     const onUnlinkEntityError = (error: any) => {
       unlinkEntityDialog.value.value = false;
-      displayErrorMessage(
-        upperFirst(
-          t(
-            props.type === 'parentScopes' && props.object?.type === 'scope' ? 'removeScopeFromScopeError'
-            : props.type === 'parentScopes' ? 'removeObjectFromScopeError'
-            : 'removeObjectFromObjectError'
-          ).toString()
-        ),
-        error?.toString()
-      );
+      displayErrorMessage(upperFirst(t('removeObjectFromObjectError')), error?.toString());
     };
 
     // Edit risk dialog stuff

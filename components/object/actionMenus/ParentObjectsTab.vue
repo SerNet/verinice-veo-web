@@ -19,13 +19,14 @@
     <slot :actions="actions"></slot>
 
     <ObjectSelectObjectTypeDialog
-      v-if="isScope"
+      v-if="isComposite"
       v-model="selectObjectTypeDialog.visible"
       :title="t('selectObjectType')"
       :description-text="t('selectObjectTypeDescription')"
       :cancel-text="$t('global.button.cancel')"
       :action-button-text="$t('global.button.ok')"
       action="select-entity"
+      :allowed-object-types="allowedParentTypes"
       @select-entity="onObjectTypeSelected(($event as any).type)"
     />
 
@@ -81,7 +82,7 @@ const selectObjectTypeDialog = ref({ visible: false });
 const selectedObjectTypeForDialog = ref<string | undefined>(undefined);
 
 const domainId = computed(() => route.params.domain as string);
-const isScope = computed(() => props.object?.type === 'scope');
+const isComposite = computed(() => props.object?.type != 'scope');
 
 const actions = computed(() => [
   {
@@ -100,7 +101,7 @@ const getObjectTypeName = () => {
 };
 
 const openDialog = () => {
-  if (isScope.value) {
+  if (isComposite.value) {
     selectObjectTypeDialog.value.visible = true;
   } else {
     selectedObjectTypeForDialog.value = props.object?.type;
@@ -135,6 +136,7 @@ const handleLink = async (parentObjects: IVeoEntity[]) => {
 
 const onSuccess = (objectIds: string[]) => {
   emit('reload');
+  queryClient.invalidateQueries({ queryKey: ['objectParents'] });
   displaySuccessMessage(
     objectIds.length > 1 ? t('multipleObjectsLinked', { count: objectIds.length }) : t('objectLinked')
   );
@@ -146,6 +148,7 @@ const onCreate = (objectId: string, openEditor: boolean) => {
     emit('reload');
   }
 };
+const allowedParentTypes = computed(() => (isComposite.value ? ['scope', props.object.type] : ['scope']));
 
 const onError = (error: any) => {
   displayErrorMessage(t('linkError'), error.message);

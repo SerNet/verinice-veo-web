@@ -21,9 +21,6 @@ steps:
   - title: 'Parts'
     element: '[data-component-name=object-details-childObjects-tab]'
     intro: In this section you will see all objects of the scope or object under consideration.
-  - title: 'In Scope'
-    element: '[data-component-name=object-details-parentScopes-tab]'
-    intro: In this section you can see in which scopes the selected object is contained.
   - title: 'Part of'
     element: '[data-component-name=object-details-parentObjects-tab]'
     intro: In this section you can see in which objects the selected object is contained.

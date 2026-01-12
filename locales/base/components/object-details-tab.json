@@ -32,10 +32,6 @@
     "removeFromScope": "Remove from scope",
     "removeObjectFromObjectError": "Couldn't remove object",
     "removeObjectFromObjectSuccess": "Object was removed successfully",
-    "removeObjectFromScopeError": "Couldn't remove object from scope",
-    "removeObjectFromScopeSuccess": "Object was removed from scope",
-    "removeScopeFromScopeError": "Couldn't remove scope",
-    "removeScopeFromScopeSuccess": "Scope was removed successfully",
     "residualRisk": "Residual risk",
     "riskDeleted": "The risk was removed",
     "riskTreatments": {
@@ -79,10 +75,6 @@
     "removeFromScope": "Aus Scope entfernen",
     "removeObjectFromObjectError": "Objekt konnte nicht entfernt werden",
     "removeObjectFromObjectSuccess": "Objekt wurde entfernt",
-    "removeObjectFromScopeError": "Objekt konnte nicht aus Scope entfernt werden",
-    "removeObjectFromScopeSuccess": "Objekt wurde aus Scope entfernt",
-    "removeScopeFromScopeError": "Scope konnte nicht entfernt werden",
-    "removeScopeFromScopeSuccess": "Scope wurde entfernt",
     "residualRisk": "NettoUmsetzungsrisiko",
     "riskDeleted": "Das Risiko wurde entfernt",
     "riskTreatments": {

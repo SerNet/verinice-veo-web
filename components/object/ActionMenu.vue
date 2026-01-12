@@ -89,10 +89,9 @@ import { mdiClose, mdiPlus } from '@mdi/js';
 import type { PropType } from 'vue';
 import ObjectActionMenusChildObjectsTab from '~/components/object/actionMenus/ChildObjectsTab.vue';
 import ObjectActionMenusParentObjectsTab from '~/components/object/actionMenus/ParentObjectsTab.vue';
-import ObjectActionMenusParentScopesTab from '~/components/object/actionMenus/ParentScopesTab.vue';
+import ObjectActionMenusRisksTab from '~/components/object/actionMenus/RisksTab.vue';
 import ObjectActionMenusTargetsTab from '~/components/object/actionMenus/TargetsTab.vue';
 import ObjectActionMenusControlsTab from '~/components/object/actionMenus/ControlsTab.vue';
-import ObjectActionMenusRisksTab from '~/components/object/actionMenus/RisksTab.vue';
 
 import type { IVeoEntity } from '~/types/VeoTypes';
 
@@ -126,7 +125,6 @@ export default defineComponent({
         childObjects: ObjectActionMenusChildObjectsTab,
         parentObjects: ObjectActionMenusParentObjectsTab,
         controls: ObjectActionMenusControlsTab,
-        parentScopes: ObjectActionMenusParentScopesTab,
         risks: ObjectActionMenusRisksTab,
         targets: ObjectActionMenusTargetsTab
       };

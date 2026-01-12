@@ -26,7 +26,8 @@ import type {
   IVeoEntityLegacy,
   IVeoPaginatedResponse,
   IVeoPaginationOptions,
-  IVeoRisk
+  IVeoRisk,
+  VeoElementTypePlurals
 } from '~/types/VeoTypes';
 import type { IVeoMutationDefinition } from '../utils/mutation';
 import type { IVeoQueryDefinition } from '../utils/query';
@@ -65,6 +66,10 @@ export interface IVeoFetchControlImplementationsParameters extends IVeoFetchObje
 
 export interface IVeoFetchScopeChildrenParameters extends IVeoPaginationOptions {
   domain: string;
+  id: string;
+}
+export interface IVeoFetchObjectParentsParameters extends IVeoPaginationOptions {
+  endpoint: VeoElementTypePlurals;
   id: string;
 }
 
@@ -302,6 +307,25 @@ export default {
         }
       })
     } as IVeoQueryDefinition<IVeoFetchScopeChildrenParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
+    fetchObjectParents: {
+      primaryQueryKey: 'objectParents',
+      url: '/api/domains/:domain/:endpoint/:id/parents',
+      onDataFetched: (result) => {
+        result.items.map((item) => formatObject(item));
+        return result;
+      },
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domain: route.params.domain,
+          endpoint: queryParameters.endpoint,
+          id: queryParameters.id
+        },
+        query: {
+          ...omit(queryParameters, 'id', 'endpoint'),
+          page: queryParameters.page ?? 0
+        }
+      })
+    } as IVeoQueryDefinition<IVeoFetchObjectParentsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,
     fetchRisks: {
       primaryQueryKey: 'risks',
       url: '/api/:endpoint/:id/risks',

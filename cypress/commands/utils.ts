@@ -8,7 +8,7 @@ export function getRandomElementType(
   const idx = Math.floor(Math.random() * elementTypes.length);
   return elementTypes[idx];
 }
-
+export type Tabs = 'childObjects' | 'parentObjects' | 'links' | 'controls' | 'risks';
 export function waitForPageToLoad() {
   // Wait for Vue to finish rendering the new data
   cy.window().then((win) => {

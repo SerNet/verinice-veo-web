@@ -115,11 +115,7 @@ const tabs = computed<{ key: string; disabled?: boolean; hidden?: boolean; toolt
     key: 'childObjects'
   },
   {
-    key: 'parentScopes'
-  },
-  {
-    key: 'parentObjects',
-    hidden: isScope.value
+    key: 'parentObjects'
   },
   {
     key: 'links'
