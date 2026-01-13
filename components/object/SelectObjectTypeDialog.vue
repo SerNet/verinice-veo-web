@@ -55,6 +55,7 @@ interface Props {
   actionButtonText?: string;
   action?: 'create-entity' | 'update:model-value' | 'select-entity';
   eventPayload?: Record<string, unknown>;
+  allowedObjectTypes?: string[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -63,7 +64,8 @@ const props = withDefaults(defineProps<Props>(), {
   cancelText: 'Cancel',
   actionButtonText: 'Create',
   action: 'create-entity',
-  eventPayload: () => ({})
+  eventPayload: () => ({}),
+  allowedObjectTypes: undefined
 });
 
 interface SelectEntityPayload {
@@ -95,7 +97,13 @@ const type = ref<string | undefined>();
 const options = computed<{ title: string; value: string }[]>(() => {
   const objectSchemaNames = Object.keys(VeoElementTypePlurals);
 
-  return objectSchemaNames.map((schemaName) => ({
+  // Filter by allowedObjectTypes if provided
+  const filteredSchemaNames =
+    props.allowedObjectTypes ?
+      objectSchemaNames.filter((name) => props.allowedObjectTypes!.includes(name))
+    : objectSchemaNames;
+
+  return filteredSchemaNames.map((schemaName) => ({
     value: schemaName,
     title: translations.value?.lang[locale.value]?.[schemaName] || schemaName
   }));
