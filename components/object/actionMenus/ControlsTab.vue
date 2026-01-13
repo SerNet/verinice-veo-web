@@ -17,76 +17,152 @@
 <template>
   <div class="controls-tab">
     <slot :actions="actions"></slot>
+
+    <ObjectAddObjectDialog
+      v-model="unifiedDialogState.visible"
+      :domain-id="domainId"
+      object-type="control"
+      :parent-object="object"
+      :edit-parents="true"
+      :multi-select="true"
+      :allow-select="true"
+      :allow-create="false"
+      :initial-tab="'select'"
+      :preselected-filters="{ subType: selectedSubType }"
+      :disabled-fields="['subType', 'objectType']"
+      :on-link="handleLink"
+      @success="onSuccess"
+      @error="onError"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { mdiLinkPlus } from '@mdi/js';
-import { computed, inject } from 'vue';
+import { mdiPlus } from '@mdi/js';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCurrentDomain } from '~/composables/index';
-import type { IVeoControlImplementation, IVeoEntity, IVeoLink } from '~/types/VeoTypes';
-import type { AddEntityDialogPayload } from './types';
-const { locale } = useI18n();
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuerySync } from '~/composables/api/utils/query';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQueryClient } from '@tanstack/vue-query';
+import { useCreateLink } from '~/composables/VeoObjectUtilities';
+import type { IVeoEntity, IVeoControlImplementation } from '~/types/VeoTypes';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-// Define props
 const props = defineProps<{
   object?: IVeoEntity;
   disabled?: boolean;
 }>();
 
-// Define emits
-const emit = defineEmits<{ 'update:addEntityDialog': [dialog: AddEntityDialogPayload] }>();
+const emit = defineEmits<{
+  reload: [];
+}>();
 
-// Dependency injection
-const t: any = inject('t');
-
+const route = useRoute();
+const queryClient = useQueryClient();
+const { t, locale } = useI18n();
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+const { createLink } = useCreateLink();
+const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 const { data: currentDomain } = useCurrentDomain();
 
+const unifiedDialogState = ref({ visible: false });
+const selectedSubType = ref<string | undefined>(undefined);
+
+const domainId = computed(() => route.params.domain as string);
+
 const complianceControlSubTypes = computed(
-  () => currentDomain.value?.raw.controlImplementationConfiguration.complianceControlSubTypes || []
+  () => currentDomain.value?.raw?.controlImplementationConfiguration?.complianceControlSubTypes || []
 );
 
-// Function to open the link object dialog
-const openLinkObjectDialog = (objectType?: string, subType?: string) => {
-  const updatedDialog = {
-    object: props.object,
-    editRelationship: objectType,
-    value: true,
-    editParents: true,
-    preselectedItems: getPreselectedItems(),
-    returnObjects: true, // explicitly setting it to true
-    preselectedFilters: { subType },
-    disabledFields: ['subType', 'objectType'],
-    linkRiskAffected: false
-  };
-  emit('update:addEntityDialog', updatedDialog);
+const openDialogForSubType = (subType: string) => {
+  selectedSubType.value = subType;
+  unifiedDialogState.value.visible = true;
 };
 
-// Callback for linking object
-const linkObjectCallback = (subType?: string) => {
-  return () => openLinkObjectDialog('control', subType);
+const getSubTypeName = (subType: string): string => {
+  const translations = currentDomain.value?.raw?.elementTypeDefinitions?.control?.translations?.[locale.value];
+  return translations?.[`control_${subType}_plural`] || subType;
 };
 
-// Get preselected items for the link dialog
-const getPreselectedItems = (): IVeoLink[] => {
-  return (props.object?.controlImplementations ?? []).map((ci: IVeoControlImplementation) => ci.control);
-};
-
-// Define actions for parent objects
 const actions = computed(() => {
-  return complianceControlSubTypes.value.map((subType) => ({
-    key: `linkObject_${subType}`,
-    title: computed(() =>
-      t('linkControl', [
-        currentDomain.value.raw.elementTypeDefinitions.control.translations[locale.value][
-          `control_${subType}_plural`
-        ] || subType
-      ])
-    ),
-    icon: mdiLinkPlus,
-    tab: ['controls'],
-    objectTypes: ['entity'],
-    action: linkObjectCallback(subType)
-  }));
+  if (complianceControlSubTypes.value.length > 1) {
+    return complianceControlSubTypes.value.map((subType: string) => ({
+      key: `linkControl_${subType}`,
+      title: computed(() => t('linkControl', [getSubTypeName(subType)])),
+      icon: mdiPlus,
+      action: () => openDialogForSubType(subType)
+    }));
+  }
+
+  return [
+    {
+      key: 'linkControl',
+      title: computed(() => t('linkControl')),
+      icon: mdiPlus,
+      action: () => {
+        selectedSubType.value = complianceControlSubTypes.value[0];
+        unifiedDialogState.value.visible = true;
+      }
+    }
+  ];
 });
+
+const handleLink = async (controls: IVeoEntity[]) => {
+  if (!props.object) return;
+
+  const freshParent = await useQuerySync(
+    objectQueryDefinitions.queries.fetch,
+    {
+      domain: domainId.value,
+      endpoint: VeoElementTypePlurals[props.object.type],
+      id: props.object.id
+    },
+    queryClient
+  );
+
+  const existingControlIds = new Set(
+    (freshParent.controlImplementations || []).map((ci: IVeoControlImplementation) =>
+      ci.control.targetUri.split('/').pop()
+    )
+  );
+
+  if (!freshParent.controlImplementations) {
+    freshParent.controlImplementations = [];
+  }
+
+  for (const control of controls) {
+    if (existingControlIds.has(control.id)) continue;
+
+    freshParent.controlImplementations.push({
+      control: createLink('controls', control.id)
+    });
+  }
+
+  await updateObject({
+    domain: domainId.value,
+    endpoint: VeoElementTypePlurals[props.object.type],
+    id: freshParent.id,
+    object: freshParent
+  });
+};
+
+const onSuccess = (objectIds: string[]) => {
+  emit('reload');
+  displaySuccessMessage(
+    objectIds.length > 1 ? t('linkedMultipleControls', { count: objectIds.length }) : t('linkedControl')
+  );
+};
+
+const onError = (error: any) => {
+  displayErrorMessage(t('controlLinkError'), error.message);
+};
 </script>
+
+<i18n src="~/locales/base/components/object-action-menu-tabs.json"></i18n>
+
+<style scoped>
+.controls-tab {
+  position: relative;
+}
+</style>

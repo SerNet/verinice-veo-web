@@ -18,155 +18,144 @@
   <div class="parent-objects-tab">
     <slot :actions="actions"></slot>
 
-    <!-- Create Object Dialog -->
     <ObjectSelectObjectTypeDialog
-      v-if="isCreateMode"
-      v-model="createEntityDialog.value"
-      :title="t('headline_create')"
-      :description-text="t('create_entity')"
+      v-if="isScope"
+      v-model="selectObjectTypeDialog.visible"
+      :title="t('selectObjectType')"
+      :description-text="t('selectObjectTypeDescription')"
       :cancel-text="$t('global.button.cancel')"
-      :action-button-text="t('create')"
-      :action="'create-entity'"
-      :event-payload="{ addAsChild: createEntityDialog.eventPayload }"
-      @create-entity="createObjectCallback($event.type)"
-    />
-    <!-- @vue-ignore TODO #3066 $route does not exist -->
-    <ObjectSelectObjectTypeDialog
-      v-else
-      v-model="selectEntityDialog"
-      :title="t('headline_select')"
-      :description-text="t('select_entity')"
-      :cancel-text="$t('global.button.cancel')"
-      :action-button-text="t('select')"
-      :action="'select-entity'"
-      @select-entity="linkObjectCallback($event.type)"
+      :action-button-text="$t('global.button.ok')"
+      action="select-entity"
+      @select-entity="onObjectTypeSelected(($event as any).type)"
     />
 
-    <!-- @vue-ignore TODO #3066 $route does not exist -->
-    <ObjectCreateDialog
-      v-if="createObjectDialog.objectType"
-      v-model="createObjectDialog.value"
-      :domain-id="$route.params.domain"
-      :object-type="createObjectDialog.objectType"
-      :sub-type="subType"
-      :parent-scope-ids="createObjectDialog.parentScopeIds"
-      @success="onCreateObjectSuccess"
+    <ObjectAddObjectDialog
+      v-model="unifiedDialogState.visible"
+      :domain-id="domainId"
+      :object-type="selectedObjectTypeForDialog"
+      :parent-object="object"
+      :edit-parents="true"
+      :multi-select="true"
+      :allow-select="true"
+      :allow-create="true"
+      :initial-tab="initialTab"
+      :on-link="handleLink"
+      @success="onSuccess"
+      @create="onCreate"
+      @error="onError"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { mdiLinkPlus, mdiPlus } from '@mdi/js';
-import { computed, inject, ref } from 'vue';
-import { useDialogManager } from '~/composables/dialogs/useDialogManager';
+import { mdiPlus } from '@mdi/js';
+import { useLinkObject } from '~/composables/VeoObjectUtilities';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import { useTranslations } from '~/composables/Translations';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuerySync } from '~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 import type { IVeoEntity } from '~/types/VeoTypes';
-import type { AddEntityDialogPayload } from './types';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-// Define props
 const props = defineProps<{
   object?: IVeoEntity;
   disabled?: boolean;
 }>();
 
-// Define emits
 const emit = defineEmits<{
   reload: [];
-  'update:addEntityDialog': [dialog: AddEntityDialogPayload];
-  'parent-create-success': [id: string, dialog: any];
+  'parent-create-success': [id: string];
 }>();
 
-// Composables & Utilities
 const route = useRoute();
-const { data: translations } = useTranslations({
-  domain: route.params.domain as string
-});
-const { locale } = useI18n();
-const t: any = inject('t');
-const { selectEntityDialog, createObjectDialog, openCreateObjectDialog } = useDialogManager(props, 'parent');
+const queryClient = useQueryClient();
+const { t, locale } = useI18n();
+const { link } = useLinkObject();
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+const { data: translations } = useTranslations({ domain: route.params.domain as string });
 
-// State
-const createEntityDialog = ref({
-  value: false,
-  eventPayload: undefined as Record<string, any> | undefined
-});
-const linkDialogKey = ref(0);
+const unifiedDialogState = ref({ visible: false });
+const initialTab = ref<'select' | 'create'>('select');
+const selectObjectTypeDialog = ref({ visible: false });
+const selectedObjectTypeForDialog = ref<string | undefined>(undefined);
 
-// Computed Properties
-const isCreateMode = computed(() => createEntityDialog.value.value);
-const subType = computed(() => (props.object?.type !== 'scope' ? props.object?.subType : undefined));
+const domainId = computed(() => route.params.domain as string);
+const isScope = computed(() => props.object?.type === 'scope');
 
 const actions = computed(() => [
   {
-    key: 'createObject',
-    title: computed(() => t('createObject', [getCreateObjectTranslationParams()])),
+    key: 'addOrLinkParent',
+    title: computed(() => t('addOrLinkObject', [getObjectTypeName()])),
     icon: mdiPlus,
-    action: createObjectAction
-  },
-  {
-    key: 'linkObject',
-    title: computed(() => t('linkObject', [getCreateObjectTranslationParams()])),
-    icon: mdiLinkPlus,
-    action: linkObjectAction
+    action: openDialog
   }
 ]);
 
-// Helper Functions
-const getCreateObjectTranslationParams = () => {
+const getObjectTypeName = () => {
   if (props.object?.type === 'scope') {
     return t('object');
   }
   return translations.value?.lang[locale.value]?.[props.object?.type || ''] || t('object');
 };
 
-const determineType = () => (props.object?.type === 'scope' ? undefined : props.object?.type);
-const forceRerender = () => {
-  linkDialogKey.value += 1;
-};
-
-// Action Handlers
-const createObjectAction = () => {
-  openCreateObjectDialog(props.object?.type === 'scope' ? undefined : props.object?.type);
-};
-
-const linkObjectAction = () => {
-  if (props.object?.type === 'scope') {
-    selectEntityDialog.value = true;
+const openDialog = () => {
+  if (isScope.value) {
+    selectObjectTypeDialog.value.visible = true;
   } else {
-    linkObjectCallback(props.object?.type);
+    selectedObjectTypeForDialog.value = props.object?.type;
+    initialTab.value = 'select';
+    unifiedDialogState.value.visible = true;
   }
 };
 
-const linkObjectCallback = (typeTarget: string) => {
-  selectEntityDialog.value = false;
-  openDialog(determineType(), typeTarget);
-};
-const createObjectCallback = (typeTarget: any) => {
-  createEntityDialog.value.value = false;
-  openCreateObjectDialog(typeTarget);
+const onObjectTypeSelected = (type: string) => {
+  selectObjectTypeDialog.value.visible = false;
+  selectedObjectTypeForDialog.value = type;
+  initialTab.value = 'select';
+  unifiedDialogState.value.visible = true;
 };
 
-const openDialog = (objectType: string, typeTarget?: string) => {
-  openLinkObjectDialog(objectType, false, typeTarget);
+const handleLink = async (parentObjects: IVeoEntity[]) => {
+  if (!props.object) return;
+
+  for (const parent of parentObjects) {
+    const fullParent = await useQuerySync(
+      objectQueryDefinitions.queries.fetch,
+      {
+        domain: domainId.value,
+        endpoint: VeoElementTypePlurals[parent.type],
+        id: parent.id
+      },
+      queryClient
+    );
+    await link(fullParent, props.object);
+  }
 };
 
-const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean, preSelectedFilter?: string) => {
-  const updatedDialog = {
-    object: props.object,
-    editRelationship: objectType,
-    value: true,
-    editParents: addAsChild === false,
-    preselectedItems: [],
-    returnObjects: false,
-    preselectedFilters: { objectType: preSelectedFilter },
-    disabledFields: [],
-    linkRiskAffected: false
-  };
-  emit('update:addEntityDialog', updatedDialog);
-  forceRerender();
+const onSuccess = (objectIds: string[]) => {
+  emit('reload');
+  displaySuccessMessage(
+    objectIds.length > 1 ? t('multipleObjectsLinked', { count: objectIds.length }) : t('objectLinked')
+  );
 };
 
-// Success Handling
-const onCreateObjectSuccess = (newObjectId: string) => {
-  emit('parent-create-success', newObjectId, createObjectDialog.value);
+const onCreate = (objectId: string, openEditor: boolean) => {
+  emit('parent-create-success', objectId);
+  if (!openEditor) {
+    emit('reload');
+  }
+};
+
+const onError = (error: any) => {
+  displayErrorMessage(t('linkError'), error.message);
 };
 </script>
+
+<i18n src="~/locales/base/components/object-action-menu-tabs.json"></i18n>
+
+<style scoped>
+.parent-objects-tab {
+  position: relative;
+}
+</style>

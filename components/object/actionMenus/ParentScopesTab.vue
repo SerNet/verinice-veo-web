@@ -18,79 +18,109 @@
   <div class="parent-scopes-tab">
     <slot :actions="actions"></slot>
 
-    <!-- @vue-ignore TODO #3066 $route does not exist -->
-    <ObjectCreateDialog
-      v-if="createObjectDialog.objectType"
-      v-model="createObjectDialog.value"
-      :domain-id="$route.params.domain as string"
-      :object-type="createObjectDialog.objectType"
-      :parent-scope-ids="createObjectDialog.parentScopeIds"
-      @success="onCreateObjectSuccess"
+    <ObjectAddObjectDialog
+      v-model="unifiedDialogState.visible"
+      :domain-id="domainId"
+      object-type="scope"
+      :parent-object="object"
+      :edit-parents="true"
+      :multi-select="true"
+      :allow-select="true"
+      :allow-create="true"
+      :initial-tab="initialTab"
+      :on-link="handleLink"
+      @success="onSuccess"
+      @create="onCreate"
+      @error="onError"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-import { mdiLinkPlus, mdiPlus } from '@mdi/js';
-import { computed, inject } from 'vue';
-import { useDialogManager } from '~/composables/dialogs/useDialogManager';
+import { mdiPlus } from '@mdi/js';
+import { useLinkObject } from '~/composables/VeoObjectUtilities';
+import { useVeoAlerts } from '~/composables/VeoAlert';
+import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
+import { useQuerySync } from '~/composables/api/utils/query';
+import { useQueryClient } from '@tanstack/vue-query';
 import type { IVeoEntity } from '~/types/VeoTypes';
-import type { AddEntityDialogPayload } from './types';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-// Define props
 const props = defineProps<{
   object?: IVeoEntity;
   disabled?: boolean;
 }>();
 
-// Define emits
 const emit = defineEmits<{
   reload: [];
-  'update:addEntityDialog': [dialog: AddEntityDialogPayload];
-  'parent-create-success': [id: string, dialog: typeof createObjectDialog.value];
+  'parent-create-success': [id: string];
 }>();
 
-// Composables & Utilities
-const t: any = inject('t');
-const { createObjectDialog, openCreateObjectDialog } = useDialogManager(props, 'parent');
+const route = useRoute();
+const queryClient = useQueryClient();
+const { t } = useI18n();
+const { link } = useLinkObject();
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 
-// Computed Properties
+const unifiedDialogState = ref({ visible: false });
+const initialTab = ref<'select' | 'create'>('select');
+
+const domainId = computed(() => route.params.domain as string);
+
 const actions = computed(() => [
   {
-    key: 'createScope',
-    title: computed(() => t('createScope')),
+    key: 'addToScope',
+    title: computed(() => t('addToScope')),
     icon: mdiPlus,
-    action: createScopeAction
-  },
-  {
-    key: 'linkScope',
-    title: computed(() => t('linkScope')),
-    icon: mdiLinkPlus,
-    action: linkScopeAction
+    action: openDialog
   }
 ]);
 
-// Action Handlers
-const createScopeAction = () => openCreateObjectDialog('scope');
-const linkScopeAction = () => openLinkObjectDialog('scope', true, 'scope');
-
-const openLinkObjectDialog = (objectType?: string, addAsChild?: boolean, preSelectedFilter?: string) => {
-  const updatedDialog = {
-    object: props.object,
-    editRelationship: objectType,
-    value: true,
-    editParents: true,
-    preselectedItems: [],
-    returnObjects: false,
-    preselectedFilters: { objectType: preSelectedFilter },
-    disabledFields: [],
-    linkRiskAffected: false
-  };
-  emit('update:addEntityDialog', updatedDialog);
+const openDialog = () => {
+  initialTab.value = 'select';
+  unifiedDialogState.value.visible = true;
 };
 
-// Success Handling
-const onCreateObjectSuccess = (newObjectId: string) => {
-  emit('parent-create-success', newObjectId, createObjectDialog.value);
+const handleLink = async (parentScopes: IVeoEntity[]) => {
+  if (!props.object) return;
+
+  for (const scope of parentScopes) {
+    const fullScope = await useQuerySync(
+      objectQueryDefinitions.queries.fetch,
+      {
+        domain: domainId.value,
+        endpoint: VeoElementTypePlurals[scope.type],
+        id: scope.id
+      },
+      queryClient
+    );
+    await link(fullScope, props.object);
+  }
+};
+
+const onSuccess = (objectIds: string[]) => {
+  emit('reload');
+  displaySuccessMessage(
+    objectIds.length > 1 ? t('addedToMultipleScopes', { count: objectIds.length }) : t('addedToScope')
+  );
+};
+
+const onCreate = (objectId: string, openEditor: boolean) => {
+  emit('parent-create-success', objectId);
+  if (!openEditor) {
+    emit('reload');
+  }
+};
+
+const onError = (error: any) => {
+  displayErrorMessage(t('linkError'), error.message);
 };
 </script>
+
+<i18n src="~/locales/base/components/object-action-menu-tabs.json"></i18n>
+
+<style scoped>
+.parent-scopes-tab {
+  position: relative;
+}
+</style>
