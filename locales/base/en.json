@@ -63,6 +63,8 @@
   "global.logout": "Logout",
   "global.menu.collapse": "Collapse menu",
   "global.menu.expand": "Fix menu",
+  "global.button.select": "Select",
+  "global.button.create": "Create",
   "userMessages": {
     "info": {
       "title": "Hint"
