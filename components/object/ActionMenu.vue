@@ -21,14 +21,25 @@
       :is="currentTabComponent"
       :object="object"
       :disabled="disabled"
-      :add-entity-dialog="addEntityDialog"
-      @update:add-entity-dialog="addEntityDialog = $event"
       @reload="handleReload"
-      @parent-create-success="onParentCreateObjectSuccess"
-      @child-create-success="onChildCreateObjectSuccess"
+      @parent-create-success="onCreateObjectSuccess"
+      @child-create-success="onCreateObjectSuccess"
     >
       <template #default="{ actions }">
-        <v-menu v-model="speedDialIsOpen" location="top left">
+        <v-btn
+          v-if="actions.length === 1"
+          :icon="mdiPlus"
+          :disabled="disabled || !ability.can('manage', subject('units', { id: route.params.unit }))"
+          class="veo-primary-action-fab mr-2"
+          color="primary"
+          data-component-name="object-details-actions-button"
+          data-veo-test="object-details-actions-button"
+          :aria-label="actions[0].title.value"
+          :title="actions[0].title.value"
+          @click="actions[0].action()"
+        />
+        <!-- Fallback for multiple actions (backward compatibility) -->
+        <v-menu v-else-if="actions.length > 1" v-model="speedDialIsOpen" location="top left">
           <template #activator="{ props: menuProps }">
             <v-btn
               :icon="speedDialIsOpen && !disabled && actions.length ? mdiClose : mdiPlus"
@@ -70,41 +81,20 @@
       data-component-name="object-details-actions-button"
       data-veo-test="object-details-actions-button"
     />
-
-    <!-- @vue-ignore TODO #3066 not assignable -->
-    <ObjectLinkDialog
-      v-if="addEntityDialog.object"
-      :key="linkDialogKey"
-      v-model="addEntityDialog.value"
-      v-bind="addEntityDialog"
-      @success="onAddEntitySuccess"
-      @error="onAddEntityError"
-      @update:preselected-items="onItemsUpdated"
-    />
   </div>
 </template>
 
 <script lang="ts">
 import { mdiClose, mdiPlus } from '@mdi/js';
-import { cloneDeep, upperFirst } from 'lodash';
 import type { PropType } from 'vue';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
 import ObjectActionMenusChildObjectsTab from '~/components/object/actionMenus/ChildObjectsTab.vue';
-import ObjectActionMenusControlsTab from '~/components/object/actionMenus/ControlsTab.vue';
 import ObjectActionMenusParentObjectsTab from '~/components/object/actionMenus/ParentObjectsTab.vue';
 import ObjectActionMenusParentScopesTab from '~/components/object/actionMenus/ParentScopesTab.vue';
-import ObjectActionMenusRisksTab from '~/components/object/actionMenus/RisksTab.vue';
 import ObjectActionMenusTargetsTab from '~/components/object/actionMenus/TargetsTab.vue';
+import ObjectActionMenusControlsTab from '~/components/object/actionMenus/ControlsTab.vue';
+import ObjectActionMenusRisksTab from '~/components/object/actionMenus/RisksTab.vue';
 
-import { useQueryClient } from '@tanstack/vue-query';
-import { useVeoAlerts } from '~/composables/VeoAlert';
-import { useCreateLink, useLinkObject } from '~/composables/VeoObjectUtilities';
-import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
-import { useMutation } from '~/composables/api/utils/mutation';
-import { useQuerySync } from '~/composables/api/utils/query';
-import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IVeoEntity } from '~/types/VeoTypes';
 
 export default defineComponent({
   props: {
@@ -125,90 +115,14 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useI18n();
     const route = useRoute();
-    const { createLink } = useCreateLink();
-    const { link } = useLinkObject();
-    const queryClient = useQueryClient();
-    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
     const speedDialIsOpen = ref(false);
     const { ability, subject } = useVeoPermissions();
-
-    const addEntityDialog = ref<{
-      object: IVeoEntity | undefined;
-      editRelationship: string | undefined;
-      value: boolean;
-      editParents: boolean;
-      preselectedItems: (IVeoLink | IVeoEntity)[];
-      returnObjects: boolean;
-      preselectedFilters: Record<string, any>;
-      disabledFields: string[];
-      linkRiskAffected: boolean;
-    }>({
-      object: undefined,
-      editRelationship: '',
-      value: false,
-      editParents: false,
-      preselectedItems: [],
-      returnObjects: false,
-      preselectedFilters: {},
-      disabledFields: [],
-      linkRiskAffected: false
-    });
-
-    // force ObjectLinkDialog to rerender, and thus update correctly
-    const linkDialogKey = ref(0);
-    const forceRerender = () => {
-      linkDialogKey.value += 1;
-    };
-
-    watch(addEntityDialog, () => {
-      forceRerender();
-    });
-
-    // Update Item on Return Objects
-    const onItemsUpdated = async (newItems: (IVeoEntity | IVeoLink)[]) => {
-      if (!props.object) return;
-
-      const copy = cloneDeep(props.object);
-      copy.controlImplementations ??= [];
-
-      const newImplementations = newItems
-        .filter((item) => !copy.controlImplementations.some((impl) => impl.control.id === item.id))
-        .map((item) => ({
-          control: 'targetUri' in item ? item : createLink('controls', item.id)
-        }));
-
-      copy.controlImplementations.push(...newImplementations);
-
-      try {
-        await updateObject({
-          domain: route.params.domain,
-          endpoint: route.params?.objectType,
-          id: copy.id,
-          object: copy
-        });
-        displaySuccessMessage(upperFirst(t('objectLinked').toString()));
-      } catch (error) {
-        console.error('Error updating object:', error);
-        displayErrorMessage(upperFirst(t('objectNotLinked').toString()), JSON.stringify(error));
-      }
-    };
-    // show error or success message
-    const onAddEntitySuccess = () => {
-      displaySuccessMessage(upperFirst(t('objectLinked').toString()));
-      addEntityDialog.value.value = false;
-      emit('reload');
-    };
-    const onAddEntityError = (error: any) => {
-      displayErrorMessage(upperFirst(t('objectNotLinked').toString()), JSON.stringify(error));
-      addEntityDialog.value.value = false;
-    };
 
     const handleReload = () => {
       emit('reload');
     };
     const currentTabComponent = computed(() => {
-      const componentsMap = {
+      const componentsMap: Record<string, any> = {
         childObjects: ObjectActionMenusChildObjectsTab,
         parentObjects: ObjectActionMenusParentObjectsTab,
         controls: ObjectActionMenusControlsTab,
@@ -218,63 +132,20 @@ export default defineComponent({
       };
       return componentsMap[props.type];
     });
-    const handleCreateObjectSuccess = async (
-      newObjectId: string,
-      createObjectDialog: any,
-      linkObjects: (obj1: any, obj2: any) => Promise<void>
-    ) => {
-      if (!props.object) return;
 
-      try {
-        const createdObject = await useQuerySync(
-          objectQueryDefinitions.queries.fetch,
-          {
-            domain: route.params.domain as string,
-            endpoint: VeoElementTypePlurals[createObjectDialog?.objectType || ''] || '',
-            id: newObjectId
-          },
-          queryClient
-        );
-
-        await linkObjects(props.object, createdObject);
-        await queryClient.invalidateQueries({ queryKey: ['childScopes'] });
-        displaySuccessMessage(t('objectLinked').toString());
-        handleReload();
-      } catch (e: any) {
-        displayErrorMessage(upperFirst(t('objectNotLinked').toString()), e.message);
-      }
-    };
-
-    const onParentCreateObjectSuccess = (newObjectId: string, createObjectDialog: any) => {
-      handleCreateObjectSuccess(newObjectId, createObjectDialog, async (parent, child) => {
-        await link(child, parent);
-      });
-    };
-
-    const onChildCreateObjectSuccess = (newObjectId: string, createObjectDialog: any) => {
-      handleCreateObjectSuccess(newObjectId, createObjectDialog, async (parent, child) => {
-        if (!createObjectDialog?.parentScopeIds?.length) {
-          await link(parent, child);
-        }
-      });
+    const onCreateObjectSuccess = (_newObjectId: string) => {
+      handleReload();
     };
 
     provide('t', t);
     return {
       currentTabComponent,
-      onAddEntitySuccess,
-      onAddEntityError,
-      onItemsUpdated,
       handleReload,
-      addEntityDialog,
       speedDialIsOpen,
       t,
-      upperFirst,
       mdiClose,
       mdiPlus,
-      linkDialogKey,
-      onParentCreateObjectSuccess,
-      onChildCreateObjectSuccess,
+      onCreateObjectSuccess,
       ability,
       subject,
       route
