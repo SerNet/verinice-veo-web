@@ -23,8 +23,13 @@
     @update:model-value="$emit('update:model-value', $event)"
   >
     <template #default>
-      {{ descriptionText }}
-      <v-select v-model="type" data-veo-test="select-object-type" :items="options" variant="underlined" />
+      <v-select
+        v-model="type"
+        data-veo-test="select-object-type"
+        :items="options"
+        variant="underlined"
+        :label="descriptionText"
+      />
     </template>
     <template #dialog-options>
       <v-btn variant="text" @click="$emit('update:model-value', false)">
