@@ -57,8 +57,6 @@ function openModulesTab() {
 function openAddModulesDialog() {
   openModulesTab();
   cy.getCustom('[data-component-name="object-details-actions-button"]').click();
-  cy.getCustom('[data-component-name="object-details-actions-button"]').click();
-  cy.containsCustom('Model Modules').click({ force: true }); // Implicit testing of the button's label!
 }
 
 function openFirstRI() {
@@ -116,7 +114,7 @@ describe('Object details, compliance tab: Actions', () => {
 
     // Try adding it
     cy.intercept('GET', apiRoutes.scopes).as('getScopes');
-    cy.getCustom('.v-card-actions button').contains('Save').click({ force: true });
+    cy.getCustom('.v-card-actions button').contains('Select controls').click({ force: true });
     cy.wait(['@getScopes']).its('response.statusCode').should('eq', 200);
 
     // Check if it was indeed added
