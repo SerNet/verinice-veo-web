@@ -151,10 +151,15 @@ export function deleteTestUnits(testUnits = Cypress.env('dynamicTestData')?.test
           console.info(`Failed to delete unit ${unit.unitId}. Status code: ${response.status}`);
         } else {
           // Clean up old test unit data
-          Cypress.env('dynamicTestData').testUnits = [];
-          Cypress.env('dynamicTestData').unit = null;
+          cy.deleteDomain()
+            .then(() => {
+              Cypress.env('dynamicTestData').testUnits = [];
+              Cypress.env('dynamicTestData').unit = null;
+            })
+            .then((res) => {
+              return res;
+            });
         }
-        return response;
       });
   });
 }

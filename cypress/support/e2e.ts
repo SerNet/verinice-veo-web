@@ -76,7 +76,7 @@ before(() => {
 
 after(() => {
   cy.log('--- GLOBAL AFTER ---');
-  const domainId = Cypress.env('dynamicTestData')?.testUnits[0]?.domains[0]?.id;
+  const domainId = Cypress.env('dynamicTestData')?.testDomain?.id;
   cy.deleteTestUnits().then(() => cy.deleteDomain(domainId));
 });
 
