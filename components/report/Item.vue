@@ -14,51 +14,49 @@
    - You should have received a copy of the GNU Affero General Public License along with this program.
    - If not, see <http://www.gnu.org/licenses/>.
 -->
-
 <template>
-  <v-col cols="12">
-    <v-card class="pa-4 d-flex flex-column" data-veo-test="veo-card" @click="handleClick()">
-      <div class="position-absolute top-0 right-0 ma-2" @click.stop>
+  <v-card class="pa-1 pb-4" data-veo-test="veo-card" @click="handleClick()">
+    <div class="d-flex">
+      <div class="d-flex flex-column" style="min-width: 0">
+        <v-card-title class="d-flex">
+          <span class="font-weight-bold text-truncate">
+            {{ name }}
+          </span>
+        </v-card-title>
+        <v-tooltip location="bottom" :aria-label="`report-${name}`">
+          <template #activator="{ props: tooltipProps }">
+            <span v-bind="tooltipProps" class="pl-4" :class="{ 'text-truncate d-block': clampDescription }">
+              {{ description }}
+            </span>
+          </template>
+          <span>{{ description }}</span>
+        </v-tooltip>
+      </div>
+
+      <v-spacer />
+
+      <v-card-title>
         <v-chip :prepend-icon="mdiWeb" variant="flat" size="x-small">
           {{ language }}
         </v-chip>
-      </div>
-
-      <v-card-title class="font-weight-bold">
-        {{ name }}
       </v-card-title>
-
-      <div class="px-4">
-        <div>
-          <v-tooltip v-if="descriptionShort" location="bottom" :aria-label="`report-${name}`">
-            <template #activator="{ props: tooltipProps }">
-              <span v-bind="tooltipProps">
-                {{ descriptionShort }}
-              </span>
-            </template>
-            <span>{{ description }}</span>
-          </v-tooltip>
-
-          <span v-else>
-            {{ description }}
-          </span>
-        </div>
-      </div>
-    </v-card>
-  </v-col>
+    </div>
+  </v-card>
 </template>
 
 <script setup lang="ts">
 import { mdiWeb } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 
-interface Props {
-  name: string;
-  description: string;
-  language: string;
-  descriptionShort?: string;
-}
-const props = defineProps<Props>();
+const props = withDefaults(
+  defineProps<{
+    name: string;
+    description: string;
+    language: string;
+    clampDescription?: boolean;
+  }>(),
+  { clampDescription: false }
+);
 
 interface Emits {
   (e: 'click'): void;
@@ -71,5 +69,3 @@ const handleClick = () => {
   emit('click');
 };
 </script>
-
-<style scoped lang="scss"></style>

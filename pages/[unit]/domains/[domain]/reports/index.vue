@@ -18,12 +18,17 @@
 <template>
   <BasePage>
     <template #header>
-      <p class="mt-8 mb-4 mx-6">
-        {{ t('hint') }}
-      </p>
+      <BaseContainer class="pt-0 pb-1">
+        <p>
+          {{ t('hint') }}
+        </p>
+      </BaseContainer>
     </template>
+
     <template #default>
-      <ReportList @create-report="createReport" />
+      <BaseContainer>
+        <ReportList @create-report="createReport" />
+      </BaseContainer>
     </template>
   </BasePage>
 </template>

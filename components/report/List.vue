@@ -22,18 +22,19 @@
         <VSkeletonLoader v-for="i in 5" :key="i" type="image" elevation="2" class="my-6" height="160px" />
       </v-col>
     </template>
-    <div v-if="displayedItems && displayedItems.length" class="veo-report-list">
-      <template v-for="report in displayedItems" :key="report.id">
+
+    <template v-if="displayedItems && displayedItems.length">
+      <v-col v-for="report in displayedItems" :key="report.id" cols="12">
         <ReportItem
           :name="report?.name"
           :description="report?.description"
           :language="report?.language"
-          :description-short="report?.descriptionShort"
           :data-veo-test="`report-${report?.id}`"
+          :clamp-description="true"
           @click="emit('create-report', report)"
         />
-      </template>
-    </div>
+      </v-col>
+    </template>
   </v-row>
 </template>
 <script setup lang="ts">
@@ -114,8 +115,6 @@ function prepareReportsData(reports: [id: string, report: IVeoReportMeta][]) {
       const name = report.name[lang] || report.name.en || Object.values(report.name)[0];
       const description = report.description[lang] || report.description.en || Object.values(report.description)[0];
 
-      const descriptionShort = description.length > 80 ? description.substring(0, 80) + '...' : description;
-
       const targetTypes = report.targetTypes
         .map((type) => {
           return upperFirst(type.modelType) || type.modelType;
@@ -133,7 +132,6 @@ function prepareReportsData(reports: [id: string, report: IVeoReportMeta][]) {
         originalId: id,
         name,
         description,
-        descriptionShort,
         multipleTargetsSupported: report.multipleTargetsSupported,
         outputTypes,
         targetTypes,
@@ -163,11 +161,3 @@ const displayedItems = computed(() => {
 });
 </script>
 <i18n src="~/locales/base/components/report-list.json"></i18n>
-<style lang="scss" scoped>
-.veo-report-list {
-  width: 80%;
-  display: grid;
-  gap: 16px;
-  padding: 16px;
-}
-</style>

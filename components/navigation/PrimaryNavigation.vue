@@ -429,9 +429,9 @@ const items = computed<INavItem[]>(() => [
       domainDashboardNavEntry.value,
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
-      reportsNavEntry.value,
       ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
-      ...(!isEmpty(riskChildItems.value) ? [risksNavEntry.value] : [])
+      ...(!isEmpty(riskChildItems.value) ? [risksNavEntry.value] : []),
+      reportsNavEntry.value
     ]
   : [])
 ]);
