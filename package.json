@@ -47,7 +47,6 @@
     "date-fns": "^4.0.0",
     "dompurify": "^3.1.5",
     "glob": "^13.0.0",
-    "hash-sum": "^2.0.0",
     "intro.js": "^8.3.2",
     "js-cookie": "^3.0.1",
     "json-ptr": "^3.1.1",
