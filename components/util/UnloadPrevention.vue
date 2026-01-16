@@ -24,7 +24,8 @@ export default {
   props: {
     modelValue: {
       type: Boolean,
-      required: true
+      required: true,
+      default: false
     }
   },
   watch: {
