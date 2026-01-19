@@ -94,7 +94,7 @@
     "lint-staged": "16.2.7",
     "mocha-junit-reporter": "2.2.1",
     "nuxt": "4.2.2",
-    "prettier": "3.7.4",
+    "prettier": "3.8.0",
     "sass": "1.97.2",
     "typescript-eslint": "8.53.0",
     "undici": "7.18.2",
