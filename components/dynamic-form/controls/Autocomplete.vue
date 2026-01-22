@@ -64,7 +64,6 @@
       </v-list-item>
     </template>
     <template v-else #item="{ props: _props }">
-      <!-- @vue-ignore - likely a bug in tsc v3.1.8. This comment can be deleted after upgrading to tsc >v3.1.8 #4432 -->
       <v-list-item v-bind="_props" data-veo-test="object-select-item" />
     </template>
   </v-autocomplete>
