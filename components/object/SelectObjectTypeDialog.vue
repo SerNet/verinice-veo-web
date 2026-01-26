@@ -18,9 +18,10 @@
 <template>
   <BaseDialog
     v-bind="$attrs"
+    :model-value="modelValue"
     :title="title"
     :aria-label="title"
-    @update:model-value="$emit('update:model-value', $event)"
+    @update:model-value="onDialogUpdate"
   >
     <template #default>
       <v-select
@@ -32,7 +33,7 @@
       />
     </template>
     <template #dialog-options>
-      <v-btn variant="text" @click="$emit('update:model-value', false)">
+      <v-btn variant="text" @click="onDialogUpdate(false)">
         {{ cancelText }}
       </v-btn>
       <v-spacer />
@@ -49,6 +50,7 @@ import { useQuery } from '~/composables/api/utils/query';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 interface Props {
+  modelValue?: boolean;
   title?: string;
   descriptionText?: string;
   cancelText?: string;
@@ -59,6 +61,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  modelValue: false,
   title: 'Create new object',
   descriptionText: 'Please specify the type of the new object.',
   cancelText: 'Cancel',
@@ -93,6 +96,19 @@ const fetchTranslationsQueryParameters = computed(() => ({
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
 const type = ref<string | undefined>();
+
+watch(
+  () => props.modelValue,
+  (isOpen) => {
+    if (!isOpen) {
+      type.value = undefined;
+    }
+  }
+);
+
+const onDialogUpdate = (value: boolean) => {
+  emit('update:model-value', value);
+};
 
 const options = computed<{ title: string; value: string }[]>(() => {
   const objectSchemaNames = Object.keys(VeoElementTypePlurals);

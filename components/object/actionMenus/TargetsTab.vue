@@ -19,13 +19,14 @@
     <slot :actions="actions"></slot>
 
     <ObjectSelectObjectTypeDialog
-      v-model="selectObjectTypeDialog.visible"
+      :model-value="selectObjectTypeDialog.visible"
       :title="t('selectTargetType')"
       :description-text="t('selectTargetTypeDescription')"
       :cancel-text="$t('global.button.cancel')"
       :action-button-text="$t('global.button.ok')"
       :allowed-object-types="['scope', 'process', 'asset']"
       action="select-entity"
+      @update:model-value="onSelectTypeDialogClose"
       @select-entity="onObjectTypeSelected(($event as any).type)"
     />
 
@@ -34,11 +35,11 @@
       :domain-id="domainId"
       :object-type="selectedObjectType"
       :parent-object="object"
-      :edit-parents="true"
       :multi-select="true"
       :allow-select="true"
       :allow-create="false"
       :initial-tab="'select'"
+      :fetch-control-implementation-targets="true"
       :on-link="handleLink"
       @success="onSuccess"
       @error="onError"
@@ -89,7 +90,15 @@ const actions = computed(() => [
 ]);
 
 const openDialog = () => {
+  selectedObjectType.value = undefined;
   selectObjectTypeDialog.value.visible = true;
+};
+
+const onSelectTypeDialogClose = (value: boolean) => {
+  selectObjectTypeDialog.value.visible = value;
+  if (!value) {
+    selectedObjectType.value = undefined;
+  }
 };
 
 const onObjectTypeSelected = (type: string) => {
@@ -130,10 +139,16 @@ const handleLink = async (targetObjects: IVeoEntity[]) => {
 };
 
 const onSuccess = (objectIds: string[]) => {
+  queryClient.invalidateQueries({
+    queryKey: ['controlImplementations']
+  });
+
   emit('reload');
   displaySuccessMessage(
     objectIds.length > 1 ? t('linkedToMultipleTargets', { count: objectIds.length }) : t('linkedToTarget')
   );
+
+  selectedObjectType.value = undefined;
 };
 
 const onError = (error: any) => {
