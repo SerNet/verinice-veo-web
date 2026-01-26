@@ -21,7 +21,7 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery } from '~/composables/api/utils/query';
 import { useSearch } from '~/composables/search/useSearch';
 
-import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoPaginatedResponse, IVeoControlImplementation } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { VeoSearch } from '~/types/VeoSearch';
 
@@ -39,6 +39,7 @@ interface UseLinkableObjectsOptions {
   preselectedItems: Ref<IVeoEntity[]>;
 
   showCreateView: Ref<boolean>;
+  fetchControlImplementationTargets?: Ref<boolean>;
 }
 
 export function useLinkableObjects(options: UseLinkableObjectsOptions) {
@@ -53,9 +54,11 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
     parentObject,
     editParents,
     preselectedItems,
-    showCreateView
+    showCreateView,
+    fetchControlImplementationTargets
   } = options;
 
+  const route = useRoute();
   const DEFAULT_PAGE_SIZE = 9999;
   const DEFAULT_PAGE = 0;
 
@@ -137,7 +140,11 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
 
   // Parents
   const parentsQueryEnabled = computed(
-    () => !!objectListEndpoint.value && !!parentObject?.value?.id && editParents.value
+    () =>
+      !!objectListEndpoint.value &&
+      !!parentObject?.value?.id &&
+      editParents.value &&
+      !fetchControlImplementationTargets?.value
   );
 
   const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(
@@ -151,10 +158,46 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
     { enabled: parentsQueryEnabled }
   );
 
-  // selectable logic
-  const originalSelectedItems = computed<IVeoEntity[]>(() =>
-    editParents.value ? [...(parents.value?.items || []), ...preselectedItems.value] : children.value
+  const controlImplementationTargetsQueryEnabled = computed(
+    () => !!parentObject?.value?.id && !!domainId.value && !!fetchControlImplementationTargets?.value
   );
+
+  const controlImplementationTargetsParams = computed(() => ({
+    domain: domainId.value,
+    endpoint: route.params.objectType as string,
+    id: parentObject?.value?.id || '',
+    purpose: 'COMPLIANCE' as const,
+    size: DEFAULT_PAGE_SIZE,
+    page: DEFAULT_PAGE
+  }));
+
+  const { data: controlImplementations, isFetching: controlImplementationsLoading } = useQuery(
+    objectQueryDefinitions.queries.fetchObjectControlImplementations,
+    controlImplementationTargetsParams,
+    { enabled: controlImplementationTargetsQueryEnabled }
+  );
+
+  const controlImplementationTargets = computed<IVeoEntity[]>(() => {
+    if (!controlImplementations.value?.items || !objectListEndpoint.value) return [];
+
+    const targetType = filter.value.objectType;
+    return controlImplementations.value.items
+      .filter((ci: IVeoControlImplementation) => !targetType || ci.owner?.type === targetType)
+      .map((ci: IVeoControlImplementation) => ({
+        id: ci.owner.id,
+        type: ci.owner.type,
+        name: ci.owner.name,
+        displayName: ci.owner.displayName
+      })) as IVeoEntity[];
+  });
+
+  // selectable logic
+  const originalSelectedItems = computed<IVeoEntity[]>(() => {
+    if (fetchControlImplementationTargets?.value) {
+      return [...controlImplementationTargets.value, ...preselectedItems.value];
+    }
+    return editParents.value ? [...(parents.value?.items || []), ...preselectedItems.value] : children.value;
+  });
 
   const originalIds = computed(() => new Set(originalSelectedItems.value.map((i) => i.id)));
 
@@ -181,7 +224,8 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
       searchLoading.value ||
       childObjectsLoading.value ||
       childScopesLoading.value ||
-      parentsLoading.value
+      parentsLoading.value ||
+      controlImplementationsLoading.value
   );
 
   return {

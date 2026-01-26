@@ -170,6 +170,7 @@ const props = withDefaults(
     preselectedFilters?: Record<string, any>;
     onLink?: (objects: IVeoEntity[]) => Promise<void>;
     initialTab?: 'select' | 'create';
+    fetchControlImplementationTargets?: boolean;
   }>(),
   {
     objectType: undefined,
@@ -183,7 +184,8 @@ const props = withDefaults(
     preselectedItems: () => [],
     disabledFields: () => [],
     preselectedFilters: () => ({}),
-    initialTab: 'select'
+    initialTab: 'select',
+    fetchControlImplementationTargets: false
   }
 );
 
@@ -248,7 +250,8 @@ const { selectableObjects, originalSelectedItems, isLoadingObjects } = useLinkab
   parentObject: toRef(props, 'parentObject'),
   editParents: toRef(props, 'editParents'),
   preselectedItems: toRef(props, 'preselectedItems'),
-  showCreateView: isCreatingNewObject
+  showCreateView: isCreatingNewObject,
+  fetchControlImplementationTargets: toRef(props, 'fetchControlImplementationTargets')
 });
 
 const hasItems = computed(() => selectableObjects.value?.totalItemCount && selectableObjects.value.totalItemCount > 0);
