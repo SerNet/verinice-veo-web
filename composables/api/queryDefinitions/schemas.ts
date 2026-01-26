@@ -100,6 +100,21 @@ export default {
       }),
       staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
     } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoDomainSpecificObjectSchema>,
+    fetchCISchema: {
+      primaryQueryKey: 'ci-schema',
+      url: '/api/domains/:domainId/:type/control-implementations/json-schema',
+      onDataFetched: (result: any) => {
+        result.title = result.title.toLowerCase();
+        return result;
+      },
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: {
+          domainId: queryParameters.domainId,
+          type: queryParameters.type
+        }
+      }),
+      staticQueryOptions: { staleTime: STALE_TIME.MEDIUM }
+    } as IVeoQueryDefinition<IVeoFetchSchemaParameters, IVeoDomainSpecificObjectSchema>,
     fetchSchemaLegacy: {
       primaryQueryKey: 'schema',
       url: '/api/schemas/:type',
