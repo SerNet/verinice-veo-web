@@ -16,15 +16,6 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseAlert
-    v-if="allUnitsHaveAccessAccountTab && showAccessGroupsFeature"
-    :title="t('allUsersHaveAccessHint')"
-    :model-value="true"
-    :type="VeoAlertType.INFO"
-    class="mt-6 mb-4 d-flex align-center"
-    no-close-button
-    flat
-  />
   <BaseCard class="mb-16">
     <v-card-title class="bg-accent small-caps text-h4">
       <span>{{ t('accounts') }}</span>
@@ -100,8 +91,6 @@ import accountQueryDefinition from '~/composables/api/queryDefinitions/accounts'
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
-import { VeoAlertType } from '~/types/VeoTypes';
-import { hasFeature } from '~/utils/featureFlags';
 
 const { ability } = useVeoPermissions();
 const { t } = useI18n();
@@ -109,14 +98,6 @@ const { profile, userSettings } = useVeoUser();
 
 const { data: accounts, isFetching } = useQuery(accountQueryDefinition.queries.fetchAccounts);
 const { data: accessGroups } = useQuery(accessGroupsDefinition.queries.fetchAccessGroups);
-const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
-
-const allUnitsHaveAccessAccountTab = ref(!isRestrictedAccess.value);
-
-watchEffect(() => {
-  const val = isRestrictedAccess.value;
-  allUnitsHaveAccessAccountTab.value = val ? !val.restrictUnitAccess : false;
-});
 
 const activeAccounts = computed(() => (accounts.value || []).filter((account) => account.enabled).length);
 
@@ -218,8 +199,6 @@ const additionalTableHeaders = computed(() => [
     key: 'roles'
   }
 ]);
-
-const showAccessGroupsFeature = hasFeature('accessGroups');
 </script>
 
 <i18n src="~/locales/base/pages/administration.json"></i18n>
