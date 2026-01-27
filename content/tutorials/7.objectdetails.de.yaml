@@ -31,9 +31,9 @@ steps:
   - title: 'Verknüpfungen'
     element: '[data-component-name=object-details-links-tab]'
     intro: Der Abschnitt Links zeigt alle im Formular verknüpften Objekte an.
-  - title: 'Maßnahmen'
+  - title: 'Compliance'
     element: '[data-component-name=object-details-controls-tab]'
-    intro: Für einige Objekte können je nach Domäne Baustein oder Controls hinterlegt werden.
+    intro: Für Assets, Prozesse und Scopes können hier Controls hinterlegt werden, welche aus Compliance-Gründen für das jeweilige Objekt erforderlich sind (z.B. Bausteine im IT-Grundschutz). Das Anwenden von Compliance-Controls ist nicht in allen Domänen vorgesehen.
   - title: 'Risiken'
     element: '[data-component-name=object-details-risks-tab]'
     intro: Für einige Objekte (Scopes, Prozesse, Assets) können je nach Domäne Risiken dokumentiert und bearbeitet werden.

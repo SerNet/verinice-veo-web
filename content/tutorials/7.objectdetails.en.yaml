@@ -30,9 +30,9 @@ steps:
   - title: 'Links'
     element: '[data-component-name=object-details-links-tab]'
     intro: The Links section shows all objects linked in the form.
-  - title: 'Measures'
+  - title: 'Compliance'
     element: '[data-component-name=object-details-controls-tab]'
-    intro: Depending on the domain, modules or controls can be stored for some objects.
+    intro: For assets, processes and scopes, this tab allows the assignment of controls which are required for compliance reasons (e.g. modules in IT-Grundschutz). Applying compliance controls is not intended in all domains.
   - title: 'Risks'
     element: '[data-component-name=object-details-risks-tab]'
     intro: Depending on the domain, risks can be documented and processed for some objects (scopes, processes, assets).
