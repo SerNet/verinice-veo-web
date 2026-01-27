@@ -1,5 +1,5 @@
 # syntax = docker/dockerfile:experimental@sha256:600e5c62eedff338b3f7a0850beb7c05866e0ef27b2d2e8c02aa468e78496ff5
-FROM node:25-alpine@sha256:d1cdf008963e1627f47c4426c33481e538190300ad2514e9f8d5c75755888521 AS builder
+FROM node:25-alpine@sha256:da5dc26b238da14950248568e9a3c5a01611c755685faec93dd59f1e39914e3c AS builder
 
 # Install Git & Install Python for node-14
 RUN apk --no-cache add git python3 make g++
