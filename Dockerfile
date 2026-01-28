@@ -45,8 +45,6 @@ RUN chown -R 0 /usr/src/app && chmod -R g+rwX /usr/src/app
 # Add custom config to serve the index.html as entrypoint if the server would otherwise return a 404
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf
 
-RUN mkdir -p /tmp/veo/app && chown -R 0 /tmp/veo && chmod -R g+rwX /tmp/veo
-RUN mkdir -p /var/cache/nginx/client_temp && chown -R 0 /var/cache/nginx && chmod -R g+rwX /var/cache/nginx
 
 COPY startup.sh /usr/src/app
 RUN chmod +x /usr/src/app/startup.sh

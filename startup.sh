@@ -1,5 +1,9 @@
 #!/bin/bash
 
+mkdir -p /tmp/veo/app && chown -R 0 /tmp/veo && chmod -R g+rwX /tmp/veo
+mkdir -p /var/cache/nginx/proxy_temp
+mkdir -p /var/cache/nginx/client_temp && chown -R 0 /var/cache/nginx && chmod -R g+rwX /var/cache/nginx
+
 cp -r /usr/src/app /tmp/veo/
 
 file=$(find /tmp/veo/app -type f -print0 | xargs -0 grep -l api.veo.example)
