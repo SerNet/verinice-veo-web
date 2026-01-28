@@ -21,7 +21,7 @@ workflow:
     - when: on_success
 
 default:
-  image: node:25-alpine@sha256:da5dc26b238da14950248568e9a3c5a01611c755685faec93dd59f1e39914e3c
+  image: node:25-alpine@sha256:f741690269ee7abb07675cb744f0b66ec117b482d89d9565a36f2360d5e2a3ef
   cache: # Cache modules in between jobs
     key:
       files:
