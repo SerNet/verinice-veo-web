@@ -18,7 +18,13 @@
 <template>
   <v-tooltip v-if="miniVariant" location="bottom" :aria-label="t('select')">
     <template #activator="{ props: toolTips }">
-      <v-icon class="ma-4" :aria-label="t('select')" :icon="mdiUnity" v-bind="toolTips" @click="$emit('expand-menu')" />
+      <v-icon
+        class="ma-4"
+        :aria-label="t('select')"
+        :icon="mdiPackageVariantClosed"
+        v-bind="toolTips"
+        @click="$emit('expand-menu')"
+      />
     </template>
 
     <template #default>
@@ -73,7 +79,7 @@
 import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { ROUTE_NAME as ROUTE_UNITS } from '~/pages/units/index.vue';
 
-import { mdiUnity } from '@mdi/js';
+import { mdiPackageVariantClosed } from '@mdi/js';
 
 withDefaults(
   defineProps<{
