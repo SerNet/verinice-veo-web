@@ -70,7 +70,18 @@ const { data: domain, isFetching: isFetchingDomains } = useQuery(
   fetchDomainQueryParameters,
   { enabled: fetchDomainQueryEnabled }
 );
-const { data: reports, isFetching: isFetchingReports } = useQuery(reportQueryDefinitions.queries.fetchAll);
+
+const fetchReportsQueryEnabled = computed(() => !!domain.value);
+
+const fetchReportsQueryParameters = computed(() => ({
+  domain: domain.value?.name as string
+}));
+
+const { data: reports, isFetching: isFetchingReports } = useQuery(
+  reportQueryDefinitions.queries.fetchAll,
+  fetchReportsQueryParameters,
+  { enabled: fetchReportsQueryEnabled }
+);
 
 // Filter reports according to domain only
 function filterReportsByDomain(_domain: IVeoDomain, _allReports: IVeoReportsMeta) {
