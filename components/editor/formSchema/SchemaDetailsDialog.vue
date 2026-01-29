@@ -18,34 +18,45 @@
 <template>
   <BaseDialog
     :model-value="modelValue"
-    large
-    :title="t('schemaDetailsHeadline')"
+    :title="globalT('editor.schema.properties')"
     fixed-footer
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
       <v-form v-model="formIsValid" class="mx-4" @submit="doSave()">
         <v-row no-gutters class="align-center mt-4">
-          <v-col cols="12" :md="5">
-            <span style="font-size: 1.2rem">{{ t('schemaName') }}*:</span>
-          </v-col>
-          <v-col cols="12" :md="5">
-            <v-text-field v-model="form.formSchema" required flat :rules="[requiredRule]" :label="t('schemaName')" />
+          <v-col cols="12">
+            <v-text-field
+              v-model="form.formSchema"
+              required
+              flat
+              :rules="[requiredRule]"
+              :label="globalT('editor.formschema.create.title')"
+            />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
-          <v-col cols="12" :md="5">
-            <span style="font-size: 1.2rem">{{ globalT('editor.formschema.sorting') }}:</span>
-          </v-col>
-          <v-col cols="12" :md="5">
+          <v-col cols="12">
             <v-text-field v-model="form.sorting" :label="globalT('editor.formschema.sorting')" flat />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
-          <v-col cols="12" :md="5">
-            <span style="font-size: 1.2rem">{{ globalT('editor.formschema.create.type.text') }}*:</span>
+          <v-col cols="12">
+            <v-text-field
+              :model-value="
+                form.context === 'elementDetails' ?
+                  globalT('editor.formschema.create.context.elementDetails')
+                : globalT('editor.formschema.create.context.requirementImplementationControlView')
+              "
+              flat
+              :label="globalT('editor.formschema.create.context')"
+              readonly
+              disabled
+            />
           </v-col>
-          <v-col cols="12" :md="5">
+        </v-row>
+        <v-row no-gutters class="align-center mt-4">
+          <v-col cols="12">
             <v-text-field
               :model-value="objectSchema.title"
               flat
@@ -56,10 +67,7 @@
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
-          <v-col cols="12" :md="5">
-            <span style="font-size: 1.2rem">{{ globalT('editor.formschema.subtype') }}:</span>
-          </v-col>
-          <v-col cols="12" :md="5">
+          <v-col cols="12">
             <v-select
               v-model="form.subType"
               :label="globalT('editor.formschema.subtype')"
@@ -72,6 +80,7 @@
         <small>{{ globalT('global.input.requiredfields') }}</small>
       </v-form>
     </template>
+
     <template #dialog-options>
       <v-btn @click="$emit('update:model-value', false)">
         {{ globalT('global.button.cancel') }}
@@ -93,22 +102,23 @@ const props = withDefaults(
     formSchema: string;
     subType: string | null;
     sorting: string | null;
+    context: string | null;
     domainId: string;
   }>(),
   {
     formSchema: '',
     subType: null,
-    sorting: null
+    sorting: null,
+    context: null
   }
 );
 
 const emit = defineEmits<{
   (e: 'update:model-value', newValue: boolean): void;
   (e: 'update-schema-name', newValue: string): void;
-  (e: 'update:sub-type' | 'update:sorting', newValue: string | null): void;
+  (e: 'update:sub-type' | 'update:sorting' | 'update:schema-context', newValue: string | null): void;
 }>();
 
-const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
 
@@ -116,7 +126,8 @@ const formIsValid = ref(true);
 const form = ref({
   formSchema: props.formSchema,
   subType: props.subType,
-  sorting: props.sorting
+  sorting: props.sorting,
+  context: props.context
 });
 
 watch(
@@ -150,9 +161,8 @@ const subTypeOptions = computed(() =>
 function doSave() {
   emit('update:sub-type', form.value.subType);
   emit('update:sorting', form.value.sorting ?? null);
+  emit('update:schema-context', form.value.context);
   emit('update-schema-name', form.value.formSchema);
   emit('update:model-value', false);
 }
 </script>
-
-<i18n src="~/locales/base/components/editor-form-schema-schema-details-dialog.json"></i18n>
