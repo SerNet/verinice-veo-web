@@ -17,7 +17,7 @@
 -->
 <template>
   <v-window-item v-bind="$attrs">
-    <h2 class="text-h2 mb-2">
+    <h2 class="text-h2">
       {{ t('createFormSchema') }}
     </h2>
     <v-form
@@ -29,13 +29,10 @@
       <BaseCard class="mb-4">
         <v-card-text>
           <v-row no-gutters class="align-center mt-4">
-            <v-col cols="12" md="5">
-              <span>{{ t('editor.formschema.create.title.text') }}*:</span>
-            </v-col>
-            <v-col cols="12" md="7">
+            <v-col cols="12">
               <v-text-field
                 :model-value="name"
-                :label="t('editor.formschema.create.title')"
+                :label="`${t('editor.formschema.create.title')}*`"
                 :rules="[requiredRule]"
                 required
                 variant="underlined"
@@ -45,10 +42,7 @@
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center mt-4">
-            <v-col cols="12" md="5">
-              <span>{{ t('editor.formschema.sorting') }}:</span>
-            </v-col>
-            <v-col cols="12" md="7">
+            <v-col cols="12">
               <v-text-field
                 :model-value="sorting"
                 :label="t('editor.formschema.sorting')"
@@ -63,13 +57,10 @@
       <BaseCard>
         <v-card-text>
           <v-row no-gutters class="align-center">
-            <v-col cols="12" md="5">
-              <span>{{ t('editor.formschema.create.context.text') }}*:</span>
-            </v-col>
-            <v-col cols="12" md="7">
+            <v-col cols="12">
               <v-select
                 :model-value="context"
-                :label="t('editor.formschema.create.context')"
+                :label="`${t('editor.formschema.create.context')}*`"
                 :rules="[requiredRule]"
                 :items="contexts"
                 required
@@ -80,14 +71,11 @@
             </v-col>
           </v-row>
           <v-row no-gutters class="align-center">
-            <v-col cols="12" md="5">
-              <span>{{ t('editor.formschema.create.type.text') }}*:</span>
-            </v-col>
-            <v-col cols="12" md="7">
+            <v-col cols="12">
               <v-select
                 :model-value="objectType"
                 :disabled="!context"
-                :label="t('editor.formschema.create.type')"
+                :label="labels(context).objectType"
                 :rules="[requiredRule]"
                 :items="objectTypes"
                 required
@@ -98,8 +86,7 @@
             </v-col>
           </v-row>
           <v-row v-if="objectType === 'custom'" no-gutters>
-            <v-col cols="0" md="5" />
-            <v-col cols="12" md="7">
+            <v-col cols="12">
               <EditorFileUpload
                 :input-label="t('objectSchemaUploadLabel')"
                 :submit-button-text="t('importObjectSchema')"
@@ -107,22 +94,24 @@
               />
             </v-col>
           </v-row>
-          <v-row no-gutters class="align-center mt-4">
-            <v-col cols="12" md="5">
-              <span>{{ t('editor.formschema.subtype') }}*:</span>
-            </v-col>
-            <v-col cols="12" md="7">
+          <v-row no-gutters class="align-center mb-4">
+            <v-col cols="12">
               <v-select
                 :model-value="subType"
                 :disabled="!objectType || (objectType === 'custom' && !objectSchema)"
                 :items="subTypes"
                 :loading="!!objectType && !objectSchema && objectType !== 'custom' && objectType !== 'all'"
-                :label="t('editor.formschema.subtype')"
+                :label="labels(context).subType"
                 :rules="[requiredRule]"
                 variant="underlined"
                 data-veo-test="form-schema-subtype-select"
                 @update:model-value="$emit('update:sub-type', $event)"
               />
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="align-center mb-4">
+            <v-col v-if="!!objectType" cols="4">
+              {{ `${t('editor.formschema.underlying.scheme')}` }}: {{ labels(context).scheme }}
             </v-col>
           </v-row>
         </v-card-text>
@@ -254,11 +243,27 @@ export default defineComponent({
       }));
     });
 
+    const labels = (context: string) => {
+      if (context === 'elementDetails') {
+        return {
+          objectType: `${t('editor.formschema.create.type')}*`,
+          subType: `${t('editor.formschema.subtype')}*`,
+          scheme: upperFirst(props.objectType)
+        };
+      }
+      return {
+        objectType: `${t('editor.formschema.create.type.context')}*`,
+        subType: `${t('editor.formschema.subtype.context')}*`,
+        scheme: 'Control'
+      };
+    };
+
     return {
       objectTypes,
       requiredRule,
       subTypes,
       contexts,
+      labels,
       t
     };
   }
