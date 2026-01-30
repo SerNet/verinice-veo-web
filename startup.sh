@@ -14,10 +14,7 @@ sed -i "s,https://auth\.veo\.example/auth,$VEO_OIDC_URL,g" $file
 sed -i "s,veo-oidcrealm-example,$VEO_OIDC_REALM,g" $file
 sed -i "s,veo-oidcclient-example,$VEO_OIDC_CLIENT,g" $file
 sed -i "s,veo-documentation-url-example,$VEO_DOCUMENTATION_URL,g" $file
-sed -i "s,veo-feature-flag-card-view-example,$VEO_FEATURE_FLAG_CARD_VIEW,g" $file
-sed -i "s,veo-feature-flag-user-settings-example,$VEO_FEATURE_FLAG_USER_SETTINGS,g" $file
 sed -i "s,veo-hide-sernet-references-example,$VEO_HIDE_SERNET_REFERENCES,g" $file
-sed -i "s,veo-feature-flag-graph-example,$VEO_FEATURE_FLAG_GRAPH,g" $file
 
 
 # Get all feature flags passed to the environment and replace corresponding strings inside nuxt config with their values
