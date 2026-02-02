@@ -63,11 +63,11 @@
           <v-row>
             <v-col cols="12" :md="availableSubTypes.length > 0 ? 6 : 12">
               <v-select
-                v-model="createFormObjectType"
+                v-model="typeTranslation"
                 :items="objectTypeOptions"
                 :label="t('objectType')"
                 :disabled="!!objectType"
-                variant="outlined"
+                variant="underlined"
                 density="comfortable"
                 :rules="[requiredRule]"
               />
@@ -77,7 +77,7 @@
                 v-model="createFormSubType"
                 :items="subTypeOptions"
                 :label="t('subType')"
-                variant="outlined"
+                variant="underlined"
                 density="comfortable"
                 :rules="[requiredRule]"
               />
@@ -89,7 +89,7 @@
               <v-text-field
                 v-model="createFormAbbreviation"
                 :label="t('abbreviation')"
-                variant="outlined"
+                variant="underlined"
                 density="comfortable"
                 maxlength="100"
                 counter
@@ -99,7 +99,7 @@
               <v-text-field
                 v-model="createFormName"
                 :label="t('name')"
-                variant="outlined"
+                variant="underlined"
                 density="comfortable"
                 :rules="[requiredRule]"
                 maxlength="500"
@@ -209,14 +209,14 @@ const config = useRuntimeConfig();
 const { data: translations } = useTranslations({ domain: props.domainId });
 const { navigateToCatalog, navigateToObject } = useNavigation();
 
-const navigateToObjectDetail = (objectType: string, objectId: string): string => {
+const navigateToObjectDetail = (objectType: string, objectId: string, subType: string): string => {
   const routeData = router.resolve({
     name: 'unit-domains-domain-objectType-subType-object',
     params: {
       unit: route.params.unit,
       domain: route.params.domain,
       objectType: VeoElementTypePlurals[objectType] || objectType,
-      subType: '-',
+      subType: subType || '-',
       object: objectId
     }
   });
@@ -278,6 +278,10 @@ const objectTypeOptions = computed(() => {
     value: type,
     title: translations.value?.lang[locale.value]?.[type + '_singular'] || type
   }));
+});
+
+const typeTranslation = computed(() => {
+  return translations.value?.lang[locale.value]?.[createFormObjectType.value] || t('object');
 });
 
 const availableSubTypes = computed<string[]>(() => {
@@ -438,48 +442,61 @@ const performCreateObject = async (openEditor: boolean) => {
   if (!canManageUnitContent.value || !isCreateFormValid.value) return;
 
   isSaving.value = true;
+  const endpoint = VeoElementTypePlurals[createFormObjectType.value];
 
   try {
-    const payload = buildNewObjectPayload();
-
-    const result = (await createObject({
-      endpoint: VeoElementTypePlurals[createFormObjectType.value],
-      object: payload,
-      parentScopes: props.parentScopeIds
-    })) as IVeoAPIMessage;
-
-    const newObjectId = result.resourceId;
-
-    // WAIT until object is readable
-    const createdObject = await useQuerySync(
-      objectQueryDefinitions.queries.fetch,
-      {
-        domain: props.domainId,
-        endpoint: VeoElementTypePlurals[createFormObjectType.value],
-        id: newObjectId
-      },
-      queryClient
-    );
+    const createdObject = await createAndFetchObject(endpoint);
 
     if (props.parentObject && props.onLink) {
       await props.onLink([createdObject]);
     }
 
-    emit('create', newObjectId, openEditor);
-    emit('success', [newObjectId]);
-    displaySuccessMessage(t('objectCreatedSuccess', { name: createFormName.value }));
+    emitSuccess(createdObject.id, openEditor);
+    handleDialogClose(false);
 
     if (openEditor) {
-      router.push(navigateToObjectDetail(createFormObjectType.value, newObjectId));
+      await navigateToCreatedObject(endpoint, createdObject.id);
     }
-
-    handleDialogClose(false);
   } catch (error: any) {
     displayErrorMessage(t('createError'), error.message);
     emit('error', error);
   } finally {
     isSaving.value = false;
   }
+};
+
+const createAndFetchObject = async (endpoint: string) => {
+  const payload = buildNewObjectPayload();
+
+  const result = (await createObject({
+    endpoint,
+    object: payload,
+    parentScopes: props.parentScopeIds
+  })) as IVeoAPIMessage;
+
+  return useQuerySync(
+    objectQueryDefinitions.queries.fetch,
+    {
+      domain: props.domainId,
+      endpoint,
+      id: result.resourceId
+    },
+    queryClient
+  );
+};
+
+const emitSuccess = (id: string, openEditor: boolean) => {
+  emit('create', id, openEditor);
+  emit('success', [id]);
+  displaySuccessMessage(t('objectCreatedSuccess', { name: createFormName.value }));
+};
+
+const navigateToCreatedObject = async (endpoint: string, id: string) => {
+  queryClient.invalidateQueries({
+    queryKey: ['object', { domain: props.domainId, endpoint, id }]
+  });
+
+  await router.push(navigateToObjectDetail(createFormObjectType.value, id, createFormSubType.value));
 };
 
 const buildNewObjectPayload = () => {
