@@ -3,12 +3,18 @@
     "associateDomainsErrorTitle": "Error!",
     "associateDomainsErrorBody": "Domains could not be associated.",
     "associateDomainsSuccess": "Domains successfully associated.",
-    "isAssociatingDomains": "Associating domains..."
+    "isAssociatingDomains": "Associating domains...",
+    "furtherInformation": "An overview of further functions and domains can be found on the",
+    "linkName": "verinice website",
+    "moreModulesInfo": "The verinice-Team will successively provide further domains for verinice.veo."
   },
   "de": {
     "associateDomainsErrorTitle": "Fehler!",
     "associateDomainsErrorBody": "Domänen konnten nicht assoziiert werden.",
     "associateDomainsSuccess": "Domänen erfolgreich assoziert.",
-    "isAssociatingDomains": "Assoziiere Domänen..."
+    "isAssociatingDomains": "Assoziiere Domänen...",
+    "furtherInformation": "Eine Übersicht über weitere Funktionen und Domänen finden Sie auf der",
+    "linkName": "verinice Webseite",
+    "moreModulesInfo": "Das verinice-Team wird sukzessive weitere Domänen für verinice.veo zur Verfügung stellen."
   }
 }

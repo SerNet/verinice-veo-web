@@ -41,11 +41,23 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </BaseListItem>
     </template>
   </v-row>
+  <div class="text-body-1 my-6">
+    <p>{{ t('moreModulesInfo') }}</p>
+    <p>
+      {{ t('furtherInformation') }}
+      <a :href="locale === 'de' ? 'https://verinice.com/veo' : 'https://verinice.com/en/veo'" target="_blank">{{
+        t('linkName')
+      }}</a
+      >.
+    </p>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { mdiPuzzle } from '@mdi/js';
 import type { TVeoDomain } from '~/composables/domains/useDomains';
+
+const { t, locale } = useI18n();
 
 const { data: currentUnit } = useUnit();
 
