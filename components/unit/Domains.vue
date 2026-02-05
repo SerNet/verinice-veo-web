@@ -46,6 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <script setup lang="ts">
 import { mdiPuzzle } from '@mdi/js';
 import type { TVeoDomain } from '~/composables/domains/useDomains';
+
 const { data: currentUnit } = useUnit();
 
 interface Props {
@@ -68,7 +69,7 @@ const isDomainExisting = (domain: TVeoDomain): boolean => {
   return !!currentUnit.value?.raw?.domains?.some((d) => d.id === domain.id);
 };
 
-watch([() => props.domains, () => currentUnit.value?.raw?.domains], () => {
+const syncSelectedWithUnit = () => {
   selected.value ??= [];
 
   const unitDomains = currentUnit.value?.raw?.domains ?? [];
@@ -76,11 +77,20 @@ watch([() => props.domains, () => currentUnit.value?.raw?.domains], () => {
 
   unitDomains.forEach((unitDomain) => {
     const matchingDomain = allDomains?.find((d) => d.id === unitDomain.id);
-    if (matchingDomain && !selected.value?.some((s) => s.id === matchingDomain.id)) {
+    const alreadySelected = selected.value?.some((s) => s.id === matchingDomain?.id);
+    if (matchingDomain && !alreadySelected) {
       selected.value?.push(matchingDomain);
     }
   });
-});
+};
+
+watch(
+  [() => props.domains, () => currentUnit.value?.raw?.domains],
+  () => {
+    syncSelectedWithUnit();
+  },
+  { immediate: true }
+);
 </script>
 
 <i18n src="~/locales/base/components/unit-domains.json"></i18n>
