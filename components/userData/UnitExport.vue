@@ -32,6 +32,7 @@
 <script setup lang="ts">
 import { downloadZIP } from '~/lib/jsonToZip';
 import { logError } from './modules/HandleError';
+import { read } from '~/requests/crud';
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -46,17 +47,18 @@ const state = reactive({
 const username = computed(() => profile.value?.username as string);
 const { data: units } = useUnits();
 
-const id = ref();
-const { data: unit, isFetching: isFetchingUnit } = useUnit(id);
-
 async function exportUnit(index: number) {
   state.isLoading[index] = true;
   try {
-    id.value = units.value[index].id;
-    await waitForBooleanToUpdate(isFetchingUnit, false);
+    const id = units.value[index]?.id;
+    if (!id) throw new Error('Unit ID is undefined');
 
-    const fileName = `${username.value}_${unit.value.name}`;
-    await downloadZIP(unit.value, fileName);
+    const path = `units/${id}/export`;
+    const data = await read({ path });
+
+    const fileName = `${username.value}_${data.unit?.name ?? 'unit_export'}`;
+    await downloadZIP(data, fileName);
+
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
     handleError(error);
