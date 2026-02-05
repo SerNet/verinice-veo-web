@@ -71,6 +71,7 @@
         @click="
           domainId = 'more';
           closeMenu.menu = false;
+          closeMenu.blur();
         "
       />
     </template>
@@ -78,7 +79,6 @@
 </template>
 
 <script setup lang="ts">
-import { ROUTE_NAME as ROUTE_MORE_DOMAINS } from '~/pages/[unit]/domains/more.vue';
 import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
 import { mdiPuzzle } from '@mdi/js';
 
@@ -109,7 +109,11 @@ const domains = computed(() => currentUnit.value?.domains || []);
 
 const items = computed(() => {
   const domain = (domains.value || []).find((d) => d.id === route.params.domain);
-  return domain?.name || '';
+  if (domain) return domain.name;
+  if (domainId.value === 'more') {
+    return globalT('breadcrumbs.more');
+  }
+  return '';
 });
 
 const itemSelection = computed(() =>
@@ -130,14 +134,21 @@ const domainId = computed({
     return (route.params.domain as string) || 'more';
   },
   set(newValue: string) {
-    const params = newValue === 'more' ? { unit: route.params.unit } : { domain: newValue };
-
-    navigateTo({
-      name: newValue === 'more' ? ROUTE_MORE_DOMAINS : ROUTE_DOMAIN_DASHBOARD,
-      params: {
-        ...params
+    if (newValue === 'more') {
+      if (currentUnit.value?.domainsUrl) {
+        navigateTo(currentUnit.value.domainsUrl);
+      } else {
+        navigateTo(`/units/${route.params.unit}/domains`);
       }
-    });
+    } else {
+      navigateTo({
+        name: ROUTE_DOMAIN_DASHBOARD,
+        params: {
+          unit: route.params.unit,
+          domain: newValue
+        }
+      });
+    }
   }
 });
 </script>
