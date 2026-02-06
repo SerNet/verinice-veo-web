@@ -61,6 +61,7 @@
   "global.input.required": "The field is required",
   "global.input.requiredfields": "* Required fields",
   "global.input.hasSpecialChar": "Input contains invalid characters! Only \"A-Z a-z 0-9 _ -\" are accepted.",
+  "global.input.usernameTooShort": "Username must be at least 3 characters long.",
   "global.input.invalidEmail": "Please enter a valid email address.",
   "global.input.invalidNumber": "Please enter a valid number.",
   "global.logout": "Logout",
@@ -257,7 +258,6 @@
   "i18n-t_messages": {
     "preSelectedDomainBody": "Because you are importing objects from the profile { profile }, the domain { domain } is preselected."
   },
-
   "searchbar": {
     "abbreviation": "Abbreviation",
     "createdAt": "Created at",
@@ -272,16 +272,13 @@
     "status": "Status",
     "subType": "Subtype",
     "actions": "Actions",
-
     "NEW": "New",
     "RELEASED": "Released",
     "IN_PROGRESS": "In process",
     "FOR_REVIEW": "For review",
     "ARCHIVED": "Archived",
-
     "yes": "Yes",
     "no": "No",
-
     "and": "And"
   },
   "graph": {
