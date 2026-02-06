@@ -144,7 +144,7 @@
       <v-spacer />
       <v-btn
         color="primary"
-        :disabled="formIsValid === false || ability.cannot('manage', 'accounts')"
+        :disabled="!formIsValid || !isDirty || ability.cannot('manage', 'accounts')"
         :loading="isLoading"
         @click="createOrUpdateAccount"
       >
@@ -157,7 +157,7 @@
 <script lang="ts">
 import type { PropType } from 'vue';
 import { mdiAccountOutline, mdiEmailOutline } from '@mdi/js';
-import { cloneDeep, pick, trim } from 'lodash';
+import { cloneDeep, isEqual, pick, trim } from 'lodash';
 
 import type { IVeoAccount } from '~/composables/api/queryDefinitions/accounts';
 import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
@@ -223,7 +223,12 @@ export default defineComponent({
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
     // form stuff
-    const formIsValid = ref(true);
+    const originalData = computed(() => {
+      const data = pick(props, ['username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups']);
+      const accessGroups = props.existingAccounts.find((acc) => acc.id === props.id)?.accessGroups ?? [];
+      return { ...data, accessGroups };
+    });
+    const formIsValid = ref<boolean | null>(null);
     const formData = ref<{
       username?: string;
       emailAddress?: string;
@@ -235,6 +240,7 @@ export default defineComponent({
       accessGroups?: IVeoAccessGroup[];
       [key: string]: any;
     }>({});
+    const isDirty = computed(() => !isEqual(formData.value, originalData.value));
 
     const usernameIsDuplicateRule = (v: any) =>
       !props.existingAccounts.find((account) => account.username === trim(v) && account.id !== props.id) ||
@@ -268,11 +274,15 @@ export default defineComponent({
     // Reset form on close (dialog close animation is done after 250ms)
     watch(
       () => props.modelValue,
-      (open) => {
-        if (!open) {
+      (isOpen) => {
+        if (isOpen) {
+          formData.value = cloneDeep(originalData.value);
+          formIsValid.value = null;
+        } else {
           formData.value = {};
         }
-      }
+      },
+      { immediate: true }
     );
 
     // CRUD stuff
@@ -338,6 +348,7 @@ export default defineComponent({
       usernameIsDuplicateRule,
       mailValidator,
       usernameTooShort,
+      isDirty,
 
       t,
       globalT,
