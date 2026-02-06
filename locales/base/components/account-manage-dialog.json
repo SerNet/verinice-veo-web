@@ -1,7 +1,7 @@
 {
   "en": {
     "createAccount": "Create account",
-    "creatingAccountFailed": "Couldn't create account. Username or email-address already in use.",
+    "creatingAccountFailed": "Couldn't create account.",
     "creatingAccountSuccess": "Account was created successfully",
     "email": "Email address",
     "emailAddressAlreadyTaken": "The email address is already in use. Please choose another one.",
@@ -29,7 +29,7 @@
   },
   "de": {
     "createAccount": "Account erstellen",
-    "creatingAccountFailed": "Account konnte nicht erstellt werden. Benutzername oder Email-Adresse bereits vergeben.",
+    "creatingAccountFailed": "Account konnte nicht erstellt werden.",
     "creatingAccountSuccess": "Account wurde erstellt",
     "email": "E-Mail-Adresse",
     "emailAddressAlreadyTaken": "Die E-Mail Adresse wird bereits verwendet. Bitte wählen Sie eine andere.",
