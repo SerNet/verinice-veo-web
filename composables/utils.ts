@@ -97,6 +97,8 @@ export const useRules = () => {
 
   const banSpecialChars = (v: string) => (hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar'));
 
+  const usernameTooShort = (v: string) => (v.length < 3 ? t('global.input.usernameTooShort') : true);
+
   function hasNoSpecialChar(s: string): boolean {
     if (s === '') return true; // do not test empty strings
     const re = /^[\w-]+$/; // allowed characters
@@ -118,7 +120,8 @@ export const useRules = () => {
     requiredRule,
     banSpecialChars,
     mailValidator,
-    numberValidator
+    numberValidator,
+    usernameTooShort
   };
 };
 

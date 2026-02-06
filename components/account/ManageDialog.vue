@@ -51,7 +51,7 @@
                   :label="`${t('username')}*`"
                   :prepend-inner-icon="mdiAccountOutline"
                   :disabled="!!id"
-                  :rules="[requiredRule, usernameIsDuplicateRule]"
+                  :rules="[requiredRule, usernameIsDuplicateRule, usernameTooShort]"
                   variant="underlined"
                 />
               </v-col>
@@ -244,7 +244,7 @@ export default defineComponent({
       t('emailAddressAlreadyTaken').toString();
     const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
 
-    const { mailValidator } = useRules();
+    const { mailValidator, usernameTooShort } = useRules();
 
     const availableRoles = ref([
       {
@@ -337,6 +337,7 @@ export default defineComponent({
       requiredRule,
       usernameIsDuplicateRule,
       mailValidator,
+      usernameTooShort,
 
       t,
       globalT,
