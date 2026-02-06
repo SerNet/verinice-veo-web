@@ -45,10 +45,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     <p>{{ t('moreModulesInfo') }}</p>
     <p>
       {{ t('furtherInformation') }}
-      <a :href="locale === 'de' ? 'https://verinice.com/veo' : 'https://verinice.com/en/veo'" target="_blank">{{
-        t('linkName')
-      }}</a
-      >.
+      <NuxtLink
+        :to="locale === 'de' ? 'https://verinice.com/veo' : 'https://verinice.com/en/veo'"
+        external
+        target="_blank"
+        >{{ t('linkName') }}
+      </NuxtLink>
+      .
     </p>
   </div>
 </template>
