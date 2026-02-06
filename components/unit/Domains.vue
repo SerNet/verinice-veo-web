@@ -89,8 +89,8 @@ const syncSelectedWithUnit = () => {
 
   unitDomains.forEach((unitDomain) => {
     const matchingDomain = allDomains?.find((d) => d.id === unitDomain.id);
-    const alreadySelected = selected.value?.some((s) => s.id === matchingDomain?.id);
-    if (matchingDomain && !alreadySelected) {
+    const isSelected = selected.value?.some((s) => s.id === matchingDomain?.id);
+    if (matchingDomain && !isSelected) {
       selected.value?.push(matchingDomain);
     }
   });
