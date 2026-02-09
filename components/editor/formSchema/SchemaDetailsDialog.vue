@@ -152,7 +152,7 @@ watch(
 );
 
 const subTypeOptions = computed(() =>
-  (props.objectSchema?.properties.subType.enum || []).map((subType: string) => ({
+  (props.objectSchema?.properties?.subType?.enum || []).map((subType: string) => ({
     title: subType,
     value: subType
   }))

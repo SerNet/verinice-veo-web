@@ -208,45 +208,71 @@ export default defineComponent({
       { enabled: fetchFormQueryEnabled }
     );
 
+    const normalizeSchema = (schema: any, searchValue: string, replaceValue: string) => {
+      if (!schema) return schema;
+
+      return JSON.parse(JSON.stringify(schema).replaceAll(searchValue, replaceValue));
+    };
+
+    const isCustomFormSchema = computed(() => !formSchemaId.value || formSchemaId.value === 'custom');
+
     const formSchema = computed(() => {
-      let schema =
-        !formSchemaId.value || formSchemaId.value === 'custom' ? uploadedFormSchema.value : remoteFormSchema.value;
-      if (schema) {
-        // We add a slash infront of the replace in order to only replace the domain id in the scope property
-        schema = JSON.parse(JSON.stringify(schema).replaceAll(`/${props.domainId}`, '/{CURRENT_DOMAIN_ID}'));
-      }
-      return schema;
+      const schema = isCustomFormSchema.value ? uploadedFormSchema.value : remoteFormSchema.value;
+
+      return normalizeSchema(schema, `/${props.domainId}`, '/{CURRENT_DOMAIN_ID}');
     });
 
     const forceOwnObjectSchema = ref(false);
     const objectSchemaId = ref<string>();
     const uploadedObjectSchema = ref<IVeoDomainSpecificObjectSchema>();
 
-    const objectTypePlural = computed(() =>
-      formSchemaDetails?.value?.context === 'requirementImplementationControlView' ?
-        'controls'
-      : VeoElementTypePlurals[objectSchemaId.value || '']
+    const isControlImplementationContext = computed(
+      () => formSchemaDetails.value.context === 'controlImplementationDetails'
     );
+
+    const objectTypePlural = computed(() => {
+      if (formSchemaDetails.value.context === 'requirementImplementationControlView') {
+        return 'controls';
+      }
+
+      return VeoElementTypePlurals[objectSchemaId.value || ''];
+    });
+
     const fetchSchemaQueryParameters = computed<IVeoFetchSchemaParameters>(() => ({
       type: objectTypePlural.value || '',
       domainId: props.domainId
     }));
+
     const fetchSchemaQueryEnabled = computed(() => !!objectTypePlural.value);
+
     const { data: remoteObjectSchema, isFetching: loadingObjectSchema } = useQuery(
       schemaQueryDefinitions.queries.fetchSchema,
       fetchSchemaQueryParameters,
-      { enabled: fetchSchemaQueryEnabled }
+      {
+        enabled: computed(() => fetchSchemaQueryEnabled.value && !isControlImplementationContext.value)
+      }
+    );
+
+    const { data: remoteObjectSchemaCI, isFetching: loadingObjectSchemaCI } = useQuery(
+      schemaQueryDefinitions.queries.fetchCISchema,
+      fetchSchemaQueryParameters,
+      {
+        enabled: computed(() => fetchSchemaQueryEnabled.value && isControlImplementationContext.value)
+      }
+    );
+
+    const isLoadingSchema = computed(() => loadingObjectSchema.value || loadingObjectSchemaCI.value);
+
+    const isCustomObjectSchema = computed(() => forceOwnObjectSchema.value || objectSchemaId.value === 'custom');
+
+    const selectedRemoteObjectSchema = computed(() =>
+      isControlImplementationContext.value ? remoteObjectSchemaCI.value : remoteObjectSchema.value
     );
 
     const objectSchema = computed(() => {
-      let schema =
-        forceOwnObjectSchema.value || objectSchemaId.value === 'custom' ?
-          uploadedObjectSchema.value
-        : remoteObjectSchema.value;
-      if (schema) {
-        schema = JSON.parse(JSON.stringify(schema).replaceAll(props.domainId, '{CURRENT_DOMAIN_ID}'));
-      }
-      return schema;
+      const schema = isCustomObjectSchema.value ? uploadedObjectSchema.value : selectedRemoteObjectSchema.value;
+
+      return normalizeSchema(schema, props.domainId, '{CURRENT_DOMAIN_ID}');
     });
 
     watch(
@@ -394,7 +420,7 @@ export default defineComponent({
       handleSubTypeChange,
       importFormSchema,
       loadingFormSchema,
-      loadingObjectSchema,
+      loadingObjectSchema: isLoadingSchema,
       objectSchema,
       objectSchemaId,
       onClose,

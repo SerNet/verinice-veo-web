@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -90,7 +90,13 @@ import { isObject } from 'lodash';
 
 import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import formsQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import { VeoAlertType, VeoElementTypePlurals, RI_CONTROL_VIEW_CONTEXT } from '~/types/VeoTypes';
+import {
+  VeoAlertType,
+  VeoElementTypePlurals,
+  RI_CONTROL_VIEW_CONTEXT,
+  CI_DIALOG_VIEW_CONTEXT,
+  RISK_AFFECTED
+} from '~/types/VeoTypes';
 import { useQuery } from '~/composables/api/utils/query';
 
 export default defineComponent({
@@ -160,6 +166,8 @@ export default defineComponent({
         props.formSchema &&
         !(
           (props.formSchema.context === RI_CONTROL_VIEW_CONTEXT && props.formSchema.modelType == null) ||
+          (props.formSchema.context === CI_DIALOG_VIEW_CONTEXT &&
+            RISK_AFFECTED.includes(props.formSchema.modelType as any)) ||
           Object.keys(VeoElementTypePlurals).includes(props.formSchema?.modelType as string)
         )
     );
