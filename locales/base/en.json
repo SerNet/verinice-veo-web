@@ -25,6 +25,7 @@
   "editor.formschema.create.context": "Context",
   "editor.formschema.create.context.elementDetails": "Object view",
   "editor.formschema.create.context.requirementImplementationControlView": "Implementation-Dialog: Control view",
+  "editor.formschema.create.context.controlImplementationDetails": "CI-Dialog",
   "editor.formschema.create.context.text": "Context of the object schema",
   "editor.formschema.edit.css.class": "CSS classes",
   "editor.formschema.edit.css.style": "CSS styles",
