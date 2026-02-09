@@ -103,10 +103,6 @@ export default {
     fetchCISchema: {
       primaryQueryKey: 'ci-schema',
       url: '/api/domains/:domainId/:type/control-implementations/json-schema',
-      onDataFetched: (result: any) => {
-        result.title = result.title.toLowerCase();
-        return result;
-      },
       queryParameterTransformationFn: (queryParameters) => ({
         params: {
           domainId: queryParameters.domainId,
