@@ -425,7 +425,28 @@ export interface IVeoControlImplementation {
   // TODO #3066 find some way to express read-only properties
   owner?: IVeoLink;
   responsible?: IVeoLink;
+  implementationStatus?: 'UNKNOWN' | 'YES' | 'NO' | 'PARTIAL' | 'N_A';
+  _requirementImplementations?: string;
+  customAspects?: IVeoCustomAspects;
   _self?: string;
+}
+
+export interface IVeoControlImplementationDefinition {
+  customAspects?: {
+    [aspectName: string]: {
+      attributeDefinitions: {
+        [attributeName: string]: {
+          type: string;
+          allowedValues?: string[];
+        };
+      };
+    };
+  };
+  translations?: {
+    [lang: string]: {
+      [key: string]: string;
+    };
+  };
 }
 
 export type RequirementImplementation = {
@@ -606,6 +627,7 @@ export interface IVeoElementTypeDefinition {
     };
   };
   customAspects: IVeoCustomAspects;
+  controlImplementationDefinition?: IVeoControlImplementationDefinition;
 }
 
 export interface IVeoObjectControlCompendiumEntry {
@@ -656,6 +678,9 @@ export type VeoLinkItem = {
 
 export const ELEMENT_DETAILS_CONTEXT = 'elementDetails';
 export const RI_CONTROL_VIEW_CONTEXT = 'requirementImplementationControlView';
-export const contextKeys = [ELEMENT_DETAILS_CONTEXT, RI_CONTROL_VIEW_CONTEXT];
+export const CI_DIALOG_VIEW_CONTEXT = 'controlImplementationDetails';
+export const contextKeys = [ELEMENT_DETAILS_CONTEXT, RI_CONTROL_VIEW_CONTEXT, CI_DIALOG_VIEW_CONTEXT];
 
-export const RiContextTypes = ['all', 'scope', 'process', 'asset'] as const;
+export const RISK_AFFECTED = ['all', 'scope', 'process', 'asset'] as const;
+// Alias for backward compatibility
+export const RiContextTypes = RISK_AFFECTED;
