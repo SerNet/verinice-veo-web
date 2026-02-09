@@ -1,4 +1,25 @@
-import { writeFileSync, readFile } from 'fs';
+/*
+ * verinice.veo web
+ * Copyright (C) 2026 jae
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/** @description: This script processes HTML: It moves the content of inline scripts into external files */
+
+import fs from 'fs';
+import path from 'path';
 import crypto from 'node:crypto';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -6,52 +27,52 @@ import { glob } from 'glob';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const NUXT_BUILD_DIR = resolve(__dirname, '.output', 'public');
 
-function hash(stringToHash) {
-  if (typeof stringToHash !== 'string') {
-    throw new TypeError('Input must be a string');
+(function init() {
+  const htmlFiles = glob.sync(`${NUXT_BUILD_DIR}/**/*.html`);
+
+  for (const htmlFile of htmlFiles) {
+    processHtmlFile(htmlFile);
   }
-  return crypto.createHash('sha256').update(stringToHash).digest('hex');
+})();
+
+function processHtmlFile(htmlFile) {
+  const htmlContent = fs.readFileSync(htmlFile, 'utf8');
+  const nuxtDir = `_nuxt`;
+
+  const regex = new RegExp(/<script([^>]*)>([\s\S]*?)<\/script>/g);
+  const processedHtml = htmlContent.replace(regex, (match, attributes, content) => {
+    // Skip empty scripts
+    if (!content.trim()) {
+      return match;
+    }
+
+    // Skip scripts with id="__NUXT_DATA__"
+    if (attributes.includes('id="__NUXT_DATA__"')) {
+      return match;
+    }
+
+    // Skip scripts that already have src attribute, they aren't inline scripts
+    if (attributes.includes('src=')) {
+      return match;
+    }
+
+    // Process inline script
+    // Generate a unique filename
+    const hash = crypto.createHash('md5').update(content).digest('hex').substring(0, 8);
+    const scriptFilename = `script-${hash}.js`;
+    const scriptPath = path.join(NUXT_BUILD_DIR, nuxtDir, scriptFilename);
+
+    // Copy the script's content into a file
+    if (!fs.existsSync(scriptPath)) {
+      fs.writeFileSync(scriptPath, content);
+    }
+
+    // Replace the script's content with a reference to the new external script
+    return `<script${attributes} src="/${nuxtDir}/${scriptFilename}"></script>`;
+  });
+
+  // Write the processed HTML back into the original file
+  fs.writeFileSync(htmlFile, processedHtml);
 }
-
-const name = () => {
-  const BUILD_OUTPUT_DIR = resolve(__dirname, '.output', 'public');
-
-  let configScripts = [];
-
-  // Get a list of all compiled html files (those could contain <script>)
-  const htmlFiles = glob.sync(`${BUILD_OUTPUT_DIR}/**/*.html`);
-
-  for (const file of htmlFiles) {
-    const configIsWritable = !configScripts.length;
-    let foundOccurence = 0;
-    // Read every file and check whether <script> exists within. if so, replace it with a link to the config file (created as soon as the first match is found with the config data of the match (all files contain the same config))
-    readFile(file, (_error, fileContent) => {
-      const newContent = fileContent.toString().replace(/<script([^>]*)>(.+?)<\/script>/gis, (text, args, content) => {
-        // If src= is already set, this is not the tag we are looking for, so leave everything as it is
-        if (args.includes('src=')) {
-          return text;
-        }
-
-        // Seems to be used for hydration, so we can ignore it as we do SSG. If not ignored either breaks page
-        // loading because __NUXT_DATA__ has no content (content was externalized) or because CSP disallows inline scripts
-        if (args.includes('id="__NUXT_DATA__"')) {
-          return '';
-        }
-
-        // Only write config if config array is empty (first file)
-        if (configIsWritable) {
-          const configFileName = `config${foundOccurence}.${hash(content)}.js`;
-          configScripts.push(configFileName);
-          writeFileSync(resolve(BUILD_OUTPUT_DIR, '_nuxt', configFileName), content);
-        }
-
-        // Replace old script tag with new one with the link
-        return `<script${args} src="/_nuxt/${configScripts[foundOccurence++]}"></script>`;
-      });
-      writeFileSync(file, newContent);
-    });
-  }
-};
-
-name();
