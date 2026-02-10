@@ -70,259 +70,69 @@
 
         <!-- Editable implementation details -->
         <v-label class="mt-4">{{ t('riEditor.implementation') }}</v-label>
+
         <BaseCard border padding margin-bottom>
-          <!-- Umsetzung -->
-          <v-card class="mb-6">
-            <v-card-title>{{ t('riEditor.implementationCard') }}</v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12" md="4">
-                  <v-select
-                    v-model="form.status"
-                    :label="t('riEditor.status')"
-                    :aria-label="t('riEditor')"
-                    :items="statusValues"
-                    item-title="label"
-                    item-value="value"
-                    :disabled="!canManageUnitContent"
-                    variant="underlined"
-                    data-veo-test="riEditor-status"
-                  />
-                </v-col>
+          <!-- Responsible person -->
+          <v-autocomplete
+            v-model="form.responsible"
+            :label="t('riEditor.responsible')"
+            :items="persons"
+            :disabled="!canManageUnitContent"
+            clearable
+            item-title="name"
+            item-value="name"
+            return-object
+            variant="underlined"
+            class="my-4"
+            data-veo-test="compliance-editor-ri-responsible-person"
+          />
 
-                <v-col cols="12" md="8">
-                  <v-autocomplete
-                    v-model="form.responsible"
-                    :label="t('riEditor.responsible')"
-                    :aria-label="t('riEditor.responsible')"
-                    :items="persons"
-                    item-title="name"
-                    item-value="name"
-                    :disabled="!canManageUnitContent"
-                    clearable
-                    variant="underlined"
-                    return-object
-                    data-veo-test="compliance-editor-ri-responsible-person"
-                  />
-                </v-col>
+          <!-- Implementation date -->
+          <!-- @click:clear
+            in vuetify 3.6.xx `clearable` doesn't reset the value when clearing the input,
+            thus v-model is being reset manually
+          -->
+          <v-date-input
+            v-model="form.implementationUntil"
+            :label="t('riEditor.implementationUntil')"
+            :aria-label="t('riEditor.implementationUntil')"
+            :disabled="!canManageUnitContent"
+            data-veo-test="compliance-editor-ri-implementation-date"
+            prepend-icon=""
+            prepend-inner-icon="$calendar"
+            clearable
+            role="combobox"
+            :aria-expanded="!!form.implementationUntil"
+            @click:clear="form.implementationUntil = undefined"
+          />
 
-                <v-col cols="12" md="4">
-                  <v-date-input
-                    v-model="form.implementationUntil"
-                    v-model:menu="implementationUntilMenu"
-                    :aria-expanded="implementationUntilMenu"
-                    :label="t('riEditor.implementationUntil')"
-                    :aria-label="t('riEditor.implementationUntil')"
-                    :disabled="!canManageUnitContent"
-                    prepend-icon=""
-                    role="combobox"
-                    prepend-inner-icon="$calendar"
-                    clearable
-                    variant="underlined"
-                    data-veo-test="riEditor-implementationUntil"
-                    @click:clear="form.implementationUntil = undefined"
-                  />
-                </v-col>
+          <!-- Status -->
+          <v-radio-group
+            v-model="form.status"
+            :disabled="!canManageUnitContent"
+            :aria-label="t('riEditor.status')"
+            inline
+          >
+            <template #label>
+              <div>{{ t('riEditor.status') }}</div>
+            </template>
+            <template v-for="(key, value) in Status" :key="key">
+              <v-radio
+                :label="t(`riEditor.statusValues.${value}`)"
+                :value="`${key}`"
+                :data-veo-test="`compliance-editor-staus-${value}`"
+              />
+            </template>
+          </v-radio-group>
 
-                <v-col cols="12" md="8">
-                  <v-text-field
-                    v-model="form.cost"
-                    :label="t('riEditor.cost')"
-                    :aria-label="t('riEditor.cost')"
-                    :disabled="!canManageUnitContent"
-                    variant="underlined"
-                    :rules="[numberValidator]"
-                    data-veo-test="riEditor-cost"
-                  />
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-
-          <!-- Dokumentation -->
-          <v-card class="mb-6">
-            <v-card-title>{{ t('riEditor.documentationCard') }}</v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12" md="4">
-                  <v-date-input
-                    v-model="form.implementationDate"
-                    v-model:menu="implementationDateMenu"
-                    :aria-expanded="implementationDateMenu"
-                    :label="t('riEditor.implementationDate')"
-                    :aria-label="t('riEditor.implementationDate')"
-                    :disabled="!canManageUnitContent"
-                    prepend-icon=""
-                    role="combobox"
-                    prepend-inner-icon="$calendar"
-                    clearable
-                    variant="underlined"
-                    data-veo-test="riEditor-implementationDate"
-                    @click:clear="form.implementationDate = undefined"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="8">
-                  <v-autocomplete
-                    v-model="form.implementedBy"
-                    :label="t('riEditor.implementedBy')"
-                    :aria-label="t('riEditor.implementedBy')"
-                    :items="persons"
-                    :disabled="!canManageUnitContent"
-                    item-title="name"
-                    item-value="name"
-                    clearable
-                    required
-                    return-object
-                    variant="underlined"
-                    data-veo-test="riEditor-implementedBy"
-                    @click:clear="form.implementedBy = undefined"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="4">
-                  <v-date-input
-                    v-model="form.assessmentDate"
-                    v-model:menu="assessmentDateMenu"
-                    :aria-expanded="assessmentDateMenu"
-                    :label="t('riEditor.assessmentDate')"
-                    :aria-label="t('riEditor.assessmentDate')"
-                    :disabled="!canManageUnitContent"
-                    prepend-icon=""
-                    prepend-inner-icon="$calendar"
-                    role="combobox"
-                    clearable
-                    variant="underlined"
-                    data-veo-test="riEditor-assessmentDate"
-                    @click:clear="form.assessmentDate = undefined"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="8">
-                  <v-autocomplete
-                    v-model="form.assessmentBy"
-                    :label="t('riEditor.assessmentBy')"
-                    :aria-label="t('riEditor.assessmentBy')"
-                    :items="persons"
-                    :disabled="!canManageUnitContent"
-                    item-title="name"
-                    item-value="name"
-                    clearable
-                    return-object
-                    variant="underlined"
-                    data-veo-test="riEditor-assessmentBy"
-                    @click:clear="form.assessmentBy = undefined"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="12">
-                  <v-textarea
-                    v-model="form.implementationStatement"
-                    :label="t('riEditor.description')"
-                    :aria-label="t('riEditor.description')"
-                    :disabled="!canManageUnitContent"
-                    variant="underlined"
-                    rows="2"
-                    data-veo-test="riEditor-description"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="12">
-                  <v-select
-                    v-model="form.document"
-                    :label="t('riEditor.document')"
-                    :aria-label="t('riEditor.document')"
-                    :items="documents"
-                    item-title="name"
-                    item-value="name"
-                    :disabled="!canManageUnitContent"
-                    return-object
-                    variant="underlined"
-                    data-veo-test="riEditor-document"
-                    @click:clear="form.document = undefined"
-                  />
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-
-          <!-- Revisionen -->
-          <v-card>
-            <v-card-title>{{ t('riEditor.revisionCard') }}</v-card-title>
-            <v-card-text>
-              <v-row dense>
-                <v-col cols="12" md="4">
-                  <v-date-input
-                    v-model="form.lastRevisionDate"
-                    v-model:menu="lastRevisionDateMenu"
-                    :aria-expanded="lastRevisionDateMenu"
-                    :label="t('riEditor.lastRevisionDate')"
-                    :aria-label="t('riEditor.lastRevisionDate')"
-                    :disabled="!canManageUnitContent"
-                    prepend-icon=""
-                    prepend-inner-icon="$calendar"
-                    clearable
-                    role="combobox"
-                    variant="underlined"
-                    data-veo-test="riEditor-lastRevisionDate"
-                    @click:clear="form.lastRevisionDate = undefined"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="8">
-                  <v-autocomplete
-                    v-model="form.lastRevisionBy"
-                    :label="t('riEditor.lastRevisionBy')"
-                    :aria-label="t('riEditor.lastRevisionBy')"
-                    :items="persons"
-                    :disabled="!canManageUnitContent"
-                    item-title="name"
-                    item-value="name"
-                    clearable
-                    return-object
-                    variant="underlined"
-                    data-veo-test="riEditor-lastRevisionBy"
-                    @click:clear="form.lastRevisionBy = undefined"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="4">
-                  <v-date-input
-                    v-model="form.nextRevisionDate"
-                    v-model:menu="nextRevisionMenu"
-                    :aria-expanded="nextRevisionMenu"
-                    :label="t('riEditor.nextRevisionDate')"
-                    :aria-label="t('riEditor.nextRevisionDate')"
-                    :disabled="!canManageUnitContent"
-                    role="combobox"
-                    prepend-icon=""
-                    prepend-inner-icon="$calendar"
-                    clearable
-                    variant="underlined"
-                    data-veo-test="riEditor-nextRevisionDate"
-                    @click:clear="form.nextRevisionDate = undefined"
-                  />
-                </v-col>
-
-                <v-col cols="12" md="8">
-                  <v-autocomplete
-                    v-model="form.nextRevisionBy"
-                    :label="t('riEditor.nextRevisionBy')"
-                    :aria-label="t('riEditor.nextRevisionBy')"
-                    :items="persons"
-                    :disabled="!canManageUnitContent"
-                    item-title="name"
-                    item-value="name"
-                    clearable
-                    return-object
-                    variant="underlined"
-                    data-veo-test="riEditor-nextRevisionBy"
-                    @click:clear="form.nextRevisionDate = undefined"
-                  />
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
+          <!-- Description -->
+          <v-textarea
+            v-model="form.implementationStatement"
+            :label="t('riEditor.description')"
+            :disabled="!canManageUnitContent"
+            variant="underlined"
+            data-veo-test="compliance-editor-description"
+          />
         </BaseCard>
       </v-card-text>
       <ObjectFormSkeletonLoader v-else />
@@ -362,7 +172,9 @@
 
 <script setup lang="ts">
 // ===== External dependencies =====
+import { format } from 'date-fns';
 import { cloneDeep, merge } from 'lodash';
+import { useDate } from 'vuetify';
 
 // ===== Internal components =====
 import DynamicFormEntrypoint from '~/components/dynamic-form/Entrypoint.vue';
@@ -370,8 +182,13 @@ import ComplianceEditorRiMetaData from './editorRiMetaData.vue';
 
 // ===== API and composables =====
 import { useRequest } from '@/composables/api/utils/request';
+import type {
+  IVeoFetchPersonsInDomainParameters,
+  IVeoPersonInDomain
+} from '~/composables/api/queryDefinitions/domains';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import type { IVeoFetchObjectParameters, IVeoFetchObjectsParameters } from '~/composables/api/queryDefinitions/objects';
+import type { IVeoFetchObjectParameters } from '~/composables/api/queryDefinitions/objects';
 import controlQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
@@ -382,8 +199,6 @@ import { useQuery } from '~/composables/api/utils/query';
 import type { IVeoEntity, IVeoLink, RequirementImplementation, ResponsiblePerson } from '~/types/VeoTypes';
 import { RI_CONTROL_VIEW_CONTEXT, VeoElementTypePlurals } from '~/types/VeoTypes';
 import { isVeoLink, validateType } from '~/types/utils';
-import { format } from 'date-fns';
-import { useFetchObjects } from '~/composables/api/objects';
 
 // ===== Type definitions =====
 interface Props {
@@ -396,31 +211,14 @@ interface Emits {
   (e: 'update:show-dialog', value: boolean): void;
 }
 
-const statusValues = computed(() =>
-  Object.values(Status).map((value) => ({
-    value,
-    label: t(`riEditor.statusValues.${value}`)
-  }))
-);
-
 type RequirementImplementationForForm = {
   origin: Partial<IVeoLink>;
   control: Partial<IVeoEntity>;
   responsible?: ResponsiblePerson;
   status: string;
   origination: string;
-  implementationUntil?: string;
-  implementedBy?: ResponsiblePerson;
-  cost?: number;
   implementationStatement?: string;
-  implementationDate?: string;
-  assessmentDate?: string;
-  assessmentBy?: ResponsiblePerson;
-  document?: any;
-  lastRevisionDate?: string;
-  lastRevisionBy?: ResponsiblePerson;
-  nextRevisionDate?: string;
-  nextRevisionBy?: ResponsiblePerson;
+  implementationUntil?: Date;
 };
 
 export type TAdditionalInfo = {
@@ -430,13 +228,6 @@ export type TAdditionalInfo = {
   protectionApproachTranslation?: string;
 };
 
-// ===== Menu refs for aria labels =====
-const nextRevisionMenu = ref(false);
-const lastRevisionDateMenu = ref(false);
-const implementationUntilMenu = ref(false);
-const implementationDateMenu = ref(false);
-const assessmentDateMenu = ref(false);
-
 // ===== Props and emits =====
 const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
@@ -444,6 +235,7 @@ const emit = defineEmits<Emits>();
 // ===== Utilities and hooks =====
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { t } = useVeoI18n();
+const adapter = useDate();
 const route = useRoute();
 const { request } = useRequest();
 const { updateItem } = useRequirementImplementationQuery();
@@ -465,19 +257,9 @@ const initialForm: RequirementImplementationForForm = {
   origin: {},
   control: {},
   responsible: null,
-  status: Status.Unknown,
+  status: 'UNKNOWN',
   implementationStatement: null,
-  origination: 'SYSTEM_SPECIFIC',
-  cost: null,
-  implementationDate: null,
-  implementedBy: null,
-  assessmentDate: null,
-  assessmentBy: null,
-  document: null,
-  lastRevisionDate: null,
-  lastRevisionBy: null,
-  nextRevisionDate: null,
-  nextRevisionBy: null
+  origination: 'SYSTEM_SPECIFIC'
 };
 
 const form = ref<RequirementImplementationForForm>(initialForm);
@@ -506,6 +288,34 @@ const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
   domain: currentDomainId.value as string,
   endpoint: 'controls'
 }));
+
+// ===== API data fetching =====
+
+// Fetch persons
+const totalItemCountQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
+  domainId: currentDomainId.value as string,
+  unitId: unitId.value as string,
+  size: '1'
+}));
+
+const fetchPersonsForTotalItemCountEnabled = computed(() => !!currentDomainId.value && !!unitId.value);
+
+const { data: _personsForTotalItemCount } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  totalItemCountQueryParameters,
+  { enabled: fetchPersonsForTotalItemCountEnabled }
+);
+
+// Domain and persons queries
+const totalItemCount = computed(() => _personsForTotalItemCount?.value?.totalItemCount);
+
+const fetchPersonsInDomainQueryParameters = computed<IVeoFetchPersonsInDomainParameters>(() => ({
+  domainId: currentDomainId.value as string,
+  unitId: unitId.value as string,
+  size: totalItemCount.value as string
+}));
+
+const canFetchPersons = computed(() => !!currentDomainId.value && !!unitId.value && !!totalItemCount.value);
 
 // Forms and schemas queries
 const formsQueryParameters = computed(() => ({
@@ -595,34 +405,11 @@ const { data: controlFormSchema } = useQuery(formQueryDefinitions.queries.fetchF
   enabled: formQueryEnabled
 });
 
-// ===== API object data fetching =====
-const canFetchObjectData = computed(() => !!currentDomainId.value && !!unitId.value);
-
-// Fetch persons
-const personsQueryParams = computed<IVeoFetchObjectsParameters>(() => ({
-  endpoint: 'persons',
-  domain: Array.isArray(currentDomainId.value) ? currentDomainId.value[0] : currentDomainId.value,
-  unit: Array.isArray(unitId.value) ? unitId.value[0] : unitId.value,
-  size: '5000'
-}));
-
-const { data: _persons } = useFetchObjects(personsQueryParams, {
-  enabled: canFetchObjectData,
-  keepPreviousData: true
-});
-
-// Fetch documents
-const documentQueryParams = computed<IVeoFetchObjectsParameters>(() => ({
-  endpoint: 'documents',
-  domain: Array.isArray(currentDomainId.value) ? currentDomainId.value[0] : currentDomainId.value,
-  unit: Array.isArray(unitId.value) ? unitId.value[0] : unitId.value,
-  size: '5000'
-}));
-
-const { data: _documents } = useFetchObjects(documentQueryParams, {
-  enabled: canFetchObjectData,
-  keepPreviousData: true
-});
+const { data: _persons } = useQuery(
+  domainQueryDefinitions.queries.fetchPersonsInDomain,
+  fetchPersonsInDomainQueryParameters,
+  { enabled: canFetchPersons }
+);
 
 // ===== Computed properties =====
 // Translations
@@ -645,26 +432,15 @@ const { subTypeTranslation: ciSubType } = useSubTypeTranslation(
   false
 );
 
-// ===== Helper functions =====
 // Persons
-const persons = computed(() => mapPersons(_persons?.value?.items as IVeoEntity[]) ?? []);
+const persons = computed(() => mapPersons(_persons?.value?.items as IVeoPersonInDomain[]) ?? []);
 
-function mapPersons(persons: IVeoEntity[]): ResponsiblePerson[] {
+// ===== Helper functions =====
+function mapPersons(persons: IVeoPersonInDomain[]): ResponsiblePerson[] {
   if (!persons) return [];
   return persons.map((person) => ({
     name: person.name,
     targetUri: person._self
-  }));
-}
-
-// Documents
-const documents = computed(() => mapDocuments(_documents?.value?.items as IVeoEntity[]) ?? []);
-
-function mapDocuments(documents: IVeoEntity[]) {
-  if (!documents) return [];
-  return documents.map((document) => ({
-    name: document.name,
-    targetUri: document._self
   }));
 }
 
@@ -694,9 +470,6 @@ function updateAdditionalInfo(control: IVeoEntity, targetObject: IVeoEntity, pro
   additionalInfo.value.protectionApproachTranslation = protectionApproachTranslation;
 }
 
-// ===== Rules =====
-const { numberValidator } = useRules();
-
 // ===== Event handlers =====
 async function submitForm({
   type,
@@ -720,15 +493,10 @@ async function submitForm({
     ...clone,
     control: { targetUri: clone.control._self },
     origin: validateType(clone.origin, isVeoLink),
-    implementationUntil: form.implementationUntil ? format(form.implementationUntil, 'yyyy-MM-dd') : undefined,
-    implementationDate: form.implementationDate ? format(form.implementationDate, 'yyyy-MM-dd') : undefined,
-    lastRevisionDate: form.lastRevisionDate ? format(form.lastRevisionDate, 'yyyy-MM-dd') : undefined,
-    nextRevisionDate: form.nextRevisionDate ? format(form.nextRevisionDate, 'yyyy-MM-dd') : undefined,
-    assessmentDate: form.assessmentDate ? format(form.assessmentDate, 'yyyy-MM-dd') : undefined
+    implementationUntil: form.implementationUntil && format(form.implementationUntil, 'yyyy-MM-dd')
   };
 
-  // Filter null values
-  const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value != null));
+  const requirementImplementation = Object.fromEntries(Object.entries(_form).filter(([, value]) => value !== null));
 
   try {
     await updateItem({
@@ -753,7 +521,10 @@ watch([_item, control], () => {
   if (!_item.value) return;
   form.value = {
     ..._item.value,
-    control: control.value
+    control: control.value,
+    // TODO #3066 is there some way to get a date adapter that explicitly returns Dates and doesn't need casting?
+    implementationUntil:
+      _item.value.implementationUntil ? (adapter.parseISO(_item.value.implementationUntil) as Date) : undefined
   };
 });
 

@@ -63,7 +63,6 @@
   "global.input.hasSpecialChar": "Input contains invalid characters! Only \"A-Z a-z 0-9 _ -\" are accepted.",
   "global.input.usernameTooShort": "Username must be at least 3 characters long.",
   "global.input.invalidEmail": "Please enter a valid email address.",
-  "global.input.invalidNumber": "Please enter a valid number.",
   "global.logout": "Logout",
   "global.menu.collapse": "Collapse menu",
   "global.menu.expand": "Fix menu",
@@ -252,6 +251,7 @@
     }
   },
   "noValue": "No Value",
+
   "permissions": {
     "missingPermissionTooltip": "Missing permission for this action."
   },

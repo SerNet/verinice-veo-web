@@ -92,9 +92,6 @@ export const useRules = () => {
     }
   };
 
-  const numberValidator = (v: any) =>
-    (v && !isNaN(Number(v)) && isFinite(Number(v))) || t('global.input.invalidNumber');
-
   const banSpecialChars = (v: string) => (hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar'));
 
   const usernameTooShort = (v: string) => (v.length < 3 ? t('global.input.usernameTooShort') : true);
@@ -120,7 +117,6 @@ export const useRules = () => {
     requiredRule,
     banSpecialChars,
     mailValidator,
-    numberValidator,
     usernameTooShort
   };
 };
