@@ -306,12 +306,16 @@ describe('Requirement Implementations: Editor', () => {
     // Add some new data
     cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
     cy.get('@editor').within(() => {
+      cy.getCustom('[data-veo-test="compliance-editor-staus-No"] input').click();
       cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]')
         .click()
         .clear()
+        .type('test-person')
         .type('{downArrow}{enter}');
-      cy.getCustom('[data-veo-test="riEditor-cost"] input').type('1500');
-      cy.getCustom('[data-veo-test="riEditor-description"] textarea').click().type(testRIData.description);
+      cy.getCustom('[data-veo-test="compliance-editor-description"] textarea').click().type(testRIData.description);
+
+      // Typing does currently not work
+      //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-implementation-date"]').click().type('11.11.2111').type("{esc}");
 
       // Save
       cy.intercept('GET', apiRoutes.requirementImplementations).as('getRIs');
@@ -319,22 +323,33 @@ describe('Requirement Implementations: Editor', () => {
       cy.wait(['@getRIs']).its('response.statusCode').should('eq', 200);
     });
 
+    //cy.wait(1000);
+
     // Assert content of RI list
     cy.getCustom('[data-veo-test="responsible.displayName"]').first().contains(testPerson.name);
-    cy.getCustom('[data-veo-test="translations.status"]').first().first().contains('Unedited');
+    cy.getCustom('[data-veo-test="translations.status"]').first().first().contains('No');
 
     // Open editor again
     cy.getCustom('td').first().click();
 
     cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
     cy.get('@editor').within(() => {
+      // Assert
+      cy.getCustom('[data-veo-test="compliance-editor-staus-No"] input')
+        .invoke('val')
+        .then((status: string) => expect(status).to.eq('NO'));
+
+      // Currently the input field always has a value of ''
+      //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"] input').invoke('val').then((person: string) => expect(person).to.eq(testRIData.person));
       cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]').then(
         ($personInp: JQuery<HTMLElement>) => expect($personInp).to.contain(testRIData.person)
       );
-      cy.getCustom('[data-veo-test="riEditor-cost"] input').should('have.value', '1500');
-      cy.getCustom('[data-veo-test="riEditor-description"] textarea')
+
+      cy.getCustom('[data-veo-test="compliance-editor-description"] textarea')
         .invoke('val')
         .then((description: string) => expect(description).to.eq(testRIData.description));
+
+      //cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-implementation-date"]').invoke('val').then(() =>{})
     });
   });
 });
