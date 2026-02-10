@@ -63,7 +63,6 @@
   "global.input.requiredfields": "* Pflichtfelder",
   "global.input.hasSpecialChar": "Eingabe enthält ungültige Zeichen. Nur \"A-Z a-z 0-9 _ -\" sind zulässig.",
   "global.input.invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
-  "global.input.invalidNumber": "Bitte geben Sie eine gültige Zahl ein.",
   "global.logout": "Logout",
   "global.menu.collapse": "Menü verstecken",
   "global.menu.expand": "Menü fixieren",
@@ -253,6 +252,7 @@
     }
   },
   "noValue": "Kein Wert",
+
   "permissions": {
     "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
   },

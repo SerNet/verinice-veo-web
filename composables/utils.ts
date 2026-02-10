@@ -92,9 +92,6 @@ export const useRules = () => {
     }
   };
 
-  const numberValidator = (v: any) =>
-    (v && !isNaN(Number(v)) && isFinite(Number(v))) || t('global.input.invalidNumber');
-
   const banSpecialChars = (v: string) => (hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar'));
 
   function hasNoSpecialChar(s: string): boolean {
@@ -117,8 +114,7 @@ export const useRules = () => {
   return {
     requiredRule,
     banSpecialChars,
-    mailValidator,
-    numberValidator
+    mailValidator
   };
 };
 
