@@ -242,12 +242,30 @@ export default defineComponent({
     }>({});
     const isDirty = computed(() => !isEqual(formData.value, originalData.value));
 
-    const usernameIsDuplicateRule = (v: any) =>
-      !props.existingAccounts.find((account) => account.username === trim(v) && account.id !== props.id) ||
-      t('usernameAlreadyTaken').toString();
-    const mailAddressIsDuplicateRule = (v: any) =>
-      !props.existingAccounts.find((account) => account.emailAddress === trim(v) && account.id !== props.id) ||
-      t('emailAddressAlreadyTaken').toString();
+    const usernameIsDuplicateRule = (v: any) => {
+      const trimmedValue = trim(v);
+      const isDuplicate = props.existingAccounts.find(
+        (account) => account.username === trimmedValue && account.id !== props.id
+      );
+      const isLoggedInUser = profile.value?.username === trimmedValue && props.id !== profile.value?.id;
+      if (isDuplicate || isLoggedInUser) {
+        return t('usernameAlreadyTaken').toString();
+      }
+      return true;
+    };
+
+    const mailAddressIsDuplicateRule = (v: any) => {
+      const trimmedValue = trim(v);
+      if (!trimmedValue) return true;
+      const isDuplicateInList = props.existingAccounts.find(
+        (account) => account.emailAddress === trimmedValue && account.id !== props.id
+      );
+      const isLoggedInUserEmail = profile.value?.email === trimmedValue && props.id !== profile.value?.id;
+      if (isDuplicateInList || isLoggedInUserEmail) {
+        return t('emailAddressAlreadyTaken').toString();
+      }
+      return true;
+    };
     const requiredRule = (v: any) => (!!v && !!trim(v).length) || t('global.input.required').toString();
 
     const { mailValidator, usernameTooShort } = useRules();
