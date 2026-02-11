@@ -37,6 +37,7 @@ interface Props {
   pageWidthsXl?: (string | number)[];
   pageTitles?: string[];
   unresponsivePageWidths?: boolean;
+  initialCollapsedStates?: boolean[];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -50,7 +51,8 @@ const props = withDefaults(defineProps<Props>(), {
   pageWidthsLg: () => [],
   pageWidthsXl: () => [],
   pageTitles: () => [],
-  unresponsivePageWidths: false
+  unresponsivePageWidths: false,
+  initialCollapsedStates: () => []
 });
 
 const emit = defineEmits<{ 'page-collapsed': [states: boolean[]] }>();
@@ -111,8 +113,13 @@ const onPageCountChange = () => {
       collapsablePages.value[0] = props.collapsableLeft;
       collapsablePages.value[collapsablePages.value.length - 1] = props.collapsableRight;
 
-      // Expand all pages (resets the state even if previous pages have been collapsed)
-      pagesCollapsedStates.value = Array(_currentPagesCount).fill(false);
+      // Use initial collapsed states if provided, otherwise expand all pages
+      if (props.initialCollapsedStates.length >= _currentPagesCount) {
+        pagesCollapsedStates.value = props.initialCollapsedStates.slice(0, _currentPagesCount);
+        emit('page-collapsed', pagesCollapsedStates.value);
+      } else {
+        pagesCollapsedStates.value = Array(_currentPagesCount).fill(false);
+      }
       currentPageCount.value = _currentPagesCount;
 
       destroyKeybinds();
@@ -123,6 +130,17 @@ const onPageCountChange = () => {
 
 watch(() => props.collapsableLeft, onPageCountChange);
 watch(() => props.collapsableRight, onPageCountChange);
+
+watch(
+  () => props.initialCollapsedStates,
+  (newStates) => {
+    if (newStates && newStates.length >= currentPageCount.value && currentPageCount.value > 0) {
+      pagesCollapsedStates.value = newStates.slice(0, currentPageCount.value);
+      emit('page-collapsed', pagesCollapsedStates.value);
+    }
+  },
+  { deep: true }
+);
 /**
  * Helper function to find out whether the previous page is collapsed
  */

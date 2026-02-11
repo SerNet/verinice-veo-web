@@ -27,6 +27,7 @@
     :page-widths-xl="pageWidthsXl"
     :page-widths-lg="pageWidthsLg"
     :page-titles="pageTitles"
+    :initial-collapsed-states="initialCollapsedStates"
     data-component-name="object-details-page"
     data-veo-test="object-details-page"
     @page-collapsed="onPageCollapsed"
@@ -195,6 +196,8 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { useQueryClient } from 'vue-query-v5';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
+import { useSettings, type ObjectPageCollapseOption } from '~/composables/api/useSettings';
+import { useObjectPageCollapseState } from '~/composables/useObjectPageCollapseState';
 
 import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import type { IVeoObjectHistoryEntry } from '~/types/history';
@@ -288,6 +291,9 @@ onUnmounted(() => {
   expireOptimisticLockingAlert();
 });
 
+const { data: userSettings } = useSettings();
+const { getSessionState, setSessionState, hasSessionState } = useObjectPageCollapseState();
+
 // Display stuff
 const pageWidths = ref<number[]>([3, 9]);
 const pageWidthsLg = ref<number[]>([5, 7]);
@@ -296,16 +302,75 @@ const pageTitles = ref<string[]>([t('objectInfo'), t('objectForm')]);
 
 const wasSavedSuccessfully = ref<boolean>(false);
 
-const onPageCollapsed = (collapsedPages: boolean[]) => {
-  if (collapsedPages.some((page) => page)) {
-    pageWidths.value = [12, 0];
-    pageWidthsLg.value = [12, 0];
-    pageWidthsXl.value = [12, 0];
-  } else {
-    pageWidths.value = [3, 9];
-    pageWidthsLg.value = [4, 8];
-    pageWidthsXl.value = [5, 7];
+const initialCollapsedStates = computed<boolean[]>(() => {
+  const sessionState = getSessionState();
+  const collapseOption =
+    sessionState !== null ? sessionState : userSettings.value?.['object-page-default-collapse'] || 'none';
+
+  switch (collapseOption) {
+    case 'info':
+      return [true, false];
+    case 'form':
+      return [false, true];
+    case 'none':
+    default:
+      return [false, false];
   }
+});
+
+function applyCollapseWidths(collapseOption: ObjectPageCollapseOption) {
+  switch (collapseOption) {
+    case 'info':
+      pageWidths.value = [0, 12];
+      pageWidthsLg.value = [0, 12];
+      pageWidthsXl.value = [0, 12];
+      break;
+    case 'form':
+      pageWidths.value = [12, 0];
+      pageWidthsLg.value = [12, 0];
+      pageWidthsXl.value = [12, 0];
+      break;
+    case 'none':
+    default:
+      pageWidths.value = [3, 9];
+      pageWidthsLg.value = [4, 8];
+      pageWidthsXl.value = [5, 7];
+      break;
+  }
+}
+
+function initializeCollapseState() {
+  const sessionState = getSessionState();
+  if (sessionState !== null) {
+    applyCollapseWidths(sessionState);
+  } else if (userSettings.value?.['object-page-default-collapse']) {
+    applyCollapseWidths(userSettings.value['object-page-default-collapse']);
+  }
+}
+
+watch(
+  () => userSettings.value?.['object-page-default-collapse'],
+  () => {
+    if (!hasSessionState()) {
+      initializeCollapseState();
+    }
+  },
+  { immediate: true }
+);
+
+const onPageCollapsed = (collapsedPages: boolean[]) => {
+  let newCollapseState: ObjectPageCollapseOption = 'none';
+
+  if (collapsedPages[0] && !collapsedPages[1]) {
+    newCollapseState = 'info';
+  } else if (!collapsedPages[0] && collapsedPages[1]) {
+    newCollapseState = 'form';
+  } else {
+    newCollapseState = 'none';
+  }
+
+  setSessionState(newCollapseState);
+  applyCollapseWidths(newCollapseState);
 };
 
 const objectType = computed(() => VeoElementTypesSingular[route.params.objectType as string]);
