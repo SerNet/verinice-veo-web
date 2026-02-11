@@ -209,9 +209,9 @@ const subTypes = computed(() =>
         currentValue.elementTypeDefinitions?.[effectiveObjectType.value]?.subTypes || {}
       ).map((subType) => ({
         title:
-          currentValue.elementTypeDefinitions[effectiveObjectType.value].translations[locale.value][
+          currentValue.elementTypeDefinitions?.[effectiveObjectType.value]?.translations?.[locale.value]?.[
             `${effectiveObjectType.value}_${subType}_singular`
-          ],
+          ] || subType,
         value: subType
       }));
 
