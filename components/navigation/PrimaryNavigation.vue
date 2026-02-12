@@ -1,7 +1,7 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Tino Groteloh, Philipp Ballhausen, Annemarie Bufe, jae
-   - Samuel Vitzthum
+   - Samuel Vitzthum, djm
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -18,16 +18,15 @@
 -->
 <template>
   <v-navigation-drawer
-    :width="300"
-    :model-value="modelValue"
-    :rail="!xs && miniVariant"
-    :permanent="!xs"
-    :temporary="xs"
-    scrim
     v-bind="$attrs"
+    role="navigation"
+    aria-label="Navigation"
+    :rail="!xs && miniVariant"
+    permanent
+    data-veo-test="navigation-drawer-primary-navigation"
   >
     <template #prepend>
-      <div class="my-6">
+      <div class="my-6" role="group">
         <NavigationUnitSelect :mini-variant="miniVariant" @expand-menu="miniVariant = false" />
         <!-- @vue-ignore TODO #3066 $route does not exist -->
         <NavigationDomainSelect
@@ -37,47 +36,30 @@
         />
       </div>
     </template>
-    <template #default>
-      <v-list ref="primaryNavList" class="mt-4" :rounded="miniVariant" role="menu">
-        <template v-for="item in items" :key="item.id">
-          <NavigationPrimaryNavigationCategory
-            v-if="item.children"
-            v-bind="item"
-            :level="0"
-            :mini-variant="miniVariant"
-            @expand-menu="miniVariant = false"
-          />
-          <NavigationPrimaryNavigationEntry
-            v-else
-            v-bind="item"
-            :level="0"
-            :mini-variant="miniVariant"
-            @expand-menu="miniVariant = false"
-          />
-        </template>
-      </v-list>
-    </template>
+
+    <v-divider />
+
+    <v-list ref="primaryNavList" class="mt-4 px-2" role="menu" aria-label="Main">
+      <NavigationDrawerItems v-for="item in items" :key="item.id" :item="item" :mini-variant="miniVariant" />
+    </v-list>
+
     <template #append>
-      <v-divider style="background: rgba(255, 255, 255, 0.2)" />
-      <v-list density="compact" class="pa-0" role="menu">
+      <v-divider />
+      <v-list density="compact" class="pa-0" role="group">
         <v-list-item
           v-if="!xs"
-          class="pl-4"
+          class="px-4"
+          role="button"
+          :aria-expanded="!miniVariant"
+          :aria-label="miniVariant ? t('expand') : t('collapse')"
+          data-veo-test="toggle-navigation"
           data-component-name="toggle-navigation"
-          density="compact"
-          tabindex="0"
-          autofocus
-          role="menuitem"
           @click="miniVariant = !miniVariant"
         >
           <template #prepend>
-            <v-icon v-if="miniVariant" :color="chevronColor" class="mr-3" :icon="mdiChevronRight" />
-            <v-icon v-else :color="chevronColor" class="mr-3" :icon="mdiChevronLeft" />
+            <v-icon :color="chevronColor" :icon="miniVariant ? mdiChevronRight : mdiChevronLeft" />
           </template>
-          <v-list-item-title v-if="miniVariant">
-            {{ t('fix') }}
-          </v-list-item-title>
-          <v-list-item-title v-else>
+          <v-list-item-title v-if="!miniVariant">
             {{ t('collapse') }}
           </v-list-item-title>
         </v-list-item>
@@ -141,6 +123,7 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+import NavigationDrawerItems from '~/components/navigation/NavigationDrawerItems.vue';
 
 const props = withDefaults(
   defineProps<{
