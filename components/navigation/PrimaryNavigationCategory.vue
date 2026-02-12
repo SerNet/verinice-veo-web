@@ -152,10 +152,6 @@ const openCategory = () => {
 <style lang="scss" scoped>
 @use 'assets/styles/_variables.scss';
 
-.border-top {
-  border-top: 1px solid variables.$medium-grey;
-}
-
 .v-list-item--density-compact.primary-navigation-entry-level-1 {
   padding-inline-start: 52px !important;
 }
