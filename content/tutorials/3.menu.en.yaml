@@ -27,8 +27,8 @@ steps:
   - title: 'Risks'
     element: '[data-component-name=risks-nav-item]'
     intro: In the Risks section you can view one of the available risk definitions.
-  - title: 'Hide menu'
+  - title: 'Collapse menu'
     element: '[data-component-name=toggle-navigation]'
-    intro: With hide menu you can expand or collapse the navigation.
+    intro: With collapse menu you can expand or collapse the navigation.
   - title: 'Done'
     intro: Further information can also be found in the documentation.

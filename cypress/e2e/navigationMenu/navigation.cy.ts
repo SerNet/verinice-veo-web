@@ -142,4 +142,25 @@ describe('Navigation Menu', () => {
       });
     });
   });
+
+  it('Toggles the navigation drawer (collapse/expand) and persists state', () => {
+    // check initial state
+    cy.getCustom('[data-veo-test="navigation-drawer-primary-navigation"]').should('be.visible');
+    cy.contains('Collapse').should('be.visible');
+    // click collapse
+    cy.getCustom('[data-veo-test="navigation-drawer-primary-navigation"]')
+      .find('[data-veo-test="toggle-navigation"]')
+      .click();
+    // verify collapsed
+    cy.contains('Collapse').should('not.exist');
+    // check LocalStorage persistence
+    cy.reload();
+    cy.getCustom('[data-veo-test="navigation-drawer-primary-navigation"]').should('be.visible');
+    // click expand
+    cy.getCustom('[data-veo-test="navigation-drawer-primary-navigation"]')
+      .find('[data-veo-test="toggle-navigation"]')
+      .click();
+    // verify expanded
+    cy.contains('Collapse').should('be.visible');
+  });
 });
