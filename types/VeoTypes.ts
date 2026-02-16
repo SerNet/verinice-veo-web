@@ -208,6 +208,7 @@ export interface IVeoPaginatedResponseMeta {
   pageCount: number;
   page: number;
 }
+
 export interface IVeoPaginatedResponse<T> extends IVeoPaginatedResponseMeta {
   items: T;
 }
@@ -218,6 +219,7 @@ export interface IVeoPaginationOptions {
   size?: number | string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+
   [key: string]: any;
 }
 
@@ -234,6 +236,7 @@ export interface IVeoObjectSchemaProperty {
       properties: Record<string, any>;
     };
   }[];
+
   [key: string]: any;
 }
 
@@ -456,6 +459,12 @@ export type RequirementImplementation = {
   origination: string;
   implementationStatement?: string;
   implementationUntil?: string;
+  implementationDate?: string;
+  document?: any;
+  lastRevisionDate?: string;
+  lastRevisionBy?: ResponsiblePerson;
+  nextRevisionDate?: string;
+  nextRevisionBy?: ResponsiblePerson;
 };
 
 export type ResponsiblePerson = IVeoLink;
@@ -584,6 +593,7 @@ export enum VeoAlertType {
 export interface IVeoGlobalAlertParams {
   defaultButtonText?: string; // If not set defaults to "Okay" in VeoGlobalAlert of types "Info & Error"
   actions?: MaybeRef<IAlertButton[]>;
+
   [key: string]: any;
 }
 
