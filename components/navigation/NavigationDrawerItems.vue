@@ -2,19 +2,21 @@
   <div v-if="miniVariant && !xs" key="mini" role="menu">
     <v-menu
       v-if="item.children && item.children.length > 0"
-      location="left"
-      :open-on-hover="false"
-      :close-on-content-click="false"
+      v-model="isSubMenuOpen"
+      location="right"
       offset="18"
-      transition="slide-x-transition"
+      :close-delay="50"
     >
       <template #activator="{ props: menuProps }">
-        <v-tooltip :text="item.name" location="left" offset="10">
+        <v-tooltip :text="item.name" location="right" offset="10">
           <template #activator="{ props: tooltipProps }">
             <v-list-item
               v-bind="mergeProps(menuProps, tooltipProps)"
               variant="text"
-              class="d-flex justify-center rounded-lg mx-auto"
+              :class="[
+                'mb-2 d-flex justify-center rounded-lg mx-auto',
+                { 'v-list-item--active text-primary': isItemSelected }
+              ]"
               :style="{ width: '44px', height: '44px' }"
               :aria-label="item.name"
               aria-haspopup="menu"
@@ -32,20 +34,29 @@
         <v-list density="compact" class="py-0" role="menu" :aria-label="item.name">
           <template v-for="child in item.children" :key="child.id">
             <NavigationPrimaryNavigationCategory v-if="child.children" v-bind="child" :mini-variant="false" />
-            <NavigationPrimaryNavigationEntry v-else v-bind="child" :mini-variant="false" />
+
+            <NavigationPrimaryNavigationEntry
+              v-else
+              v-bind="child"
+              :mini-variant="false"
+              @click="isSubMenuOpen = false"
+            />
           </template>
         </v-list>
       </v-card>
     </v-menu>
 
-    <v-tooltip v-else :text="item.name" location="left" offset="10">
+    <v-tooltip v-else :text="item.name" location="right" offset="10">
       <template #activator="{ props: tooltipProps }">
         <v-list-item
           v-bind="tooltipProps"
           :to="item.to"
           link
           variant="text"
-          class="mb-2 d-flex justify-center rounded-lg mx-auto"
+          :class="[
+            'mb-2 d-flex justify-center rounded-lg mx-auto',
+            { 'v-list-item--active text-primary': isItemSelected }
+          ]"
           :style="{ width: '44px', height: '44px' }"
           :aria-label="item.name"
           role="menuitem"
@@ -66,12 +77,37 @@
 
 <script setup lang="ts">
 import { mergeProps } from 'vue';
-import { useDisplay } from 'vuetify/framework';
+import { useDisplay } from 'vuetify';
+import { useRoute } from 'vue-router';
 
-const { xs } = useDisplay();
-
-defineProps<{
+const props = defineProps<{
   item: any;
   miniVariant: boolean;
 }>();
+
+const { xs } = useDisplay();
+const route = useRoute();
+
+const isSubMenuOpen = ref(false);
+
+watch(
+  () => route.path,
+  () => {
+    isSubMenuOpen.value = false;
+  }
+);
+
+const isItemSelected = computed(() => {
+  const parentMaps: Record<string, string> = {
+    objects: 'objectType',
+    catalog: 'catalog',
+    risks: 'risks'
+  };
+  const target = parentMaps[props.item.id];
+  const routeName = route.name?.toString() || '';
+
+  if (props.item.to?.name === route.name) return true;
+
+  return !!(target && routeName.includes(target));
+});
 </script>
