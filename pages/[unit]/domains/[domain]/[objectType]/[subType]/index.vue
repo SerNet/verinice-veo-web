@@ -18,20 +18,18 @@
 <template>
   <BasePage data-component-name="object-overview-page" :title="`${pageTitle}`" sticky-footer>
     <template #default>
-      <template v-if="!hasNewSearchbar">
-        <div class="filter-row">
-          <div class="filter-section">
-            <ObjectFilterBar
-              ref="filterBar"
-              class="my-0 py-0"
-              :domain-id="domainId"
-              :filter="filter"
-              :required-fields="['objectType']"
-              @update:filter="updateRoute"
-            />
-          </div>
+      <div class="filter-row">
+        <div class="filter-section">
+          <ObjectFilterBar
+            ref="filterBar"
+            class="my-0 py-0"
+            :domain-id="domainId"
+            :filter="filter"
+            :required-fields="['objectType']"
+            @update:filter="updateRoute"
+          />
         </div>
-      </template>
+      </div>
 
       <div class="actions py-0 my-0">
         <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
@@ -69,16 +67,9 @@
             {{ t('assignObjects') }}
           </v-tooltip>
         </div>
-        <template v-if="hasNewSearchbar">
-          <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
-            <SearchBarNew v-model:search="search" density="compact" :filters="searchBarFilters" />
-          </div>
-        </template>
-        <template v-else>
-          <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
-            <SearchBar v-model:search="search" density="compact" />
-          </div>
-        </template>
+        <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
+          <SearchBar v-model:search="search" density="compact" />
+        </div>
       </div>
 
       <template v-if="filter.objectType">
@@ -251,7 +242,6 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import CsvImportCard from '~/components/object/CsvImportCard.vue';
-import { useSearchFilters } from '~/composables/search/useSearchFilters';
 import type { VeoSearch } from '~/types/VeoSearch';
 enum FILTER_SOURCE {
   QUERY,
@@ -371,7 +361,6 @@ const filter = computed(() => {
     })
   ) as Record<string, string | undefined>;
 });
-
 //
 // table stuff
 //
@@ -432,8 +421,6 @@ const combinedQueryParameters = computed<any>(() => ({
   ...getSearchQueryParameters(search.value)
 }));
 
-const hasNewSearchbar = hasFeature('newSearchbar');
-
 // Sync request parameters with URL query parameters, if enabled
 const { queryParams } =
   hasFeature('urlParams') ? useQueryParams(combinedQueryParameters) : { queryParams: combinedQueryParameters };
@@ -450,8 +437,6 @@ const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, 
   enabled: formsQueryEnabled,
   placeholderData: []
 });
-
-const { data: searchBarFilters } = hasNewSearchbar ? useSearchFilters(filter) : { data: undefined };
 
 const selectedSubtypeForCreateDialog = ref<string>('');
 
