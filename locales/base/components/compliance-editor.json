@@ -2,8 +2,6 @@
   "de": {
     "riEditor": {
       "requirement": "Anforderung",
-      "requirementDescription": "Anforderungsbeschreibung",
-      "noRequirementDescriptionAvailable": "Kein Inhalt verfügbar.",
       "targetObject": "Zielobjekt",
       "description": "Beschreibung",
       "originationDescription": "Umsetzungsbeschreibung",
@@ -15,11 +13,11 @@
       },
       "status": "Status",
       "statusValues": {
-        "Unknown": "Unbearbeitet",
-        "Yes": "Ja",
-        "Partial": "Teilweise",
-        "No": "Nein",
-        "NA": "Entbehrlich"
+        "UNKNOWN": "Unbearbeitet",
+        "YES": "Ja",
+        "PARTIAL": "Teilweise",
+        "NO": "Nein",
+        "N_A": "Entbehrlich"
       },
       "responsible": "Verantwortlich",
       "editRequirementImplementation": "Umsetzung bearbeiten",
@@ -32,14 +30,25 @@
       "implementation": "Umsetzung",
       "targetObjectLabel": "Zuordnung",
       "id": "ID",
-      "designator": "Designator"
+      "designator": "Designator",
+      "implementationCard": "Umsetzung",
+      "documentationCard": "Dokumentation",
+      "revisionCard": "Revisionen",
+      "implementationDate": "Umgesetzt am",
+      "implementedBy": "Umgesetzt durch",
+      "assessmentDate": "Bewertet am",
+      "assessmentBy": "Bewertet durch",
+      "lastRevisionDate": "Letzte Revision am",
+      "lastRevisionBy": "Letzte Revision durch",
+      "nextRevisionDate": "Nächste Revision am",
+      "nextRevisionBy": "Nächste Revision durch",
+      "cost": "Kosten",
+      "document": "Dokument / Aufzeichnung"
     }
   },
   "en": {
     "riEditor": {
       "requirement": "Requirement",
-      "requirementDescription": "Description",
-      "noRequirementDescriptionAvailable": "No content available.",
       "targetObject": "Target object",
       "description": "Description",
       "origination": "Origination",
@@ -51,11 +60,11 @@
       },
       "status": "Status",
       "statusValues": {
-        "Unknown": "Unedited",
-        "Yes": "Yes",
-        "Partial": "Partial",
-        "No": "No",
-        "NA": "Dispensable"
+        "UNKNOWN": "Unedited",
+        "YES": "Yes",
+        "PARTIAL": "Partial",
+        "NO": "No",
+        "N_A": "Dispensable"
       },
       "responsible": "Responsible",
       "editRequirementImplementation": "Edit implementation",
@@ -63,12 +72,25 @@
       "requirementImplementationUpdated": "Implementation successfully updated.",
       "name": "Name",
       "protectionApproach": "Protection approach",
-      "implementationUntil": "Implementation by",
+      "implementationUntil": "Implementation until",
       "abbreviation": "Abbreviation",
       "implementation": "Implementation",
       "targetObjectLabel": "Assignment",
       "id": "ID",
-      "designator": "Designator"
+      "designator": "Designator",
+      "implementationCard": "Implementation",
+      "documentationCard": "Documentation",
+      "revisionCard": "Revisions",
+      "implementationDate": "Implemented on",
+      "implementedBy": "Implemented by",
+      "assessmentDate": "Assessment on",
+      "assessmentBy": "Assessment by",
+      "lastRevisionDate": "Last revision on",
+      "lastRevisionBy": "Last revision by",
+      "nextRevisionDate": "Next revision on",
+      "nextRevisionBy": "Next revision by",
+      "cost": "Cost",
+      "document": "Document / record"
     }
   }
 }
