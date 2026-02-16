@@ -1,12 +1,12 @@
 {
   "en": {
     "display": "View",
-    "objectView": "Object view",
+    "objectView": "Full view",
     "viewAs": "View as"
   },
   "de": {
     "display": "Ansicht",
-    "objectView": "Objektansicht",
+    "objectView": "Vollständige Ansicht",
     "viewAs": "Darstellen als"
   }
 }
