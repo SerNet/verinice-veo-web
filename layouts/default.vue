@@ -132,12 +132,7 @@ const domainId = computed((): string | undefined => {
 // Theme stuff
 onBeforeMount(() => {
   // check if browser supports dark mode
-  if (window.matchMedia && window.matchMedia('(prefers-color-scheme)').media !== 'not all') {
-    // if user prefers light mode switch to it
-    if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-      theme.change('light');
-    }
-  }
+  theme.change(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 });
 </script>
 
