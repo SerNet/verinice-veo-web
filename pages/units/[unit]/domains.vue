@@ -90,7 +90,7 @@ useUserFeedback({
   isSuccess,
   isError,
   messages,
-  callback: () => router.push({ name: 'units' })
+  callback: () => router.back()
 });
 </script>
 
