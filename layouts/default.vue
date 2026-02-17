@@ -132,7 +132,17 @@ const domainId = computed((): string | undefined => {
 // Theme stuff
 onBeforeMount(() => {
   // check if browser supports dark mode
-  theme.change(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+  const handleThemeChange = (e: MediaQueryListEvent) => {
+    theme.change(e.matches ? 'dark' : 'light');
+  };
+  theme.change(mediaQuery.matches ? 'dark' : 'light');
+  mediaQuery.addEventListener('change', handleThemeChange);
+
+  // cleanup to avoid leaks
+  onBeforeUnmount(() => {
+    mediaQuery.removeEventListener('change', handleThemeChange);
+  });
 });
 </script>
 
