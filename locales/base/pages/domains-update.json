@@ -1,0 +1,28 @@
+{
+  "en": {
+    "noDescription": "No description available",
+    "noDomainUpdatesTitle": "No updates available",
+    "noDomainUpdatesText": "Your unit is up to date with the latest domain versions.",
+    "updateRecommendedTitle": "Update recommended",
+    "updateRecommendedText": "It is recommended to update your units to the latest domain versions and benefit from improvements and new features.",
+    "version": "Version",
+    "currentVersion": "Current version",
+    "availableVersion": "New version",
+    "updateUnits": "Update unit",
+    "conflictsTitle": "Conflicts detected",
+    "conflictsText": "Please resolve all conflicts before retrying the update."
+  },
+  "de": {
+    "noDescription": "Keine Beschreibung verfügbar",
+    "noDomainUpdatesTitle": "Keine Updates verfügbar",
+    "noDomainUpdatesText": "Ihre Unit ist auf dem neuesten Stand mit den aktuellsten Domänen-Versionen.",
+    "updateRecommendedTitle": "Update empfohlen",
+    "updateRecommendedText": "Es wird empfohlen, Ihre Units auf die neuesten Domänen-Versionen zu aktualisieren, um von Verbesserungen und neuen Funktionen zu profitieren.",
+    "version": "Version",
+    "currentVersion": "Aktuelle Version",
+    "availableVersion": "Neue Version",
+    "updateUnits": "Unit aktualisieren",
+    "conflictsTitle": "Konflikte erkannt",
+    "conflictsText": "Bitte lösen Sie alle Konflikte, bevor Sie das Update erneut versuchen."
+  }
+}

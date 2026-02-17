@@ -39,7 +39,7 @@ export interface IVeoDomainUpdate {
 export default {
   queries: {
     fetchAll: {
-      primaryQueryKey: 'domainUpdate',
+      primaryQueryKey: 'domainUpdates',
       url: '/api/domains/updates'
     } as IVeoQueryDefinition<Record<string, never>, IVeoDomainUpdate[]>
   }

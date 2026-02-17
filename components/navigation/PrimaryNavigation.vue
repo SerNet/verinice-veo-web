@@ -110,7 +110,8 @@ import {
   mdiFileChartOutline,
   mdiTextBoxEditOutline,
   mdiUngroup,
-  mdiViewDashboardOutline
+  mdiViewDashboardOutline,
+  mdiPuzzleOutline
 } from '@mdi/js';
 import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage, useVModel } from '@vueuse/core';
@@ -422,7 +423,19 @@ const editorsNavEntry = computed<INavItem>(() => ({
   }
 }));
 
+const { data: domainUpdates } = useFetchDomainUpdate();
+const numberOfDomainUpdates = computed(() => domainUpdates.value?.length ?? 0);
+
+const domainsNavEntry = computed<INavItem>(() => ({
+  id: 'domains',
+  name: $t('breadcrumbs.update'),
+  icon: mdiPuzzleOutline,
+  to: '/domains/update',
+  classes: 'mb-4 justify-content-center'
+}));
+
 const items = computed<INavItem[]>(() => [
+  ...(numberOfDomainUpdates.value ? [domainsNavEntry.value] : []),
   ...(props.unitId && props.domainId ?
     [
       domainDashboardNavEntry.value,

@@ -26,8 +26,8 @@
           :text="t('hin', [message.domainName, message.currentVersion, message.newVersion])"
           :type="VeoAlertType.INFO"
           class="mt-2 text-pre-wrap"
-          :buttons="getMigrationButtons(message)"
-          :defaultButtonText="t('dismiss')"
+          :buttons="getMigrationButtons()"
+          :default-button-text="t('dismiss')"
           @update:model-value="(val) => handleDismiss(val, message.id)"
         >
         </BaseAlert>
@@ -51,19 +51,15 @@ const emit = defineEmits<{
   (e: 'dismiss', id: string): void;
 }>();
 
-function getMigrationButtons(message: TDomainUpdateMessage): IAlertButton[] {
+function getMigrationButtons(): IAlertButton[] {
   return [
     {
-      text: t('migration'),
-      onClick: () => onUpdateClick(message)
+      text: t('update'),
+      to: `/domains/update`
     }
   ];
 }
 
-function onUpdateClick(message: TDomainUpdateMessage) {
-  // eslint-disable-next-line no-console
-  console.log('update', message);
-}
 function handleDismiss(val: boolean, id: string) {
   if (!val) {
     emit('dismiss', id);

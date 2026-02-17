@@ -108,9 +108,6 @@ const domains = computed(() => currentUnit.value?.domains || []);
 const items = computed(() => {
   const domain = (domains.value || []).find((d) => d.id === route.params.domain);
   if (domain) return domain.translations?.[locale.value].name || domain.name;
-  if (domainId.value === 'more') {
-    return globalT('breadcrumbs.more');
-  }
   return '';
 });
 

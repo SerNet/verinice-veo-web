@@ -125,7 +125,9 @@
     "user-data": "Datenübertragung",
     "welcome": "Willkommen",
     "user-settings": "Einstellungen",
-    "edit": "Bearbeiten"
+    "edit": "Bearbeiten",
+    "migration": "Domain Migration",
+    "update": "Domain-Updates"
   },
   "compliance": {
     "status": {
