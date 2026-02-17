@@ -17,7 +17,7 @@
 -->
 
 <template>
-  <div v-if="miniVariant && !xs" key="mini">
+  <template v-if="miniVariant && !xs">
     <v-menu
       v-if="item.children && item.children.length > 0"
       v-model="isSubMenuOpen"
@@ -26,10 +26,11 @@
       :close-delay="50"
     >
       <template #activator="{ props: menuProps }">
-        <v-tooltip :text="item.name" location="right" offset="10">
+        <v-tooltip :text="item.name" :aria-label="item.name" location="right" offset="10">
           <template #activator="{ props: tooltipProps }">
             <v-btn
               v-bind="mergeProps(menuProps, tooltipProps)"
+              role="menuitem"
               :aria-label="item.name"
               aria-haspopup="true"
               :aria-expanded="isSubMenuOpen"
@@ -43,26 +44,13 @@
           </template>
         </v-tooltip>
       </template>
-
-      <v-card min-width="220" elevation="12" class="border pa-1 bg-surface shadow-xl">
-        <v-list density="compact" class="py-0" :aria-label="item.name">
-          <template v-for="child in item.children" :key="child.id">
-            <NavigationPrimaryNavigationCategory v-if="child.children" v-bind="child" :mini-variant="false" />
-            <NavigationPrimaryNavigationEntry
-              v-else
-              v-bind="child"
-              :mini-variant="false"
-              @click="isSubMenuOpen = false"
-            />
-          </template>
-        </v-list>
-      </v-card>
     </v-menu>
 
-    <v-tooltip v-else :text="item.name" location="right" offset="10">
+    <v-tooltip v-else :text="item.name" :aria-label="item.name" location="right" offset="10">
       <template #activator="{ props: tooltipProps }">
         <v-btn
           v-bind="tooltipProps"
+          role="menuitem"
           :to="item.to"
           :aria-label="item.name"
           :aria-current="isItemSelected ? 'page' : undefined"
@@ -75,14 +63,15 @@
         </v-btn>
       </template>
     </v-tooltip>
-  </div>
+  </template>
 
-  <div v-else key="expanded">
-    <NavigationPrimaryNavigationCategory v-if="item.children" v-bind="item" :mini-variant="false" />
-    <NavigationPrimaryNavigationEntry v-else v-bind="item" :mini-variant="false" />
-  </div>
+  <template v-else>
+    <div key="expanded" role="none">
+      <NavigationPrimaryNavigationCategory v-if="item.children" v-bind="item" :mini-variant="false" />
+      <NavigationPrimaryNavigationEntry v-else v-bind="item" :mini-variant="false" />
+    </div>
+  </template>
 </template>
-
 <script setup lang="ts">
 import { mergeProps } from 'vue';
 import { useDisplay } from 'vuetify';
