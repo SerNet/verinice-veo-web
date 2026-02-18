@@ -4,8 +4,7 @@ const flagNames = {
   cardView: 'VEO_FEATURE_FLAG_CARD_VIEW',
   shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS',
   urlParams: 'VEO_FEATURE_FLAG_URL_PARAMS',
-  accessGroups: 'VEO_FEATURE_FLAG_ACCESS_GROUPS',
-  newSearchbar: 'VEO_FEATURE_FLAG_NEW_SEARCHBAR'
+  accessGroups: 'VEO_FEATURE_FLAG_ACCESS_GROUPS'
 };
 
 type FlagNames = keyof typeof flagNames;

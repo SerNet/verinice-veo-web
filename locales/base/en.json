@@ -258,29 +258,6 @@
   "i18n-t_messages": {
     "preSelectedDomainBody": "Because you are importing objects from the profile { profile }, the domain { domain } is preselected."
   },
-  "searchbar": {
-    "abbreviation": "Abbreviation",
-    "createdAt": "Created at",
-    "designator": "Designator",
-    "description": "Description",
-    "hasChildElements": "has parts",
-    "name": "Name",
-    "displayName": "Name/Abbreviation",
-    "hasParentElements": "part of another object",
-    "hasNoParentElements": "not part of another object",
-    "objectType": "Object type",
-    "status": "Status",
-    "subType": "Subtype",
-    "actions": "Actions",
-    "NEW": "New",
-    "RELEASED": "Released",
-    "IN_PROGRESS": "In process",
-    "FOR_REVIEW": "For review",
-    "ARCHIVED": "Archived",
-    "yes": "Yes",
-    "no": "No",
-    "and": "And"
-  },
   "graph": {
     "tooManyElements": "Too many related objects."
   }
