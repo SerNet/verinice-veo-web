@@ -44,6 +44,20 @@
           </template>
         </v-tooltip>
       </template>
+
+      <v-card min-width="220" elevation="12" class="border pa-1 bg-surface shadow-xl">
+        <v-list density="compact" class="py-0" :aria-label="item.name">
+          <template v-for="child in item.children" :key="child.id">
+            <NavigationPrimaryNavigationCategory v-if="child.children" v-bind="child" :mini-variant="false" />
+            <NavigationPrimaryNavigationEntry
+              v-else
+              v-bind="child"
+              :mini-variant="false"
+              @click="isSubMenuOpen = false"
+            />
+          </template>
+        </v-list>
+      </v-card>
     </v-menu>
 
     <v-tooltip v-else :text="item.name" :aria-label="item.name" location="right" offset="10">
@@ -72,6 +86,7 @@
     </div>
   </template>
 </template>
+
 <script setup lang="ts">
 import { mergeProps } from 'vue';
 import { useDisplay } from 'vuetify';
