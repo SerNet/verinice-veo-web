@@ -123,7 +123,6 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import NavigationDrawerItems from '~/components/navigation/NavigationDrawerItems.vue';
 
 const props = withDefaults(
   defineProps<{
