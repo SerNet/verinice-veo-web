@@ -48,7 +48,7 @@
         <v-btn
           v-for="(button, index) in localButtons"
           :key="index"
-          class="mt-4"
+          class="mt-4 mx-1"
           variant="outlined"
           :data-veo-test="button.dataVeoTest ?? `alert-button-${index}`"
           @click="button.onClick"
