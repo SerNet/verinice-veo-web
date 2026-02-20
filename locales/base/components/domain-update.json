@@ -1,0 +1,10 @@
+{
+  "en": {
+    "title": "{0} :New Domain Version Available",
+    "hin": "In your unit you have used \"{0}\" domain in version \"{1}\". \nDo you want to replace it with version \"{2}\"?"
+  },
+  "de": {
+    "title": "{0} :Neue DomainVersion verfügbar",
+    "hin": "In Ihrer Einheit wird die Domäne \"{0}\" in Version \"{1}\" verwendet. \nMöchten Sie sie durch Version \"{2}\" ersetzen?"
+  }
+}
