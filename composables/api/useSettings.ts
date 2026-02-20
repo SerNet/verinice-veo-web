@@ -20,21 +20,13 @@ import settingsQueryDefinition from '~/composables/api/queryDefinitions/settings
 import messages from '~/locales/base/components/user-settings-messages.json';
 
 const appId = 'verinice-veo';
-export type ObjectPageCollapseOption = 'none' | 'form' | 'info';
-
-const defaultSettings = {
-  'compact-styles': false,
-  'object-page-default-collapse': 'none' as ObjectPageCollapseOption
-};
+const defaultSettings = { 'compact-styles': false };
 
 const allowedSettingKeys = Object.keys(defaultSettings);
 export type UserSettings = typeof defaultSettings;
 type AllowedSettingKeys = typeof allowedSettingKeys;
 
-function filterSettings(
-  allSettings: Record<string, boolean | string>,
-  allowedSettingKeys: AllowedSettingKeys
-): UserSettings {
+function filterSettings(allSettings: Record<string, boolean>, allowedSettingKeys: AllowedSettingKeys): UserSettings {
   if (!allSettings || !allowedSettingKeys) return defaultSettings;
 
   return Object.keys(allSettings)
@@ -89,14 +81,8 @@ export function useSettings() {
   }
 
   async function toggleSetting(key: string) {
-    if (data.value && typeof data.value[key] === 'boolean') {
-      data.value[key] = !data.value[key];
-    }
-  }
-
-  function setSetting<K extends keyof UserSettings>(key: K, value: UserSettings[K]) {
     if (data.value) {
-      data.value[key] = value;
+      data.value[key] = !data.value[key];
     }
   }
 
@@ -108,7 +94,6 @@ export function useSettings() {
     data,
     isLoading,
     save: saveSettings,
-    toggleSetting,
-    setSetting
+    toggleSetting
   };
 }

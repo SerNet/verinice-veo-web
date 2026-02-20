@@ -15,11 +15,8 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { ObjectPageCollapseOption } from '~/composables/api/useSettings';
+export type ObjectPageCollapseOption = 'none' | 'form' | 'info';
 
-/**
- * Collapse State: It takes priority over user settings when the user manually changes the collapse state.
- */
 const sessionCollapseState = ref<ObjectPageCollapseOption | null>(null);
 const hasUserInteracted = ref(false);
 

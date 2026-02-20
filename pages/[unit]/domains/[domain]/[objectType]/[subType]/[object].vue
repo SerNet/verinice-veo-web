@@ -196,11 +196,10 @@ import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import { useQueryClient } from 'vue-query-v5';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
-import { useSettings, type ObjectPageCollapseOption } from '~/composables/api/useSettings';
-import { useObjectPageCollapseState } from '~/composables/useObjectPageCollapseState';
 
 import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
 import type { IVeoObjectHistoryEntry } from '~/types/history';
+import type { ObjectPageCollapseOption } from '~/composables/useObjectPageCollapseState';
 
 onBeforeRouteLeave((to, _from, next) => {
   // If the form was modified and the dialog is open, the user wanted to proceed with his navigation
@@ -291,8 +290,7 @@ onUnmounted(() => {
   expireOptimisticLockingAlert();
 });
 
-const { data: userSettings } = useSettings();
-const { getSessionState, setSessionState, hasSessionState } = useObjectPageCollapseState();
+const { getSessionState, setSessionState } = useObjectPageCollapseState();
 
 // Display stuff
 const pageWidths = ref<number[]>([3, 9]);
@@ -304,8 +302,7 @@ const wasSavedSuccessfully = ref<boolean>(false);
 
 const initialCollapsedStates = computed<boolean[]>(() => {
   const sessionState = getSessionState();
-  const collapseOption =
-    sessionState !== null ? sessionState : userSettings.value?.['object-page-default-collapse'] || 'none';
+  const collapseOption = sessionState !== null ? sessionState : 'none';
 
   switch (collapseOption) {
     case 'info':
@@ -338,25 +335,6 @@ function applyCollapseWidths(collapseOption: ObjectPageCollapseOption) {
       break;
   }
 }
-
-function initializeCollapseState() {
-  const sessionState = getSessionState();
-  if (sessionState !== null) {
-    applyCollapseWidths(sessionState);
-  } else if (userSettings.value?.['object-page-default-collapse']) {
-    applyCollapseWidths(userSettings.value['object-page-default-collapse']);
-  }
-}
-
-watch(
-  () => userSettings.value?.['object-page-default-collapse'],
-  () => {
-    if (!hasSessionState()) {
-      initializeCollapseState();
-    }
-  },
-  { immediate: true }
-);
 
 const onPageCollapsed = (collapsedPages: boolean[]) => {
   let newCollapseState: ObjectPageCollapseOption = 'none';

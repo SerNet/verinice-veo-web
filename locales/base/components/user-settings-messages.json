@@ -13,15 +13,6 @@
       "header": "Compact Table View",
       "body": "Enable compact mode to reduce spacing in tables."
     },
-    "object-page-default-collapse": {
-      "header": "Object Page Default Layout",
-      "body": "Choose which panel should be collapsed by default when viewing object details.",
-      "options": {
-        "none": "Show both panels (Object Info and Form)",
-        "form": "Collapse Form panel (show Object Info only)",
-        "info": "Collapse Object Info panel (show Form only)"
-      }
-    },
     "save": "Save"
   },
   "de": {
@@ -37,15 +28,6 @@
     "compact-styles": {
       "header": "Kompakte Tabellenansicht",
       "body": "Aktivieren Sie den Kompaktmodus, um Abstände in Tabellen zu reduzieren."
-    },
-    "object-page-default-collapse": {
-      "header": "Standard-Layout der Objektseite",
-      "body": "Wählen Sie, welches Panel beim Anzeigen von Objektdetails standardmäßig minimiert sein soll.",
-      "options": {
-        "none": "Beide Panels anzeigen (Objektinfo und Formular)",
-        "form": "Formular-Panel minimieren (nur Objektinfo anzeigen)",
-        "info": "Objektinfo-Panel minimieren (nur Formular anzeigen)"
-      }
     },
     "save": "Speichern"
   }
