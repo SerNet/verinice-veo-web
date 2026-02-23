@@ -74,8 +74,8 @@
     <v-main :class="$style.main">
       <SystemMessageAlert v-if="messages.length" :messages="messages" />
       <DomainUpdateAlert
-        v-if="DomainMessages.length && hasdomainUpdate"
-        :messages="DomainMessages"
+        v-if="domainMessages.length && hasDomainUpdate"
+        :messages="domainMessages"
         @dismiss="dismissMessage"
       />
       <slot></slot>
@@ -113,11 +113,11 @@ const { t } = useI18n();
 const theme = useTheme();
 const context = useNuxtApp();
 const { data: messages } = useSystemMessages();
-const { messages: DomainMessages, dismissMessage } = useDomainUpdate();
+const { domainUpdateMessages: domainMessages, dismissDomainUpdateMessage: dismissMessage } = useDomainUpdate();
 const { isLoading, loadingInfo } = useGlobalLoadingState();
 
 const hasShortcuts = hasFeature('shortcuts');
-const hasdomainUpdate = hasFeature('domainUpdate');
+const hasDomainUpdate = hasFeature('domainUpdate');
 const { shortcuts = [], isDialogOpen = false } = hasShortcuts ? useShortcuts() : {};
 
 useHead(() => ({

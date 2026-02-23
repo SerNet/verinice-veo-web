@@ -74,8 +74,8 @@ export function useDomainUpdate() {
   }
 
   return {
-    messages: computed(() => messages.value.filter((m) => m.isVisible)),
-    dismissMessage
+    domainUpdateMessages: computed(() => messages.value.filter((m) => m.isVisible)),
+    dismissDomainUpdateMessage: dismissMessage
   };
 }
 

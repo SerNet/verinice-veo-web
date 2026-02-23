@@ -16,22 +16,17 @@
 -->
 <template>
   <v-row class="px-2 bg-basepage">
-    <v-col>
+    <v-col v-if="messages && messages.length">
       <BaseAlert
-        v-for="message in displayMessages"
-        :key="message?.id"
-        :model-value="message?.isVisible"
-        :title="t('title', [message?.domainName])"
-        :text="t('hin', [message?.domainName, message?.currentVersion, message?.newVersion])"
+        v-for="message in messages"
+        :key="message.id"
+        :model-value="message.isVisible"
+        :title="t('title', [message.domainName])"
+        :text="t('hin', [message.domainName, message.currentVersion, message.newVersion])"
         :type="VeoAlertType.WARNING"
         class="mt-2 text-pre-wrap"
         :buttons="getMigrationButtons(message)"
-        :no-close-button="false"
-        @update:model-value="
-          (val) => {
-            if (!val) emit('dismiss', message.id);
-          }
-        "
+        @update:model-value="(val) => handleDismiss(val, message.id)"
       >
       </BaseAlert>
     </v-col>
@@ -43,13 +38,12 @@ import type { TDomainUpdateMessage } from '~/composables/domains/useDomainUpdate
 import type { IAlertButton } from './base/Alert.vue';
 import { VeoAlertType } from '~/types/VeoTypes';
 
-const props = defineProps<{
+defineProps<{
   messages: TDomainUpdateMessage[];
 }>();
 
 const { t } = useI18n();
 
-const displayMessages = computed(() => props.messages);
 const emit = defineEmits<{
   (e: 'dismiss', id: string): void;
 }>();
@@ -66,6 +60,11 @@ function getMigrationButtons(message: TDomainUpdateMessage): IAlertButton[] {
 function onUpdateClick(message: TDomainUpdateMessage) {
   // eslint-disable-next-line no-console
   console.log('update', message);
+}
+function handleDismiss(val: boolean, id: string) {
+  if (!val) {
+    emit('dismiss', id);
+  }
 }
 </script>
 
