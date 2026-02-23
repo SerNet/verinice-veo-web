@@ -57,6 +57,7 @@ interface Props {
   noPaddingTop?: boolean;
   title?: string;
   titlebarAlignment?: PageHeaderAlignment;
+  hasTitleBg?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -69,7 +70,8 @@ const props = withDefaults(defineProps<Props>(), {
   noPadding: false,
   noPaddingTop: false,
   title: undefined,
-  titlebarAlignment: PageHeaderAlignment.LEFT
+  titlebarAlignment: PageHeaderAlignment.LEFT,
+  hasTitleBg: true
 });
 </script>
 

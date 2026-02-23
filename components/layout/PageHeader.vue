@@ -53,6 +53,10 @@ export default defineComponent({
     color: {
       type: String,
       default: undefined
+    },
+    hasTitleBg: {
+      type: Boolean,
+      default: true
     }
   },
   setup(props, { slots }) {
@@ -73,7 +77,8 @@ export default defineComponent({
               class: 'd-flex flex-row flex-wrap veo-page__title mb-2',
               style: {
                 ...titlebarAlignment.value,
-                'background-color': props.color
+                'background-color': props.color,
+                ...(props.hasTitleBg ? {} : { background: 'transparent', padding: 0 })
               }
             },
             {
@@ -122,7 +127,6 @@ export default defineComponent({
   background: rgb(var(--v-theme-background));
   padding: 2px 14px;
   border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   color: rgb(var(--v-theme-color));
 }
 
