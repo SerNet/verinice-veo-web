@@ -68,7 +68,7 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
   "devDependencies": {
-    "@eslint/js": "9.39.2",
+    "@eslint/js": "9.39.3",
     "@nuxt/content": "3.11.2",
     "@nuxt/eslint-config": "1.15.1",
     "@nuxt/fonts": "0.14.0",
@@ -86,7 +86,7 @@
     "cypress-axe": "1.7.0",
     "cypress-multi-reporters": "2.0.5",
     "cypress-parallel-extended": "2.1.8",
-    "eslint": "9.39.2",
+    "eslint": "9.39.3",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-vue": "10.8.0",
     "force-graph": "1.51.1",
