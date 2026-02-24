@@ -89,7 +89,7 @@
             <v-col cols="12">
               <EditorFileUpload
                 :input-label="t('objectSchemaUploadLabel')"
-                :submit-button-text="t('importObjectSchema')"
+                :submit-button-text="t('openObjectSchema')"
                 @schema-uploaded="$emit('update:object-schema', $event)"
               />
             </v-col>

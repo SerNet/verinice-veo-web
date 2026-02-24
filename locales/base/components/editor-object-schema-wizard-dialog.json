@@ -1,26 +1,20 @@
 {
   "en": {
-    "createObjectSchema": "Create object schema",
-    "createObjectSchemaDescription": "Create a new object schema from scratch.",
     "format": "(.json)",
-    "importObjectSchema": "Import object schema",
-    "importObjectSchemaSwitch": "Create a new object schema instead",
-    "importObjectSchemaDescription": "Import an existing object schema and modify it.",
+    "openObjectSchema": "Open object schema",
+    "openObjectSchemaDescription": "Open an existing object schema and modify it.",
     "uploadLabel": "Object schema upload @:format",
-    "customObjectSchema": "Custom",
+    "customObjectSchema": "Upload JSON",
     "start": "How do you want to start?",
     "description": "Description",
     "type": "Type of the object schema"
   },
   "de": {
-    "createObjectSchema": "Objektschema erstellen",
-    "createObjectSchemaDescription": "Neues, leeres Objektschema erstellen",
     "format": "(.json)",
-    "importObjectSchema": "Objektschema importieren",
-    "importObjectSchemaDescription": "Bestehendes Objektschema importieren und modifizieren",
-    "importObjectSchemaSwitch": "Stattdessen ein neues Objektschema erstellen",
+    "openObjectSchema": "Objektschema öffnen",
+    "openObjectSchemaDescription": "Bestehendes Objektschema öffnen und modifizieren",
     "uploadLabel": "Objektschema hochladen @:format",
-    "customObjectSchema": "Eigenes",
+    "customObjectSchema": "JSON hochladen",
     "start": "Wie möchten Sie starten?",
     "description": "Beschreibung",
     "type": "Typ des Objektschemas"

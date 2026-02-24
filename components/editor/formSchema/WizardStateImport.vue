@@ -75,7 +75,7 @@
         <div v-if="forceOwnSchema">
           <EditorFileUpload
             :input-label="t('objectSchemaUploadLabel')"
-            :submit-button-text="t('importObjectSchema')"
+            :submit-button-text="t('openObjectSchema')"
             @schema-uploaded="$emit('update:object-schema', $event)"
           />
         </div>

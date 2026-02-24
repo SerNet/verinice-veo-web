@@ -3,12 +3,12 @@
     "calltoaction": "What do you want to do?",
     "editors": "Editors",
     "formSchemaDescription": "Create, edit, import or export form schemas",
-    "objectSchemaDescription": "Create, edit, import or export object schemas"
+    "objectSchemaDescription": "Open, edit or export object schemas"
   },
   "de": {
     "calltoaction": "Was möchten Sie tun?",
     "editors": "Editoren",
     "formSchemaDescription": "Formschemas erstellen, bearbeiten, importieren und exportieren",
-    "objectSchemaDescription": "Objektschemas erstellen, bearbeiten, importieren und exportieren"
+    "objectSchemaDescription": "Objektschemas öffnen, bearbeiten oder exportieren"
   }
 }

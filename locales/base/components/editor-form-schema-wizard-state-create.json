@@ -2,17 +2,17 @@
   "en": {
     "all": "All",
     "createFormSchema": "Create form schema",
-    "customObjectSchema": "Custom",
+    "customObjectSchema": "Upload JSON",
     "format": "(.json)",
-    "importObjectSchema": "Import object schema",
+    "openObjectSchema": "Open object schema",
     "objectSchemaUploadLabel": "Object schema upload @:format"
   },
   "de": {
     "all": "Alle",
     "createFormSchema": "Formschema erstellen",
-    "customObjectSchema": "Eigenes",
+    "customObjectSchema": "JSON hochladen",
     "format": "(.json)",
-    "importObjectSchema": "Objektschema importieren",
+    "openObjectSchema": "Objektschema öffnen",
     "objectSchemaUploadLabel": "Objektschema hochladen @:format"
   }
 }
