@@ -238,7 +238,7 @@
   </LayoutPageWrapper>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import {
   mdiAlertCircleOutline,
   mdiContentSave,
@@ -249,250 +249,206 @@ import {
   mdiTranslate,
   mdiWrench
 } from '@mdi/js';
+
 import { pickBy, upperFirst } from 'lodash';
 import { useDisplay } from 'vuetify';
 
 import type { LocaleObject } from '@nuxtjs/i18n';
+import type { IVeoObjectSchema } from '~/types/VeoTypes';
+import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
+import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
-import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
 import ObjectSchemaHelper from '~/lib/ObjectSchemaHelper2';
-import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
+
 import { ROUTE as HELP_ROUTE } from '~/pages/help/index.vue';
-import type { IVeoObjectSchema } from '~/types/VeoTypes';
 
-export default defineComponent({
-  name: 'ObjectSchemaEditor',
-  setup() {
-    const { locale, locales, t } = useI18n();
-    const { t: globalT } = useI18n({ useScope: 'global' });
-    const route = useRoute();
-    const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
-    const { ability } = useVeoPermissions();
-    const { xs } = useDisplay();
+const { ability } = useVeoPermissions();
+const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
+const { locale, locales, t } = useI18n();
+const { t: globalT } = useI18n({ useScope: 'global' });
+const { xs } = useDisplay();
+const route = useRoute();
 
-    const objectSchemaHelper = ref<ObjectSchemaHelper | undefined>(undefined);
+const objectSchemaHelper = ref<ObjectSchemaHelper | undefined>(undefined);
 
-    const displayLanguage = ref(locale.value);
-    watch(
-      () => locale.value,
-      (newValue) => {
-        displayLanguage.value = newValue;
-      }
-    );
-
-    provide('displayLanguage', displayLanguage);
-    provide('objectSchemaHelper', objectSchemaHelper);
-
-    // Layout stuff
-    const pageWidths = ref([6, 6]);
-
-    const creationDialogVisible = ref(true);
-    const errorDialogVisible = ref(false);
-    const translationDialogVisible = ref(false);
-    const detailsDialogVisible = ref(false);
-
-    const fetchTranslationQueryParameters = computed(() => ({
-      languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
-      domain: route.params.domain
-    }));
-    const translations = reactive<IVeoTranslations['lang']>({});
-    const { data: _translations, isFetching: translationsLoading } = useQuery(
-      translationQueryDefinitions.queries.fetch,
-      fetchTranslationQueryParameters
-    );
-    watch(
-      () => _translations.value,
-      (newValue) => Object.assign(translations, newValue?.lang || {}),
-      { deep: true, immediate: true }
-    );
-
-    watch(
-      () => translations,
-      () => {
-        if (objectSchemaHelper.value) {
-          for (const [languageKey, languageTranslations] of Object.entries(schemaSpecificTranslations.value)) {
-            objectSchemaHelper.value.updateTranslations(languageKey, languageTranslations);
-          }
-        }
-      },
-      { deep: true, immediate: true }
-    );
-    const availableLanguages = computed(() => Object.keys(translations));
-
-    const code = ref('');
-    const schemaIsValid = ref<VeoSchemaValidatorValidationResult>({
-      valid: false,
-      errors: [],
-      warnings: []
-    });
-
-    // Editor stuff
-    const hideEmptyAspects = ref(false);
-    const searchQuery = ref<string | undefined>(undefined);
-
-    // Schema stuff
-    const title = computed(() => objectSchemaHelper.value?.getTitle() || '');
-    const description = computed(() => objectSchemaHelper.value?.getDescription() || '');
-
-    const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(() => {
-      const translationsToReturn: IVeoTranslations['lang'] = {};
-      const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_`;
-
-      for (const language of availableLanguages.value) {
-        translationsToReturn[language] = pickBy(
-          translations[language],
-          (_value, key) => key.startsWith(schemaTitle) && key !== `${schemaTitle}plural`
-        );
-      }
-
-      return translationsToReturn;
-    });
-
-    const setSchema = (data: { schema?: IVeoObjectSchema; meta?: { type: string; description: string } }) => {
-      objectSchemaHelper.value =
-        data.schema || data.meta ? new ObjectSchemaHelper(data.schema, route.params.domain as string) : undefined;
-
-      if (objectSchemaHelper.value) {
-        if (data.meta) {
-          objectSchemaHelper.value.setTitle(data.meta.type);
-          objectSchemaHelper.value.setDescription(data.meta.description);
-        }
-
-        for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations.value)) {
-          objectSchemaHelper.value.updateTranslations(languageKey, translations);
-        }
-        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
-        validate();
-      }
-
-      creationDialogVisible.value = !objectSchemaHelper.value || false;
-    };
-
-    const updateSchema = (schema: IVeoObjectSchema) => {
-      objectSchemaHelper.value = new ObjectSchemaHelper(schema);
-      code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
-      objectSchemaHelper.value = new ObjectSchemaHelper(JSON.parse(code.value));
-
-      validate();
-    };
-
-    const updateSchemaName = (name: string) => {
-      objectSchemaHelper.value?.changeTranslationKey(objectSchemaHelper.value.getTitle(), name);
-      objectSchemaHelper.value?.setTitle(name);
-      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
-    };
-
-    const updateDescription = (description: string) => {
-      objectSchemaHelper.value?.setDescription(description);
-      code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
-    };
-
-    const updateCode = () => {
-      if (objectSchemaHelper.value) {
-        code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
-        validate();
-      }
-    };
-
-    const downloadButton = ref();
-    const downloadSchema = () => {
-      if (downloadButton.value) {
-        const data = `data:text/json;charset=utf-8,${encodeURIComponent(
-          JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2)
-        )}`;
-        (downloadButton.value as any).href = data;
-        (downloadButton.value as any).download = `os_${objectSchemaHelper.value?.getTitle() || 'download'}.json`;
-      }
-    };
-
-    const validate = () => {
-      schemaIsValid.value = objectSchemaHelper.value?.validate() || {
-        valid: false,
-        errors: [],
-        warnings: []
-      };
-    };
-
-    const onPageCollapsed = (collapsedPages: boolean[]) => {
-      if (collapsedPages[1]) {
-        pageWidths.value = [12, 0];
-      } else {
-        pageWidths.value = [6, 6];
-      }
-    };
-
-    // Saving
-    const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
-
-    const saveSchema = async () => {
-      const objectSchema = objectSchemaHelper.value?.toSchema();
-      if (!objectSchema) {
-        return;
-      }
-
-      try {
-        await update({
-          domainId: route.params.domain,
-          objectType: title.value,
-          objectSchema
-        });
-        displaySuccessMessage(t('saveSchemaSuccess').toString());
-      } catch (e: any) {
-        displayErrorMessage(
-          globalT('userMessages.error.title').toString(),
-          `${t('saveSchemaError').toString()}: ${e.message}`
-        );
-      }
-    };
-
-    return {
-      ability,
-      availableLanguages,
-      code,
-      creationDialogVisible,
-      description,
-      detailsDialogVisible,
-      displayLanguage,
-      downloadButton,
-      downloadSchema,
-      errorDialogVisible,
-      hideEmptyAspects,
-      objectSchemaHelper,
-      onPageCollapsed,
-      pageWidths,
-      saveSchema,
-      schemaIsValid,
-      searchQuery,
-      setSchema,
-      title,
-      translationDialogVisible,
-      translationsLoading,
-      updateCode,
-      updateSchema,
-      updateSchemaName,
-      updateDescription,
-
-      t,
-      globalT,
-      upperFirst,
-      mdiAlertCircleOutline,
-      mdiContentSave,
-      mdiDownload,
-      mdiHelpCircleOutline,
-      mdiInformationOutline,
-      mdiMagnify,
-      mdiTranslate,
-      mdiWrench,
-      HELP_ROUTE,
-      xs
-    };
+const displayLanguage = ref(locale.value);
+watch(
+  () => locale.value,
+  (newValue) => {
+    displayLanguage.value = newValue;
   }
+);
+
+provide('displayLanguage', displayLanguage);
+provide('objectSchemaHelper', objectSchemaHelper);
+
+// Layout stuff
+const pageWidths = ref([6, 6]);
+
+const creationDialogVisible = ref(false);
+const errorDialogVisible = ref(false);
+const translationDialogVisible = ref(false);
+const detailsDialogVisible = ref(false);
+
+const fetchTranslationQueryParameters = computed(() => ({
+  languages: (locales.value as LocaleObject[]).map((locale) => locale.code),
+  domain: route.params.domain
+}));
+const translations = reactive<IVeoTranslations['lang']>({});
+const { data: _translations, isFetching: translationsLoading } = useQuery(
+  translationQueryDefinitions.queries.fetch,
+  fetchTranslationQueryParameters
+);
+watch(
+  () => _translations.value,
+  (newValue) => Object.assign(translations, newValue?.lang || {}),
+  { deep: true, immediate: true }
+);
+
+watch(
+  () => translations,
+  () => {
+    if (objectSchemaHelper.value) {
+      for (const [languageKey, languageTranslations] of Object.entries(schemaSpecificTranslations.value)) {
+        objectSchemaHelper.value.updateTranslations(languageKey, languageTranslations);
+      }
+    }
+  },
+  { deep: true, immediate: true }
+);
+const availableLanguages = computed(() => Object.keys(translations));
+
+const code = ref('');
+const schemaIsValid = ref<VeoSchemaValidatorValidationResult>({
+  valid: false,
+  errors: [],
+  warnings: []
 });
+
+// Editor stuff
+const hideEmptyAspects = ref(false);
+const searchQuery = ref<string | undefined>(undefined);
+
+// Schema stuff
+const title = computed(() => objectSchemaHelper.value?.getTitle() || '');
+const description = computed(() => objectSchemaHelper.value?.getDescription() || '');
+
+const schemaSpecificTranslations = computed<IVeoTranslations['lang']>(() => {
+  const translationsToReturn: IVeoTranslations['lang'] = {};
+  const schemaTitle = `${objectSchemaHelper.value?.getTitle()}_`;
+
+  for (const language of availableLanguages.value) {
+    translationsToReturn[language] = pickBy(
+      translations[language],
+      (_value, key) => key.startsWith(schemaTitle) && key !== `${schemaTitle}plural`
+    );
+  }
+
+  return translationsToReturn;
+});
+
+const setSchema = (data: { schema?: IVeoObjectSchema; meta?: { type: string; description: string } }) => {
+  objectSchemaHelper.value =
+    data.schema || data.meta ? new ObjectSchemaHelper(data.schema, route.params.domain as string) : undefined;
+
+  if (objectSchemaHelper.value) {
+    if (data.meta) {
+      objectSchemaHelper.value.setTitle(data.meta.type);
+      objectSchemaHelper.value.setDescription(data.meta.description);
+    }
+
+    for (const [languageKey, translations] of Object.entries(schemaSpecificTranslations.value)) {
+      objectSchemaHelper.value.updateTranslations(languageKey, translations);
+    }
+    code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+    validate();
+  }
+
+  creationDialogVisible.value = !objectSchemaHelper.value || false;
+};
+
+const updateSchema = (schema: IVeoObjectSchema) => {
+  objectSchemaHelper.value = new ObjectSchemaHelper(schema);
+  code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+  objectSchemaHelper.value = new ObjectSchemaHelper(JSON.parse(code.value));
+
+  validate();
+};
+
+const updateSchemaName = (name: string) => {
+  objectSchemaHelper.value?.changeTranslationKey(objectSchemaHelper.value.getTitle(), name);
+  objectSchemaHelper.value?.setTitle(name);
+  code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
+};
+
+const updateDescription = (description: string) => {
+  objectSchemaHelper.value?.setDescription(description);
+  code.value = JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2);
+};
+
+const updateCode = () => {
+  if (objectSchemaHelper.value) {
+    code.value = JSON.stringify(objectSchemaHelper.value.toSchema(), undefined, 2);
+    validate();
+  }
+};
+
+const downloadButton = ref();
+const downloadSchema = () => {
+  if (downloadButton.value) {
+    const data = `data:text/json;charset=utf-8,${encodeURIComponent(
+      JSON.stringify(objectSchemaHelper.value?.toSchema(), undefined, 2)
+    )}`;
+    (downloadButton.value as any).href = data;
+    (downloadButton.value as any).download = `os_${objectSchemaHelper.value?.getTitle() || 'download'}.json`;
+  }
+};
+
+const validate = () => {
+  schemaIsValid.value = objectSchemaHelper.value?.validate() || {
+    valid: false,
+    errors: [],
+    warnings: []
+  };
+};
+
+const onPageCollapsed = (collapsedPages: boolean[]) => {
+  if (collapsedPages[1]) {
+    pageWidths.value = [12, 0];
+  } else {
+    pageWidths.value = [6, 6];
+  }
+};
+
+// Saving
+const { mutateAsync: update } = useMutation(domainQueryDefinitions.mutations.updateTypeDefinitions);
+
+const saveSchema = async () => {
+  const objectSchema = objectSchemaHelper.value?.toSchema();
+  if (!objectSchema) {
+    return;
+  }
+
+  try {
+    await update({
+      domainId: route.params.domain,
+      objectType: title.value,
+      objectSchema
+    });
+    displaySuccessMessage(t('saveSchemaSuccess').toString());
+  } catch (e: any) {
+    displayErrorMessage(
+      globalT('userMessages.error.title').toString(),
+      `${t('saveSchemaError').toString()}: ${e.message}`
+    );
+  }
+};
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-domain-editor-objectschema.json"></i18n>

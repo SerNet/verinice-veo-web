@@ -14,9 +14,6 @@ describe('Object Editor', () => {
   });
 
   const selectMenuItem = (status: string) => {
-    cy.get('[data-veo-test="open-object-schema"]').click();
-    cy.wait(100);
-
     cy.getCustom('[data-veo-test="object-schema-select"]').should('be.visible');
     cy.wait(100);
 

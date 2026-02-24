@@ -26,19 +26,6 @@
   >
     <template #default>
       <v-window v-model="state">
-        <v-window-item value="start" class="py-4">
-          <v-list class="px-0 overflow-hidden" color="transparent">
-            <v-list-item lines="two" data-veo-test="open-object-schema" @click="state = 'import'">
-              <v-list-item-title class="font-weight-bold">
-                {{ t('openObjectSchema') }}
-              </v-list-item-title>
-              <v-list-item-subtitle>{{ t('openObjectSchemaDescription') }}</v-list-item-subtitle>
-              <template #append>
-                <v-icon size="x-large" :icon="mdiChevronRight" />
-              </template>
-            </v-list-item>
-          </v-list>
-        </v-window-item>
         <v-window-item value="import" class="px-4">
           <h2 class="text-h2">
             {{ t('openObjectSchema') }}
@@ -86,7 +73,6 @@
 
 <script setup lang="ts">
 import { isEmpty, isEqual, isString } from 'lodash';
-import { mdiChevronRight } from '@mdi/js';
 
 import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
