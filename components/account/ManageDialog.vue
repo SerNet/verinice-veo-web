@@ -221,7 +221,6 @@ export default defineComponent({
     const { ability } = useVeoPermissions();
     const { profile } = useVeoUser();
     const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
-
     // form stuff
     const originalData = computed(() => {
       const data = pick(props, ['username', 'emailAddress', 'firstName', 'lastName', 'enabled', 'groups']);
@@ -315,13 +314,12 @@ export default defineComponent({
     const { mutateAsync: update, isLoading: isLoadingUpdate } = useMutation(
       accountQueryDefinitions.mutations.updateAccount
     );
-
     const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);
-
     const createOrUpdateAccount = async () => {
       if (formIsValid.value === false || ability.value.cannot('manage', 'accounts')) {
         return;
       }
+      const errorMessage = t(props.id ? 'updatingAccountFailed' : 'creatingAccountFailed').toString();
 
       // Sanitize data
       Object.keys(formData.value).forEach((key) => {
@@ -346,7 +344,9 @@ export default defineComponent({
         emit('success');
         emit('update:model-value', false);
       } catch (error: any) {
-        displayErrorMessage(t(props.id ? 'updatingAccountFailed' : 'creatingAccountFailed').toString(), error.message);
+        if (error?.code === 409) {
+          displayErrorMessage(errorMessage, t('emailAddressOrUsernameAlreadyTaken').toString());
+        } else displayErrorMessage(errorMessage, error.message);
       }
     };
 
