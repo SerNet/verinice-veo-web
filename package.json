@@ -100,7 +100,7 @@
     "undici": "7.22.0",
     "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.0.18",
-    "vue-tsc": "3.2.4"
+    "vue-tsc": "3.2.5"
   },
   "overrides": {
     "vitest": "$vitest"
