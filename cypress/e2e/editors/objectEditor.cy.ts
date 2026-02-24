@@ -13,28 +13,8 @@ describe('Object Editor', () => {
     cy.acceptAllCookies();
   });
 
-  it('should set up the editor to create a new object schema', () => {
-    visitEditor();
-    cy.get('[data-veo-test="objectschema-item"]').click();
-    cy.get('[data-veo-test="dialog-card"]').within(() => {
-      cy.get('[data-veo-test="create-object-schema"]').click();
-      cy.get('[data-veo-test="object-schema-type"]')
-        .click()
-        .within(() => {
-          cy.get('input').type('test');
-        });
-
-      cy.get('[data-veo-test="object-schema-description"]')
-        .click()
-        .within(() => {
-          cy.get('input').type('test');
-        });
-      cy.get('[data-veo-test="create-object-schema-button"]').click();
-    });
-    assertEditorPage();
-  });
   const selectMenuItem = (status: string) => {
-    cy.get('[data-veo-test="import-object-schema"]').click();
+    cy.get('[data-veo-test="open-object-schema"]').click();
     cy.wait(100);
 
     cy.getCustom('[data-veo-test="object-schema-select"]').should('be.visible');
@@ -50,11 +30,11 @@ describe('Object Editor', () => {
 
     cy.getCustom('.v-overlay__content .v-field__input').should('contain', status);
   };
-  it('should import an object editor', () => {
+  it('should open an object schema', () => {
     visitEditor();
     cy.get('[data-veo-test="objectschema-item"]').click();
     selectMenuItem('scope');
-    cy.get('[data-veo-test="import-object-schema-button"]').click();
+    cy.get('[data-veo-test="open-object-schema-button"]').click();
     assertEditorPage();
   });
 });
