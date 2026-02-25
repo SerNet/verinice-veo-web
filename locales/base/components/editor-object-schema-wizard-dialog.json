@@ -4,7 +4,7 @@
     "openObjectSchema": "Open object schema",
     "openObjectSchemaDescription": "Open an existing object schema and modify it.",
     "uploadLabel": "Object schema upload @:format",
-    "customObjectSchema": "Upload JSON",
+    "uploadJson": "Upload JSON",
     "start": "How do you want to start?",
     "description": "Description",
     "type": "Type of the object schema"
@@ -14,7 +14,7 @@
     "openObjectSchema": "Objektschema öffnen",
     "openObjectSchemaDescription": "Bestehendes Objektschema öffnen und modifizieren",
     "uploadLabel": "Objektschema hochladen @:format",
-    "customObjectSchema": "JSON hochladen",
+    "uploadJson": "JSON hochladen",
     "start": "Wie möchten Sie starten?",
     "description": "Beschreibung",
     "type": "Typ des Objektschemas"

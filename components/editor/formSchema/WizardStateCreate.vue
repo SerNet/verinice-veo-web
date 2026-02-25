@@ -216,7 +216,7 @@ export default defineComponent({
       }));
 
       objectSchemaOptions.unshift({
-        title: t('customObjectSchema').toString(),
+        title: t('uploadJson').toString(),
         value: 'custom'
       });
 

@@ -9,7 +9,7 @@
     "importFormSchema": "Import form schema",
     "openObjectSchema": "Open object schema",
     "formSchemaUploadLabel": "Form schema upload @:format",
-    "objectschema": "Objectschema",
+    "objectschema": "Object schema",
     "objectSchemaIncompatible": "The object schema is not compatible with the form schema",
     "objectSchemaUploadLabel": "Object schema upload @:format",
     "objectTypeMissing": "The object schema belonging to the form schema couldn't be found",

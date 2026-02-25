@@ -16,16 +16,9 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog
-    :model-value="modelValue"
-    :large="state !== 'start'"
-    :title="$t('editor.objectschema.headline')"
-    confirm-close
-    :close-function="onClose"
-    @update:model-value="emit('update:model-value', $event)"
-  >
+  <BaseDialog :title="$t('editor.objectschema.headline')" :close-function="onClose" confirm-close large>
     <template #default>
-      <v-window v-model="state">
+      <v-window>
         <v-window-item value="import" class="px-4">
           <h2 class="text-h2">
             {{ t('openObjectSchema') }}
@@ -56,10 +49,9 @@
     <template #dialog-options>
       <v-spacer />
       <v-btn
-        v-if="state === 'import' && modelType !== 'custom'"
+        v-if="modelType !== 'custom'"
         color="primary"
         variant="text"
-        role="submit"
         type="submit"
         data-veo-test="open-object-schema-button"
         :disabled="importNextDisabled"
@@ -80,11 +72,6 @@ import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { useQueryClient } from '@tanstack/vue-query';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-interface Props {
-  modelValue: boolean;
-}
-
-const props = defineProps<Props>();
 interface CompletedPayload {
   schema?: any;
   meta?: {
@@ -92,7 +79,7 @@ interface CompletedPayload {
     description: string;
   };
 }
-const emit = defineEmits<{ 'update:model-value': [value: boolean]; completed: [data: CompletedPayload] }>();
+const emit = defineEmits<{ completed: [data: CompletedPayload] }>();
 
 const route = useRoute();
 const router = useRouter();
@@ -101,17 +88,6 @@ const { t: $t } = useI18n({ useScope: 'global' });
 const queryClient = useQueryClient();
 
 // Layout stuff
-const state = ref<'start' | 'import'>('start');
-
-watch(
-  () => props.modelValue,
-  (newValue) => {
-    if (newValue) {
-      state.value = 'import';
-    }
-  }
-);
-
 const isNavigatedByDialog = computed(() => isEmpty(route.query));
 const isDialogCustom = computed(() => route.query.os === 'custom');
 
@@ -131,7 +107,7 @@ const availableObjectSchemas = computed(() =>
       title: translations.value?.lang[locale.value]?.[objectType] || '',
       value: objectType
     }))
-    .concat({ title: t('customObjectSchema'), value: 'custom' })
+    .concat({ title: t('uploadJson'), value: 'custom' })
 );
 
 const importNextDisabled = computed(() => (modelType.value === 'custom' && !code.value) || !modelType.value);
@@ -175,17 +151,14 @@ watch(
       if (newValue.query.os === 'custom') {
         // If a user navigates through a URL which has custom os parameter,
         // the dialog with selected custom OS should be opened
-        state.value = 'import';
         modelType.value = 'custom';
       } else if (isString(newValue.query.os) && newValue.query.os !== 'custom') {
         // If a user navigates through a URL which has os parameter different from 'custom'
         // (e.g. 'process', 'asset', etc.), the OS should be automatically loaded from the server
-        state.value = 'import';
         modelType.value = newValue.query.os;
         openSchema();
       }
     } else if (isEmpty(newValue.query)) {
-      state.value = 'start';
       code.value = '';
       modelType.value = '';
       emit('completed', {});

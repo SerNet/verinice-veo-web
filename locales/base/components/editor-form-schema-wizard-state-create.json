@@ -2,7 +2,7 @@
   "en": {
     "all": "All",
     "createFormSchema": "Create form schema",
-    "customObjectSchema": "Upload JSON",
+    "uploadJson": "Upload JSON",
     "format": "(.json)",
     "openObjectSchema": "Open object schema",
     "objectSchemaUploadLabel": "Object schema upload @:format"
@@ -10,7 +10,7 @@
   "de": {
     "all": "Alle",
     "createFormSchema": "Formschema erstellen",
-    "customObjectSchema": "JSON hochladen",
+    "uploadJson": "JSON hochladen",
     "format": "(.json)",
     "openObjectSchema": "Objektschema öffnen",
     "objectSchemaUploadLabel": "Objektschema hochladen @:format"
