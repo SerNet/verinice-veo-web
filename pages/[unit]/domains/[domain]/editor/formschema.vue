@@ -487,18 +487,18 @@ const translations = computed({
           );
         }
       }
+    }
 
-      // Iterate over all formschema translations
-      for (const [locale, fsLanguageTranslations] of Object.entries(formSchema.value?.translation || {})) {
-        for (const [translationKey, translationValue] of Object.entries(fsLanguageTranslations)) {
-          _translations = setTranslation(
-            _translations,
-            translationKey,
-            TRANSLATION_SOURCE.FORMSCHEMA,
-            locale,
-            translationValue
-          );
-        }
+    // Iterate over all formschema translations
+    for (const [locale, fsLanguageTranslations] of Object.entries(formSchema.value?.translation || {})) {
+      for (const [translationKey, translationValue] of Object.entries(fsLanguageTranslations)) {
+        _translations = setTranslation(
+          _translations,
+          translationKey,
+          TRANSLATION_SOURCE.FORMSCHEMA,
+          locale,
+          translationValue
+        );
       }
     }
 
