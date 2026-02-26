@@ -22,6 +22,7 @@ import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/editor';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
+import { useTheme } from 'vuetify';
 
 const props = withDefaults(
   defineProps<{
@@ -64,10 +65,21 @@ const editorOptions = {
   }
 };
 
+/** Dark mode support */
+function handleTheme() {
+  if (!editorRef.value) return;
+  const isDark = vuetifyTheme.global.current.value.dark;
+  editorRef.value.className = isDark ? 'toastui-editor-dark' : 'toastui-editor-default';
+}
+
+const vuetifyTheme = useTheme();
+watch(() => vuetifyTheme.global.current.value.dark, handleTheme);
+
 onMounted(() => {
   editor = new Editor({ ...editorOptions, el: editorRef.value });
   // `false` prevents the editor from getting focus when its content is updated
   editor.setMarkdown(props.modelValue || '', false);
+  handleTheme();
 });
 
 onBeforeUnmount(() => {
