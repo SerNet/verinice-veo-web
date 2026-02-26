@@ -43,11 +43,7 @@
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12">
             <v-text-field
-              :model-value="
-                form.context === 'elementDetails' ?
-                  globalT('editor.formschema.create.context.elementDetails')
-                : globalT('editor.formschema.create.context.requirementImplementationControlView')
-              "
+              :model-value="contextLabel"
               flat
               :label="globalT('editor.formschema.create.context')"
               readonly
@@ -129,6 +125,16 @@ const form = ref({
   sorting: props.sorting,
   context: props.context
 });
+
+const contextLabels: Record<string, string> = {
+  elementDetails: globalT('editor.formschema.create.context.elementDetails'),
+  requirementImplementationControlView: globalT(
+    'editor.formschema.create.context.requirementImplementationControlView'
+  ),
+  controlImplementationDetails: globalT('editor.formschema.create.context.controlImplementationDetails')
+};
+
+const contextLabel = computed(() => contextLabels[form.value.context] ?? '');
 
 watch(
   () => props.formSchema,
