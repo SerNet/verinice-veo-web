@@ -76,7 +76,7 @@
     "@types/hash-sum": "1.0.2",
     "@types/intro.js": "5.1.5",
     "@types/js-cookie": "3.0.6",
-    "@types/lodash": "4.17.23",
+    "@types/lodash": "4.17.24",
     "@types/node": "24.10.13",
     "@types/prismjs": "1.26.6",
     "@typescript-eslint/eslint-plugin": "8.56.0",
