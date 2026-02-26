@@ -65,6 +65,15 @@ const editorOptions = {
   }
 };
 
+function setMarkdown() {
+  // `false` prevents the editor from getting focus when its content is updated
+  editor?.setMarkdown(props.modelValue || '', false);
+}
+
+/** Handle content updates from outside the editor
+(e.g. when loading markdown from an API or reseting dirty state) */
+watch(() => props.modelValue, setMarkdown);
+
 /** Dark mode support */
 function handleTheme() {
   if (!editorRef.value) return;
@@ -77,8 +86,7 @@ watch(() => vuetifyTheme.global.current.value.dark, handleTheme);
 
 onMounted(() => {
   editor = new Editor({ ...editorOptions, el: editorRef.value });
-  // `false` prevents the editor from getting focus when its content is updated
-  editor.setMarkdown(props.modelValue || '', false);
+  setMarkdown();
   handleTheme();
 });
 
