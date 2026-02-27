@@ -56,7 +56,7 @@ export function useCsvImporter() {
       .replace(/\r\n|\r/g, '\n'); // Normalize line breaks
   }
 
-  const preprocessCsv = async (file: File): Promise<string> => {
+  const preprocessCsv = async (file: File, encoding: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -79,7 +79,7 @@ export function useCsvImporter() {
         resolve(lines.join('\n'));
       };
       reader.onerror = (error) => reject(error);
-      reader.readAsText(file);
+      reader.readAsText(file, encoding);
     });
   };
 
@@ -118,12 +118,16 @@ export function useCsvImporter() {
    * @param {ParserOptions} [options] - Optional parser options to customize the parsing behavior.
    * @returns {Promise<void>} A promise that resolves when the CSV parsing is complete.
    */
-  const parseCsv = async (file: File, options: ParserOptions = {}): Promise<Ref<CsvData>> => {
+  const parseCsv = async (
+    file: File,
+    options: ParserOptions = {},
+    encoding: string = 'UTF-8'
+  ): Promise<Ref<CsvData>> => {
     error.value = undefined;
     isLoading.value = true;
 
     try {
-      const processedCsv = await preprocessCsv(file);
+      const processedCsv = await preprocessCsv(file, encoding);
       data.value = await parseCSVData(processedCsv, options);
       return data;
     } catch (err) {

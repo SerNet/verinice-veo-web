@@ -52,7 +52,7 @@
         <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" />
       </v-card>
     </div>
-
+    <ObjectEncodingDialog v-model="isEncodingDialogOpen" @confirm="handleEncodingConfirm" />
     <ObjectCsvDialog
       v-if="isCsvDialogOpen"
       v-model="isCsvDialogOpen"
@@ -73,6 +73,7 @@ import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { VFileUploadItem } from 'vuetify/labs/VFileUpload';
+import ObjectEncodingDialog from '~/components/object/EncodingDialog.vue';
 
 const route = useRoute();
 const { t } = useI18n();
@@ -107,6 +108,8 @@ const headers = ref<string[]>([]);
 const parsedData = ref<Record<string, any>[]>([]);
 const isDragging = ref(false);
 const fileInputRef = ref<HTMLInputElement | null>(null);
+const isEncodingDialogOpen = ref(false);
+const pendingFile = ref<File | null>(null);
 
 const triggerFileUpload = () => {
   if (fileInputRef.value) {
@@ -133,40 +136,47 @@ const extractFile = (input: any): File | null => {
   return null;
 };
 
-const handleFile = (file: File) => {
-  if (!isValidCsvFile(file)) {
-    displayErrorMessage(t('import.errors.invalidFile'), t('import.errors.onlyCsvAllowed'));
-    resetFileInput();
-    return;
-  }
-  processFile(file);
-};
-
 const handleFileUpload = (files: any) => {
   const file = extractFile(files);
   if (!file) {
     console.error('Unsupported file input type:', files);
     return;
   }
-  handleFile(file);
+  pendingFile.value = file;
+  isEncodingDialogOpen.value = true;
 };
+const handleEncodingConfirm = async (encoding: string) => {
+  if (!pendingFile.value) return;
 
+  await processFile(pendingFile.value, encoding);
+
+  pendingFile.value = null;
+  isCsvDialogOpen.value = true;
+};
 const handleNativeInputChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
-  if (input.files?.length) {
-    handleFile(input.files[0]);
+  if (!input.files?.length) return;
+
+  const file = input.files[0];
+
+  if (!isValidCsvFile(file)) {
+    displayErrorMessage(t('import.errors.invalidFile'), t('import.errors.onlyCsvAllowed'));
+    resetFileInput();
+    return;
   }
+
+  pendingFile.value = file;
+  isEncodingDialogOpen.value = true;
 };
 
-const processFile = async (file: File) => {
+const processFile = async (file: File, encoding: string) => {
   if (isProcessing.value || !file) return;
 
   isProcessing.value = true;
   try {
-    const result = await parseCsv(file);
+    const result = await parseCsv(file, {}, encoding);
     headers.value = result.value.headers;
     parsedData.value = result.value.records;
-    isCsvDialogOpen.value = true;
     resetFileInput();
   } catch (error) {
     console.error('Error processing CSV file:', error);
