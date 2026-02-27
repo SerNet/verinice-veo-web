@@ -1,10 +1,14 @@
 {
   "en": {
     "title": "{0}: New Domain Version Available",
-    "hin": "In your units you have used \"{0}\" domain in version \"{1}\". \nDo you want to replace it with version \"{2}\"?"
+    "hin": "In your units you have used \"{0}\" domain in version \"{1}\". \nDo you want to replace it with version \"{2}\"?",
+    "migration": "Update now",
+    "dismiss": "Later"
   },
   "de": {
     "title": "{0}: Neue Domänenversion verfügbar",
-    "hin": "In Ihren Units wird die Domäne \"{0}\" in Version \"{1}\" verwendet. \nMöchten Sie sie durch Version \"{2}\" ersetzen?"
+    "hin": "In Ihren Units wird die Domäne \"{0}\" in Version \"{1}\" verwendet. \nMöchten Sie sie durch Version \"{2}\" ersetzen?",
+    "migration": "Jetzt updaten",
+    "dismiss": "Später"
   }
 }
