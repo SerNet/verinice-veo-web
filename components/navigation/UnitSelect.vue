@@ -58,8 +58,6 @@
     </template>
 
     <template #append-item>
-
-
       <v-list-item
         :active="unitId === 'management'"
         color="primary"

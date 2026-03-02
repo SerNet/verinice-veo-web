@@ -35,18 +35,18 @@
               aria-haspopup="true"
               :aria-expanded="isSubMenuOpen"
               :class="['mb-2 rounded-lg mx-auto d-flex', { 'text-primary': isItemSelected }]"
-              :style="{ width: '44px', height: '44px' }"
+              density="comfortable"
               variant="text"
               icon
             >
-              <v-icon :icon="item.icon" size="22" aria-hidden="true" />
+              <v-icon :icon="item.icon" aria-hidden="true" />
             </v-btn>
           </template>
         </v-tooltip>
       </template>
 
-      <v-card min-width="220" elevation="12" class="border pa-1 bg-surface shadow-xl">
-        <v-list density="compact" class="py-0" :aria-label="item.name">
+      <v-card min-width="220" elevation="12" class="border bg-surface shadow-xl">
+        <v-list class="collapse-context" :aria-label="item.name">
           <template v-for="child in item.children" :key="child.id">
             <NavigationPrimaryNavigationCategory v-if="child.children" v-bind="child" :mini-variant="false" />
             <NavigationPrimaryNavigationEntry
@@ -69,11 +69,11 @@
           :aria-label="item.name"
           :aria-current="isItemSelected ? 'page' : undefined"
           :class="['mb-2 rounded-lg mx-auto d-flex', { 'text-primary': isItemSelected }]"
-          :style="{ width: '44px', height: '44px' }"
+          density="comfortable"
           variant="text"
           icon
         >
-          <v-icon :icon="item.icon" size="22" aria-hidden="true" />
+          <v-icon :icon="item.icon" aria-hidden="true" />
         </v-btn>
       </template>
     </v-tooltip>

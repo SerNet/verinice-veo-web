@@ -19,10 +19,12 @@
 <template>
   <v-navigation-drawer
     v-bind="$attrs"
+    v-model="drawerModel"
     role="navigation"
     aria-label="Navigation"
     :rail="!xs && miniVariant"
-    permanent
+    :permanent="!xs"
+    :temporary="xs"
     data-veo-test="navigation-drawer-primary-navigation"
   >
     <template #prepend>
@@ -98,7 +100,7 @@ import {
   mdiViewDashboardOutline
 } from '@mdi/js';
 import { sortBy, upperFirst, isEmpty } from 'lodash';
-import { StorageSerializers, useStorage } from '@vueuse/core';
+import { StorageSerializers, useStorage, useVModel } from '@vueuse/core';
 import { useDisplay, useTheme } from 'vuetify';
 
 import { extractSubTypesFromObjectSchema, OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
@@ -133,6 +135,12 @@ const props = withDefaults(
     domainId: undefined
   }
 );
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: boolean): void;
+}>();
+
+const drawerModel = useVModel(props, 'modelValue', emit);
 
 const { t, locale } = useI18n();
 const { t: $t } = useI18n({ useScope: 'global' });

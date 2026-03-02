@@ -61,7 +61,6 @@
     </template>
 
     <template #append-item>
-
       <v-list-item
         :active="domainId === 'more'"
         color="primary"

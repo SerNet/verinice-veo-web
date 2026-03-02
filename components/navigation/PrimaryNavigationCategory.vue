@@ -152,12 +152,22 @@ const openCategory = () => {
 <style lang="scss" scoped>
 @use 'assets/styles/_variables.scss';
 
-.v-list-item--density-compact.primary-navigation-entry-level-1 {
+// Expanded Menu
+.primary-navigation-entry-level-1 {
   padding-inline-start: 40px !important;
 }
 
-.v-list-item--density-compact.primary-navigation-entry-level-2 {
-  padding-inline-start:66px !important;
+.primary-navigation-entry-level-2 {
+  padding-inline-start: 66px !important;
+}
+
+// Collapse Menu
+.collapse-context .primary-navigation-entry-level-0 {
+  padding-inline-start: 16px !important;
+}
+
+.collapse-context .primary-navigation-entry-level-1 {
+  padding-inline-start: 42px !important;
 }
 
 .veo-list-nav-item {
