@@ -26,7 +26,7 @@
     data-veo-test="navigation-drawer-primary-navigation"
   >
     <template #prepend>
-      <div class="my-6" role="group">
+      <div role="group">
         <NavigationUnitSelect :mini-variant="miniVariant" @expand-menu="miniVariant = false" />
         <!-- @vue-ignore TODO #3066 $route does not exist -->
         <NavigationDomainSelect
@@ -37,18 +37,15 @@
       </div>
     </template>
 
-    <v-divider />
-
-    <v-list ref="primaryNavList" class="mt-4 px-2" role="menu" aria-label="Main">
+    <v-list ref="primaryNavList" class="px-2" role="menu" aria-label="Main">
       <NavigationDrawerItems v-for="item in items" :key="item.id" :item="item" :mini-variant="miniVariant" />
     </v-list>
 
     <template #append>
       <v-divider />
-      <v-list density="compact" class="pa-0" role="group">
+      <v-list density="compact" role="group">
         <v-list-item
           v-if="!xs"
-          class="px-4"
           role="button"
           :aria-expanded="!miniVariant"
           :aria-label="miniVariant ? t('expand') : t('collapse')"
@@ -401,8 +398,7 @@ const editorsNavEntry = computed<INavItem>(() => ({
       unit: props.unitId,
       domain: props.domainId
     }
-  },
-  classes: 'mb-4'
+  }
 }));
 
 const items = computed<INavItem[]>(() => [

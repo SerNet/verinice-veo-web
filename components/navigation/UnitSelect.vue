@@ -36,7 +36,7 @@
     v-else
     ref="closeMenu"
     :model-value="items"
-    class="ma-2 mt-4"
+    class="mx-2"
     data-component-name="unit-select"
     density="compact"
     :disabled="disabled"
@@ -58,7 +58,7 @@
     </template>
 
     <template #append-item>
-      <v-divider />
+
 
       <v-list-item
         :active="unitId === 'management'"

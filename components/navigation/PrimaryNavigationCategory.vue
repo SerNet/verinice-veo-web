@@ -36,7 +36,7 @@
     <template #activator="{ props: activatorProps }">
       <v-list-item
         v-bind="activatorProps"
-        :density="level > 0 ? 'compact' : 'default'"
+        density="compact"
         :class="activatorIntendation"
         tabindex="0"
         role="menuitem"
@@ -47,7 +47,7 @@
           <v-tooltip location="end" :disabled="!miniVariant" :aria-label="`${name}`">
             <template #activator="{ props: tooltip }">
               <div v-bind="tooltip">
-                <v-icon v-if="icon" :icon="icon" class="mr-3" />
+                <v-icon v-if="icon" :icon="icon" start />
               </div>
             </template>
             <span>{{ name }}</span>
@@ -153,15 +153,11 @@ const openCategory = () => {
 @use 'assets/styles/_variables.scss';
 
 .v-list-item--density-compact.primary-navigation-entry-level-1 {
-  padding-inline-start: 52px !important;
+  padding-inline-start: 40px !important;
 }
 
 .v-list-item--density-compact.primary-navigation-entry-level-2 {
-  padding-inline-start: 84px !important;
-}
-
-.v-list-item--density-compact.primary-navigation-entry-level-3 {
-  padding-inline-start: 116px !important;
+  padding-inline-start:66px !important;
 }
 
 .veo-list-nav-item {
