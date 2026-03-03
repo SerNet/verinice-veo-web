@@ -14,6 +14,19 @@ export type RequestOptions = {
   body?: any;
 };
 
+export class HttpError<T = unknown> extends Error {
+  public readonly status: number;
+  public readonly data?: T;
+
+  constructor(message: string, status: number, data?: T) {
+    super(message);
+
+    this.name = 'HttpError';
+    this.status = status;
+    this.data = data;
+  }
+}
+
 const etags = new Map<string, string>();
 
 async function request({
@@ -39,6 +52,10 @@ async function request({
   await callback?.();
 
   if (!response.ok) {
+    const bodyText = JSON.parse(await response.text());
+
+    throw new HttpError(bodyText?.message || 'Request failed', response.status, bodyText);
+
     throw new Error('Response was not ok:', {
       cause: await response.text()
     });
