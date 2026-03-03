@@ -453,56 +453,66 @@ const setTranslation = (
   locale: string,
   value: string
 ) => {
-  const _translations = cloneDeep(translations);
+  if (!translations[key]) {
+    translations[key] = Object.create(null);
+  }
 
-  if (!_translations[key]) {
-    _translations[key] = Object.create(null);
+  if (!translations[key][source]) {
+    translations[key][source] = Object.create(null);
   }
-  if (!_translations[key][source]) {
-    _translations[key][source] = Object.create(null);
-  }
-  _translations[key][source][locale] = value;
-  return _translations;
+
+  translations[key][source][locale] = value;
 };
+
+const isObjectSchemaTranslationKey = (translationKey: string) => {
+  if (!translationKey.includes('_')) {
+    return true;
+  }
+
+  const objectSchemaTitle = objectSchema.value?.title || '';
+
+  return Boolean(objectSchemaTitle && translationKey.startsWith(objectSchemaTitle));
+};
+
+const controlImplementationDefinitionTranslations = computed(() => {
+  const objectType = formSchema.value?.modelType || objectSchema.value?.title;
+
+  if (!objectType) {
+    return {};
+  }
+
+  return domain.value?.elementTypeDefinitions?.[objectType]?.controlImplementationDefinition?.translations ?? {};
+});
 
 const translations = computed({
   get: () => {
-    let _translations: IEditorTranslations = Object.create(null);
+    const translations: IEditorTranslations = Object.create(null);
 
-    // If no objectschema is present, no need to iterate over all translations
-    if (objectSchema.value?.title) {
-      // Iterate over all objectschema translations that belong to this formschemas objectschema
-      for (const [locale, osLanguageTranslations] of Object.entries(translationsQueryData.value?.lang || {})) {
-        for (const [translationKey, translationValue] of Object.entries(osLanguageTranslations)) {
-          // Skip translations not belonging to a different objectschema
-          if (translationKey.includes('_') && !translationKey.startsWith(objectSchema.value.title)) {
-            continue;
-          }
-          _translations = setTranslation(
-            _translations,
-            translationKey,
-            TRANSLATION_SOURCE.OBJECTSCHEMA,
-            locale,
-            translationValue
-          );
+    const applyTranslations = (
+      source: Record<string, Record<string, string>> | undefined,
+      translationSource: TRANSLATION_SOURCE,
+      keyFilter?: (key: string) => boolean
+    ) => {
+      if (!source) return;
+
+      for (const [locale, entries] of Object.entries(source)) {
+        if (!entries) continue;
+
+        for (const [key, value] of Object.entries(entries)) {
+          if (keyFilter && !keyFilter(key)) continue;
+
+          setTranslation(translations, key, translationSource, locale, value);
         }
       }
-    }
+    };
 
-    // Iterate over all formschema translations
-    for (const [locale, fsLanguageTranslations] of Object.entries(formSchema.value?.translation || {})) {
-      for (const [translationKey, translationValue] of Object.entries(fsLanguageTranslations)) {
-        _translations = setTranslation(
-          _translations,
-          translationKey,
-          TRANSLATION_SOURCE.FORMSCHEMA,
-          locale,
-          translationValue
-        );
-      }
-    }
+    applyTranslations(controlImplementationDefinitionTranslations.value, TRANSLATION_SOURCE.OBJECTSCHEMA);
 
-    return _translations;
+    applyTranslations(translationsQueryData.value?.lang, TRANSLATION_SOURCE.OBJECTSCHEMA, isObjectSchemaTranslationKey);
+
+    applyTranslations(formSchema.value?.translation, TRANSLATION_SOURCE.FORMSCHEMA);
+
+    return translations;
   },
   set: (newTranslations) => {
     if (!formSchema.value) {
@@ -532,8 +542,8 @@ const translations = computed({
     formSchema.value.translation = newFormSchemaTranslations;
   }
 });
-provide(PROVIDE_KEYS.TRANSLATIONS, translations);
 
+provide(PROVIDE_KEYS.TRANSLATIONS, translations);
 const eligibleTranslations = computed(() => editorTranslationsToFormsTranslations(translations.value));
 
 const translationDialogVisible: Ref<boolean> = ref(false);
