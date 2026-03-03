@@ -17,33 +17,38 @@
 -->
 <template>
   <!-- Admin messages -->
-  <v-row class="px-2 bg-basepage">
-    <v-col>
-      <BaseAlert
-        v-for="message in messages"
-        :key="message.id"
-        :model-value="message.displayProps.isShown"
-        :title="message.message[locale]"
-        :type="VeoAlertType[message.displayProps.alertType]"
-        class="mt-2"
-        flat
-        :no-close-button="!message.displayProps.isDismissable"
-        @update:model-value="
-          (val) => {
-            message.displayProps.isShown = val;
-          }
-        "
-      >
-        <div v-if="dateIsValid(message.displayProps.effectiveDate)" class="d-flex">
-          <v-icon :icon="mdiAlarm" />
-          <span>&nbsp;</span>
-          <span>{{ formatTime(message.displayProps.effectiveDate).value }}</span>
-        </div>
+  <v-container>
+    <v-row>
+      <v-col v-if="messages && messages.length" class="pb-0">
+        <BaseAlert
+          v-for="message in messages"
+          :key="message.id"
+          :model-value="message.displayProps.isShown"
+          :title="message.message[locale]"
+          :type="VeoAlertType[message.displayProps.alertType]"
+          class="mt-2"
+          flat
+          :no-close-button="!message.displayProps.isDismissable"
+          @update:model-value="
+            (val) => {
+              message.displayProps.isShown = val;
+            }
+          "
+        >
+          <div v-if="dateIsValid(message.displayProps.effectiveDate)" class="d-flex">
+            <v-icon :icon="mdiAlarm" />
+            <span>&nbsp;</span>
+            <span>{{ formatTime(message.displayProps.effectiveDate).value }}</span>
+          </div>
 
-        <SystemMessageTimer v-if="message.displayProps.isUrgent" :effective-date="message.displayProps.effectiveDate" />
-      </BaseAlert>
-    </v-col>
-  </v-row>
+          <SystemMessageTimer
+            v-if="message.displayProps.isUrgent"
+            :effective-date="message.displayProps.effectiveDate"
+          />
+        </BaseAlert>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 <script setup lang="ts">
 import { useFormatters } from '~/composables/utils';

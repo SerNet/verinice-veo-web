@@ -20,16 +20,14 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :color="alertColor"
-    border="start"
-    :elevation="flat ? undefined : 2"
     class="overflow-hidden bg-basepage"
     :class="{
       'veo-pseudo-hover': dismissOnClick,
       'cursor-pointer': dismissOnClick
     }"
+    :elevation="flat ? undefined : 2"
     :icon="alertIcon"
     variant="tonal"
-    style="border-radius: 6px"
     @click="onContentClick"
   >
     <v-row no-gutters class="justify-lg-space-between">
@@ -242,7 +240,6 @@ export default defineComponent({
       localButtons,
       onContentClick,
       remainingTime,
-
       t,
       globalT
     };

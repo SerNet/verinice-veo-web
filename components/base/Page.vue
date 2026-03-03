@@ -16,7 +16,10 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-col :class="['veo-page', 'bg-basepage', noPaddingTop ? 'pt-0' : 'pt-6', noPadding ? 'px-0' : 'px-2']" cols="12">
+  <v-col
+    :class="['veo-page', 'bg-basepage', noPaddingTop ? 'pt-0' : 'pt-6', noPadding ? 'px-0' : 'pl-4 pr-1']"
+    cols="12"
+  >
     <LayoutPageHeader v-bind="omit(props, 'contentClass', 'stickyFooter', 'height', 'noPadding', 'noPaddingTop')">
       <template v-if="$slots.title" #title>
         <slot name="title"></slot>

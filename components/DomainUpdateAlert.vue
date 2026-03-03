@@ -15,23 +15,25 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-row class="px-2 bg-basepage">
-    <v-col v-if="messages && messages.length">
-      <BaseAlert
-        v-for="message in messages"
-        :key="message.id"
-        :model-value="message.isVisible"
-        :title="t('title', [message.domainName])"
-        :text="t('hin', [message.domainName, message.currentVersion, message.newVersion])"
-        :type="VeoAlertType.INFO"
-        class="mt-2 text-pre-wrap"
-        :buttons="getMigrationButtons(message)"
-        :defaultButtonText="t('dismiss')"
-        @update:model-value="(val) => handleDismiss(val, message.id)"
-      >
-      </BaseAlert>
-    </v-col>
-  </v-row>
+  <v-container fluid>
+    <v-row>
+      <v-col v-if="messages && messages.length" class="pb-0">
+        <BaseAlert
+          v-for="message in messages"
+          :key="message.id"
+          :model-value="message.isVisible"
+          :title="t('title', [message.domainName])"
+          :text="t('hin', [message.domainName, message.currentVersion, message.newVersion])"
+          :type="VeoAlertType.INFO"
+          class="mt-2 text-pre-wrap"
+          :buttons="getMigrationButtons(message)"
+          :defaultButtonText="t('dismiss')"
+          @update:model-value="(val) => handleDismiss(val, message.id)"
+        >
+        </BaseAlert>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup lang="ts">

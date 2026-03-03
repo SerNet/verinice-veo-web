@@ -71,7 +71,7 @@
       data-component-name="primary-navigation"
     />
 
-    <v-main :class="$style.main">
+    <v-main :class="$style.main" class="bg-basepage">
       <SystemMessageAlert v-if="messages.length" :messages="messages" />
       <DomainUpdateAlert
         v-if="domainMessages.length && hasDomainUpdate"
