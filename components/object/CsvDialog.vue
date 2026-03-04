@@ -66,6 +66,18 @@
               :error-messages="!globalSubType ? t('global.input.required') : ''"
               @update:model-value="applySubType"
             />
+            <v-select
+              v-model="selectedStatus"
+              :items="statusOptions"
+              :label="t('importObjects.status') + ' *'"
+              :error="!globalSubType"
+              :error-messages="
+                !globalSubType ? t('importObjects.selectSubtypeFirst')
+                : !selectedStatus ? t('global.input.required')
+                : ''
+              "
+              :disabled="!globalSubType"
+            />
           </div>
           <v-alert
             v-if="importedItems > 0"
@@ -239,13 +251,15 @@ const headerMappings = ref<Record<string, string>>({});
 const csvTableRef = ref();
 const editingItem = ref<any>(null);
 const editingKey = ref<string>('');
+const selectedStatus = ref<string>('');
 
 // Track original state for dirty check
 const originalState = ref({
   headerMappings: {} as Record<string, string>,
   items: [] as Record<string, any>[],
   globalObjectType: '',
-  globalSubType: ''
+  globalSubType: '',
+  selectedStatus: ''
 });
 
 /** Computed Properties */
@@ -274,7 +288,19 @@ const subTypesOptions = computed(() => {
       ] || key
   }));
 });
+const statusOptions = computed(() => {
+  const statuses =
+    currentDomain.value?.raw?.elementTypeDefinitions?.[globalObjectType.value]?.subTypes?.[globalSubType.value]
+      ?.statuses || [];
 
+  return statuses.map((status: string) => ({
+    value: status,
+    title:
+      currentDomain.value?.raw?.elementTypeDefinitions?.[globalObjectType.value]?.translations?.[locale.value]?.[
+        `${globalObjectType.value}_${globalSubType.value}_status_${status}`
+      ] ?? status
+  }));
+});
 const unmappedRequiredFields = computed(() => props.requiredFields.filter((field) => !getMappedHeader(field)));
 
 const objectProps = computed(() => [...props.requiredFields, 'abbreviation', 'description']);
@@ -303,7 +329,8 @@ const hasAllRequiredFields = computed(() => {
     props.requiredFields.every((field) => usedOptions.includes(field)) &&
     usedOptions.every((option) => objectProps.value.includes(option)) &&
     !!globalObjectType.value &&
-    !!globalSubType.value
+    !!globalSubType.value &&
+    !!selectedStatus.value
   );
 });
 
@@ -328,8 +355,11 @@ const confirmCloseMessage = computed(() => {
   // Check if type selections changed
   const typeChanged = globalObjectType.value !== originalState.value.globalObjectType;
   const subTypeChanged = globalSubType.value !== originalState.value.globalSubType;
+  const statusChanged = selectedStatus.value !== originalState.value.selectedStatus;
 
-  return mappingsChanged || itemsChanged || typeChanged || subTypeChanged ? t('importObjects.confirmClose') : '';
+  return mappingsChanged || itemsChanged || typeChanged || subTypeChanged || statusChanged ?
+      t('importObjects.confirmClose')
+    : '';
 });
 
 /** Watchers */
@@ -351,7 +381,8 @@ const initializeOriginalState = () => {
     headerMappings: JSON.parse(JSON.stringify(headerMappings.value)),
     items: items.value ? JSON.parse(JSON.stringify(items.value)) : [],
     globalObjectType: globalObjectType.value,
-    globalSubType: globalSubType.value
+    globalSubType: globalSubType.value,
+    selectedStatus: selectedStatus.value
   };
 };
 // Initialize original state when dialog opens
@@ -501,9 +532,7 @@ const handleImport = async () => {
       objectType: globalObjectType.value,
       subType: globalSubType.value,
       owner: createLink('units', route.params.unit as string),
-      status:
-        currentDomain.value?.raw?.elementTypeDefinitions?.[globalObjectType.value]?.subTypes?.[globalSubType.value]
-          ?.statuses?.[0]
+      status: selectedStatus.value
     } as Record<string, any>;
 
     // Assign values from mapped CSV headers to corresponding required fields
