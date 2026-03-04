@@ -288,6 +288,7 @@ const subTypesOptions = computed(() => {
       ] || key
   }));
 });
+
 const statusOptions = computed(() => {
   const statuses =
     currentDomain.value?.raw?.elementTypeDefinitions?.[globalObjectType.value]?.subTypes?.[globalSubType.value]
@@ -301,13 +302,39 @@ const statusOptions = computed(() => {
       ] ?? status
   }));
 });
+
+const customAttributes = computed(() => {
+  const typeDef = currentDomain.value?.raw?.elementTypeDefinitions?.[globalObjectType.value];
+  if (!typeDef) return [];
+  const translations = typeDef.translations?.[locale.value] || typeDef.translations?.['de'] || {};
+
+  return Object.entries(typeDef.customAspects || {}).flatMap(([customAspectKey, customAspectDef]: [string, any]) =>
+    Object.entries(customAspectDef.attributeDefinitions || {})
+      .filter(([_, attrDef]: [string, any]) => attrDef.type === 'text')
+      .map(([attrKey]: [string, any]) => ({
+        key: attrKey,
+        title: translations[attrKey] || attrKey,
+        customAspect: customAspectKey
+      }))
+  );
+});
+
 const unmappedRequiredFields = computed(() => props.requiredFields.filter((field) => !getMappedHeader(field)));
 
-const objectProps = computed(() => [...props.requiredFields, 'abbreviation', 'description']);
+const objectProps = computed(() => {
+  const standardFields = ['name', 'abbreviation', 'description'];
+  const customFields = customAttributes.value.map((attr) => attr.key);
+  return [...new Set([...props.requiredFields, ...standardFields, ...customFields])];
+});
 
 // Map technical field names to user-friendly translated names
 const getFieldTranslation = (technicalName: string) => {
-  return technicalName ? t('objectlist.' + technicalName) : '';
+  if (!technicalName) return '';
+  const customAttr = customAttributes.value.find((a) => a.key === technicalName);
+  if (customAttr && customAttr.title) {
+    return customAttr.title;
+  }
+  return t('objectlist.' + technicalName);
 };
 
 const displayFields = (fields: string[]) => {
@@ -527,23 +554,44 @@ const handleImport = async () => {
   );
 
   // Transform each row in items to include only the required fields and global properties
-  const transformedData = items.value.map((row) => {
+  const transformedData = (items.value || []).map((row) => {
     const newItem = {
       objectType: globalObjectType.value,
       subType: globalSubType.value,
       owner: createLink('units', route.params.unit as string),
-      status: selectedStatus.value
+      status: selectedStatus.value,
+      customAspects: {}
     } as Record<string, any>;
 
-    // Assign values from mapped CSV headers to corresponding required fields
-    objectProps.value.forEach((field) => {
-      newItem[field] = row[inverseMappings[field]];
+    // Iterate over the inverse mappings to extract the data correctly
+    Object.entries(inverseMappings).forEach(([fieldKey, csvHeader]) => {
+      // If the user mapped this field AND there is data in the row
+      if (csvHeader && row[csvHeader] !== undefined) {
+        // Check if this is a Custom Aspect (does it exist in our computed list?)
+        const customAttr = customAttributes.value.find((a) => a.key === fieldKey);
+
+        if (customAttr) {
+          if (!newItem.customAspects[customAttr.customAspect]) {
+            newItem.customAspects[customAttr.customAspect] = {};
+          }
+          // Save the value inside the group
+          newItem.customAspects[customAttr.customAspect][fieldKey] = row[csvHeader];
+        } else {
+          newItem[fieldKey] = row[csvHeader];
+        }
+      }
     });
+
+    // Clean up customAspects if no mapping was injected to keep payload clean
+    if (Object.keys(newItem.customAspects).length === 0) {
+      delete newItem.customAspects;
+    }
 
     return newItem;
   });
+
   // Call onSubmit with transformed data and original data (items)
-  onSubmit(transformedData, items.value);
+  onSubmit(transformedData, items.value || []);
 };
 
 const cancelImport = () => {
@@ -576,7 +624,7 @@ function highlightAllFailedItems(highlight: boolean) {
     const rows = tbody.querySelectorAll('tr');
 
     failedImports.value.forEach((error) => {
-      const index = items.value.findIndex((item) => item === error.item);
+      const index = (items.value || []).findIndex((item) => item === error.item);
       if (index === -1 || index >= rows.length) return;
       const rowEl = rows[index];
 
