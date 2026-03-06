@@ -16,6 +16,11 @@
 -->
 <template>
   <div ref="editorRef"></div>
+  <div class="d-flex justify-end">
+    <v-btn class="mt-2" size="small" variant="outlined" @click="changeMode">{{
+      isMarkdownEditor ? 'WYSIWIG' : 'Markdown'
+    }}</v-btn>
+  </div>
 </template>
 <script setup lang="ts">
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -37,6 +42,8 @@ const emit = defineEmits<{
 
 let editor = null;
 const editorRef = ref<HTMLDivElement | null>(null);
+const isMarkdownEditor = ref(true);
+
 const editorOptions = {
   el: null,
   initialValue: '',
@@ -44,6 +51,7 @@ const editorOptions = {
   initialEditType: 'markdown',
   previewStyle: 'vertical',
   usageStatistics: false,
+  hideModeSwitch: true,
   plugins: [[codeSyntaxHighlightPlugin, { highlighter: Prism }]],
   toolbarItems: [
     ['heading', 'bold', 'italic', 'strike'],
@@ -98,5 +106,49 @@ onMounted(() => {
 onBeforeUnmount(() => {
   editor?.destroy();
 });
+
+function getScrollableParent(el: HTMLElement) {
+  let parent = el?.parentElement;
+
+  while (parent) {
+    const style = getComputedStyle(parent);
+
+    const overflowY = style.overflowY;
+
+    const isScrollableY =
+      ['auto', 'scroll', 'overlay'].includes(overflowY) && parent.scrollHeight > parent.clientHeight;
+
+    if (isScrollableY) {
+      return parent;
+    }
+
+    parent = parent.parentElement;
+  }
+
+  return document.scrollingElement || document.documentElement;
+}
+
+function getScrollPos(scrollParent: HTMLElement | Element) {
+  return {
+    scrollTop: scrollParent.scrollTop,
+    scrollLeft: scrollParent.scrollLeft
+  };
+}
+
+function updateScrollPos({ scrollParent, scrollTop, scrollLeft }) {
+  scrollParent.scrollTop = scrollTop;
+  scrollParent.scrollLeft = scrollLeft;
+}
+
+function changeMode() {
+  const scrollParent = getScrollableParent(editorRef.value);
+  const scrollPos = getScrollPos(scrollParent);
+  if (editor.mode === 'markdown') {
+    editor.changeMode('wysiwyg', true);
+  } else {
+    editor.changeMode('markdown', true);
+  }
+  updateScrollPos({ scrollParent, ...scrollPos });
+  isMarkdownEditor.value = editor.mode === 'markdown';
+}
 </script>
-<style scoped lang="scss"></style>
