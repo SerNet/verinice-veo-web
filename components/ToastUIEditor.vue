@@ -66,7 +66,12 @@ const editorOptions = {
 };
 
 function setMarkdown() {
+  // Avoid unnecessary updates
+  const markdownText = editor?.getMarkdown();
+  if (markdownText === props.modelValue) return;
+
   // `false` prevents the editor from getting focus when its content is updated
+  // only works in markdown mode
   editor?.setMarkdown(props.modelValue || '', false);
 }
 
