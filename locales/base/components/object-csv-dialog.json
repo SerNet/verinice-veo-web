@@ -5,7 +5,6 @@
       "requiredFieldsNotMapped": "Required fields not mapped: ",
       "objectType": "Object Type",
       "subType": "Sub Type",
-      "importCompletedWithErrors": "Import completed with errors: {imported}/{total} items imported.",
       "importSuccessful": "Import successful: {imported}/{total} items imported.",
       "showingRemaining": "Showing {count} remaining.",
       "showFailedItems": "Show failed items ({count})",
@@ -22,7 +21,11 @@
       "confirmClose": "Are you sure you want to close the import dialog? You will lose all unsaved changes.",
       "noOptionsAvailable": "No more import fields available.",
       "status": "Status",
-      "selectSubtypeFirst": "Select subtype first"
+      "selectSubtypeFirst": "Select subtype first",
+      "invalidBeforeImport": "{invalid} of {total} items are invalid and will not be imported",
+      "showInvalidRows": "Show {count} invalid rows",
+      "validObjectsTitle": "Invalid items detected",
+      "confirmImport": "Of the {total} items to be imported, {invalid} are invalid. Do you want to import only the {valid} valid items? You can correct the invalid items afterwards and import them later"
     }
   },
   "de": {
@@ -31,7 +34,6 @@
       "requiredFieldsNotMapped": "Erforderliche Felder nicht zugeordnet: ",
       "objectType": "Objekttyp",
       "subType": "Subtyp",
-      "importCompletedWithErrors": "Import mit Fehlern abgeschlossen: {imported}/{total} Elemente importiert.",
       "importSuccessful": "Import erfolgreich: {imported}/{total} Elemente importiert.",
       "showingRemaining": "Es werden {count} verbleibende angezeigt.",
       "showFailedItems": "Fehlgeschlagene Elemente anzeigen ({count})",
@@ -48,7 +50,11 @@
       "confirmClose": "Sind Sie sicher, dass Sie den Import-Dialog schließen möchten? Sie werden alle unsichern Änderungen verlieren.",
       "noOptionsAvailable": "Keine weiteren Importfelder vorhanden.",
       "status": "Status",
-      "selectSubtypeFirst": "Subtyp zuerst auswählen"
+      "selectSubtypeFirst": "Subtyp zuerst auswählen",
+      "invalidBeforeImport": "{invalid} von {total} Einträgen sind ungültig und werden nicht importiert",
+      "showInvalidRows": "{count} ungültige Zeilen anzeigen",
+      "validObjectsTitle": "Ungültige Elemente erkannt",
+      "confirmImport": "Von den {total} zu importierenden Einträgen sind {invalid} ungültig. Möchten Sie nur die {valid} gültigen Einträge importieren? Sie können die ungültigen Einträge anschließend korrigieren und später importieren"
     }
   }
 }

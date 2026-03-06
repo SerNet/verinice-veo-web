@@ -27,15 +27,33 @@
   >
     <template #default>
       <div>
+        <BaseAlert
+          v-model="confirmImport"
+          :title="t('importObjects.validObjectsTitle')"
+          :text="
+            t('importObjects.confirmImport', {
+              total: items.length,
+              invalid: invalidCount,
+              valid: items.length - invalidCount
+            })
+          "
+          :type="VeoAlertType.ERROR"
+          class="mt-2 text-pre-wrap"
+          no-close-button
+          :buttons="importButtons()"
+        />
+
         <div>
-          <v-list v-if="unmappedRequiredFields.length > 0 && items.length" class="required-fields-list">
+          <v-list v-if="items.length && unmappedRequiredFields.length > 0" class="required-fields-list">
             <v-list-item>
               <v-list-item-title>
-                <span class="text-error">
-                  <v-icon :icon="mdiAlert" />
-                  {{ t('importObjects.requiredFieldsNotMapped') }}
-                </span>
-                <span> {{ displayFields(unmappedRequiredFields) }}</span>
+                <div v-if="unmappedRequiredFields.length > 0">
+                  <span class="text-error">
+                    <v-icon :icon="mdiAlert" />
+                    {{ t('importObjects.requiredFieldsNotMapped') }}
+                  </span>
+                  <span> {{ displayFields(unmappedRequiredFields) }}</span>
+                </div>
               </v-list-item-title>
             </v-list-item>
           </v-list>
@@ -79,14 +97,12 @@
               :disabled="!globalSubType"
             />
           </div>
-          <v-alert
-            v-if="importedItems > 0"
-            class="mb-4"
-            :type="failedImports.length > 0 ? 'error' : 'success'"
-            variant="tonal"
-          >
-            <strong v-if="failedImports.length > 0">
-              {{ t('importObjects.importCompletedWithErrors', { imported: importedItems, total: totalItems }) }}
+          <v-alert v-if="invalidCount > 0" class="mb-4" :type="invalidCount > 0 ? 'error' : 'success'" variant="tonal">
+            <strong v-if="invalidCount > 0">
+              {{ t('importObjects.invalidBeforeImport', { invalid: invalidCount, total: items.length }) }}
+              <v-btn color="primary" small class="mx-2" @click="highlightCell = true">
+                {{ t('importObjects.showFailedItems', { count: invalidCount }) }}
+              </v-btn>
             </strong>
             <strong v-else>
               {{ t('importObjects.importSuccessful', { imported: importedItems, total: totalItems }) }}
@@ -94,10 +110,6 @@
             &nbsp;<span v-if="totalItems - importedItems > 0">
               {{ t('importObjects.showingRemaining', { count: totalItems - importedItems }) }}
             </span>
-
-            <v-btn v-if="failedImports.length > 0" small class="mb-1 ml-1" @click="toggleAndHighlight">
-              {{ t('importObjects.showFailedItems', { count: failedImports.length }) }}
-            </v-btn>
 
             <v-expand-transition>
               <div v-if="showFailedItems">
@@ -113,7 +125,7 @@
 
           <v-card-text v-if="items.length" class="px-0 py-0 mt-2">
             <div class="table-wrapper">
-              <objectCsvTable ref="csvTableRef" :headers="localHeaders" :items="items">
+              <ObjectCsvTable ref="csvTableRef" :headers="localHeaders" :items="items">
                 <template #headers>
                   <tr>
                     <th v-for="header in headers" :key="header">
@@ -135,7 +147,11 @@
                     </th>
                   </tr>
                 </template>
-                <template v-for="header in localHeaders" :key="header.value" #[`item.${header.value}`]="{ item }">
+                <template
+                  v-for="header in localHeaders"
+                  :key="header.value"
+                  #[`item.${header.value}`]="{ item, index }"
+                >
                   <div :key="header.value" @click="startEditing(item, header.value)">
                     <v-text-field
                       v-if="editingItem === item && editingKey === header.value"
@@ -147,12 +163,21 @@
                       @blur="stopEditing"
                       @keydown.enter="stopEditing"
                     />
-                    <span v-else class="cell-content">
+                    <span
+                      v-else
+                      class="cell-content"
+                      :class="{
+                        'error-cell': highlightCell && validationErrors[index]?.[headerMappings[header.value]]
+                      }"
+                    >
                       {{ item[header.value] || '-' }}
                     </span>
+                    <div v-if="validationErrors[index]?.[headerMappings[header.value]] && highlightCell" class="error">
+                      {{ validationErrors[index][headerMappings[header.value]] }}
+                    </div>
                   </div>
                 </template>
-              </objectCsvTable>
+              </ObjectCsvTable>
             </div>
           </v-card-text>
         </div>
@@ -193,7 +218,8 @@ import { useI18n } from 'vue-i18n';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { IAlertButton } from '../base/Alert.vue';
 
 interface MappedHeader {
   title: string;
@@ -252,6 +278,9 @@ const csvTableRef = ref();
 const editingItem = ref<any>(null);
 const editingKey = ref<string>('');
 const selectedStatus = ref<string>('');
+const validationErrors = ref<Record<number, Record<string, string>>>({});
+const confirmImport = ref<boolean>(false);
+const highlightCell = ref<boolean>(false);
 
 // Track original state for dirty check
 const originalState = ref({
@@ -524,7 +553,7 @@ const onSubmit = async (data: any[], originalData: any[]) => {
   // Rest of your logic remains the same
   const unmappedOrFailedItems = originalData.filter((_, index) => !successfullyImported.has(data[index]));
 
-  items.value = [...unmappedOrFailedItems];
+  items.value = items.value.filter((_, index) => validationErrors.value[index]);
 
   if (failedImports.value.length > 0) {
     displayErrorMessage(
@@ -545,9 +574,30 @@ const onSubmit = async (data: any[], originalData: any[]) => {
     );
     emit('navigate', globalObjectType.value, globalSubType.value);
   }
+  if (invalidCount.value === 0) {
+    emit('update:model-value', false);
+  }
+};
+const invalidCount = computed(() => {
+  if (!validationErrors.value) return 0;
+  return Object.keys(validationErrors.value).length;
+});
+
+const validRows = computed(() => items.value?.filter((_, index) => !validationErrors.value[index]) || []);
+watch(invalidCount, (count) => {
+  if (count === 0) {
+    confirmImport.value = false;
+  }
+});
+
+const normalizeValue = (value: any) => {
+  if (value === null || value === undefined) return '';
+  const v = String(value).trim();
+  if (v === '' || v === '-') return '';
+  return value;
 };
 
-const handleImport = async () => {
+const startImport = async () => {
   const inverseMappings: Record<string, string> = Object.fromEntries(
     Object.entries(headerMappings.value)
       .filter(([_, field]) => field && objectProps.value.includes(field))
@@ -555,7 +605,7 @@ const handleImport = async () => {
   );
 
   // Transform each row in items to include only the required fields and global properties
-  const transformedData = (items.value || []).map((row) => {
+  const transformedData = validRows.value.map((row) => {
     const newItem = {
       objectType: globalObjectType.value,
       subType: globalSubType.value,
@@ -576,7 +626,7 @@ const handleImport = async () => {
             newItem.customAspects[customAttr.customAspect] = {};
           }
           // Save the value inside the group
-          newItem.customAspects[customAttr.customAspect][fieldKey] = row[csvHeader];
+          newItem.customAspects[customAttr.customAspect][fieldKey] = normalizeValue(row[csvHeader]);
         } else {
           newItem[fieldKey] = row[csvHeader];
         }
@@ -588,11 +638,15 @@ const handleImport = async () => {
       delete newItem.customAspects;
     }
 
+    // Assign values from mapped CSV headers to corresponding required fields
+    objectProps.value.forEach((field) => {
+      newItem[field] = row[inverseMappings[field]];
+    });
     return newItem;
   });
 
   // Call onSubmit with transformed data and original data (items)
-  onSubmit(transformedData, items.value || []);
+  await onSubmit(transformedData, items.value || []);
 };
 
 const cancelImport = () => {
@@ -615,37 +669,75 @@ const updateView = (value: boolean) => {
   emit('update:model-value', value);
 };
 
-// Add some design because why not
-function highlightAllFailedItems(highlight: boolean) {
-  nextTick(() => {
-    const tableEl = csvTableRef.value?.$el;
-    if (!tableEl) return;
-    const tbody = tableEl.querySelector('tbody');
-    if (!tbody) return;
-    const rows = tbody.querySelectorAll('tr');
-
-    failedImports.value.forEach((error) => {
-      const index = (items.value || []).findIndex((item) => item === error.item);
-      if (index === -1 || index >= rows.length) return;
-      const rowEl = rows[index];
-
-      if (highlight) {
-        rowEl.classList.add('highlight');
-        rowEl.classList.remove('remove-highlight');
-      } else {
-        rowEl.classList.add('remove-highlight');
-        rowEl.classList.remove('highlight');
+function importButtons(): IAlertButton[] {
+  return [
+    {
+      text: t('global.button.import'),
+      onClick: () => {
+        confirmImport.value = false;
+        startImport();
       }
-    });
-  });
+    }
+  ];
 }
 
-function toggleAndHighlight() {
-  showFailedItems.value = !showFailedItems.value;
-  if (showFailedItems.value) {
-    highlightAllFailedItems(true);
+const validateAll = () => {
+  const mappedFields = Object.values(headerMappings.value).filter(Boolean);
+
+  // ensure all required fields are mapped
+  if (!props.requiredFields.every((f) => mappedFields.includes(f))) {
+    validationErrors.value = {};
+    return;
+  }
+  const newErrors: Record<number, Record<string, string>> = {};
+
+  const inverseMappings: Record<string, string> = Object.fromEntries(
+    Object.entries(headerMappings.value)
+      .filter(([_, field]) => field)
+      .map(([header, field]) => [field, header])
+  );
+
+  items.value?.forEach((row, index) => {
+    const errors: Record<string, string> = {};
+
+    Object.keys(inverseMappings).forEach((field) => {
+      const csvHeader = inverseMappings[field];
+      const value = csvHeader ? row[csvHeader] : undefined;
+
+      // required field validation
+      if (props.requiredFields.includes(field)) {
+        if (!value || value.toString().trim() === '') {
+          errors[field] = t('global.input.required');
+          return;
+        }
+      }
+      // string validation
+      if (value !== null && value !== undefined && typeof value !== 'string') {
+        errors[field] = t('global.input.mustBeString');
+      }
+    });
+
+    if (Object.keys(errors).length > 0) {
+      newErrors[index] = errors;
+    }
+  });
+
+  validationErrors.value = newErrors;
+};
+
+watch(
+  [items, headerMappings, globalSubType, selectedStatus],
+  () => {
+    validateAll();
+  },
+  { deep: true }
+);
+
+function handleImport() {
+  if (invalidCount.value > 0) {
+    confirmImport.value = true;
   } else {
-    highlightAllFailedItems(false);
+    startImport();
   }
 }
 </script>
@@ -725,7 +817,6 @@ function toggleAndHighlight() {
 .required-fields-list {
   margin-bottom: 0px;
   padding: 0px;
-  background-color: #f8f8f8;
 }
 
 .error-text {
@@ -736,5 +827,10 @@ function toggleAndHighlight() {
   flex-direction: column;
   height: auto !important;
   width: 60px;
+}
+.error-cell {
+  margin: 2px;
+  background-color: rgba(255, 0, 0, 0.15);
+  border: 1px solid red;
 }
 </style>
