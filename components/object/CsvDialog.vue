@@ -321,8 +321,9 @@ const customAttributes = computed(() => {
 
 const unmappedRequiredFields = computed(() => props.requiredFields.filter((field) => !getMappedHeader(field)));
 
+const standardFields = ['name', 'abbreviation', 'description'];
+
 const objectProps = computed(() => {
-  const standardFields = ['name', 'abbreviation', 'description'];
   const customFields = customAttributes.value.map((attr) => attr.key);
   return [...new Set([...props.requiredFields, ...standardFields, ...customFields])];
 });
