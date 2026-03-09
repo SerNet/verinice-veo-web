@@ -123,4 +123,8 @@ const _classes = computed(() => `${props.classes} primary-navigation-entry-level
 .veo-active-list-nav-item {
   border-left: 4px solid variables.$primary;
 }
+
+.v-list-item--density-compact.v-list-item--one-line:not(.v-list-item--nav) {
+  padding-inline: 10px;
+}
 </style>

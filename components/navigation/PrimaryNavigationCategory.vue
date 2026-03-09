@@ -154,11 +154,11 @@ const openCategory = () => {
 
 // Expanded Menu
 .primary-navigation-entry-level-1 {
-  padding-inline-start: 40px !important;
+  padding-inline-start: 34px !important;
 }
 
 .primary-navigation-entry-level-2 {
-  padding-inline-start: 66px !important;
+  padding-inline-start: 60px !important;
 }
 
 // Collapse Menu
