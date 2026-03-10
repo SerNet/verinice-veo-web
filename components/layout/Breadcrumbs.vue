@@ -461,6 +461,12 @@ const Crumb: TInlineComponent = {
 :deep(.capitalize) {
   text-transform: capitalize;
 }
+
+.v-breadcrumbs-item:first-child {
+  margin-left: 0;
+  padding-left: 0;
+}
+
 .v-breadcrumbs-item .v-icon {
   font-size: 2rem;
 }

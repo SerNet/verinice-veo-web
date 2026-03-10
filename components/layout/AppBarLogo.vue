@@ -16,7 +16,7 @@
 -->
 <template>
   <div>
-    <LayoutAppLogoDesktop v-if="showDesktop" height="60%" width="85%" />
+    <LayoutAppLogoDesktop v-if="showDesktop" height="60%" />
     <LayoutAppLogoMobile v-else-if="showMobile" height="80%" width="80%" style="max-height: 40px" />
   </div>
 </template>
