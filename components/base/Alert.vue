@@ -49,6 +49,7 @@
           class="mt-4 mx-1"
           variant="outlined"
           :data-veo-test="button.dataVeoTest ?? `alert-button-${index}`"
+          :to="button.to ? button.to : undefined"
           @click="button.onClick"
         >
           {{ button.text }}
@@ -76,8 +77,9 @@ import { VeoAlertType } from '~/types/VeoTypes';
 
 export interface IAlertButton {
   text: string;
-  onClick: () => void;
+  onClick?: () => void;
   dataVeoTest?: string;
+  to?: string;
 }
 
 export default defineComponent({
