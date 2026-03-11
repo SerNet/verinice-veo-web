@@ -1,6 +1,7 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2021  Samuel Vitzthum, Jonas Heitmann
+   - Copyright (C) 2026 Ð. Mirosavljevic
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -16,7 +17,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <UtilNotFoundError v-if="!loading && notFoundError" :text="t('notFound')" />
+  <UtilNotFoundError v-if="!loading && (notFoundError || unitMismatch)" :text="t('notFound')" />
   <LayoutPageWrapper
     v-else
     class="px-4 bg-basepage"
@@ -262,6 +263,22 @@ const {
   onSuccess: async (data: IVeoEntity) => {
     finalizeModifiedObject(data);
   }
+});
+
+const ownerUnitId = computed<string | undefined>(() => {
+  const owner = object.value?.owner;
+  if (!owner) return undefined;
+  if (owner.id) return owner.id;
+  const match = owner.targetUri?.match(/\/units\/([^/]+)(?:\/|$)/);
+  return match?.[1];
+});
+
+const unitMismatch = computed<boolean>(() => {
+  if (loading.value) return false;
+  if (!object.value) return false;
+  // If we can't determine the owner unit, fail closed (treat as not found).
+  if (!ownerUnitId.value) return true;
+  return ownerUnitId.value !== (route.params.unit as string);
 });
 
 const appliedCatalogItem = computed<IVeoLink | undefined>(() => object.value?.appliedCatalogItem);
