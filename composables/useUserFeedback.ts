@@ -10,15 +10,27 @@ type UserFeedbackParams = {
   isLoading: Ref<boolean>;
   isSuccess: Ref<boolean>;
   isError: Ref<boolean>;
+  hasSuccessMessage?: Ref<boolean>;
+  hasErrorMessage?: Ref<boolean>;
   messages?: UserFeedbackMessages;
   callback?: () => void;
 };
 
-export function useUserFeedback({ isLoading, isSuccess, isError, messages, callback }: UserFeedbackParams) {
+export function useUserFeedback({
+  isLoading,
+  isSuccess,
+  isError,
+  hasSuccessMessage,
+  hasErrorMessage,
+  messages,
+  callback
+}: UserFeedbackParams) {
   const { setLoading, clearLoading } = useGlobalLoadingState();
   const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
   const feedbackMessages = messages ?? useDefaultMessages();
+  const _hasSuccessMessage = computed(() => hasSuccessMessage?.value ?? true);
+  const _hasErrorMessage = computed(() => hasErrorMessage?.value ?? true);
 
   let loaderId: symbol | undefined;
   const stopWatcher = watch(isLoading, () => {
@@ -27,12 +39,12 @@ export function useUserFeedback({ isLoading, isSuccess, isError, messages, callb
       return;
     }
 
-    if (isSuccess.value) {
+    if (_hasSuccessMessage.value && isSuccess.value) {
       displaySuccessMessage(feedbackMessages.value.success);
       callback?.();
     }
 
-    if (isError.value) {
+    if (_hasErrorMessage.value && isError.value) {
       displayErrorMessage({ title: feedbackMessages.value.error.title, text: feedbackMessages.value.error.text });
     }
 
