@@ -23,6 +23,7 @@ import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { getIsPending } from '~/composables/helpers';
 
 import type { IVeoBaseObject, IVeoLink } from '~/types/VeoTypes';
+import type { IVeoDomainTranslations } from '../api/queryDefinitions/domains';
 
 export interface IVeoUnit extends IVeoBaseObject {
   id: string;
@@ -52,6 +53,7 @@ export type TVeoUnit = {
     color: string;
     targetUri: string;
     dashboardUrl: string;
+    translations: IVeoDomainTranslations;
   }>;
   raw: IVeoUnit;
 };
@@ -199,7 +201,8 @@ export function mapUnitValues(unit: IVeoUnit): TVeoUnit {
       abbreviation: d.abbreviation ?? '',
       color: useDomainColor(d.name),
       targetUri: d.targetUri,
-      dashboardUrl: `/${unit.id}/domains/${d.id}`
+      dashboardUrl: `/${unit.id}/domains/${d.id}`,
+      translations: d.translations
     })),
     raw: toRaw(unit)
   };

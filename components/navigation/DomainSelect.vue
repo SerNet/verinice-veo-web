@@ -96,7 +96,7 @@ defineEmits<{
 }>();
 
 const route = useRoute();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
 // v-select's append-item slot has no events (!), hence we have to reference it
@@ -107,7 +107,7 @@ const domains = computed(() => currentUnit.value?.domains || []);
 
 const items = computed(() => {
   const domain = (domains.value || []).find((d) => d.id === route.params.domain);
-  if (domain) return domain.name;
+  if (domain) return domain.translations?.[locale.value].name || domain.name;
   if (domainId.value === 'more') {
     return globalT('breadcrumbs.more');
   }
@@ -117,7 +117,7 @@ const items = computed(() => {
 const itemSelection = computed(() =>
   (domains.value || []).map((domain: any) => ({
     value: domain.id,
-    title: domain?.name,
+    title: domain.translations?.[locale.value].name || domain.name,
     name: domain?.name
   }))
 );

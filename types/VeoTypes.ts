@@ -22,6 +22,7 @@ import type { IAlertButton } from '~/components/base/Alert.vue';
 import type { Mode } from '~/components/dynamic-form/util';
 import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';
 import type { UISchemaElement } from './UISchema';
+import type { IVeoDomainTranslations } from '~/composables/api/queryDefinitions/domains';
 
 export type IVeoFormSchemaContentType = 'Layout' | 'Control' | 'Label' | string;
 
@@ -45,6 +46,7 @@ export interface IVeoLink {
   designator?: string;
   type?: string;
   subType?: string;
+  translations?: IVeoDomainTranslations;
 }
 
 export interface IVeoRiskDefinitionItemTranslations {
