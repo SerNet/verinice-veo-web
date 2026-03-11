@@ -62,19 +62,24 @@
 
     <v-tooltip v-else :text="item.name" :aria-label="item.name" location="right" offset="10">
       <template #activator="{ props: tooltipProps }">
-        <v-btn
-          v-bind="tooltipProps"
-          role="menuitem"
-          :to="item.to"
-          :aria-label="item.name"
-          :aria-current="isItemSelected ? 'page' : undefined"
-          :class="['mb-2 rounded-lg mx-auto d-flex', { 'text-primary': isItemSelected }]"
-          density="comfortable"
-          variant="text"
-          icon
+        <component
+          :is="item.badge ? 'v-badge' : 'span'"
+          v-bind="item.badge ? { location: 'top right', color: item.badge.color, content: item.badge.content } : {}"
         >
-          <v-icon :icon="item.icon" aria-hidden="true" />
-        </v-btn>
+          <v-btn
+            v-bind="tooltipProps"
+            role="menuitem"
+            :to="item.to"
+            :aria-label="item.name"
+            :aria-current="isItemSelected ? 'page' : undefined"
+            :class="['mb-2 rounded-lg mx-auto d-flex', { 'text-primary': isItemSelected }]"
+            density="comfortable"
+            variant="text"
+            icon
+          >
+            <v-icon :icon="item.icon" aria-hidden="true" />
+          </v-btn>
+        </component>
       </template>
     </v-tooltip>
   </template>

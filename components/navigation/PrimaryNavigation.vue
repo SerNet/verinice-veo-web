@@ -431,7 +431,8 @@ const domainsNavEntry = computed<INavItem>(() => ({
   name: $t('breadcrumbs.update'),
   icon: mdiPuzzleOutline,
   to: '/domains/update',
-  classes: 'mb-4 justify-content-center'
+  classes: 'mb-4 justify-content-center',
+  badge: { content: numberOfDomainUpdates.value, color: 'info' }
 }));
 
 const items = computed<INavItem[]>(() => [

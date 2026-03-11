@@ -45,6 +45,9 @@
     <v-list-item-title class="veo-primary-navigation-title" data-veo-test="nav-entry-title">
       {{ name }}
     </v-list-item-title>
+    <template v-if="badge" #append>
+      <v-badge location="top" :color="badge.color" :content="badge.content" class="pb-1 px-4" />
+    </template>
   </v-list-item>
 </template>
 
@@ -58,6 +61,7 @@ const props = withDefaults(
     INavItem & {
       level: number;
       miniVariant: boolean;
+      badge?: { content: number; color: string; classes?: string };
     }
   >(),
   {
@@ -67,7 +71,8 @@ const props = withDefaults(
     componentName: undefined,
     classes: undefined,
     children: undefined,
-    openInNewtab: false
+    openInNewtab: false,
+    badge: undefined
   }
 );
 
