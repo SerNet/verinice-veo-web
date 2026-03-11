@@ -19,14 +19,23 @@
   <div
     v-if="options.visible"
     class="vf-markdown-editor vf-form-element"
-    :class="{ 'is-disabled': disabled || options.disabled }"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
-    <div v-if="options.label" class="subtitle-1">
+    <div v-if="options.label" class="subtitle-1 d-flex justify-space-between mb-2">
       {{ options.label }}
+
+      <v-btn
+        v-if="!isCreateMode"
+        :icon="editing ? mdiClose : mdiPencilOutline"
+        :aria-label="editing ? t('breadcrumbs.editor') : t('global.button.cancel')"
+        size="small"
+        :disabled="ability.cannot('manage', 'accounts')"
+        color="primary"
+        @click="enableEditing"
+      />
     </div>
 
-    <ToastUIViewer v-if="isViewer" :model-value="modelValue" />
+    <ToastUIViewer v-if="!isCreateMode && !editing" :model-value="modelValue" />
 
     <ToastUIEditor
       v-else
@@ -38,6 +47,7 @@
 
 <script lang="ts">
 import type { IVeoFormsElementDefinition } from '../types';
+import { mdiClose, mdiPencilOutline } from '@mdi/js';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',
@@ -63,13 +73,18 @@ import { VeoFormsControlProps } from '../util';
 defineOptions({
   name: CONTROL_DEFINITION.code
 });
+const editing = ref(false);
+const { ability } = useVeoPermissions();
+const { t } = useI18n();
 // we’re intentionally using a runtime prop object here.
 // eslint-disable-next-line vue/define-props-declaration
 const props = defineProps(VeoFormsControlProps);
+const isCreateMode = computed(() => props.objectCreationDisabled);
 const emit = defineEmits<{
   'update:model-value': [value: string | undefined];
 }>();
-
-const isViewer = computed(() => props.options.disabled || props.disabled);
+function enableEditing() {
+  editing.value = !editing.value;
+}
 </script>
 <i18n src="~/locales/base/components/dynamic-form-controls-markdown-editor.json"></i18n>
