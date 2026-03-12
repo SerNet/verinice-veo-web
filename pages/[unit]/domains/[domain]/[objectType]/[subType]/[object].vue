@@ -274,8 +274,7 @@ const ownerUnitId = computed<string | undefined>(() => {
 });
 
 const unitMismatch = computed<boolean>(() => {
-  if (loading.value) return false;
-  if (!object.value) return false;
+  if (loading.value || !object.value) return false;
   // If we can't determine the owner unit, fail closed (treat as not found).
   if (!ownerUnitId.value) return true;
   return ownerUnitId.value !== (route.params.unit as string);
