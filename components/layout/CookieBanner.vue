@@ -18,7 +18,7 @@
 <template>
   <div v-if="!cookieSelection">
     <div class="veo-border veo-cookie-banner">
-      <v-card style="border-radius: 0">
+      <v-card style="border-radius: 0" class="py-8">
         <v-card-text class="d-flex flex-row align-center justify-space-between py-0">
           <span class="text-body-1">
             {{ t('cookieBannerText') }}
@@ -185,7 +185,6 @@ body:has(.v-navigation-drawer--active) .veo-cookie-banner {
   transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   padding-left: var(--v-layout-left);
   padding-right: var(--v-layout-right);
-  padding-top: var(--v-layout-top);
   padding-bottom: var(--v-layout-bottom);
 }
 
