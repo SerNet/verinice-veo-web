@@ -29,7 +29,7 @@
         :icon="editing ? mdiClose : mdiPencilOutline"
         :aria-label="editing ? t('breadcrumbs.editor') : t('global.button.cancel')"
         size="small"
-        :disabled="ability.cannot('manage', 'accounts')"
+        :disabled="!canManageUnitContent"
         color="primary"
         @click="enableEditing"
       />
@@ -74,8 +74,9 @@ defineOptions({
   name: CONTROL_DEFINITION.code
 });
 const editing = ref(false);
-const { ability } = useVeoPermissions();
+const { ability, subject } = useVeoPermissions();
 const { t } = useI18n();
+const route = useRoute();
 // we’re intentionally using a runtime prop object here.
 // eslint-disable-next-line vue/define-props-declaration
 const props = defineProps(VeoFormsControlProps);
@@ -86,5 +87,8 @@ const emit = defineEmits<{
 function enableEditing() {
   editing.value = !editing.value;
 }
+const canManageUnitContent = computed(() =>
+  ability.value.can('manage', subject('units', { id: route.params.unit as string }))
+);
 </script>
 <i18n src="~/locales/base/components/dynamic-form-controls-markdown-editor.json"></i18n>
