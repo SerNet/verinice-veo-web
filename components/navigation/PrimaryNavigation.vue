@@ -46,8 +46,21 @@
     <template #append>
       <v-divider />
       <v-list density="compact" role="group">
+        <template v-if="miniVariant && !xs">
+          <v-btn
+            role="button"
+            :aria-label="t('expand')"
+            class="rounded-lg mx-auto d-flex"
+            density="comfortable"
+            variant="text"
+            icon
+            @click="miniVariant = !miniVariant"
+          >
+            <v-icon :icon="mdiChevronRight" />
+          </v-btn>
+        </template>
         <v-list-item
-          v-if="!xs"
+          v-else-if="!xs"
           role="button"
           :aria-expanded="!miniVariant"
           :aria-label="miniVariant ? t('expand') : t('collapse')"
