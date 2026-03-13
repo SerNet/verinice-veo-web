@@ -190,29 +190,14 @@ export default defineComponent({
       { deep: true }
     );
 
-    const localMitigations = computed(() => props.mitigations);
-
-    const filteredImpactCriteria = computed(() => {
-      return filteredRiskCriteria(activeRiskDefinition.value, SECTION_TYPES.IMPACT);
-    });
-
-    const filteredRiskCriteriaValue = computed(() => {
-      return filteredRiskCriteria(activeRiskDefinition.value, SECTION_TYPES.RISK);
-    });
-
-    // helpers
     enum SECTION_TYPES {
       IMPACT = 'IMPACT',
       RISK = 'RISK'
     }
 
-    const filteredRiskCriteria = (riskDefinition: IVeoDomainRiskDefinition, sectionType: SECTION_TYPES) => {
-      const isImpact = sectionType === SECTION_TYPES.IMPACT;
-      return riskDefinition.categories.filter(
-        (riskCriterion) =>
-          riskCriterionExists(riskCriterion.id, riskDefinition, isImpact) && riskMatrixExists(riskCriterion)
-      );
-    };
+    const localMitigations = computed(() => props.mitigations);
+
+    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
 
     const riskCriterionExists = (
       riskCriterion: string,
@@ -227,7 +212,21 @@ export default defineComponent({
       return !!values.find((value) => value.category === riskCriterion);
     };
 
-    const riskMatrixExists = (riskCriterion: IVeoRiskCategory) => !!riskCriterion.valueMatrix;
+    const filteredRiskCriteria = (riskDefinition: IVeoDomainRiskDefinition, sectionType: SECTION_TYPES) => {
+      const isImpact = sectionType === SECTION_TYPES.IMPACT;
+      return riskDefinition.categories.filter(
+        (riskCriterion) =>
+          riskCriterionExists(riskCriterion.id, riskDefinition, isImpact) && riskMatrixExists(riskCriterion)
+      );
+    };
+
+    const filteredImpactCriteria = computed(() => {
+      return filteredRiskCriteria(activeRiskDefinition.value, SECTION_TYPES.IMPACT);
+    });
+
+    const filteredRiskCriteriaValue = computed(() => {
+      return filteredRiskCriteria(activeRiskDefinition.value, SECTION_TYPES.RISK);
+    });
 
     return {
       activeTab,
