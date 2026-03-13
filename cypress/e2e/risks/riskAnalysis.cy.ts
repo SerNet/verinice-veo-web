@@ -48,7 +48,7 @@ describe('Net risk', () => {
     cy.getCustom('[data-component-name="object-details-risks-tab"]').click();
 
     // Select the first risk row → opens dialog
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').first().click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').contains('Datenverlust').click();
 
     // Verify dialog is open
     cy.getCustom('[data-veo-test="base-dialog"]').should('be.visible');
@@ -68,7 +68,7 @@ describe('Net risk', () => {
     cy.getCustom('[data-veo-test="dialog-risk-close"]').should('be.visible').click();
 
     // Open the dialog again to check if change were saved
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').first().click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').contains('Datenverlust').click();
 
     // Check if the changes were made
     cy.get('[data-veo-test="risk-treatments"] span').first().should('have.text', 'risk transfer');
@@ -87,11 +87,14 @@ describe('Mitigation Measures', () => {
   });
 
   it('should add a mitigation to a risk', () => {
+    const riskName = 'Datenverlust';
+    const mitigationName = 'Active Directory Domain Services';
+
     cy.visitObject();
     cy.getCustom('[data-component-name="object-details-risks-tab"]').click();
 
     // Open risk dialog
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').should('be.visible').click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').contains(riskName).click();
 
     // Add mitigation
     cy.getCustom('[data-veo-test="add-mitigation"]').click();
@@ -100,8 +103,7 @@ describe('Mitigation Measures', () => {
     // Workaround the Safeguard filter
     cy.get('[data-testid="close-chip"]').click();
 
-    // Select the first item
-    cy.getCustom('[data-veo-test="dialog-card"] tbody tr input').first().check();
+    cy.contains('[data-veo-test="link-dialog"] tr', mitigationName).find('input').check();
 
     // Save mitigation in controls dialog
     cy.get('button').last().contains('Save').should('be.visible').click();
@@ -113,7 +115,7 @@ describe('Mitigation Measures', () => {
     cy.getCustom('[data-veo-test="dialog-risk-close"]').should('be.visible').click();
 
     // Reopen dialog
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').should('be.visible').click();
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').contains(riskName).click();
 
     // Confirm mitigation is added in the dialog table
     cy.getCustom('[data-veo-test="loadedDataTable"]:visible tr').should('be.visible');
@@ -122,6 +124,7 @@ describe('Mitigation Measures', () => {
     cy.getCustom('[data-veo-test="add-mitigation"]').click();
     cy.contains('[data-veo-test="add-mitigating-actions"]', 'Add mitigating action').click();
     cy.get('[data-testid="close-chip"]').click();
-    cy.getCustom('[data-veo-test="dialog-card"] tbody tr input').first().should('be.checked');
+
+    cy.contains('[data-veo-test="link-dialog"] tr', mitigationName).find('input').should('be.checked');
   });
 });
