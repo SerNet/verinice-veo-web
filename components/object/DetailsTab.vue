@@ -65,7 +65,7 @@
       @error="onUnlinkEntityError"
     />
     <RiskCreateDialogSingle
-      v-if="object"
+      v-if="object && editRiskDialog.visible"
       v-model="editRiskDialog.visible"
       v-bind="editRiskDialog"
       :domain-id="domainId"
