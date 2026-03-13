@@ -18,7 +18,7 @@
   <div ref="editorRef"></div>
   <div class="d-flex justify-end">
     <v-btn class="mt-2" size="small" variant="outlined" @click="changeMode">{{
-      isMarkdownEditor ? 'WYSIWIG' : 'Markdown'
+      isMarkdownEditor ? 'WYSIWYG' : 'Markdown'
     }}</v-btn>
   </div>
 </template>
