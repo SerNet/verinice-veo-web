@@ -133,7 +133,7 @@
                         :value="getFieldTranslation(headerMappings[header])"
                         :items="getAvailableOptions(header)"
                         dense
-                        :label="getHeaderLabel(header)"
+                        :label="header"
                         outlined
                         hide-details
                         clearable
@@ -263,7 +263,7 @@ const { createLink } = useCreateLink();
 const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.createObject);
 
 /** Reactive Variables */
-const items = ref<Record<string, any>[]>([]);
+const items = ref<Record<string, any>[]>();
 const globalObjectType = ref<string>(props.preselectedType);
 const globalSubType = ref<string>(props.preselectedSubType);
 const isImporting = ref<boolean>(false);
@@ -371,11 +371,9 @@ const displayFields = (fields: string[]) => {
   return fields.map((field) => getFieldTranslation(field)).join(', ');
 };
 
-const getHeaderLabel = (header: string) => header.replace(/__\\d+$/, '');
-
 const localHeaders = computed<MappedHeader[]>(() =>
   props.headers.map((header) => ({
-    title: getHeaderLabel(header),
+    title: header,
     value: header,
     width: '200px'
   }))
@@ -630,7 +628,7 @@ const startImport = async () => {
           // Save the value inside the group
           newItem.customAspects[customAttr.customAspect][fieldKey] = normalizeValue(row[csvHeader]);
         } else {
-          newItem[fieldKey] = normalizeValue(row[csvHeader]);
+          newItem[fieldKey] = row[csvHeader];
         }
       }
     });
@@ -639,11 +637,16 @@ const startImport = async () => {
     if (Object.keys(newItem.customAspects).length === 0) {
       delete newItem.customAspects;
     }
+
+    // Assign values from mapped CSV headers to corresponding required fields
+    objectProps.value.forEach((field) => {
+      newItem[field] = row[inverseMappings[field]];
+    });
     return newItem;
   });
 
   // Call onSubmit with transformed data and original data (items)
-  await onSubmit(transformedData, validRows.value);
+  await onSubmit(transformedData, items.value || []);
 };
 
 const cancelImport = () => {
