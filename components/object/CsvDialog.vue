@@ -28,6 +28,7 @@
     <template #default>
       <div>
         <BaseAlert
+          v-if="items.length - invalidCount > 0"
           v-model="confirmImport"
           :title="t('importObjects.validObjectsTitle')"
           :text="
@@ -100,9 +101,6 @@
           <v-alert v-if="invalidCount > 0" class="mb-4" :type="invalidCount > 0 ? 'error' : 'success'" variant="tonal">
             <strong v-if="invalidCount > 0">
               {{ t('importObjects.invalidBeforeImport', { invalid: invalidCount, total: items.length }) }}
-              <v-btn color="primary" small class="mx-2" @click="highlightCell = true">
-                {{ t('importObjects.showFailedItems', { count: invalidCount }) }}
-              </v-btn>
             </strong>
             <strong v-else>
               {{ t('importObjects.importSuccessful', { imported: importedItems, total: totalItems }) }}
@@ -167,12 +165,12 @@
                       v-else
                       class="cell-content"
                       :class="{
-                        'error-cell': highlightCell && validationErrors[index]?.[headerMappings[header.value]]
+                        'error-cell': validationErrors[index]?.[headerMappings[header.value]]
                       }"
                     >
                       {{ item[header.value] || '-' }}
                     </span>
-                    <div v-if="validationErrors[index]?.[headerMappings[header.value]] && highlightCell" class="error">
+                    <div v-if="validationErrors[index]?.[headerMappings[header.value]]" class="error">
                       {{ validationErrors[index][headerMappings[header.value]] }}
                     </div>
                   </div>
@@ -280,7 +278,6 @@ const editingKey = ref<string>('');
 const selectedStatus = ref<string>('');
 const validationErrors = ref<Record<number, Record<string, string>>>({});
 const confirmImport = ref<boolean>(false);
-const highlightCell = ref<boolean>(false);
 
 // Track original state for dirty check
 const originalState = ref({
@@ -819,18 +816,19 @@ function handleImport() {
   padding: 0px;
 }
 
-.error-text {
-  color: red;
+.error-cell {
+  background-color: rgb(var(--v-theme-error));
+  opacity: 0.15;
+  margin-top: 2px;
 }
-
+.error {
+  color: rgb(var(--v-theme-error));
+  white-space: nowrap;
+  font-size: 12px;
+}
 .object-side-container-select {
   flex-direction: column;
   height: auto !important;
   width: 60px;
-}
-.error-cell {
-  margin: 2px;
-  background-color: rgba(255, 0, 0, 0.15);
-  border: 1px solid red;
 }
 </style>

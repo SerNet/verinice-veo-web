@@ -60,7 +60,7 @@
   "global.button.save_quit": "Speichern und Schließen",
   "global.button.apply": "Übernehmen",
   "global.button.yes": "Ja",
-  "global.input.required": "Das Feld muss ausgefüllt werden",
+  "global.input.required": "Feld muss ausgefüllt sein",
   "global.input.requiredfields": "* Pflichtfelder",
   "global.input.hasSpecialChar": "Eingabe enthält ungültige Zeichen. Nur \"A-Z a-z 0-9 _ -\" sind zulässig.",
   "global.input.usernameTooShort": "Benutzername muss mindestens 3 Zeichen lang sein.",
