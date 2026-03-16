@@ -28,6 +28,7 @@ import { Editor } from '@toast-ui/editor';
 import Prism from 'prismjs';
 import codeSyntaxHighlightPlugin from '@toast-ui/editor-plugin-code-syntax-highlight';
 import { useTheme } from 'vuetify';
+import { nextTick } from 'vue';
 
 const props = withDefaults(
   defineProps<{
@@ -43,6 +44,7 @@ const emit = defineEmits<{
 let editor = null;
 const editorRef = ref<HTMLDivElement | null>(null);
 const isMarkdownEditor = ref(true);
+const isInternalChange = ref(false);
 
 const editorOptions = {
   el: null,
@@ -62,13 +64,15 @@ const editorOptions = {
   ],
   events: {
     change: () => {
-      const markdownText = editor.getMarkdown();
-      emit(
-        'update:model-value',
-        (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ?
-          props.modelValue
-        : markdownText
-      );
+      if (!isInternalChange.value) {
+        const markdownText = editor.getMarkdown();
+        emit(
+          'update:model-value',
+          (typeof props.modelValue === 'undefined' || props.modelValue === null) && markdownText === '' ?
+            props.modelValue
+          : markdownText
+        );
+      }
     }
   }
 };
@@ -77,10 +81,14 @@ function setMarkdown() {
   // Avoid unnecessary updates
   const markdownText = editor?.getMarkdown();
   if (markdownText === props.modelValue) return;
+  isInternalChange.value = true;
 
   // `false` prevents the editor from getting focus when its content is updated
   // only works in markdown mode
   editor?.setMarkdown(props.modelValue || '', false);
+  nextTick(() => {
+    isInternalChange.value = false;
+  });
 }
 
 /** Handle content updates from outside the editor
@@ -143,11 +151,17 @@ function updateScrollPos({ scrollParent, scrollTop, scrollLeft }) {
 function changeMode() {
   const scrollParent = getScrollableParent(editorRef.value);
   const scrollPos = getScrollPos(scrollParent);
+  isInternalChange.value = true;
+
   if (editor.mode === 'markdown') {
     editor.changeMode('wysiwyg', true);
   } else {
     editor.changeMode('markdown', true);
   }
+  nextTick(() => {
+    isInternalChange.value = false;
+  });
+
   updateScrollPos({ scrollParent, ...scrollPos });
   isMarkdownEditor.value = editor.mode === 'markdown';
 }
