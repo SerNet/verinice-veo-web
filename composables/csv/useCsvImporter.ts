@@ -1,7 +1,6 @@
 /*
  * verinice.veo web
  * Copyright (C) 2025 Aziz Khalledi
- * Copyright (C) 2026 D. Mirosavljevic
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU Affero General Public License
@@ -93,18 +92,12 @@ export function useCsvImporter() {
    */
   const parseCSVData = (csvText: string, options: ParserOptions = {}): Promise<CsvData> => {
     return new Promise((resolve, reject) => {
-      const seenHeaders = new Map<string, number>();
       Papa.parse(csvText, {
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
         ...(options.delimiter ? { delimiter: options.delimiter } : {}),
-        transformHeader: (header, index) => {
-          const base = header?.trim().replace(/\s+/g, '_').replace(/\W/g, '') || `column_${String(index ?? 0)}`;
-          const seenCount = seenHeaders.get(base) ?? 0;
-          seenHeaders.set(base, seenCount + 1);
-          return seenCount === 0 ? base : `${base}`;
-        },
+        transformHeader: (header) => header.trim().replace(/\s+/g, '_').replace(/\W/g, ''),
         complete: (results) => {
           resolve({
             records: results.data,
