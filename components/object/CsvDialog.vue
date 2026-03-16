@@ -16,7 +16,7 @@
 -->
 <template>
   <BaseDialog
-    :v-model="isOpen"
+    v-model="isOpen"
     max-width="1200"
     :title="t('importObjects.title')"
     :confirm-close="confirmCloseMessage || false"
@@ -252,7 +252,7 @@ const emit = defineEmits<{
   (event: 'update:model-value', value: boolean): void;
 }>();
 
-const isOpen = computed(() => props.modelValue);
+const isOpen = toRef(props.modelValue);
 
 /** Dependencies */
 const { t, locale } = useI18n();
@@ -828,7 +828,6 @@ function handleImport() {
   height: auto !important;
   width: 60px;
 }
-
 .error-cell {
   margin: 2px;
   background-color: rgba(255, 0, 0, 0.15);
