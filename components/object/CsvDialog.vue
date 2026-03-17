@@ -16,6 +16,7 @@
 -->
 <template>
   <BaseDialog
+    v-if="items?.length"
     v-model="isOpen"
     max-width="1200"
     :title="t('importObjects.title')"
@@ -38,7 +39,7 @@
               valid: items.length - invalidCount
             })
           "
-          :type="VeoAlertType.ERROR"
+          :type="VeoAlertType.WARNING"
           class="mt-2 text-pre-wrap"
           no-close-button
           :buttons="importButtons()"
@@ -80,7 +81,6 @@
               :label="t('importObjects.subType') + '*'"
               :required="true"
               outlined
-              style="width: 200px"
               :error="!globalSubType"
               :error-messages="!globalSubType ? t('global.input.required') : ''"
               @update:model-value="applySubType"
@@ -98,7 +98,12 @@
               :disabled="!globalSubType"
             />
           </div>
-          <v-alert v-if="invalidCount > 0" class="mb-4" :type="invalidCount > 0 ? 'error' : 'success'" variant="tonal">
+          <v-alert
+            v-if="invalidCount > 0 && !confirmImport"
+            class="mb-4"
+            :type="invalidCount > 0 ? 'error' : 'success'"
+            variant="tonal"
+          >
             <strong v-if="invalidCount > 0">
               {{ t('importObjects.invalidBeforeImport', { invalid: invalidCount, total: items.length }) }}
             </strong>
@@ -186,7 +191,13 @@
         {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn v-if="items.length" variant="text" color="primary" :disabled="!hasAllRequiredFields" @click="handleImport">
+      <v-btn
+        v-if="items.length"
+        variant="text"
+        color="primary"
+        :disabled="!hasAllRequiredFields || confirmImport || items.length - invalidCount === 0"
+        @click="handleImport"
+      >
         {{ t('global.button.import') }}
       </v-btn>
     </template>
@@ -569,16 +580,9 @@ const onSubmit = async (data: any[], originalData: any[]) => {
       undefined,
       `${importedItems.value}/${totalItems.value} items were imported successfully.`
     );
-    emit('navigate', globalObjectType.value, globalSubType.value);
-  }
-  if (invalidCount.value === 0) {
-    emit('update:model-value', false);
   }
 };
-const invalidCount = computed(() => {
-  if (!validationErrors.value) return 0;
-  return Object.keys(validationErrors.value).length;
-});
+const invalidCount = computed(() => Object.keys(validationErrors.value || {}).length);
 
 const validRows = computed(() => items.value?.filter((_, index) => !validationErrors.value[index]) || []);
 watch(invalidCount, (count) => {
@@ -656,12 +660,8 @@ const updateMapping = (key: string, value: string | undefined) => {
 };
 
 const updateView = (value: boolean) => {
-  if (!value) {
-    if (importedItems.value > 0) {
-      emit('navigate', globalObjectType.value, globalSubType.value);
-    } else {
-      emit('update:model-value', false);
-    }
+  if (!value && importedItems.value > 0) {
+    emit('navigate', globalObjectType.value, globalSubType.value);
   }
   emit('update:model-value', value);
 };
@@ -730,13 +730,12 @@ watch(
   { deep: true }
 );
 
-function handleImport() {
-  if (invalidCount.value > 0) {
-    confirmImport.value = true;
-  } else {
+const handleImport = () => {
+  confirmImport.value = invalidCount.value > 0;
+  if (!confirmImport.value) {
     startImport();
   }
-}
+};
 </script>
 <i18n src="~/locales/base/components/object-csv-dialog.json"></i18n>
 <style scoped>
