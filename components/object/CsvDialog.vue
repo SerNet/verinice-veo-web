@@ -40,7 +40,7 @@
             })
           "
           :type="VeoAlertType.WARNING"
-          class="mt-2 text-pre-wrap"
+          class="text-pre-wrap"
           no-close-button
           :buttons="importButtons()"
         />
@@ -62,53 +62,49 @@
 
           <v-divider v-if="unmappedRequiredFields.length > 0 && items.length" class="mt-4 mb-6" />
           <div v-else class="mb-4"></div>
-          <div v-if="items.length" class="global-selection">
-            <v-select
-              v-model="globalObjectType"
-              :items="typesOptions"
-              :label="t('importObjects.objectType')"
-              :rules="[requiredRule]"
-              outlined
-              class="mr-2"
-              style="width: 240px"
-              :error="!globalObjectType"
-              :error-messages="!globalObjectType ? t('global.input.required') : ''"
-              @update:model-value="applyType"
-            />
-            <v-select
-              v-model="globalSubType"
-              :items="subTypesOptions"
-              :label="t('importObjects.subType') + '*'"
-              :required="true"
-              outlined
-              :error="!globalSubType"
-              :error-messages="!globalSubType ? t('global.input.required') : ''"
-              @update:model-value="applySubType"
-            />
-            <v-select
-              v-model="selectedStatus"
-              :items="statusOptions"
-              :label="t('importObjects.status') + ' *'"
-              :error="!globalSubType"
-              :error-messages="
-                !globalSubType ? t('importObjects.selectSubtypeFirst')
-                : !selectedStatus ? t('global.input.required')
-                : ''
-              "
-              :disabled="!globalSubType"
-            />
+          <div v-if="items.length" class="d-flex">
+            <v-col cols="12" md="4">
+              <v-select
+                v-model="globalObjectType"
+                :items="typesOptions"
+                :label="t('importObjects.objectType')"
+                :rules="[requiredRule]"
+                outlined
+                :error="!globalObjectType"
+                :error-messages="!globalObjectType ? t('global.input.required') : ''"
+                @update:model-value="applyType"
+              />
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-select
+                v-model="globalSubType"
+                :items="subTypesOptions"
+                :label="t('importObjects.subType') + '*'"
+                :required="true"
+                outlined
+                :error="!globalSubType"
+                :error-messages="!globalSubType ? t('global.input.required') : ''"
+                @update:model-value="applySubType"
+              />
+            </v-col>
+            <v-col cols="12" md="4">
+              <v-select
+                v-model="selectedStatus"
+                :items="statusOptions"
+                :label="t('importObjects.status') + ' *'"
+                :error="!globalSubType"
+                :error-messages="
+                  !globalSubType ? t('importObjects.selectSubtypeFirst')
+                  : !selectedStatus ? t('global.input.required')
+                  : ''
+                "
+                :disabled="!globalSubType"
+              />
+            </v-col>
           </div>
-          <v-alert
-            v-if="invalidCount > 0 && !confirmImport"
-            class="mb-4"
-            :type="invalidCount > 0 ? 'error' : 'success'"
-            variant="tonal"
-          >
+          <v-alert v-if="invalidCount > 0 && !confirmImport" class="mb-4" :type="'error'" variant="tonal">
             <strong v-if="invalidCount > 0">
               {{ t('importObjects.invalidBeforeImport', { invalid: invalidCount, total: items.length }) }}
-            </strong>
-            <strong v-else>
-              {{ t('importObjects.importSuccessful', { imported: importedItems, total: totalItems }) }}
             </strong>
             &nbsp;<span v-if="totalItems - importedItems > 0">
               {{ t('importObjects.showingRemaining', { count: totalItems - importedItems }) }}
@@ -205,7 +201,7 @@
   <BaseDialog v-model="isImporting" confirm-close :title="t('importObjects.importingTitle')">
     <template #default>
       <div class="text-center py-6">
-        <div class="text-h6 mb-4">{{ t('importObjects.importing') }}</div>
+        <div class="text-h6 mb-4">{{ t('importObjects.importSuccessful') }}</div>
         <div class="text-h6 mb-4">{{ importedItems }} / {{ totalItems }}</div>
         <div class="text-subtitle-1">
           {{ t('importObjects.importedProgress', { progress }) }}
@@ -763,12 +759,6 @@ const handleImport = () => {
   100% {
     background-color: transparent;
   }
-}
-
-.global-selection {
-  display: flex;
-  gap: 16px;
-  align-items: center;
 }
 
 .table-wrapper {
