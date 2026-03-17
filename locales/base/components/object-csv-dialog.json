@@ -2,7 +2,6 @@
   "en": {
     "importObjects": {
       "title": "Import Objects",
-      "requiredFieldsNotMapped": "Required fields not mapped: ",
       "objectType": "Object Type",
       "subType": "Sub Type",
       "importSuccessful": "Import successful: {imported}/{total} items imported.",
@@ -30,7 +29,6 @@
   "de": {
     "importObjects": {
       "title": "Objekte importieren",
-      "requiredFieldsNotMapped": "Erforderliche Felder nicht zugeordnet: ",
       "objectType": "Objekttyp",
       "subType": "Subtyp",
       "importSuccessful": "Import erfolgreich: {imported}/{total} Elemente importiert.",

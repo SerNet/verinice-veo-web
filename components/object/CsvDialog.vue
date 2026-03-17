@@ -44,142 +44,112 @@
           no-close-button
           :buttons="importButtons()"
         />
-
-        <div>
-          <v-list v-if="items.length && unmappedRequiredFields.length > 0" class="required-fields-list">
-            <v-list-item>
-              <v-list-item-title>
-                <div v-if="unmappedRequiredFields.length > 0">
-                  <span class="text-error">
-                    <v-icon :icon="mdiAlert" />
-                    {{ t('importObjects.requiredFieldsNotMapped') }}
-                  </span>
-                  <span> {{ displayFields(unmappedRequiredFields) }}</span>
-                </div>
-              </v-list-item-title>
-            </v-list-item>
-          </v-list>
-
-          <v-divider v-if="unmappedRequiredFields.length > 0 && items.length" class="mt-4 mb-6" />
-          <div v-else class="mb-4"></div>
-          <div v-if="items.length" class="d-flex">
-            <v-col cols="12" md="4">
-              <v-select
-                v-model="globalObjectType"
-                :items="typesOptions"
-                :label="t('importObjects.objectType')"
-                :rules="[requiredRule]"
-                outlined
-                :error="!globalObjectType"
-                :error-messages="!globalObjectType ? t('global.input.required') : ''"
-                @update:model-value="applyType"
-              />
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-select
-                v-model="globalSubType"
-                :items="subTypesOptions"
-                :label="t('importObjects.subType') + '*'"
-                :required="true"
-                outlined
-                :error="!globalSubType"
-                :error-messages="!globalSubType ? t('global.input.required') : ''"
-                @update:model-value="applySubType"
-              />
-            </v-col>
-            <v-col cols="12" md="4">
-              <v-select
-                v-model="selectedStatus"
-                :items="statusOptions"
-                :label="t('importObjects.status') + ' *'"
-                :error="!globalSubType"
-                :error-messages="
-                  !globalSubType ? t('importObjects.selectSubtypeFirst')
-                  : !selectedStatus ? t('global.input.required')
-                  : ''
-                "
-                :disabled="!globalSubType"
-              />
-            </v-col>
-          </div>
-          <v-alert v-if="invalidCount > 0 && !confirmImport" class="mb-4" :type="'error'" variant="tonal">
-            <strong v-if="invalidCount > 0">
-              {{ t('importObjects.invalidBeforeImport', { invalid: invalidCount, total: items.length }) }}
-            </strong>
-            &nbsp;<span v-if="totalItems - importedItems > 0">
-              {{ t('importObjects.showingRemaining', { count: totalItems - importedItems }) }}
-            </span>
-
-            <v-expand-transition>
-              <div v-if="showFailedItems">
-                <ul>
-                  <li v-for="(error, index) in failedImports" :key="index">
-                    <strong>{{ error.item }}</strong
-                    >: {{ error.error }}
-                  </li>
-                </ul>
-              </div>
-            </v-expand-transition>
-          </v-alert>
-
-          <v-card-text v-if="items.length" class="px-0 py-0 mt-2">
-            <div class="table-wrapper">
-              <ObjectCsvTable ref="csvTableRef" :headers="localHeaders" :items="items">
-                <template #headers>
-                  <tr>
-                    <th v-for="header in headers" :key="header">
-                      <v-autocomplete
-                        :value="getFieldTranslation(headerMappings[header])"
-                        :items="getAvailableOptions(header)"
-                        dense
-                        :label="header"
-                        outlined
-                        hide-details
-                        clearable
-                        :placeholder="t('importObjects.selectMapping')"
-                        :no-data-text="t('importObjects.noOptionsAvailable')"
-                        item-title="title"
-                        item-value="value"
-                        return-object
-                        @update:model-value="(val) => updateMapping(header, val?.value)"
-                      />
-                    </th>
-                  </tr>
-                </template>
-                <template
-                  v-for="header in localHeaders"
-                  :key="header.value"
-                  #[`item.${header.value}`]="{ item, index }"
-                >
-                  <div :key="header.value" @click="startEditing(item, header.value)">
-                    <v-text-field
-                      v-if="editingItem === item && editingKey === header.value"
-                      v-model="item[header.value]"
-                      variant="underlined"
-                      density="compact"
-                      hide-details
-                      autofocus
-                      @blur="stopEditing"
-                      @keydown.enter="stopEditing"
-                    />
-                    <span
-                      v-else
-                      class="cell-content"
-                      :class="{
-                        'error-cell': validationErrors[index]?.[headerMappings[header.value]]
-                      }"
-                    >
-                      {{ item[header.value] || '-' }}
-                    </span>
-                    <div v-if="validationErrors[index]?.[headerMappings[header.value]]" class="error">
-                      {{ validationErrors[index][headerMappings[header.value]] }}
-                    </div>
-                  </div>
-                </template>
-              </ObjectCsvTable>
-            </div>
-          </v-card-text>
+        <v-alert v-if="invalidCount > 0 && !confirmImport" class="mb-4" :type="'error'" variant="tonal">
+          <strong v-if="invalidCount > 0">
+            {{ t('importObjects.invalidBeforeImport', { invalid: invalidCount, total: items.length }) }}
+          </strong>
+          &nbsp;<span v-if="totalItems - importedItems > 0">
+            {{ t('importObjects.showingRemaining', { count: totalItems - importedItems }) }}
+          </span>
+        </v-alert>
+      </div>
+      <div>
+        <v-divider v-if="unmappedRequiredFields.length > 0 && items.length" class="mt-4 mb-6" />
+        <div v-else class="mb-4"></div>
+        <div v-if="items.length" class="d-flex">
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="globalObjectType"
+              :items="typesOptions"
+              :label="t('importObjects.objectType')"
+              :rules="[requiredRule]"
+              outlined
+              :error="!globalObjectType"
+              :error-messages="!globalObjectType ? t('global.input.required') : ''"
+              @update:model-value="applyType"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="globalSubType"
+              :items="subTypesOptions"
+              :label="t('importObjects.subType') + '*'"
+              :required="true"
+              outlined
+              :error="!globalSubType"
+              :error-messages="!globalSubType ? t('global.input.required') : ''"
+              @update:model-value="applySubType"
+            />
+          </v-col>
+          <v-col cols="12" md="4">
+            <v-select
+              v-model="selectedStatus"
+              :items="statusOptions"
+              :label="t('importObjects.status') + ' *'"
+              :error="!globalSubType"
+              :error-messages="
+                !globalSubType ? t('importObjects.selectSubtypeFirst')
+                : !selectedStatus ? t('global.input.required')
+                : ''
+              "
+              :disabled="!globalSubType"
+            />
+          </v-col>
         </div>
+
+        <v-card-text v-if="items.length" class="px-0 py-0 mt-2">
+          <div class="table-wrapper">
+            <ObjectCsvTable ref="csvTableRef" :headers="localHeaders" :items="items">
+              <template #headers>
+                <tr>
+                  <th v-for="header in headers" :key="header">
+                    <v-autocomplete
+                      :value="getFieldTranslation(headerMappings[header])"
+                      :items="getAvailableOptions(header)"
+                      dense
+                      :label="header"
+                      outlined
+                      hide-details
+                      clearable
+                      :placeholder="t('importObjects.selectMapping')"
+                      :no-data-text="t('importObjects.noOptionsAvailable')"
+                      item-title="title"
+                      item-value="value"
+                      return-object
+                      @update:model-value="(val) => updateMapping(header, val?.value)"
+                    />
+                  </th>
+                </tr>
+              </template>
+              <template v-for="header in localHeaders" :key="header.value" #[`item.${header.value}`]="{ item, index }">
+                <div :key="header.value" @click="startEditing(item, header.value)">
+                  <v-text-field
+                    v-if="editingItem === item && editingKey === header.value"
+                    v-model="item[header.value]"
+                    variant="underlined"
+                    density="compact"
+                    hide-details
+                    autofocus
+                    @blur="stopEditing"
+                    @keydown.enter="stopEditing"
+                  />
+                  <span
+                    v-else
+                    class="cell-content"
+                    :class="{
+                      'error-cell': validationErrors[index]?.[headerMappings[header.value]]
+                    }"
+                  >
+                    {{ item[header.value] || '-' }}
+                  </span>
+                  <div v-if="validationErrors[index]?.[headerMappings[header.value]]" class="error">
+                    {{ validationErrors[index][headerMappings[header.value]] }}
+                  </div>
+                </div>
+              </template>
+            </ObjectCsvTable>
+          </div>
+        </v-card-text>
       </div>
     </template>
     <template #dialog-options>
@@ -218,7 +188,6 @@
 </template>
 
 <script setup lang="ts">
-import { mdiAlert } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
@@ -277,7 +246,6 @@ const isCancelled = ref<boolean>(false);
 const failedImports = ref<{ item: any; error: string }[]>([]);
 const importedItems = ref<number>(0);
 const totalItems = ref<number>(0);
-const showFailedItems = ref<boolean>(false);
 const headerMappings = ref<Record<string, string>>({});
 const csvTableRef = ref();
 const editingItem = ref<any>(null);
@@ -369,10 +337,6 @@ const getFieldTranslation = (technicalName: string) => {
     return customAttr.title;
   }
   return t('objectlist.' + technicalName);
-};
-
-const displayFields = (fields: string[]) => {
-  return fields.map((field) => getFieldTranslation(field)).join(', ');
 };
 
 const localHeaders = computed<MappedHeader[]>(() =>
@@ -561,20 +525,31 @@ const onSubmit = async (data: any[], originalData: any[]) => {
 
   if (failedImports.value.length > 0) {
     displayErrorMessage(
-      `Import completed with errors.`,
-      `${importedItems.value}/${totalItems.value} items were imported successfully.\nFailed items: ${failedImports.value.length}`
+      t('importObjects.importErrorMessageTitle'),
+      t('importObjects.importErrorMessage', {
+        imported: importedItems.value,
+        total: totalItems.value,
+        failed: failedImports.value.length
+      })
     );
   } else if (isCancelled.value) {
     displaySuccessMessage(
-      `Import cancelled.`,
+      t('importObjects.importCancelled'),
       undefined,
-      `${importedItems.value}/${totalItems.value} items were imported successfully.\nRemaining items: ${unmappedOrFailedItems.length}`
+      t('importObjects.importCancelledMessage', {
+        imported: importedItems.value,
+        total: totalItems.value,
+        remaining: unmappedOrFailedItems.length
+      })
     );
   } else {
     displaySuccessMessage(
-      `Import Successful.`,
+      t('importObjects.importSuccessTitle'),
       undefined,
-      `${importedItems.value}/${totalItems.value} items were imported successfully.`
+      t('importObjects.importSuccessMessage', {
+        imported: importedItems.value,
+        total: totalItems.value
+      })
     );
   }
 };
@@ -806,9 +781,9 @@ const handleImport = () => {
 }
 
 .error-cell {
-  background-color: rgb(var(--v-theme-error));
-  opacity: 0.15;
+  background-color: rgba(var(--v-theme-error), 0.15);
   margin-top: 2px;
+  color: rgb(var(--v-theme-error));
 }
 .error {
   color: rgb(var(--v-theme-error));
