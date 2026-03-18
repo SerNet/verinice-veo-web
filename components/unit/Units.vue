@@ -57,7 +57,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <h3 class="text-h3">
           {{ !ability.can('create', 'unit') ? t('cannotCreateUnitHint') : t('noUnitsText') }}
         </h3>
-        <div class="mt-4">
+        <div class="mt-4 d-flex flex-wrap ga-2 justify-center">
           <v-tooltip location="bottom" :aria-label="t('createUnit')">
             <template #activator="{ props }">
               <v-btn
@@ -70,7 +70,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 color="primary"
                 size="large"
                 :aria-label="t('createUnit')"
-                class="mr-4"
               >
                 {{ t('createUnit') }}
               </v-btn>
