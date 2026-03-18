@@ -18,7 +18,7 @@
 <template>
   <v-app>
     <LayoutLoadingWrapper v-if="isLoading" :text="loadingInfo ? loadingInfo : t('isLoading')" />
-    <v-app-bar :class="$style['app-bar']" data-component-name="app-bar" flat>
+    <v-app-bar :class="$style['app-bar']" data-component-name="app-bar" flat class="px-2">
       <v-app-bar-nav-icon v-if="xs" @click="drawer = !drawer" />
       <nuxt-link
         to="/units"
