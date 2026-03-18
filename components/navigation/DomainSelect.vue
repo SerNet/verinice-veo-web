@@ -107,20 +107,20 @@ const domains = computed(() => currentUnit.value?.domains || []);
 
 const items = computed(() => {
   const domain = (domains.value || []).find((d) => d.id === route.params.domain);
-  if (domain) return domain.translations?.[locale.value].name || domain.name;
+  if (domain) return domain.translations?.[locale.value]?.name || domain.name;
   return '';
 });
 
 const itemSelection = computed(() =>
   (domains.value || []).map((domain: any) => ({
     value: domain.id,
-    title: domain.translations?.[locale.value].name || domain.name,
-    name: domain?.name
+    title: domain.translations?.[locale.value]?.name || (domain?.name ?? ''),
+    name: domain?.name ?? ''
   }))
 );
 
 const selectedDomainName = computed(() => {
-  const selectedItem = itemSelection.value.find((item) => item.value === domainId.value);
+  const selectedItem = itemSelection.value?.find((item) => item.value === domainId.value);
   return selectedItem?.name || '';
 });
 
