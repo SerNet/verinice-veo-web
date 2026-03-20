@@ -50,7 +50,7 @@
             data-component-name="docs-nav-item"
             :aria-label="t('openDocumentationInNewTab')"
           >
-            <v-icon :icon="mdiHelpCircleOutline" />
+            <v-icon :icon="mdiLibraryOutline" />
           </v-btn>
         </template>
         <template #default>
@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiAccountCircleOutline, mdiHelpCircleOutline } from '@mdi/js';
+import { mdiAccountCircleOutline, mdiLibraryOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
 import { useDisplay, useTheme } from 'vuetify';
 import { useDomainUpdate } from '~/composables/domains/useDomainUpdate';

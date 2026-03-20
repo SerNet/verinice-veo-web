@@ -21,26 +21,24 @@
       <div>
         <v-btn
           v-if="tutorialsForRoute.length <= 1"
-          icon
-          type="submit"
-          :disabled="!tutorialsForRoute.length"
-          data-component-name="tutorial-select"
           v-bind="tooltipProps"
           :aria-label="t('showHelp')"
+          :disabled="!tutorialsForRoute.length || !visible"
           :title="t('showHelp')"
+          data-component-name="tutorial-select"
+          type="submit"
           @click="visible ? stop() : load()"
         >
-          <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
+          <v-icon :icon="mdiHelpCircleOutline" />
         </v-btn>
         <v-menu v-else offset-y bottom left nudge-bottom="2">
           <template #activator="{ props: menuProps }">
             <v-btn
-              icon
-              data-component-name="tutorial-select"
-              :aria-label="t('showHelp')"
               v-bind="{ ...tooltipProps, ...menuProps }"
+              :aria-label="t('showHelp')"
+              data-component-name="tutorial-select"
             >
-              <v-icon :icon="visible ? mdiInformationOffOutline : mdiInformationOutline" />
+              <v-icon :icon="mdiHelpCircleOutline" />
             </v-btn>
           </template>
           <template #default>
@@ -60,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiInformationOffOutline, mdiInformationOutline } from '@mdi/js';
+import { mdiHelpCircleOutline } from '@mdi/js';
 import { useTutorials } from '~/composables/intro';
 const { load, stop, tutorialsForRoute, visible } = useTutorials();
 const { t } = useI18n();
