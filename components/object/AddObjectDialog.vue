@@ -287,7 +287,11 @@ const typeTranslation = computed(() => {
 const availableSubTypes = computed<string[]>(() => {
   if (!createFormObjectType.value || !domain.value) return [];
   const elementTypeDef = domain.value.elementTypeDefinitions?.[createFormObjectType.value];
-  return elementTypeDef?.subTypes ? Object.keys(elementTypeDef.subTypes) : [];
+  return elementTypeDef?.subTypes ?
+      Object.keys(elementTypeDef.subTypes).sort(
+        (a, b) => (elementTypeDef.subTypes?.[a]?.sortKey || 0) - (elementTypeDef.subTypes?.[b]?.sortKey || 0)
+      )
+    : [];
 });
 
 const subTypeOptions = computed(() => {
