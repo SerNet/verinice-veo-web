@@ -1,6 +1,7 @@
 {
   "en": {
     "import.title": "Import Items",
+    "import.uploadLimit.description": "Maximum file size: 10MB. Supported format: CSV",
     "import.dropzone.label": "Drag and drop a CSV file here",
     "import.button.browse": "Browse Files",
     "import.or.text": "or select from your device",
@@ -13,6 +14,7 @@
   },
   "de": {
     "import.title": "Elemente importieren",
+    "import.uploadLimit.description": "Maximale Dateigröße: 10MB. Unterstütztes Format: CSV",
     "import.dropzone.label": "CSV-Datei hierher ziehen und ablegen",
     "import.button.browse": "Dateien auswählen",
     "import.or.text": "oder von Ihrem Gerät auswählen",

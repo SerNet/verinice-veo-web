@@ -19,6 +19,9 @@
     <div class="import-container">
       <v-card class="upload-card bg-basepage" flat>
         <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>
+        <v-card-subtitle class="text-center text-caption text-medium-emphasis mb-4">
+          {{ t('import.uploadLimit.description') }}
+        </v-card-subtitle>
         <v-file-upload
           :browse-text="t('import.button.browse')"
           :divider-text="t('import.or.text')"
