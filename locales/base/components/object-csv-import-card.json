@@ -6,6 +6,8 @@
     "import.or.text": "or select from your device",
     "import.errors.invalidFile": "Invalid File Type",
     "import.errors.onlyCsvAllowed": "Only CSV files are allowed. Please select a file with .csv extension.",
+    "import.errors.fileTooLarge": "File Too Large",
+    "import.errors.maxFileSize": "Maximum file size is 10MB. Please select a smaller file.",
     "import.errors.processingFailed": "Error Processing File",
     "import.selectedEncoding": "Select Encoding"
   },
@@ -16,6 +18,8 @@
     "import.or.text": "oder von Ihrem Gerät auswählen",
     "import.errors.invalidFile": "Ungültiger Dateityp",
     "import.errors.onlyCsvAllowed": "Es sind nur CSV-Dateien erlaubt. Bitte wählen Sie eine Datei mit der Endung .csv.",
+    "import.errors.fileTooLarge": "Datei zu groß",
+    "import.errors.maxFileSize": "Die maximale Dateigröße beträgt 10MB. Bitte wählen Sie eine kleinere Datei.",
     "import.errors.processingFailed": "Fehler bei der Verarbeitung der Datei",
     "import.selectedEncoding": "Kodierung auswählen"
   }

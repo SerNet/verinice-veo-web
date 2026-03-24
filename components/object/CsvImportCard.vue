@@ -129,6 +129,11 @@ const isValidCsvFile = (file: File): boolean => {
   return type === 'text/csv' || type === 'application/csv' || name.endsWith('.csv');
 };
 
+const isValidFileSize = (file: File): boolean => {
+  const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+  return file.size <= maxSize;
+};
+
 const extractFile = (input: any): File | null => {
   if (input instanceof File) return input;
   if (input instanceof FileList && input.length > 0) return input[0];
@@ -142,6 +147,17 @@ const handleFileUpload = (files: any) => {
     console.error('Unsupported file input type:', files);
     return;
   }
+
+  if (!isValidCsvFile(file)) {
+    displayErrorMessage(t('import.errors.invalidFile'), t('import.errors.onlyCsvAllowed'));
+    return;
+  }
+
+  if (!isValidFileSize(file)) {
+    displayErrorMessage(t('import.errors.fileTooLarge'), t('import.errors.maxFileSize'));
+    return;
+  }
+
   pendingFile.value = file;
   isEncodingDialogOpen.value = true;
 };
@@ -161,6 +177,12 @@ const handleNativeInputChange = (event: Event) => {
 
   if (!isValidCsvFile(file)) {
     displayErrorMessage(t('import.errors.invalidFile'), t('import.errors.onlyCsvAllowed'));
+    resetFileInput();
+    return;
+  }
+
+  if (!isValidFileSize(file)) {
+    displayErrorMessage(t('import.errors.fileTooLarge'), t('import.errors.maxFileSize'));
     resetFileInput();
     return;
   }
