@@ -26,7 +26,7 @@
           :disabled="!tutorialsForRoute.length || !visible"
           :title="t('showHelp')"
           data-component-name="tutorial-select"
-          type="submit"
+          icon
           @click="visible ? stop() : load()"
         >
           <v-icon :icon="mdiHelpCircleOutline" />
@@ -37,6 +37,7 @@
               v-bind="{ ...tooltipProps, ...menuProps }"
               :aria-label="t('showHelp')"
               data-component-name="tutorial-select"
+              icon
             >
               <v-icon :icon="mdiHelpCircleOutline" />
             </v-btn>
