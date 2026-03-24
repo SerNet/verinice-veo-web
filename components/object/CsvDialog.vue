@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2025 Aziz Khalledi
+   - Copyright (C) 2025 Aziz Khalledi, Đ. Mirosavljevic
    -
    - This program is free software: you can redistribute it and/or modify it
    - under the terms of the GNU Affero General Public License
@@ -133,7 +133,7 @@
                         :value="getFieldTranslation(headerMappings[header])"
                         :items="getAvailableOptions(header)"
                         dense
-                        :label="header"
+                        :label="getHeaderLabel(header)"
                         outlined
                         hide-details
                         clearable
@@ -339,7 +339,7 @@ const customAttributes = computed(() => {
 
   return Object.entries(typeDef.customAspects || {}).flatMap(([customAspectKey, customAspectDef]: [string, any]) =>
     Object.entries(customAspectDef.attributeDefinitions || {})
-      .filter(([_, attrDef]: [string, any]) => attrDef.type === 'text')
+      .filter(([_, attrDef]: [string, any]) => ['text', 'string'].includes(attrDef.type))
       .map(([attrKey]: [string, any]) => ({
         key: attrKey,
         title: translations[attrKey] || attrKey,
@@ -371,9 +371,11 @@ const displayFields = (fields: string[]) => {
   return fields.map((field) => getFieldTranslation(field)).join(', ');
 };
 
+const getHeaderLabel = (header: string) => header.replace(/__\d+$/, '');
+
 const localHeaders = computed<MappedHeader[]>(() =>
   props.headers.map((header) => ({
-    title: header,
+    title: getHeaderLabel(header),
     value: header,
     width: '200px'
   }))
@@ -625,10 +627,9 @@ const startImport = async () => {
           if (!newItem.customAspects[customAttr.customAspect]) {
             newItem.customAspects[customAttr.customAspect] = {};
           }
-          // Save the value inside the group
           newItem.customAspects[customAttr.customAspect][fieldKey] = normalizeValue(row[csvHeader]);
         } else {
-          newItem[fieldKey] = row[csvHeader];
+          newItem[fieldKey] = normalizeValue(row[csvHeader]);
         }
       }
     });
@@ -638,15 +639,11 @@ const startImport = async () => {
       delete newItem.customAspects;
     }
 
-    // Assign values from mapped CSV headers to corresponding required fields
-    objectProps.value.forEach((field) => {
-      newItem[field] = row[inverseMappings[field]];
-    });
     return newItem;
   });
 
   // Call onSubmit with transformed data and original data (items)
-  await onSubmit(transformedData, items.value || []);
+  await onSubmit(transformedData, validRows.value);
 };
 
 const cancelImport = () => {
