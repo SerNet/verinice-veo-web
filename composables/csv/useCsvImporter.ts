@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+import { deburr, snakeCase } from 'lodash';
 import Papa from 'papaparse';
 import { ref } from 'vue';
 
@@ -57,6 +58,24 @@ export function useCsvImporter() {
       .replace(/\r\n|\r/g, '\n'); // Normalize line breaks
   }
 
+  const normalizeHeader = (header: string | undefined, index: number | undefined) => {
+    const normalizedHeader = snakeCase(deburr(header?.trim() || ''));
+    return normalizedHeader || `column_${String(index ?? 0)}`;
+  };
+
+  const createUniqueHeaderName = (
+    header: string | undefined,
+    index: number | undefined,
+    headerCounts: Map<string, number>
+  ) => {
+    const normalizedHeader = normalizeHeader(header, index);
+    const occurrence = headerCounts.get(normalizedHeader) ?? 0;
+
+    headerCounts.set(normalizedHeader, occurrence + 1);
+
+    return occurrence === 0 ? normalizedHeader : `${normalizedHeader}__${occurrence}`;
+  };
+
   const preprocessCsv = async (file: File, encoding: string): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -93,21 +112,16 @@ export function useCsvImporter() {
    */
   const parseCSVData = (csvText: string, options: ParserOptions = {}): Promise<CsvData> => {
     return new Promise((resolve, reject) => {
-      const seenHeaders = new Map<string, number>();
+      // Tracks how often a normalized header has appeared so duplicate CSV column names
+      // can still be kept as distinct keys (for example `name`, `name__1`, `name__2`).
+      const headerCounts = new Map<string, number>();
 
       Papa.parse(csvText, {
         header: true,
         dynamicTyping: true,
         skipEmptyLines: true,
         ...(options.delimiter ? { delimiter: options.delimiter } : {}),
-        transformHeader: (header, index) => {
-          const normalizedHeader =
-            header?.trim().replace(/\s+/g, '_').replace(/\W/g, '') || `column_${String(index ?? 0)}`;
-          const occurrence = seenHeaders.get(normalizedHeader) ?? 0;
-          seenHeaders.set(normalizedHeader, occurrence + 1);
-
-          return occurrence === 0 ? normalizedHeader : `${normalizedHeader}__${occurrence}`;
-        },
+        transformHeader: (header, index) => createUniqueHeaderName(header, index, headerCounts),
         complete: (results) => {
           resolve({
             records: results.data,
