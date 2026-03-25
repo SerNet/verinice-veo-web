@@ -79,8 +79,7 @@ type_check:
     - !reference [.verification, rules]
   needs: []
   script:
-    - npm run typecheck | tee typecheck.log
-    - grep -q "error TS" typecheck.log && exit 1 || exit 0
+    - npm run typecheck
   interruptible: true
 
 check_formatting:
