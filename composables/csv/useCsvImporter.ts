@@ -157,6 +157,7 @@ export function useCsvImporter() {
     } catch (err) {
       error.value = (err as Error).message;
       data.value = { records: [], headers: [] };
+      throw err;
     } finally {
       isLoading.value = false;
     }

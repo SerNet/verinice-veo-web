@@ -74,6 +74,7 @@ import { mdiUpload } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
+import { useGlobalLoadingState } from '~/composables/useGlobalLoadingState';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { VFileUploadItem } from 'vuetify/labs/VFileUpload';
 import ObjectEncodingDialog from '~/components/object/EncodingDialog.vue';
@@ -82,6 +83,7 @@ const route = useRoute();
 const { t } = useI18n();
 const { parseCsv } = useCsvImporter();
 const { displayErrorMessage } = useVeoAlerts();
+const { setLoading, clearLoading } = useGlobalLoadingState();
 
 const isProcessing = ref(false);
 
@@ -137,6 +139,8 @@ const isValidFileSize = (file: File): boolean => {
   return file.size <= maxSize;
 };
 
+const isEmptyFile = (file: File): boolean => file.size === 0;
+
 const extractFile = (input: any): File | null => {
   if (input instanceof File) return input;
   if (input instanceof FileList && input.length > 0) return input[0];
@@ -144,10 +148,8 @@ const extractFile = (input: any): File | null => {
   return null;
 };
 
-const handleFileUpload = (files: any) => {
-  const file = extractFile(files);
+const validateSelectedFile = (file: File | null) => {
   if (!file) {
-    console.error('Unsupported file input type:', files);
     return;
   }
 
@@ -158,6 +160,21 @@ const handleFileUpload = (files: any) => {
 
   if (!isValidFileSize(file)) {
     displayErrorMessage(t('import.errors.fileTooLarge'), t('import.errors.maxFileSize'));
+    return;
+  }
+
+  if (isEmptyFile(file)) {
+    displayErrorMessage(t('import.errors.emptyFile'), t('import.errors.emptyFileMessage'));
+    return;
+  }
+
+  return true;
+};
+
+const handleFileUpload = (files: any) => {
+  const file = extractFile(files);
+  if (!validateSelectedFile(file)) {
+    resetFileInput();
     return;
   }
 
@@ -167,10 +184,14 @@ const handleFileUpload = (files: any) => {
 const handleEncodingConfirm = async (encoding: string) => {
   if (!pendingFile.value) return;
 
-  await processFile(pendingFile.value, encoding);
+  const fileWasProcessed = await processFile(pendingFile.value, encoding);
 
   pendingFile.value = null;
-  isCsvDialogOpen.value = true;
+  isEncodingDialogOpen.value = false;
+
+  if (fileWasProcessed) {
+    isCsvDialogOpen.value = true;
+  }
 };
 const handleNativeInputChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
@@ -178,14 +199,7 @@ const handleNativeInputChange = (event: Event) => {
 
   const file = input.files[0];
 
-  if (!isValidCsvFile(file)) {
-    displayErrorMessage(t('import.errors.invalidFile'), t('import.errors.onlyCsvAllowed'));
-    resetFileInput();
-    return;
-  }
-
-  if (!isValidFileSize(file)) {
-    displayErrorMessage(t('import.errors.fileTooLarge'), t('import.errors.maxFileSize'));
+  if (!validateSelectedFile(file)) {
     resetFileInput();
     return;
   }
@@ -194,20 +208,37 @@ const handleNativeInputChange = (event: Event) => {
   isEncodingDialogOpen.value = true;
 };
 
+const hasParsedCsvContent = (headersToCheck: string[], recordsToCheck: Record<string, any>[]) =>
+  headersToCheck.length > 0 && recordsToCheck.length > 0;
+
 const processFile = async (file: File, encoding: string) => {
   if (isProcessing.value || !file) return;
 
+  let loadingId: symbol | undefined;
   isProcessing.value = true;
   try {
+    loadingId = setLoading(t('import.loading.processing'));
     const result = await parseCsv(file, {}, encoding);
+
+    if (!result || !hasParsedCsvContent(result.value.headers, result.value.records)) {
+      displayErrorMessage(t('import.errors.emptyFile'), t('import.errors.emptyFileMessage'));
+      resetFileInput();
+      return false;
+    }
+
     headers.value = result.value.headers;
     parsedData.value = result.value.records;
     resetFileInput();
+    return true;
   } catch (error) {
     console.error('Error processing CSV file:', error);
     displayErrorMessage(t('import.errors.processingFailed'), String(error));
     resetFileInput();
+    return false;
   } finally {
+    if (loadingId) {
+      clearLoading(loadingId);
+    }
     isProcessing.value = false;
   }
 };
