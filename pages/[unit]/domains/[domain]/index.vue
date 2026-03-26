@@ -54,7 +54,6 @@
               />
               <WidgetStackedStatusBarChart
                 v-else
-                chart-height="30"
                 :data="widget[1]"
                 :domain-id="route.params.domain as string"
                 :object-type="widget[0]"

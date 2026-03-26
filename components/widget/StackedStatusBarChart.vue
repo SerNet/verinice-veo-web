@@ -24,13 +24,12 @@
             {{ chart.labels[0] }}
           </nuxt-link>
         </v-col>
-        <v-col cols="12" sm="12" md="7" lg="5" xl="8">
+        <v-col cols="12" sm="12" md="7" lg="5" xl="8" style="max-height: 38px">
           <v-skeleton-loader
             v-if="schemasIsLoading || domainIsLoading"
             data-veo-test="loader"
             width="100%"
             type="image"
-            height="25px"
             class="my-1"
           />
           <!-- TODO #3066 fix any cast -->
@@ -41,12 +40,7 @@
             aria-label="{{ chart.labels[0] }} data"
             :options="options[index] as any"
             :plugins="[ChartDataLabels]"
-            :style="{
-              height: `${chartHeight}px`,
-              cursor: 'pointer',
-              width: '100%',
-              position: 'relative'
-            }"
+            :style="{ cursor: 'pointer' }"
           />
           <div v-else class="ml-2 font-italic text-body-2">
             {{ t('noObjects') }}
@@ -86,14 +80,12 @@ interface IChartValue {
 const props = withDefaults(
   defineProps<{
     data?: IVeoDomainStatusCount['x'];
-    chartHeight?: number | string;
     title?: string;
     objectType: string;
     domainId: string;
   }>(),
   {
     data: () => ({}),
-    chartHeight: 50,
     title: ' '
   }
 );
