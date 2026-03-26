@@ -59,12 +59,13 @@ import type { INavItem } from './PrimaryNavigation.vue';
 const props = withDefaults(
   defineProps<
     INavItem & {
-      level: number;
+      level?: number;
       miniVariant: boolean;
       badge?: { content: number; color: string; classes?: string };
     }
   >(),
   {
+    level: 0,
     icon: undefined,
     to: undefined,
     exact: false,
