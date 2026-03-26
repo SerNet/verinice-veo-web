@@ -37,10 +37,10 @@
             v-else-if="chart.totalEntries > 0"
             ref="barChartRef"
             :data="chart"
-            aria-label="{{ chart.labels[0] }} data"
             :options="options[index] as any"
             :plugins="[ChartDataLabels]"
             :style="{ cursor: 'pointer' }"
+            :aria-label="chart.totalEntries + ' ' + chart.labels[0]"
           />
           <div v-else class="ml-2 font-italic text-body-2">
             {{ t('noObjects') }}
