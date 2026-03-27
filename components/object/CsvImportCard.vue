@@ -74,7 +74,6 @@ import { mdiUpload } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
-import { useGlobalLoadingState } from '~/composables/useGlobalLoadingState';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { VFileUploadItem } from 'vuetify/labs/VFileUpload';
 import ObjectEncodingDialog from '~/components/object/EncodingDialog.vue';
@@ -115,6 +114,13 @@ const isDragging = ref(false);
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const isEncodingDialogOpen = ref(false);
 const pendingFile = ref<File | null>(null);
+
+let loadingId: symbol | undefined;
+
+interface ParsedCsvContent {
+  headers: string[];
+  records: Record<string, any>[];
+}
 
 const triggerFileUpload = () => {
   if (fileInputRef.value) {
@@ -171,6 +177,11 @@ const validateSelectedFile = (file: File | null) => {
   return true;
 };
 
+const queueFileForEncoding = (file: File) => {
+  pendingFile.value = file;
+  isEncodingDialogOpen.value = true;
+};
+
 const handleFileUpload = (files: any) => {
   const file = extractFile(files);
   if (!validateSelectedFile(file)) {
@@ -178,21 +189,22 @@ const handleFileUpload = (files: any) => {
     return;
   }
 
-  pendingFile.value = file;
-  isEncodingDialogOpen.value = true;
+  queueFileForEncoding(file);
 };
+
 const handleEncodingConfirm = async (encoding: string) => {
   if (!pendingFile.value) return;
 
-  const fileWasProcessed = await processFile(pendingFile.value, encoding);
+  const processedFile = await processFile(pendingFile.value, encoding);
 
   pendingFile.value = null;
   isEncodingDialogOpen.value = false;
 
-  if (fileWasProcessed) {
+  if (processedFile) {
     isCsvDialogOpen.value = true;
   }
 };
+
 const handleNativeInputChange = (event: Event) => {
   const input = event.target as HTMLInputElement;
   if (!input.files?.length) return;
@@ -203,44 +215,63 @@ const handleNativeInputChange = (event: Event) => {
     resetFileInput();
     return;
   }
-
-  pendingFile.value = file;
-  isEncodingDialogOpen.value = true;
+  queueFileForEncoding(file);
 };
 
 const hasParsedCsvContent = (headersToCheck: string[], recordsToCheck: Record<string, any>[]) =>
   headersToCheck.length > 0 && recordsToCheck.length > 0;
 
-const processFile = async (file: File, encoding: string) => {
-  if (isProcessing.value || !file) return;
+const parseSelectedFile = async (file: File, encoding: string): Promise<ParsedCsvContent> => {
+  const result = await parseCsv(file, {}, encoding);
+  return {
+    headers: result.value.headers,
+    records: result.value.records
+  };
+};
 
-  let loadingId: symbol | undefined;
+const hasImportableCsvContent = ({ headers, records }: ParsedCsvContent) => hasParsedCsvContent(headers, records);
+
+const storeParsedCsvContent = ({ headers: parsedHeaders, records }: ParsedCsvContent) => {
+  headers.value = parsedHeaders;
+  parsedData.value = records;
+};
+
+const runWithProcessingState = async <T,>(action: () => Promise<T>) => {
+  if (isProcessing.value) return null;
+
   isProcessing.value = true;
   try {
     loadingId = setLoading(t('import.loading.processing'));
-    const result = await parseCsv(file, {}, encoding);
-
-    if (!result || !hasParsedCsvContent(result.value.headers, result.value.records)) {
-      displayErrorMessage(t('import.errors.emptyFile'), t('import.errors.emptyFileMessage'));
-      resetFileInput();
-      return false;
-    }
-
-    headers.value = result.value.headers;
-    parsedData.value = result.value.records;
-    resetFileInput();
-    return true;
+    return await action();
   } catch (error) {
     console.error('Error processing CSV file:', error);
     displayErrorMessage(t('import.errors.processingFailed'), String(error));
     resetFileInput();
-    return false;
+    return null;
   } finally {
-    if (loadingId) {
-      clearLoading(loadingId);
-    }
+    clearLoading(loadingId);
+    loadingId = undefined;
     isProcessing.value = false;
   }
+};
+
+const processFile = async (file: File, encoding: string) => {
+  if (!file) return null;
+
+  const parsedCsv = await runWithProcessingState(() => parseSelectedFile(file, encoding));
+  if (!parsedCsv) {
+    return null;
+  }
+
+  if (!hasImportableCsvContent(parsedCsv)) {
+    displayErrorMessage(t('import.errors.emptyFile'), t('import.errors.emptyFileMessage'));
+    resetFileInput();
+    return null;
+  }
+
+  storeParsedCsvContent(parsedCsv);
+  resetFileInput();
+  return parsedCsv;
 };
 
 const handleNavigate = (objectType: string, subType: string) => {
