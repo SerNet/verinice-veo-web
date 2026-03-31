@@ -128,21 +128,27 @@
               <div class="d-flex justify-end">
                 <v-tooltip v-for="btn in actions" :key="btn.id" location="start" :aria-label="btn.label">
                   <template #activator="{ props }">
-                    <v-btn
-                      :data-component-name="`object-overview-${btn.id}-button`"
-                      :data-veo-test="`object-overview-${btn.id}-button`"
-                      :disabled="!canManageUnitContent || btn.disabled"
-                      :icon="btn.icon"
-                      v-bind="props"
-                      variant="text"
-                      density="compact"
-                      size="x-small"
-                      class="mr-3"
-                      :aria-label="btn.label"
-                      @click="btn.action(item)"
-                    />
+                    <span v-bind="props">
+                      <v-btn
+                        :data-component-name="`object-overview-${btn.id}-button`"
+                        :data-veo-test="`object-overview-${btn.id}-button`"
+                        :disabled="!canManageUnitContent || btn.disabled"
+                        :icon="btn.icon"
+                        variant="text"
+                        density="compact"
+                        size="x-small"
+                        class="mr-3"
+                        :aria-label="btn.label"
+                        @click="btn.action(item)"
+                      />
+                    </span>
                   </template>
-                  {{ btn.label }}
+                  <span v-if="!canManageUnitContent">
+                    {{ globalT('permissions.missingPermissionTooltip') }}
+                  </span>
+                  <span v-else>
+                    {{ btn.label }}
+                  </span>
                 </v-tooltip>
               </div>
             </template>

@@ -45,16 +45,22 @@
           <div class="d-flex justify-end">
             <v-tooltip v-for="btn in actions" :key="btn.id" location="start">
               <template #activator="{ props: properties }">
-                <v-btn
-                  :disabled="!ability.can('manage', subject('units', { id: route.params.unit })) || btn.disabled"
-                  :icon="btn.icon"
-                  v-bind="properties"
-                  variant="text"
-                  :aria-label="btn.label"
-                  @click="btn.action(object)"
-                />
+                <span v-bind="properties">
+                  <v-btn
+                    :disabled="!canManageUnitContent || btn.disabled"
+                    :icon="btn.icon"
+                    variant="text"
+                    :aria-label="btn.label"
+                    @click="btn.action(object)"
+                  />
+                </span>
               </template>
-              {{ btn.label }}
+              <span v-if="!canManageUnitContent">
+                {{ globalT('permissions.missingPermissionTooltip') }}
+              </span>
+              <span v-else>
+                {{ btn.label }}
+              </span>
             </v-tooltip>
           </div>
         </template>
@@ -123,6 +129,7 @@ const route = useRoute();
 const { t: globalT, locale } = useI18n({ useScope: 'global' });
 const { tablePageSize } = useVeoUser();
 const { ability, subject } = useVeoPermissions();
+const canManageUnitContent = computed(() => ability.value.can('manage', subject('units', { id: route.params.unit })));
 
 const cardsPage = ref(1);
 const localSortBy = ref(props.sortBy);
