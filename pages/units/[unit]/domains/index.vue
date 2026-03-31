@@ -25,17 +25,31 @@
         <v-btn to="/units" size="large" class="my-6">
           {{ globalT('global.button.cancel') }}
         </v-btn>
-        <v-btn
-          data-veo-test="associate-domains"
-          color="primary"
-          size="large"
-          class="my-6"
-          :prepend-icon="mdiPlus"
-          :disabled="canAssociateDomains"
-          @click="updateUnit"
-        >
-          {{ t('associateDomains') }}
-        </v-btn>
+        <v-tooltip location="start" :aria-label="t('associateDomains')">
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                data-veo-test="associate-domains"
+                color="primary"
+                size="large"
+                class="my-6"
+                :prepend-icon="mdiPlus"
+                :disabled="!canAssociateDomains"
+                @click="onAssociateDomains"
+              >
+                {{ t('associateDomains') }}
+              </v-btn>
+            </span>
+          </template>
+          <template #default>
+            <span v-if="!canUpdateUnit">
+              {{ globalT('permissions.missingPermissionTooltip') }}
+            </span>
+            <span v-else>
+              {{ t('associateDomains') }}
+            </span>
+          </template>
+        </v-tooltip>
       </div>
     </template>
   </BasePage>
@@ -52,6 +66,7 @@ import type { IVeoUnit } from '~/composables/requests/useUnits';
 const { createLink } = useCreateLink();
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
+const { ability } = useVeoPermissions();
 
 // Data
 const { data: domains } = useDomains();
@@ -65,7 +80,8 @@ const selectedDomains = ref([]);
 const domainsToAssociate = computed(() =>
   selectedDomains.value.map((domain) => createLink('domains', domain.id) ?? [])
 );
-const canAssociateDomains = computed(() => !domainsToAssociate.value.length);
+const canUpdateUnit = computed(() => ability.value.can('update', 'unit'));
+const canAssociateDomains = computed(() => domainsToAssociate.value.length > 0 && canUpdateUnit.value);
 
 // Associate domains
 const unit = computed(
@@ -82,7 +98,7 @@ const messages = computed(() => ({
   loading: t('unit.isAssociatingDomains')
 }));
 
-const { mutate: updateUnit, isPending: isUpdatingUnit, isSuccess, isError } = useUnitMutation(unit);
+const { mutate: updateUnitMutation, isPending: isUpdatingUnit, isSuccess, isError } = useUnitMutation(unit);
 
 const router = useRouter();
 useUserFeedback({
@@ -92,6 +108,11 @@ useUserFeedback({
   messages,
   callback: () => router.back()
 });
+
+const onAssociateDomains = () => {
+  if (!canAssociateDomains.value) return;
+  updateUnitMutation();
+};
 </script>
 
 <i18n src="~/locales/base/pages/units-unit-domains.json"></i18n>

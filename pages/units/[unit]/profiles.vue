@@ -31,17 +31,31 @@
         <v-btn to="/units" size="large" class="my-6" data-veo-test="cancel-dialog">
           {{ globalT('global.button.cancel') }}
         </v-btn>
-        <v-btn
-          data-veo-test="apply-profile"
-          :disabled="!canApplyProfile"
-          color="primary"
-          :prepend-icon="mdiShapeOutline"
-          size="large"
-          class="my-6"
-          @click="initApplyProfile"
-        >
-          {{ t('applyProfiles') }}
-        </v-btn>
+        <v-tooltip location="start" :aria-label="t('applyProfiles')">
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                data-veo-test="apply-profile"
+                :disabled="!canApplyProfileAction"
+                color="primary"
+                :prepend-icon="mdiShapeOutline"
+                size="large"
+                class="my-6"
+                @click="initApplyProfile"
+              >
+                {{ t('applyProfiles') }}
+              </v-btn>
+            </span>
+          </template>
+          <template #default>
+            <span v-if="!canUpdateUnit">
+              {{ globalT('permissions.missingPermissionTooltip') }}
+            </span>
+            <span v-else>
+              {{ t('applyProfiles') }}
+            </span>
+          </template>
+        </v-tooltip>
       </div>
     </template>
 
@@ -91,6 +105,7 @@ import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { createLink } = useCreateLink();
+const { ability } = useVeoPermissions();
 
 // Data
 const { data: currentUnit } = useUnit();
@@ -98,7 +113,9 @@ const { profiles } = useProfiles();
 
 // State
 const selectedProfile = ref<TVeoProfile | null>(null);
+const canUpdateUnit = computed(() => ability.value.can('update', 'unit'));
 const canApplyProfile = computed(() => !!selectedProfile.value);
+const canApplyProfileAction = computed(() => canApplyProfile.value && canUpdateUnit.value);
 const wantsToAssociateNewDomain = ref(false);
 const isDialogOpen = ref(false);
 
@@ -176,6 +193,7 @@ useUserFeedback({
 });
 
 async function initApplyProfile() {
+  if (!canApplyProfileAction.value) return;
   if (!currentUnit.value?.domains) return;
 
   const unitKnowsDomain = currentUnit.value.domains.map((d) => d.id).includes(selectedProfile.value?.domainId ?? '');
