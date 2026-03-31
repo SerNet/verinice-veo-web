@@ -109,7 +109,7 @@
               density="compact"
               :direction="isMediumScreen ? 'vertical' : 'horizontal'"
             >
-              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiInformationOutline">
+              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiHelpCircleOutline">
                 <v-card-text>
                   <v-col cols="12">
                     <i18n-t keypath="firstSteps.tutorial" tag="span" scope="global">
@@ -121,7 +121,7 @@
                 </v-card-text>
               </v-timeline-item>
 
-              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiHelpCircleOutline">
+              <v-timeline-item dot-color="primary" size="x-large" :icon="mdiLibraryOutline">
                 <v-card-text>
                   <v-col cols="12">
                     <i18n-t keypath="firstSteps.documentation" tag="span" scope="global">
@@ -212,7 +212,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, mdiInformationOutline } from '@mdi/js';
+import { mdiHelpCircleOutline, mdiForumOutline, mdiSchoolOutline, mdiYoutubeTv, mdiLibraryOutline } from '@mdi/js';
 import { VeoAlertType } from '~/types/VeoTypes';
 import { useDisplay } from 'vuetify';
 
