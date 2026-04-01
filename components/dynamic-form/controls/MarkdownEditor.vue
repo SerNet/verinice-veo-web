@@ -27,9 +27,9 @@
       <v-btn
         v-if="!isCreateMode"
         :aria-label="editing ? t('breadcrumbs.editor') : t('global.button.cancel')"
-        :disabled="!canManageUnitContent"
-        color="primary"
         size="small"
+        :disabled="!isEditable"
+        color="primary"
         @click="enableEditing"
       >
         {{ !editing ? t('openEditor') : t('exitEditor') }}
@@ -85,10 +85,14 @@ const emit = defineEmits<{
   'update:model-value': [value: string | undefined];
 }>();
 function enableEditing() {
+  if (!isEditable.value) return;
   editing.value = !editing.value;
 }
 const canManageUnitContent = computed(() =>
   ability.value.can('manage', subject('units', { id: route.params.unit as string }))
 );
+const isEditable = computed(() => {
+  return !isCreateMode.value && !props.disabled && canManageUnitContent.value;
+});
 </script>
 <i18n src="~/locales/base/components/dynamic-form-controls-markdown-editor.json"></i18n>
