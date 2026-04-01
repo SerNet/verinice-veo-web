@@ -27,7 +27,7 @@
         @update:sort-by="updateSortBy"
       >
         <template #details>
-          <Details :name="object.displayName" :description="setObjectDetails(object, ['description'])" />
+          <ObjectCardDetails :name="object.displayName" :description="setObjectDetails(object, ['description'])" />
         </template>
         <template #prepend>
           <div class="d-flex justify-center prepend-icon ml-2">
@@ -65,11 +65,11 @@
           </div>
         </template>
         <template #bottom-left>
-          <Status :state="setObjectDetails(object, ['designator', 'abbreviation', 'status', 'source'])" />
+          <ObjectCardStatus :state="setObjectDetails(object, ['designator', 'abbreviation', 'status', 'source'])" />
         </template>
 
         <template #bottom-right>
-          <Status :state="setObjectDetails(object, ['updatedBy', 'updatedAt'])" />
+          <ObjectCardStatus :state="setObjectDetails(object, ['updatedBy', 'updatedAt'])" />
         </template>
       </BaseListItem>
     </template>
@@ -107,6 +107,8 @@
 <script setup lang="ts">
 import { mdiAccountEdit, mdiBookOpenPageVariantOutline } from '@mdi/js';
 import ObjectIcon from '~/components/object/Icon.vue';
+import ObjectCardDetails from '~/components/object/ObjectCardDetails.vue';
+import ObjectCardStatus from '~/components/object/ObjectCardStatus.vue';
 import VeoIcon from '~/components/VeoIcon.vue';
 import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import type { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
@@ -230,127 +232,6 @@ const getSourceIcon = (object: IVeoEntity) =>
 const getSourceTooltip = (object: IVeoEntity) =>
   object?.appliedCatalogItem ? globalT('breadcrumbs.catalog') : globalT('sourceTooltip');
 const getSourceColor = (object: IVeoEntity) => (object?.appliedCatalogItem ? 'blue' : undefined);
-
-const statusColor = (status: string) => {
-  switch (status) {
-    case 'Neu':
-      return 'red'; //'dark-grey';
-    case 'In Bearbeitung':
-      return 'orange';
-    case 'Zur Prüfung':
-      return 'blue';
-    case 'Freigegeben':
-      return 'green';
-    default:
-      return 'dark-grey';
-  }
-};
-
-const formatState = (state: object) => {
-  const keys = Object.keys(state);
-  if (keys.length > 0) {
-    const key = keys[0];
-    return `${key}: ${state[key]}`;
-  }
-  return '';
-};
-
-const Status = {
-  props: {
-    state: {
-      type: Object as PropType<Record<string, string>>,
-      required: true
-    }
-  },
-  data() {
-    return {
-      t: ''
-    };
-  },
-  computed: {
-    stateColors(this: Record<string, string>) {
-      return Object.fromEntries(Object.entries(this.state).map(([key, value]) => [key, statusColor(value)]));
-    },
-    formattedState(this: any): string {
-      return formatState(this.state); // Use `this` to access props
-    }
-  },
-  template: `
-
-    <div style="display: flex; justify-content: flex-end; width: 100%; gap: 4px">
-      <v-chip
-        v-for="(value, key) in state"
-        :key="key"
-        data-veo-test="item-card-text-state"
-        :style="{ color: stateColors[key] }"
-        size="small"
-        label>
-        {{ key }}: {{ value }}
-      </v-chip>
-    </div>
-
-  `
-};
-
-const Details = {
-  props: {
-    name: {
-      type: String,
-      required: true
-    },
-    description: {
-      type: Object as PropType<Record<string, any> | null>,
-      required: false,
-      default: () => ({})
-    },
-    meta: {
-      type: String,
-      required: false,
-      default: null
-    },
-    details: {
-      type: Object as PropType<Record<string, any> | null>, // Adjust based on expected structure
-      required: false,
-      default: null
-    },
-    sourceIcon: {
-      type: [String, Array] as PropType<string | string[]>,
-      required: false,
-      default: undefined
-    },
-    sourceTooltip: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    sourceColor: {
-      type: String,
-      required: false,
-      default: undefined
-    }
-  },
-  data() {
-    return {
-      t: ''
-    };
-  },
-  template: `
-    <v-card-title v-text="name"></v-card-title>
-    <v-card-subtitle v-if="meta" v-text="meta"></v-card-subtitle>
-    <v-card-text
-      v-if="description && Object.keys(description).length > 0"
-      data-veo-test="item-card-text" class="overflow-y-auto text-body-2">
-  <span
-    v-if="description && Object.values(description).every((value) => typeof value === 'string')"
-    v-for="(value, key) in description"
-    :key="key"
-    class="overflow-y-auto text-body-2 custom-pre"
-  >
-    <p style="white-space: pre-wrap">{{ value }}</p>
-      </span>
-    </v-card-text>
-  `
-};
 </script>
 
 <style scoped lang="scss">
