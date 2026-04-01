@@ -53,6 +53,15 @@
                 variant="solo-filled"
               />
             </v-col>
+            <v-col v-if="fullForm && objectSchema">
+              <DynamicFormEntrypoint
+                v-model="dynamicFormData"
+                :object-schema="objectSchema"
+                :form-schema="fullForm?.content"
+                :domain="currentDomain?.raw"
+                :translations="mergedTranslations"
+              />
+            </v-col>
           </v-row>
         </v-form>
       </div>
@@ -74,16 +83,19 @@
 <script setup lang="ts">
 import { mdiAccount, mdiPencil } from '@mdi/js';
 
-import { cloneDeep, isEqual } from 'lodash';
+import { cloneDeep, isEqual, merge } from 'lodash';
 
 import type { IVeoFetchPersonsInDomainParameters } from '~/composables/api/queryDefinitions/domains';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
-
+import DynamicFormEntrypoint from '~/components/dynamic-form/Entrypoint.vue';
 import { useCreateLink } from '~/composables/VeoObjectUtilities';
-
+import schemaQueryDefinitions from '~/composables/api/queryDefinitions/schemas';
+import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 const { mutateAsync: update } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
@@ -167,6 +179,53 @@ const controlName = computed(() => props.object?.controlImplementations[props.co
 const personNames = computed(() =>
   persons.value?.items?.map((person: any) => ({ title: person.name, value: person.id }))
 );
+const formsQueryParameters = computed(() => ({
+  domainId: route.params.domain as string
+}));
+const formsQueryEnabled = computed(() => !!currentDomain.value.id);
+
+// Fetch forms and schemas
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+  enabled: formsQueryEnabled,
+  placeholderData: []
+});
+const controlFormSchema = computed(() => {
+  if (!formSchemas.value || !props.object) return null;
+  return formSchemas.value.find(
+    (form) =>
+      form.modelType === props.object.type &&
+      form.subType === props.object.subType &&
+      form.context === 'controlImplementationDetails'
+  );
+});
+const objectTypePlural = computed(() => VeoElementTypePlurals[props.object.type]);
+const fetchSchemaQueryParameters = computed(() => ({
+  type: objectTypePlural.value as string,
+  domainId: currentDomain.value.id as string
+}));
+const fetchSchemaQueryEnabled = computed(() => !!currentDomain.value.id);
+const { data: objectSchema } = useQuery(schemaQueryDefinitions.queries.fetchCISchema, fetchSchemaQueryParameters, {
+  enabled: fetchSchemaQueryEnabled
+});
+// Form query parameters using selectedFormSchema
+const formQueryParameters = computed(() => ({
+  id: controlFormSchema.value?.id
+}));
+const formQueryEnabled = computed(() => !!controlFormSchema.value?.id);
+
+const { data: fullForm } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, {
+  enabled: formQueryEnabled
+});
+
+const translationQueryParameters = computed(() => ({
+  languages: [locale.value],
+  domain: currentDomain.value.id
+}));
+const { data: fetchedTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
+
+const mergedTranslations = computed(() =>
+  merge({}, fetchedTranslations.value?.lang || {}, fullForm.value?.translation || {})
+);
 
 const updateControl = async () => {
   try {
@@ -197,6 +256,13 @@ const description = computed({
   get: () => copy.value.controlImplementations[props.controlIndex]?.description || '',
   set: (newDescription) =>
     (copy.value.controlImplementations[props.controlIndex].description = newDescription === '' ? null : newDescription)
+});
+
+const dynamicFormData = computed({
+  get: () => copy.value.controlImplementations[props.controlIndex] || '',
+  set: (val) => {
+    copy.value.controlImplementations[props.controlIndex] = val === '' ? null : val;
+  }
 });
 
 watch(props, () => {
