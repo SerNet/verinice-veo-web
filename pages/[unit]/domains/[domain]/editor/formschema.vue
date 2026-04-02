@@ -242,10 +242,9 @@
     </template>
 
     <template #helpers>
-      <!-- @vue-ignore TODO #3066 $route does not exist -->
       <EditorFormSchemaWizardDialog
         :model-value="creationDialogVisible"
-        :domain-id="$route.params.domain as string"
+        :domain-id="route.params.domain as string"
         @done="onWizardFinished"
       />
       <EditorErrorDialog v-model="errorDialogVisible" v-bind="validationActions" :validation="schemaIsValid" />
@@ -259,7 +258,6 @@
         :form-schema-titles="formSchema?.name"
         @update:form-schema-titles="formSchema ? (formSchema.name = $event) : undefined"
       />
-      <!-- @vue-ignore TODO #3066 $route does not exist -->
       <EditorFormSchemaDetailsDialog
         v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
@@ -268,7 +266,7 @@
         v-model:context="formSchema.context"
         :object-schema="objectSchema"
         :form-schema="formSchema.name[editorLanguage]"
-        :domain-id="$route.params.domain as string"
+        :domain-id="route.params.domain as string"
       />
     </template>
   </LayoutPageWrapper>
