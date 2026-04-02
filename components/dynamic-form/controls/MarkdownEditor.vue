@@ -29,6 +29,7 @@
         :aria-label="editing ? t('breadcrumbs.editor') : t('global.button.cancel')"
         :disabled="!canManageUnitContent"
         color="primary"
+        size="small"
         @click="enableEditing"
       >
         {{ !editing ? t('openEditor') : t('exitEditor') }}
