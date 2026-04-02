@@ -53,16 +53,16 @@
                 variant="solo-filled"
               />
             </v-col>
-            <v-col v-if="fullForm && objectSchema">
-              <DynamicFormEntrypoint
-                v-model="dynamicFormData"
-                :object-schema="objectSchema"
-                :form-schema="fullForm?.content"
-                :domain="currentDomain?.raw"
-                :translations="mergedTranslations"
-              />
-            </v-col>
           </v-row>
+          <v-col v-if="fullForm && objectSchema">
+            <DynamicFormEntrypoint
+              v-model="dynamicFormData"
+              :object-schema="objectSchema"
+              :form-schema="fullForm?.content"
+              :domain="currentDomain?.raw"
+              :translations="mergedTranslations"
+            />
+          </v-col>
         </v-form>
       </div>
     </template>
