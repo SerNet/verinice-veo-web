@@ -1,8 +1,12 @@
 {
   "en": {
-    "clear": "Clear content"
+    "clear": "Clear content",
+    "openEditor": "Open Editor",
+    "exitEditor": "Exit Editor"
   },
   "de": {
-    "clear": "Inhalt löschen"
+    "clear": "Inhalt löschen",
+    "openEditor": "Editor öffnen",
+    "exitEditor": "Editor verlassen"
   }
 }

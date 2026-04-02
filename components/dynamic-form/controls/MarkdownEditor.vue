@@ -21,18 +21,18 @@
     class="vf-markdown-editor vf-form-element"
     :data-attribute-name="last(objectSchemaPointer.split('/'))"
   >
-    <div v-if="options.label" class="subtitle-1 d-flex justify-space-between mb-2">
+    <div v-if="options.label" class="subtitle-1 d-flex justify-space-between mb-4">
       {{ options.label }}
 
       <v-btn
         v-if="!isCreateMode"
-        :icon="editing ? mdiClose : mdiPencilOutline"
         :aria-label="editing ? t('breadcrumbs.editor') : t('global.button.cancel')"
-        size="small"
         :disabled="!canManageUnitContent"
         color="primary"
         @click="enableEditing"
-      />
+      >
+        {{ !editing ? t('openEditor') : t('exitEditor') }}
+      </v-btn>
     </div>
 
     <ToastUIViewer v-if="!isCreateMode && !editing" :model-value="modelValue" />
@@ -47,7 +47,6 @@
 
 <script lang="ts">
 import type { IVeoFormsElementDefinition } from '../types';
-import { mdiClose, mdiPencilOutline } from '@mdi/js';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-markdown-editor',
