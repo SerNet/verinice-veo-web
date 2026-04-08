@@ -30,32 +30,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         <v-btn to="/units" size="large" class="my-6" data-veo-test="cancel-dialog">
           {{ globalT('global.button.cancel') }}
         </v-btn>
-        <v-tooltip location="start" :aria-label="t('updateUnitDetails')">
-          <template #activator="{ props }">
-            <span v-bind="props">
-              <!-- @vue-ignore TODO #3066 not assignable -->
-              <v-btn
-                data-veo-test="associate-domains"
-                color="primary"
-                size="large"
-                class="my-6"
-                :disabled="!canUpdateAction"
-                :prepend-icon="mdiUpdate"
-                @click="onUpdateUnit"
-              >
-                {{ t('updateUnitDetails') }}
-              </v-btn>
-            </span>
-          </template>
-          <template #default>
-            <span v-if="!canUpdateUnit">
-              {{ globalT('permissions.missingPermissionTooltip') }}
-            </span>
-            <span v-else>
-              {{ t('updateUnitDetails') }}
-            </span>
-          </template>
-        </v-tooltip>
+        <!-- @vue-ignore TODO #3066 not assignable -->
+        <v-btn
+          data-veo-test="associate-domains"
+          color="primary"
+          size="large"
+          class="my-6"
+          :disabled="!canUpdate"
+          :prepend-icon="mdiUpdate"
+          @click="updateUnit"
+        >
+          {{ t('updateUnitDetails') }}
+        </v-btn>
       </div>
     </template>
   </BasePage>
@@ -71,7 +57,6 @@ import type { UnitDetails } from '~/components/unit/Details.vue';
 
 const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
-const { ability } = useVeoPermissions();
 
 // Set initial unit data
 const { data: currentUnit, isLoading: isLoadingCurrentUnit } = useUnit();
@@ -105,7 +90,7 @@ const messages = computed(() => ({
   loading: t('unit.isUpdatingDetails')
 }));
 
-const { mutate: updateUnitMutation, isPending: isUpdatingUnit, isSuccess, isError } = useUnitMutation(unit);
+const { mutate: updateUnit, isPending: isUpdatingUnit, isSuccess, isError } = useUnitMutation(unit);
 
 useUserFeedback({
   isLoading: isUpdatingUnit,
@@ -116,16 +101,9 @@ useUserFeedback({
 });
 
 // Component state
-const canUpdateUnit = computed(() => ability.value.can('update', 'unit'));
 const canUpdate = computed(() => {
   return !!unitDetails.value?.name?.trim() && !isLoadingCurrentUnit.value && !isUpdatingUnit.value;
 });
-const canUpdateAction = computed(() => canUpdate.value && canUpdateUnit.value);
-
-const onUpdateUnit = () => {
-  if (!canUpdateAction.value) return;
-  updateUnitMutation();
-};
 </script>
 
 <i18n src="~/locales/base/pages/units-unit-details.json"></i18n>

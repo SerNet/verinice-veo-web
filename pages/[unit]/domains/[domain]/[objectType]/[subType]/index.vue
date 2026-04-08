@@ -35,47 +35,36 @@
         <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
           <v-tooltip location="start" :aria-label="t('deleteObjects')">
             <template #activator="{ props }">
-              <span v-if="selectedItems.length > 0" v-bind="props">
-                <v-btn
-                  :icon="mdiTrashCanOutline"
-                  variant="text"
-                  class="trash-btn"
-                  density="compact"
-                  size="small"
-                  data-component-name="bulk-delete-button"
-                  :disabled="!canManageUnitContent"
-                  @click="onBulkDelete"
-                />
-              </span>
+              <v-btn
+                v-if="selectedItems.length > 0"
+                :icon="mdiTrashCanOutline"
+                variant="text"
+                class="trash-btn"
+                v-bind="props"
+                density="compact"
+                size="small"
+                data-component-name="bulk-delete-button"
+                @click="onBulkDelete"
+              />
             </template>
-            <span v-if="!canManageUnitContent">
-              {{ globalT('permissions.missingPermissionTooltip') }}
-            </span>
-            <span v-else>
-              {{ t('deleteObjects') }}
-            </span>
+            {{ t('deleteObjects') }}
           </v-tooltip>
           <v-tooltip location="start" :aria-label="t('assignObjects')">
             <template #activator="{ props }">
-              <span v-if="selectedItems.length > 0" v-bind="props">
-                <v-btn
-                  :disabled="!canBulkAssign"
-                  :icon="mdiPuzzleOutline"
-                  variant="text"
-                  class="assign-btn"
-                  density="compact"
-                  size="small"
-                  data-component-name="bulk-assign-button"
-                  @click="onBulkAssign"
-                />
-              </span>
+              <v-btn
+                v-if="selectedItems.length > 0"
+                :disabled="!domains || domains.length <= 1"
+                :icon="mdiPuzzleOutline"
+                variant="text"
+                class="assign-btn"
+                v-bind="props"
+                density="compact"
+                size="small"
+                data-component-name="bulk-assign-button"
+                @click="onBulkAssign"
+              />
             </template>
-            <span v-if="!canManageUnitContent">
-              {{ globalT('permissions.missingPermissionTooltip') }}
-            </span>
-            <span v-else>
-              {{ t('assignObjects') }}
-            </span>
+            {{ t('assignObjects') }}
           </v-tooltip>
         </div>
         <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
@@ -578,7 +567,6 @@ const { ability, subject } = useVeoPermissions();
 const canManageUnitContent = computed(() =>
   ability.value.can('manage', subject('units', { id: route.params.unit as string }))
 );
-const canBulkAssign = computed(() => canManageUnitContent.value && !!domains.value && domains.value.length > 1);
 
 const actions = computed(() => {
   const cannotManageUnits = !canManageUnitContent.value;
@@ -691,13 +679,11 @@ const tableKey = ref(0);
 const selectedItems = ref<IVeoEntity[]>([]);
 const showDeleteDialog = ref(false);
 const onBulkDelete = () => {
-  if (!canManageUnitContent.value) return;
   selectedOperationItems.value = selectedItems.value;
   showDeleteDialog.value = true;
 };
 
 const onBulkAssign = () => {
-  if (!canBulkAssign.value) return;
   selectedOperationItems.value = selectedItems.value;
   objectAssignDialogVisible.value = true;
 };
