@@ -43,9 +43,7 @@
               @click="selectedRevision = index"
             >
               <v-list-item-title>
-                {{ t('version') }}
-                <b>{{ version.changeNumber + 1 }}</b>
-                : {{ new Date(version.time).toLocaleString(locale) }}
+                {{ new Date(version.time).toLocaleString(locale) }}
               </v-list-item-title>
               <v-list-item-subtitle>
                 {{ t('by') }}
