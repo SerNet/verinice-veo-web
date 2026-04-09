@@ -232,7 +232,11 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
           ...sortBy(
             subTypes.map(({ subType: subType }) => {
               const displayName =
-                domain.value ?
+                (
+                  domain.value?.elementTypeDefinitions?.[modelType]?.translations?.[locale.value]?.[
+                    `${modelType}_${subType}_plural`
+                  ]
+                ) ?
                   domain.value.elementTypeDefinitions[modelType].translations[locale.value][
                     `${modelType}_${subType}_plural`
                   ]
@@ -250,7 +254,10 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                     subType: subType
                   }
                 },
-                sorting: domain.value ? domain.value.elementTypeDefinitions[modelType].subTypes[subType].sortKey : 0
+                sorting:
+                  domain.value?.elementTypeDefinitions?.[modelType]?.subTypes?.[subType]?.sortKey ?
+                    domain.value.elementTypeDefinitions[modelType].subTypes[subType].sortKey
+                  : 0
               };
             }),
             'sorting'

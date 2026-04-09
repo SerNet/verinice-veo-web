@@ -212,7 +212,7 @@ const chartData = computed<IChartValue[]>(() =>
   sortedSubTypes.value.map(([subType, subTypeData]) => ({
     totalEntries: Object.values(subTypeData).reduce((previosValue, currentValue) => previosValue + currentValue, 0),
     labels: [
-      elementTypeDefinition.value ?
+      elementTypeDefinition.value?.translations?.[locale.value]?.[`${props.objectType}_${subType}_plural`] ?
         elementTypeDefinition.value.translations[locale.value][`${props.objectType}_${subType}_plural`]
       : subType
     ],

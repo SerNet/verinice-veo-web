@@ -1,8 +1,10 @@
 {
   "en": {
-    "noDescription": "No description available."
+    "noDescription": "No description available.",
+    "noName": "No name available"
   },
   "de": {
-    "noDescription": "Keine Beschreibung verfügbar."
+    "noDescription": "Keine Beschreibung verfügbar.",
+    "noName": "Kein Name verfügbar"
   }
 }

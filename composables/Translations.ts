@@ -113,14 +113,15 @@ export function useSubTypeTranslation(_elementType?: Ref<string>, _subType?: Ref
   );
 
   return {
-    subTypeTranslation: computed(() =>
-      translateSubType({
-        domainSchema: domainSchema.value,
-        locale: locale.value,
-        subType: subType.value,
-        elementType: elementType.value,
-        plural: _plural
-      })
+    subTypeTranslation: computed(
+      () =>
+        translateSubType({
+          domainSchema: domainSchema.value,
+          locale: locale.value,
+          subType: subType.value,
+          elementType: elementType.value,
+          plural: _plural
+        }) ?? subType.value
     )
   };
 }

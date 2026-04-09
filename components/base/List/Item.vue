@@ -104,7 +104,7 @@ const ItemDetails: TInlineComponent = {
   data: () => ({ t, locale }),
   computed: {
     itemName(): string {
-      return getItemField(this.item, 'name');
+      return getItemField(this.item, 'name') ?? this.item?.name ?? t('noName');
     },
     itemDescription(): string {
       return getItemField(this.item, 'description') ?? t('noDescription');
