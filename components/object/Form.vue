@@ -183,7 +183,15 @@ export default defineComponent({
       default: false
     }
   },
-  emits: ['update:model-value', 'update:valid', 'create-dpia', 'link-dpia', 'update:object-meta-data', 'show-revision'],
+  emits: [
+    'update:model-value',
+    'update:valid',
+    'create-dpia',
+    'link-dpia',
+    'update:object-meta-data',
+    'show-revision',
+    'show-form-and-messages'
+  ],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { t: $t } = useI18n({ useScope: 'global' });
@@ -549,6 +557,19 @@ export default defineComponent({
     const onShowRevision = (revision: IVeoObjectHistoryEntry, isRevision: boolean) => {
       emit('show-revision', revision, isRevision);
     };
+
+    // Check if there are any warnings or errors
+    watch(
+      () => messages.value,
+      (newMessages) => {
+        const hasErrors = newMessages.some((m) => m.type === 'warning' || m.type === 'error');
+        if (hasErrors && selectedSideBarAction.value !== 'messages') {
+          selectedSideBarAction.value = 'messages';
+          emit('show-form-and-messages');
+        }
+      },
+      { immediate: true }
+    );
 
     return {
       localAdditionalContext,
