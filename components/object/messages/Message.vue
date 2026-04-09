@@ -1,23 +1,23 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2023  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
   <v-list-item :class="`veo-object-message--${message.type}`" role="option">
-    <v-list-item-title class="text-wrap">
+    <v-list-item-title class="veo-object-message--text">
       {{ message.text }}
     </v-list-item-title>
     <v-list-item-action v-if="message.actions?.length">
@@ -57,6 +57,11 @@ const { t } = useI18n();
 
 .veo-object-message {
   border-left: 4px solid transparent;
+}
+
+.veo-object-message--text {
+  white-space: pre-line;
+  line-break: normal;
 }
 
 .veo-object-message--success {
