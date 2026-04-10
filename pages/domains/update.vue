@@ -60,7 +60,7 @@
               :disabled="!!conflictedElementsByUnit?.length"
             >
               <span v-if="update.latestPossibleUpdate?.id" class="d-flex flex-column gap-4">
-                <span class="bg-surface-light d-flex gap-2 p-4">
+                <span class="bg-surface-light d-flex gap-2 p-4 pointer-cursor">
                   {{}}
                   <v-card-text
                     >{{ t('availableVersion') }}: {{ update.latestPossibleUpdate?.templateVersion ?? '' }}</v-card-text
@@ -97,7 +97,7 @@
               <h2 class="small-caps page-title text-h2">Conflicts</h2>
               <v-text> </v-text>
               <v-card class="mx-auto">
-                <v-list :items="items"></v-list>
+                <v-list :items="items"> </v-list>
               </v-card>
             </template>
           </v-col>
@@ -183,7 +183,9 @@ function buildListOfConflicts(data: ConflictedElementsByUnit[], domainId: string
         value: counter++,
         props: {
           to: `/${group.unit.id}/domains/${domainId}/${VeoElementTypePlurals[element.type]}/element.subType/${element.id}`,
-          class: 'text-primary text-decoration-underline'
+          class: 'text-primary text-decoration-underline pointer-cursor',
+          target: '_blank',
+          rel: 'noopener noreferrer'
         }
       });
     });
