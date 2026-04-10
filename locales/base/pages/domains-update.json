@@ -9,8 +9,8 @@
     "currentVersion": "Current version",
     "availableVersion": "New version",
     "updateUnits": "Update units",
-    "conflictsTitle": "Conflicts detected",
-    "conflictsText": "Please resolve all conflicts before retrying the update."
+    "conflictsText": "Please resolve all conflicts before retrying the update.",
+    "conflicts": "Conflicts"
   },
   "de": {
     "noDescription": "Keine Beschreibung verfügbar",
@@ -22,7 +22,7 @@
     "currentVersion": "Aktuelle Version",
     "availableVersion": "Neue Version",
     "updateUnits": "Units aktualisieren",
-    "conflictsTitle": "Konflikte erkannt",
-    "conflictsText": "Bitte lösen Sie alle Konflikte, bevor Sie das Update erneut versuchen."
+    "conflictsText": "Bitte lösen Sie alle Konflikte, bevor Sie das Update erneut versuchen.",
+    "conflicts": "Konflikte"
   }
 }

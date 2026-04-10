@@ -52,58 +52,68 @@
         </template>
 
         <template v-else>
-          <v-col v-for="update in domainUpdates" :key="update.id">
-            <v-card
-              :title="update?.domain?.translations?.[locale]?.name ?? update?.domain?.name ?? ''"
-              :subtitle="`${t('currentVersion')}: ${update?.domain?.templateVersion ?? ''}`"
-              :text="update?.domain?.translations?.[locale]?.description ?? t('noDescription')"
-              :disabled="!!conflictedElementsByUnit?.length"
-            >
-              <span v-if="update.latestPossibleUpdate?.id" class="d-flex flex-column gap-4">
-                <span class="bg-surface-light d-flex gap-2 p-4 pointer-cursor">
-                  {{}}
-                  <v-card-text
-                    >{{ t('availableVersion') }}: {{ update.latestPossibleUpdate?.templateVersion ?? '' }}</v-card-text
-                  >
-                  <v-card-actions>
-                    <v-btn
-                      :prepend-icon="mdiArrowTopRightThin"
-                      variant="outlined"
-                      size="small"
-                      @click="
-                        () => {
-                          assignIds(update.domain.id, update.latestPossibleUpdate.id);
-                          updateDomain();
-                        }
-                      "
-                      >{{ t('updateUnits') }}</v-btn
-                    >
-                  </v-card-actions>
-                </span>
-              </span>
-            </v-card>
-            <v-spacer class="my-4" />
-
-            <template v-if="conflictedElementsByUnit?.length">
+          <!-- Show if there are conflicts, otherwise show the updates -->
+          <template v-if="conflictedElementsByUnit?.length">
+            <v-col cols="12">
+              <h2 class="small-caps page-title text-h2">{{ t('conflicts') }}</h2>
+            </v-col>
+            <v-col cols="12">
               <v-alert
                 :icon="mdiAlertCircleOutline"
-                :title="t('conflictsTitle')"
+                :title="currentlyUpdatingDomainName"
                 :text="t('conflictsText')"
                 variant="tonal"
                 color="error"
                 elevation="2"
               ></v-alert>
               <v-spacer class="my-4" />
-              <h2 class="small-caps page-title text-h2">Conflicts</h2>
               <v-text> </v-text>
               <v-card class="mx-auto">
                 <v-list :items="items"> </v-list>
               </v-card>
-            </template>
-          </v-col>
+            </v-col>
+          </template>
+          <!-- If there are no conflicts, show the available updates -->
+          <template v-else>
+            <v-col cols="12">
+              <h2 class="small-caps page-title text-h2">Updates</h2>
+            </v-col>
+            <v-col v-for="update in domainUpdates" :key="update.id" cols="12">
+              <v-card
+                :title="update?.domain?.translations?.[locale]?.name ?? update?.domain?.name ?? ''"
+                :subtitle="`${t('currentVersion')}: ${update?.domain?.templateVersion ?? ''}`"
+                :text="update?.domain?.translations?.[locale]?.description ?? t('noDescription')"
+                :disabled="!!conflictedElementsByUnit?.length"
+              >
+                <span v-if="update.latestPossibleUpdate?.id" class="d-flex flex-column gap-4">
+                  <span class="bg-surface-light d-flex gap-2 p-4 pointer-cursor">
+                    {{}}
+                    <v-card-text
+                      >{{ t('availableVersion') }}:
+                      {{ update.latestPossibleUpdate?.templateVersion ?? '' }}</v-card-text
+                    >
+                    <v-card-actions>
+                      <v-btn
+                        :prepend-icon="mdiArrowTopRightThin"
+                        variant="outlined"
+                        size="small"
+                        @click="
+                          () => {
+                            assignIds(update.domain.id, update.latestPossibleUpdate.id);
+                            updateDomain();
+                          }
+                        "
+                        >{{ t('updateUnits') }}</v-btn
+                      >
+                    </v-card-actions>
+                  </span>
+                </span>
+              </v-card>
+              <v-spacer class="my-4" />
+            </v-col>
+          </template>
         </template>
       </v-row>
-      <v-row v-if="conflictedElementsByUnit?.length"> </v-row>
     </BaseContainer>
   </BasePage>
 </template>
@@ -131,6 +141,11 @@ type ConflictedElementsByUnit = {
 const { locale, t } = useI18n();
 
 const domainId = ref<string>();
+const currentlyUpdatingDomainName = computed(() => {
+  if (!domainId.value || !domainUpdates.value) return;
+  const update = domainUpdates.value?.find((u) => u.domain.id === domainId.value);
+  return update?.domain?.translations?.[locale.value]?.name ?? update?.domain?.name ?? '';
+});
 const templateId = ref<string>();
 const conflictedElementsByUnit = ref<ConflictedElementsByUnit[]>([]);
 
