@@ -59,28 +59,27 @@
               :text="update?.domain?.translations?.[locale]?.description ?? t('noDescription')"
               :disabled="!!conflictedElementsByUnit?.length"
             >
-              <span class="">
-                <!-- makte this `latest available version` -->
-                <template v-for="updateItem in update.allUpdates" :key="updateItem.id">
-                  <span class="bg-surface-light d-flex gap-2 p-4">
-                    {{}}
-                    <v-card-text>{{ t('availableVersion') }}: {{ updateItem.templateVersion }}</v-card-text>
-                    <v-card-actions>
-                      <v-btn
-                        :prepend-icon="mdiArrowTopRightThin"
-                        variant="outlined"
-                        size="small"
-                        @click="
-                          () => {
-                            assignIds(update.domain.id, updateItem.id);
-                            updateDomain();
-                          }
-                        "
-                        >{{ t('updateUnits') }}</v-btn
-                      >
-                    </v-card-actions>
-                  </span>
-                </template>
+              <span v-if="update.latestPossibleUpdate?.id" class="d-flex flex-column gap-4">
+                <span class="bg-surface-light d-flex gap-2 p-4">
+                  {{}}
+                  <v-card-text
+                    >{{ t('availableVersion') }}: {{ update.latestPossibleUpdate?.templateVersion ?? '' }}</v-card-text
+                  >
+                  <v-card-actions>
+                    <v-btn
+                      :prepend-icon="mdiArrowTopRightThin"
+                      variant="outlined"
+                      size="small"
+                      @click="
+                        () => {
+                          assignIds(update.domain.id, update.latestPossibleUpdate.id);
+                          updateDomain();
+                        }
+                      "
+                      >{{ t('updateUnits') }}</v-btn
+                    >
+                  </v-card-actions>
+                </span>
               </span>
             </v-card>
             <v-spacer class="my-4" />
