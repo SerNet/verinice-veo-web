@@ -110,7 +110,6 @@
                 no-close-button
                 flat
                 class="mb-4"
-                :title="upperFirst(t('version', { version: version + 1 }))"
                 :text="t('oldVersionAlert')"
               />
             </template>
