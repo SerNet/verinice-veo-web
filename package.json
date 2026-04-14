@@ -94,7 +94,7 @@
     "lint-staged": "16.4.0",
     "mocha-junit-reporter": "2.2.1",
     "nuxt": "4.4.2",
-    "prettier": "3.8.1",
+    "prettier": "3.8.2",
     "sass": "1.99.0",
     "typescript-eslint": "8.58.1",
     "vite-tsconfig-paths": "6.1.1",
