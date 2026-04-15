@@ -563,7 +563,7 @@ export default defineComponent({
       () => messages.value,
       (newMessages) => {
         const hasErrors = newMessages.some((m) => m.type === 'warning' || m.type === 'error');
-        if (hasErrors && selectedSideBarAction.value !== 'messages') {
+        if (hasErrors && !selectedSideBarAction.value) {
           selectedSideBarAction.value = 'messages';
           emit('show-form-and-messages');
         }
