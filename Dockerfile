@@ -37,7 +37,7 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/
 
 RUN npm run generate && node externalize-scripts.mjs
 
-FROM nginx:1.29@sha256:7f0adca1fc6c29c8dc49a2e90037a10ba20dc266baaed0988e9fb4d0d8b85ba0 AS release
+FROM nginx:1.30@sha256:0c3a604353135ac13f3a991e2a98c9958af7b8c0b7251ce1590e0c5ff5e3692c AS release
 
 COPY --from=builder /usr/src/app/.output/public /usr/src/app
 RUN chown -R 0 /usr/src/app && chmod -R g+rwX /usr/src/app
