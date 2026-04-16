@@ -23,7 +23,7 @@
     @update:model-value="emit('update:model-value', $event)"
   >
     <template #default>
-      <v-form v-model="formIsValid" class="mx-4" @submit="doSave()">
+      <v-form v-model="formIsValid" class="mx-4" @submit="saveForm()">
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12">
             <v-text-field
@@ -31,7 +31,7 @@
               required
               flat
               :rules="[requiredRule]"
-              :label="globalT('editor.formschema.create.title')"
+              :label="`${globalT('editor.formschema.create.title')} *`"
             />
           </v-col>
         </v-row>
@@ -64,13 +64,7 @@
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12">
-            <v-select
-              v-model="form.subType"
-              :label="globalT('editor.formschema.subtype')"
-              :items="subTypeOptions"
-              :rules="[requiredRule]"
-              flat
-            />
+            <v-select v-model="form.subType" :label="globalT('editor.formschema.subtype')" :items="subTypes" flat />
           </v-col>
         </v-row>
         <small>{{ globalT('global.input.requiredfields') }}</small>
@@ -82,48 +76,48 @@
         {{ globalT('global.button.cancel') }}
       </v-btn>
       <v-spacer />
-      <v-btn color="primary" :disabled="!formIsValid" @click="doSave()">
+      <v-btn color="primary" :disabled="!formIsValid" @click="saveForm()">
         {{ globalT('global.button.save') }}
       </v-btn>
     </template>
   </BaseDialog>
 </template>
+
 <script setup lang="ts">
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 
-const props = withDefaults(
-  defineProps<{
-    modelValue: boolean;
-    objectSchema: IVeoDomainSpecificObjectSchema;
-    formSchema: string;
-    subType: string | null;
-    sorting: string | null;
-    context: string | null;
-    domainId: string;
-  }>(),
-  {
-    formSchema: '',
-    subType: null,
-    sorting: null,
-    context: null
-  }
-);
+interface Props {
+  modelValue: boolean;
+  domainId: string;
+  objectSchema: IVeoDomainSpecificObjectSchema;
+  formSchema: string;
+  sorting: string | null;
+  context: string | null;
+  subType: string | null;
+}
+const props = withDefaults(defineProps<Props>(), {
+  formSchema: '',
+  sorting: null,
+  context: null,
+  subType: null
+});
 
 const emit = defineEmits<{
   (e: 'update:model-value', newValue: boolean): void;
   (e: 'update-schema-name', newValue: string): void;
-  (e: 'update:sub-type' | 'update:sorting' | 'update:schema-context', newValue: string | null): void;
+  (e: 'update:sorting' | 'update:schema-context' | 'update:sub-type', newValue: string | null): void;
 }>();
 
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
 
 const formIsValid = ref(true);
+
 const form = ref({
   formSchema: props.formSchema,
-  subType: props.subType,
   sorting: props.sorting,
-  context: props.context
+  context: props.context,
+  subType: props.subType
 });
 
 const contextLabels: Record<string, string> = {
@@ -136,17 +130,17 @@ const contextLabels: Record<string, string> = {
 
 const contextLabel = computed(() => contextLabels[form.value.context] ?? '');
 
+const subTypes = computed(() =>
+  (props.objectSchema?.properties?.subType?.enum || []).map((subType: string) => ({
+    title: subType,
+    value: subType
+  }))
+);
+
 watch(
   () => props.formSchema,
   (val: string) => {
     form.value.formSchema = val;
-  }
-);
-
-watch(
-  () => props.subType,
-  (val: string | null) => {
-    form.value.subType = val as string;
   }
 );
 
@@ -157,18 +151,11 @@ watch(
   }
 );
 
-const subTypeOptions = computed(() =>
-  (props.objectSchema?.properties?.subType?.enum || []).map((subType: string) => ({
-    title: subType,
-    value: subType
-  }))
-);
-
-function doSave() {
-  emit('update:sub-type', form.value.subType);
+function saveForm() {
+  emit('update-schema-name', form.value.formSchema);
   emit('update:sorting', form.value.sorting ?? null);
   emit('update:schema-context', form.value.context);
-  emit('update-schema-name', form.value.formSchema);
+  emit('update:sub-type', form.value.subType);
   emit('update:model-value', false);
 }
 </script>
