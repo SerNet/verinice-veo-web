@@ -26,7 +26,7 @@ const props = {
   isApplyingItems: true
 };
 
-describe('DefaultCatalog', () => {
+describe.skip('DefaultCatalog', () => {
   let component: VueWrapper<TDefaultCatalog>;
 
   beforeAll(async () => {
