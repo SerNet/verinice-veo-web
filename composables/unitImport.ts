@@ -76,7 +76,9 @@ export function extractUnitImportErrorMessages(error: unknown): string[] {
 
     if (typeof value === 'object') {
       const entries = value as Record<string, unknown>;
-      ['message', 'messages', 'errors', 'warnings', 'detail', 'details', 'violations'].forEach((key) => visit(entries[key]));
+      ['message', 'messages', 'errors', 'warnings', 'detail', 'details', 'violations'].forEach((key) =>
+        visit(entries[key])
+      );
       Object.values(entries).forEach(visit);
     }
   };

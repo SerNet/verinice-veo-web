@@ -78,6 +78,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
               <input
                 ref="fileInputRef"
+                data-veo-test="unit-import-file-input"
                 type="file"
                 accept=".json,.zip"
                 style="display: none"
