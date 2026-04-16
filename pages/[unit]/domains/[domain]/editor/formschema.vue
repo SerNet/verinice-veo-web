@@ -261,12 +261,12 @@
       <EditorFormSchemaDetailsDialog
         v-if="formSchema && objectSchema"
         v-model="detailDialogVisible"
-        v-model:sub-type="formSchema.subType"
+        v-model:schema-name="formSchema.name[editorLanguage]"
         v-model:sorting="formSchema.sorting"
         v-model:context="formSchema.context"
-        :object-schema="objectSchema"
-        :form-schema="formSchema.name[editorLanguage]"
+        v-model:sub-type="formSchema.subType"
         :domain-id="route.params.domain as string"
+        :object-schema="objectSchema"
       />
     </template>
   </LayoutPageWrapper>

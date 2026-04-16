@@ -27,11 +27,11 @@
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12">
             <v-text-field
-              v-model="form.formSchema"
-              required
-              flat
-              :rules="[requiredRule]"
+              v-model="form.schemaName"
               :label="`${globalT('editor.formschema.create.title')} *`"
+              :rules="[requiredRule]"
+              flat
+              required
             />
           </v-col>
         </v-row>
@@ -44,27 +44,41 @@
           <v-col cols="12">
             <v-text-field
               :model-value="contextLabel"
-              flat
               :label="globalT('editor.formschema.create.context')"
-              readonly
               disabled
-            />
-          </v-col>
-        </v-row>
-        <v-row no-gutters class="align-center mt-4">
-          <v-col cols="12">
-            <v-text-field
-              :model-value="objectSchema.title"
               flat
-              :label="globalT('editor.formschema.create.type')"
               readonly
-              disabled
             />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12">
-            <v-select v-model="form.subType" :label="globalT('editor.formschema.subtype')" :items="subTypes" flat />
+            <v-select
+              v-if="objectSchema.title === 'control'"
+              :model-value="objectType"
+              :label="globalT('editor.formschema.create.type')"
+              :items="RISK_AFFECTED"
+              flat
+            />
+            <v-text-field
+              v-else
+              :model-value="objectType"
+              :label="globalT('editor.formschema.create.type')"
+              disabled
+              flat
+              readonly
+            />
+          </v-col>
+        </v-row>
+        <v-row no-gutters class="align-center mt-4">
+          <v-col cols="12">
+            <v-select
+              v-model="form.subType"
+              :label="globalT('editor.formschema.subtype')"
+              :items="subTypes"
+              disabled
+              readonly
+            />
           </v-col>
         </v-row>
         <small>{{ globalT('global.input.requiredfields') }}</small>
@@ -84,19 +98,19 @@
 </template>
 
 <script setup lang="ts">
-import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
+import { type IVeoDomainSpecificObjectSchema, RISK_AFFECTED } from '~/types/VeoTypes';
 
 interface Props {
   modelValue: boolean;
   domainId: string;
   objectSchema: IVeoDomainSpecificObjectSchema;
-  formSchema: string;
+  schemaName: string;
   sorting: string | null;
   context: string | null;
   subType: string | null;
 }
 const props = withDefaults(defineProps<Props>(), {
-  formSchema: '',
+  schemaName: '',
   sorting: null,
   context: null,
   subType: null
@@ -104,22 +118,24 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: 'update:model-value', newValue: boolean): void;
-  (e: 'update-schema-name', newValue: string): void;
+  (e: 'update:schema-name', newValue: string): void;
   (e: 'update:sorting' | 'update:schema-context' | 'update:sub-type', newValue: string | null): void;
 }>();
 
+const { locale } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
 
 const formIsValid = ref(true);
 
 const form = ref({
-  formSchema: props.formSchema,
+  schemaName: props.schemaName,
   sorting: props.sorting,
   context: props.context,
   subType: props.subType
 });
 
+// Context
 const contextLabels: Record<string, string> = {
   elementDetails: globalT('editor.formschema.create.context.elementDetails'),
   requirementImplementationControlView: globalT(
@@ -130,17 +146,30 @@ const contextLabels: Record<string, string> = {
 
 const contextLabel = computed(() => contextLabels[form.value.context] ?? '');
 
+// ObjectType
+const objectType: ComputedRef<string> = computed(() => {
+  if (props.context === 'controlImplementationDetails' || props.context === 'requirementImplementationControlView') {
+    return RISK_AFFECTED.filter((type) => type === props.objectSchema.title || '');
+  }
+  return props.objectSchema.title;
+});
+
+// SubTypes
+const { data: translations } = useTranslations({ domain: props.domainId as string });
+const filteredTranslations: Record<string, string> = translations.value?.lang?.[locale.value] || {};
+
 const subTypes = computed(() =>
   (props.objectSchema?.properties?.subType?.enum || []).map((subType: string) => ({
-    title: subType,
+    title: filteredTranslations?.[`${props.objectSchema?.title}_${subType}_singular`] || subType,
     value: subType
   }))
 );
 
+// Runtime changes
 watch(
-  () => props.formSchema,
+  () => props.schemaName,
   (val: string) => {
-    form.value.formSchema = val;
+    form.value.schemaName = val;
   }
 );
 
@@ -152,10 +181,10 @@ watch(
 );
 
 function saveForm() {
-  emit('update-schema-name', form.value.formSchema);
+  emit('update:model-value', false);
+  emit('update:schema-name', form.value.schemaName);
   emit('update:sorting', form.value.sorting ?? null);
   emit('update:schema-context', form.value.context);
   emit('update:sub-type', form.value.subType);
-  emit('update:model-value', false);
 }
 </script>
