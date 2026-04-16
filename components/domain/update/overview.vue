@@ -10,6 +10,7 @@
           variant="tonal"
           color="warning"
           elevation="2"
+          data-veo-test="domain-update-recommended-alert"
         ></v-alert>
       </v-col>
     </v-row>
@@ -29,6 +30,7 @@
             variant="outlined"
             color="info"
             elevation="2"
+            data-veo-test="no-domain-updates-alert"
           ></v-alert>
         </v-col>
       </template>
@@ -36,7 +38,7 @@
       <template v-else>
         <!-- Show if there are conflicts, otherwise show the updates -->
         <template v-if="conflictedElementsByUnit?.length">
-          <v-col cols="12">
+          <v-col cols="12" data-veo-test="domain-update-conflicts-header">
             <h2 class="small-caps page-title text-h2">{{ t('conflicts') }}</h2>
           </v-col>
           <v-col cols="12">
@@ -47,17 +49,18 @@
               variant="tonal"
               color="error"
               elevation="2"
+              data-veo-test="domain-update-conflicts-alert"
             ></v-alert>
             <v-spacer class="my-4" />
             <v-card class="mx-auto">
-              <v-list :items="items"> </v-list>
+              <v-list :items="items" data-veo-test="domain-update-conflicts-list"> </v-list>
             </v-card>
           </v-col>
         </template>
         <!-- If there are no conflicts, show the available updates -->
         <template v-else>
           <v-col cols="12">
-            <h2 class="small-caps page-title text-h2">Updates</h2>
+            <h2 class="small-caps page-title text-h2" data-veo-test="domain-updates-header">Updates</h2>
           </v-col>
           <v-col v-for="update in domainUpdates" :key="update.id" cols="12">
             <v-card
@@ -65,6 +68,7 @@
               :subtitle="`${t('currentVersion')}: ${update?.domain?.templateVersion ?? ''}`"
               :text="update?.domain?.translations?.[locale]?.description ?? t('noDescription')"
               :disabled="!!conflictedElementsByUnit?.length"
+              data-veo-test="domain-update-card"
             >
               <span v-if="update.latestPossibleUpdate?.id" class="d-flex flex-column gap-4">
                 <span class="bg-surface-light d-flex gap-2 p-4 pointer-cursor">
@@ -76,6 +80,7 @@
                       :prepend-icon="mdiArrowTopRightThin"
                       variant="outlined"
                       size="small"
+                      data-veo-test="domain-update-button"
                       @click="
                         () => {
                           assignIds(update.domain.id, update.latestPossibleUpdate.id);
