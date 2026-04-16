@@ -29,10 +29,41 @@
     </BaseContainer>
     <!-- When no unit is available, hide the button here and show it in another place -->
     <template #footer>
-      <v-tooltip v-if="activeUnits !== 0" location="start" :aria-label="t('createUnit')">
-        <template #activator="{ props }">
-          <div class="d-flex">
-            <div class="ml-auto my-6" v-bind="props">
+      <div v-if="activeUnits !== 0" class="d-flex justify-end ga-3 flex-wrap my-6">
+        <v-tooltip location="start" :aria-label="t('importUnit')">
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                data-veo-test="import-unit-btn"
+                data-component-name="import-unit-btn"
+                to="/units/import"
+                :prepend-icon="mdiTrayArrowUp"
+                :disabled="maxUnitsExceeded || !canCreateUnit"
+                color="primary"
+                size="large"
+                :aria-label="t('importUnit')"
+              >
+                {{ t('importUnit') }}
+              </v-btn>
+            </span>
+          </template>
+
+          <template #default>
+            <span v-if="maxUnitsExceeded">
+              {{ t('exceeded') }}
+            </span>
+            <span v-else-if="!canCreateUnit">
+              {{ t('permissions.missingPermissionTooltip') }}
+            </span>
+            <span v-else>
+              {{ t('importUnitHint') }}
+            </span>
+          </template>
+        </v-tooltip>
+
+        <v-tooltip location="start" :aria-label="t('createUnit')">
+          <template #activator="{ props }">
+            <span v-bind="props">
               <v-btn
                 data-veo-test="create-unit-btn"
                 data-component-name="create-unit-btn"
@@ -42,24 +73,25 @@
                 color="primary"
                 size="large"
                 :aria-label="t('createUnit')"
-                >{{ t('createUnit') }}
+              >
+                {{ t('createUnit') }}
               </v-btn>
-            </div>
-          </div>
-        </template>
+            </span>
+          </template>
 
-        <template #default>
-          <span v-if="maxUnitsExceeded">
-            {{ t('exceeded') }}
-          </span>
-          <span v-if="!canCreateUnit">
-            {{ t('permissions.missingPermissionTooltip') }}
-          </span>
-          <span v-else>
-            {{ t('createUnit') }}
-          </span>
-        </template>
-      </v-tooltip>
+          <template #default>
+            <span v-if="maxUnitsExceeded">
+              {{ t('exceeded') }}
+            </span>
+            <span v-else-if="!canCreateUnit">
+              {{ t('permissions.missingPermissionTooltip') }}
+            </span>
+            <span v-else>
+              {{ t('createUnit') }}
+            </span>
+          </template>
+        </v-tooltip>
+      </div>
     </template>
   </BasePage>
 </template>
@@ -69,7 +101,7 @@ export const ROUTE_NAME = 'units';
 </script>
 
 <script setup lang="ts">
-import { mdiPlus } from '@mdi/js';
+import { mdiPlus, mdiTrayArrowUp } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 

@@ -58,6 +58,28 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           {{ !ability.can('create', 'unit') ? t('cannotCreateUnitHint') : t('noUnitsText') }}
         </h3>
         <div class="mt-4 d-flex flex-wrap ga-2 justify-center">
+          <v-tooltip location="bottom" :aria-label="t('importUnit')">
+            <template #activator="{ props }">
+              <v-btn
+                v-bind="props"
+                data-veo-test="import-unit-btn"
+                :disabled="!ability.can('create', 'unit')"
+                data-component-name="import-unit-btn"
+                to="/units/import"
+                :prepend-icon="mdiTrayArrowUp"
+                size="large"
+                :aria-label="t('importUnit')"
+              >
+                {{ t('importUnit') }}
+              </v-btn>
+            </template>
+            <template #default>
+              <span>
+                {{ t('importUnitHint') }}
+              </span>
+            </template>
+          </v-tooltip>
+
           <v-tooltip location="bottom" :aria-label="t('createUnit')">
             <template #activator="{ props }">
               <v-btn
@@ -89,7 +111,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 data-component-name="first-step-btn"
                 :prepend-icon="mdiFootPrint"
                 to="/welcome"
-                color="gray"
                 size="large"
                 :aria-label="t('firstStep')"
               >
@@ -117,6 +138,7 @@ import {
   mdiDeleteOutline,
   mdiPencilOutline,
   mdiPlus,
+  mdiTrayArrowUp,
   mdiPuzzle,
   mdiShapeOutline,
   mdiFootPrint
