@@ -1,0 +1,102 @@
+{
+  "en": {
+    "acceptedFormats": "Supported formats: JSON exports and ZIP archives containing a JSON export.",
+    "backendMessagesTitle": "Import could not be completed",
+    "descriptionLabel": "Description",
+    "details": "Details",
+    "dropzoneTitle": "Drop your unit export here",
+    "editStep": "Edit (optional)",
+    "explanation": {
+      "edit": "You can adjust the imported unit name and description before starting the import.",
+      "import": "Upload an exported unit as JSON or ZIP file. The import data will be loaded from the file automatically.",
+      "summary": "Review the imported data before you create the unit."
+    },
+    "fileReadError": "The selected file could not be read.",
+    "fileReadErrorTitle": "File could not be processed",
+    "goToUnitAdmin": "Back to Unit administration",
+    "hint": {
+      "edit": "The imported name and description are prefilled from the file.",
+      "import": "The import keeps the unit content from the export. If the backend rejects the data, the reason will be shown here.",
+      "summary": "Please verify the details before finalizing the import."
+    },
+    "importedFile": "Imported file",
+    "importStats": "Import contents",
+    "importStatsValue": "{0} domains, {1} elements",
+    "importSuccess": "Unit was successfully imported.",
+    "importErrorBody": "The unit could not be imported.",
+    "importErrorTitle": "Import failed",
+    "importUnit": "Import unit",
+    "importUnitStep": "Import unit",
+    "invalidImportStructure": "The selected file does not contain a valid unit export.",
+    "isImportingUnit": "Importing unit...",
+    "localErrorsTitle": "The selected file cannot be imported yet",
+    "localWarningsTitle": "Please review these import hints",
+    "noDescription": "No description available",
+    "noJsonInZip": "The selected ZIP file does not contain a JSON export.",
+    "notAvailable": "Not available",
+    "or": "or",
+    "pageTitle": "Import unit",
+    "reviewAndFinalize": "Review & finalize",
+    "selectFile": "Select file",
+    "selectedFile": "Selected file",
+    "summary": "Summary",
+    "unitNameLabel": "Unit name",
+    "validation": {
+      "missingDomains": "The export does not contain any domains.",
+      "missingElements": "The export does not contain any elements.",
+      "missingName": "The export does not contain a unit name. Please provide one in the next step.",
+      "missingRisks": "The export does not contain any risks.",
+      "missingUnit": "The export does not contain unit metadata."
+    }
+  },
+  "de": {
+    "acceptedFormats": "Unterstützte Formate: JSON-Exporte und ZIP-Archive mit einem JSON-Export.",
+    "backendMessagesTitle": "Import konnte nicht abgeschlossen werden",
+    "descriptionLabel": "Beschreibung",
+    "details": "Details",
+    "dropzoneTitle": "Unit-Export hier ablegen",
+    "editStep": "Bearbeiten (optional)",
+    "explanation": {
+      "edit": "Sie können den importierten Unit-Namen und die Beschreibung optional jetzt anpassen.",
+      "import": "Laden Sie eine exportierte Unit als JSON- oder ZIP-Datei hoch. Die Importdaten werden automatisch aus der Datei geladen.",
+      "summary": "Prüfen Sie die importierten Daten, bevor Sie die Unit anlegen."
+    },
+    "fileReadError": "Die ausgewählte Datei konnte nicht gelesen werden.",
+    "fileReadErrorTitle": "Datei konnte nicht verarbeitet werden",
+    "goToUnitAdmin": "Zurück zur Unit-Verwaltung",
+    "hint": {
+      "edit": "Name und Beschreibung der Unit werden aus der Datei übernommen.",
+      "import": "Der Import übernimmt die Unit-Inhalte aus dem Export. Falls das Backend die Daten ablehnt, wird der Grund hier angezeigt.",
+      "summary": "Bitte überprüfen Sie die Angaben, bevor Sie den Import abschließen."
+    },
+    "importedFile": "Importierte Datei",
+    "importStats": "Importinhalt",
+    "importStatsValue": "{0} Domänen, {1} Elemente",
+    "importSuccess": "Die Unit wurde erfolgreich importiert.",
+    "importErrorBody": "Die Unit konnte nicht importiert werden.",
+    "importErrorTitle": "Import fehlgeschlagen",
+    "importUnit": "Unit importieren",
+    "importUnitStep": "Unit importieren",
+    "invalidImportStructure": "Die ausgewählte Datei enthält keinen gültigen Unit-Export.",
+    "isImportingUnit": "Importiere Unit...",
+    "localErrorsTitle": "Die ausgewählte Datei kann noch nicht importiert werden",
+    "localWarningsTitle": "Bitte prüfen Sie diese Import-Hinweise",
+    "noDescription": "Keine Beschreibung vorhanden",
+    "noJsonInZip": "Die ausgewählte ZIP-Datei enthält keinen JSON-Export.",
+    "notAvailable": "Nicht verfügbar",
+    "or": "oder",
+    "pageTitle": "Unit importieren",
+    "reviewAndFinalize": "Prüfen & abschließen",
+    "selectFile": "Datei auswählen",
+    "selectedFile": "Ausgewählte Datei",
+    "summary": "Zusammenfassung",
+    "unitNameLabel": "Unit-Name",
+    "validation": {
+      "missingDomains": "Der Export enthält keine Domänen.",
+      "missingElements": "Der Export enthält keine Elemente.",
+      "missingName": "Der Export enthält keinen Unit-Namen. Bitte geben Sie ihn im nächsten Schritt an.",
+      "missingRisks": "Der Export enthält keine Risiken.",
+      "missingUnit": "Der Export enthält keine Unit-Metadaten."
+    }
+  }
+}

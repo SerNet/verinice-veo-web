@@ -5,6 +5,8 @@
     "deleteUnit": "Delete Unit",
     "editUnit": "Edit Unit",
     "exceeded": "You have reached the maximum amount of Units",
+    "importUnit": "Import Unit",
+    "importUnitHint": "Import an exported unit from a file",
     "of": "of",
     "permissions": {
       "missingPermissionTooltip": "Missing permission for this action."
@@ -16,6 +18,8 @@
     "deleteUnit": "Unit löschen",
     "editUnit": "Unit bearbeiten",
     "exceeded": "Sie haben die maximale Anzahl an Units erreicht",
+    "importUnit": "Unit importieren",
+    "importUnitHint": "Eine exportierte Unit aus einer Datei importieren",
     "of": "von",
     "permissions": {
       "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
