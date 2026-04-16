@@ -20,10 +20,12 @@
     <h2 class="text-h2 px-4 pt-1">
       {{ t('messages') }}
     </h2>
-    <div v-for="(messagesBySeverity, severity) of categorizedMessages" :key="severity">
-      <span class="font-weight-medium text-body-1 px-4"> Information ({{ messagesBySeverity.length }}) </span>
+    <div v-for="severity in categorizedMessages" :key="severity.type">
+      <span class="font-weight-medium text-body-1 px-4">
+        {{ t(severity.type, severity.count) }} ({{ severity.count }})
+      </span>
       <v-list role="listbox" :aria-label="t('messages')">
-        <ObjectMessagesMessage v-for="message of messagesBySeverity" :key="message.key" :message="message" />
+        <ObjectMessagesMessage v-for="message of severity.messages" :key="message.key" :message="message" />
       </v-list>
     </div>
   </div>
@@ -43,8 +45,6 @@ export type Message = {
 <script setup lang="ts">
 import { useVeoAlerts } from '~/composables/VeoAlert';
 
-const SEVERITIES = ['error', 'warning', 'info', 'success'];
-
 const props = withDefaults(
   defineProps<{
     messages: Message[];
@@ -57,17 +57,24 @@ const props = withDefaults(
 const { t } = useI18n();
 const { displayInfoMessage } = useVeoAlerts();
 
+const SEVERITIES = [
+  { type: 'error', label: t('error') },
+  { type: 'warning', label: t('warning') },
+  { type: 'info', label: t('info') },
+  { type: 'success', label: t('success') }
+];
+
 const categorizedMessages = computed(() => {
-  const toReturn: Record<string, Message[]> = {};
-  for (const message of props.messages) {
-    if (SEVERITIES.includes(message.type)) {
-      if (!toReturn[message.type]) {
-        toReturn[message.type] = [];
-      }
-      toReturn[message.type].push(message);
-    }
-  }
-  return toReturn;
+  return SEVERITIES.map(({ type, label }) => {
+    const messages = props.messages.filter((m) => m.type === type);
+
+    return {
+      type,
+      label,
+      messages,
+      count: messages.length
+    };
+  }).filter((group) => group.count > 0);
 });
 
 watch(
