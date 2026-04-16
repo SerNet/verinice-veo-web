@@ -32,6 +32,15 @@ export interface IVeoUnit extends IVeoBaseObject {
   domains: IVeoLink[];
 }
 
+export type TVeoUnitImportPayload = {
+  unit?: Partial<IVeoUnit> & {
+    domains?: IVeoLink[];
+  };
+  domains?: Array<Record<string, any>>;
+  elements?: Array<Record<string, any>>;
+  [key: string]: any;
+};
+
 export type TVeoUnit = {
   id: string;
   name: string;
@@ -168,6 +177,34 @@ export function useCreateUnitAndMaybeApplyProfile(
 
   const query = useMutation({
     mutationFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['units'] });
+    }
+  });
+
+  return {
+    ...query,
+    isPending: computed(() => getIsPending(query.status.value))
+  };
+}
+
+export function useImportUnit(unitImport: Ref<TVeoUnitImportPayload | undefined>) {
+  const queryClient = useQueryClient();
+
+  const query = useMutation({
+    mutationFn: async () => {
+      if (!unitImport.value) {
+        throw new Error('No unit import payload provided');
+      }
+
+      return mutate({
+        path: '/units/import',
+        options: {
+          method: 'POST',
+          body: unitImport.value
+        }
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['units'] });
     }
