@@ -126,7 +126,6 @@ const currentlyUpdatingDomainName = computed(() => {
   return update?.domain?.translations?.[locale.value]?.name ?? update?.domain?.name ?? '';
 });
 const templateId = ref<string>();
-const conflictedElementsByUnit = ref<ConflictedElementsByUnit[]>([]);
 
 const {
   mutate: updateDomain,
@@ -136,11 +135,14 @@ const {
   error: updateError
 } = useDomainUpdate(domainId, templateId);
 
+const conflictedElementsByUnit = computed<ConflictedElementsByUnit[]>(() => {
+  if (!updateError.value || (updateError.value as UpdateError).status !== 409) return [];
+  return (updateError.value as UpdateError).data?.conflictedElementsByUnit ?? [];
+});
+
 const { data: domainUpdates, isLoading: isLoadingDomainUpdates } = useFetchDomainUpdate();
 
 const items = computed(() => buildListOfConflicts(conflictedElementsByUnit.value, domainId.value));
-
-watch(updateError, () => handleUpdateError(updateError.value as UpdateError));
 
 useUserFeedback({
   isLoading: computed(() => getIsPending(status.value)),
@@ -148,11 +150,6 @@ useUserFeedback({
   isError: isDomainUpdateError,
   hasErrorMessage: computed(() => (updateError as Ref<UpdateError>).value?.status != 409)
 });
-
-function handleUpdateError(error: UpdateError) {
-  if (error?.status != 409) return;
-  conflictedElementsByUnit.value = error.data?.conflictedElementsByUnit;
-}
 
 function assignIds(_domainId: string, _targetVersion: string) {
   domainId.value = _domainId;
