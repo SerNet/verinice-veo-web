@@ -46,6 +46,8 @@ export interface IVeoCreateReportParameters {
     outputType: string;
     timeZone: string;
     language: string;
+    domain: string;
+    unit: string;
     targets: {
       type: string;
       id: string;
