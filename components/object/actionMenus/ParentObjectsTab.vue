@@ -83,7 +83,7 @@ const selectObjectTypeDialog = ref({ visible: false });
 const selectedObjectTypeForDialog = ref<string | undefined>(undefined);
 
 const domainId = computed(() => route.params.domain as string);
-const isComposite = computed(() => props.object?.type != 'scope');
+const isComposite = computed(() => !!props.object && props.object.type !== 'scope');
 
 const actions = computed(() => [
   {
