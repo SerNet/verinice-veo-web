@@ -223,10 +223,26 @@ const translationQueryParameters = computed(() => ({
 }));
 const { data: fetchedTranslations } = useQuery(translationQueryDefinitions.queries.fetch, translationQueryParameters);
 
-const mergedTranslations = computed(() =>
-  merge({}, fetchedTranslations.value?.lang || {}, fullForm.value?.translation || {})
-);
+const controlImplementationDefinitionTranslations = computed(() => {
+  const objectType = fullForm.value?.modelType;
 
+  if (!objectType) {
+    return {};
+  }
+
+  return (
+    currentDomain.value?.raw?.elementTypeDefinitions?.[objectType]?.controlImplementationDefinition?.translations ?? {}
+  );
+});
+
+const mergedTranslations = computed(() =>
+  merge(
+    {},
+    fetchedTranslations.value?.lang || {},
+    controlImplementationDefinitionTranslations.value || {},
+    fullForm.value?.translation || {}
+  )
+);
 const updateControl = async () => {
   try {
     await update({
