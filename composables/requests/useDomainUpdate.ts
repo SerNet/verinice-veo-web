@@ -30,7 +30,9 @@ export function useDomainUpdate(domainId: Ref<string>, templateId: Ref<string>) 
     },
 
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['domainUpdates'] });
+      ['units', 'domains', 'domainUpdates'].forEach((key) => {
+        queryClient.invalidateQueries({ queryKey: [key] });
+      });
     }
   });
 }
