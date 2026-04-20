@@ -47,7 +47,7 @@
       </BaseAlert>
 
       <BaseCard class="mt-4">
-        <v-form>
+        <v-form @submit.prevent="(e) => deleteUnit()">
           <v-text-field
             v-model="unitName"
             autofocus
