@@ -163,6 +163,8 @@ const { ability } = useVeoPermissions();
 const { xs } = useDisplay();
 const theme = useTheme();
 
+const canUpdateUnits = computed(() => ability.value.can('update', 'unit'));
+
 // Layout stuff
 const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, {
   serializer: StorageSerializers.boolean
@@ -439,7 +441,9 @@ const domainsNavEntry = computed<INavItem>(() => ({
   icon: mdiPuzzleOutline,
   to: '/domains/update',
   classes: 'mb-4 justify-content-center',
-  badge: { content: numberOfDomainUpdates.value, color: 'info' }
+  badge: { content: numberOfDomainUpdates.value, color: 'info' },
+  disabled: !canUpdateUnits.value,
+  tooltip: canUpdateUnits.value ? '' : t('permissions.missingPermissionTooltip')
 }));
 
 const items = computed<INavItem[]>(() => [
