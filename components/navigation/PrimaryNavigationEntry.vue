@@ -16,39 +16,41 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-list-item
-    :to="to"
-    :active="active"
-    active-class="veo-active-list-nav-item"
-    class="veo-list-nav-item"
-    color="color"
-    :class="_classes"
-    :data-component-name="componentName"
-    :data-veo-test="componentName"
-    density="compact"
-    :target="openInNewtab ? '_blank' : undefined"
-    tabindex="0"
-    autofocus
-    role="menuitem"
-    @click.stop="onClick"
-  >
-    <template v-if="icon" #prepend>
-      <v-tooltip location="end" :disabled="!miniVariant" :aria-label="`${name}`">
-        <template #activator="{ props: tooltip }">
-          <div v-bind="tooltip">
-            <v-icon v-if="icon" :icon="icon" start />
-          </div>
-        </template>
-        <span>{{ name }}</span>
-      </v-tooltip>
+  <v-tooltip location="end" :disabled="!tooltip" :aria-label="`${name}`">
+    <template #activator="{ props: tooltipProps }">
+      <span v-bind="tooltipProps" :tabindex="disabled ? 0 : -1">
+        <v-list-item
+          :to="to"
+          :active="active"
+          active-class="veo-active-list-nav-item"
+          class="veo-list-nav-item"
+          color="color"
+          :class="_classes"
+          :data-component-name="componentName"
+          :data-veo-test="componentName"
+          density="compact"
+          :target="openInNewtab ? '_blank' : undefined"
+          tabindex="0"
+          autofocus
+          role="menuitem"
+          @click.stop="onClick"
+        >
+          <template v-if="icon" #prepend>
+            <div>
+              <v-icon v-if="icon" :icon="icon" start />
+            </div>
+          </template>
+          <v-list-item-title class="veo-primary-navigation-title" data-veo-test="nav-entry-title">
+            {{ name }}
+          </v-list-item-title>
+          <template v-if="badge" #append>
+            <v-badge location="top" :color="badge.color" :content="badge.content" class="pb-1 px-4" />
+          </template>
+        </v-list-item>
+      </span>
     </template>
-    <v-list-item-title class="veo-primary-navigation-title" data-veo-test="nav-entry-title">
-      {{ name }}
-    </v-list-item-title>
-    <template v-if="badge" #append>
-      <v-badge location="top" :color="badge.color" :content="badge.content" class="pb-1 px-4" />
-    </template>
-  </v-list-item>
+    <span>{{ name }}</span>
+  </v-tooltip>
 </template>
 
 <script setup lang="ts">
