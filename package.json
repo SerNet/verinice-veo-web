@@ -86,7 +86,7 @@
     "cypress-axe": "1.7.0",
     "cypress-multi-reporters": "2.0.5",
     "cypress-parallel-extended": "2.1.8",
-    "eslint": "10.2.0",
+    "eslint": "10.2.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-vue": "10.8.0",
     "force-graph": "1.51.4",
