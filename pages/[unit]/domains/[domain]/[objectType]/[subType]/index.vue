@@ -33,38 +33,45 @@
 
       <div class="actions py-0 my-0">
         <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
-          <v-tooltip location="start" :aria-label="t('deleteObjects')">
+          <v-tooltip
+            location="start"
+            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects')"
+          >
             <template #activator="{ props }">
-              <v-btn
-                v-if="selectedItems.length > 0"
-                :icon="mdiTrashCanOutline"
-                variant="text"
-                class="trash-btn"
-                v-bind="props"
-                density="compact"
-                size="small"
-                data-component-name="bulk-delete-button"
-                @click="onBulkDelete"
-              />
+              <span v-if="selectedItems.length > 0" v-bind="props">
+                <v-btn
+                  :icon="mdiTrashCanOutline"
+                  variant="text"
+                  class="trash-btn"
+                  density="compact"
+                  size="small"
+                  data-component-name="bulk-delete-button"
+                  :disabled="!canManageUnitContent"
+                  @click="onBulkDelete"
+                />
+              </span>
             </template>
-            {{ t('deleteObjects') }}
+            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects') }}
           </v-tooltip>
-          <v-tooltip location="start" :aria-label="t('assignObjects')">
+          <v-tooltip
+            location="start"
+            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects')"
+          >
             <template #activator="{ props }">
-              <v-btn
-                v-if="selectedItems.length > 0"
-                :disabled="!domains || domains.length <= 1"
-                :icon="mdiPuzzleOutline"
-                variant="text"
-                class="assign-btn"
-                v-bind="props"
-                density="compact"
-                size="small"
-                data-component-name="bulk-assign-button"
-                @click="onBulkAssign"
-              />
+              <span v-if="selectedItems.length > 0" v-bind="props">
+                <v-btn
+                  :disabled="!canManageUnitContent || !domains || domains.length <= 1"
+                  :icon="mdiPuzzleOutline"
+                  variant="text"
+                  class="assign-btn"
+                  density="compact"
+                  size="small"
+                  data-component-name="bulk-assign-button"
+                  @click="onBulkAssign"
+                />
+              </span>
             </template>
-            {{ t('assignObjects') }}
+            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects') }}
           </v-tooltip>
         </div>
         <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
@@ -115,23 +122,33 @@
           >
             <template #actions="{ item }">
               <div class="d-flex justify-end">
-                <v-tooltip v-for="btn in actions" :key="btn.id" location="start" :aria-label="btn.label">
+                <v-tooltip
+                  v-for="btn in actions"
+                  :key="btn.id"
+                  location="start"
+                  :aria-label="
+                    !canManageUnitContent || btn.disabled ? t('permissions.missingPermissionTooltip') : btn.label
+                  "
+                >
                   <template #activator="{ props }">
-                    <v-btn
-                      :data-component-name="`object-overview-${btn.id}-button`"
-                      :data-veo-test="`object-overview-${btn.id}-button`"
-                      :disabled="!canManageUnitContent || btn.disabled"
-                      :icon="btn.icon"
-                      v-bind="props"
-                      variant="text"
-                      density="compact"
-                      size="x-small"
-                      class="mr-3"
-                      :aria-label="btn.label"
-                      @click="btn.action(item)"
-                    />
+                    <span v-bind="props">
+                      <v-btn
+                        :data-component-name="`object-overview-${btn.id}-button`"
+                        :data-veo-test="`object-overview-${btn.id}-button`"
+                        :disabled="!canManageUnitContent || btn.disabled"
+                        :icon="btn.icon"
+                        variant="text"
+                        density="compact"
+                        size="x-small"
+                        class="mr-3"
+                        :aria-label="
+                          !canManageUnitContent || btn.disabled ? t('permissions.missingPermissionTooltip') : btn.label
+                        "
+                        @click="btn.action(item)"
+                      />
+                    </span>
                   </template>
-                  {{ btn.label }}
+                  {{ !canManageUnitContent || btn.disabled ? t('permissions.missingPermissionTooltip') : btn.label }}
                 </v-tooltip>
               </div>
             </template>
@@ -174,42 +191,59 @@
         :display-success-message="true"
         :sub-type="filter.subType || selectedSubtypeForCreateDialog"
       />
-      <v-tooltip v-if="filter.objectType" location="start" :aria-label="t('createObject', [createObjectLabel])">
+      <v-tooltip
+        v-if="filter.objectType"
+        location="start"
+        :aria-label="
+          !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])
+        "
+      >
         <template #activator="{ props }">
-          <UtilNestedMenu v-if="!filter.subType" location="bottom right" :items="nestedActions">
-            <template #activator="{ props: menuProps }">
-              <v-btn
-                v-bind="mergeProps($attrs, menuProps, props)"
-                color="primary"
-                flat
-                class="veo-primary-action-fab"
-                data-component-name="create-object-button"
-                data-veo-test="create-object-button"
-                size="large"
-                :disabled="!nestedActions.length || !canManageUnitContent"
-                :aria-label="t('createObject', [createObjectLabel])"
-                :icon="mdiPlus"
-              />
-            </template>
-          </UtilNestedMenu>
-          <v-btn
-            v-else
-            color="primary"
-            flat
-            :disabled="!canManageUnitContent"
-            :icon="mdiPlus"
-            class="veo-primary-action-fab"
-            data-component-name="create-object-button"
-            data-veo-test="create-object-button"
-            v-bind="props"
-            :aria-label="t('createObject', [createObjectLabel])"
-            size="large"
-            @click="createObjectDialogVisible = true"
-          />
+          <span v-bind="props">
+            <UtilNestedMenu v-if="!filter.subType" location="bottom right" :items="nestedActions">
+              <template #activator="{ props: menuProps }">
+                <v-btn
+                  v-bind="mergeProps($attrs, menuProps)"
+                  color="primary"
+                  flat
+                  class="veo-primary-action-fab"
+                  data-component-name="create-object-button"
+                  data-veo-test="create-object-button"
+                  size="large"
+                  :disabled="!nestedActions.length || !canManageUnitContent"
+                  :aria-label="
+                    !canManageUnitContent ?
+                      t('permissions.missingPermissionTooltip')
+                    : t('createObject', [createObjectLabel])
+                  "
+                  :icon="mdiPlus"
+                />
+              </template>
+            </UtilNestedMenu>
+            <v-btn
+              v-else
+              color="primary"
+              flat
+              :disabled="!canManageUnitContent"
+              :icon="mdiPlus"
+              class="veo-primary-action-fab"
+              data-component-name="create-object-button"
+              data-veo-test="create-object-button"
+              :aria-label="
+                !canManageUnitContent ?
+                  t('permissions.missingPermissionTooltip')
+                : t('createObject', [createObjectLabel])
+              "
+              size="large"
+              @click="createObjectDialogVisible = true"
+            />
+          </span>
           <div style="height: 76px"></div>
         </template>
         <template #default>
-          <span>{{ t('createObject', [createObjectLabel]) }}</span>
+          <span>{{
+            !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])
+          }}</span>
         </template>
       </v-tooltip>
     </template>
@@ -679,11 +713,15 @@ const tableKey = ref(0);
 const selectedItems = ref<IVeoEntity[]>([]);
 const showDeleteDialog = ref(false);
 const onBulkDelete = () => {
+  if (!canManageUnitContent.value) return;
+
   selectedOperationItems.value = selectedItems.value;
   showDeleteDialog.value = true;
 };
 
 const onBulkAssign = () => {
+  if (!canManageUnitContent.value) return;
+
   selectedOperationItems.value = selectedItems.value;
   objectAssignDialogVisible.value = true;
 };
