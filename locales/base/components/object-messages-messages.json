@@ -1,13 +1,13 @@
 {
   "en": {
     "error": "Error | Errors",
-    "info": "Information",
+    "info": "Hint | Hints",
     "messages": "Messages",
     "warning": "Warning | Warnings"
   },
   "de": {
     "error": "Fehler",
-    "info": "Information | Informationen",
+    "info": "Hinweis | Hinweise",
     "messages": "Meldungen",
     "warning": "Warnung | Warnungen"
   }
