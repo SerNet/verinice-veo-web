@@ -60,8 +60,7 @@ const { displayInfoMessage } = useVeoAlerts();
 const SEVERITIES = [
   { type: 'error', label: t('error') },
   { type: 'warning', label: t('warning') },
-  { type: 'info', label: t('info') },
-  { type: 'success', label: t('success') }
+  { type: 'info', label: t('info') }
 ];
 
 const categorizedMessages = computed(() => {

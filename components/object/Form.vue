@@ -336,7 +336,7 @@ export default defineComponent({
 
         return {
           key: `${decision}_${decisionResultAsString}`,
-          type: result.value === false ? 'success' : 'info',
+          type: 'info',
           text:
             `${decisionName}: ${decisionResultStrings[decisionResultAsString]}` +
             (result.decisiveRule !== undefined ? ` (${decisiveRuleDescription})` : '')
