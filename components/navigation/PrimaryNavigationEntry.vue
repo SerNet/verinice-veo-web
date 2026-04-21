@@ -20,7 +20,8 @@
     <template #activator="{ props: tooltipProps }">
       <span v-bind="tooltipProps" :tabindex="disabled ? 0 : -1">
         <v-list-item
-          :to="to"
+          :to="disabled ? undefined : to"
+          :disabled="disabled"
           :active="active"
           active-class="veo-active-list-nav-item"
           class="veo-list-nav-item"
@@ -49,7 +50,7 @@
         </v-list-item>
       </span>
     </template>
-    <span>{{ name }}</span>
+    <span>{{ tooltip }}</span>
   </v-tooltip>
 </template>
 
@@ -64,6 +65,8 @@ const props = withDefaults(
       level?: number;
       miniVariant: boolean;
       badge?: { content: number; color: string; classes?: string };
+      tooltip?: string;
+      disabled?: boolean;
     }
   >(),
   {
@@ -75,7 +78,9 @@ const props = withDefaults(
     classes: undefined,
     children: undefined,
     openInNewtab: false,
-    badge: undefined
+    badge: undefined,
+    tooltip: undefined,
+    disabled: false
   }
 );
 
