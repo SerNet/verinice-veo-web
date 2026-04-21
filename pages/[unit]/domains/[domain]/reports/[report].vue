@@ -18,7 +18,7 @@
 <template>
   <BasePage :loading="reportsFetching" data-component-name="report-page">
     <template #header>
-      <v-row dense class="justify-space-between mt-6">
+      <v-row dense class="justify-space-between">
         <v-col cols="12">
           <ReportItem
             :name="report?.name[reportLang]"
@@ -34,7 +34,7 @@
 
       <!-- @vue-ignore TODO #3066 $route does not exist -->
       <ObjectFilterBar
-        class="mt-8"
+        class="my-4"
         data-component-name="report-entity-selection-filter-bar"
         :available-object-types="availableObjectTypes"
         :available-sub-types="availableSubTypes"
@@ -45,16 +45,10 @@
         @update:filter="updateRouteQuery"
       />
 
-      <p v-if="report" class="text-body-1 my-2">
-        {{ report.multipleTargetsSupported ? t('hintMultiple') : t('hintSingle') }}
-      </p>
-
       <BaseCard>
         <ObjectTable
           v-model:page="page"
           v-model:sort-by="sortBy"
-          :model-value="selectedObjects"
-          show-select
           :default-headers="[
             'icon',
             'designator',
@@ -69,24 +63,27 @@
           :items="objects"
           :loading="objectsFetching"
           data-component-name="report-entity-selection"
-          @update:model-value="onReportSelectionUpdated"
-        />
+          enable-click
+          enable-links
+          @click="openItem"
+        >
+          <template #actions="{ item }">
+            <div class="my-2 text-left">
+              <v-btn
+                flat
+                size="small"
+                color="primary"
+                :disabled="generatingReport"
+                data-component-name="generate-report-button"
+                @click.stop="generateReport(item)"
+              >
+                {{ t('generateReport') }}
+              </v-btn>
+            </div>
+          </template>
+        </ObjectTable>
       </BaseCard>
-      <v-row no-gutters class="mt-4">
-        <v-spacer />
-        <v-col cols="auto">
-          <v-btn
-            flat
-            color="primary"
-            :disabled="generatingReport || !selectedObjects.length"
-            data-component-name="generate-report-button"
-            @click="generateReport"
-          >
-            {{ t('generateReport') }}
-          </v-btn>
-          <a ref="downloadButton" :aria-label="t('generateReport')" href="#"></a>
-        </v-col>
-      </v-row>
+      <a ref="downloadButton" :aria-label="t('generateReport')" href="#"></a>
     </template>
   </BasePage>
 </template>
@@ -105,6 +102,7 @@ import { useVeoUser } from '~/composables/VeoUser';
 import type { IVeoEntity } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 
 export const ROUTE_NAME = 'unit-domains-domain-reports-report';
 export default defineComponent({
@@ -138,7 +136,6 @@ export default defineComponent({
     );
 
     // Table stuff
-    const selectedObjects = ref<{ id: string; type: string }[]>([]);
 
     const page = ref(0);
     const sortBy = ref([{ key: 'name', order: 'asc' }]);
@@ -241,37 +238,43 @@ export default defineComponent({
       downloadButton.value.click();
     };
 
-    const createMutationParameters = computed(() => ({
-      type: requestedReportName.value,
-      body: {
-        outputType: outputType.value,
-        language: reportLang,
-        targets: selectedObjects.value,
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-        domain: route.params.domain as string,
-        unit: route.params.unit as string
-      }
-    }));
     const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, {
       onSuccess: openReport
     });
 
-    const generateReport = async () => {
-      if (report.value) {
-        try {
-          await create(createMutationParameters);
-        } catch (error: any) {
-          displayErrorMessage(t('generateReportError').toString(), error.message);
-        }
+    const generateReport = async (object: IVeoEntity) => {
+      if (!report.value) {
+        return;
+      }
+
+      try {
+        await create({
+          type: requestedReportName.value,
+          body: {
+            outputType: outputType.value,
+            language: reportLang,
+            targets: [{ id: object.id, type: object.type }],
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+            domain: route.params.domain as string,
+            unit: route.params.unit as string
+          }
+        });
+      } catch (error: any) {
+        displayErrorMessage(t('generateReportError').toString(), error.message);
       }
     };
 
-    const onReportSelectionUpdated = (newObjects: IVeoEntity[]) => {
-      if (newObjects?.length) {
-        selectedObjects.value = [newObjects[0]];
-      } else {
-        selectedObjects.value = [];
-      }
+    const openItem = ({ item }: { item: IVeoEntity }) => {
+      return navigateTo({
+        name: OBJECT_DETAIL_ROUTE,
+        params: {
+          unit: route.params.unit,
+          domain: route.params.domain,
+          objectType: VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals],
+          subType: item.subType,
+          object: item.id
+        }
+      });
     };
 
     return {
@@ -283,8 +286,6 @@ export default defineComponent({
       generatingReport,
       objects,
       objectsFetching,
-      onReportSelectionUpdated,
-      selectedObjects,
       sortBy,
       page,
       refetchObjects,
@@ -296,7 +297,8 @@ export default defineComponent({
       updateRouteQuery,
       t,
       reportLang,
-      upperFirst
+      upperFirst,
+      openItem
     };
   }
 });
