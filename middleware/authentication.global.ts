@@ -27,7 +27,8 @@ export const restrictedRoutes = new Map<string, [string, string]>([
   ['unit-domains-domain-editor', ['view', 'editors']],
   ['unit-domains-domain-editor-objectschema', ['view', 'editors']],
   ['unit-domains-domain-editor-formschema', ['view', 'editors']],
-  ['administration', ['view', 'accounts']]
+  ['administration', ['view', 'accounts']],
+  ['domains-update', ['update', 'units']]
 ]);
 
 /**
