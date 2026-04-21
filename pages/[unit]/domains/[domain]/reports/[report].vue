@@ -25,6 +25,8 @@
             :description="report?.description[reportLang]"
             :language="reportLang"
             data-component-name="report-selected"
+            data-veo-test="opened-report-card"
+            :data-report-filename="report?.name[reportLang]"
           />
         </v-col>
       </v-row>

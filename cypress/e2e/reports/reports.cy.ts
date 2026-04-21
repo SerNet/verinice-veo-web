@@ -6,7 +6,6 @@ const objectData = {
   subType: 'INC_DataPrivacyIncident'
 };
 
-const reportListItem = 'Notification form for personal data breach';
 const downloadsFolder = Cypress.config('downloadsFolder');
 
 describe('Reports', () => {
@@ -20,6 +19,7 @@ describe('Reports', () => {
         }/reports`,
         { failOnStatusCode: false }
       );
+
       cy.get('[data-veo-test^="report-dp-privacy-incident"]').first().click();
     });
   });
@@ -29,8 +29,19 @@ describe('Reports', () => {
   });
 
   it('should allow report generation and check if a PDF file was created', () => {
-    cy.getCustom('.v-data-table__tbody input[type="checkbox"]').click();
-    cy.get('[data-component-name="generate-report-button"]').should('be.visible').click();
-    cy.readFile(`${downloadsFolder}/${reportListItem}.pdf`).should('exist');
+    cy.getCustom('.v-data-table__tbody').should('be.visible');
+    cy.get('[data-veo-test="opened-report-card"]')
+      .should('have.attr', 'data-report-filename')
+      .then((reportName) => {
+        expect(reportName, 'report filename').to.not.equal('');
+
+        cy.get('.v-data-table__tbody')
+          .find('tr')
+          .first()
+          .find('[data-component-name="generate-report-button"]')
+          .click();
+
+        cy.readFile(`${downloadsFolder}/${reportName}.pdf`).should('exist');
+      });
   });
 });
