@@ -59,27 +59,25 @@ export function buildGlobalUnitPermissions(permissions: string[]) {
 export function buildLocalUnitPermissions(permissions: string[], unitWriteAccess: string[], unitIds: string[]) {
   const { can, rules } = new AbilityBuilder(createMongoAbility);
 
-  const hasAccessRestriction = permissions?.includes('unit_access_restriction');
-  const hasReadWriteAllUnits = permissions?.includes('read_write_all_units');
-  const hasVeoWriteRole = permissions.includes('veo-write');
+  if (!Array.isArray(permissions)) return rules;
+  if (!permissions.includes('veo-write')) return rules;
 
-  if (hasVeoWriteRole) {
-    if (hasAccessRestriction) {
-      if (hasReadWriteAllUnits) {
-        unitIds.forEach((id) => can('manage', 'units', { id }));
-      } else {
-        // prettier-ignore
-        unitIds.forEach((id) => (
-        (unitWriteAccess.includes(id)) ?
-          can('manage', 'units', { id }) :
-          null
-      ));
-      }
+  if (!Array.isArray(unitIds)) return rules;
+
+  // Granular access rules for users with `unit_access_restriction` role
+  if (permissions.includes('unit_access_restriction')) {
+    if (permissions.includes('read_write_all_units')) {
+      unitIds.forEach((id) => can('manage', 'units', { id }));
       return rules;
     }
-    // The key `unit_access_restriction` is not present -> full access for all people with `veo-write` role!
-    unitIds.forEach((id) => can('manage', 'units', { id }));
+    if (Array.isArray(unitWriteAccess)) {
+      unitIds.forEach((id) => (unitWriteAccess.includes(id) ? can('manage', 'units', { id }) : null));
+    }
+    return rules;
   }
+
+  // Full access for all users with `veo-write` role, if !unit_access_restriction
+  unitIds.forEach((id) => can('manage', 'units', { id }));
   return rules;
 }
 
