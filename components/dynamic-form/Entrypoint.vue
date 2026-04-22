@@ -486,14 +486,13 @@ export default defineComponent({
         formData = action(newValue, oldValue, formData, _value.value);
       }
     }
-
     watch(
-      () => props.modelValue,
-      (newValue) => {
+      [() => props.modelValue, () => props.locale, () => locale.value],
+      ([newValue]) => {
         formData = cloneDeep(props.modelValue);
         validateFormData(newValue);
       },
-      { immediate: true }
+      { immediate: true, deep: true }
     );
 
     return () =>
