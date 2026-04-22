@@ -23,7 +23,7 @@ import type { TVeoUnit } from '~/composables/requests/useUnits';
  * @description Permissions for global unit actions, e.g. create, update, delete a whole unit,
  * `update` in this sense means updating a unit's' metadata like name, description as well as domains etc.
  */
-function buildGlobalUnitPermissions(permissions: string[]) {
+export function buildGlobalUnitPermissions(permissions: string[]) {
   const { can, rules } = new AbilityBuilder(createMongoAbility);
   const hasAccessRestriction = permissions?.includes('unit_access_restriction');
   const hasVeoWriteRole = permissions.includes('veo-write');
