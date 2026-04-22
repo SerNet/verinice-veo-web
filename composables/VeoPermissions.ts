@@ -25,14 +25,15 @@ import type { TVeoUnit } from '~/composables/requests/useUnits';
  */
 export function buildGlobalUnitPermissions(permissions: string[]) {
   const { can, rules } = new AbilityBuilder(createMongoAbility);
-  const hasAccessRestriction = permissions?.includes('unit_access_restriction');
-  const hasVeoWriteRole = permissions.includes('veo-write');
 
-  if (!hasVeoWriteRole) {
-    return rules;
-  }
+  if (!Array.isArray(permissions)) return rules;
 
-  if (hasAccessRestriction) {
+  // User has no write access at all
+  if (!permissions.includes('veo-write')) return rules;
+
+  // If a user has the `unit_access_restrictions` role,
+  // they might only perform certain actions on units
+  if (permissions.includes('unit_access_restriction')) {
     if (permissions.includes('unit:create')) {
       can('create', 'unit');
     }
@@ -45,7 +46,9 @@ export function buildGlobalUnitPermissions(permissions: string[]) {
     return rules;
   }
 
-  // The key `unit_access_restriction` is not present -> full unit access for people with `veo-write`!
+  // If a user has the `veo-write` role, but
+  // does not have `unit_access_restriction` role
+  // they can create, update, delete all units
   can('create', 'unit');
   can('update', 'unit');
   can('delete', 'unit');
