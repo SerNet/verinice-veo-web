@@ -1,6 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import { generateUnitDetails } from '../../support/setupHelpers';
 
+const featureEnabled = Cypress.env('VEO_FEATURE_FLAG_UNIT_IMPORT') === 'true';
+const maybeDescribe = featureEnabled ? describe : describe.skip;
+
 type TestData = {
   unitId: string;
   unitName: string;
@@ -162,7 +165,7 @@ function createImportedUnitResponse({ unitId, unitName, domain }: TestData) {
   };
 }
 
-describe('import units', () => {
+maybeDescribe('import units', () => {
   let testData: TestData;
 
   beforeEach(() => {

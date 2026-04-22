@@ -30,7 +30,7 @@
     <!-- When no unit is available, hide the button here and show it in another place -->
     <template #footer>
       <div v-if="activeUnits !== 0" class="d-flex justify-end ga-3 flex-wrap my-6">
-        <v-tooltip location="start" :aria-label="t('importUnit')">
+        <v-tooltip v-if="hasUnitImport" location="start" :aria-label="t('importUnit')">
           <template #activator="{ props }">
             <span v-bind="props">
               <v-btn
@@ -104,6 +104,7 @@ export const ROUTE_NAME = 'units';
 import { mdiPlus, mdiTrayArrowUp } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { hasFeature } from '~/utils/featureFlags';
 
 const { ability } = useVeoPermissions();
 const { userSettings } = useVeoUser();
@@ -111,6 +112,7 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 
 const canCreateUnit = computed(() => ability.value.can('create', 'unit'));
+const hasUnitImport = hasFeature('unitImport');
 
 const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | null>(null);
 const activeUnits = computed(() => unitsRef?.value?.activeUnits || 0);
