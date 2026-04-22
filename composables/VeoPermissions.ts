@@ -52,8 +52,11 @@ export function buildGlobalUnitPermissions(permissions: string[]) {
   return rules;
 }
 
-/** @description Permissions for unit-specific actions, e.g. create, update, delete objects, currently you may either do everything or nothing. That's why we use `manage` */
-function buildLocalUnitPermissions(permissions: string[], unitWriteAccess: string[], unitIds: string[]) {
+/** @description Permissions for unit-specific actions,
+ * e.g. create, update, delete objects inside a unit,
+ * currently you may either do everything or nothing. That's why we use `manage`
+ */
+export function buildLocalUnitPermissions(permissions: string[], unitWriteAccess: string[], unitIds: string[]) {
   const { can, rules } = new AbilityBuilder(createMongoAbility);
 
   const hasAccessRestriction = permissions?.includes('unit_access_restriction');
