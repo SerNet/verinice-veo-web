@@ -114,6 +114,7 @@ type ConflictedElementsByUnit = {
     id: string;
     name: string;
     type: string;
+    subType: string;
   }[];
 };
 
@@ -174,7 +175,7 @@ function buildListOfConflicts(data: ConflictedElementsByUnit[], domainId: string
         title: element.name,
         value: counter++,
         props: {
-          to: `/${group.unit.id}/domains/${domainId}/${VeoElementTypePlurals[element.type]}/element.subType/${element.id}`,
+          to: `/${group.unit.id}/domains/${domainId}/${VeoElementTypePlurals[element.type]}/${element.subType}/${element.id}`,
           class: 'text-primary text-decoration-underline pointer-cursor',
           target: '_blank',
           rel: 'noopener noreferrer'
