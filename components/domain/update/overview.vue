@@ -81,12 +81,7 @@
                       variant="outlined"
                       size="small"
                       data-veo-test="domain-update-button"
-                      @click="
-                        () => {
-                          assignIds(update.domain.id, update.latestPossibleUpdate.id);
-                          updateDomain();
-                        }
-                      "
+                      @click="handleUpdate(update.domain.id, update.latestPossibleUpdate.id)"
                       >{{ t('updateUnits') }}</v-btn
                     >
                   </v-card-actions>
@@ -156,9 +151,10 @@ useUserFeedback({
   hasErrorMessage: computed(() => (updateError as Ref<UpdateError>).value?.status != 409)
 });
 
-function assignIds(_domainId: string, _targetVersion: string) {
+function handleUpdate(_domainId: string, _targetVersion: string) {
   domainId.value = _domainId;
   templateId.value = _targetVersion;
+  updateDomain();
 }
 
 function buildListOfConflicts(data: ConflictedElementsByUnit[], domainId: string) {
