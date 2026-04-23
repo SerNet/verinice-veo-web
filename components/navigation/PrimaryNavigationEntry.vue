@@ -16,47 +16,30 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="end" :disabled="!tooltip" :aria-label="`${name}`">
-    <template #activator="{ props: tooltipProps }">
-      <span v-bind="tooltipProps" :tabindex="disabled ? 0 : -1">
-        <v-list-item
-          :to="disabled ? undefined : to"
-          :disabled="disabled"
-          :active="active"
-          active-class="veo-active-list-nav-item"
-          class="veo-list-nav-item"
-          color="color"
-          :class="_classes"
-          :data-component-name="componentName"
-          :data-veo-test="componentName"
-          density="compact"
-          :target="openInNewtab ? '_blank' : undefined"
-          tabindex="0"
-          autofocus
-          role="menuitem"
-          @click.stop="onClick"
-        >
-          <template v-if="icon" #prepend>
-            <div>
-              <v-icon v-if="icon" :icon="icon" start />
-            </div>
-          </template>
-          <v-list-item-title class="veo-primary-navigation-title" data-veo-test="nav-entry-title">
-            {{ name }}
-          </v-list-item-title>
-          <template v-if="badge" #append>
-            <v-badge location="top" :color="badge.color" :content="badge.content" class="pb-1 px-4" />
-          </template>
-        </v-list-item>
-      </span>
-    </template>
-    <span>{{ tooltip }}</span>
-  </v-tooltip>
+  <template v-if="tooltip">
+    <v-tooltip location="end" :aria-label="tooltip">
+      <template #activator="{ props: tooltipProps }">
+        <span v-bind="tooltipProps" :tabindex="disabled ? 0 : -1">
+          <NavigationPrimaryNavigationEntryListItem
+            v-bind="props"
+            @open-parent="emit('open-parent')"
+            @expand-menu="emit('expand-menu')"
+          />
+        </span>
+      </template>
+      <span>{{ tooltip }}</span>
+    </v-tooltip>
+  </template>
+  <NavigationPrimaryNavigationEntryListItem
+    v-else
+    v-bind="props"
+    @open-parent="emit('open-parent')"
+    @expand-menu="emit('expand-menu')"
+  />
 </template>
 
 <script setup lang="ts">
 import { _RouteLocationBase } from 'vue-router';
-
 import type { INavItem } from './PrimaryNavigation.vue';
 
 const props = withDefaults(
@@ -87,57 +70,4 @@ const props = withDefaults(
 const emit = defineEmits<{
   (event: 'expand-menu' | 'open-parent'): void;
 }>();
-
-const router = useRouter();
-const route = useRoute();
-
-/* The default match function of the router watches for the same resolved route name, however this means that
- * /<unit>/domains/<objectType>/<subType> won't match /<unit>/domains/<objectType>/<subType>/<object> and thus the menu
- * entry won't be highlighted even if we set exact to false, so we need to implement our own match function.
- */
-const active = computed(() => {
-  if (!props.to) {
-    return false;
-  }
-
-  const resolvedRoute = router.resolve(props.to);
-  return props.exact ? resolvedRoute.fullPath === route.fullPath : route.fullPath.startsWith(resolvedRoute.fullPath);
-});
-
-// For some reason the list doesn't get auto-openend if an object is opened even though active is true (probably because the nav item isn't the full path, so we have to do it by ourselves)
-watch(
-  () => active.value,
-  (newValue) => {
-    if (newValue) {
-      emit('open-parent');
-    }
-  },
-  { immediate: true }
-);
-
-const onClick = () => {
-  if (props.openInNewtab) {
-    return;
-  }
-  if (props.miniVariant) {
-    emit('expand-menu');
-  }
-};
-const _classes = computed(() => `${props.classes} primary-navigation-entry-level-${props.level}`);
 </script>
-
-<style lang="scss">
-@use 'assets/styles/_variables.scss';
-
-.veo-list-nav-item {
-  border-left: 4px solid transparent;
-}
-
-.veo-active-list-nav-item {
-  border-left: 4px solid variables.$primary;
-}
-
-.v-list-item--density-compact.v-list-item--one-line:not(.v-list-item--nav) {
-  padding-inline: 10px;
-}
-</style>
