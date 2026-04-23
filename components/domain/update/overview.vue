@@ -60,7 +60,7 @@
         <!-- If there are no conflicts, show the available updates -->
         <template v-else>
           <v-col cols="12">
-            <h2 class="small-caps page-title text-h2" data-veo-test="domain-updates-header">Updates</h2>
+            <h2 class="small-caps page-title text-h2" data-veo-test="domain-updates-header">{{ t('updates') }}</h2>
           </v-col>
           <v-col v-for="update in domainUpdates" :key="update.id" cols="12">
             <v-card
