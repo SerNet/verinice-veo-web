@@ -67,7 +67,6 @@
               :title="update?.domain?.translations?.[locale]?.name ?? update?.domain?.name ?? ''"
               :subtitle="`${t('currentVersion')}: ${update?.domain?.templateVersion ?? ''}`"
               :text="update?.domain?.translations?.[locale]?.description ?? t('noDescription')"
-              :disabled="!!conflictedElementsByUnit?.length"
               data-veo-test="domain-update-card"
             >
               <span v-if="update.latestPossibleUpdate?.id" class="d-flex flex-column gap-4">
