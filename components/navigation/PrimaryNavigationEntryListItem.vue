@@ -34,7 +34,9 @@
     @click="onClick"
   >
     <template v-if="icon" #prepend>
-      <v-icon :icon="icon" start />
+      <div>
+        <v-icon :icon="icon" start />
+      </div>
     </template>
     <v-list-item-title class="veo-primary-navigation-title" data-veo-test="nav-entry-title">
       {{ name }}
