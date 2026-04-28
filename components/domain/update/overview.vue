@@ -109,6 +109,13 @@
         </template>
       </template>
     </v-row>
+    <v-row v-if="conflictedElementsByUnit?.length">
+      <v-col class="d-flex justify-content-end">
+        <v-btn class="ml-auto" variant="outlined" data-veo-test="domain-update-cancel-button" @click="resetUpdate">{{
+          t('global.button.cancel')
+        }}</v-btn>
+      </v-col>
+    </v-row>
   </BaseContainer>
 </template>
 
@@ -149,7 +156,8 @@ const {
   isSuccess: isDomainUpdateSuccess,
   isError: isDomainUpdateError,
   status,
-  error: updateError
+  error: updateError,
+  reset: resetUpdate
 } = useDomainUpdate(domainId, templateId);
 
 const conflictedElementsByUnit = computed<ConflictedElementsByUnit[]>(() => {
