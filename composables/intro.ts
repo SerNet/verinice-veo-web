@@ -331,8 +331,12 @@ export function createIntro() {
 /**
  * Use intro.js
  */
+let isIntroInitialized = false;
 export function useIntro() {
-  createIntro();
+  if (!isIntroInitialized) {
+    createIntro();
+    isIntroInitialized = true;
+  }
 
   /**
    * Configure intro.js

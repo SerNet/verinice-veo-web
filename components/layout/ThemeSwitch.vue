@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="bottom" :aria-label="t('mode')">
+  <v-tooltip location="bottom" :aria-label="t('mode')" :disabled="disabled">
     <template #activator="{ props }">
       <v-btn
         data-component-name="theme-switch"
@@ -25,6 +25,7 @@
         :aria-label="t('mode')"
         :title="t('mode')"
         :icon="mdiThemeLightDark"
+        :disabled="disabled"
         @click="_switch"
       />
     </template>
@@ -39,6 +40,10 @@
 import { useTheme } from 'vuetify';
 import { mdiThemeLightDark } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
+
+defineProps<{
+  disabled?: boolean;
+}>();
 
 const { t } = useI18n();
 const theme = useTheme();

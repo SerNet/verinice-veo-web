@@ -23,7 +23,7 @@
     @update:model-value="onMenuClosed"
   >
     <template #activator="{ props }">
-      <v-tooltip location="bottom" :aria-label="t('OpenPreferences')">
+      <v-tooltip location="bottom" :aria-label="t('OpenPreferences')" :disabled="disabled">
         <template #activator="{ props: tooltipProps }">
           <v-btn
             class="mr-2"
@@ -31,6 +31,7 @@
             color="primary"
             v-bind="{ ...tooltipProps, ...props }"
             icon
+            :disabled="disabled"
           >
             <v-avatar color="primary" size="48">
               {{ initials }}
@@ -141,6 +142,10 @@ const accountLink = computed(() => `${config.public.oidcAccountApplication}`);
 const onMenuClosed = () => {
   displayDeploymentDetails.value = false;
 };
+
+defineProps<{
+  disabled?: boolean;
+}>();
 </script>
 
 <i18n src="~/locales/base/components/layout-account-btn.json"></i18n>

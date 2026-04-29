@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-tooltip location="bottom" :aria-label="t('showHelp')">
+  <v-tooltip location="bottom" :aria-label="t('showHelp')" :disabled="disabled">
     <template #activator="{ props: tooltip }">
       <div v-bind="tooltip">
         <v-menu offset-y bottom left nudge-bottom="2">
@@ -27,6 +27,7 @@
               :aria-label="t('showHelp')"
               :title="t('showHelp')"
               :icon="mdiTranslate"
+              :disabled="disabled"
             />
           </template>
 
@@ -52,6 +53,10 @@ import { mdiTranslate } from '@mdi/js';
 import { useLocale } from 'vuetify';
 const { t, locale, locales, setLocale } = useI18n();
 const { current } = useLocale();
+
+defineProps<{
+  disabled?: boolean;
+}>();
 
 const selectedLocale = computed({
   get: () => [locale.value],

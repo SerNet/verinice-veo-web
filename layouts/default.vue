@@ -33,12 +33,12 @@
       <LayoutBreadcrumbs write-to-title />
       <v-spacer />
 
-      <LayoutThemeSwitch />
-      <LayoutLanguageSwitch />
+      <LayoutThemeSwitch :disabled="visible" />
+      <LayoutLanguageSwitch :disabled="visible" />
 
       <LayoutTutorialButton v-if="!$route.path.startsWith('/login')" />
 
-      <v-tooltip location="bottom" :aria-label="t('openDocumentationInNewTab')">
+      <v-tooltip location="bottom" :disabled="visible" :aria-label="t('openDocumentationInNewTab')">
         <template #activator="{ props }">
           <v-btn
             class="mr-3"
@@ -49,6 +49,7 @@
             v-bind="props"
             data-component-name="docs-nav-item"
             :aria-label="t('openDocumentationInNewTab')"
+            :disabled="visible"
           >
             <v-icon :icon="mdiLibraryOutline" />
           </v-btn>
@@ -58,7 +59,7 @@
         </template>
       </v-tooltip>
 
-      <LayoutAccountBtn v-if="authenticated" class="mr-3" />
+      <LayoutAccountBtn v-if="authenticated" class="mr-3" :disabled="visible" />
       <v-btn v-else color="primary" icon to="/login" :aria-label="t('login')">
         <v-icon :icon="mdiAccountCircleOutline" />
       </v-btn>
@@ -112,6 +113,7 @@ const { isLoading, loadingInfo } = useGlobalLoadingState();
 
 const hasShortcuts = hasFeature('shortcuts');
 const { shortcuts = [], isDialogOpen = false } = hasShortcuts ? useShortcuts() : {};
+const { visible } = useIntro();
 
 useHead(() => ({
   titleTemplate: '%s - verinice.veo'
