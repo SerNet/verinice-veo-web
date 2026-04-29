@@ -5,7 +5,6 @@ const flagNames = {
   shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS',
   urlParams: 'VEO_FEATURE_FLAG_URL_PARAMS',
   accessGroups: 'VEO_FEATURE_FLAG_ACCESS_GROUPS',
-  domainUpdate: 'VEO_FEATURE_FLAG_DOMAIN_UPDATE',
   unitImport: 'VEO_FEATURE_FLAG_UNIT_IMPORT'
 };
 

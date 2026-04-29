@@ -73,11 +73,7 @@
 
     <v-main :class="$style.main" class="bg-basepage">
       <SystemMessageAlert v-if="messages.length" :messages="messages" />
-      <DomainUpdateAlert
-        v-if="domainMessages.length && hasDomainUpdate"
-        :messages="domainMessages"
-        @dismiss="dismissMessage"
-      />
+
       <slot></slot>
       <LayoutCookieBanner />
     </v-main>
@@ -98,7 +94,6 @@
 import { mdiAccountCircleOutline, mdiLibraryOutline } from '@mdi/js';
 import 'intro.js/minified/introjs.min.css';
 import { useDisplay, useTheme } from 'vuetify';
-import { useDomainUpdate } from '~/composables/domains/useDomainUpdate';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -113,11 +108,9 @@ const { t } = useI18n();
 const theme = useTheme();
 const context = useNuxtApp();
 const { data: messages } = useSystemMessages();
-const { domainUpdateMessages: domainMessages, dismissDomainUpdateMessage: dismissMessage } = useDomainUpdate();
 const { isLoading, loadingInfo } = useGlobalLoadingState();
 
 const hasShortcuts = hasFeature('shortcuts');
-const hasDomainUpdate = hasFeature('domainUpdate');
 const { shortcuts = [], isDialogOpen = false } = hasShortcuts ? useShortcuts() : {};
 
 useHead(() => ({
