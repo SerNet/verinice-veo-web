@@ -17,6 +17,7 @@
 import { vi, describe, it, expect, beforeAll, beforeEach } from 'vitest';
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
 import { expectElementsToExist, expectElementsNotToExist } from './helpers';
+import { nextTick } from 'vue';
 
 // @ts-ignore // TS thinks this file would not exist
 import domainUpdateOverview from '~/components/domain/update/overview.vue';
@@ -104,6 +105,48 @@ const data = [
   }
 ];
 
+const conflictedElementsByUnit = [
+  {
+    unit: {
+      id: 'unit-1',
+      name: 'Test Unit 1'
+    },
+    elements: [
+      {
+        id: 'element-1',
+        name: 'Test Element 1',
+        type: 'asset'
+      },
+      {
+        id: 'element-2',
+        name: 'Test Element 2',
+        type: 'process'
+      }
+    ]
+  },
+  {
+    unit: {
+      id: 'unit-2',
+      name: 'Test Unit 2'
+    },
+    elements: [
+      {
+        id: 'element-3',
+        name: 'Test Element 3',
+        type: 'scope'
+      }
+    ]
+  }
+];
+
+// Update mock to simulate a response; here: 409 error
+const errorMock = ref({
+  status: 409,
+  data: {
+    conflictedElementsByUnit
+  }
+});
+
 // Mocks
 const { useFetchDomainUpdateMock, useDomainUpdateMock } = vi.hoisted(() => {
   return {
@@ -119,7 +162,8 @@ const { useFetchDomainUpdateMock, useDomainUpdateMock } = vi.hoisted(() => {
         isSuccess: false,
         isError: false,
         status: 'idle',
-        error: ref(null)
+        error: ref(null),
+        reset: vi.fn()
       };
     })
   };
@@ -144,6 +188,7 @@ const SELECTORS = {
   domainUpdatesHeader: '[data-veo-test="domain-updates-header"]',
   domainUpdateCard: '[data-veo-test="domain-update-card"]',
   domainUpdateButton: '[data-veo-test="domain-update-button"]',
+  domainUpdateCancelButton: '[data-veo-test="domain-update-cancel-button"]',
   domainUpdateConflictsHeader: '[data-veo-test="domain-update-conflicts-header"]',
   domainUpdateConflictsAlert: '[data-veo-test="domain-update-conflicts-alert"]',
   domainUpdatesConflictsList: '[data-veo-test="domain-update-conflicts-list"]'
@@ -272,7 +317,8 @@ describe('Domain Update Overview - Trigger update', () => {
       isSuccess: false,
       isError: false,
       status: 'idle',
-      error: ref(null)
+      error: ref(null),
+      reset: vi.fn()
     });
 
     component = await mountWithState({
@@ -297,54 +343,13 @@ describe('Domain Update Overview - Trigger update', () => {
   });
 
   it('renders conflicts UI if conflicts exists', async () => {
-    const conflictedElementsByUnit = [
-      {
-        unit: {
-          id: 'unit-1',
-          name: 'Test Unit 1'
-        },
-        elements: [
-          {
-            id: 'element-1',
-            name: 'Test Element 1',
-            type: 'asset'
-          },
-          {
-            id: 'element-2',
-            name: 'Test Element 2',
-            type: 'process'
-          }
-        ]
-      },
-      {
-        unit: {
-          id: 'unit-2',
-          name: 'Test Unit 2'
-        },
-        elements: [
-          {
-            id: 'element-3',
-            name: 'Test Element 3',
-            type: 'scope'
-          }
-        ]
-      }
-    ];
-
-    // Update mock to simulate a response; here: 409 error
-    const errorMock = {
-      status: 409,
-      data: {
-        conflictedElementsByUnit
-      }
-    };
-
     useDomainUpdateMock.mockReturnValue({
       mutate: updateDomainMock,
       isSuccess: false,
       isError: true,
       status: 'error',
-      error: ref(errorMock)
+      error: errorMock,
+      reset: vi.fn()
     });
 
     // Re-mount component with the error state
@@ -368,5 +373,52 @@ describe('Domain Update Overview - Trigger update', () => {
 
     // Updates UI is hidden?
     expectElementsNotToExist(component, [SELECTORS.domainUpdateCard, SELECTORS.domainUpdatesHeader]);
+  });
+});
+
+describe('Domain Update Overview - Reset update', () => {
+  let component: VueWrapper<any>;
+  let resetUpdateMock: any;
+
+  beforeEach(async () => {
+    vi.clearAllMocks();
+    resetUpdateMock = vi.fn();
+
+    useDomainUpdateMock.mockReturnValue({
+      mutate: vi.fn(),
+      isSuccess: false,
+      isError: true,
+      status: 'error',
+      error: errorMock,
+      reset: resetUpdateMock
+    });
+
+    component = await mountWithState({
+      data: data.slice(0, 1),
+      isLoading: false
+    });
+  });
+
+  it('calls resetUpdate when cancel button is clicked', async () => {
+    const cancelButton = component.getComponent(SELECTORS.domainUpdateCancelButton);
+
+    await cancelButton.trigger('click');
+
+    expect(resetUpdateMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders the update UI after dismissing conflicts', async () => {
+    errorMock.value = null;
+    await nextTick();
+
+    expectElementsToExist(component, [SELECTORS.domainUpdateRecommendedAlert]);
+
+    expectElementsNotToExist(component, [
+      SELECTORS.domainUpdateConflictsHeader,
+      SELECTORS.domainUpdateConflictsAlert,
+      SELECTORS.domainUpdatesConflictsList
+    ]);
+
+    expectElementsToExist(component, [SELECTORS.domainUpdateCard, SELECTORS.domainUpdatesHeader]);
   });
 });
