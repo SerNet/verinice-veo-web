@@ -159,8 +159,8 @@ const { useFetchDomainUpdateMock, useDomainUpdateMock } = vi.hoisted(() => {
     useDomainUpdateMock: vi.fn(() => {
       return {
         mutate: vi.fn(),
-        isSuccess: false,
-        isError: false,
+        isSuccess: ref(false),
+        isError: ref(true),
         status: 'idle',
         error: ref(null),
         reset: vi.fn()
@@ -314,8 +314,8 @@ describe('Domain Update Overview - Trigger update', () => {
 
     useDomainUpdateMock.mockReturnValue({
       mutate: updateDomainMock,
-      isSuccess: false,
-      isError: false,
+      isSuccess: ref(false),
+      isError: ref(true),
       status: 'idle',
       error: ref(null),
       reset: vi.fn()
@@ -345,8 +345,8 @@ describe('Domain Update Overview - Trigger update', () => {
   it('renders conflicts UI if conflicts exists', async () => {
     useDomainUpdateMock.mockReturnValue({
       mutate: updateDomainMock,
-      isSuccess: false,
-      isError: true,
+      isSuccess: ref(false),
+      isError: ref(true),
       status: 'error',
       error: errorMock,
       reset: vi.fn()
@@ -386,8 +386,8 @@ describe('Domain Update Overview - Reset update', () => {
 
     useDomainUpdateMock.mockReturnValue({
       mutate: vi.fn(),
-      isSuccess: false,
-      isError: true,
+      isSuccess: ref(false),
+      isError: ref(true),
       status: 'error',
       error: errorMock,
       reset: resetUpdateMock
