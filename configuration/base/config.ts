@@ -6,7 +6,9 @@ export const config = {
       'gdpr-int': '#c90000',
       'iso-iec-27000': '#003f63', // This domain name is deprecated (ISO/IEC 27000)
       'iso-27001-de': '#003f63',
+      'iso-27001-int': '#003f63',
       nis2: '#9c26af',
+      'nis2-int': '#9c26af',
       'it-grundschutz': '#2E7D32',
       'it-grundschutz++': '#009192',
       tisax: '#AF6108',
