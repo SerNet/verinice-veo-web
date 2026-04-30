@@ -70,7 +70,70 @@
 
         <!-- Editable implementation details -->
         <v-label class="mt-4">{{ t('riEditor.implementation') }}</v-label>
-        <BaseCard border padding margin-bottom>
+        <BaseCard v-if="!hasFeature('riDialogProps')" border padding margin-bottom>
+          <!-- Responsible person -->
+          <v-autocomplete
+            v-model="form.responsible"
+            :label="t('riEditor.responsible')"
+            :items="persons"
+            :disabled="!canManageUnitContent"
+            clearable
+            item-title="name"
+            item-value="name"
+            return-object
+            variant="underlined"
+            class="my-4"
+            data-veo-test="compliance-editor-ri-responsible-person"
+          />
+
+          <!-- Implementation date -->
+          <!-- @click:clear
+            in vuetify 3.6.xx `clearable` doesn't reset the value when clearing the input,
+            thus v-model is being reset manually
+          -->
+          <v-date-input
+            v-model="form.implementationUntil"
+            :label="t('riEditor.implementationUntil')"
+            :aria-label="t('riEditor.implementationUntil')"
+            :disabled="!canManageUnitContent"
+            data-veo-test="compliance-editor-ri-implementation-date"
+            prepend-icon=""
+            prepend-inner-icon="$calendar"
+            clearable
+            role="combobox"
+            :aria-expanded="!!form.implementationUntil"
+            @click:clear="form.implementationUntil = undefined"
+          />
+
+          <!-- Status -->
+          <v-radio-group
+            v-model="form.status"
+            :disabled="!canManageUnitContent"
+            :aria-label="t('riEditor.status')"
+            inline
+          >
+            <template #label>
+              <div>{{ t('riEditor.status') }}</div>
+            </template>
+            <template v-for="(key, value) in Status" :key="key">
+              <v-radio
+                :label="t(`riEditor.statusValues.${value}`)"
+                :value="`${key}`"
+                :data-veo-test="`compliance-editor-staus-${value}`"
+              />
+            </template>
+          </v-radio-group>
+
+          <!-- Description -->
+          <v-textarea
+            v-model="form.implementationStatement"
+            :label="t('riEditor.description')"
+            :disabled="!canManageUnitContent"
+            variant="underlined"
+            data-veo-test="compliance-editor-description"
+          />
+        </BaseCard>
+        <BaseCard v-else border padding margin-bottom>
           <!-- Umsetzung -->
           <v-card class="mb-6">
             <v-card-title>{{ t('riEditor.implementationCard') }}</v-card-title>
@@ -350,7 +413,7 @@ import { RI_CONTROL_VIEW_CONTEXT, VeoElementTypePlurals } from '~/types/VeoTypes
 import { isVeoLink, validateType } from '~/types/utils';
 import { format } from 'date-fns';
 import { useFetchObjects } from '~/composables/api/objects';
-
+import { hasFeature } from '~/utils/featureFlags';
 // ===== Type definitions =====
 interface Props {
   item: RequirementImplementation | null;
@@ -415,11 +478,11 @@ const { data: currentDomain } = useCurrentDomain();
 
 // ===== Constants =====
 enum Status {
-  Unknown = 'UNKNOWN',
-  Yes = 'YES',
-  Partial = 'PARTIAL',
-  No = 'NO',
-  NA = 'N_A'
+  UNKNOWN = 'UNKNOWN',
+  YES = 'YES',
+  PARTIAL = 'PARTIAL',
+  NO = 'NO',
+  N_A = 'N_A'
 }
 
 // ===== State management =====
@@ -428,7 +491,7 @@ const initialForm: RequirementImplementationForForm = {
   origin: {},
   control: {},
   responsible: null,
-  status: Status.Unknown,
+  status: Status.UNKNOWN,
   implementationStatement: null,
   origination: 'SYSTEM_SPECIFIC',
   cost: null,

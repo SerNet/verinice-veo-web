@@ -5,7 +5,8 @@ const flagNames = {
   shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS',
   urlParams: 'VEO_FEATURE_FLAG_URL_PARAMS',
   accessGroups: 'VEO_FEATURE_FLAG_ACCESS_GROUPS',
-  unitImport: 'VEO_FEATURE_FLAG_UNIT_IMPORT'
+  unitImport: 'VEO_FEATURE_FLAG_UNIT_IMPORT',
+  riDialogProps: 'VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES'
 };
 
 type FlagNames = keyof typeof flagNames;
