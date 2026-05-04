@@ -15,7 +15,8 @@ module.exports = defineConfig({
 
   // disable the user settings test via feature flag
   env: {
-    VEO_FEATURE_FLAG_USER_SETTINGS: 'false'
+    VEO_FEATURE_FLAG_USER_SETTINGS: 'false',
+    VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES: 'true'
   },
   e2e: {
     setupNodeEvents(on, config) {

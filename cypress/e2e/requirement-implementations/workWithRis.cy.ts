@@ -47,6 +47,7 @@ const testPerson = {
   status: 'NEW'
 };
 
+const featureEnabled = Cypress.env('VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES') === 'true';
 // Navigation helpers
 function openModulesTab() {
   cy.visitObject();
@@ -308,31 +309,53 @@ describe('Requirement Implementations: Editor', () => {
         .click()
         .clear()
         .type('{downArrow}{enter}');
-      cy.getCustom('[data-veo-test="riEditor-cost"] input').type('1500');
-      cy.getCustom('[data-veo-test="riEditor-description"] textarea').click().type(testRIData.description);
+
+      if (featureEnabled) {
+        // (riDialogProps = true)
+        cy.getCustom('[data-veo-test="riEditor-cost"]').should('exist').find('input').type('1500');
+
+        cy.getCustom('[data-veo-test="riEditor-description"]')
+          .should('exist')
+          .find('textarea')
+          .click()
+          .type(testRIData.description);
+      } else {
+        // (riDialogProps = false)
+        cy.getCustom('[data-veo-test="compliance-editor-description"]')
+          .should('exist')
+          .find('textarea')
+          .click()
+          .type(testRIData.description);
+      }
 
       // Save
       cy.intercept('GET', apiRoutes.requirementImplementations).as('getRIs');
-      cy.get('button').contains('Save').click();
-      cy.wait(['@getRIs']).its('response.statusCode').should('eq', 200);
+      cy.contains('button', 'Save').click();
+      cy.wait('@getRIs').its('response.statusCode').should('eq', 200);
     });
 
     // Assert content of RI list
-    cy.getCustom('[data-veo-test="responsible.displayName"]').first().contains(testPerson.name);
-    cy.getCustom('[data-veo-test="translations.status"]').first().first().contains('Unedited');
+    cy.getCustom('[data-veo-test="responsible.displayName"]').first().should('contain', testPerson.name);
+    cy.getCustom('[data-veo-test="translations.status"]').first().should('contain', 'Unedited');
 
     // Open editor again
     cy.getCustom('td').first().click();
 
     cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
     cy.get('@editor').within(() => {
-      cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]').then(
-        ($personInp: JQuery<HTMLElement>) => expect($personInp).to.contain(testRIData.person)
-      );
-      cy.getCustom('[data-veo-test="riEditor-cost"] input').should('have.value', '1500');
-      cy.getCustom('[data-veo-test="riEditor-description"] textarea')
-        .invoke('val')
-        .then((description: string) => expect(description).to.eq(testRIData.description));
+      cy.getCustom('[data-veo-test="compliance-editor-ri-responsible-person"]').should('contain', testRIData.person);
+
+      if (featureEnabled) {
+        cy.getCustom('[data-veo-test="riEditor-cost"]').find('input').should('have.value', '1500');
+
+        cy.getCustom('[data-veo-test="riEditor-description"]')
+          .find('textarea')
+          .should('have.value', testRIData.description);
+      } else {
+        cy.getCustom('[data-veo-test="compliance-editor-description"]')
+          .find('textarea')
+          .should('have.value', testRIData.description);
+      }
     });
   });
 });
