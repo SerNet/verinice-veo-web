@@ -226,8 +226,11 @@ export default {
         },
         query: {
           // The frontend only works with hasNoParentElements, but the backend expects hasParentElements
-          hasParentElements: queryParameters.hasNoParentElements === true ? false : undefined,
-          ...omit(queryParameters, 'endpoint')
+          hasParentElements:
+            queryParameters.hasNoParentElements === true || queryParameters.hasNoParentElements === 'true' ?
+              false
+            : undefined,
+          ...omit(queryParameters, ['endpoint', 'hasNoParentElements'])
         }
       })
     } as IVeoQueryDefinition<IVeoFetchObjectsParameters, IVeoPaginatedResponse<IVeoEntity[]>>,

@@ -174,7 +174,12 @@ export default defineComponent({
         filterKeys.map((key) => {
           // Extract first query value
           const val = ([] as (string | null)[]).concat(query[key]).shift();
-          return [key, val === null ? true : val];
+          const filterValue =
+            val === null ? true
+            : val === 'true' ? true
+            : val === 'false' ? false
+            : val;
+          return [key, filterValue];
         })
       );
 
