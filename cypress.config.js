@@ -1,5 +1,6 @@
 // import { defineConfig } from 'cypress';
 
+require('dotenv').config();
 const { defineConfig } = require('cypress');
 const fs = require('fs');
 const path = require('path');
@@ -13,10 +14,10 @@ module.exports = defineConfig({
   experimentalMemoryManagement: true,
   numTestsKeptInMemory: 0,
 
-  // disable the user settings test via feature flag
+  // read environment variables
   env: {
-    VEO_FEATURE_FLAG_USER_SETTINGS: 'false',
-    VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES: 'true'
+    VEO_FEATURE_FLAG_USER_SETTINGS: process.env.VEO_FEATURE_FLAG_USER_SETTINGS,
+    VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES: process.env.VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES
   },
   e2e: {
     setupNodeEvents(on, config) {
