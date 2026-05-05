@@ -46,15 +46,15 @@
   },
   "de": {
     "cloneObject": "Objekt duplizieren",
-    "controlDeleted": "Die Bausteinmodellierung wurde entfernt",
+    "controlDeleted": "Control-Zuordnung wurde entfernt",
     "controls": {
       "abbreviation": "Abkürzung",
       "description": "Beschreibung",
       "responsible": "Verantwortlich",
       "status": "Umsetzungsstatus"
     },
-    "deleteDialogText": "Es wird nur die Modellierung von Baustein \"{ name }\" entfernt!",
-    "deleteDialogTitle": "Bausteinmodellierung entfernen",
+    "deleteDialogText": "Es wird nur die Zuordnung des Controls \"{ name }\" entfernt!",
+    "deleteDialogTitle": "Control-Zuordnung entfernen",
     "deleteRisk": "Risiko löschen",
     "errors": {
       "clone": "Das Objekt konnte nicht dupliziert werden",
