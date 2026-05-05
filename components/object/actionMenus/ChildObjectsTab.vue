@@ -138,6 +138,7 @@ const handleLink = async (objects: IVeoEntity[]) => {
 
 const onSuccess = (objectIds: string[]) => {
   emit('reload');
+  queryClient.invalidateQueries({ queryKey: ['elementRelations'] });
   displaySuccessMessage(upperFirst(t('successfullyAdded', { name: t('childObjects', objectIds.length) })));
 };
 

@@ -19,6 +19,7 @@ import type { IVeoQueryDefinition } from '../utils/query';
 export type IGraphResult = {
   nodes: IGraphNode[];
   links: IGraphLink[];
+  totalCount: number;
 };
 export type IGraphNode = {
   displayName: string;
@@ -38,6 +39,7 @@ export interface GraphParams {
   domainId: string;
   elementId: string;
   elementType: string;
+  limit?: number;
 }
 
 export default {
@@ -51,6 +53,9 @@ export default {
           domainId: String(params.domainId),
           elementId: String(params.elementId),
           elementType: String(params.elementType)
+        },
+        query: {
+          ...(params.limit != undefined ? { limit: params.limit } : {})
         }
       })
     } as IVeoQueryDefinition<GraphParams, IGraphResult>

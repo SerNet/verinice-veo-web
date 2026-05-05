@@ -72,7 +72,7 @@ export function useGraph(
   graphData: Ref<IGraphResult | undefined>,
   isLoading: Ref<boolean>
 ) {
-  let forceGraph: ForceGraphInstance;
+  let forceGraph: ForceGraphInstance | null = null;
   let ro: ResizeObserver | null = null;
 
   const route = useRoute();
@@ -298,11 +298,8 @@ export function useGraph(
   };
 
   // Initialize and configure the ForceGraph instance
-  const initGraph = (container: HTMLElement) => {
+  const initGraph = (container: HTMLElement): ForceGraphInstance | null => {
     try {
-      if (forceGraph) {
-        cleanup();
-      }
       const ForceGraphAny = ForceGraph as unknown as () => any;
       const graph = ForceGraphAny()(container);
 
@@ -338,6 +335,7 @@ export function useGraph(
       return graph;
     } catch (error) {
       console.error('Graph Failed', error);
+      return null;
     }
   };
 
@@ -377,10 +375,14 @@ export function useGraph(
     }
   };
 
-  onMounted(async () => {
-    if (graphContainerRef.value) {
-      forceGraph = initGraph(graphContainerRef.value);
-      applyGraphThemeClass();
+  onMounted(() => {
+    if (!graphContainerRef.value) return;
+
+    forceGraph = initGraph(graphContainerRef.value);
+    applyGraphThemeClass();
+
+    if (graphData.value) {
+      renderGraph(graphData.value);
     }
   });
 

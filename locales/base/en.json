@@ -262,6 +262,7 @@
     "preSelectedDomainBody": "Because you are importing objects from the profile { profile }, the domain { domain } is preselected."
   },
   "graph": {
-    "tooManyElements": "Too many related objects."
+    "displayed": "of {total} related objects",
+    "limitSelectLabel": "Select maximum number of related objects"
   }
 }

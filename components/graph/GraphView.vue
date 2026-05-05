@@ -16,11 +16,22 @@
 -->
 <template>
   <div>
-    <v-alert v-if="isTooManyElements" type="error" variant="tonal" color="primary">
-      {{ t('graph.tooManyElements') }}
-    </v-alert>
+    <div class="graph-toolbar">
+      <v-select
+        v-model="selectedLimit"
+        :items="limitOptions"
+        density="compact"
+        variant="outlined"
+        hide-details
+        class="graph-limit-select"
+        :aria-label="t('graph.limitSelectLabel')"
+      />
 
-    <LoadingWrapper v-else-if="isGraphReady" />
+      <span>
+        {{ t('graph.displayed', { total: totalCount }) }}
+      </span>
+    </div>
+    <LoadingWrapper v-if="isGraphLoading" />
     <div ref="graphContainerRef" class="graphContainerRef"></div>
   </div>
 </template>
@@ -33,22 +44,56 @@ import graphQueryDefinition from '~/composables/api/queryDefinitions/graph';
 import LoadingWrapper from '../layout/LoadingWrapper.vue';
 import { useI18n } from 'vue-i18n';
 
+const DEFAULT_LIMIT = 25;
+const BASE_LIMIT_OPTIONS = [10, 25, 50, 100];
+const LIMIT_STEP = 50;
+const LIMIT_START = 150;
+
 const route = useRoute();
 const graphContainerRef = ref<HTMLDivElement | null>(null);
 const isload = ref(true);
 const { t } = useI18n();
+const selectedLimit = ref(DEFAULT_LIMIT);
+
+const limitOptions = computed(() => {
+  const count = totalCount.value;
+
+  if (!count) {
+    return BASE_LIMIT_OPTIONS;
+  }
+
+  const options = [...BASE_LIMIT_OPTIONS];
+
+  if (!options.includes(count)) {
+    options.push(count);
+  }
+
+  for (let value = LIMIT_START; value <= count; value += LIMIT_STEP) {
+    options.push(value);
+  }
+
+  return [...new Set(options)].filter((value) => value <= count).sort((a, b) => a - b);
+});
 
 const graphParameters = computed(() => ({
   elementId: String(route.params.object),
   elementType: String(route.params.objectType),
-  domainId: String(route.params.domain)
+  domainId: String(route.params.domain),
+  limit: selectedLimit.value
 }));
 
-const { data, error } = useQuery(graphQueryDefinition.queries.fetchElementRelations, graphParameters, { retry: false });
+const { data } = useQuery(graphQueryDefinition.queries.fetchElementRelations, graphParameters, { retry: false });
+const totalCount = computed(() => data.value?.totalCount ?? 0);
 
-const isTooManyElements = computed(() => {
-  return error.value?.message?.includes('Too many related elements');
-});
+watch(
+  totalCount,
+  (count) => {
+    if (count > 0 && count < 25) {
+      selectedLimit.value = count;
+    }
+  },
+  { immediate: true }
+);
 
 const graphData = computed(() => {
   return data.value;
@@ -61,5 +106,5 @@ onUnmounted(() => {
   destroy();
 });
 
-const isGraphReady = computed(() => isload.value && graphContainerRef.value);
+const isGraphLoading = computed(() => isload.value && graphContainerRef.value);
 </script>

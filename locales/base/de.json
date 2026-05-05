@@ -265,6 +265,7 @@
     "preSelectedDomainBody": "Weil Sie Objekte aus dem Profil { profile } importieren, ist die Domäne { domain } vorausgewählt."
   },
   "graph": {
-    "tooManyElements": "Zu viele benachbarte Objekte"
+    "displayed": "von {total} benachbarten Objekten angezeigt",
+    "limitSelectLabel": "Maximale Anzahl benachbarter Objekte auswählen"
   }
 }
