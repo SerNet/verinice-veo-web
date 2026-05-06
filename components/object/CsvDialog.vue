@@ -104,7 +104,8 @@
                 <tr>
                   <th v-for="header in headers" :key="header">
                     <v-autocomplete
-                      :value="getFieldTranslation(headerMappings[header])"
+                      v-model:search="headerSearchTerms[header]"
+                      :model-value="getSelectedOption(header)"
                       :items="getAvailableOptions(header)"
                       dense
                       :label="getHeaderLabel(header)"
@@ -247,6 +248,7 @@ const failedImports = ref<{ item: any; error: string }[]>([]);
 const importedItems = ref<number>(0);
 const totalItems = ref<number>(0);
 const headerMappings = ref<Record<string, string>>({});
+const headerSearchTerms = ref<Record<string, string>>({});
 const csvTableRef = ref();
 const editingItem = ref<any>(null);
 const editingKey = ref<string>('');
@@ -363,6 +365,7 @@ const hasAllRequiredFields = computed(() => {
 
 props.headers.forEach((header) => {
   headerMappings.value[header] = '';
+  headerSearchTerms.value[header] = '';
 });
 
 const confirmCloseMessage = computed(() => {
@@ -447,6 +450,11 @@ const getAvailableOptions = (header: string) => {
       value: option,
       title: getFieldTranslation(option)
     }));
+};
+
+const getSelectedOption = (header: string) => {
+  const mappedValue = headerMappings.value[header];
+  return getAvailableOptions(header).find((option) => option.value === mappedValue) ?? null;
 };
 
 const getMappedHeader = (requiredField: string) => {
@@ -625,6 +633,7 @@ const cancelImport = () => {
 
 const updateMapping = (key: string, value: string | undefined) => {
   headerMappings.value[key] = value || '';
+  headerSearchTerms.value[key] = value ? getFieldTranslation(value) : '';
 };
 
 const updateView = (value: boolean) => {
