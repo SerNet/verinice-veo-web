@@ -54,7 +54,14 @@ async function exportUnit(index: number) {
     if (!id) throw new Error('Unit ID is undefined');
 
     const path = `units/${id}/export`;
-    const data = await read({ path });
+    const data = await read({
+      path,
+      options: {
+        headers: {
+          Accept: 'application/vnd.sernet.verinice.unit-dump.v2+json'
+        }
+      }
+    });
 
     const cleanFileName = (value) => String(value).replace(/[^\w-]/g, '_');
 
