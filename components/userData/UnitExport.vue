@@ -56,7 +56,11 @@ async function exportUnit(index: number) {
     const path = `units/${id}/export`;
     const data = await read({ path });
 
-    const fileName = `${username.value}_${data.unit?.name ?? 'unit_export'}`;
+    const cleanFileName = (value) => String(value).replace(/[^\w-]/g, '_');
+
+    const safeUsername = cleanFileName(username.value);
+    const safeUnitName = cleanFileName(data.unit?.name ?? 'unit_export');
+    const fileName = `${safeUsername}_${safeUnitName}`;
     await downloadZIP(data, fileName);
 
     displaySuccessMessage(t('successHeader'));
