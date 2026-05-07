@@ -1,6 +1,6 @@
 #!/bin/sh
-# Example usage: ./release-frontend.sh 1.0.0
-# Example usage: ./release-frontend.sh 1.0.0 develop (if on a branch different from develop but you want to merge develop)
+# Example usage: ./scripts/release-frontend.sh 1.0.0
+# Example usage: ./scripts/release-frontend.sh 1.0.0 develop (if on a branch different from develop but you want to merge develop)
 MAIN_BRANCH="master"
 FALLBACK_BRANCH="develop"
 

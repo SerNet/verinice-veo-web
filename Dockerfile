@@ -46,8 +46,8 @@ RUN chown -R 0 /usr/src/app && chmod -R g+rwX /usr/src/app
 COPY  nginx.conf /etc/nginx/conf.d/custom.conf
 
 
-COPY startup.sh /usr/src/app
-RUN chmod +x /usr/src/app/startup.sh
+COPY scripts/startup.sh /usr/src/app/scripts/
+RUN chmod +x /usr/src/app/scripts/startup.sh
 
 ENV VEO_DEFAULT_API_URL=https://api.veo.example/veo
 ENV VEO_FORMS_API_URL=https://api.veo.example/forms
@@ -63,4 +63,4 @@ ENV VEO_HIDE_SERNET_REFERENCES=veo-hide-sernet-references-example
 
 EXPOSE 80
 
-CMD ["/usr/src/app/startup.sh"]
+CMD ["/usr/src/app/scripts/startup.sh"]

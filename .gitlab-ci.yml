@@ -134,9 +134,9 @@ build_test_app:
       - .npm/
   before_script:
     - npm ci --cache .npm --prefer-offline
-    - chmod +x ./setup-env.sh
+    - chmod +x ./scripts/setup-env.sh
   script:
-    - ./setup-env.sh
+    - ./scripts/setup-env.sh
     - npm run generate
   artifacts:
     expire_in: 1 week
@@ -175,8 +175,8 @@ build_test_app:
       - .npm/
   before_script:
     - npm ci --cache .npm --prefer-offline
-    - chmod +x ./setup-env.sh ./run-parallel-tests.sh
-    - ./setup-env.sh
+    - chmod +x ./scripts/setup-env.sh ./scripts/run-parallel-tests.sh
+    - ./scripts/setup-env.sh
     - apt-get update && apt-get install -y xvfb
     - Xvfb :99 & # Start Xvfb
     - export DISPLAY=:99 # Set the DISPLAY environment variable
@@ -189,7 +189,7 @@ test:
   extends: .test_template
   script:
     - npm run prepare
-    - ./run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
+    - ./scripts/run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
     - pkill -f Xvfb # Kill Xvfb after tests
 
 docker_image:
