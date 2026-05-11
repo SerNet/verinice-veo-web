@@ -271,7 +271,6 @@ import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
-import { hasFeature } from '~/utils/featureFlags';
 
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 
@@ -399,48 +398,18 @@ const filter = computed(() => {
 //
 // table stuff
 //
-const parsePage = (raw: string | string[]) => {
-  if (!hasFeature('urlParams')) return 0;
-  return Math.max(0, parseInt(stringOrFirstValue(raw)) || 0);
-};
-
-const page = ref(parsePage(route.query.page));
+const page = ref(0);
 
 const cardsPageChange = (value: number) => {
   page.value = value - 1;
 };
-const sortBy = ref([
-  route.query.sortOrder ? { key: route.query.sortBy, order: route.query.sortOrder } : { key: 'name', order: 'asc' }
-]);
+const sortBy = ref([{ key: 'name', order: 'asc' }]);
 const resetQueryOptions = () => {
   page.value = 0;
   sortBy.value = [{ key: 'name', order: 'asc' }];
 };
 
-watch(
-  filter,
-  () => {
-    if (hasFeature('urlParams')) return;
-    resetQueryOptions();
-  },
-  { deep: true }
-);
-
-function resetPage() {
-  page.value = 0;
-}
-
-watch(
-  () => route.query,
-  (newValue, oldValue) => {
-    if (!hasFeature('urlParams')) return;
-    if (newValue?.page !== oldValue?.page) {
-      page.value = parsePage(newValue.page);
-      return;
-    }
-    resetPage();
-  }
-);
+watch(filter, resetQueryOptions, { deep: true });
 
 const search = ref<VeoSearch[]>([]);
 
@@ -456,12 +425,8 @@ const combinedQueryParameters = computed<any>(() => ({
   ...getSearchQueryParameters(search.value)
 }));
 
-// Sync request parameters with URL query parameters, if enabled
-const { queryParams } =
-  hasFeature('urlParams') ? useQueryParams(combinedQueryParameters) : { queryParams: combinedQueryParameters };
-
 const queryEnabled = computed(() => !!VeoElementTypePlurals[filter.value.objectType as string]);
-const { data: items, isFetching: isLoadingObjects } = useFetchObjects(queryParams, {
+const { data: items, isFetching: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
   enabled: queryEnabled,
   keepPreviousData: true
 });
