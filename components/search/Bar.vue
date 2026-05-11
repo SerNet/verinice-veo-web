@@ -71,6 +71,7 @@ const props = withDefaults(
     filters?: VeoSearchFilters;
     operators?: VeoSearchOperators;
     density?: 'default' | 'comfortable' | 'compact';
+    initialSearch?: VeoSearch[];
   }>(),
   {
     filters: () => ({
@@ -81,7 +82,8 @@ const props = withDefaults(
       all: ['='],
       default: '='
     }),
-    density: 'default'
+    density: 'default',
+    initialSearch: () => []
   }
 );
 
@@ -128,6 +130,10 @@ const search = defineModel<VeoSearch[]>('search', {
   default: []
 });
 
+// Initialize search from props
+if (props.initialSearch?.length) {
+  search.value = props.initialSearch;
+}
 // v-combobox menu items
 const selectionItems = computed(() => {
   const lastSearchPart: Partial<VeoSearch> = search.value.at(-1) ?? {};
