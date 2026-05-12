@@ -254,8 +254,10 @@ export default defineComponent({
       const splittedTimeString = newValue.split(':');
       const hours = parseInt(splittedTimeString[0] || '', 10);
       const minutes = parseInt(splittedTimeString[1] || '', 10);
+      const second = parseInt(splittedTimeString[2] || '', 10);
+
       if (hours !== undefined && minutes !== undefined) {
-        dateObject.setHours(hours, minutes);
+        dateObject.setHours(hours, minutes, second);
         emit('update:model-value', formatISO(dateObject));
       } else {
         emit('update:model-value', newValue);
