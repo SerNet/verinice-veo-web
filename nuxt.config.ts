@@ -11,6 +11,7 @@ export default defineNuxtConfig({
   //==============================================================
   telemetry: false,
   experimental: {
+    viteEnvironmentApi: true,
     entryImportMap: false
   },
 
