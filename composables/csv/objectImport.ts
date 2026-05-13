@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const supportedCsvImportAttributeTypes = ['text', 'string', 'boolean'] as const;
+export const supportedCsvImportAttributeTypes = ['text', 'string', 'boolean', 'integer'] as const;
 
 export type CsvImportAttributeType = (typeof supportedCsvImportAttributeTypes)[number];
 
@@ -57,21 +57,51 @@ export function isBooleanCsvImportValue(value: any) {
   return ['0', '1', 0, 1].includes(value);
 }
 
+export function isIntegerCsvImportValue(value: any) {
+  if (isEmptyCsvImportValue(value)) return true;
+  return Number.isInteger(Number(String(value).trim()));
+}
+
 export function normalizeCsvImportValue(
   value: any,
   type: CsvImportAttributeType | 'default' = 'default'
 ): NormalizedCsvImportValue {
-  if (type === 'boolean') {
-    if (isEmptyCsvImportValue(value)) return { shouldAssign: false, value: null };
-    if (value === 1 || value === '1') return { shouldAssign: true, value: true };
-    if (value === 0 || value === '0') return { shouldAssign: true, value: false };
-    return { shouldAssign: true, value };
+  if (isEmptyCsvImportValue(value)) {
+    switch (type) {
+      case 'boolean':
+      case 'integer':
+        return { shouldAssign: false, value: null };
+
+      default:
+        return { shouldAssign: true, value: '' };
+    }
   }
 
-  if (value === null || value === undefined) return { shouldAssign: true, value: '' };
+  const raw = String(value).trim();
 
-  const trimmedValue = String(value).trim();
-  if (trimmedValue === '' || trimmedValue === '-') return { shouldAssign: true, value: '' };
+  switch (type) {
+    case 'boolean': {
+      if (raw === '1') {
+        return { shouldAssign: true, value: true };
+      }
 
-  return { shouldAssign: true, value };
+      if (raw === '0') {
+        return { shouldAssign: true, value: false };
+      }
+      return { shouldAssign: false, value: null };
+    }
+
+    case 'integer': {
+      if (isIntegerCsvImportValue(raw)) {
+        return { shouldAssign: true, value: Number(raw) };
+      }
+      return { shouldAssign: false, value: null };
+    }
+
+    default:
+      return {
+        shouldAssign: true,
+        value: raw
+      };
+  }
 }

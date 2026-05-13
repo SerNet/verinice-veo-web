@@ -123,7 +123,7 @@
                 </tr>
               </template>
               <template v-for="header in localHeaders" :key="header.value" #[`item.${header.value}`]="{ item, index }">
-                <div :key="header.value" @click="startEditing(item, header.value)">
+                <div @click="startEditing(item, header.value)">
                   <v-text-field
                     v-if="editingItem === item && editingKey === header.value"
                     v-model="item[header.value]"
@@ -198,6 +198,7 @@ import {
   extractImportableCustomAttributes,
   isBooleanCsvImportValue,
   isEmptyCsvImportValue,
+  isIntegerCsvImportValue,
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 import type { IAlertButton } from '../base/Alert.vue';
@@ -697,6 +698,12 @@ const validateAll = () => {
       if (fieldType === 'boolean') {
         if (!isBooleanCsvImportValue(value)) {
           errors[field] = t('importObjects.booleanFormat');
+        }
+        return;
+      }
+      if (fieldType === 'integer') {
+        if (!isIntegerCsvImportValue(value)) {
+          errors[field] = t('importObjects.integerFormat');
         }
         return;
       }
