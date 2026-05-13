@@ -141,7 +141,7 @@
                       'error-cell': validationErrors[index]?.[headerMappings[header.value]]
                     }"
                   >
-                    {{ item[header.value] || '-' }}
+                    {{ formatCellValue(item[header.value]) }}
                   </span>
                   <div v-if="validationErrors[index]?.[headerMappings[header.value]]" class="error">
                     {{ validationErrors[index][headerMappings[header.value]] }}
@@ -194,6 +194,12 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import {
+  extractImportableCustomAttributes,
+  isBooleanCsvImportValue,
+  isEmptyCsvImportValue,
+  normalizeCsvImportValue
+} from '~/composables/csv/objectImport';
 import type { IAlertButton } from '../base/Alert.vue';
 
 interface MappedHeader {
@@ -311,15 +317,7 @@ const customAttributes = computed(() => {
   if (!typeDef) return [];
   const translations = typeDef.translations?.[locale.value] || typeDef.translations?.['de'] || {};
 
-  return Object.entries(typeDef.customAspects || {}).flatMap(([customAspectKey, customAspectDef]: [string, any]) =>
-    Object.entries(customAspectDef.attributeDefinitions || {})
-      .filter(([_, attrDef]: [string, any]) => ['text', 'string'].includes(attrDef.type))
-      .map(([attrKey]: [string, any]) => ({
-        key: attrKey,
-        title: translations[attrKey] || attrKey,
-        customAspect: customAspectKey
-      }))
-  );
+  return extractImportableCustomAttributes(typeDef, translations);
 });
 
 const unmappedRequiredFields = computed(() => props.requiredFields.filter((field) => !getMappedHeader(field)));
@@ -573,10 +571,14 @@ watch(invalidCount, (count) => {
 });
 
 const normalizeValue = (value: any) => {
-  if (value === null || value === undefined) return '';
-  const v = String(value).trim();
-  if (v === '' || v === '-') return '';
-  return value;
+  return normalizeCsvImportValue(value);
+};
+
+const getFieldType = (fieldKey: string) =>
+  customAttributes.value.find((attr) => attr.key === fieldKey)?.type ?? 'string';
+
+const formatCellValue = (value: any) => {
+  return isEmptyCsvImportValue(value) ? '-' : String(value);
 };
 
 const startImport = async () => {
@@ -607,7 +609,10 @@ const startImport = async () => {
           if (!newItem.customAspects[customAttr.customAspect]) {
             newItem.customAspects[customAttr.customAspect] = {};
           }
-          newItem.customAspects[customAttr.customAspect][fieldKey] = normalizeValue(row[csvHeader]);
+          newItem.customAspects[customAttr.customAspect][fieldKey] = normalizeCsvImportValue(
+            row[csvHeader],
+            customAttr.type
+          );
         } else {
           newItem[fieldKey] = normalizeValue(row[csvHeader]);
         }
@@ -656,13 +661,6 @@ function importButtons(): IAlertButton[] {
 }
 
 const validateAll = () => {
-  const mappedFields = Object.values(headerMappings.value).filter(Boolean);
-
-  // ensure all required fields are mapped
-  if (!props.requiredFields.every((f) => mappedFields.includes(f))) {
-    validationErrors.value = {};
-    return;
-  }
   const newErrors: Record<number, Record<string, string>> = {};
 
   const inverseMappings: Record<string, string> = Object.fromEntries(
@@ -680,13 +678,21 @@ const validateAll = () => {
 
       // required field validation
       if (props.requiredFields.includes(field)) {
-        if (!value || value.toString().trim() === '') {
+        if (isEmptyCsvImportValue(value)) {
           errors[field] = t('global.input.required');
           return;
         }
       }
-      // string validation
-      if (value !== null && value !== undefined && typeof value !== 'string') {
+      const fieldType = getFieldType(field);
+
+      if (fieldType === 'boolean') {
+        if (!isBooleanCsvImportValue(value)) {
+          errors[field] = t('importObjects.booleanFormat');
+        }
+        return;
+      }
+
+      if (!isEmptyCsvImportValue(value) && typeof value !== 'string') {
         errors[field] = t('global.input.mustBeString');
       }
     });
