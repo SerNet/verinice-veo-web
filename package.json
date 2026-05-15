@@ -99,7 +99,7 @@
     "sass": "1.99.0",
     "typescript-eslint": "8.59.2",
     "vite-tsconfig-paths": "6.1.1",
-    "vitest": "4.1.5",
+    "vitest": "4.1.6",
     "vue-tsc": "3.2.8"
   },
   "overrides": {
