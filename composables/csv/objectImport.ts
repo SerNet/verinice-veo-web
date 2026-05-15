@@ -26,6 +26,11 @@ export interface CsvImportAttribute {
   type: CsvImportAttributeType;
 }
 
+export interface NormalizedCsvImportValue {
+  shouldAssign: boolean;
+  value: any;
+}
+
 export function isSupportedCsvImportAttributeType(type: unknown): type is CsvImportAttributeType {
   return supportedCsvImportAttributeTypes.includes(type as CsvImportAttributeType);
 }
@@ -52,18 +57,21 @@ export function isBooleanCsvImportValue(value: any) {
   return ['0', '1', 0, 1].includes(value);
 }
 
-export function normalizeCsvImportValue(value: any, type: CsvImportAttributeType | 'default' = 'default') {
+export function normalizeCsvImportValue(
+  value: any,
+  type: CsvImportAttributeType | 'default' = 'default'
+): NormalizedCsvImportValue {
   if (type === 'boolean') {
-    if (isEmptyCsvImportValue(value)) return null;
-    if (value === 1 || value === '1') return true;
-    if (value === 0 || value === '0') return false;
-    return value;
+    if (isEmptyCsvImportValue(value)) return { shouldAssign: false, value: null };
+    if (value === 1 || value === '1') return { shouldAssign: true, value: true };
+    if (value === 0 || value === '0') return { shouldAssign: true, value: false };
+    return { shouldAssign: true, value };
   }
 
-  if (value === null || value === undefined) return '';
+  if (value === null || value === undefined) return { shouldAssign: true, value: '' };
 
   const trimmedValue = String(value).trim();
-  if (trimmedValue === '' || trimmedValue === '-') return '';
+  if (trimmedValue === '' || trimmedValue === '-') return { shouldAssign: true, value: '' };
 
-  return value;
+  return { shouldAssign: true, value };
 }

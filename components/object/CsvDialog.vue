@@ -571,7 +571,7 @@ watch(invalidCount, (count) => {
 });
 
 const normalizeValue = (value: any) => {
-  return normalizeCsvImportValue(value);
+  return normalizeCsvImportValue(value).value;
 };
 
 const getFieldType = (fieldKey: string) =>
@@ -600,22 +600,31 @@ const startImport = async () => {
 
     // Iterate over the inverse mappings to extract the data correctly
     Object.entries(inverseMappings).forEach(([fieldKey, csvHeader]) => {
-      // If the user mapped this field AND there is data in the row
-      if (csvHeader && row[csvHeader] !== undefined) {
-        // Check if this is a Custom Aspect (does it exist in our computed list?)
-        const customAttr = customAttributes.value.find((a) => a.key === fieldKey);
+      if (!csvHeader) {
+        return;
+      }
 
-        if (customAttr) {
-          if (!newItem.customAspects[customAttr.customAspect]) {
-            newItem.customAspects[customAttr.customAspect] = {};
-          }
-          newItem.customAspects[customAttr.customAspect][fieldKey] = normalizeCsvImportValue(
-            row[csvHeader],
-            customAttr.type
-          );
-        } else {
-          newItem[fieldKey] = normalizeValue(row[csvHeader]);
+      // Check if this is a Custom Aspect (does it exist in our computed list?)
+      const customAttr = customAttributes.value.find((a) => a.key === fieldKey);
+
+      // Keep previous behavior for text/string fields: undefined cells are skipped entirely.
+      if (row[csvHeader] === undefined && customAttr?.type !== 'boolean') {
+        return;
+      }
+
+      if (customAttr) {
+        const normalizedValue = normalizeCsvImportValue(row[csvHeader], customAttr.type);
+
+        if (!normalizedValue.shouldAssign) {
+          return;
         }
+
+        if (!newItem.customAspects[customAttr.customAspect]) {
+          newItem.customAspects[customAttr.customAspect] = {};
+        }
+        newItem.customAspects[customAttr.customAspect][fieldKey] = normalizedValue.value;
+      } else {
+        newItem[fieldKey] = normalizeValue(row[csvHeader]);
       }
     });
 
