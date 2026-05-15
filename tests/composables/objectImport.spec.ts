@@ -51,15 +51,20 @@ describe('object CSV import helpers', () => {
     expect(isBooleanCsvImportValue(null)).toBe(true);
     expect(isBooleanCsvImportValue(undefined)).toBe(true);
     expect(isBooleanCsvImportValue('ja')).toBe(false);
+    expect(isBooleanCsvImportValue('""')).toBe(false);
+    expect(isBooleanCsvImportValue('-')).toBe(false);
     expect(isBooleanCsvImportValue(true)).toBe(false);
     expect(isBooleanCsvImportValue(false)).toBe(false);
   });
 
   it('should normalize imported boolean values to API payload values', () => {
-    expect(normalizeCsvImportValue(0, 'boolean')).toBe(false);
-    expect(normalizeCsvImportValue(1, 'boolean')).toBe(true);
-    expect(normalizeCsvImportValue('', 'boolean')).toBeNull();
-    expect(normalizeCsvImportValue('   ', 'boolean')).toBeNull();
-    expect(normalizeCsvImportValue(null, 'boolean')).toBeNull();
+    expect(normalizeCsvImportValue(0, 'boolean')).toEqual({ shouldAssign: true, value: false });
+    expect(normalizeCsvImportValue(1, 'boolean')).toEqual({ shouldAssign: true, value: true });
+    expect(normalizeCsvImportValue('', 'boolean')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue('   ', 'boolean')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue(null, 'boolean')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue(undefined, 'boolean')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue('""', 'boolean')).toEqual({ shouldAssign: true, value: '""' });
+    expect(normalizeCsvImportValue('-', 'boolean')).toEqual({ shouldAssign: true, value: '-' });
   });
 });
