@@ -78,7 +78,7 @@
     "@types/intro.js": "5.1.5",
     "@types/js-cookie": "3.0.6",
     "@types/lodash": "4.17.24",
-    "@types/node": "24.12.3",
+    "@types/node": "24.12.4",
     "@types/prismjs": "1.26.6",
     "@typescript-eslint/eslint-plugin": "8.59.2",
     "@vitejs/plugin-vue": "6.0.6",
