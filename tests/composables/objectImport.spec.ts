@@ -15,11 +15,28 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
+/*
+ * verinice.veo web
+ * Copyright (C) 2026 Haneen Husin
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Affero General Public License
+ * as published by the Free Software Foundation, either version 3 of the License,
+ * or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+ * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License along with this program.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
 import { describe, expect, it } from 'vitest';
 import {
   extractImportableCustomAttributes,
   isBooleanCsvImportValue,
   isIntegerCsvImportValue,
+  isLinkCsvImportValue,
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 
@@ -31,7 +48,8 @@ describe('object CSV import helpers', () => {
           attributeDefinitions: {
             asset_meta_name: { type: 'string' },
             asset_meta_enabled: { type: 'boolean' },
-            asset_meta_rank: { type: 'integer' }
+            asset_meta_rank: { type: 'integer' },
+            asset_meta_webSite: { type: 'externalDocument' }
           }
         }
       }
@@ -40,7 +58,8 @@ describe('object CSV import helpers', () => {
     const attributes = extractImportableCustomAttributes(typeDef, {
       asset_meta_name: 'Name',
       asset_meta_enabled: 'Enabled',
-      asset_meta_rank: 'Rank'
+      asset_meta_rank: 'Rank',
+      asset_meta_webSite: 'webSite'
     });
 
     expect(attributes).toEqual([
@@ -61,6 +80,12 @@ describe('object CSV import helpers', () => {
         title: 'Rank',
         customAspect: 'asset_meta',
         type: 'integer'
+      },
+      {
+        key: 'asset_meta_webSite',
+        title: 'webSite',
+        customAspect: 'asset_meta',
+        type: 'externalDocument'
       }
     ]);
   });
@@ -99,6 +124,13 @@ describe('object CSV import helpers', () => {
     expect(normalizeCsvImportValue(null, 'integer')).toEqual({ shouldAssign: false, value: null });
     expect(normalizeCsvImportValue(undefined, 'integer')).toEqual({ shouldAssign: false, value: null });
     expect(normalizeCsvImportValue('-', 'integer')).toEqual({ shouldAssign: false, value: null });
+
+    expect(normalizeCsvImportValue('https://test', 'externalDocument')).toEqual({
+      shouldAssign: true,
+      value: 'https://test'
+    });
+    expect(normalizeCsvImportValue('', 'externalDocument')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue('   ', 'externalDocument')).toEqual({ shouldAssign: false, value: null });
   });
 
   it('should accept only integer imports or empty values', () => {
@@ -109,5 +141,18 @@ describe('object CSV import helpers', () => {
     expect(isIntegerCsvImportValue('')).toBe(true);
     expect(isIntegerCsvImportValue('   ')).toBe(true);
     expect(isIntegerCsvImportValue(null)).toBe(true);
+  });
+  it('should normalize URL values correctly', () => {
+    expect(isLinkCsvImportValue('https://test')).toBe(true);
+    expect(isLinkCsvImportValue('http://localhost')).toBe(true);
+
+    expect(isLinkCsvImportValue('')).toBe(true);
+    expect(isLinkCsvImportValue('   ')).toBe(true);
+    expect(isLinkCsvImportValue(null)).toBe(true);
+    expect(isLinkCsvImportValue(undefined)).toBe(true);
+
+    expect(isLinkCsvImportValue('No-URL')).toBe(false);
+    expect(isLinkCsvImportValue('http')).toBe(false);
+    expect(isLinkCsvImportValue('""')).toBe(false);
   });
 });

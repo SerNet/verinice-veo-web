@@ -61,6 +61,18 @@ export function isIntegerCsvImportValue(value: any) {
   if (isEmptyCsvImportValue(value)) return true;
   return Number.isInteger(Number(String(value).trim()));
 }
+export function isLinkCsvImportValue(value: any): boolean {
+  if (isEmptyCsvImportValue(value)) {
+    return true;
+  }
+  try {
+    const url = new URL(value);
+
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
 
 export function normalizeCsvImportValue(
   value: any,
@@ -70,6 +82,7 @@ export function normalizeCsvImportValue(
     switch (type) {
       case 'boolean':
       case 'integer':
+      case 'externalDocument':
         return { shouldAssign: false, value: null };
 
       default:
@@ -97,7 +110,12 @@ export function normalizeCsvImportValue(
       }
       return { shouldAssign: false, value: null };
     }
-
+    case 'externalDocument': {
+      if (isLinkCsvImportValue(raw)) {
+        return { shouldAssign: true, value: raw };
+      }
+      return { shouldAssign: false, value: null };
+    }
     default:
       return {
         shouldAssign: true,
