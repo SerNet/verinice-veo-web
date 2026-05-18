@@ -22,9 +22,15 @@ export type VeoSearch = {
   operator?: string;
 };
 
+export type VeoSearchFilter = {
+  key: string;
+  value: string;
+  options?: Record<string, string>;
+};
+
 export type VeoSearchFilters = {
-  all: string[];
-  default: string;
+  all: VeoSearchFilter[];
+  default: VeoSearchFilter;
 };
 
 export type VeoSearchOperators = {
@@ -32,9 +38,4 @@ export type VeoSearchOperators = {
   default: string;
 };
 
-type VeoSearchQueryParameter = { operator: string; term: string };
-export type VeoSearchQueryParameters = {
-  name?: VeoSearchQueryParameter;
-  abbreviation?: VeoSearchQueryParameter;
-  displayName?: VeoSearchQueryParameter;
-};
+export type VeoSearchQueryParameters = Record<string, string | undefined>;

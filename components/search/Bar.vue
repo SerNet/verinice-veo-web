@@ -54,7 +54,7 @@
 <script setup lang="ts">
 import { mdiCloseCircle, mdiFilter, mdiMagnify } from '@mdi/js';
 import { cloneDeep } from 'lodash';
-import type { VeoSearch, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
+import type { VeoSearch, VeoSearchFilter, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
 type UpdateSearchMsg = {
   type: string;
@@ -75,8 +75,12 @@ const props = withDefaults(
   }>(),
   {
     filters: () => ({
-      all: ['abbreviation', 'name', 'displayName'],
-      default: 'displayName'
+      all: [
+        { key: 'abbreviation', value: 'abbreviation' },
+        { key: 'name', value: 'name' },
+        { key: 'displayName', value: 'displayName' }
+      ],
+      default: { key: 'displayName', value: 'displayName' }
     }),
     operators: () => ({
       all: ['='],
@@ -87,8 +91,8 @@ const props = withDefaults(
   }
 );
 
-const { t } = useI18n();
-const filters = [...props.filters.all];
+const { t, te } = useI18n();
+const filters: VeoSearchFilter[] = [...props.filters.all];
 const operators = [...props.operators.all];
 
 function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
@@ -105,7 +109,7 @@ function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
         ...search,
         {
           ...searchPart,
-          searchFilter: searchPart.searchFilter ?? props.filters.default,
+          searchFilter: searchPart.searchFilter ?? props.filters.default.key,
           operator: searchPart.operator ?? props.operators.default,
           term: msg.newValue
         }
@@ -119,8 +123,16 @@ function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
   }
 }
 
-function translateItem(item: string) {
-  if (filters.includes(item)) return t(`searchFilter_${item}`);
+function translateItem(item: VeoSearchFilter | string) {
+  if (typeof item === 'object') {
+    const i18nKey = `searchFilter_${item.key}`;
+    return te(i18nKey) ? t(i18nKey) : item.value;
+  }
+  const filterByKey = filters.find((f) => f.key === item);
+  if (filterByKey) {
+    const i18nKey = `searchFilter_${filterByKey.key}`;
+    return te(i18nKey) ? t(i18nKey) : filterByKey.value;
+  }
   return item;
 }
 
@@ -165,12 +177,11 @@ watch(select, () => {
   const oldSearch = cloneDeep(search.value);
   select.value = undefined;
 
-  // User selected a filter
-  if (filters.includes(newValue)) {
+  if (typeof newValue === 'object' && 'key' in newValue) {
     return (search.value = updateSearch({
       type: 'updateFilter',
       oldSearch,
-      newValue
+      newValue: (newValue as VeoSearchFilter).key
     }));
   }
 

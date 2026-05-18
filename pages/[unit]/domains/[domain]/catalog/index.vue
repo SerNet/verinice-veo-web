@@ -125,7 +125,13 @@ const { data: _catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
 const { subTypeTranslation: currentSubTypeTranslated } = useSubTypeTranslation();
 
 // SEARCH
-const searchFilters = { all: ['abbreviation', 'name'], default: 'name' };
+const searchFilters = {
+  all: [
+    { key: 'abbreviation', value: 'abbreviation' },
+    { key: 'name', value: 'name' }
+  ],
+  default: { key: 'name', value: 'name' }
+};
 
 // v-model from `SearchBar`
 const search = ref<VeoSearch[]>([]);
@@ -134,7 +140,8 @@ const search = ref<VeoSearch[]>([]);
 const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
   baseQueryParameters: fetchCatalogItemsQueryParameters,
   queryDefinition: catalogQueryDefinitions.queries.fetchCatalogItems,
-  search
+  search,
+  filters: searchFilters
 });
 
 const catalogItems = computed<IVeoPaginatedResponse<IVeoEntity[]>>(() => {

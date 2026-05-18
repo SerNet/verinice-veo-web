@@ -25,13 +25,12 @@ type UseSearchParams<T> = {
   baseQueryParameters: Ref<T & { endpoint?: string; page?: number }>;
   search: Ref<VeoSearch[]>;
   queryDefinition?: any;
+  filters?: VeoSearchFilters;
 };
 
 type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
 
-type SearchKey = 'abbreviation' | 'displayName' | 'name';
-
-export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: UseSearchParams<T>): {
+export function useSearch<T>({ baseQueryParameters, search, queryDefinition, filters }: UseSearchParams<T>): {
   data: Ref<VeoSearchResponse>;
   isLoading: Ref<boolean>;
 } {
@@ -40,6 +39,7 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
   const isLoading = ref(false);
   const _queryDefinition = queryDefinition ? queryDefinition : elementQueryDefinitions.queries.fetchAll;
   const isObjectSearch = !queryDefinition;
+  const allowedKeys = filters?.all.map((f) => f.key);
 
   async function getSearchResults() {
     watch(
@@ -49,7 +49,7 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
         if (isObjectSearch && !baseQueryParameters.value?.endpoint) return;
         const parameters = ref({
           ...baseQueryParameters.value,
-          ...getSearchQueryParameters(search.value)
+          ...getSearchQueryParameters(search.value, allowedKeys)
         });
 
         try {
@@ -75,25 +75,14 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition }: U
   };
 }
 
-const defaultSearchKeys: SearchKey[] = ['abbreviation', 'displayName', 'name'];
-
-const defaultSearch = defaultSearchKeys.reduce(
-  (acc, key) => {
-    acc[key] = undefined;
-    return acc;
-  },
-  {} as Record<SearchKey, undefined>
-);
-
-export function getSearchQueryParameters(
-  search: VeoSearch[],
-  allowedKeys: SearchKey[] = defaultSearchKeys
-): VeoSearchQueryParameters {
-  if (!search.length) return defaultSearch;
+export function getSearchQueryParameters(search: VeoSearch[], allowedKeys?: string[]): VeoSearchQueryParameters {
+  if (!search.length) {
+    return allowedKeys ? Object.fromEntries(allowedKeys.map((key) => [key, undefined])) : {};
+  }
   return Object.fromEntries(
     search
-      .filter((item) => allowedKeys.includes(item.searchFilter as SearchKey))
-      .map((item) => [item.searchFilter, item.term])
+      .filter((item) => !!item.searchFilter && (!allowedKeys || allowedKeys.includes(item.searchFilter)))
+      .map((item) => [item.searchFilter as string, item.term])
   );
 }
 
@@ -102,11 +91,11 @@ export function useUrlFilters(filters: VeoSearchFilters, search: Ref<VeoSearch[]
   const urlFilters = computed<VeoSearch[]>(() =>
     filters.all
       .map((filter) => {
-        if (!route.query[filter]) return null;
+        if (!route.query[filter.key]) return null;
         return {
-          searchFilter: filter,
+          searchFilter: filter.key,
           operator: '=',
-          term: route.query[filter] as string
+          term: route.query[filter.key] as string
         };
       })
       .filter(Boolean)
