@@ -41,7 +41,7 @@ export const PROVIDE_KEYS = {
 
 <script setup lang="ts">
 import { cloneDeep } from 'lodash';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import { v5 as UUIDv5, v4 as UUIDv4 } from 'uuid';
 
 import type { IVeoFormSchemaItem } from '~/composables/api/queryDefinitions/forms';

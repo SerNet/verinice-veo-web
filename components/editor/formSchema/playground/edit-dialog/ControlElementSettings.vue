@@ -85,7 +85,7 @@
 
 <script setup lang="ts">
 import type { JSONSchema7 } from 'json-schema';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 
 import { PROVIDE_KEYS as FORMSCHEMA_PROVIDE_KEYS } from '~/pages/[unit]/domains/[domain]/editor/formschema.vue';
 import { controlTypeAlternatives, eligibleInputElements, INPUT_ELEMENTS } from '~/types/VeoEditor';

@@ -133,7 +133,7 @@ import { mdiUpload } from '@mdi/js';
 import type { IVeoFormsTranslations } from '~/components/dynamic-form/types';
 import { formsTranslationsToEditorTranslations } from '../translations/util';
 import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 
 const props = withDefaults(
   defineProps<{

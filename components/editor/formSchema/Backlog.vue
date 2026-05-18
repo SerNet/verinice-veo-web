@@ -188,7 +188,7 @@
 
 <script setup lang="ts">
 import { mdiArrowCollapseVertical, mdiAutoFix, mdiFormatText, mdiFormSelect } from '@mdi/js';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import { cloneDeep, pick, upperFirst } from 'lodash';
 import { v4 as uuid } from 'uuid';
 

@@ -90,7 +90,7 @@
 <script lang="ts">
 import type { Ref } from 'vue';
 import type { LocaleObject } from '@nuxtjs/i18n';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import { trim } from 'lodash';
 
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';

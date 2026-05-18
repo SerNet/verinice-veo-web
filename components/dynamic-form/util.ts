@@ -17,7 +17,7 @@
  */
 import addFormats from 'ajv-formats';
 import Ajv2019 from 'ajv/dist/2019';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import type { JSONSchema7 } from 'json-schema';
 import { cloneDeep, dropRight, merge, partition, pull } from 'lodash';
 import type { PropType } from 'vue';

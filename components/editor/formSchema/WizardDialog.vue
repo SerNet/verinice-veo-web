@@ -86,7 +86,7 @@
 
 <script lang="ts">
 import type { LocaleObject } from '@nuxtjs/i18n';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import type { Dictionary } from 'lodash';
 import { isEqual, merge, pick } from 'lodash';
 

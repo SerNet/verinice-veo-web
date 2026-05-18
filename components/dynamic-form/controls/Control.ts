@@ -17,7 +17,7 @@
  */
 import type { ComputedRef } from 'vue';
 import { maxBy } from 'lodash';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 
 import { VeoFormsControlProps } from '../util';
 import * as Autocomplete from './Autocomplete.vue';

@@ -112,7 +112,7 @@
 <script setup lang="ts">
 import { cloneDeep } from 'lodash';
 import { mdiAlphabetical, mdiFormTextbox, mdiMagicStaff, mdiTrashCanOutline } from '@mdi/js';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import type { JSONSchema7 } from 'json-schema';
 
 import type { FormSchemaElementMap } from '../Playground.vue';

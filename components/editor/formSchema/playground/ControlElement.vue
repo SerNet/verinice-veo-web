@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { mdiDrag, mdiPencilOutline, mdiTrashCanOutline } from '@mdi/js';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import type { JSONSchema7 } from 'json-schema';
 
 import type { IPlaygroundElement } from './Element.vue';

@@ -296,7 +296,7 @@ import {
 } from '@mdi/js';
 
 import { useDisplay } from 'vuetify';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import { cloneDeep, isArray } from 'lodash';
 
 import { getRiskAdditionalContext } from '~/components/dynamic-form/additionalContext';

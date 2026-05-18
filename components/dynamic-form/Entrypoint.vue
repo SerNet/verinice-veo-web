@@ -17,7 +17,7 @@
 -->
 <script lang="ts">
 import type { ErrorObject } from 'ajv';
-import { JsonPointer } from 'json-ptr';
+import { JsonPointer } from '~/lib/jsonPointer';
 import type { JSONSchema7 } from 'json-schema';
 import { cloneDeep, debounce, merge, take, takeRight } from 'lodash';
 import type { ComputedRef, PropType } from 'vue';
