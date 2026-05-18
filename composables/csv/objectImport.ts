@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const supportedCsvImportAttributeTypes = ['text', 'string', 'boolean', 'integer'] as const;
+export const supportedCsvImportAttributeTypes = ['text', 'string', 'boolean', 'integer', 'externalDocument'] as const;
 
 export type CsvImportAttributeType = (typeof supportedCsvImportAttributeTypes)[number];
 

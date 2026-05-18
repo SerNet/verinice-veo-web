@@ -199,6 +199,7 @@ import {
   isBooleanCsvImportValue,
   isEmptyCsvImportValue,
   isIntegerCsvImportValue,
+  isLinkCsvImportValue,
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 import type { IAlertButton } from '../base/Alert.vue';
@@ -698,6 +699,12 @@ const validateAll = () => {
       if (fieldType === 'boolean') {
         if (!isBooleanCsvImportValue(value)) {
           errors[field] = t('importObjects.booleanFormat');
+        }
+        return;
+      }
+      if (fieldType === 'externalDocument') {
+        if (!isLinkCsvImportValue(value)) {
+          errors[field] = t('importObjects.urlFormat');
         }
         return;
       }
