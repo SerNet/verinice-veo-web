@@ -195,7 +195,7 @@ watch(
  */
 
 const tableClassAndDensity = computed(() =>
-  hasCompactTable.value ? { class: 'ultra-compact-table', density: 'compact' } : {}
+  hasCompactTable.value ? { class: 'ultra-compact-table veo-fixed-table', density: 'compact' } : {}
 );
 
 /**
@@ -603,6 +603,9 @@ const sharedProps = computed(() => {
     headers: normalizedDisplayHeaders.value,
     page: localPage.value,
     sortBy: localSortBy.value,
+    fixedHeader: true,
+    class: 'veo-fixed-table',
+
     // Spread conditional event handlers
     ...onClickRowHandler,
 
@@ -753,13 +756,6 @@ const render = () => {
     line-height: 1.2 !important;
   }
 
-  .v-table__wrapper {
-    overflow-y: visible !important;
-    overflow-x: visible !important;
-    height: auto !important;
-    max-height: none !important;
-  }
-
   /* Items per page selector and footer elements */
   .v-data-table-footer__items-per-page {
     font-size: 12px !important;
@@ -811,5 +807,10 @@ const render = () => {
   &:hover {
     text-decoration: underline !important;
   }
+}
+
+.veo-fixed-table {
+  max-height: calc(100vh - 240px);
+  overflow-y: auto;
 }
 </style>
