@@ -35,6 +35,8 @@ import { describe, expect, it } from 'vitest';
 import {
   extractImportableCustomAttributes,
   isBooleanCsvImportValue,
+  isDateCsvImportValue,
+  isDateTimeCsvImportValue,
   isIntegerCsvImportValue,
   isLinkCsvImportValue,
   normalizeCsvImportValue
@@ -131,6 +133,17 @@ describe('object CSV import helpers', () => {
     });
     expect(normalizeCsvImportValue('', 'externalDocument')).toEqual({ shouldAssign: false, value: null });
     expect(normalizeCsvImportValue('   ', 'externalDocument')).toEqual({ shouldAssign: false, value: null });
+
+    expect(normalizeCsvImportValue('2026-02-28', 'date')).toEqual({ shouldAssign: true, value: '2026-02-28' });
+    expect(normalizeCsvImportValue('2026-02-29', 'date')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue('', 'date')).toEqual({ shouldAssign: false, value: null });
+
+    expect(normalizeCsvImportValue('2026-02-28T13:13:30', 'datetime')).toEqual({
+      shouldAssign: true,
+      value: '2026-02-28T13:13:30'
+    });
+    expect(normalizeCsvImportValue('2026-02-28T13:77:30', 'datetime')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue('', 'datetime')).toEqual({ shouldAssign: false, value: null });
   });
 
   it('should accept only integer imports or empty values', () => {
@@ -154,5 +167,22 @@ describe('object CSV import helpers', () => {
     expect(isLinkCsvImportValue('No-URL')).toBe(false);
     expect(isLinkCsvImportValue('http')).toBe(false);
     expect(isLinkCsvImportValue('""')).toBe(false);
+  });
+
+  it('should validate Date values correctly', () => {
+    expect(isDateCsvImportValue('2026-02-28')).toBe(true);
+    expect(isDateCsvImportValue('2026-02-29')).toBe(false);
+    expect(isDateCsvImportValue('2026-13-01')).toBe(false);
+    expect(isDateCsvImportValue('')).toBe(true);
+    expect(isDateCsvImportValue('   ')).toBe(true);
+    expect(isDateCsvImportValue(null)).toBe(true);
+  });
+  it('should validate DateTime values correctly', () => {
+    expect(isDateTimeCsvImportValue('2026-02-28T13:13:30')).toBe(true);
+    expect(isDateTimeCsvImportValue('2026-02-28T13:77:30')).toBe(false);
+    expect(isDateTimeCsvImportValue('2026-02-28 13:13:30')).toBe(false);
+    expect(isDateTimeCsvImportValue('')).toBe(true);
+    expect(isDateTimeCsvImportValue('   ')).toBe(true);
+    expect(isDateTimeCsvImportValue(null)).toBe(true);
   });
 });
