@@ -15,7 +15,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-export const supportedCsvImportAttributeTypes = ['text', 'string', 'boolean', 'integer', 'externalDocument'] as const;
+export const supportedCsvImportAttributeTypes = [
+  'text',
+  'string',
+  'boolean',
+  'integer',
+  'externalDocument',
+  'date',
+  'datetime'
+] as const;
 
 export type CsvImportAttributeType = (typeof supportedCsvImportAttributeTypes)[number];
 
@@ -74,6 +82,43 @@ export function isLinkCsvImportValue(value: any): boolean {
   }
 }
 
+export function isDateCsvImportValue(value: any) {
+  if (isEmptyCsvImportValue(value)) {
+    return true;
+  }
+  const raw = String(value).trim();
+  // YYYY-MM-DD
+  const regex = /^\d{4}-\d{2}-\d{2}$/;
+
+  if (!regex.test(raw)) {
+    return false;
+  }
+  const date = new Date(raw);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === raw;
+}
+
+export function isDateTimeCsvImportValue(value: any) {
+  if (isEmptyCsvImportValue(value)) {
+    return true;
+  }
+  const raw = String(value).trim();
+
+  // YYYY-MM-DDTHH:mm:ss
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})$/);
+  if (!match) return false;
+
+  const [, year, month, day, hours, minutes, seconds] = match.map(Number);
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return false;
+  }
+  if (hours < 0 || hours > 23) return false;
+  if (minutes < 0 || minutes > 59) return false;
+  if (seconds < 0 || seconds > 59) return false;
+
+  return true;
+}
+
 export function normalizeCsvImportValue(
   value: any,
   type: CsvImportAttributeType | 'default' = 'default'
@@ -83,6 +128,8 @@ export function normalizeCsvImportValue(
       case 'boolean':
       case 'integer':
       case 'externalDocument':
+      case 'date':
+      case 'datetime':
         return { shouldAssign: false, value: null };
 
       default:
@@ -104,18 +151,19 @@ export function normalizeCsvImportValue(
       return { shouldAssign: false, value: null };
     }
 
-    case 'integer': {
-      if (isIntegerCsvImportValue(raw)) {
-        return { shouldAssign: true, value: Number(raw) };
-      }
-      return { shouldAssign: false, value: null };
-    }
-    case 'externalDocument': {
-      if (isLinkCsvImportValue(raw)) {
-        return { shouldAssign: true, value: raw };
-      }
-      return { shouldAssign: false, value: null };
-    }
+    case 'integer':
+      return isIntegerCsvImportValue(raw) ?
+          { shouldAssign: true, value: Number(raw) }
+        : { shouldAssign: false, value: null };
+    case 'externalDocument':
+      return isLinkCsvImportValue(raw) ? { shouldAssign: true, value: raw } : { shouldAssign: false, value: null };
+
+    case 'date':
+      return isDateCsvImportValue(raw) ? { shouldAssign: true, value: raw } : { shouldAssign: false, value: null };
+
+    case 'datetime':
+      return isDateTimeCsvImportValue(raw) ? { shouldAssign: true, value: raw } : { shouldAssign: false, value: null };
+
     default:
       return {
         shouldAssign: true,

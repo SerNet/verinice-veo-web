@@ -26,7 +26,9 @@
       "confirmImport": "Of the {total} items to be imported, {invalid} are invalid. Do you want to import only the {valid} valid items? You can correct the invalid items afterwards and import them later",
       "booleanFormat": "Must be 0, 1, or empty.",
       "integerFormat": "Must be a number",
-      "urlFormat": "Must be a valid URL."
+      "urlFormat": "Must be a valid URL.",
+      "dateFormat": "Invalid date format. Expected: YYYY-MM-DD",
+      "dateTimeFormat": "Invalid date & time format. Expected: YYYY-MM-DDTHH:mm:ss"
     }
   },
   "de": {
@@ -56,6 +58,8 @@
       "confirmImport": "Von den {total} zu importierenden Einträgen sind {invalid} ungültig. Möchten Sie nur die {valid} gültigen Einträge importieren? Sie können die ungültigen Einträge anschließend korrigieren und später importieren",
       "booleanFormat": "Es sind nur 0, 1 oder leer erlaubt.",
       "integerFormat": "Muss eine Ganzzahl sein",
+      "dateFormat": "Ungültiges Datumsformat. Erwartet: JJJJ-MM-TT",
+      "dateTimeFormat": "Ungültiges Datum-/Uhrzeitformat. Erwartet: JJJJ-MM-TTThh:mm:ss",
       "urlFormat": "Muss eine gültige URL sein."
     }
   }

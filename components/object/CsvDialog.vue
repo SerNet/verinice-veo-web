@@ -197,6 +197,8 @@ import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 import {
   extractImportableCustomAttributes,
   isBooleanCsvImportValue,
+  isDateCsvImportValue,
+  isDateTimeCsvImportValue,
   isEmptyCsvImportValue,
   isIntegerCsvImportValue,
   isLinkCsvImportValue,
@@ -711,6 +713,19 @@ const validateAll = () => {
       if (fieldType === 'integer') {
         if (!isIntegerCsvImportValue(value)) {
           errors[field] = t('importObjects.integerFormat');
+        }
+        return;
+      }
+      if (fieldType === 'date') {
+        if (!isDateCsvImportValue(value)) {
+          errors[field] = t('importObjects.dateFormat');
+        }
+        return;
+      }
+
+      if (fieldType === 'datetime') {
+        if (!isDateTimeCsvImportValue(value)) {
+          errors[field] = t('importObjects.dateTimeFormat');
         }
         return;
       }
