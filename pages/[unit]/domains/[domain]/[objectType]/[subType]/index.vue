@@ -251,7 +251,6 @@ import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import { useFetchObjects } from '~/composables/api/objects';
 import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
@@ -286,15 +285,8 @@ const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
-const fetchTranslationsQueryParameters = computed(() => ({
-  languages: [locale.value],
-  domain: route.params.domain
-}));
-const { data: translations, isFetching: translationsLoading } = useQuery(
-  translationQueryDefinitions.queries.fetch,
-  fetchTranslationsQueryParameters
-);
 
+const { data: translations, isLoading: isLoadingTranslations } = useTranslations();
 const { data: currentUnit } = useUnit();
 const domains = computed(() => currentUnit.value?.domains || []);
 
@@ -409,31 +401,7 @@ const { data: items, isFetching: isLoadingObjects } = useFetchObjects(combinedQu
   keepPreviousData: true
 });
 
-const formsQueryParameters = computed(() => ({ domainId: domainId.value }));
-const formsQueryEnabled = computed(() => !!domainId.value);
-const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
-  enabled: formsQueryEnabled,
-  placeholderData: []
-});
-
-const selectedSubtypeForCreateDialog = ref<string>('');
-
-const nestedActions = computed<INestedMenuEntries[]>(() => {
-  return formSchemas.value
-    ?.filter((formschema) => formschema.modelType === filter.value.objectType)
-    .map((f) => ({
-      key: f.id,
-      title: f.name[locale.value],
-      icon: OBJECT_TYPE_ICONS.get(filter.value.objectType)?.icon as string,
-      subType: f.subType,
-      callback: (entry: INestedMenuEntries) => {
-        selectedSubtypeForCreateDialog.value = entry.subType;
-        createObjectDialogVisible.value = true;
-      }
-    }));
-});
-
-const isLoading = computed(() => isLoadingObjects.value || translationsLoading.value);
+const isLoading = computed(() => isLoadingObjects.value || isLoadingTranslations.value);
 
 // Update query parameters but keep other route options
 const updateRoute = async (newValue: Record<string, string | undefined | null | true>) => {
