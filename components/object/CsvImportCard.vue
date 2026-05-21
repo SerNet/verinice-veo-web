@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog :close-function="closeDialog" relative-width="60%" title="whoop" fixed-footer flat>
+  <BaseDialog :close-function="closeDialog" relative-width="60%" title="CSV Import" fixed-footer flat>
     <div class="import-container">
       <v-card class="bg-basepage px-8 py-8" flat>
         <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>

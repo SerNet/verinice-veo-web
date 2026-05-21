@@ -32,7 +32,7 @@
               "
               :prepend-icon="mdiPlus"
             >
-              {{ t('createObject', [createObjectLabel]) }}
+              {{ t('createObject') }}
             </v-btn>
           </template>
         </UtilNestedMenu>

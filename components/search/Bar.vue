@@ -27,10 +27,11 @@
     :append-inner-icon="mdiMagnify"
     chips
     hide-selected
-    :class="hasCompactTable ? 'compact-view' : ''"
+    variant="outlined"
     :density="density"
     auto-select-first="exact"
     :aria-label="t('search')"
+    class="veo-search"
     @click:clear="resetSearch"
     @click:append-inner="runSearch"
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
@@ -62,10 +63,6 @@ type UpdateSearchMsg = {
   newValue?: string;
 };
 
-const { data: userSettings } = useSettings();
-const hasCompactTable = computed(() => {
-  return userSettings.value?.['compact-styles'] ?? false;
-});
 const props = withDefaults(
   defineProps<{
     filters?: VeoSearchFilters;
@@ -245,30 +242,13 @@ function handleDelete(event: KeyboardEvent) {
     color: rgb(var(--v-theme-primary));
   }
 }
-.compact-view {
-  :deep(.v-field__field) {
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
-  :deep(.v-field__input) {
-    min-height: 36px !important;
-    padding-top: 0 !important;
-    padding-bottom: 0 !important;
-  }
-
+.veo-search {
   :deep(.v-field) {
-    min-height: 36px !important;
+    background: #fff;
   }
 
-  :deep(.v-chip) {
-    margin-top: 2px !important;
-    margin-bottom: 2px !important;
-  }
-
-  :deep(.v-field__placeholder) {
-    opacity: 0.7;
-    font-style: italic;
+  :deep(.v-theme--dark.v-field) {
+    background: unset;
   }
 }
 </style>

@@ -30,65 +30,67 @@
           />
         </div>
       </div>
-
-      <div class="py-4 my-0 d-flex justify-end ga-2">
-        <v-btn
-          data-component-name="csv-button"
-          color="primary"
-          :prepend-icon="mdiUpload"
-          @click="hasCSVImport = true"
-          >{{ t('csvButtonText') }}</v-btn
-        >
-        <ObjectCreateButton :filter="filter" />
-      </div>
-
-      <div class="actions py-0 my-0">
-        <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
-          <v-tooltip
-            location="start"
-            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects')"
-          >
-            <template #activator="{ props }">
-              <span v-if="selectedItems.length > 0" v-bind="props">
-                <v-btn
-                  :icon="mdiTrashCanOutline"
-                  variant="text"
-                  class="trash-btn"
-                  density="compact"
-                  size="small"
-                  data-component-name="bulk-delete-button"
-                  :disabled="!canManageUnitContent"
-                  @click="onBulkDelete"
-                />
-              </span>
-            </template>
-            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects') }}
-          </v-tooltip>
-          <v-tooltip
-            location="start"
-            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects')"
-          >
-            <template #activator="{ props }">
-              <span v-if="selectedItems.length > 0" v-bind="props">
-                <v-btn
-                  :disabled="!canManageUnitContent || !domains || domains.length <= 1"
-                  :icon="mdiPuzzleOutline"
-                  variant="text"
-                  class="assign-btn"
-                  density="compact"
-                  size="small"
-                  data-component-name="bulk-assign-button"
-                  @click="onBulkAssign"
-                />
-              </span>
-            </template>
-            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects') }}
-          </v-tooltip>
+      <span class="py-4 my-8 d-flex flex-wrap justify-end ga-8 align-top">
+        <div class="actions py-0 my-0" :class="{ 'd-none': selectedItems.length == 0 }">
+          <div class="actions__bulk__wrapper">
+            <v-tooltip
+              location="start"
+              :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects')"
+            >
+              <template #activator="{ props }">
+                <span v-if="selectedItems.length > 0" v-bind="props">
+                  <v-btn
+                    :icon="mdiTrashCanOutline"
+                    variant="text"
+                    class="trash-btn"
+                    density="compact"
+                    size="small"
+                    data-component-name="bulk-delete-button"
+                    :disabled="!canManageUnitContent"
+                    @click="onBulkDelete"
+                  />
+                </span>
+              </template>
+              {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects') }}
+            </v-tooltip>
+            <v-tooltip
+              location="start"
+              :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects')"
+            >
+              <template #activator="{ props }">
+                <span v-if="selectedItems.length > 0" v-bind="props">
+                  <v-btn
+                    :disabled="!canManageUnitContent || !domains || domains.length <= 1"
+                    :icon="mdiPuzzleOutline"
+                    variant="text"
+                    class="assign-btn"
+                    density="compact"
+                    size="small"
+                    data-component-name="bulk-assign-button"
+                    @click="onBulkAssign"
+                  />
+                </span>
+              </template>
+              {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects') }}
+            </v-tooltip>
+          </div>
         </div>
         <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
           <SearchBar v-model:search="search" density="compact" />
         </div>
-      </div>
+
+        <span class="my-0 d-flex justify-end ga-2">
+          <v-btn
+            flat
+            data-component-name="csv-button"
+            color="primary"
+            :prepend-icon="mdiUpload"
+            @click="hasCSVImport = true"
+            >{{ t('csvButtonText') }}</v-btn
+          >
+          <ObjectCreateButton :filter="filter" />
+        </span>
+      </span>
 
       <template v-if="filter.objectType">
         <BaseCard>
@@ -624,24 +626,16 @@ const hasCSVImport = ref(false);
   justify-content: flex-start;
   left: 0;
   z-index: 1;
-  opacity: 0;
-  transition: opacity 0.4s ease;
   height: 100%;
   width: 48px;
   gap: 2px;
-}
-
-.actions__bulk__wrapper.visible {
-  opacity: 1;
+  left: 0;
 }
 
 .search-wrapper {
   flex: 1;
-  width: 100%;
-  margin-left: 0;
-  transition:
-    margin-left 0.2s ease,
-    width 0.2s ease;
+  max-width: 100%;
+  min-width: 60%;
 }
 
 .search-shrunk {
