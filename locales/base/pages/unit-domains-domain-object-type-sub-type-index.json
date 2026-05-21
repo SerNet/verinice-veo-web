@@ -22,7 +22,8 @@
     "open": "Open",
     "VdA": "Procedure for securing",
     "cardViewOn": "Show items as table",
-    "cardViewOff": "Show items as cards"
+    "cardViewOff": "Show items as cards",
+    "csvButtonText": "CSV Import"
   },
   "de": {
     "import.title": "Elemente importieren",
@@ -47,6 +48,7 @@
     "open": "Öffnen",
     "VdA": "Vorgehensweise der Absicherung",
     "cardViewOn": "Zeige Einträge als Tabelle",
-    "cardViewOff": "Zeige Einträge als Karten"
+    "cardViewOff": "Zeige Einträge als Karten",
+    "csvButtonText": "CSV Import"
   }
 }
