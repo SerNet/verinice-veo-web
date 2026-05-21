@@ -15,9 +15,9 @@
  * If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
+  <BaseDialog :model-value="modelValue" :close-function="() => emit('close')" relative-width="60%" fixed-footer flat>
     <div class="import-container">
-      <v-card class="upload-card bg-basepage" flat>
+      <v-card class="bg-basepage px-8 py-8" flat>
         <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>
         <v-card-subtitle class="text-center text-caption text-medium-emphasis mb-4">
           {{ t('import.uploadLimit.description') }}
@@ -66,7 +66,13 @@
       :required-fields="requiredFields"
       @navigate="handleNavigate"
     />
-  </div>
+    <template #dialog-options>
+      <v-btn variant="text" @click="emit('close')">
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-spacer />
+    </template>
+  </BaseDialog>
 </template>
 
 <script setup lang="ts">
@@ -282,31 +288,6 @@ const handleNavigate = (objectType: string, subType: string) => {
 <i18n src="~/locales/base/components/object-csv-import-card.json"></i18n>
 
 <style scoped>
-.import-container {
-  margin-bottom: 2rem;
-}
-
-.upload-card {
-  max-width: 700px;
-  margin: 0 auto;
-  padding: 2rem;
-  background: white;
-}
-
-.drop-zone {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background-color: #f9f9f9;
-}
-
-.drop-zone-active {
-  border-color: #1976d2;
-  background-color: rgba(25, 118, 210, 0.05);
-}
-
 ::v-deep(.v-divider__content) {
   color: #555555 !important;
 }

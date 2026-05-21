@@ -32,6 +32,13 @@
       </div>
 
       <div class="py-4 my-0 d-flex justify-end ga-2">
+        <v-btn
+          data-component-name="csv-button"
+          color="primary"
+          :prepend-icon="mdiUpload"
+          @click="hasCSVImport = true"
+          >{{ t('csvButtonText') }}</v-btn
+        >
         <ObjectCreateButton :filter="filter" />
       </div>
 
@@ -166,11 +173,14 @@
         :objects="selectedOperationItems"
         @update:model-value="resetOperationItems"
       />
-      <CsvImportCard
+      <ObjectCsvImportCard
+        v-if="hasCSVImport"
+        :model-value="hasCSVImport"
         :object-type="filter.objectType"
         :sub-type="filter.subType"
         :required-fields="['name']"
         @navigate="handleNavigate"
+        @close="hasCSVImport = false"
       />
     </template>
   </BasePage>
@@ -181,7 +191,7 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <script setup lang="ts">
-import { mdiContentCopy, mdiPuzzleOutline, mdiTrashCanOutline } from '@mdi/js';
+import { mdiContentCopy, mdiPuzzleOutline, mdiTrashCanOutline, mdiUpload } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchObjects } from '~/composables/api/objects';
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -192,7 +202,6 @@ import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from 
 
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 
-import CsvImportCard from '~/components/object/CsvImportCard.vue';
 import type { VeoSearch } from '~/types/VeoSearch';
 enum FILTER_SOURCE {
   QUERY,
@@ -561,6 +570,8 @@ const handleError = (message: string, error: unknown) => {
   const errorMessage = error instanceof Error ? error.message : 'Unknown error';
   displayErrorMessage(message, errorMessage);
 };
+
+const hasCSVImport = ref(false);
 </script>
 
 <i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-index.json"></i18n>
