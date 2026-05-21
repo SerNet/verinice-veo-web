@@ -810,7 +810,7 @@ const render = () => {
 }
 
 .veo-fixed-table {
-  max-height: calc(100vh - 240px);
+  max-height: calc(100vh - 290px);
   overflow-y: auto;
 }
 </style>
