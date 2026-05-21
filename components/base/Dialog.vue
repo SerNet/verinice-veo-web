@@ -104,6 +104,7 @@ const props = withDefaults(
     innerClass?: string;
     dataVeoTest?: string;
     headingLevel?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+    relativeWidth?;
   }>(),
   {
     modelValue: false,
@@ -132,6 +133,7 @@ const fullscreen = computed(() => (props.xLarge && mdAndDown.value) || (props.la
 const width = computed(() => {
   if (props.large) return '900px';
   if (props.xLarge) return '1350px';
+  if (props.relativeWidth) return props.relativeWidth;
   return '450px';
 });
 
