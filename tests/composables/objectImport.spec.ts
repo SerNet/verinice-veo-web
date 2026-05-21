@@ -40,6 +40,7 @@ import {
   isDateTimeCsvImportValue,
   isIntegerCsvImportValue,
   isLinkCsvImportValue,
+  isValidEnumValue,
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 
@@ -96,7 +97,14 @@ describe('object CSV import helpers', () => {
     parse('2026-02-28T13:13:30', "yyyy-MM-dd'T'HH:mm:ss", new Date()),
     "yyyy-MM-dd'T'HH:mm:ssxxx"
   );
-
+  const allowedValues = [
+    'incident_description_locationOfIncident_inside',
+    'incident_description_locationOfIncident_outside'
+  ];
+  const translations = {
+    incident_description_locationOfIncident_inside: 'Inside organization',
+    incident_description_locationOfIncident_outside: 'outside organization'
+  };
   it('should accept only 0, 1, or empty values for boolean imports', () => {
     expect(isBooleanCsvImportValue(0)).toBe(true);
     expect(isBooleanCsvImportValue(1)).toBe(true);
@@ -149,6 +157,19 @@ describe('object CSV import helpers', () => {
     });
     expect(normalizeCsvImportValue('2026-02-28T13:77:30', 'dateTime')).toEqual({ shouldAssign: false, value: null });
     expect(normalizeCsvImportValue('', 'dateTime')).toEqual({ shouldAssign: false, value: null });
+
+    expect(normalizeCsvImportValue('Inside organization', 'enum', allowedValues, translations)).toEqual({
+      shouldAssign: true,
+      value: 'incident_description_locationOfIncident_inside'
+    });
+    expect(normalizeCsvImportValue('Invalid', 'enum', allowedValues, translations)).toEqual({
+      shouldAssign: false,
+      value: null
+    });
+    expect(normalizeCsvImportValue('', 'enum', allowedValues, translations)).toEqual({
+      shouldAssign: false,
+      value: null
+    });
   });
 
   it('should accept only integer imports or empty values', () => {
@@ -189,5 +210,14 @@ describe('object CSV import helpers', () => {
     expect(isDateTimeCsvImportValue('')).toBe(true);
     expect(isDateTimeCsvImportValue('   ')).toBe(true);
     expect(isDateTimeCsvImportValue(null)).toBe(true);
+  });
+  it('should normalize enum values correctly', () => {
+    expect(isValidEnumValue('Inside organization', allowedValues, translations)).toBe(true);
+    expect(isValidEnumValue('Outside organization', allowedValues, translations)).toBe(true);
+    expect(isValidEnumValue('', allowedValues, translations)).toBe(true);
+    expect(isValidEnumValue('   ', allowedValues, translations)).toBe(true);
+    expect(isValidEnumValue(null, allowedValues, translations)).toBe(true);
+    expect(isValidEnumValue('Invalid', allowedValues, translations)).toBe(false);
+    expect(isValidEnumValue('""', allowedValues, translations)).toBe(false);
   });
 });
