@@ -141,7 +141,7 @@
                       'error-cell': validationErrors[index]?.[headerMappings[header.value]]
                     }"
                   >
-                    {{ formatCellValue(item[header.value]) }}
+                    {{ formatCellValue(item[header.value], headerMappings[header.value]) }}
                   </span>
                   <div v-if="validationErrors[index]?.[headerMappings[header.value]]" class="error">
                     {{ validationErrors[index][headerMappings[header.value]] }}
@@ -194,6 +194,7 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
 import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import type { CsvImportAttributeType } from '~/composables/csv/objectImport';
 import {
   extractImportableCustomAttributes,
   isBooleanCsvImportValue,
@@ -202,6 +203,7 @@ import {
   isEmptyCsvImportValue,
   isIntegerCsvImportValue,
   isLinkCsvImportValue,
+  isValidEnumValue,
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 import type { IAlertButton } from '../base/Alert.vue';
@@ -574,15 +576,33 @@ watch(invalidCount, (count) => {
   }
 });
 
-const normalizeValue = (value: any) => {
+const normalizeValue = (
+  value: any,
+  type?: CsvImportAttributeType,
+  allowedValues?: string[],
+  translations?: Record<string, string>
+) => {
+  if (type) {
+    return normalizeCsvImportValue(value, type, allowedValues, translations).value;
+  }
   return normalizeCsvImportValue(value).value;
 };
 
 const getFieldType = (fieldKey: string) =>
   customAttributes.value.find((attr) => attr.key === fieldKey)?.type ?? 'string';
 
-const formatCellValue = (value: any) => {
-  return isEmptyCsvImportValue(value) ? '-' : String(value);
+const formatCellValue = (value: any, fieldKey?: string) => {
+  if (isEmptyCsvImportValue(value)) return '-';
+
+  if (fieldKey) {
+    const customAttr = customAttributes.value.find((a) => a.key === fieldKey);
+    if (customAttr?.type === 'enum' && translations.value?.lang[locale.value]) {
+      const translated = translations.value.lang[locale.value][value];
+      if (translated) return translated;
+    }
+  }
+
+  return String(value);
 };
 
 const startImport = async () => {
@@ -617,7 +637,12 @@ const startImport = async () => {
       }
 
       if (customAttr) {
-        const normalizedValue = normalizeCsvImportValue(row[csvHeader], customAttr.type);
+        const normalizedValue = normalizeCsvImportValue(
+          row[csvHeader],
+          customAttr.type,
+          customAttr.allowedValues,
+          translations.value?.lang[locale.value]
+        );
 
         if (!normalizedValue.shouldAssign) {
           return;
@@ -729,7 +754,16 @@ const validateAll = () => {
         }
         return;
       }
+      if (fieldType === 'enum') {
+        const customAttr = customAttributes.value.find((a) => a.key === field);
 
+        const allowedValues = customAttr?.allowedValues || [];
+        if (!isValidEnumValue(value, allowedValues, translations.value.lang[locale.value])) {
+          errors[field] = t('importObjects.enumSelectFormat');
+        }
+
+        return;
+      }
       if (!isEmptyCsvImportValue(value) && typeof value !== 'string') {
         errors[field] = t('global.input.mustBeString');
       }

@@ -28,7 +28,8 @@
       "integerFormat": "Must be a number",
       "urlFormat": "Must be a valid URL.",
       "dateFormat": "Invalid date format. Expected: YYYY-MM-DD",
-      "dateTimeFormat": "Invalid date & time format. Expected: YYYY-MM-DDTHH:mm:ss"
+      "dateTimeFormat": "Invalid date & time format. Expected: YYYY-MM-DDTHH:mm:ss",
+      "enumSelectFormat": "Please select a valid value from the allowed options."
     }
   },
   "de": {
@@ -60,7 +61,8 @@
       "integerFormat": "Muss eine Ganzzahl sein",
       "dateFormat": "Ungültiges Datumsformat. Erwartet: JJJJ-MM-TT",
       "dateTimeFormat": "Ungültiges Datum-/Uhrzeitformat. Erwartet: JJJJ-MM-TTThh:mm:ss",
-      "urlFormat": "Muss eine gültige URL sein."
+      "urlFormat": "Muss eine gültige URL sein.",
+      "enumSelectFormat": "Bitte wählen Sie einen gültigen Wert aus den erlaubten Optionen."
     }
   }
 }
