@@ -300,9 +300,7 @@ const domains = computed(() => currentUnit.value?.domains || []);
 
 const domainId = computed(() => route.params.domain as string);
 
-//
-// Filter stuff
-//
+// Filters
 
 // Ref to filter bar to programmatically open filter dialog from outside
 const filterBar = ref();
@@ -311,7 +309,6 @@ const onOpenFilterDialog = () => {
 };
 
 // accepted filter keys (others wont be respected when specified in URL query parameters)
-
 const filterDefinitions: IFilterDefinition = {
   objectType: {
     source: FILTER_SOURCE.PARAMS
@@ -380,9 +377,8 @@ const filter = computed(() => {
     })
   ) as Record<string, string | undefined>;
 });
-//
-// table stuff
-//
+
+// Table
 const page = ref(0);
 
 const sortBy = ref([{ key: 'name', order: 'asc' }]);
@@ -512,10 +508,6 @@ const openItem = ({ item }: { item: any }) => {
     }
   });
 };
-
-//
-// CRUD stuff
-//
 
 // Create object
 const createObjectDialogVisible = ref(false);
