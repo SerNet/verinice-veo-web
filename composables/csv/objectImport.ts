@@ -18,13 +18,15 @@
 import { format, isValid, parse } from 'date-fns';
 
 export const supportedCsvImportAttributeTypes = [
+  
   'text',
   'string',
   'boolean',
   'integer',
   'externalDocument',
   'date',
-  'dateTime'
+  'dateTime',
+  'enum'
 ] as const;
 
 export type CsvImportAttributeType = (typeof supportedCsvImportAttributeTypes)[number];
@@ -34,6 +36,7 @@ export interface CsvImportAttribute {
   title: string;
   customAspect: string;
   type: CsvImportAttributeType;
+  allowedValues?: string[];
 }
 
 export interface NormalizedCsvImportValue {
@@ -49,12 +52,19 @@ export function extractImportableCustomAttributes(typeDef: any, translations: Re
   return Object.entries(typeDef?.customAspects || {}).flatMap(([customAspectKey, customAspectDef]: [string, any]) =>
     Object.entries(customAspectDef.attributeDefinitions || {})
       .filter(([_, attrDef]: [string, any]) => isSupportedCsvImportAttributeType(attrDef.type))
-      .map(([attrKey, attrDef]: [string, any]) => ({
-        key: attrKey,
-        title: translations[attrKey] || attrKey,
-        customAspect: customAspectKey,
-        type: attrDef.type as CsvImportAttributeType
-      }))
+      .map(([attrKey, attrDef]: [string, any]) => {
+        const attribute: CsvImportAttribute = {
+          key: attrKey,
+          title: translations[attrKey] || attrKey,
+          customAspect: customAspectKey,
+          type: attrDef.type as CsvImportAttributeType
+        };
+        if (attrDef.type === 'enum' && attrDef.allowedValues) {
+          attribute.allowedValues = attrDef.allowedValues;
+        }
+
+        return attribute;
+      })
   );
 }
 
@@ -111,9 +121,25 @@ export function isDateTimeCsvImportValue(value: any) {
   return format(date, "yyyy-MM-dd'T'HH:mm:ss") === raw;
 }
 
+export function isValidEnumValue(value: any, allowedValues: string[], translations: Record<string, string>): boolean {
+  if (isEmptyCsvImportValue(value)) {
+    return true;
+  }
+
+  const raw = String(value).trim().toLowerCase();
+
+  return allowedValues.some((key) => {
+    const translatedValue = String(translations[key] ?? '')
+      .trim()
+      .toLowerCase();
+    return translatedValue === raw;
+  });
+}
 export function normalizeCsvImportValue(
   value: any,
-  type: CsvImportAttributeType | 'default' = 'default'
+  type: CsvImportAttributeType | 'default' = 'default',
+  allowedValues?: string[],
+  translations?: Record<string, string>
 ): NormalizedCsvImportValue {
   if (isEmptyCsvImportValue(value)) {
     switch (type) {
@@ -122,6 +148,7 @@ export function normalizeCsvImportValue(
       case 'externalDocument':
       case 'date':
       case 'dateTime':
+      case 'enum':
         return { shouldAssign: false, value: null };
 
       default:
@@ -163,6 +190,23 @@ export function normalizeCsvImportValue(
         shouldAssign: true,
         value: format(dateTime, "yyyy-MM-dd'T'HH:mm:ssxxx")
       };
+    }
+
+    case 'enum': {
+      if (!allowedValues || !translations) {
+        return { shouldAssign: false, value: null };
+      }
+      const rawLower = raw.toLowerCase();
+      const matchedKey = allowedValues.find((key) => {
+        const translated = translations[key];
+        return translated?.toLowerCase().trim() === rawLower;
+      });
+
+      if (!matchedKey) {
+        return { shouldAssign: false, value: null };
+      }
+
+      return { shouldAssign: true, value: matchedKey };
     }
 
     default:
