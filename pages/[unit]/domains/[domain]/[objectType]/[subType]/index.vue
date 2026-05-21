@@ -790,22 +790,6 @@ const handleError = (message: string, error: unknown) => {
   color: red;
 }
 
-.import-container {
-  max-width: 800px;
-  margin: 2rem auto;
-}
-
-.upload-card {
-  padding: 2rem;
-  text-align: center;
-}
-
-.drop-zone {
-  border: 2px dashed #ccc;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
 .drag-active {
   border-color: #1976d2;
   background-color: rgba(25, 118, 210, 0.05);
