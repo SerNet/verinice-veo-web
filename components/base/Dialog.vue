@@ -116,7 +116,8 @@ const props = withDefaults(
     fixedFooter: false,
     innerClass: '',
     dataVeoTest: 'base-dialog',
-    headingLevel: undefined
+    headingLevel: undefined,
+    relativeWidth: undefined
   }
 );
 

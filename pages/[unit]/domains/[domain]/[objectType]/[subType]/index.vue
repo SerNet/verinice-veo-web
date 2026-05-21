@@ -31,6 +31,10 @@
         </div>
       </div>
 
+      <div class="py-4 my-0 d-flex justify-end ga-2">
+        <ObjectCreateButton :filter="filter" />
+      </div>
+
       <div class="actions py-0 my-0">
         <div class="actions__bulk__wrapper" :class="{ visible: selectedItems.length > 0 }">
           <v-tooltip
@@ -169,71 +173,6 @@
         @navigate="handleNavigate"
       />
     </template>
-    <template #footer>
-      <ObjectCreateDialog
-        v-if="filter.objectType && createObjectDialogVisible"
-        v-model="createObjectDialogVisible"
-        :domain-id="domainId"
-        :object-type="filter.objectType"
-        :display-success-message="true"
-        :sub-type="filter.subType || selectedSubtypeForCreateDialog"
-      />
-      <v-tooltip
-        v-if="filter.objectType"
-        location="start"
-        :aria-label="
-          !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])
-        "
-      >
-        <template #activator="{ props }">
-          <span v-bind="props">
-            <UtilNestedMenu v-if="!filter.subType" location="bottom right" :items="nestedActions">
-              <template #activator="{ props: menuProps }">
-                <v-btn
-                  v-bind="mergeProps($attrs, menuProps)"
-                  color="primary"
-                  flat
-                  class="veo-primary-action-fab"
-                  data-component-name="create-object-button"
-                  data-veo-test="create-object-button"
-                  size="large"
-                  :disabled="!nestedActions.length || !canManageUnitContent"
-                  :aria-label="
-                    !canManageUnitContent ?
-                      t('permissions.missingPermissionTooltip')
-                    : t('createObject', [createObjectLabel])
-                  "
-                  :icon="mdiPlus"
-                />
-              </template>
-            </UtilNestedMenu>
-            <v-btn
-              v-else
-              color="primary"
-              flat
-              :disabled="!canManageUnitContent"
-              :icon="mdiPlus"
-              class="veo-primary-action-fab"
-              data-component-name="create-object-button"
-              data-veo-test="create-object-button"
-              :aria-label="
-                !canManageUnitContent ?
-                  t('permissions.missingPermissionTooltip')
-                : t('createObject', [createObjectLabel])
-              "
-              size="large"
-              @click="createObjectDialogVisible = true"
-            />
-          </span>
-          <div style="height: 76px"></div>
-        </template>
-        <template #default>
-          <span>{{
-            !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])
-          }}</span>
-        </template>
-      </v-tooltip>
-    </template>
   </BasePage>
 </template>
 
@@ -242,16 +181,9 @@ export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
 </script>
 
 <script setup lang="ts">
-import { mdiContentCopy, mdiPlus, mdiPuzzleOutline, mdiTrashCanOutline } from '@mdi/js';
+import { mdiContentCopy, mdiPuzzleOutline, mdiTrashCanOutline } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
-import { mergeProps } from 'vue';
-
-import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
-import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 import { useFetchObjects } from '~/composables/api/objects';
-import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
-import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
-import { useQuery } from '~/composables/api/utils/query';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { useCloneObject } from '~/composables/VeoObjectUtilities';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
@@ -260,7 +192,6 @@ import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from 
 
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 
-import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import CsvImportCard from '~/components/object/CsvImportCard.vue';
 import type { VeoSearch } from '~/types/VeoSearch';
 enum FILTER_SOURCE {
@@ -433,32 +364,12 @@ const updateRoute = async (newValue: Record<string, string | undefined | null | 
   await navigateTo(routeDetails);
 };
 
-const formatObjectLabel = (label: string, value?: string) => {
-  switch (label) {
-    // translated object type
-    case 'objectType':
-      return value ? translations.value?.lang[locale.value]?.[value] : undefined;
-    // translated sub type
-    case 'subType':
-      return (
-        (formSchemas.value as IVeoFormSchemaMeta[]).find((formschema) => formschema.subType === value)?.name?.[
-          locale.value
-        ] || value
-      );
-  }
-};
 const getPluralLabel = (objectType?: string): string => {
   if (!objectType) return '';
 
   const langData = translations.value?.lang?.[locale.value];
   return langData?.[`${objectType}_plural`] ?? '';
 };
-
-const createObjectLabel = computed(() =>
-  filter.value.subType ?
-    formatObjectLabel('subType', filter.value.subType)
-  : formatObjectLabel('objectType', filter.value.objectType)
-);
 
 const pageTitle = computed(() => getPluralLabel(filter.value.objectType));
 
@@ -476,9 +387,6 @@ const openItem = ({ item }: { item: any }) => {
     }
   });
 };
-
-// Create object
-const createObjectDialogVisible = ref(false);
 
 // Delete object
 const selectedOperationItems = ref<IVeoEntity[]>([]);
