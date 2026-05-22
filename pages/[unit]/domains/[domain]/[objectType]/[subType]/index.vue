@@ -80,20 +80,7 @@
       </div>
 
       <template v-if="filter.objectType">
-        <!-- Card View -->
-
-        <ObjectCardView
-          v-if="hasCardView"
-          :is-card-view-visible="hasCardView"
-          :card-items="items.items ?? []"
-          :fetched-items="items"
-          :sort-by="sortBy"
-          :actions="actions"
-          :translations="translations"
-          :cards-page-change="cardsPageChange"
-        />
-        <!-- Table View -->
-        <BaseCard v-else>
+        <BaseCard>
           <ObjectTable
             :key="tableKey"
             v-model="selectedItems"
@@ -299,8 +286,6 @@ const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { clone } = useCloneObject();
-// CardView Feature
-const hasCardView = hasFeature('cardView');
 const fetchTranslationsQueryParameters = computed(() => ({
   languages: [locale.value],
   domain: route.params.domain
@@ -400,9 +385,6 @@ const filter = computed(() => {
 //
 const page = ref(0);
 
-const cardsPageChange = (value: number) => {
-  page.value = value - 1;
-};
 const sortBy = ref([{ key: 'name', order: 'asc' }]);
 const resetQueryOptions = () => {
   page.value = 0;
