@@ -24,7 +24,7 @@ export const supportedCsvImportAttributeTypes = [
   'integer',
   'externalDocument',
   'date',
-  'datetime'
+  'dateTime'
 ] as const;
 
 export type CsvImportAttributeType = (typeof supportedCsvImportAttributeTypes)[number];
@@ -121,7 +121,7 @@ export function normalizeCsvImportValue(
       case 'integer':
       case 'externalDocument':
       case 'date':
-      case 'datetime':
+      case 'dateTime':
         return { shouldAssign: false, value: null };
 
       default:
@@ -153,8 +153,17 @@ export function normalizeCsvImportValue(
     case 'date':
       return isDateCsvImportValue(raw) ? { shouldAssign: true, value: raw } : { shouldAssign: false, value: null };
 
-    case 'datetime':
-      return isDateTimeCsvImportValue(raw) ? { shouldAssign: true, value: raw } : { shouldAssign: false, value: null };
+    case 'dateTime': {
+      if (!isDateTimeCsvImportValue(raw)) {
+        return { shouldAssign: false, value: null };
+      }
+      const dateTime = parse(raw, "yyyy-MM-dd'T'HH:mm:ss", new Date());
+
+      return {
+        shouldAssign: true,
+        value: format(dateTime, "yyyy-MM-dd'T'HH:mm:ssxxx")
+      };
+    }
 
     default:
       return {

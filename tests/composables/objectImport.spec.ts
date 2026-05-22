@@ -31,6 +31,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+import { format, parse } from 'date-fns';
 import { describe, expect, it } from 'vitest';
 import {
   extractImportableCustomAttributes,
@@ -91,6 +92,10 @@ describe('object CSV import helpers', () => {
       }
     ]);
   });
+  const expected = format(
+    parse('2026-02-28T13:13:30', "yyyy-MM-dd'T'HH:mm:ss", new Date()),
+    "yyyy-MM-dd'T'HH:mm:ssxxx"
+  );
 
   it('should accept only 0, 1, or empty values for boolean imports', () => {
     expect(isBooleanCsvImportValue(0)).toBe(true);
@@ -138,12 +143,12 @@ describe('object CSV import helpers', () => {
     expect(normalizeCsvImportValue('2026-02-29', 'date')).toEqual({ shouldAssign: false, value: null });
     expect(normalizeCsvImportValue('', 'date')).toEqual({ shouldAssign: false, value: null });
 
-    expect(normalizeCsvImportValue('2026-02-28T13:13:30', 'datetime')).toEqual({
+    expect(normalizeCsvImportValue('2026-02-28T13:13:30', 'dateTime')).toEqual({
       shouldAssign: true,
-      value: '2026-02-28T13:13:30'
+      value: expected
     });
-    expect(normalizeCsvImportValue('2026-02-28T13:77:30', 'datetime')).toEqual({ shouldAssign: false, value: null });
-    expect(normalizeCsvImportValue('', 'datetime')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue('2026-02-28T13:77:30', 'dateTime')).toEqual({ shouldAssign: false, value: null });
+    expect(normalizeCsvImportValue('', 'dateTime')).toEqual({ shouldAssign: false, value: null });
   });
 
   it('should accept only integer imports or empty values', () => {

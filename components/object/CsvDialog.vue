@@ -723,7 +723,7 @@ const validateAll = () => {
         return;
       }
 
-      if (fieldType === 'datetime') {
+      if (fieldType === 'dateTime') {
         if (!isDateTimeCsvImportValue(value)) {
           errors[field] = t('importObjects.dateTimeFormat');
         }
