@@ -10,9 +10,6 @@ describe('Create elements', () => {
     cy.createUnit(unitDetails);
 
     cy.acceptAllCookies();
-    cy.goToUnitSelection();
-    cy.selectUnit(unitDetails.name);
-    cy.handleLanguageBug();
   });
 
   afterEach(() => cy.deleteUnit(unitDetails.name)); // Use the name from the unitDetails object to delete);
@@ -22,20 +19,24 @@ describe('Create elements', () => {
   // number of elements to be created in each sub type
   const numOfElements = 1;
 
-  it('verifies actions available in `all scopes`', () => {
+  it('tests availability of `all scopes` actions', () => {
     cy.visit(
       `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${Cypress.env('dynamicTestData').unit.domains[0].id}/scopes/-`,
       { failOnStatusCode: false }
     );
 
+    // Wait for page load
+    cy.getCustom('[data-component-name="breadcrumbs"]');
+
     // Get possible actions on this page
     cy.getCustom('button[data-component-name="create-object-button"]').click();
     cy.get('[data-veo-test="action-selection-nav-item"]').as('availableActions');
+
     cy.getCustom('button[data-component-name="create-object-button"]').click();
 
     cy.get('@availableActions').each((action) => {
       cy.getCustom('button[data-component-name="create-object-button"]').click();
-      cy.get('[data-veo-test="action-selection-nav-item"]'); // wait for menu to be open
+      cy.getCustom('[data-veo-test="action-selection-nav-item"]'); // wait for menu to be open
 
       cy.containsCustom('[data-veo-test="action-selection-nav-item"]', action.text()).click();
       cy.getCustom('[data-veo-test="dialog-card"]').as('container');
@@ -49,6 +50,9 @@ describe('Create elements', () => {
 
   for (const elementType of elementTypeList) {
     it('creates elements in ' + elementType, () => {
+      cy.goToUnitSelection();
+      cy.selectUnit(unitDetails.name);
+      cy.handleLanguageBug();
       cy.navigateTo({ group: 'objects', category: elementType });
 
       cy.selectFirstSubType(elementType, ($subType: JQuery<HTMLElement>) => {
