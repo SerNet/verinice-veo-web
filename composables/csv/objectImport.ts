@@ -18,7 +18,6 @@
 import { format, isValid, parse } from 'date-fns';
 
 export const supportedCsvImportAttributeTypes = [
-  
   'text',
   'string',
   'boolean',
