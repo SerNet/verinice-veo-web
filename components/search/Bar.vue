@@ -106,12 +106,19 @@ function getSelectedFilterKeys(search: VeoSearch[]) {
   return new Set(search.map((item) => item.searchFilter).filter((filter): filter is string => !!filter));
 }
 
-function normalizeSearch(search: VeoSearch[]) {
-  return search.filter((item) => item.searchFilter || item.operator || item.term);
-}
-
 function getSearchFilter(key?: string) {
   return filters.value.find((filter) => filter.key === key);
+}
+
+function normalizeSearch(search: VeoSearch[]) {
+  return search.filter((item) => {
+    if (!item.searchFilter && !item.operator && !item.term) return false;
+    if (item.searchFilter && !getSearchFilter(item.searchFilter)) return false;
+    if (item.operator && !item.searchFilter) return false;
+    if (item.term && !item.searchFilter) return false;
+
+    return true;
+  });
 }
 
 function getSearchFilterOptions(filterKey?: string): VeoSearchFilterOption[] {
@@ -129,15 +136,16 @@ function isSearchFilterOption(item: unknown): item is VeoSearchFilterOption {
 }
 
 function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
-  const search = cloneDeep(msg.oldSearch ?? []);
-  const searchPart: Partial<VeoSearch> = search.pop() ?? {};
+  const existingSearchEntries = cloneDeep(msg.oldSearch ?? []);
+  const currentSearchEntry: Partial<VeoSearch> = existingSearchEntries.pop() ?? {};
+  const hasCompletedSearchEntry = !!currentSearchEntry.term;
 
   switch (msg.type) {
     case 'updateFilter':
-      if (searchPart.term) {
+      if (hasCompletedSearchEntry) {
         return normalizeSearch([
-          ...search,
-          searchPart,
+          ...existingSearchEntries,
+          currentSearchEntry,
           {
             searchFilter: msg.newValue,
             operator: hasSingleOperator.value ? props.operators.default : undefined
@@ -145,27 +153,30 @@ function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
         ]);
       }
       return normalizeSearch([
-        ...search,
+        ...existingSearchEntries,
         {
-          ...searchPart,
+          ...currentSearchEntry,
           searchFilter: msg.newValue,
-          operator: hasSingleOperator.value ? props.operators.default : searchPart.operator
+          operator: hasSingleOperator.value ? props.operators.default : currentSearchEntry.operator
         }
       ]);
     case 'updateOperator':
-      return normalizeSearch([...search, { ...searchPart, operator: msg.newValue }]);
+      return normalizeSearch([...existingSearchEntries, { ...currentSearchEntry, operator: msg.newValue }]);
     case 'updateTerm':
       return normalizeSearch([
-        ...search,
+        ...existingSearchEntries,
         {
-          ...searchPart,
-          searchFilter: searchPart.searchFilter ?? props.filters.default.key,
-          operator: searchPart.operator ?? props.operators.default,
+          ...currentSearchEntry,
+          searchFilter: currentSearchEntry.searchFilter ?? props.filters.default.key,
+          operator: currentSearchEntry.operator ?? props.operators.default,
           term: msg.newValue
         }
       ]);
     case 'addToTerm':
-      return normalizeSearch([...search, { ...searchPart, term: (searchPart.term ?? '') + msg.newValue }]);
+      return normalizeSearch([
+        ...existingSearchEntries,
+        { ...currentSearchEntry, term: (currentSearchEntry.term ?? '') + msg.newValue }
+      ]);
     case 'reset':
       return [];
     default:
