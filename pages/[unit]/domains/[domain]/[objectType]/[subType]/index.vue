@@ -76,7 +76,7 @@
           </div>
         </div>
         <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
-          <SearchBar v-model:search="search" density="compact" />
+          <SearchBar v-model:search="search" :filters="searchFilters" density="compact" />
         </div>
 
         <span class="my-0 d-flex justify-end ga-2">
@@ -205,6 +205,8 @@ import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from 
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
 
 import type { VeoSearch } from '~/types/VeoSearch';
+import { useObjectSearchFilters } from '~/composables/search/objectFilters';
+
 enum FILTER_SOURCE {
   QUERY,
   PARAMS,
@@ -324,6 +326,11 @@ const resetQueryOptions = () => {
 watch(filter, resetQueryOptions, { deep: true });
 
 const search = ref<VeoSearch[]>([]);
+const searchFilters = useObjectSearchFilters({
+  domainId,
+  excludedKeys: ['objectType'],
+  filter
+});
 
 const combinedQueryParameters = computed<any>(() => ({
   size: tablePageSize.value,
@@ -334,7 +341,10 @@ const combinedQueryParameters = computed<any>(() => ({
   ...omit(filter.value, 'objectType'),
   endpoint: VeoElementTypePlurals[filter.value.objectType as string],
   domain: route.params.domain,
-  ...getSearchQueryParameters(search.value)
+  ...getSearchQueryParameters(
+    search.value,
+    searchFilters.value.all.map((filter) => filter.key)
+  )
 }));
 
 const queryEnabled = computed(() => !!VeoElementTypePlurals[filter.value.objectType as string]);

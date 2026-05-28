@@ -40,7 +40,7 @@
           @update:filter="updateObjectFilter"
         />
 
-        <SearchBar v-model:search="searchQueries" class="mt-2" />
+        <SearchBar v-model:search="searchQueries" :filters="searchFilters" class="mt-2" />
 
         <BaseCard class="mt-3">
           <ObjectTable
@@ -151,6 +151,7 @@ import { useTranslations } from '~/composables/Translations';
 import type { VeoSearch } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoAPIMessage } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { useObjectSearchFilters } from '~/composables/search/objectFilters';
 
 type VBtnVariant = 'text' | 'flat' | 'outlined' | 'plain' | 'elevated' | 'tonal';
 
@@ -228,6 +229,11 @@ const isSaving = ref(false);
 
 const objectFilter = ref<Record<string, any>>({});
 const searchQueries = ref<VeoSearch[]>([]);
+const searchFilters = useObjectSearchFilters({
+  domainId: toRef(props, 'domainId'),
+  excludedKeys: computed(() => ['objectType', ...props.disabledFields]),
+  filter: objectFilter
+});
 const currentPage = ref(0);
 const tableSorting = ref([{ key: 'name', order: 'asc' }]);
 const selectedObjects = ref<IVeoEntity[]>([]);
@@ -244,6 +250,7 @@ const { selectableObjects, originalSelectedItems, isLoadingObjects } = useLinkab
   unitId: computed(() => route.params.unit as string),
   filter: objectFilter,
   search: searchQueries,
+  searchFilters,
   page: currentPage,
   sortBy: tableSorting,
   pageSize: tablePageSize,

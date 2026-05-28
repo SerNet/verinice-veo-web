@@ -58,7 +58,7 @@
         @update:filter="updateFilter"
       />
 
-      <SearchBar v-model:search="search" />
+      <SearchBar v-model:search="search" :filters="searchFilters" />
 
       <BaseCard id="link-dialog-select-all">
         <ObjectTable
@@ -118,6 +118,7 @@ import { useNavigation } from '~/composables/navigation';
 import type { VeoSearch } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { useObjectSearchFilters } from '~/composables/search/objectFilters';
 import type { TableHeader } from '../base/Table.vue';
 
 export default defineComponent({
@@ -237,11 +238,17 @@ export default defineComponent({
     // v-model from `SearchBar`
     const hasItems = computed(() => _objects.value?.totalItemCount && _objects.value.totalItemCount > 0);
     const search = ref<VeoSearch[]>([]);
+    const searchFilters = useObjectSearchFilters({
+      domainId: computed(() => route.params.domain as string),
+      excludedKeys: computed(() => ['objectType', ...props.disabledFields]),
+      filter
+    });
 
     // get search results
     const { data: searchResults, isLoading: isLoadingSearchResults } = useSearch({
       baseQueryParameters: combinedObjectsQueryParameters,
-      search
+      search,
+      filters: searchFilters
     });
 
     // items rendered in ObjectTable
@@ -583,6 +590,7 @@ export default defineComponent({
       t,
       upperFirst,
       search,
+      searchFilters,
       isLoadingSearchResults,
       additionalHeaders
     };

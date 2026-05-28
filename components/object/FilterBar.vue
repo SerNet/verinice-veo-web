@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2022  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -54,6 +54,7 @@ import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/form
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+import { OBJECT_FILTER_KEYS } from '~/composables/search/objectFilters';
 
 export default defineComponent({
   props: {
@@ -107,18 +108,7 @@ export default defineComponent({
     const filterDialogVisible = ref(false);
 
     // available & active filter options
-    const filterKeys = [
-      'objectType',
-      'subType',
-      'abbreviation',
-      'designator',
-      'name',
-      'status',
-      'description',
-      'updatedBy',
-      'hasNoParentElements',
-      'hasChildElements'
-    ];
+    const filterKeys = OBJECT_FILTER_KEYS;
     const activeFilterKeys = computed(() => {
       return filterKeys.filter((k) => props.filter[k] !== undefined);
     });
