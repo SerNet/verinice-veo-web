@@ -66,7 +66,7 @@ async function request({
   etags.set(path, etag);
 
   const contentType = response.headers.get('Content-Type') || '';
-  if (contentType.includes('application/json')) {
+  if (contentType.includes('application/json') || contentType.includes('+json')) {
     return await response.json();
   }
 
