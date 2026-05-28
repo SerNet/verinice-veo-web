@@ -19,6 +19,7 @@
   <v-combobox
     ref="searchInput"
     v-model="select"
+    v-model:menu="menuOpen"
     data-component-name="veo-search"
     hide-details="auto"
     :placeholder="t('search')"
@@ -43,7 +44,7 @@
           {{ translateItem(s.searchFilter) }}
         </v-chip>
         <v-chip v-if="s.operator" size="large" class="mr-1" color="green">{{ s.operator }}</v-chip>
-        <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ s.term }}</v-chip>
+        <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ translateTerm(s) }}</v-chip>
       </div>
     </template>
     <template #append-inner>
@@ -56,6 +57,13 @@
 import { mdiCloseCircle, mdiFilter, mdiMagnify } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 import type { VeoSearch, VeoSearchFilter, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
+
+type VeoSearchFilterOption = {
+  optionValue: string;
+  optionLabel: string;
+};
+
+type VeoSearchSelectionItem = VeoSearchFilter | VeoSearchFilterOption | string;
 
 type UpdateSearchMsg = {
   type: string;
@@ -89,8 +97,36 @@ const props = withDefaults(
 );
 
 const { t, te } = useI18n();
-const filters: VeoSearchFilter[] = [...props.filters.all];
-const operators = [...props.operators.all];
+const { t: globalT, te: globalTe } = useI18n({ useScope: 'global' });
+const filters = computed<VeoSearchFilter[]>(() => [...props.filters.all]);
+const operators = computed(() => [...props.operators.all]);
+const hasSingleOperator = computed(() => operators.value.length === 1);
+
+function getSelectedFilterKeys(search: VeoSearch[]) {
+  return new Set(search.map((item) => item.searchFilter).filter((filter): filter is string => !!filter));
+}
+
+function normalizeSearch(search: VeoSearch[]) {
+  return search.filter((item) => item.searchFilter || item.operator || item.term);
+}
+
+function getSearchFilter(key?: string) {
+  return filters.value.find((filter) => filter.key === key);
+}
+
+function getSearchFilterOptions(filterKey?: string): VeoSearchFilterOption[] {
+  const options = getSearchFilter(filterKey)?.options;
+  if (!options) return [];
+
+  return Object.entries(options).map(([optionValue, optionLabel]) => ({
+    optionValue,
+    optionLabel
+  }));
+}
+
+function isSearchFilterOption(item: unknown): item is VeoSearchFilterOption {
+  return typeof item === 'object' && item !== null && 'optionValue' in item;
+}
 
 function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
   const search = cloneDeep(msg.oldSearch ?? []);
@@ -98,11 +134,28 @@ function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
 
   switch (msg.type) {
     case 'updateFilter':
-      return [...search, { ...searchPart, searchFilter: msg.newValue }];
+      if (searchPart.term) {
+        return normalizeSearch([
+          ...search,
+          searchPart,
+          {
+            searchFilter: msg.newValue,
+            operator: hasSingleOperator.value ? props.operators.default : undefined
+          }
+        ]);
+      }
+      return normalizeSearch([
+        ...search,
+        {
+          ...searchPart,
+          searchFilter: msg.newValue,
+          operator: hasSingleOperator.value ? props.operators.default : searchPart.operator
+        }
+      ]);
     case 'updateOperator':
-      return [...search, { ...searchPart, operator: msg.newValue }];
+      return normalizeSearch([...search, { ...searchPart, operator: msg.newValue }]);
     case 'updateTerm':
-      return [
+      return normalizeSearch([
         ...search,
         {
           ...searchPart,
@@ -110,9 +163,9 @@ function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
           operator: searchPart.operator ?? props.operators.default,
           term: msg.newValue
         }
-      ];
+      ]);
     case 'addToTerm':
-      return [...search, { ...searchPart, term: (searchPart.term ?? '') + msg.newValue }];
+      return normalizeSearch([...search, { ...searchPart, term: (searchPart.term ?? '') + msg.newValue }]);
     case 'reset':
       return [];
     default:
@@ -120,17 +173,31 @@ function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
   }
 }
 
-function translateItem(item: VeoSearchFilter | string) {
+function translateItem(item: VeoSearchSelectionItem) {
+  if (isSearchFilterOption(item)) {
+    return item.optionLabel;
+  }
   if (typeof item === 'object') {
     const i18nKey = `searchFilter_${item.key}`;
-    return te(i18nKey) ? t(i18nKey) : item.value;
+    const objectListI18nKey = `objectlist.${item.key}`;
+    if (te(i18nKey)) return t(i18nKey);
+    if (globalTe(objectListI18nKey)) return globalT(objectListI18nKey);
+    return item.value;
   }
-  const filterByKey = filters.find((f) => f.key === item);
+  const filterByKey = getSearchFilter(item);
   if (filterByKey) {
     const i18nKey = `searchFilter_${filterByKey.key}`;
-    return te(i18nKey) ? t(i18nKey) : filterByKey.value;
+    const objectListI18nKey = `objectlist.${filterByKey.key}`;
+    if (te(i18nKey)) return t(i18nKey);
+    if (globalTe(objectListI18nKey)) return globalT(objectListI18nKey);
+    return filterByKey.value;
   }
   return item;
+}
+
+function translateTerm(searchPart: VeoSearch) {
+  if (!searchPart.term) return '';
+  return getSearchFilter(searchPart.searchFilter)?.options?.[searchPart.term] ?? searchPart.term;
 }
 
 // STATE
@@ -146,13 +213,16 @@ if (props.initialSearch?.length) {
 // v-combobox menu items
 const selectionItems = computed(() => {
   const lastSearchPart: Partial<VeoSearch> = search.value.at(-1) ?? {};
-  if (lastSearchPart?.term) return filters;
-  if (lastSearchPart?.operator) return [];
-  if (lastSearchPart?.searchFilter) return operators;
-  return filters;
+  const availableFilters = filters.value.filter((filter) => !getSelectedFilterKeys(search.value).has(filter.key));
+  if (lastSearchPart?.term) return availableFilters;
+  if (lastSearchPart?.operator) return getSearchFilterOptions(lastSearchPart.searchFilter);
+  if (lastSearchPart?.searchFilter)
+    return hasSingleOperator.value ? getSearchFilterOptions(lastSearchPart.searchFilter) : operators.value;
+  return availableFilters;
 });
 
 const searchInput = ref<HTMLInputElement>();
+const menuOpen = ref(false);
 
 function runSearch() {
   searchInput.value?.blur();
@@ -162,6 +232,10 @@ function resetSearch() {
   search.value = updateSearch({
     type: 'reset'
   });
+}
+
+function openMenuOnNextTick() {
+  nextTick(() => (menuOpen.value = true));
 }
 
 // Current value of v-combobox
@@ -174,16 +248,34 @@ watch(select, () => {
   const oldSearch = cloneDeep(search.value);
   select.value = undefined;
 
+  if (isSearchFilterOption(newValue)) {
+    search.value = updateSearch({
+      type: 'updateTerm',
+      oldSearch,
+      newValue: newValue.optionValue
+    });
+    openMenuOnNextTick();
+    return;
+  }
+
   if (typeof newValue === 'object' && 'key' in newValue) {
-    return (search.value = updateSearch({
+    const newSearchFilter = (newValue as VeoSearchFilter).key;
+    if (getSelectedFilterKeys(oldSearch).has(newSearchFilter)) return;
+
+    search.value = updateSearch({
       type: 'updateFilter',
       oldSearch,
-      newValue: (newValue as VeoSearchFilter).key
-    }));
+      newValue: newSearchFilter
+    });
+
+    if (getSearchFilterOptions(newSearchFilter).length) {
+      openMenuOnNextTick();
+    }
+    return;
   }
 
   // User selected an operator
-  if (operators.includes(newValue)) {
+  if (operators.value.includes(newValue)) {
     return (search.value = updateSearch({
       type: 'updateOperator',
       oldSearch,
@@ -191,8 +283,20 @@ watch(select, () => {
     }));
   }
 
+  const lastSearchPart = oldSearch.at(-1);
+  const optionValues = getSearchFilterOptions(lastSearchPart?.searchFilter).map((option) => option.optionValue);
+  if (lastSearchPart?.operator && optionValues.length && !optionValues.includes(newValue)) return;
+
   const type = oldSearch.at(-1)?.term ? 'addToTerm' : 'updateTerm';
   search.value = updateSearch({ type, oldSearch, newValue });
+  openMenuOnNextTick();
+});
+
+watch(selectionItems, (items) => {
+  const lastSearchPart = search.value.at(-1);
+  if (((lastSearchPart?.operator && !lastSearchPart.term) || lastSearchPart?.term) && items.length) {
+    menuOpen.value = true;
+  }
 });
 
 function handleDelete(event: KeyboardEvent) {
@@ -200,32 +304,26 @@ function handleDelete(event: KeyboardEvent) {
   if (target.value.length > 0) return;
 
   const oldSearch = cloneDeep(search.value);
-  if (!oldSearch.at(-1)) return;
+  const searchPart = oldSearch.pop();
+  if (!searchPart) return;
 
-  // Update search term
-  if (oldSearch.at(-1)?.term) {
-    return (search.value = updateSearch({
-      type: 'updateTerm',
-      oldSearch,
-      newValue: search.value.at(-1)?.term?.slice(0, -1)
-    }));
+  if (searchPart.term) {
+    search.value = normalizeSearch([...oldSearch, { ...searchPart, term: undefined }]);
+    openMenuOnNextTick();
+    return;
   }
 
-  // Update search operator
-  if (oldSearch.at(-1)?.operator) {
-    return (search.value = updateSearch({
-      type: 'updateOperator',
-      oldSearch,
-      newValue: undefined
-    }));
+  if (searchPart.operator) {
+    search.value =
+      hasSingleOperator.value ?
+        normalizeSearch(oldSearch)
+      : normalizeSearch([...oldSearch, { ...searchPart, operator: undefined }]);
+    openMenuOnNextTick();
+    return;
   }
 
-  // Update search filter
-  return (search.value = updateSearch({
-    type: 'updateFilter',
-    oldSearch,
-    newValue: undefined
-  }));
+  search.value = normalizeSearch(oldSearch);
+  openMenuOnNextTick();
 }
 </script>
 
