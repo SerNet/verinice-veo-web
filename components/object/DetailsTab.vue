@@ -119,6 +119,7 @@ import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { getScenarioName } from '~/composables/risk/riskScenario';
 import type {
   IInOutLink,
   IVeoControlImplementation,
@@ -134,6 +135,7 @@ import type {
   VeoSort
 } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+
 export default defineComponent({
   props: {
     type: {
@@ -240,6 +242,7 @@ export default defineComponent({
         items: cis.value.items.map(mapFunction)
       };
     }
+
     // TODO #3066 fix type (it can also return risks or control implementations)
     const items = computed<IVeoEntity[] | IVeoPaginatedResponse<IVeoEntity[]> | IVeoPaginatedResponse<VeoLinkItem[]>>(
       () => {
@@ -304,6 +307,7 @@ export default defineComponent({
     } = useQuery(elementsQueryDefinitions.queries.fetchObjectLinks, linksQueryParameters, {
       enabled: linksQueryEnabled
     });
+
     function mapLinkSortKey(key: string) {
       switch (key) {
         case 'name':
@@ -346,6 +350,7 @@ export default defineComponent({
         keepPreviousData: true
       }
     );
+
     function mapCisSortingKey(key: string) {
       if (cisQueryEnabled.value) {
         switch (key) {
@@ -466,10 +471,7 @@ export default defineComponent({
         truncate: true,
         priority: 100,
         order: 40,
-        render: (data: any) => {
-          const sliceIndex = data.internalItem.raw?.scenario?.abbreviation ? 2 : 1;
-          return data.internalItem.raw.scenario.displayName.split(' ').slice(sliceIndex).join(' ');
-        }
+        render: (data: any) => getScenarioName(data.internalItem.raw.scenario)
       });
 
       const createRiskCategoryHeaders = () => {
