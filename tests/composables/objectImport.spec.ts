@@ -41,6 +41,7 @@ import {
   isIntegerCsvImportValue,
   isLinkCsvImportValue,
   isValidEnumValue,
+  isValidEnumListValue,
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 
@@ -219,5 +220,95 @@ describe('object CSV import helpers', () => {
     expect(isValidEnumValue(null, allowedValues, translations)).toBe(true);
     expect(isValidEnumValue('Invalid', allowedValues, translations)).toBe(false);
     expect(isValidEnumValue('""', allowedValues, translations)).toBe(false);
+  });
+
+  const listAllowedValues = [
+    'person_preferences_favColor_green',
+    'person_preferences_favColor_red',
+    'person_preferences_favColor_blue'
+  ];
+  const listTranslations = {
+    person_preferences_favColor_green: 'Grün',
+    person_preferences_favColor_red: 'Rot',
+    person_preferences_favColor_blue: 'Blau'
+  };
+
+  it('includes multi-select (list of enum) attributes and excludes unsupported list item types from mapping', () => {
+    const typeDef = {
+      customAspects: {
+        person_preferences: {
+          attributeDefinitions: {
+            person_preferences_favColor: {
+              type: 'list',
+              itemDefinition: { type: 'enum', allowedValues: listAllowedValues }
+            },
+            person_preferences_tags: {
+              type: 'list',
+              itemDefinition: { type: 'text' }
+            }
+          }
+        }
+      }
+    };
+
+    const attributes = extractImportableCustomAttributes(typeDef, {
+      person_preferences_favColor: 'Favorite colors',
+      person_preferences_tags: 'Tags'
+    });
+
+    expect(attributes).toEqual([
+      {
+        key: 'person_preferences_favColor',
+        title: 'Favorite colors',
+        customAspect: 'person_preferences',
+        type: 'enumList',
+        allowedValues: listAllowedValues
+      }
+    ]);
+  });
+
+  it('should normalize multi-select enum-list values correctly', () => {
+    expect(normalizeCsvImportValue('Grün,Rot', 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: true,
+      value: ['person_preferences_favColor_green', 'person_preferences_favColor_red']
+    });
+    expect(normalizeCsvImportValue(' Grün , Rot ', 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: true,
+      value: ['person_preferences_favColor_green', 'person_preferences_favColor_red']
+    });
+    expect(normalizeCsvImportValue('Grün,Grün', 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: true,
+      value: ['person_preferences_favColor_green']
+    });
+    expect(normalizeCsvImportValue('Grü,Rot', 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: false,
+      value: null
+    });
+    expect(normalizeCsvImportValue('', 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: false,
+      value: null
+    });
+    expect(normalizeCsvImportValue('   ', 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: false,
+      value: null
+    });
+    expect(normalizeCsvImportValue(null, 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: false,
+      value: null
+    });
+    expect(normalizeCsvImportValue('Grün,', 'enumList', listAllowedValues, listTranslations)).toEqual({
+      shouldAssign: true,
+      value: ['person_preferences_favColor_green']
+    });
+  });
+
+  it('should validate multi-select enum-list values correctly', () => {
+    expect(isValidEnumListValue('Grün,Rot', listAllowedValues, listTranslations)).toBe(true);
+    expect(isValidEnumListValue(' Grün , Rot ', listAllowedValues, listTranslations)).toBe(true);
+    expect(isValidEnumListValue('', listAllowedValues, listTranslations)).toBe(true);
+    expect(isValidEnumListValue('   ', listAllowedValues, listTranslations)).toBe(true);
+    expect(isValidEnumListValue(null, listAllowedValues, listTranslations)).toBe(true);
+    expect(isValidEnumListValue('Grü,Rot', listAllowedValues, listTranslations)).toBe(false);
+    expect(isValidEnumListValue('Grün,Invalid', listAllowedValues, listTranslations)).toBe(false);
   });
 });
