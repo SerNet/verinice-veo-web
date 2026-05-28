@@ -66,6 +66,8 @@ import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import { mdiPlus } from '@mdi/js';
 import { mergeProps } from 'vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
+import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
+import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 
 const props = defineProps<{
   filter;

@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog :model-value="modelValue" :close-function="() => emit('close')" relative-width="60%" fixed-footer flat>
+  <BaseDialog :close-function="closeDialog" relative-width="60%" title="whoop" fixed-footer flat>
     <div class="import-container">
       <v-card class="bg-basepage px-8 py-8" flat>
         <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>
@@ -112,6 +112,7 @@ withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (event: 'navigate', objectType: string, subType: string): void;
+  (event: 'close'): void;
 }>();
 
 const isCsvDialogOpen = ref(false);
@@ -284,6 +285,11 @@ const processFile = async (file: File, encoding: string) => {
 const handleNavigate = (objectType: string, subType: string) => {
   emit('navigate', objectType, subType);
 };
+
+function closeDialog() {
+  emit('close');
+  return true;
+}
 </script>
 
 <i18n src="~/locales/base/components/object-csv-import-card.json"></i18n>
