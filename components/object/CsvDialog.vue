@@ -204,6 +204,7 @@ import {
   isIntegerCsvImportValue,
   isLinkCsvImportValue,
   isValidEnumValue,
+  isValidEnumListValue,
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 import type { IAlertButton } from '../base/Alert.vue';
@@ -761,6 +762,16 @@ const validateAll = () => {
         const allowedValues = customAttr?.allowedValues || [];
         if (!isValidEnumValue(value, allowedValues, translations.value.lang[locale.value])) {
           errors[field] = t('importObjects.enumSelectFormat');
+        }
+
+        return;
+      }
+      if (fieldType === 'enumList') {
+        const customAttr = customAttributes.value.find((a) => a.key === field);
+
+        const allowedValues = customAttr?.allowedValues || [];
+        if (!isValidEnumListValue(value, allowedValues, translations.value.lang[locale.value])) {
+          errors[field] = t('importObjects.enumListSelectFormat');
         }
 
         return;

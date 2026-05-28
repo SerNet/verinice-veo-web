@@ -25,7 +25,8 @@ export const supportedCsvImportAttributeTypes = [
   'externalDocument',
   'date',
   'dateTime',
-  'enum'
+  'enum',
+  'enumList'
 ] as const;
 
 export type CsvImportAttributeType = (typeof supportedCsvImportAttributeTypes)[number];
@@ -47,23 +48,47 @@ export function isSupportedCsvImportAttributeType(type: unknown): type is CsvImp
   return supportedCsvImportAttributeTypes.includes(type as CsvImportAttributeType);
 }
 
+function resolveImportAttributeType(attrDef: any): { type: CsvImportAttributeType; allowedValues?: string[] } | null {
+  if (attrDef?.type === 'list') {
+    if (attrDef.itemDefinition?.type === 'enum') {
+      return { type: 'enumList', allowedValues: attrDef.itemDefinition.allowedValues };
+    }
+    return null;
+  }
+
+  if (!isSupportedCsvImportAttributeType(attrDef?.type)) {
+    return null;
+  }
+
+  if (attrDef.type === 'enum' && attrDef.allowedValues) {
+    return { type: 'enum', allowedValues: attrDef.allowedValues };
+  }
+
+  return { type: attrDef.type as CsvImportAttributeType };
+}
+
 export function extractImportableCustomAttributes(typeDef: any, translations: Record<string, string> = {}) {
   return Object.entries(typeDef?.customAspects || {}).flatMap(([customAspectKey, customAspectDef]: [string, any]) =>
     Object.entries(customAspectDef.attributeDefinitions || {})
-      .filter(([_, attrDef]: [string, any]) => isSupportedCsvImportAttributeType(attrDef.type))
       .map(([attrKey, attrDef]: [string, any]) => {
+        const resolved = resolveImportAttributeType(attrDef);
+        if (!resolved) {
+          return null;
+        }
+
         const attribute: CsvImportAttribute = {
           key: attrKey,
           title: translations[attrKey] || attrKey,
           customAspect: customAspectKey,
-          type: attrDef.type as CsvImportAttributeType
+          type: resolved.type
         };
-        if (attrDef.type === 'enum' && attrDef.allowedValues) {
-          attribute.allowedValues = attrDef.allowedValues;
+        if (resolved.allowedValues) {
+          attribute.allowedValues = resolved.allowedValues;
         }
 
         return attribute;
       })
+      .filter((attribute): attribute is CsvImportAttribute => attribute !== null)
   );
 }
 
@@ -120,19 +145,48 @@ export function isDateTimeCsvImportValue(value: any) {
   return format(date, "yyyy-MM-dd'T'HH:mm:ss") === raw;
 }
 
+function matchEnumKey(value: string, allowedValues: string[], translations: Record<string, string>): string | null {
+  const raw = value.trim().toLowerCase();
+  return (
+    allowedValues.find(
+      (key) =>
+        String(translations[key] ?? '')
+          .trim()
+          .toLowerCase() === raw
+    ) ?? null
+  );
+}
+
+function splitEnumListValue(value: any): string[] {
+  return String(value)
+    .split(',')
+    .map((segment) => segment.trim())
+    .filter((segment) => segment.length > 0);
+}
+
 export function isValidEnumValue(value: any, allowedValues: string[], translations: Record<string, string>): boolean {
   if (isEmptyCsvImportValue(value)) {
     return true;
   }
 
-  const raw = String(value).trim().toLowerCase();
+  return matchEnumKey(String(value), allowedValues, translations) !== null;
+}
 
-  return allowedValues.some((key) => {
-    const translatedValue = String(translations[key] ?? '')
-      .trim()
-      .toLowerCase();
-    return translatedValue === raw;
-  });
+export function isValidEnumListValue(
+  value: any,
+  allowedValues: string[],
+  translations: Record<string, string>
+): boolean {
+  if (isEmptyCsvImportValue(value)) {
+    return true;
+  }
+
+  const segments = splitEnumListValue(value);
+  if (segments.length === 0) {
+    return true;
+  }
+
+  return segments.every((segment) => matchEnumKey(segment, allowedValues, translations) !== null);
 }
 export function normalizeCsvImportValue(
   value: any,
@@ -148,6 +202,7 @@ export function normalizeCsvImportValue(
       case 'date':
       case 'dateTime':
       case 'enum':
+      case 'enumList':
         return { shouldAssign: false, value: null };
 
       default:
@@ -195,17 +250,37 @@ export function normalizeCsvImportValue(
       if (!allowedValues || !translations) {
         return { shouldAssign: false, value: null };
       }
-      const rawLower = raw.toLowerCase();
-      const matchedKey = allowedValues.find((key) => {
-        const translated = translations[key];
-        return translated?.toLowerCase().trim() === rawLower;
-      });
+      const matchedKey = matchEnumKey(raw, allowedValues, translations);
 
       if (!matchedKey) {
         return { shouldAssign: false, value: null };
       }
 
       return { shouldAssign: true, value: matchedKey };
+    }
+
+    case 'enumList': {
+      if (!allowedValues || !translations) {
+        return { shouldAssign: false, value: null };
+      }
+
+      const segments = splitEnumListValue(raw);
+      if (segments.length === 0) {
+        return { shouldAssign: false, value: null };
+      }
+
+      const keys: string[] = [];
+      for (const segment of segments) {
+        const matchedKey = matchEnumKey(segment, allowedValues, translations);
+        if (!matchedKey) {
+          return { shouldAssign: false, value: null };
+        }
+        if (!keys.includes(matchedKey)) {
+          keys.push(matchedKey);
+        }
+      }
+
+      return { shouldAssign: true, value: keys };
     }
 
     default:
