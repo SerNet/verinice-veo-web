@@ -89,5 +89,7 @@ const vuetify = createVuetify({
 });
 
 export default defineNuxtPlugin((nuxtApp) => {
+  // @ts-ignore // the reason is a type mismatch: nuxt and vuetify are referencing different vue versions. Might resolve itself with coming upgrades.
+  // Otherwise TODO: consider, if an override (and thus aligning vue versions) is worth it.
   nuxtApp.vueApp.use(vuetify);
 });
