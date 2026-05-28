@@ -20,12 +20,13 @@ import { useQuerySync } from '~/composables/api/utils/query';
 import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import type { VeoSearch, VeoSearchQueryParameters, VeoSearchFilters } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { unref, type MaybeRef } from 'vue';
 
 type UseSearchParams<T> = {
   baseQueryParameters: Ref<T & { endpoint?: string; page?: number }>;
   search: Ref<VeoSearch[]>;
   queryDefinition?: any;
-  filters?: VeoSearchFilters;
+  filters?: MaybeRef<VeoSearchFilters>;
 };
 
 type VeoSearchResponse = IVeoPaginatedResponse<IVeoEntity[]> | undefined;
@@ -39,7 +40,7 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition, fil
   const isLoading = ref(false);
   const _queryDefinition = queryDefinition ? queryDefinition : elementQueryDefinitions.queries.fetchAll;
   const isObjectSearch = !queryDefinition;
-  const allowedKeys = filters?.all.map((f) => f.key);
+  const allowedKeys = computed(() => unref(filters)?.all.map((f) => f.key));
 
   async function getSearchResults() {
     watch(
@@ -49,7 +50,7 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition, fil
         if (isObjectSearch && !baseQueryParameters.value?.endpoint) return;
         const parameters = ref({
           ...baseQueryParameters.value,
-          ...getSearchQueryParameters(search.value, allowedKeys)
+          ...getSearchQueryParameters(search.value, allowedKeys.value)
         });
 
         try {

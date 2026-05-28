@@ -23,13 +23,14 @@ import { useSearch } from '~/composables/search/useSearch';
 
 import type { IVeoEntity, IVeoPaginatedResponse, IVeoControlImplementation } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
-import type { VeoSearch } from '~/types/VeoSearch';
+import type { VeoSearch, VeoSearchFilters } from '~/types/VeoSearch';
 
 interface UseLinkableObjectsOptions {
   domainId: Ref<string>;
   unitId: Ref<string>;
   filter: Ref<Record<string, any>>;
   search: Ref<VeoSearch[]>;
+  searchFilters?: MaybeRef<VeoSearchFilters>;
   page: Ref<number>;
   sortBy: Ref<{ key: string; order: string }[]>;
   pageSize: Ref<number>;
@@ -86,7 +87,8 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
 
   const { data: searchResults, isLoading: searchLoading } = useSearch({
     baseQueryParameters: objectsQueryParams,
-    search
+    search,
+    filters: options.searchFilters
   });
 
   const objects = computed<IVeoPaginatedResponse<IVeoEntity[]>>(() =>
