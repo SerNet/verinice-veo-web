@@ -65,6 +65,7 @@
       :preselected-sub-type="subType"
       :required-fields="requiredFields"
       @navigate="handleNavigate"
+      @close-csv-importer="emit('close')"
     />
     <template #dialog-options>
       <v-btn variant="text" @click="emit('close')">

@@ -234,7 +234,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (event: 'save'): void;
+  (event: 'close-csv-importer'): void;
   (event: 'navigate', objectType: string, subType: string): void;
   (event: 'update:model-value', value: boolean): void;
 }>();
@@ -557,6 +557,7 @@ const onSubmit = async (data: any[], originalData: any[]) => {
       })
     );
   } else {
+    emit('close-csv-importer');
     displaySuccessMessage(
       t('importObjects.importSuccessTitle'),
       undefined,
