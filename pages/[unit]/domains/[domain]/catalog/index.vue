@@ -77,7 +77,7 @@ import { onBeforeRouteLeave } from 'vue-router';
 import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~/composables/api/utils/query';
 import { useSubTypeTranslation } from '~/composables/Translations';
-import type { VeoSearch } from '~/types/VeoSearch';
+import type { VeoSearch, VeoSearchFilters } from '~/types/VeoSearch';
 import { VeoElementTypePlurals, type IVeoLink, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
 
 const { t, locale } = useI18n();
@@ -125,7 +125,7 @@ const { data: _catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
 const { subTypeTranslation: currentSubTypeTranslated } = useSubTypeTranslation();
 
 // SEARCH
-const searchFilters = {
+const searchFilters: VeoSearchFilters = {
   all: [
     { key: 'abbreviation', value: 'abbreviation' },
     { key: 'name', value: 'name' }
