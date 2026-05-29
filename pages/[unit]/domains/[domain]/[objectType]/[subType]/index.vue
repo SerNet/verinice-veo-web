@@ -30,7 +30,7 @@
           />
         </div>
       </div>
-      <span class="py-4 my-8 d-flex flex-wrap justify-end ga-8 align-top">
+      <span class="py-4 my-4 d-flex flex-wrap justify-end ga-8 align-top">
         <div class="actions py-0 my-0" :class="{ 'd-none': selectedItems.length == 0 }">
           <div class="actions__bulk__wrapper">
             <v-tooltip
