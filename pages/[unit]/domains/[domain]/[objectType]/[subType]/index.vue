@@ -30,56 +30,57 @@
           />
         </div>
       </div>
-      <span class="py-4 my-4 d-flex flex-wrap justify-end ga-8 align-top">
-        <div class="actions py-0 my-0" :class="{ 'd-none': selectedItems.length == 0 }">
-          <div class="actions__bulk__wrapper">
-            <v-tooltip
-              location="start"
-              :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects')"
-            >
-              <template #activator="{ props }">
-                <span v-if="selectedItems.length > 0" v-bind="props">
-                  <v-btn
-                    :icon="mdiTrashCanOutline"
-                    variant="text"
-                    class="trash-btn"
-                    density="compact"
-                    size="small"
-                    data-component-name="bulk-delete-button"
-                    :disabled="!canManageUnitContent"
-                    @click="onBulkDelete"
-                  />
-                </span>
-              </template>
-              {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects') }}
-            </v-tooltip>
-            <v-tooltip
-              location="start"
-              :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects')"
-            >
-              <template #activator="{ props }">
-                <span v-if="selectedItems.length > 0" v-bind="props">
-                  <v-btn
-                    :disabled="!canManageUnitContent || !domains || domains.length <= 1"
-                    :icon="mdiPuzzleOutline"
-                    variant="text"
-                    class="assign-btn"
-                    density="compact"
-                    size="small"
-                    data-component-name="bulk-assign-button"
-                    @click="onBulkAssign"
-                  />
-                </span>
-              </template>
-              {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects') }}
-            </v-tooltip>
-          </div>
+      <div class="toolbar my-6">
+        <div class="actions-wrapper">
+          <h5 class="selection-count" :style="{ opacity: !hasSelection ? 0.5 : 1 }">
+            {{ t('selectedCount', { count: selectedCount }) }}
+          </h5>
+          <v-divider vertical class="mx-2" />
+          <v-tooltip
+            location="start"
+            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects')"
+          >
+            <template #activator="{ props }">
+              <span v-bind="props">
+                <v-btn
+                  :icon="mdiTrashCanOutline"
+                  variant="text"
+                  class="trash-btn"
+                  density="compact"
+                  size="small"
+                  data-component-name="bulk-delete-button"
+                  :disabled="!canManageUnitContent || !hasSelection"
+                  @click="onBulkDelete"
+                />
+              </span>
+            </template>
+            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects') }}
+          </v-tooltip>
+          <v-tooltip
+            location="start"
+            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects')"
+          >
+            <template #activator="{ props }">
+              <span v-bind="props">
+                <v-btn
+                  :disabled="!canManageUnitContent || !domains || domains.length <= 1 || !hasSelection"
+                  :icon="mdiPuzzleOutline"
+                  variant="text"
+                  class="assign-btn"
+                  density="compact"
+                  size="small"
+                  data-component-name="bulk-assign-button"
+                  @click="onBulkAssign"
+                />
+              </span>
+            </template>
+            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects') }}
+          </v-tooltip>
         </div>
-        <div class="search-wrapper" :class="{ 'search-shrunk': selectedItems.length > 0 }">
-          <SearchBar v-model:search="search" :filters="searchFilters" density="compact" />
+        <div class="toolbar-search">
+          <SearchBar v-model:search="search" density="compact" />
         </div>
-
-        <span class="my-0 d-flex justify-end ga-2">
+        <span class="toolbar-right">
           <v-btn
             flat
             data-component-name="csv-button"
@@ -90,7 +91,7 @@
           >
           <ObjectCreateButton :filter="filter" />
         </span>
-      </span>
+      </div>
 
       <template v-if="filter.objectType">
         <BaseCard>
@@ -243,7 +244,8 @@ const filterBar = ref();
 const onOpenFilterDialog = () => {
   filterBar.value.filterDialogVisible = true;
 };
-
+const selectedCount = computed(() => selectedItems.value.length);
+const hasSelection = computed(() => selectedCount.value > 0);
 // accepted filter keys (others wont be respected when specified in URL query parameters)
 const filterDefinitions: IFilterDefinition = {
   objectType: {
@@ -589,68 +591,26 @@ const hasCSVImport = ref(false);
 <i18n src="~/locales/base/pages/unit-domains-domain-object-type-sub-type-index.json"></i18n>
 
 <style scoped lang="scss">
-.filter-row {
+.toolbar {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
   width: 100%;
 }
 
-.filter-section {
+.toolbar-search {
   flex: 1;
+}
+
+.toolbar-right {
+  display: flex;
+  gap: 8px;
+}
+
+.actions-wrapper {
   display: flex;
   align-items: center;
-}
-
-.toggle-section {
-  display: flex;
-  align-items: center;
-
-  :deep(.v-switch) {
-    margin: 0;
-    padding: 0;
-  }
-
-  :deep(.v-switch__track) {
-    opacity: 0.7;
-  }
-
-  :deep(.v-label) {
-    font-size: 13px;
-    opacity: 0.85;
-    margin-left: 4px;
-  }
-}
-
-.actions {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-items: center;
-}
-
-.actions__bulk__wrapper {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  left: 0;
-  z-index: 1;
-  height: 100%;
-  width: 48px;
-  gap: 2px;
-  left: 0;
-}
-
-.search-wrapper {
-  flex: 1;
-  max-width: 100%;
-  min-width: 60%;
-}
-
-.search-shrunk {
-  width: calc(100% - 48px);
-  margin-left: 48px;
+  gap: 6px;
 }
 </style>
 
