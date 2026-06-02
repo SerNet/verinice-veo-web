@@ -78,7 +78,7 @@
           </v-tooltip>
         </div>
         <div class="toolbar-search">
-          <SearchBar v-model:search="search" density="compact" />
+          <SearchBar v-model:search="search" :filters="searchFilters" density="compact" />
         </div>
         <span class="toolbar-right">
           <v-btn
