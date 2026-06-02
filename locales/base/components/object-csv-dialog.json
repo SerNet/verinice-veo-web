@@ -30,6 +30,8 @@
       "dateFormat": "Invalid date format. Expected: YYYY-MM-DD",
       "dateTimeFormat": "Invalid date & time format. Expected: YYYY-MM-DDTHH:mm:ss",
       "enumSelectFormat": "Please select a valid value from the allowed options.",
+      "importColumn": "Import column",
+      "targetAttribute": "Target attribute",
       "enumListSelectFormat": "Please enter only valid, comma-separated values from the allowed options."
     }
   },
@@ -64,6 +66,8 @@
       "dateTimeFormat": "Ungültiges Datum-/Uhrzeitformat. Erwartet: JJJJ-MM-TTThh:mm:ss",
       "urlFormat": "Muss eine gültige URL sein.",
       "enumSelectFormat": "Bitte wählen Sie einen gültigen Wert aus den erlaubten Optionen.",
+      "importColumn": "Spalte importieren",
+      "targetAttribute": "Zielattribut",
       "enumListSelectFormat": "Bitte geben Sie nur gültige, durch Komma getrennte Werte aus den erlaubten Optionen ein."
     }
   }

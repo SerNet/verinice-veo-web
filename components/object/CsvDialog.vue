@@ -102,21 +102,32 @@
             <ObjectCsvTable ref="csvTableRef" :headers="localHeaders" :items="items">
               <template #headers>
                 <tr>
-                  <th v-for="header in headers" :key="header">
+                  <th v-for="header in headers" :key="header" class="csv-column-header">
+                    <div class="column-name">{{ getHeaderLabel(header) }}</div>
+                    <v-checkbox
+                      :model-value="columnImportEnabled[header]"
+                      :label="t('importObjects.importColumn')"
+                      density="compact"
+                      hide-details
+                      class="my-1"
+                      @update:model-value="(val) => onColumnImportToggle(header, !!val)"
+                    />
                     <v-autocomplete
+                      v-if="columnImportEnabled[header]"
                       v-model:search="headerSearchTerms[header]"
                       :model-value="getSelectedOption(header)"
                       :items="getAvailableOptions(header)"
-                      dense
-                      :label="getHeaderLabel(header)"
-                      outlined
-                      hide-details
+                      density="compact"
+                      :label="t('importObjects.targetAttribute')"
+                      variant="outlined"
                       clearable
                       :placeholder="t('importObjects.selectMapping')"
                       :no-data-text="t('importObjects.noOptionsAvailable')"
                       item-title="title"
                       item-value="value"
                       return-object
+                      :error="!headerMappings[header]"
+                      :error-messages="!headerMappings[header] ? t('global.input.required') : ''"
                       @update:model-value="(val) => updateMapping(header, val?.value)"
                     />
                   </th>
@@ -268,6 +279,7 @@ const editingKey = ref<string>('');
 const selectedStatus = ref<string>('');
 const validationErrors = ref<Record<number, Record<string, string>>>({});
 const confirmImport = ref<boolean>(false);
+const columnImportEnabled = ref<Record<string, boolean>>({});
 
 // Track original state for dirty check
 const originalState = ref({
@@ -275,7 +287,8 @@ const originalState = ref({
   items: [] as Record<string, any>[],
   globalObjectType: '',
   globalSubType: '',
-  selectedStatus: ''
+  selectedStatus: '',
+  columnImportEnabled: {} as Record<string, boolean>
 });
 
 /** Computed Properties */
@@ -358,7 +371,11 @@ const localHeaders = computed<MappedHeader[]>(() =>
 
 const hasAllRequiredFields = computed(() => {
   const usedOptions = Object.values(headerMappings.value).filter((value) => value);
+  const allEnabledMapped = props.headers.every(
+    (header) => !columnImportEnabled.value[header] || !!headerMappings.value[header]
+  );
   return (
+    allEnabledMapped &&
     usedOptions.length >= props.requiredFields.length &&
     props.requiredFields.every((field) => usedOptions.includes(field)) &&
     usedOptions.every((option) => objectProps.value.includes(option)) &&
@@ -371,6 +388,7 @@ const hasAllRequiredFields = computed(() => {
 props.headers.forEach((header) => {
   headerMappings.value[header] = '';
   headerSearchTerms.value[header] = '';
+  columnImportEnabled.value[header] = true;
 });
 
 const confirmCloseMessage = computed(() => {
@@ -379,6 +397,9 @@ const confirmCloseMessage = computed(() => {
   // Check if mappings have changed
   const mappingsChanged = Object.keys(headerMappings.value).some(
     (key) => headerMappings.value[key] !== originalState.value.headerMappings[key]
+  );
+  const columnImportChanged = Object.keys(columnImportEnabled.value).some(
+    (key) => columnImportEnabled.value[key] !== originalState.value.columnImportEnabled[key]
   );
 
   // Check if items have been edited
@@ -392,7 +413,7 @@ const confirmCloseMessage = computed(() => {
   const subTypeChanged = globalSubType.value !== originalState.value.globalSubType;
   const statusChanged = selectedStatus.value !== originalState.value.selectedStatus;
 
-  return mappingsChanged || itemsChanged || typeChanged || subTypeChanged || statusChanged ?
+  return mappingsChanged || itemsChanged || typeChanged || subTypeChanged || statusChanged || columnImportChanged ?
       t('importObjects.confirmClose')
     : '';
 });
@@ -417,7 +438,8 @@ const initializeOriginalState = () => {
     items: items.value ? JSON.parse(JSON.stringify(items.value)) : [],
     globalObjectType: globalObjectType.value,
     globalSubType: globalSubType.value,
-    selectedStatus: selectedStatus.value
+    selectedStatus: selectedStatus.value,
+    columnImportEnabled: JSON.parse(JSON.stringify(columnImportEnabled.value))
   };
 };
 // Initialize original state when dialog opens
@@ -681,6 +703,13 @@ const updateMapping = (key: string, value: string | undefined) => {
   headerSearchTerms.value[key] = value ? getFieldTranslation(value) : '';
 };
 
+const onColumnImportToggle = (header: string, enabled: boolean) => {
+  columnImportEnabled.value[header] = enabled;
+  if (!enabled) {
+    updateMapping(header, undefined);
+  }
+};
+
 const updateView = (value: boolean) => {
   if (!value && importedItems.value > 0) {
     emit('navigate', globalObjectType.value, globalSubType.value);
@@ -892,5 +921,20 @@ const handleImport = () => {
   flex-direction: column;
   height: auto !important;
   width: 60px;
+}
+
+:deep(.csv-column-header) {
+  vertical-align: top;
+  min-width: 220px;
+  padding: 8px !important;
+}
+
+.column-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  padding-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
