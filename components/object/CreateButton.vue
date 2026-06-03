@@ -1,3 +1,19 @@
+<!--
+   - verinice.veo web
+   - Copyright (C) 2026 Haneen Husin
+   - 
+   - This program is free software: you can redistribute it and/or modify it
+   - under the terms of the GNU Affero General Public License
+   - as published by the Free Software Foundation, either version 3 of the License,
+   - or (at your option) any later version.
+   - 
+   - This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+   - without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+   - See the GNU Affero General Public License for more details.
+   - 
+   - You should have received a copy of the GNU Affero General Public License along with this program.
+   - If not, see <http://www.gnu.org/licenses/>.
+-->
 <template>
   <ObjectCreateDialog
     v-if="filter.objectType && createObjectDialogVisible"
@@ -7,58 +23,43 @@
     :display-success-message="true"
     :sub-type="filter.subType || selectedSubtypeForCreateDialog"
   />
-  <v-tooltip
-    v-if="filter.objectType"
-    location="start"
-    :aria-label="
-      !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])
-    "
-  >
-    <template #activator="{ props: tooltipProps }">
-      <span v-bind="tooltipProps">
-        <UtilNestedMenu v-if="!filter.subType && nestedActions.length" location="bottom right" :items="nestedActions">
-          <template #activator="{ props: menuProps }">
-            <v-btn
-              v-bind="mergeProps($attrs, menuProps)"
-              color="primary"
-              flat
-              data-component-name="create-object-button"
-              data-veo-test="create-object-button"
-              :disabled="!nestedActions.length || !canManageUnitContent"
-              :aria-label="
-                !canManageUnitContent ?
-                  t('permissions.missingPermissionTooltip')
-                : t('createObject', [createObjectLabel])
-              "
-              :prepend-icon="mdiPlus"
-            >
-              {{ t('createObject') }}
-            </v-btn>
-          </template>
-        </UtilNestedMenu>
+
+  <template v-if="filter.objectType">
+    <UtilNestedMenu v-if="!filter.subType && nestedActions.length" location="bottom right" :items="nestedActions">
+      <template #activator="{ props: menuProps }">
         <v-btn
-          v-else
+          v-bind="mergeProps($attrs, menuProps)"
           color="primary"
           flat
-          :disabled="!canManageUnitContent"
           data-component-name="create-object-button"
           data-veo-test="create-object-button"
+          :disabled="!nestedActions.length || !canManageUnitContent"
           :aria-label="
             !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])
           "
           :prepend-icon="mdiPlus"
-          @click="createObjectDialogVisible = true"
         >
-          {{ t('createObject', [createObjectLabel]) }}
+          {{ t('createObject') }}
         </v-btn>
-      </span>
-    </template>
-    <template #default>
-      <span>{{
+      </template>
+    </UtilNestedMenu>
+
+    <v-btn
+      v-else
+      color="primary"
+      flat
+      :disabled="!canManageUnitContent"
+      data-component-name="create-object-button"
+      data-veo-test="create-object-button"
+      :aria-label="
         !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])
-      }}</span>
-    </template>
-  </v-tooltip>
+      "
+      :prepend-icon="mdiPlus"
+      @click="createObjectDialogVisible = true"
+    >
+      {{ t('createObject', [createObjectLabel]) }}
+    </v-btn>
+  </template>
 </template>
 <script setup lang="ts">
 import { useQuery } from '~/composables/api/utils/query';
