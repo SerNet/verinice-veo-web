@@ -46,9 +46,9 @@ export function checkPagination(columnSelectors: string[] = ['name', 'status', '
   }
   cy.getCustom('.v-data-table-footer__info > div')
     .invoke('text')
-    .then((footerText: any) => {
+    .then((footerText: string) => {
       const matches = footerText.match(paginationRegex);
-
+      if (!matches) return;
       expect(matches).to.have.length(4);
       const startItem = parseInt(matches[1], 10);
       const endItem = parseInt(matches[2], 10);
