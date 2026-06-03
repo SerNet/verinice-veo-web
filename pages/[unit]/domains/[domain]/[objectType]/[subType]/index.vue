@@ -596,6 +596,7 @@ const hasCSVImport = ref(false);
   align-items: center;
   gap: 16px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
 .toolbar-search {
