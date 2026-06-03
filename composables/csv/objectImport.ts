@@ -111,8 +111,13 @@ export function isLinkCsvImportValue(value: any): boolean {
   }
   try {
     const url = new URL(value);
-
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    return (
+      url.protocol === 'http:' ||
+      url.protocol === 'https:' ||
+      url.protocol === 'ftp:' ||
+      url.protocol === 'ftps:' ||
+      url.protocol === 'smb:'
+    );
   } catch {
     return false;
   }
