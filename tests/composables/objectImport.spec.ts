@@ -185,6 +185,7 @@ describe('object CSV import helpers', () => {
   it('should normalize URL values correctly', () => {
     expect(isLinkCsvImportValue('https://test')).toBe(true);
     expect(isLinkCsvImportValue('http://localhost')).toBe(true);
+    expect(isLinkCsvImportValue('ftps://localhost')).toBe(true);
 
     expect(isLinkCsvImportValue('')).toBe(true);
     expect(isLinkCsvImportValue('   ')).toBe(true);
