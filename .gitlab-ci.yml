@@ -1,7 +1,7 @@
 stages:
   - setup
-  - test
   - build
+  - test
   - deploy
 
 workflow:
@@ -122,32 +122,9 @@ unit_integration_tests:
         - test-results/vitest-junit.xml
   interruptible: true
 
-build_test_app:
-  stage: test
-  rules:
-    - !reference [.verification, rules]
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - .npm/
-  before_script:
-    - npm ci --cache .npm --prefer-offline
-    - chmod +x ./scripts/setup-env.sh
-  script:
-    - ./scripts/setup-env.sh
-    - npm run generate
-  artifacts:
-    expire_in: 1 week
-    when: always
-    paths:
-      - ${CI_PROJECT_DIR}/.output/public
-  interruptible: true
-
 .test_template:
   image: cypress/base:26.0.0@sha256:446be8fcb63e3cad2f9a4e14720e3d8e35993e12f36da541e09f5740a4c2477c
-  needs: ['build_test_app']
+  needs: ['docker_image']
   stage: test
   tags:
     - native
@@ -155,6 +132,24 @@ build_test_app:
     - !reference [.verification, rules]
   variables:
     CYPRESS_parallel_group: 2
+    TEST_VEO_DEFAULT_API_URL: $VEO_DEFAULT_API_URL
+    TEST_VEO_FORMS_API_URL: $VEO_FORMS_API_URL
+    TEST_VEO_HISTORY_API_URL: $VEO_HISTORY_API_URL
+    TEST_VEO_REPORTING_API_URL: $VEO_REPORTING_API_URL
+    TEST_VEO_ACCOUNTS_API_URL: $VEO_ACCOUNTS_API_URL
+    TEST_VEO_ACCOUNT_PATH: $VEO_ACCOUNT_PATH
+    TEST_VEO_OIDC_URL: $VEO_OIDC_URL
+    TEST_VEO_OIDC_REALM: $VEO_OIDC_REALM
+    TEST_VEO_OIDC_CLIENT: $VEO_OIDC_CLIENT
+    TEST_VEO_OIDC_ACCOUNT_APPLICATION: $VEO_OIDC_ACCOUNT_APPLICATION
+    TEST_VEO_DOCUMENTATION_URL: $VEO_DOCUMENTATION_URL
+    TEST_VEO_HIDE_SERNET_REFERENCES: $VEO_HIDE_SERNET_REFERENCES
+    TEST_VEO_FEATURE_FLAG_ACCESS_GROUPS: $VEO_FEATURE_FLAG_ACCESS_GROUPS
+    TEST_VEO_FEATURE_FLAG_GRAPH: $VEO_FEATURE_FLAG_GRAPH
+    TEST_VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES: $VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES
+    TEST_VEO_FEATURE_FLAG_SHORTCUTS: $VEO_FEATURE_FLAG_SHORTCUTS
+    TEST_VEO_FEATURE_FLAG_UNIT_IMPORT: $VEO_FEATURE_FLAG_UNIT_IMPORT
+    TEST_VEO_FEATURE_FLAG_USER_SETTINGS: $VEO_FEATURE_FLAG_USER_SETTINGS
   artifacts:
     expire_in: 1 week
     when: always
@@ -176,17 +171,44 @@ build_test_app:
   before_script:
     - npm ci --cache .npm --prefer-offline
     - chmod +x ./scripts/setup-env.sh ./scripts/run-parallel-tests.sh
+    - export CYPRESS_BASE_URL_LOCAL=http://localhost:3000
     - ./scripts/setup-env.sh
-    - apt-get update && apt-get install -y xvfb
+    - apt-get update && apt-get install -y curl socat xvfb
     - Xvfb :99 & # Start Xvfb
     - export DISPLAY=:99 # Set the DISPLAY environment variable
     - export {http,https}_proxy="${http_proxy}"
-    - npx serve .output/public/ &
+    - export no_proxy="${no_proxy},localhost,127.0.0.1,veo-web"
+    - export NO_PROXY="${NO_PROXY},localhost,127.0.0.1,veo-web"
+    - socat TCP-LISTEN:3000,fork,reuseaddr TCP:veo-web:5000 &
+    - timeout 60 sh -c 'until curl --fail --silent --output /dev/null "$CYPRESS_BASE_URL_LOCAL"; do sleep 1; done'
+    - echo "$CYPRESS_BASE_URL_LOCAL is ready"
   interruptible: true
   retry: 2
 
 test:
   extends: .test_template
+  services:
+    - name: eu.gcr.io/veo-projekt/veo-web:git-${CI_COMMIT_SHA}
+      alias: veo-web
+      variables:
+        VEO_DEFAULT_API_URL: $TEST_VEO_DEFAULT_API_URL
+        VEO_FORMS_API_URL: $TEST_VEO_FORMS_API_URL
+        VEO_HISTORY_API_URL: $TEST_VEO_HISTORY_API_URL
+        VEO_REPORTING_API_URL: $TEST_VEO_REPORTING_API_URL
+        VEO_ACCOUNTS_API_URL: $TEST_VEO_ACCOUNTS_API_URL
+        VEO_ACCOUNT_PATH: $TEST_VEO_ACCOUNT_PATH
+        VEO_OIDC_URL: $TEST_VEO_OIDC_URL
+        VEO_OIDC_REALM: $TEST_VEO_OIDC_REALM
+        VEO_OIDC_CLIENT: $TEST_VEO_OIDC_CLIENT
+        VEO_OIDC_ACCOUNT_APPLICATION: $TEST_VEO_OIDC_ACCOUNT_APPLICATION
+        VEO_DOCUMENTATION_URL: $TEST_VEO_DOCUMENTATION_URL
+        VEO_HIDE_SERNET_REFERENCES: $TEST_VEO_HIDE_SERNET_REFERENCES
+        VEO_FEATURE_FLAG_ACCESS_GROUPS: $TEST_VEO_FEATURE_FLAG_ACCESS_GROUPS
+        VEO_FEATURE_FLAG_GRAPH: $TEST_VEO_FEATURE_FLAG_GRAPH
+        VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES: $TEST_VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES
+        VEO_FEATURE_FLAG_SHORTCUTS: $TEST_VEO_FEATURE_FLAG_SHORTCUTS
+        VEO_FEATURE_FLAG_UNIT_IMPORT: $TEST_VEO_FEATURE_FLAG_UNIT_IMPORT
+        VEO_FEATURE_FLAG_USER_SETTINGS: $TEST_VEO_FEATURE_FLAG_USER_SETTINGS
   script:
     - npm run prepare
     - ./scripts/run-parallel-tests.sh $CI_NODE_INDEX $CYPRESS_parallel_group
@@ -201,8 +223,8 @@ docker_image:
     name: gcr.io/kaniko-project/executor:v1.24.0-debug@sha256:2562c4fe551399514277ffff7dcca9a3b1628c4ea38cb017d7286dc6ea52f4cd
     entrypoint: ['']
   variables:
-    # this does not work in Gitlab < 15.7, so we need the before_script workaround
-    # GOOGLE_APPLICATION_CREDENTIALS: $GCR_ACCESS_TOKEN
+  # this does not work in Gitlab < 15.7, so we need the before_script workaround
+  # GOOGLE_APPLICATION_CREDENTIALS: $GCR_ACCESS_TOKEN
   before_script:
     - export GOOGLE_APPLICATION_CREDENTIALS=${GCR_ACCESS_TOKEN}
   script:
