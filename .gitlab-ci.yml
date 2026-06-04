@@ -252,7 +252,7 @@ update-values:
     - when: never
   trigger:
     project: veo/verinice-veo-argocd
-    branch: master
+    branch: main
     strategy: mirror
     inputs:
       valuesFile: $VALUES_FILE
