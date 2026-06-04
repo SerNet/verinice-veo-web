@@ -31,52 +31,6 @@
         </div>
       </div>
       <div class="toolbar my-6">
-        <div class="actions-wrapper">
-          <h5 class="selection-count" :style="{ opacity: !hasSelection ? 0.5 : 1 }">
-            {{ t('selectedCount', { count: selectedCount }) }}
-          </h5>
-          <v-divider vertical class="mx-2" />
-          <v-tooltip
-            location="start"
-            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects')"
-          >
-            <template #activator="{ props }">
-              <span v-bind="props">
-                <v-btn
-                  :icon="mdiTrashCanOutline"
-                  variant="text"
-                  class="trash-btn"
-                  density="compact"
-                  size="small"
-                  data-component-name="bulk-delete-button"
-                  :disabled="!canManageUnitContent || !hasSelection"
-                  @click="onBulkDelete"
-                />
-              </span>
-            </template>
-            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects') }}
-          </v-tooltip>
-          <v-tooltip
-            location="start"
-            :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects')"
-          >
-            <template #activator="{ props }">
-              <span v-bind="props">
-                <v-btn
-                  :disabled="!canManageUnitContent || !domains || domains.length <= 1 || !hasSelection"
-                  :icon="mdiPuzzleOutline"
-                  variant="text"
-                  class="assign-btn"
-                  density="compact"
-                  size="small"
-                  data-component-name="bulk-assign-button"
-                  @click="onBulkAssign"
-                />
-              </span>
-            </template>
-            {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects') }}
-          </v-tooltip>
-        </div>
         <div class="toolbar-search">
           <SearchBar v-model:search="search" :filters="searchFilters" density="compact" />
         </div>
@@ -92,7 +46,53 @@
           <ObjectCreateButton :filter="filter" />
         </span>
       </div>
-
+      <div class="actions-wrapper mx-5 mb-2">
+        <span :style="{ opacity: !hasSelection ? 0.4 : 1 }">
+          {{ t('selectedCount', { count: selectedCount }) }}
+        </span>
+        <v-divider vertical class="mx-2" />
+        <v-tooltip
+          location="start"
+          :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects')"
+        >
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                :icon="mdiTrashCanOutline"
+                variant="text"
+                density="compact"
+                size="small"
+                :aria-label="t('deleteObjects')"
+                data-component-name="bulk-delete-button"
+                :disabled="!canManageUnitContent || !hasSelection"
+                @click="onBulkDelete"
+              />
+            </span>
+          </template>
+          {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('deleteObjects') }}
+        </v-tooltip>
+        <v-tooltip
+          location="start"
+          :aria-label="!canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects')"
+        >
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                :disabled="!canManageUnitContent || !domains || domains.length <= 1 || !hasSelection"
+                :icon="mdiPuzzleOutline"
+                variant="text"
+                density="compact"
+                class="mx-2"
+                size="small"
+                :aria-label="t('assignObjects')"
+                data-component-name="bulk-assign-button"
+                @click="onBulkAssign"
+              />
+            </span>
+          </template>
+          {{ !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('assignObjects') }}
+        </v-tooltip>
+      </div>
       <template v-if="filter.objectType">
         <BaseCard>
           <ObjectTable
@@ -611,7 +611,6 @@ const hasCSVImport = ref(false);
 .actions-wrapper {
   display: flex;
   align-items: center;
-  gap: 6px;
 }
 </style>
 
