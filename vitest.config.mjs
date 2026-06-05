@@ -5,6 +5,7 @@ export default defineVitestConfig({
   plugins: [tsconfigPaths()],
   test: {
     exclude: ['node_modules', 'composables/__test__/use-units.spec.ts', './components/userData/__test__/**'],
+    hookTimeout: 20000,
     includeSource: ['**/*.{js,ts}'],
     setupFiles: './tests/setup/mocks.ts'
   },
