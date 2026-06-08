@@ -203,10 +203,13 @@
 import { useI18n } from 'vue-i18n';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
+import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
+import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import { useQuery } from '~/composables/api/utils/query';
-import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { ELEMENT_DETAILS_CONTEXT, VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { CsvImportAttributeType } from '~/composables/csv/objectImport';
 import {
+  extractFormScopeAttributeKeys,
   extractImportableCustomAttributes,
   isBooleanCsvImportValue,
   isDateCsvImportValue,
@@ -299,6 +302,34 @@ const fetchTranslationsQueryParameters = computed(() => ({
 
 const { data: translations } = useQuery(translationQueryDefinitions.queries.fetch, fetchTranslationsQueryParameters);
 
+const formsQueryParameters = computed(() => ({ domainId: route.params.domain as string }));
+const formsQueryEnabled = computed(() => !!route.params.domain);
+const { data: formSchemas } = useQuery(formQueryDefinitions.queries.fetchForms, formsQueryParameters, {
+  enabled: formsQueryEnabled,
+  placeholderData: []
+});
+
+const selectedFormSchemaId = computed(() => {
+  if (!globalObjectType.value || !globalSubType.value) return undefined;
+  return (formSchemas.value as IVeoFormSchemaMeta[] | undefined)?.find(
+    (form) =>
+      form.modelType === globalObjectType.value &&
+      form.subType === globalSubType.value &&
+      form.context === ELEMENT_DETAILS_CONTEXT
+  )?.id;
+});
+
+const formQueryParameters = computed(() => ({ id: selectedFormSchemaId.value as string }));
+const formQueryEnabled = computed(() => !!selectedFormSchemaId.value);
+const { data: selectedFormSchema } = useQuery(formQueryDefinitions.queries.fetchForm, formQueryParameters, {
+  enabled: formQueryEnabled
+});
+
+const subTypeAttributeKeys = computed(() => {
+  if (!globalSubType.value) return new Set<string>();
+  return extractFormScopeAttributeKeys(selectedFormSchema.value?.content);
+});
+
 const typesOptions = computed(() => {
   const types = Object.keys(currentDomain?.value?.raw?.elementTypeDefinitions || {});
   return types.map((key) => ({
@@ -334,10 +365,13 @@ const statusOptions = computed(() => {
 
 const customAttributes = computed(() => {
   const typeDef = currentDomain.value?.raw?.elementTypeDefinitions?.[globalObjectType.value];
-  if (!typeDef) return [];
+  if (!typeDef || !globalSubType.value) return [];
   const translations = typeDef.translations?.[locale.value] || typeDef.translations?.['de'] || {};
 
-  return extractImportableCustomAttributes(typeDef, translations);
+  // Only keep attributes that the selected subtype's form actually uses.
+  return extractImportableCustomAttributes(typeDef, translations).filter((attr) =>
+    subTypeAttributeKeys.value.has(attr.key)
+  );
 });
 
 const unmappedRequiredFields = computed(() => props.requiredFields.filter((field) => !getMappedHeader(field)));
@@ -345,6 +379,8 @@ const unmappedRequiredFields = computed(() => props.requiredFields.filter((field
 const standardFields = ['name', 'abbreviation', 'description'];
 
 const objectProps = computed(() => {
+  // No subtype selected => offer no attributes at all.
+  if (!globalSubType.value) return [];
   const customFields = customAttributes.value.map((attr) => attr.key);
   return [...new Set([...props.requiredFields, ...standardFields, ...customFields])];
 });

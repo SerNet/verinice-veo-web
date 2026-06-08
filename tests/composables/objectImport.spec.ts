@@ -34,6 +34,7 @@
 import { format, parse } from 'date-fns';
 import { describe, expect, it } from 'vitest';
 import {
+  extractFormScopeAttributeKeys,
   extractImportableCustomAttributes,
   isBooleanCsvImportValue,
   isDateCsvImportValue,
@@ -94,6 +95,34 @@ describe('object CSV import helpers', () => {
       }
     ]);
   });
+  it('extracts the leaf attribute keys of every scope referenced in a form schema', () => {
+    const content = {
+      type: 'Layout',
+      elements: [
+        { type: 'Control', scope: '#/properties/name' },
+        {
+          type: 'Layout',
+          elements: [
+            {
+              type: 'Control',
+              scope: '#/properties/customAspects/properties/asset_meta/properties/attributes/properties/asset_meta_name'
+            },
+            { type: 'Label', text: 'no scope here' }
+          ]
+        }
+      ]
+    };
+
+    const keys = extractFormScopeAttributeKeys(content);
+    expect(keys.has('name')).toBe(true);
+    expect(keys.has('asset_meta_name')).toBe(true);
+    expect(keys.size).toBe(2);
+  });
+
+  it('returns an empty set for missing form content', () => {
+    expect(extractFormScopeAttributeKeys(undefined).size).toBe(0);
+  });
+
   const expected = format(
     parse('2026-02-28T13:13:30', "yyyy-MM-dd'T'HH:mm:ss", new Date()),
     "yyyy-MM-dd'T'HH:mm:ssxxx"

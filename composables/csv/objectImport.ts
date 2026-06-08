@@ -91,6 +91,27 @@ export function extractImportableCustomAttributes(typeDef: any, translations: Re
       .filter((attribute): attribute is CsvImportAttribute => attribute !== null)
   );
 }
+export function extractFormScopeAttributeKeys(content: any): Set<string> {
+  const keys = new Set<string>();
+
+  const visit = (node: any) => {
+    if (!node || typeof node !== 'object') {
+      return;
+    }
+    if (typeof node.scope === 'string' && node.scope.length > 0) {
+      const leaf = node.scope.split('/').filter(Boolean).pop();
+      if (leaf) {
+        keys.add(leaf);
+      }
+    }
+    if (Array.isArray(node.elements)) {
+      node.elements.forEach(visit);
+    }
+  };
+
+  visit(content);
+  return keys;
+}
 
 export function isEmptyCsvImportValue(value: any) {
   return value === null || value === undefined || String(value).trim() === '';
