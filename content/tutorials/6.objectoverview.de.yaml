@@ -7,18 +7,6 @@ steps:
   - title: 'Objektübersicht'
     element: '[data-component-name=object-overview-page]'
     intro: In der Objektübersicht werden alle verfügbaren Objekte aufgelistet.
-  - title: 'Filter'
-    element: '[data-component-name=filter-bar-filter-button]'
-    intro: Die Objektübersicht wird dazu immer auf Grundlage eines Filters aufgebaut.
-  - title: 'Aktive Filterkriterien'
-    element: '[data-component-name=filter-bar-active-filters]'
-    intro: Aktive Filterkriterien werden in sogenannten 'Chips' dargestellt.
-  - title: 'Filterkriterien löschen'
-    element: '[data-component-name=veo-object-chip]:nth-child(2) .v-chip__close'
-    intro: Optionale Filterkriterien können durch Mausklick direkt ohne Aufruf des Filterdialogs gelöscht werden.
-  - title: 'WICHTIG!'
-    element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
-    intro: Der Objekttyp als Mindestkriterium kann nur über den Filterdialog geändert werden!
   - title: 'Suchfunktion'
     element: '[data-component-name=veo-search]'
     intro: Mit der Suche können Sie schnell Objekte finden. Geben Sie entweder den Namen, die Abkürzung oder eine Kombination aus beidem ein, um passende Ergebnisse zu erhalten.

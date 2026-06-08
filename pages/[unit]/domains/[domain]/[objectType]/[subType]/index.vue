@@ -18,21 +18,9 @@
 <template>
   <BasePage data-component-name="object-overview-page" :title="`${pageTitle}`" sticky-footer :has-title-bg="false">
     <template #default>
-      <div class="filter-row">
-        <div class="filter-section">
-          <ObjectFilterBar
-            ref="filterBar"
-            class="my-0 py-0"
-            :domain-id="domainId"
-            :filter="filter"
-            :required-fields="['objectType']"
-            @update:filter="updateRoute"
-          />
-        </div>
-      </div>
       <div class="toolbar my-6">
         <div class="toolbar-search">
-          <SearchBar v-model:search="search" :filters="searchFilters" density="compact" />
+          <SearchBar :search="search" :filters="searchFilters" density="compact" />
         </div>
         <span class="toolbar-right">
           <v-btn
@@ -156,11 +144,6 @@
           </ObjectTable>
         </BaseCard>
       </template>
-      <ObjectTypeError v-else>
-        <v-btn color="primary" variant="text" @click="onOpenFilterDialog">
-          {{ t('filterObjects') }}
-        </v-btn>
-      </ObjectTypeError>
 
       <!-- Dialogs -->
       <ObjectDeleteDialog
@@ -237,13 +220,6 @@ const domains = computed(() => currentUnit.value?.domains || []);
 
 const domainId = computed(() => route.params.domain as string);
 
-// Filters
-
-// Ref to filter bar to programmatically open filter dialog from outside
-const filterBar = ref();
-const onOpenFilterDialog = () => {
-  filterBar.value.filterDialogVisible = true;
-};
 const selectedCount = computed(() => selectedItems.value.length);
 const hasSelection = computed(() => selectedCount.value > 0);
 // accepted filter keys (others wont be respected when specified in URL query parameters)
@@ -327,10 +303,43 @@ const resetQueryOptions = () => {
 
 watch(filter, resetQueryOptions, { deep: true });
 
-const search = ref<VeoSearch[]>([]);
+const objectType = computed(() => VeoElementTypesSingular[route.params.objectType as string]);
+
+const search = computed<VeoSearch[]>(() => {
+  const result: VeoSearch[] = [];
+
+  if (route.params.objectType) {
+    result.push({
+      searchFilter: t('objectType'),
+      operator: '=',
+      term: objectType.value ?? String(route.params.objectType)
+    });
+  }
+
+  if (route.params.subType && route.params.subType !== '-') {
+    result.push({
+      searchFilter: t('subType'),
+      operator: '=',
+      term:
+        currentDomain.value?.raw?.elementTypeDefinitions?.[objectType.value]?.translations?.[locale.value]?.[
+          `${objectType.value}_${route.params.subType}_singular`
+        ] ?? String(route.params.subType)
+    });
+  }
+  if (route.query.status) {
+    result.push({
+      searchFilter: t('status'),
+      operator: '=',
+      term: String(route.query.status)
+    });
+  }
+
+  return result;
+});
+
 const searchFilters = useObjectSearchFilters({
   domainId,
-  excludedKeys: ['objectType'],
+  excludedKeys: ['objectType', 'subType'],
   filter
 });
 
@@ -356,36 +365,6 @@ const { data: items, isFetching: isLoadingObjects } = useFetchObjects(combinedQu
 });
 
 const isLoading = computed(() => isLoadingObjects.value || isLoadingTranslations.value);
-
-// Update query parameters but keep other route options
-const updateRoute = async (newValue: Record<string, string | undefined | null | true>) => {
-  const routeDetails = {
-    name: ROUTE_NAME,
-    query: {} as Record<string, string>,
-    params: {} as Record<string, string>
-  };
-  Object.entries(newValue).forEach(([filterKey, filterValue]) => {
-    // Special handling
-    if (filterKey === 'objectType') {
-      filterValue = VeoElementTypePlurals[filterValue as string];
-    }
-
-    if (filterValue === undefined && filterDefinitions[filterKey].nullValue !== undefined) {
-      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
-        routeDetails.params[filterKey] = filterDefinitions[filterKey].nullValue;
-      } else {
-        routeDetails.query[filterKey] = filterDefinitions[filterKey].nullValue;
-      }
-    } else {
-      if (filterDefinitions[filterKey].source === FILTER_SOURCE.PARAMS) {
-        routeDetails.params[filterKey] = filterValue as string;
-      } else {
-        routeDetails.query[filterKey] = filterValue as string;
-      }
-    }
-  });
-  await navigateTo(routeDetails);
-};
 
 const getPluralLabel = (objectType?: string): string => {
   if (!objectType) return '';

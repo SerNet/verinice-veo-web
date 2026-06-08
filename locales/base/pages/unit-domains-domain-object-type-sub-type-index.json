@@ -5,7 +5,6 @@
     "import.button.browse": "Browse Files",
     "assignObject": "Assign object to another domain",
     "assignObjects": "Assign objects to another domain",
-    "filterObjects": "Filter objects",
     "createObject": "Create Object",
     "clone": "Duplicated",
     "cloneObject": "Clone object",
@@ -24,7 +23,9 @@
     "cardViewOn": "Show items as table",
     "cardViewOff": "Show items as cards",
     "csvButtonText": "CSV Import",
-    "selectedCount": "{count} selected"
+    "selectedCount": "{count} selected",
+    "objectType": "Object type",
+    "subType": "Subtype"
   },
   "de": {
     "import.title": "Elemente importieren",
@@ -32,7 +33,6 @@
     "import.button.browse": "Dateien durchsuchen",
     "assignObject": "Objekt einer weiteren Domäne zuordnen",
     "assignObjects": "Objekte einer weiteren Domäne zuordnen",
-    "filterObjects": "Objekte filtern",
     "createObject": "Objekt erstellen",
     "clone": "Dupliziert",
     "cloneObject": "Objekt duplizieren",
@@ -51,6 +51,8 @@
     "cardViewOn": "Zeige Einträge als Tabelle",
     "cardViewOff": "Zeige Einträge als Karten",
     "csvButtonText": "CSV Import",
-    "selectedCount": "{count} ausgewählt"
+    "selectedCount": "{count} ausgewählt",
+    "objectType": "Objekttyp",
+    "subType": "Subtyp"
   }
 }

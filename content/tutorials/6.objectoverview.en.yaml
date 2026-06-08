@@ -7,18 +7,6 @@ steps:
   - title: 'Object overview'
     element: '[data-component-name=object-overview-page]'
     intro: The object-overview lists all available objects.
-  - title: 'Filter'
-    element: '[data-component-name=filter-bar-filter-button]'
-    intro: The object overview is always based on a filter.
-  - title: 'Active filter criteria'
-    element: '[data-component-name=filter-bar-active-filters]'
-    intro: Active filter criteria are displayed in so-called 'chips'.
-  - title: 'Delete filter criteria'
-    element: '[data-component-name=veo-object-chip]:nth-child(2) .v-chip__close'
-    intro: Optional filter criteria can be deleted directly by mouse click without calling up the filter dialogue.
-  - title: 'IMPORTANT!'
-    element: '[data-component-name=filter-bar-active-filters] span:nth-child(1)'
-    intro: The object type as minimum criterion can only be changed via the filter dialogue!
   - title: 'Search Function'
     element: '[data-component-name=veo-search]'
     intro: The search box allows you to quickly find items. Enter either the name, the abbreviation, or a combination of both to get relevant results.
