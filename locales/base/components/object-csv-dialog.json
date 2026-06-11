@@ -32,7 +32,8 @@
       "enumSelectFormat": "Please select a valid value from the allowed options.",
       "importColumn": "Import column",
       "targetAttribute": "Target attribute",
-      "enumListSelectFormat": "Please enter only valid, comma-separated values from the allowed options."
+      "enumListSelectFormat": "Please enter only valid, comma-separated values from the allowed options.",
+      "requiredFields": "The required attribute {required} must be mapped."
     }
   },
   "de": {
@@ -68,7 +69,8 @@
       "enumSelectFormat": "Bitte wählen Sie einen gültigen Wert aus den erlaubten Optionen.",
       "importColumn": "Spalte importieren",
       "targetAttribute": "Zielattribut",
-      "enumListSelectFormat": "Bitte geben Sie nur gültige, durch Komma getrennte Werte aus den erlaubten Optionen ein."
+      "enumListSelectFormat": "Bitte geben Sie nur gültige, durch Komma getrennte Werte aus den erlaubten Optionen ein.",
+      "requiredFields": "Das Pflichtattribut {required} muss zugeordnet sein."
     }
   }
 }

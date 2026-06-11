@@ -54,7 +54,11 @@
         </v-alert>
       </div>
       <div>
-        <v-divider v-if="unmappedRequiredFields.length > 0 && items.length" class="mt-4 mb-6" />
+        <v-alert v-if="unmappedRequiredFields.length > 0" class="mb-4" type="error" variant="tonal">
+          <span>
+            {{ t('importObjects.requiredFields', { required: unmappedRequiredFields.join(', ') }) }}
+          </span>
+        </v-alert>
         <div v-else class="mb-4"></div>
         <div v-if="items.length" class="d-flex">
           <v-col cols="12" md="4">
