@@ -263,9 +263,10 @@
         v-model="detailDialogVisible"
         v-model:schema-name="formSchema.name[editorLanguage]"
         v-model:sorting="formSchema.sorting"
-        v-model:context="formSchema.context"
-        v-model:sub-type="formSchema.subType"
+        :context="formSchema.context"
+        :sub-type="formSchema.subType"
         :domain-id="route.params.domain as string"
+        :model-type="formSchema.modelType"
         :object-schema="objectSchema"
       />
     </template>

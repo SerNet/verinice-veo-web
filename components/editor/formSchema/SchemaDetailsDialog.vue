@@ -47,37 +47,22 @@
               :label="globalT('editor.formschema.create.context')"
               disabled
               flat
-              readonly
             />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12">
-            <v-select
-              v-if="objectSchema.title === 'control'"
-              :model-value="objectType"
-              :label="globalT('editor.formschema.create.type')"
-              :items="RISK_AFFECTED"
-              flat
-            />
-            <v-text-field
-              v-else
-              :model-value="objectType"
-              :label="globalT('editor.formschema.create.type')"
-              disabled
-              flat
-              readonly
-            />
+            <v-text-field :model-value="objectType" :label="globalT('editor.formschema.create.type')" disabled flat />
           </v-col>
         </v-row>
         <v-row no-gutters class="align-center mt-4">
           <v-col cols="12">
             <v-select
-              v-model="form.subType"
+              :model-value="form.subType"
               :label="globalT('editor.formschema.subtype')"
               :items="subTypes"
               disabled
-              readonly
+              flat
             />
           </v-col>
         </v-row>
@@ -98,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { type IVeoDomainSpecificObjectSchema, RISK_AFFECTED } from '~/types/VeoTypes';
+import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 
 interface Props {
   modelValue: boolean;
@@ -108,21 +93,21 @@ interface Props {
   sorting: string | null;
   context: string | null;
   subType: string | null;
+  modelType: string | null;
 }
 const props = withDefaults(defineProps<Props>(), {
   schemaName: '',
-  sorting: null,
-  context: null,
-  subType: null
+  sorting: null
 });
 
 const emit = defineEmits<{
   (e: 'update:model-value', newValue: boolean): void;
   (e: 'update:schema-name', newValue: string): void;
-  (e: 'update:sorting' | 'update:schema-context' | 'update:sub-type', newValue: string | null): void;
+  (e: 'update:sorting', newValue: string | null): void;
 }>();
 
 const { locale } = useI18n();
+const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const { requiredRule } = useRules();
 
@@ -149,7 +134,7 @@ const contextLabel = computed(() => contextLabels[form.value.context] ?? '');
 // ObjectType
 const objectType: ComputedRef<string> = computed(() => {
   if (props.context === 'controlImplementationDetails' || props.context === 'requirementImplementationControlView') {
-    return RISK_AFFECTED.filter((type) => type === props.objectSchema.title || '');
+    return props.modelType ?? t('all');
   }
   return props.objectSchema.title;
 });
@@ -184,7 +169,7 @@ function saveForm() {
   emit('update:model-value', false);
   emit('update:schema-name', form.value.schemaName);
   emit('update:sorting', form.value.sorting ?? null);
-  emit('update:schema-context', form.value.context);
-  emit('update:sub-type', form.value.subType);
 }
 </script>
+
+<i18n src="~/locales/base/components/editor-form-schema-wizard-state-create.json"></i18n>
