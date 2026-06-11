@@ -38,6 +38,14 @@
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
   >
     <template #prepend-inner>
+      <div v-for="chip in contextChips" :key="`context-${chip.searchFilter}`" class="d-flex">
+        <v-chip v-if="chip.searchFilter" size="small" color="red" class="mr-1">
+          <v-icon size="small" class="mr-1" :icon="mdiFilter" start />
+          {{ chip.searchFilter }}
+        </v-chip>
+        <v-chip v-if="chip.operator" size="large" class="mr-1" color="green">{{ chip.operator }}</v-chip>
+        <v-chip v-if="chip.term" size="large" class="mr-2" label variant="flat">{{ chip.term }}</v-chip>
+      </div>
       <div v-for="s in search" :key="s.searchFilter" class="d-flex">
         <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
           <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start />
@@ -77,6 +85,7 @@ const props = withDefaults(
     operators?: VeoSearchOperators;
     density?: 'default' | 'comfortable' | 'compact';
     initialSearch?: VeoSearch[];
+    contextChips?: VeoSearch[];
   }>(),
   {
     filters: () => ({
@@ -92,7 +101,8 @@ const props = withDefaults(
       default: '='
     }),
     density: 'default',
-    initialSearch: () => []
+    initialSearch: () => [],
+    contextChips: () => []
   }
 );
 

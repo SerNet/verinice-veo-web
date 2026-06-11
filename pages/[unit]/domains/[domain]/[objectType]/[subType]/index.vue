@@ -27,7 +27,12 @@
     <template #default>
       <div class="toolbar my-6">
         <div class="toolbar-search">
-          <SearchBar :search="search" :filters="searchFilters" density="compact" />
+          <SearchBar
+            v-model:search="search"
+            :context-chips="contextSearch"
+            :filters="searchFilters"
+            density="compact"
+          />
         </div>
         <span class="toolbar-right">
           <v-btn
@@ -313,16 +318,10 @@ watch(filter, resetQueryOptions, { deep: true });
 
 const objectType = computed(() => VeoElementTypesSingular[route.params.objectType as string]);
 
-const search = computed<VeoSearch[]>(() => {
-  const result: VeoSearch[] = [];
+const search = ref<VeoSearch[]>([]);
 
-  if (route.params.objectType) {
-    result.push({
-      searchFilter: t('objectType'),
-      operator: '=',
-      term: objectType.value ?? String(route.params.objectType)
-    });
-  }
+const contextSearch = computed<VeoSearch[]>(() => {
+  const result: VeoSearch[] = [];
 
   if (route.params.subType && route.params.subType !== '-') {
     result.push({
@@ -334,14 +333,6 @@ const search = computed<VeoSearch[]>(() => {
         ] ?? String(route.params.subType)
     });
   }
-  if (route.query.status) {
-    result.push({
-      searchFilter: t('status'),
-      operator: '=',
-      term: String(route.query.status)
-    });
-  }
-
   return result;
 });
 
@@ -350,6 +341,12 @@ const searchFilters = useObjectSearchFilters({
   excludedKeys: ['objectType', 'subType'],
   filter
 });
+
+// Seed the search from URL query parameters (e.g. ?status=NEW, ?name=foo)
+useUrlFilters(searchFilters.value, search);
+
+// Jump back to the first page when the search changes, results may be fewer
+watch(search, () => (page.value = 0));
 
 const combinedQueryParameters = computed<any>(() => ({
   size: tablePageSize.value,
