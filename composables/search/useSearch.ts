@@ -77,14 +77,15 @@ export function useSearch<T>({ baseQueryParameters, search, queryDefinition, fil
 }
 
 export function getSearchQueryParameters(search: VeoSearch[], allowedKeys?: string[]): VeoSearchQueryParameters {
-  if (!search.length) {
-    return allowedKeys ? Object.fromEntries(allowedKeys.map((key) => [key, undefined])) : {};
-  }
-  return Object.fromEntries(
-    search
-      .filter((item) => !!item.searchFilter && (!allowedKeys || allowedKeys.includes(item.searchFilter)))
-      .map((item) => [item.searchFilter as string, item.term])
-  );
+  const resetParameters = allowedKeys ? Object.fromEntries(allowedKeys.map((key) => [key, undefined])) : {};
+  return {
+    ...resetParameters,
+    ...Object.fromEntries(
+      search
+        .filter((item) => !!item.searchFilter && (!allowedKeys || allowedKeys.includes(item.searchFilter)))
+        .map((item) => [item.searchFilter as string, item.term])
+    )
+  };
 }
 
 export function useUrlFilters(filters: VeoSearchFilters, search: Ref<VeoSearch[]>) {
