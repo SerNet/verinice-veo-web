@@ -194,9 +194,10 @@ watch(
  * compact-mode styling
  */
 
-const tableClassAndDensity = computed(() =>
-  hasCompactTable.value ? { class: 'ultra-compact-table veo-fixed-table', density: 'compact' } : {}
-);
+const tableClassAndDensity = computed(() => ({
+  class: ['veo-fixed-table', attrs.class, { 'ultra-compact-table': hasCompactTable.value }],
+  ...(hasCompactTable.value ? { density: 'compact' as const } : {})
+}));
 
 /**
  * Distinguish between IVeoPaginatedResponse and basic arrays
@@ -604,7 +605,6 @@ const sharedProps = computed(() => {
     page: localPage.value,
     sortBy: localSortBy.value,
     fixedHeader: true,
-    class: 'veo-fixed-table',
 
     // Spread conditional event handlers
     ...onClickRowHandler,
@@ -812,5 +812,45 @@ const render = () => {
 .veo-fixed-table {
   max-height: calc(100vh - 282px);
   overflow-y: auto;
+}
+
+.veo-body-scroll-table {
+  height: 100%;
+  max-height: none;
+  overflow: hidden;
+
+  > .v-table__wrapper {
+    min-height: 0;
+    overflow-y: hidden;
+
+    > table {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      > thead,
+      > tbody {
+        display: block;
+        scrollbar-gutter: stable;
+
+        > tr {
+          display: table;
+          table-layout: fixed;
+          width: 100%;
+        }
+      }
+
+      > thead {
+        flex: 0 0 auto;
+        overflow-y: hidden;
+      }
+
+      > tbody {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto;
+      }
+    }
+  }
 }
 </style>

@@ -16,7 +16,14 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="object-overview-page" :title="`${pageTitle}`" sticky-footer :has-title-bg="false">
+  <BasePage
+    data-component-name="object-overview-page"
+    :title="`${pageTitle}`"
+    height="100%"
+    content-class="d-flex flex-column overflow-hidden"
+    sticky-footer
+    :has-title-bg="false"
+  >
     <template #default>
       <div class="toolbar my-6">
         <div class="toolbar-search">
@@ -82,7 +89,7 @@
         </v-tooltip>
       </div>
       <template v-if="filter.objectType">
-        <BaseCard>
+        <BaseCard class="flex-grow-1">
           <ObjectTable
             :key="tableKey"
             v-model="selectedItems"
@@ -104,6 +111,7 @@
             ]"
             :additional-headers="additionalHeaders"
             show-select
+            class="veo-body-scroll-table"
             enable-links
             data-component-name="object-overview-table"
             enable-click
