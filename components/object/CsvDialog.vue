@@ -54,9 +54,18 @@
         </v-alert>
       </div>
       <div>
-        <v-alert v-if="unmappedRequiredFields.length > 0" class="mb-4" type="error" variant="tonal">
+        <v-alert
+          v-if="unmappedRequiredFields.length > 0 && globalSubType && selectedStatus"
+          class="mb-4"
+          type="error"
+          variant="tonal"
+        >
           <span>
-            {{ t('importObjects.requiredFields', { required: unmappedRequiredFields.join(', ') }) }}
+            {{
+              t('importObjects.requiredFields', {
+                required: capitalize(unmappedRequiredFields[0] || '')
+              })
+            }}
           </span>
         </v-alert>
         <div v-else class="mb-4"></div>
@@ -226,6 +235,7 @@ import {
   normalizeCsvImportValue
 } from '~/composables/csv/objectImport';
 import type { IAlertButton } from '../base/Alert.vue';
+import { capitalize } from 'vue';
 
 interface MappedHeader {
   title: string;
@@ -595,7 +605,6 @@ const onSubmit = async (data: any[], originalData: any[]) => {
 
   isImporting.value = false;
 
-  // Rest of your logic remains the same
   const unmappedOrFailedItems = originalData.filter((_, index) => !successfullyImported.has(data[index]));
 
   items.value = items.value.filter((_, index) => validationErrors.value[index]);
