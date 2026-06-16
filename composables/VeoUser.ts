@@ -79,7 +79,7 @@ export const useVeoUser: () => IVeoUserComposable = () => {
         await keycloak.value.loadUserProfile();
       }
     } catch (error) {
-      throw new Error(`Error while setting up authentication provider: ${JSON.stringify(error)}`);
+      throw new Error(`Error while setting up authentication provider: ${JSON.stringify(error)}`, { cause: error });
     }
     _keycloak.value = keycloak.value;
     keycloakInitialized.value = true;

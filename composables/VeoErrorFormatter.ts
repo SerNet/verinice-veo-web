@@ -77,7 +77,7 @@ export const useVeoErrorFormatter = () => {
       }
     }
 
-    let translatedErrorString = '';
+    let translatedErrorString: string;
 
     switch (error.keyword) {
       case 'required':

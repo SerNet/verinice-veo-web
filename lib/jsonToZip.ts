@@ -31,7 +31,7 @@ export async function downloadZIP(data: any, filename: string) {
     // Download that zip
     download(zip, filename);
   } catch (error) {
-    throw new Error(`Downloading ZIP archive failed: ${error}`);
+    throw new Error(`Downloading ZIP archive failed: ${error}`, { cause: error });
   }
 }
 
