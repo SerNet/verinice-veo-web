@@ -10,6 +10,7 @@
     "attributeTypes": {
       "date": "Date",
       "dateTime": "Date and Time",
+      "duration": "Duration",
       "text": "Text",
       "uri": "URI"
     },
@@ -26,6 +27,7 @@
     "attributeTypes": {
       "date": "Datum",
       "dateTime": "Datum und Uhrzeit",
+      "duration": "Dauer",
       "text": "Text",
       "uri": "URI"
     },

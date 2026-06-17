@@ -1,0 +1,18 @@
+{
+  "en": {
+    "weeks": "Weeks",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "clear": "Clear duration"
+  },
+  "de": {
+    "weeks": "Wochen",
+    "days": "Tage",
+    "hours": "Stunden",
+    "minutes": "Minuten",
+    "seconds": "Sekunden",
+    "clear": "Dauer löschen"
+  }
+}
