@@ -24,6 +24,7 @@ import * as Autocomplete from './Autocomplete.vue';
 import * as Checkbox from './Checkbox.vue';
 import * as InputDate from './InputDate.vue';
 import * as InputDateTime from './InputDateTime.vue';
+import * as InputDuration from './InputDuration.vue';
 import * as InputNumber from './InputNumber.vue';
 import * as InputText from './InputText.vue';
 import * as InputTextMultiline from './InputTextMultiline.vue';
@@ -39,6 +40,7 @@ const AVAILABLE_CONTROLS = [
   Checkbox,
   InputDate,
   InputDateTime,
+  InputDuration,
   InputNumber,
   InputText,
   InputTextMultiline,
