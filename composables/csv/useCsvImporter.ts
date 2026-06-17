@@ -59,7 +59,10 @@ export function useCsvImporter() {
   }
 
   const normalizeHeader = (header: string | undefined, index: number | undefined) => {
-    const normalizedHeader = snakeCase(deburr(header?.trim() || ''));
+    const match = header?.trim().match(/^(.*)_\(([^)]+)\)$/);
+
+    const normalizedHeader =
+      match ? `${snakeCase(deburr(match[1]))}_(${match[2]})` : snakeCase(deburr(header?.trim() || ''));
     return normalizedHeader || `column_${String(index ?? 0)}`;
   };
 

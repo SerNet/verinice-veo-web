@@ -40,6 +40,7 @@
             data-component-name="csv-button"
             color="primary"
             :prepend-icon="mdiUpload"
+            :disabled="!canManageUnitContent"
             @click="hasCSVImport = true"
             >{{ t('csvButtonText') }}</v-btn
           >

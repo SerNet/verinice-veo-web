@@ -85,7 +85,6 @@ export function extractImportableCustomAttributes(typeDef: any, translations: Re
         if (resolved.allowedValues) {
           attribute.allowedValues = resolved.allowedValues;
         }
-
         return attribute;
       })
       .filter((attribute): attribute is CsvImportAttribute => attribute !== null)

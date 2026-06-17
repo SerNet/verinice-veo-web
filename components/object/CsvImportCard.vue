@@ -15,46 +15,61 @@
  * If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseDialog :close-function="closeDialog" relative-width="60%" title="CSV Import" fixed-footer flat>
-    <div class="import-container">
-      <v-card class="bg-basepage px-8 py-8" flat>
-        <v-card-title class="text-center font-weight-bold mb-6">{{ t('import.title') }}</v-card-title>
-        <v-card-subtitle class="text-center text-caption text-medium-emphasis mb-4">
-          {{ t('import.uploadLimit.description') }}
-        </v-card-subtitle>
-        <v-file-upload
-          :browse-text="t('import.button.browse')"
-          :divider-text="t('import.or.text')"
-          :icon="mdiUpload"
-          :title="t('import.dropzone.label')"
-          density="default"
-          scrim="primary"
-          accept=".csv"
-          show-selection="false"
-          :multiple="false"
-          class="custom-file-upload drop-zone bg-surface"
-          :class="{ 'drop-zone-active': isDragging }"
-          :aria-label="t('import.dropzone.label')"
-          data-component-name="csv-button"
-          :disabled="!canManageUnitContent"
-          @dragenter.prevent="isDragging = true"
-          @dragleave.prevent="isDragging = false"
-          @update:model-value="handleFileUpload"
-          @click.prevent="triggerFileUpload"
-        >
-          <template #browse="{}">
-            <v-btn color="primary" variant="flat" size="large">
-              {{ t('import.button.browse') }}
-            </v-btn>
-          </template>
-          <template #item="{ props: itemProps }">
-            <v-file-upload-item v-bind="itemProps" lines="one" nav />
-          </template>
-        </v-file-upload>
+  <BaseDialog
+    :close-function="closeDialog"
+    relative-width="60%"
+    title="CSV Import"
+    fixed-footer
+    flat
+    inner-class="px-0 py-0"
+  >
+    <v-card class="bg-basepage">
+      <v-card-title class="font-weight-bold px-6">
+        <v-icon :icon="mdiHelpCircleOutline" />
+        {{ t('export.sampleCsv') }}
+      </v-card-title>
 
-        <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" />
-      </v-card>
-    </div>
+      <div class="d-flex align-center justify-space-between px-4">
+        <v-card-subtitle class="flex-grow-1 text-wrap" style="max-width: 50%">
+          {{ t('export.sampleCsvDescription') }}
+        </v-card-subtitle>
+
+        <ObjectCsvDownload :filter="filter" />
+      </div>
+
+      <v-file-upload
+        :browse-text="t('import.button.browse')"
+        :divider-text="t('import.or.text')"
+        :icon="mdiUpload"
+        :title="t('import.dropzone.label')"
+        density="default"
+        scrim="primary"
+        accept=".csv"
+        show-selection="false"
+        :multiple="false"
+        class="custom-file-upload drop-zone bg-surface"
+        :class="{ 'drop-zone-active': isDragging }"
+        :aria-label="t('import.dropzone.label')"
+        data-component-name="csv-button"
+        :disabled="!canManageUnitContent"
+        @dragenter.prevent="isDragging = true"
+        @dragleave.prevent="isDragging = false"
+        @update:model-value="handleFileUpload"
+        @click.prevent="triggerFileUpload"
+      >
+        <template #browse="{}">
+          <v-btn color="primary" variant="flat" size="large">
+            {{ t('import.button.browse') }}
+          </v-btn>
+          <span class="text-caption text-medium-emphasis mt-4"> {{ t('import.uploadLimit.description') }}</span>
+        </template>
+        <template #item="{ props: itemProps }">
+          <v-file-upload-item v-bind="itemProps" lines="one" nav />
+        </template>
+      </v-file-upload>
+
+      <input ref="fileInputRef" type="file" accept=".csv" style="display: none" @change="handleNativeInputChange" />
+    </v-card>
     <ObjectEncodingDialog v-model="isEncodingDialogOpen" @confirm="handleEncodingConfirm" />
     <ObjectCsvDialog
       v-if="isCsvDialogOpen"
@@ -84,6 +99,8 @@ import { useCsvImporter } from '~/composables/csv/useCsvImporter';
 import { useVeoAlerts } from '~/composables/VeoAlert';
 import { VFileUploadItem } from 'vuetify/labs/VFileUpload';
 import ObjectEncodingDialog from '~/components/object/EncodingDialog.vue';
+import { mdiHelpCircleOutline } from '@mdi/js';
+import { VeoElementTypesSingular } from '~/types/VeoTypes';
 
 const route = useRoute();
 const { t } = useI18n();
@@ -290,6 +307,44 @@ function closeDialog() {
   emit('close');
   return true;
 }
+enum FILTER_SOURCE {
+  QUERY,
+  PARAMS,
+  NONE
+}
+
+type IFilterDefinition = {
+  [filterKey: string]: {
+    source: FILTER_SOURCE;
+    nullValue?: any;
+  };
+};
+const filterDefinitions: IFilterDefinition = {
+  objectType: {
+    source: FILTER_SOURCE.PARAMS
+  },
+  subType: {
+    source: FILTER_SOURCE.PARAMS,
+    nullValue: '-'
+  }
+};
+const filter = computed(() =>
+  Object.fromEntries(
+    Object.entries(filterDefinitions).map(([key, def]) => {
+      const raw = def.source === FILTER_SOURCE.QUERY ? route.query[key] : route.params[key];
+
+      const value = Array.isArray(raw) ? raw[0] : raw;
+
+      return [
+        key,
+        value === def.nullValue ? undefined
+        : value === 'true' ? true
+        : key === 'objectType' ? VeoElementTypesSingular[value as string]
+        : value
+      ];
+    })
+  )
+);
 </script>
 
 <i18n src="~/locales/base/components/object-csv-import-card.json"></i18n>
@@ -297,5 +352,8 @@ function closeDialog() {
 <style scoped>
 ::v-deep(.v-divider__content) {
   color: #555555 !important;
+}
+.custom-file-upload {
+  padding: 0;
 }
 </style>

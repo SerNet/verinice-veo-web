@@ -1,6 +1,8 @@
 {
   "en": {
     "import.title": "Import Items",
+    "export.sampleCsv": "Sample CSV",
+    "export.sampleCsvDescription": "You can download a sample CSV file to check that the structure is correct",
     "import.uploadLimit.description": "Maximum file size: 10MB. Supported format: CSV",
     "import.dropzone.label": "Drag and drop a CSV file here",
     "import.button.browse": "Browse Files",
@@ -13,10 +15,19 @@
     "import.errors.fileTooLarge": "File Too Large",
     "import.errors.maxFileSize": "Maximum file size is 10MB. Please select a smaller file.",
     "import.errors.processingFailed": "Error Processing File",
-    "import.selectedEncoding": "Select Encoding"
+    "import.selectedEncoding": "Select Encoding",
+    "export.download.tooltip": "Download sample CSV",
+    "examples": {
+      "text": "Sample text",
+      "boolean": "0 / 1",
+      "enum": "A possible enum value",
+      "enumList": "All enum values in one cell"
+    }
   },
   "de": {
     "import.title": "Elemente importieren",
+    "export.sampleCsv": "Beispiel-CSV",
+    "export.sampleCsvDescription": "Sie können eine Beispiel-CSV herunterladen, um die korrekte Struktur zu überprüfen",
     "import.uploadLimit.description": "Maximale Dateigröße: 10MB. Unterstütztes Format: CSV",
     "import.dropzone.label": "CSV-Datei hierher ziehen und ablegen",
     "import.button.browse": "Dateien auswählen",
@@ -29,6 +40,13 @@
     "import.errors.fileTooLarge": "Datei zu groß",
     "import.errors.maxFileSize": "Die maximale Dateigröße beträgt 10MB. Bitte wählen Sie eine kleinere Datei.",
     "import.errors.processingFailed": "Fehler bei der Verarbeitung der Datei",
-    "import.selectedEncoding": "Kodierung auswählen"
+    "import.selectedEncoding": "Kodierung auswählen",
+    "export.download.tooltip": "Beispiel-csv herunterladen",
+    "examples": {
+      "text": "Beispieltext",
+      "boolean": "0 / 1",
+      "enum": "Ein möglicher Enum-Wert",
+      "enumList": "Alle möglichen Enum-Werte in einer Zelle"
+    }
   }
 }
