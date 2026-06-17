@@ -164,6 +164,13 @@ const INPUT_FORMATS: IInputFormats = {
         format: 'uri',
         pattern: '^(https?|ftp)://'
       }
+    },
+    {
+      name: 'duration',
+      options: {
+        format: 'duration',
+        pattern: undefined
+      }
     }
   ]
 };
