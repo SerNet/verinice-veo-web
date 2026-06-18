@@ -34,7 +34,9 @@
         :step="1"
         hide-details
         inset
-        @update:model-value="updatePart(part, $event)"
+        @update:model-value="updateDraftPart(part, $event)"
+        @update:focused="handleFocusedUpdate($event)"
+        @keydown.enter="commitDuration"
         @wheel.prevent.stop
       />
 
@@ -61,7 +63,15 @@ import { last } from 'lodash';
 
 import type { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
-import { EMPTY_DURATION, formatDuration, normalizeDurationPart, parseDuration, type DurationParts } from './duration';
+import {
+  EMPTY_DURATION,
+  formatDuration,
+  normalizeDurationPart,
+  normalizeDurationParts,
+  parseDuration,
+  type DurationPart,
+  type DurationParts
+} from './duration';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-duration-input',
@@ -75,8 +85,6 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   },
   conditions: (props) => [props.objectSchema.type === 'string', props.objectSchema.format === 'duration']
 };
-
-type DurationPart = keyof DurationParts;
 
 export default defineComponent({
   name: CONTROL_DEFINITION.code,
@@ -99,12 +107,22 @@ export default defineComponent({
       { immediate: true }
     );
 
-    function updatePart(part: DurationPart, value: unknown) {
+    function updateDraftPart(part: DurationPart, value: unknown) {
       localValue.value = {
         ...localValue.value,
-        [part]: normalizeDurationPart(value)
+        [part]: normalizeDurationPart(value, part)
       };
+    }
+
+    function commitDuration() {
+      localValue.value = normalizeDurationParts(localValue.value);
       emit('update:model-value', formatDuration(localValue.value));
+    }
+
+    function handleFocusedUpdate(isFocused: boolean) {
+      if (!isFocused) {
+        commitDuration();
+      }
     }
 
     function clear() {
@@ -116,7 +134,9 @@ export default defineComponent({
       durationParts,
       localValue,
       hasValue,
-      updatePart,
+      updateDraftPart,
+      commitDuration,
+      handleFocusedUpdate,
       clear,
       getControlErrorMessages,
       last,

@@ -6,6 +6,8 @@ export interface DurationParts {
   seconds?: number;
 }
 
+export type DurationPart = keyof DurationParts;
+
 export const EMPTY_DURATION: DurationParts = {
   weeks: undefined,
   days: undefined,
@@ -74,9 +76,7 @@ export function parseDuration(value: unknown): DurationParts {
 }
 
 export function formatDuration(parts: DurationParts): string | undefined {
-  const normalizedParts = Object.fromEntries(
-    Object.entries(parts).map(([key, value]) => [key, normalizeDurationPart(value)])
-  ) as DurationParts;
+  const normalizedParts = normalizeDurationParts(parts);
 
   if (Object.values(normalizedParts).every((value) => value === undefined)) {
     return undefined;
@@ -103,13 +103,61 @@ export function formatDuration(parts: DurationParts): string | undefined {
   return `P${datePart}${timePart ? `T${timePart}` : ''}`;
 }
 
-export function normalizeDurationPart(value: unknown): number | undefined {
+export function normalizeDurationPart(value: unknown, _part?: DurationPart): number | undefined {
   if (value === undefined || value === null || value === '') {
     return undefined;
   }
 
   const number = Number(value);
-  return Number.isFinite(number) ? Math.max(0, Math.trunc(number)) : undefined;
+  if (!Number.isFinite(number)) {
+    return undefined;
+  }
+
+  return Math.max(0, Math.trunc(number));
+}
+
+export function normalizeDurationParts(parts: DurationParts): DurationParts {
+  const normalizedParts = Object.fromEntries(
+    Object.entries(parts).map(([key, value]) => [key, normalizeDurationPart(value, key as DurationPart)])
+  ) as DurationParts;
+
+  const totalSeconds =
+    (normalizedParts.weeks || 0) * 7 * 24 * 60 * 60 +
+    (normalizedParts.days || 0) * 24 * 60 * 60 +
+    (normalizedParts.hours || 0) * 60 * 60 +
+    (normalizedParts.minutes || 0) * 60 +
+    (normalizedParts.seconds || 0);
+
+  if (totalSeconds === 0) {
+    return {
+      weeks: preserveExplicitZero(parts, 'weeks') ? 0 : undefined,
+      days: preserveExplicitZero(parts, 'days') ? 0 : undefined,
+      hours: preserveExplicitZero(parts, 'hours') ? 0 : undefined,
+      minutes: preserveExplicitZero(parts, 'minutes') ? 0 : undefined,
+      seconds: preserveExplicitZero(parts, 'seconds') ? 0 : undefined
+    };
+  }
+
+  const weeks = Math.floor(totalSeconds / (7 * 24 * 60 * 60));
+  const daysRemainder = totalSeconds % (7 * 24 * 60 * 60);
+  const days = Math.floor(daysRemainder / (24 * 60 * 60));
+  const hoursRemainder = daysRemainder % (24 * 60 * 60);
+  const hours = Math.floor(hoursRemainder / (60 * 60));
+  const minutesRemainder = hoursRemainder % (60 * 60);
+  const minutes = Math.floor(minutesRemainder / 60);
+  const seconds = minutesRemainder % 60;
+
+  return {
+    weeks: weeks || undefined,
+    days: days || undefined,
+    hours: hours || undefined,
+    minutes: minutes || undefined,
+    seconds: seconds || undefined
+  };
+}
+
+function preserveExplicitZero(parts: DurationParts, part: DurationPart): boolean {
+  return normalizeDurationPart(parts[part], part) === 0;
 }
 
 function readUnitValue(part: string, unit: 'W' | 'D' | 'H' | 'M' | 'S'): number | undefined {

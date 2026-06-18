@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatDuration, parseDuration } from '../duration';
+import { formatDuration, normalizeDurationParts, parseDuration } from '../duration';
 
 describe('duration utilities', () => {
   it('parses days into weeks and remaining days', () => {
@@ -51,6 +51,37 @@ describe('duration utilities', () => {
       hours: undefined,
       minutes: undefined,
       seconds: undefined
+    });
+  });
+
+  it('normalizes overflow across split fields', () => {
+    expect(normalizeDurationParts({ days: 9 })).toEqual({
+      weeks: 1,
+      days: 2,
+      hours: undefined,
+      minutes: undefined,
+      seconds: undefined
+    });
+    expect(normalizeDurationParts({ hours: 27 })).toEqual({
+      weeks: undefined,
+      days: 1,
+      hours: 3,
+      minutes: undefined,
+      seconds: undefined
+    });
+    expect(normalizeDurationParts({ minutes: 90 })).toEqual({
+      weeks: undefined,
+      days: undefined,
+      hours: 1,
+      minutes: 30,
+      seconds: undefined
+    });
+    expect(normalizeDurationParts({ seconds: 3661 })).toEqual({
+      weeks: undefined,
+      days: undefined,
+      hours: 1,
+      minutes: 1,
+      seconds: 1
     });
   });
 });
