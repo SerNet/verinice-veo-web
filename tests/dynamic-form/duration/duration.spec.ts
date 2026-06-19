@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatDuration, normalizeDurationParts, parseDuration } from '../duration';
+import { formatDuration, normalizeDurationParts, parseDuration } from '~/components/dynamic-form/duration/duration';
 
 describe('duration utilities', () => {
   it('parses days into weeks and remaining days', () => {

@@ -71,7 +71,7 @@ import {
   parseDuration,
   type DurationPart,
   type DurationParts
-} from './duration';
+} from '../duration/duration';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-duration-input',
