@@ -21,6 +21,8 @@ import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements
 import type { VeoSearch, VeoSearchQueryParameters, VeoSearchFilters } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { unref, type MaybeRef } from 'vue';
+import { isEqual } from 'lodash';
+import { isNavigationFailure } from 'vue-router';
 
 type UseSearchParams<T> = {
   baseQueryParameters: Ref<T & { endpoint?: string; page?: number }>;
@@ -104,4 +106,36 @@ export function useUrlFilters(filters: VeoSearchFilters, search: Ref<VeoSearch[]
   );
 
   watch(urlFilters, () => (search.value = urlFilters.value), { immediate: true });
+}
+
+export function useUrlSearchFilters(filters: VeoSearchFilters, search: Ref<VeoSearch[]>) {
+  const route = useRoute();
+  const router = useRouter();
+  const allowedKeys = computed(() => filters.all.map((filter) => filter.key));
+
+  useUrlFilters(filters, search);
+
+  watch(
+    search,
+    async () => {
+      const nextQuery = {
+        ...route.query,
+        ...getSearchQueryParameters(search.value, allowedKeys.value)
+      };
+
+      Object.keys(nextQuery).forEach((key) => nextQuery[key] === undefined && Reflect.deleteProperty(nextQuery, key));
+
+      if (isEqual(route.query, nextQuery)) return;
+
+      try {
+        await router.replace({
+          path: route.path,
+          query: nextQuery
+        });
+      } catch (err) {
+        if (!isNavigationFailure(err)) throw err;
+      }
+    },
+    { deep: true }
+  );
 }

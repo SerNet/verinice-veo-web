@@ -204,6 +204,7 @@ import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domai
 
 import type { VeoSearch } from '~/types/VeoSearch';
 import { useObjectSearchFilters } from '~/composables/search/objectFilters';
+import { getSearchQueryParameters, useUrlSearchFilters } from '~/composables/search/useSearch';
 
 enum FILTER_SOURCE {
   QUERY,
@@ -343,8 +344,8 @@ const searchFilters = useObjectSearchFilters({
   filter
 });
 
-// Seed the search from URL query parameters (e.g. ?status=NEW, ?name=foo)
-useUrlFilters(searchFilters.value, search);
+// Keep search chips and URL query parameters in sync so browser navigation can restore criteria.
+useUrlSearchFilters(searchFilters.value, search);
 
 // Jump back to the first page when the search changes, results may be fewer
 watch(search, () => (page.value = 0));

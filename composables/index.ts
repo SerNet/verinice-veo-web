@@ -21,6 +21,11 @@ export { useDomains, useDomainColor, useCurrentDomain } from '~/composables/doma
 export { useProfiles } from '~/composables/profiles/useProfiles';
 export { useMutation } from '~/composables/api/utils/mutation';
 export { useActions, usePerformActions } from '~/composables/actions/useActions';
-export { useSearch, getSearchQueryParameters, useUrlFilters } from '~/composables/search/useSearch';
+export {
+  useSearch,
+  getSearchQueryParameters,
+  useUrlFilters,
+  useUrlSearchFilters
+} from '~/composables/search/useSearch';
 export { useSystemMessages } from '~/composables/messages/useSystemMessages';
 export { useSettings } from '~/composables/api/useSettings';
