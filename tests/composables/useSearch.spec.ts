@@ -17,20 +17,35 @@
  */
 
 import { mockNuxtImport } from '@nuxt/test-utils/runtime';
-import { describe, expect, it } from 'vitest';
-import { ref } from 'vue';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { nextTick, ref } from 'vue';
 
 import type { VeoSearch, VeoSearchFilters } from '~/types/VeoSearch';
 
 const routeQuery = ref<Record<string, string>>({});
+const routePath = ref('/objects');
+const routerReplace = vi.fn();
 
 mockNuxtImport('useRoute', () => {
   return () => ({
+    path: routePath.value,
     query: routeQuery.value
   });
 });
 
-const { getSearchQueryParameters, useUrlFilters } = await import('~/composables/search/useSearch');
+mockNuxtImport('useRouter', () => {
+  return () => ({
+    replace: routerReplace
+  });
+});
+
+const { getSearchQueryParameters, useUrlFilters, useUrlSearchFilters } = await import('~/composables/search/useSearch');
+
+beforeEach(() => {
+  routePath.value = '/objects';
+  routeQuery.value = {};
+  routerReplace.mockReset();
+});
 
 describe('getSearchQueryParameters()', () => {
   it('returns an empty object for an empty search without allowed keys', () => {
@@ -132,5 +147,42 @@ describe('useUrlFilters()', () => {
     useUrlFilters(filters, search);
 
     expect(search.value).toEqual([]);
+  });
+});
+
+describe('useUrlSearchFilters()', () => {
+  const filters: VeoSearchFilters = {
+    all: [
+      { key: 'name', value: 'name' },
+      { key: 'status', value: 'status' }
+    ],
+    default: { key: 'name', value: 'name' }
+  };
+
+  it('persists search entries to the URL query', async () => {
+    const search = ref<VeoSearch[]>([]);
+
+    useUrlSearchFilters(filters, search);
+    search.value = [{ searchFilter: 'name', operator: '=', term: 'foo' }];
+    await nextTick();
+
+    expect(routerReplace).toHaveBeenCalledWith({
+      path: '/objects',
+      query: { name: 'foo' }
+    });
+  });
+
+  it('removes cleared search parameters from the URL query and preserves unrelated parameters', async () => {
+    routeQuery.value = { name: 'foo', tab: 'overview' };
+    const search = ref<VeoSearch[]>([]);
+
+    useUrlSearchFilters(filters, search);
+    search.value = [];
+    await nextTick();
+
+    expect(routerReplace).toHaveBeenCalledWith({
+      path: '/objects',
+      query: { tab: 'overview' }
+    });
   });
 });
