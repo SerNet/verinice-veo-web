@@ -19,7 +19,7 @@ describe('Elements Overview Table', () => {
 
         waitForPageToLoad();
         waitForLoadersToDisappear();
-
+        cy.get('[data-veo-test="loadedDataTable"]').find('tbody').should('be.visible');
         cy.checkPagination(['name', 'status', 'updatedAt', 'updatedBy']);
       });
     });
