@@ -17,38 +17,48 @@
     role="group"
     :aria-label="options.label"
   >
-    <div class="vf-input-duration__inputs">
-      <v-number-input
-        v-for="part in durationParts"
-        :key="part"
-        :model-value="localValue[part]"
-        :disabled="disabled || options.disabled"
-        :label="t(part)"
-        :aria-label="t(part)"
-        class="vf-input-duration__input"
-        control-variant="stacked"
-        variant="underlined"
-        density="compact"
-        placeholder="-"
-        :min="0"
-        :step="1"
-        hide-details
-        inset
-        @update:model-value="updateDraftPart(part, $event)"
-        @update:focused="handleFocusedUpdate($event)"
-        @keydown.enter="commitDuration"
-        @wheel.prevent.stop
-      />
+    <div v-if="options.label" class="vf-input-duration__label text-medium-emphasis">
+      {{ options.label }}
+    </div>
 
-      <v-btn
-        :icon="mdiCloseCircle"
-        variant="text"
-        density="compact"
-        :disabled="disabled || options.disabled || !hasValue"
-        :aria-label="t('clear')"
-        class="vf-input-duration__clear"
-        @click="clear"
-      />
+    <div class="vf-input-duration__container">
+      <div class="vf-input-duration__inputs">
+        <div v-for="part in durationParts" :key="part" class="vf-input-duration__field">
+          <div class="vf-input-duration__field-label text-medium-emphasis">
+            {{ t(part) }}
+          </div>
+
+          <v-number-input
+            :model-value="localValue[part]"
+            :disabled="disabled || options.disabled"
+            :aria-label="t(part)"
+            class="vf-input-duration__input"
+            control-variant="stacked"
+            variant="underlined"
+            density="compact"
+            placeholder="-"
+            persistent-placeholder
+            :min="0"
+            :step="1"
+            hide-details
+            inset
+            @update:model-value="updateDraftPart(part, $event)"
+            @update:focused="handleFocusedUpdate($event)"
+            @keydown.enter="commitDuration"
+            @wheel.prevent.stop
+          />
+        </div>
+
+        <v-btn
+          :icon="mdiCloseCircle"
+          variant="text"
+          density="compact"
+          :disabled="disabled || options.disabled || !hasValue"
+          :aria-label="t('clear')"
+          class="vf-input-duration__clear"
+          @click="clear"
+        />
+      </div>
     </div>
 
     <div v-for="error in getControlErrorMessages($props)" :key="error" class="vf-input-duration__error text-error">
@@ -147,15 +157,19 @@ export default defineComponent({
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .vf-input-duration {
   margin-bottom: 16px;
 }
 
 .vf-input-duration__label {
-  color: rgba(var(--v-theme-on-surface), var(--v-medium-emphasis-opacity));
   font-size: 12px;
-  margin-bottom: 2px;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.vf-input-duration__container {
+  padding: 16px;
 }
 
 .vf-input-duration__inputs {
@@ -164,15 +178,24 @@ export default defineComponent({
   gap: 16px;
 }
 
-.vf-input-duration__input {
+.vf-input-duration__field {
   flex: 1 1 90px;
   min-width: 72px;
   max-width: 130px;
 }
 
-.vf-input-duration__clear {
-  flex: 0 0 auto;
-  margin-bottom: 6px;
+.vf-input-duration__field-label {
+  font-size: 12px;
+  line-height: 1.2;
+  margin-bottom: 2px;
+}
+
+.vf-input-duration__input {
+  width: 100%;
+}
+
+.vf-input-duration__input :deep(input) {
+  text-indent: 8px;
 }
 
 .vf-input-duration__error {
