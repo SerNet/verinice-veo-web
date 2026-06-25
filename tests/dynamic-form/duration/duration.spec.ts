@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatDuration, normalizeDurationParts, parseDuration } from '~/components/dynamic-form/duration/duration';
+import {
+  formatDraftDuration,
+  formatDuration,
+  normalizeDurationParts,
+  parseDuration
+} from '~/components/dynamic-form/duration/duration';
 
 describe('duration utilities', () => {
   it('parses days into weeks and remaining days', () => {
@@ -83,5 +88,17 @@ describe('duration utilities', () => {
       minutes: 1,
       seconds: 1
     });
+  });
+
+  it('formats draft values without normalizing them first', () => {
+    expect(
+      formatDraftDuration({
+        weeks: 3,
+        days: 9,
+        hours: undefined,
+        minutes: 5,
+        seconds: 2
+      })
+    ).toBe('P30DT5M2S');
   });
 });
