@@ -25,7 +25,7 @@
             color="primary"
             variant="outlined"
             data-component-name="create-object-button"
-            data-veo-test="create-object-button"
+            data-veo-test="csv-download-button"
             :disabled="!nestedActions.length || !canManageUnitContent"
             :aria-label="
               !canManageUnitContent ? t('permissions.missingPermissionTooltip') : t('createObject', [createObjectLabel])

@@ -60,7 +60,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
                 @click.prevent="triggerFileUpload"
               >
                 <template #browse="{}">
-                  <v-btn color="primary" variant="flat" size="large">
+                  <v-btn data-veo-test="unit-import-file-upload" color="primary" variant="flat" size="large">
                     {{ t('selectFile') }}
                   </v-btn>
                 </template>

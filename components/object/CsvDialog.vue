@@ -77,6 +77,7 @@
               :label="t('importObjects.objectType')"
               :rules="[requiredRule]"
               outlined
+              data-veo-test="object-type-select"
               :error="!globalObjectType"
               :error-messages="!globalObjectType ? t('global.input.required') : ''"
               @update:model-value="applyType"
@@ -89,6 +90,7 @@
               :label="t('importObjects.subType') + '*'"
               :required="true"
               outlined
+              data-veo-test="object-subtype-select"
               :error="!globalSubType"
               :error-messages="!globalSubType ? t('global.input.required') : ''"
               @update:model-value="applySubType"
@@ -97,6 +99,7 @@
           <v-col cols="12" md="4">
             <v-select
               v-model="selectedStatus"
+              data-veo-test="status-select"
               :items="statusOptions"
               :label="t('importObjects.status') + ' *'"
               :error="!globalSubType"
@@ -116,7 +119,7 @@
               <template #headers>
                 <tr>
                   <th v-for="header in headers" :key="header" class="csv-column-header">
-                    <div class="column-name">{{ getHeaderLabel(header) }}</div>
+                    <div class="column-name" data-veo-test="column-name">{{ getHeaderLabel(header) }}</div>
                     <v-checkbox
                       :model-value="columnImportEnabled[header]"
                       :label="t('importObjects.importColumn')"
@@ -134,6 +137,7 @@
                       :label="t('importObjects.targetAttribute')"
                       variant="outlined"
                       clearable
+                      data-veo-test="column-mapping-select"
                       :placeholder="t('importObjects.selectMapping')"
                       :no-data-text="t('importObjects.noOptionsAvailable')"
                       item-title="title"
@@ -186,6 +190,7 @@
         v-if="items.length"
         variant="text"
         color="primary"
+        data-veo-test="import-button"
         :disabled="!hasAllRequiredFields || confirmImport || items.length - invalidCount === 0"
         @click="handleImport"
       >

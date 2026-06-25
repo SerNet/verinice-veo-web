@@ -38,6 +38,7 @@
           <v-btn
             flat
             data-component-name="csv-button"
+            data-veo-test="csv-button"
             color="primary"
             :prepend-icon="mdiUpload"
             :disabled="!canManageUnitContent"

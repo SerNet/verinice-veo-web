@@ -51,6 +51,7 @@
         :class="{ 'drop-zone-active': isDragging }"
         :aria-label="t('import.dropzone.label')"
         data-component-name="csv-button"
+        data-veo-test="csv-dialog-card"
         :disabled="!canManageUnitContent"
         @dragenter.prevent="isDragging = true"
         @dragleave.prevent="isDragging = false"

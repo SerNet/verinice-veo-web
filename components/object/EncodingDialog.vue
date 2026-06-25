@@ -27,6 +27,7 @@
           :label="t('import.selectedEncoding') + ' *'"
           :error="!selected"
           :error-messages="!selected ? [t('global.input.required')] : []"
+          data-veo-test="encoding-dialog"
         />
       </v-card-text>
 
@@ -35,7 +36,7 @@
         <v-btn text @click="cancel">
           {{ t('global.button.cancel') }}
         </v-btn>
-        <v-btn color="primary" :disabled="!selected" @click="confirm">
+        <v-btn data-veo-test="confirm-encoding-button" color="primary" :disabled="!selected" @click="confirm">
           {{ t('global.button.yes') }}
         </v-btn>
       </v-card-actions>
