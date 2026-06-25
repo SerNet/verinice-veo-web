@@ -163,13 +163,21 @@ async function exportToCSV(subType: string) {
   try {
     selectedSubtypeForCreateDialog.value = subType;
     await until(selectedFormSchema).not.toBeUndefined();
-    const fields = [
+    const standardFields = [
       {
         title: `${t('objectlist.name')} (${t('global.input.requiredfields')})`,
         type: 'text'
       },
-      ...customAttributes.value
+      {
+        title: t('objectlist.abbreviation'),
+        type: 'text'
+      },
+      {
+        title: t('objectlist.description'),
+        type: 'text'
+      }
     ];
+    const fields = [...standardFields, ...customAttributes.value];
     const headerRow = fields.map((f) => escapeCSV(`${f.title}_(${f.type})`)).join(';');
     const dataRows = buildRows(fields, t);
 
