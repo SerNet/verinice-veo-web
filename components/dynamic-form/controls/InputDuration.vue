@@ -75,6 +75,7 @@ import type { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import {
   EMPTY_DURATION,
+  formatDraftDuration,
   formatDuration,
   normalizeDurationPart,
   normalizeDurationParts,
@@ -109,7 +110,7 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       (value) => {
-        if (value === formatDuration(localValue.value)) {
+        if (value === formatDuration(localValue.value) || value === formatDraftDuration(localValue.value)) {
           return;
         }
         localValue.value = parseDuration(value);
@@ -122,6 +123,7 @@ export default defineComponent({
         ...localValue.value,
         [part]: normalizeDurationPart(value, part)
       };
+      emit('update:model-value', formatDraftDuration(localValue.value));
     }
 
     function commitDuration() {
@@ -174,13 +176,14 @@ export default defineComponent({
 
 .vf-input-duration__inputs {
   display: flex;
+  flex-wrap: wrap;
   align-items: end;
-  gap: 16px;
+  gap: 12px;
 }
 
 .vf-input-duration__field {
   flex: 1 1 90px;
-  min-width: 72px;
+  min-width: 90px;
   max-width: 130px;
 }
 
@@ -205,7 +208,22 @@ export default defineComponent({
 
 @media (max-width: 700px) {
   .vf-input-duration__inputs {
-    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 520px) {
+  .vf-input-duration__inputs {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .vf-input-duration__field {
+    max-width: none;
+  }
+
+  .vf-input-duration__clear {
+    align-self: flex-end;
   }
 }
 </style>
