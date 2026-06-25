@@ -78,6 +78,20 @@ export function parseDuration(value: unknown): DurationParts {
 export function formatDuration(parts: DurationParts): string | undefined {
   const normalizedParts = normalizeDurationParts(parts);
 
+  return formatDurationParts(normalizedParts);
+}
+
+export function formatDraftDuration(parts: DurationParts): string | undefined {
+  const draftParts = Object.fromEntries(
+    Object.entries(parts).map(([key, value]) => [key, normalizeDurationPart(value, key as DurationPart)])
+  ) as DurationParts;
+
+  return formatDurationParts(draftParts);
+}
+
+function formatDurationParts(parts: DurationParts): string | undefined {
+  const normalizedParts = parts;
+
   if (Object.values(normalizedParts).every((value) => value === undefined)) {
     return undefined;
   }
