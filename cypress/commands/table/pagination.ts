@@ -14,7 +14,7 @@ export function checkPagination(columnSelectors: string[] = ['name', 'status', '
 
   function verifyAndNavigate(pages: any) {
     for (let page = 1; page < pages; page++) {
-      cy.getCustom('.v-pagination__next').click();
+      cy.getCustom('.v-pagination__next').find('button').should('be.visible').and('not.be.disabled').click();
 
       cy.getCustom('.v-data-table-footer__info > div')
         .invoke('text')
@@ -44,6 +44,7 @@ export function checkPagination(columnSelectors: string[] = ['name', 'status', '
         });
     }
   }
+
   cy.getCustom('.v-data-table-footer__info > div')
     .invoke('text')
     .then((footerText: string) => {
