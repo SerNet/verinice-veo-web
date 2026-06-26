@@ -7,6 +7,7 @@ describe('Elements Overview Table', () => {
   beforeEach(() => {
     cy.login();
     cy.goToUnitDashboard();
+    cy.acceptAllCookies();
   });
 
   const elementTypeList: string[] = ['Scopes', getRandomElementType()];
