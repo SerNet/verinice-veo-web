@@ -183,9 +183,9 @@ function matchEnumKey(value: string, allowedValues: string[], translations: Reco
 }
 
 function splitEnumListValue(value: any): string[] {
-  return String(value)
-    .split(',')
-    .map((segment) => segment.trim())
+  return String(value ?? '')
+    .split(/(?<!\\)\s*&\s*/)
+    .map((segment) => segment.replace(/\\&/g, '&').trim())
     .filter((segment) => segment.length > 0);
 }
 

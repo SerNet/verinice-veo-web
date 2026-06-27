@@ -62,7 +62,7 @@ describe('getCellValue', () => {
   });
 
   it('enumList joins values', () => {
-    expect(getCellValue({ title: 'x', type: 'enumList', allowedValues: ['A', 'B'] }, 0)).toBe('A, B');
+    expect(getCellValue({ title: 'x', type: 'enumList', allowedValues: ['A', 'B'] }, 0)).toBe('A & B');
   });
   it('returns formatted date', () => {
     vi.useFakeTimers();

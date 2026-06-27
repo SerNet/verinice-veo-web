@@ -298,19 +298,19 @@ describe('object CSV import helpers', () => {
   });
 
   it('should normalize multi-select enum-list values correctly', () => {
-    expect(normalizeCsvImportValue('Grün,Rot', 'enumList', listAllowedValues, listTranslations)).toEqual({
+    expect(normalizeCsvImportValue('Grün&Rot', 'enumList', listAllowedValues, listTranslations)).toEqual({
       shouldAssign: true,
       value: ['person_preferences_favColor_green', 'person_preferences_favColor_red']
     });
-    expect(normalizeCsvImportValue(' Grün , Rot ', 'enumList', listAllowedValues, listTranslations)).toEqual({
+    expect(normalizeCsvImportValue(' Grün & Rot ', 'enumList', listAllowedValues, listTranslations)).toEqual({
       shouldAssign: true,
       value: ['person_preferences_favColor_green', 'person_preferences_favColor_red']
     });
-    expect(normalizeCsvImportValue('Grün,Grün', 'enumList', listAllowedValues, listTranslations)).toEqual({
+    expect(normalizeCsvImportValue('Grün&Grün', 'enumList', listAllowedValues, listTranslations)).toEqual({
       shouldAssign: true,
       value: ['person_preferences_favColor_green']
     });
-    expect(normalizeCsvImportValue('Grü,Rot', 'enumList', listAllowedValues, listTranslations)).toEqual({
+    expect(normalizeCsvImportValue('Grü&Rot', 'enumList', listAllowedValues, listTranslations)).toEqual({
       shouldAssign: false,
       value: null
     });
@@ -326,19 +326,19 @@ describe('object CSV import helpers', () => {
       shouldAssign: false,
       value: null
     });
-    expect(normalizeCsvImportValue('Grün,', 'enumList', listAllowedValues, listTranslations)).toEqual({
+    expect(normalizeCsvImportValue('Grün&', 'enumList', listAllowedValues, listTranslations)).toEqual({
       shouldAssign: true,
       value: ['person_preferences_favColor_green']
     });
   });
 
   it('should validate multi-select enum-list values correctly', () => {
-    expect(isValidEnumListValue('Grün,Rot', listAllowedValues, listTranslations)).toBe(true);
-    expect(isValidEnumListValue(' Grün , Rot ', listAllowedValues, listTranslations)).toBe(true);
+    expect(isValidEnumListValue('Grün&Rot', listAllowedValues, listTranslations)).toBe(true);
+    expect(isValidEnumListValue(' Grün & Rot ', listAllowedValues, listTranslations)).toBe(true);
     expect(isValidEnumListValue('', listAllowedValues, listTranslations)).toBe(true);
     expect(isValidEnumListValue('   ', listAllowedValues, listTranslations)).toBe(true);
     expect(isValidEnumListValue(null, listAllowedValues, listTranslations)).toBe(true);
-    expect(isValidEnumListValue('Grü,Rot', listAllowedValues, listTranslations)).toBe(false);
-    expect(isValidEnumListValue('Grün,Invalid', listAllowedValues, listTranslations)).toBe(false);
+    expect(isValidEnumListValue('Grü&Rot', listAllowedValues, listTranslations)).toBe(false);
+    expect(isValidEnumListValue('Grün&Invalid', listAllowedValues, listTranslations)).toBe(false);
   });
 });

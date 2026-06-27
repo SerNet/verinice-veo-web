@@ -30,6 +30,9 @@ export const getMaxRows = (fields: CSVField[]) => {
     return max;
   }, 1);
 };
+function escapeEnumValue(value: string): string {
+  return value.replace(/&/g, '\\&');
+}
 
 export const getCellValue = (field: CSVField, rowIndex: number, t?: (key: string) => string) => {
   const translate = t ?? ((key: string) => key);
@@ -49,7 +52,7 @@ export const getCellValue = (field: CSVField, rowIndex: number, t?: (key: string
     case 'enum':
       return field.allowedValues?.[rowIndex] ?? '';
     case 'enumList':
-      return field.allowedValues?.join(', ') ?? '';
+      return field.allowedValues?.map(escapeEnumValue).join(' & ') ?? '';
 
     default:
       return examples[field.type] ?? translate('examples.text');
