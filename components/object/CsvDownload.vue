@@ -80,7 +80,7 @@ const selectedSubtypeForCreateDialog = ref<string>('');
 
 const nestedActions = computed<INestedMenuEntries[]>(() => {
   return formSchemas.value
-    ?.filter((formschema) => formschema.modelType === props.filter.objectType)
+    ?.filter((formschema) => formschema.modelType === props.filter.objectType && formschema.subType)
     .map((f) => ({
       key: f.id,
       title: f.name[locale.value],
