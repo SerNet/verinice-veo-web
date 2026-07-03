@@ -64,11 +64,7 @@ const { t } = useI18n();
   line-break: normal;
 }
 
-.veo-object-message--success {
-  border-left: 4px solid #4caf50;
-}
-
-.veo-object-message--info {
+.veo-object-message--hint {
   border-left: 4px solid #2196f3;
 }
 

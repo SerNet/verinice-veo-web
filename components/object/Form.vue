@@ -123,7 +123,7 @@ import type { PropType } from 'vue';
 import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
 import type { IVeoFormSchemaMeta } from '~/composables/api/queryDefinitions/forms';
 import type { IVeoFormsAdditionalContext, IVeoFormsReactiveFormActions } from '~/components/dynamic-form/types';
-import type { IVeoDecisionResults, IVeoEntity, IVeoInspectionResult } from '~/types/VeoTypes';
+import type { IVeoEntity, IVeoInspectionResult } from '~/types/VeoTypes';
 import type { IVeoObjectHistoryEntry } from '~/types/history';
 import type { Message } from '~/components/object/messages/Messages.vue';
 import type { INestedMenuEntries } from '../util/NestedMenu.vue';
@@ -194,7 +194,6 @@ export default defineComponent({
   ],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
-    const { t: $t } = useI18n({ useScope: 'global' });
     const { personReactiveFormActions, riskReactiveFormActions } = useVeoReactiveFormActions();
 
     // Object stuff
@@ -307,42 +306,6 @@ export default defineComponent({
         text: text[0]
       }));
 
-    const transformDecisionResults = (decisionResults: IVeoDecisionResults | undefined): Message[] =>
-      Object.entries(decisionResults || {}).map(([decision, result]) => {
-        const decisionInDomain = domain.value?.decisions?.[decision];
-
-        if (!decisionInDomain) {
-          return {
-            key: `${decision}_unknown`,
-            type: 'warning',
-            text: `Text for decision ${decision} not found`
-          };
-        }
-
-        const decisionResultStrings: Record<string, string> = {
-          true: $t('global.button.yes'),
-          false: $t('global.button.no'),
-          undefined: t('unknown')
-        };
-        // Returns true, false or undefined as string
-        const decisionResultAsString = typeof result.value === 'undefined' ? 'undefined' : `${result.value}`;
-
-        const decisionName = decisionInDomain.name[locale.value] || Object.values(decisionInDomain.name || {})[0];
-        const decisiveRuleDescription =
-          result.decisiveRule !== undefined ?
-            decisionInDomain.rules[result.decisiveRule]?.description[locale.value] ||
-            Object.values(decisionInDomain.rules[result.decisiveRule]?.description || {})[0]
-          : '';
-
-        return {
-          key: `${decision}_${decisionResultAsString}`,
-          type: 'info',
-          text:
-            `${decisionName}: ${decisionResultStrings[decisionResultAsString]}` +
-            (result.decisiveRule !== undefined ? ` (${decisiveRuleDescription})` : '')
-        };
-      });
-
     const transformInspectionFindingSuggestions = (
       suggestions: IVeoInspectionResult['suggestions']
     ): INestedMenuEntries[] =>
@@ -382,14 +345,13 @@ export default defineComponent({
 
     const messages = computed(() => [
       ...transformFormErrors(formErrors.value),
-      ...transformDecisionResults(inspectionFindings.value?.decisionResults),
       ...transformInspectionFindings(inspectionFindings.value?.inspectionFindings || [])
     ]);
 
     const messagesBadgeColor = computed(() =>
       messages.value.some((message) => message.type === 'error') ? 'error'
       : messages.value.some((message) => message.type === 'warning') ? 'warning'
-      : 'info'
+      : 'hint'
     );
 
     // Stuff that handles which formschema the object gets displayed with
