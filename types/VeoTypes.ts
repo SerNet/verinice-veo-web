@@ -384,16 +384,6 @@ export interface IVeoUnitIncarnationDescriptions {
     }[];
   }[];
 }
-
-export interface IVeoDecisionResults {
-  [decision: string]: {
-    value?: boolean;
-    decisiveRule?: number;
-    matchingRules?: number[];
-    agreeingRules?: number[];
-  };
-}
-
 export interface IVeoInspectionResult {
   description: {
     [lang: string]: string;
@@ -407,7 +397,6 @@ export interface IVeoInspectionResult {
 }
 
 export interface IVeoDecisionEvaluation {
-  decisionResults: IVeoDecisionResults;
   inspectionFindings: IVeoInspectionResult[];
 }
 
@@ -416,7 +405,6 @@ export interface IVeoEntityDomain {
     status?: string;
     subType?: string;
     riskDefinition?: string;
-    decisionResults?: IVeoDecisionResults;
     riskValues?: any;
   };
 }

@@ -37,7 +37,7 @@ import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
 export type Message = {
   key: string;
   text: string;
-  type: 'error' | 'warning' | 'info' | 'success';
+  type: 'error' | 'warning' | 'hint';
   actions?: INestedMenuEntries[];
 };
 </script>
@@ -60,7 +60,7 @@ const { displayInfoMessage } = useVeoAlerts();
 const SEVERITIES = [
   { type: 'error', label: t('error') },
   { type: 'warning', label: t('warning') },
-  { type: 'info', label: t('info') }
+  { type: 'hint', label: t('hint') }
 ];
 
 const categorizedMessages = computed(() => {
@@ -81,7 +81,7 @@ watch(
   (newMessages, oldMessages) => {
     for (const newMessage of newMessages) {
       if (!oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)) {
-        displayInfoMessage(t('info', 1), newMessage.text, {
+        displayInfoMessage(t('hint', 1), newMessage.text, {
           timeout: 5000
         });
       }
