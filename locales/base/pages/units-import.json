@@ -45,7 +45,6 @@
       "missingDomains": "The export does not contain any domains.",
       "missingElements": "The export does not contain any elements.",
       "missingName": "The export does not contain a unit name. Please provide one in the next step.",
-      "missingRisks": "The export does not contain any risks.",
       "missingUnit": "The export does not contain unit metadata."
     }
   },
@@ -95,7 +94,6 @@
       "missingDomains": "Der Export enthält keine Domänen.",
       "missingElements": "Der Export enthält keine Elemente.",
       "missingName": "Der Export enthält keinen Unit-Namen. Bitte geben Sie ihn im nächsten Schritt an.",
-      "missingRisks": "Der Export enthält keine Risiken.",
       "missingUnit": "Der Export enthält keine Unit-Metadaten."
     }
   }
