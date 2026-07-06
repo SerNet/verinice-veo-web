@@ -46,7 +46,29 @@ describe('validateUnitImportPayload()', () => {
     });
   });
 
-  it('reports missing unit sections including risks', () => {
+  it('accepts a unit import payload without optional contents', () => {
+    // Given a unit import without any risks or unit description
+    const payload = {
+      unit: {
+        name: 'Unrisky unit',
+        domains: [{ targetUri: '/veo/domains/domain-1' }]
+      },
+      domains: [{ id: 'domain-1' }],
+      elements: [{ id: 'element-1' }],
+      risks: []
+    };
+
+    // When the payload is validated
+    const result = validateUnitImportPayload(payload, t);
+
+    // Then no validation issues are reported
+    expect(result).toEqual({
+      errors: [],
+      warnings: []
+    });
+  });
+
+  it('reports missing unit sections', () => {
     // Given an incomplete unit import payload
     const payload = {
       unit: {
@@ -61,7 +83,7 @@ describe('validateUnitImportPayload()', () => {
     const result = validateUnitImportPayload(payload, t);
 
     // Then missing sections and editable fields are reported
-    expect(result.errors).toEqual(['validation.missingDomains', 'validation.missingRisks']);
+    expect(result.errors).toEqual(['validation.missingDomains']);
     expect(result.warnings).toEqual(['validation.missingName', 'validation.missingElements']);
   });
 });

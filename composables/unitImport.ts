@@ -25,10 +25,6 @@ export function validateUnitImportPayload(
     errors.push(t('validation.missingDomains'));
   }
 
-  if (!payload.risks?.length) {
-    errors.push(t('validation.missingRisks'));
-  }
-
   if (!payload.unit?.name?.trim()) {
     warnings.push(t('validation.missingName'));
   }
