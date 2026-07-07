@@ -33,7 +33,7 @@
 
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="cancel">
+        <v-btn data-veo-test="cancel-encoding-button" text @click="cancel">
           {{ t('global.button.cancel') }}
         </v-btn>
         <v-btn data-veo-test="confirm-encoding-button" color="primary" :disabled="!selected" @click="confirm">
