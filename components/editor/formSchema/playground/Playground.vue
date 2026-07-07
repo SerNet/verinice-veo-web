@@ -110,6 +110,11 @@ const addElementToMap = (
   pointer: string,
   parent: IVeoFormSchemaItem | undefined
 ) => {
+  // Turn relative custom link attribute scopes into absolute scopes.
+  if (isCustomLinkAttribute(formSchemaElement, parent) && !formSchemaElement.scope?.startsWith('#/properties/links')) {
+    formSchemaElement.scope = `${parent?.scope}/items/${formSchemaElement.scope?.replace('#/', '')}`;
+  }
+
   const uuid = UUIDv5(getFormSchemaElementName(formSchemaElement, pointer), FORMSCHEMA_PLAYGROUND_NAMESPACE);
   formSchemaElementMap.set(uuid, cloneDeep(formSchemaElement));
 
