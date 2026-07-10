@@ -58,7 +58,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
           {{ !ability.can('create', 'unit') ? t('cannotCreateUnitHint') : t('noUnitsText') }}
         </h3>
         <div class="mt-4 d-flex flex-wrap ga-2 justify-center">
-          <v-tooltip v-if="hasUnitImport" location="bottom" :aria-label="t('importUnit')">
+          <v-tooltip location="bottom" :aria-label="t('importUnit')">
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -146,7 +146,6 @@ import {
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { sortUnits, type TVeoUnit } from '~/composables/requests/useUnits';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
-import { hasFeature } from '~/utils/featureFlags';
 
 import type { IVeoUnit } from '~/composables/requests/useUnits';
 import type { TInlineComponent } from '~/types/utils';
@@ -162,7 +161,6 @@ const { data: allDomains } = useDomains();
 const { ability } = useVeoPermissions();
 const canUpdateUnit = computed(() => ability.value.can('update', 'unit'));
 const canDeleteUnit = computed(() => ability.value.can('delete', 'unit'));
-const hasUnitImport = hasFeature('unitImport');
 
 const units = computed({
   get() {
