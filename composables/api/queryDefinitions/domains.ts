@@ -136,6 +136,17 @@ export interface IVeoFetchProfileParameters {
   id: string;
 }
 
+export interface IVeoFetchAttributeValuesParameters {
+  domainId: string;
+  type: string;
+  unitId: string;
+}
+
+export interface IVeoAttributeValues {
+  values: string[];
+  truncated: boolean;
+}
+
 export interface IVeoUpdateControlImplementationConfigurationParameters {
   domainId: string;
   mitigationControlSubType?: string;
@@ -217,7 +228,22 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.MEDIUM
       }
-    } as IVeoQueryDefinition<IVeoFetchProfileParameters, TVeoProfile>
+    } as IVeoQueryDefinition<IVeoFetchProfileParameters, TVeoProfile>,
+    fetchAttributeValues: {
+      primaryQueryKey: 'attributeValues',
+      url: '/api/domains/:domainId/attribute-values',
+      queryParameterTransformationFn: (queryParameters) => ({
+        params: { domainId: queryParameters.domainId },
+        query: {
+          type: queryParameters.type,
+          unit: queryParameters.unitId
+        }
+      }),
+      staticQueryOptions: {
+        staleTime: STALE_TIME.REQUEST,
+        placeholderData: { values: [], truncated: false }
+      }
+    } as IVeoQueryDefinition<IVeoFetchAttributeValuesParameters, IVeoAttributeValues>
   },
   mutations: {
     updateTypeDefinitions: {

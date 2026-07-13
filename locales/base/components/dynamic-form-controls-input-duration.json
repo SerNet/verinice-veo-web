@@ -5,7 +5,14 @@
     "hours": "Hours",
     "minutes": "Minutes",
     "seconds": "Seconds",
-    "clear": "Clear duration"
+    "clear": "Clear duration",
+    "custom": "Custom",
+    "customSelected": "Custom (enter value in the field below...)",
+    "weeksCount": "{n} week | {n} weeks",
+    "daysCount": "{n} day | {n} days",
+    "hoursCount": "{n} hour | {n} hours",
+    "minutesCount": "{n} minute | {n} minutes",
+    "secondsCount": "{n} second | {n} seconds"
   },
   "de": {
     "weeks": "Wochen",
@@ -13,6 +20,13 @@
     "hours": "Stunden",
     "minutes": "Minuten",
     "seconds": "Sekunden",
-    "clear": "Dauer löschen"
+    "clear": "Dauer löschen",
+    "custom": "Individuell",
+    "customSelected": "Individuell (Wert im Feld unten eingeben...)",
+    "weeksCount": "{n} Woche | {n} Wochen",
+    "daysCount": "{n} Tag | {n} Tage",
+    "hoursCount": "{n} Stunde | {n} Stunden",
+    "minutesCount": "{n} Minute | {n} Minuten",
+    "secondsCount": "{n} Sekunde | {n} Sekunden"
   }
 }

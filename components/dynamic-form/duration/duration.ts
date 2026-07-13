@@ -117,6 +117,25 @@ function formatDurationParts(parts: DurationParts): string | undefined {
   return `P${datePart}${timePart ? `T${timePart}` : ''}`;
 }
 
+export function normalizeIsoDuration(value: unknown): string | undefined {
+  return formatDuration(parseDuration(value));
+}
+
+export function formatDurationLabel(
+  parts: DurationParts,
+  translate: (part: DurationPart, count: number) => string
+): string | undefined {
+  const order: DurationPart[] = ['weeks', 'days', 'hours', 'minutes', 'seconds'];
+
+  const positiveParts = order.filter((part) => (parts[part] || 0) > 0);
+  if (positiveParts.length > 0) {
+    return positiveParts.map((part) => translate(part, parts[part] as number)).join(' ');
+  }
+
+  const explicitZeroPart = order.find((part) => parts[part] !== undefined);
+  return explicitZeroPart === undefined ? undefined : translate(explicitZeroPart, 0);
+}
+
 export function normalizeDurationPart(value: unknown, _part?: DurationPart): number | undefined {
   if (value === undefined || value === null || value === '') {
     return undefined;

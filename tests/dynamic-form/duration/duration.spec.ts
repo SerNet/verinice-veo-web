@@ -3,8 +3,11 @@ import { describe, expect, it } from 'vitest';
 import {
   formatDraftDuration,
   formatDuration,
+  formatDurationLabel,
   normalizeDurationParts,
-  parseDuration
+  normalizeIsoDuration,
+  parseDuration,
+  type DurationPart
 } from '~/components/dynamic-form/duration/duration';
 
 describe('duration utilities', () => {
@@ -100,5 +103,27 @@ describe('duration utilities', () => {
         seconds: 2
       })
     ).toBe('P30DT5M2S');
+  });
+
+  it('normalizes ISO duration strings to a canonical form', () => {
+    expect(normalizeIsoDuration('P3W')).toBe('P21D');
+    expect(normalizeIsoDuration('PT90M')).toBe('PT1H30M');
+    expect(normalizeIsoDuration('P17DT4H5M6S')).toBe('P17DT4H5M6S');
+    expect(normalizeIsoDuration('not a duration')).toBeUndefined();
+    expect(normalizeIsoDuration(undefined)).toBeUndefined();
+    expect(normalizeIsoDuration(42)).toBeUndefined();
+  });
+
+  const translate = (part: DurationPart, count: number) => `${count} ${part}`;
+
+  it('builds a human readable label from duration parts', () => {
+    expect(formatDurationLabel({ weeks: 1, days: 3, hours: 2 }, translate)).toBe('1 weeks 3 days 2 hours');
+    expect(formatDurationLabel({ hours: 1 }, translate)).toBe('1 hours');
+  });
+
+  it('skips zero parts in the label unless the duration is entirely zero', () => {
+    expect(formatDurationLabel({ days: 10, hours: 2, minutes: 0 }, translate)).toBe('10 days 2 hours');
+    expect(formatDurationLabel({ hours: 0 }, translate)).toBe('0 hours');
+    expect(formatDurationLabel({}, translate)).toBeUndefined();
   });
 });

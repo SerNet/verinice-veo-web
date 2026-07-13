@@ -17,11 +17,30 @@
     role="group"
     :aria-label="options.label"
   >
-    <div v-if="options.label" class="vf-input-duration__label text-medium-emphasis">
+    <v-select
+      v-if="suggestionsEnabled"
+      :model-value="selectValue"
+      :items="selectItems"
+      :label="options.label"
+      :aria-label="options.label"
+      :disabled="disabled || options.disabled"
+      class="vf-input-duration__select"
+      data-veo-test="duration-preset-select"
+      variant="underlined"
+      autocomplete="off"
+      hide-details
+      @update:model-value="handlePresetSelected"
+    >
+      <template #selection="{ item }">
+        {{ item.value === CUSTOM_DURATION ? t('customSelected') : item.title }}
+      </template>
+    </v-select>
+
+    <div v-if="customFieldsVisible && options.label" class="vf-input-duration__label text-medium-emphasis">
       {{ options.label }}
     </div>
 
-    <div class="vf-input-duration__container">
+    <div v-if="customFieldsVisible" class="vf-input-duration__container">
       <div class="vf-input-duration__inputs">
         <div v-for="part in durationParts" :key="part" class="vf-input-duration__field">
           <div class="vf-input-duration__field-label text-medium-emphasis">
@@ -71,18 +90,24 @@
 import { mdiCloseCircle } from '@mdi/js';
 import { last } from 'lodash';
 
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import { useQuery } from '~/composables/api/utils/query';
 import type { IVeoFormsElementDefinition } from '../types';
 import { getControlErrorMessages, VeoFormsControlProps } from '../util';
 import {
   EMPTY_DURATION,
   formatDraftDuration,
   formatDuration,
+  formatDurationLabel,
   normalizeDurationPart,
   normalizeDurationParts,
+  normalizeIsoDuration,
   parseDuration,
   type DurationPart,
   type DurationParts
 } from '../duration/duration';
+
+const CUSTOM_DURATION = '__custom__';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-duration-input',
@@ -103,9 +128,58 @@ export default defineComponent({
   emits: ['update:model-value'],
   setup(props, { emit }) {
     const { t } = useI18n();
+    const route = useRoute();
     const durationParts: DurationPart[] = ['weeks', 'days', 'hours', 'minutes', 'seconds'];
     const localValue = ref<DurationParts>({ ...EMPTY_DURATION });
     const hasValue = computed(() => Object.values(localValue.value).some((value) => value !== undefined));
+
+    const domainId = computed(() => route.params.domain as string | undefined);
+    const unitId = computed(() => route.params.unit as string | undefined);
+    const suggestionsEnabled = computed(() => Boolean(domainId.value && unitId.value));
+
+    const { data: usedDurationValues } = useQuery(
+      domainQueryDefinitions.queries.fetchAttributeValues,
+      computed(() => ({
+        domainId: domainId.value as string,
+        type: 'duration',
+        unitId: unitId.value as string
+      })),
+      { enabled: suggestionsEnabled }
+    );
+
+    const isCustom = ref(false);
+    const customFieldsVisible = computed(() => !suggestionsEnabled.value || isCustom.value);
+
+    const normalizedModelValue = computed(() => normalizeIsoDuration(props.modelValue));
+    const selectValue = computed(() => (isCustom.value ? CUSTOM_DURATION : normalizedModelValue.value));
+
+    const translateDurationPart = (part: DurationPart, count: number) => t(`${part}Count`, count);
+
+    const selectItems = computed(() => {
+      const seen = new Set<string>();
+      const items: { title: string; value: string }[] = [];
+
+      for (const value of [props.modelValue, ...(usedDurationValues.value?.values ?? [])]) {
+        const normalized = normalizeIsoDuration(value);
+        if (!normalized || seen.has(normalized)) continue;
+
+        const title = formatDurationLabel(parseDuration(normalized), translateDurationPart);
+        if (!title) continue;
+
+        seen.add(normalized);
+        items.push({ title, value: normalized });
+      }
+
+      items.push({ title: t('custom'), value: CUSTOM_DURATION });
+      return items;
+    });
+
+    function handlePresetSelected(value: unknown) {
+      isCustom.value = value === CUSTOM_DURATION;
+      if (!isCustom.value && typeof value === 'string' && value !== props.modelValue) {
+        emit('update:model-value', value);
+      }
+    }
 
     watch(
       () => props.modelValue,
@@ -146,6 +220,12 @@ export default defineComponent({
       durationParts,
       localValue,
       hasValue,
+      suggestionsEnabled,
+      customFieldsVisible,
+      selectItems,
+      selectValue,
+      handlePresetSelected,
+      CUSTOM_DURATION,
       updateDraftPart,
       commitDuration,
       handleFocusedUpdate,
@@ -162,6 +242,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 .vf-input-duration {
   margin-bottom: 16px;
+}
+
+.vf-input-duration__select {
+  margin-bottom: 8px;
 }
 
 .vf-input-duration__label {
