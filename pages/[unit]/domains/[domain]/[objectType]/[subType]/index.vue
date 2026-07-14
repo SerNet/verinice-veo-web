@@ -209,8 +209,7 @@ import { getSearchQueryParameters, useUrlSearchFilters } from '~/composables/sea
 
 enum FILTER_SOURCE {
   QUERY,
-  PARAMS,
-  NONE
+  PARAMS
 }
 
 type IFilterDefinition = {

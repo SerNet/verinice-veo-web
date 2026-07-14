@@ -396,8 +396,7 @@ function closeDialog() {
 
 enum FILTER_SOURCE {
   QUERY,
-  PARAMS,
-  NONE
+  PARAMS
 }
 
 type IFilterDefinition = {
