@@ -38,6 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
             :can-update-unit="canUpdateUnit"
             :can-delete-unit="canDeleteUnit"
             @delete-unit="() => deleteUnit(u)"
+            @download-unit="() => openExportDialog(u)"
           />
         </template>
         <template #bottom-left="{ item: u }">
@@ -129,6 +130,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   </v-row>
 
   <UnitDeleteDialog v-model="deleteDialogIsOpen" :unit="unitToDelete" />
+
+  <UnitExportDialog v-model="exportDialogIsOpen" :unit="unitToExport" />
 </template>
 
 <script setup lang="ts">
@@ -141,7 +144,8 @@ import {
   mdiTrayArrowUp,
   mdiPuzzle,
   mdiShapeOutline,
-  mdiFootPrint
+  mdiFootPrint,
+  mdiDownloadOutline
 } from '@mdi/js';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { sortUnits, type TVeoUnit } from '~/composables/requests/useUnits';
@@ -178,6 +182,13 @@ const unitToEditId = ref<undefined | string>(undefined);
 const unitToDelete = ref<undefined | IVeoUnit>(undefined);
 const isManageDialogOpen = ref(false);
 const deleteDialogIsOpen = ref(false);
+const exportDialogIsOpen = ref(false);
+const unitToExport = ref<TVeoUnit>();
+
+function openExportDialog(unit: TVeoUnit) {
+  unitToExport.value = unit;
+  exportDialogIsOpen.value = true;
+}
 
 function createUnit() {
   unitToEditId.value = undefined;
@@ -232,14 +243,37 @@ const Details: TInlineComponent = {
 
 const UnitActions: TInlineComponent = {
   props: ['detailsUrl', 'canUpdateUnit', 'canDeleteUnit'],
-  data: () => ({ mdiPencilOutline, mdiDeleteOutline, t }),
-  emits: ['deleteUnit'],
+  data: () => ({ mdiPencilOutline, mdiDeleteOutline, mdiDownloadOutline, t }),
+  emits: ['deleteUnit', 'downloadUnit'],
   methods: {
     emitDeleteUnit() {
       (this as any).$emit('deleteUnit');
+    },
+    emitDownloadUnit() {
+      (this as any).$emit('downloadUnit');
     }
   },
   template: `
+    <!-- DOWNLOAD BUTTON -->
+    <v-tooltip :aria-label="t('downloadUnit')">
+      <template #activator="{ props }">
+        <span v-bind="props">
+          <v-btn
+            @click="emitDownloadUnit"
+            :icon="mdiDownloadOutline"
+            variant="text"
+            :aria-label="t('downloadUnit')"
+            data-veo-test="units-download-unit-button"
+            data-component-name="units-download-unit-button"
+          />
+        </span>
+      </template>
+      <template #default>
+        <span>
+          {{ t('downloadUnit') }}
+        </span>
+      </template>
+    </v-tooltip>
     <!-- EDIT BUTTON -->
     <v-tooltip :aria-label="t('editUnit')">
       <template #activator="{ props }">

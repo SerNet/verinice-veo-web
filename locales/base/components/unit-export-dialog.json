@@ -1,0 +1,22 @@
+{
+  "de": {
+    "dialogTitle": "Unit exportieren",
+    "description": "Möchten Sie die Unit \"{name}\" exportieren? \nEs wird nur die aktuelle Unit exportiert. Historie und Benutzerdaten sind nicht enthalten.",
+    "dataTransferHint": "Für den Export von Historie und Benutzerdaten verwenden Sie die Datenübertragung.",
+    "dataTransfer": "Datenübertragung",
+    "export": "Exportieren",
+    "successHeader": "Die Unit wurde erfolgreich exportiert.",
+    "errorHeader": "Export fehlgeschlagen",
+    "errorBody": "Die Unit konnte nicht exportiert werden."
+  },
+  "en": {
+    "dialogTitle": "Export unit",
+    "description": "Do you want to export the unit \"{name}\"?\nOnly the current unit will be exported. History and user data are not included.",
+    "dataTransferHint": "To export the history and user data, please use the Data Transfer page.",
+    "dataTransfer": "Data Transfer",
+    "export": "Export",
+    "successHeader": "The unit was exported successfully.",
+    "errorHeader": "Export failed",
+    "errorBody": "The unit could not be exported."
+  }
+}

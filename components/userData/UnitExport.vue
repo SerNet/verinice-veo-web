@@ -25,50 +25,33 @@
     :alert-body="t('alertBody')"
     :items="units"
     :is-loading="state.isLoading"
-    :handle-click="exportUnit"
+    :handle-click="downloadUnit"
   />
 </template>
 
 <script setup lang="ts">
-import { downloadZIP } from '~/lib/jsonToZip';
 import { logError } from './modules/HandleError';
-import { read } from '~/requests/crud';
+const { exportUnit } = useUnitExport();
 
 // Composables
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 const { t } = useI18n();
-const { profile } = useVeoUser();
 
 const state = reactive({
   isLoading: [] as boolean[],
   showAlert: false
 });
 
-const username = computed(() => profile.value?.username as string);
 const { data: units } = useUnits();
 
-async function exportUnit(index: number) {
+async function downloadUnit(index: number) {
   state.isLoading[index] = true;
+
   try {
     const id = units.value[index]?.id;
     if (!id) throw new Error('Unit ID is undefined');
 
-    const path = `units/${id}/export`;
-    const data = await read({
-      path,
-      options: {
-        headers: {
-          Accept: 'application/vnd.sernet.verinice.unit-dump.v2+json'
-        }
-      }
-    });
-
-    const cleanFileName = (value) => String(value).replace(/[^\w-]/g, '_');
-
-    const safeUsername = cleanFileName(username.value);
-    const safeUnitName = cleanFileName(data.unit?.name ?? 'unit_export');
-    const fileName = `${safeUsername}_${safeUnitName}`;
-    await downloadZIP(data, fileName);
+    await exportUnit(id);
 
     displaySuccessMessage(t('successHeader'));
   } catch (error) {
