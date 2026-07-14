@@ -107,6 +107,6 @@
     "lodash-es": "4.18.1",
     "preact": "10.29.7",
     "dompurify": "$dompurify",
-    "shell-quote": "1.9.0"
+    "shell-quote": "1.10.0"
   }
 }
