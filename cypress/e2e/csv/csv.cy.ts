@@ -44,6 +44,8 @@ describe('CSV Import', () => {
         force: true
       });
 
+    cy.get('[data-veo-test="confirm-csv-file-button"]').should('be.visible').click();
+
     cy.get('[data-veo-test="encoding-dialog"]').should('be.visible');
 
     cy.get('[data-veo-test="confirm-encoding-button"]').click();
