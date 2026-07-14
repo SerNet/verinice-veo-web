@@ -100,7 +100,7 @@
     "typescript-eslint": "8.63.0",
     "vite-tsconfig-paths": "6.1.1",
     "vitest": "4.1.10",
-    "vue-tsc": "3.3.6"
+    "vue-tsc": "3.3.7"
   },
   "overrides": {
     "vitest": "$vitest",
