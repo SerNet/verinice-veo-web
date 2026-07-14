@@ -27,7 +27,7 @@
     @update:model-value="updateView"
   >
     <template #default>
-      <div>
+      <div v-if="wizardStep === CsvImportWizardStep.MAPPING">
         <BaseAlert
           v-if="items.length - invalidCount > 0"
           v-model="confirmImport"
@@ -53,7 +53,7 @@
           </span>
         </v-alert>
       </div>
-      <div>
+      <div v-if="wizardStep === CsvImportWizardStep.MAPPING">
         <v-alert
           v-if="unmappedRequiredFields.length > 0 && globalSubType && selectedStatus"
           class="mb-4"
@@ -119,7 +119,13 @@
               <template #headers>
                 <tr>
                   <th v-for="header in headers" :key="header" class="csv-column-header">
-                    <div class="column-name" data-veo-test="column-name">{{ getHeaderLabel(header) }}</div>
+                    <div
+                      class="column-name"
+                      :class="{ 'csv-column-disabled': !columnImportEnabled[header] }"
+                      data-veo-test="column-name"
+                    >
+                      {{ getHeaderLabel(header) }}
+                    </div>
                     <v-checkbox
                       :model-value="columnImportEnabled[header]"
                       :label="t('importObjects.importColumn')"
@@ -151,9 +157,13 @@
                 </tr>
               </template>
               <template v-for="header in localHeaders" :key="header.value" #[`item.${header.value}`]="{ item, index }">
-                <div @click="startEditing(item, header.value)">
+                <div
+                  class="csv-cell"
+                  :class="{ 'csv-column-disabled': !columnImportEnabled[header.value] }"
+                  @click="startEditing(item, header.value)"
+                >
                   <v-text-field
-                    v-if="editingItem === item && editingKey === header.value"
+                    v-if="columnImportEnabled[header.value] && editingItem === item && editingKey === header.value"
                     v-model="item[header.value]"
                     variant="underlined"
                     density="compact"
@@ -180,14 +190,44 @@
           </div>
         </v-card-text>
       </div>
+      <div v-else-if="wizardStep === CsvImportWizardStep.IMPORTING" class="csv-import-state">
+        <div class="csv-import-state__title">{{ t('importObjects.importing') }}</div>
+        <div class="csv-import-state__title">{{ importedItems }} / {{ totalItems }}</div>
+        <div class="csv-import-state__subtitle">
+          {{ t('importObjects.importedProgress', { progress }) }}
+        </div>
+        <v-progress-linear :model-value="progress" height="6" color="primary" class="csv-import-state__progress" />
+      </div>
+      <div v-else class="csv-import-state">
+        <div class="csv-import-state__panel veo-generated-fs-group-border">
+          <v-icon :icon="resultIcon" :color="resultColor" size="64" class="csv-import-state__icon" />
+          <div class="csv-import-state__result-title">{{ importResultTitle }}</div>
+          <div class="csv-import-state__message">{{ importResultMessage }}</div>
+        </div>
+      </div>
     </template>
     <template #dialog-options>
-      <v-btn variant="text" @click="emit('update:model-value', false)">
+      <v-btn
+        v-if="wizardStep === CsvImportWizardStep.MAPPING"
+        variant="text"
+        @click="emit('update:model-value', false)"
+      >
         {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-btn
+        v-else-if="wizardStep === CsvImportWizardStep.IMPORTING"
+        variant="text"
+        color="primary"
+        @click="cancelImport"
+      >
+        {{ t('global.button.cancel') }}
+      </v-btn>
+      <v-btn v-else color="primary" variant="flat" @click="finishImport">
+        {{ t('global.button.close') }}
       </v-btn>
       <v-spacer />
       <v-btn
-        v-if="items.length"
+        v-if="wizardStep === CsvImportWizardStep.MAPPING && items.length"
         variant="text"
         color="primary"
         data-veo-test="import-button"
@@ -198,26 +238,10 @@
       </v-btn>
     </template>
   </BaseDialog>
-  <BaseDialog v-model="isImporting" confirm-close :title="t('importObjects.importingTitle')">
-    <template #default>
-      <div class="text-center py-6">
-        <div class="text-h6 mb-4">{{ t('importObjects.importSuccessful') }}</div>
-        <div class="text-h6 mb-4">{{ importedItems }} / {{ totalItems }}</div>
-        <div class="text-subtitle-1">
-          {{ t('importObjects.importedProgress', { progress }) }}
-        </div>
-        <v-progress-linear :model-value="progress" height="6" color="primary" class="mt-4 mb-4" />
-      </div>
-    </template>
-    <template #dialog-options>
-      <v-btn variant="text" color="primary" :disabled="!isImporting" @click="cancelImport">
-        {{ t('global.button.cancel') }}
-      </v-btn>
-    </template>
-  </BaseDialog>
 </template>
 
 <script setup lang="ts">
+import { mdiAlertCircleOutline, mdiCheckCircleOutline, mdiCloseCircleOutline } from '@mdi/js';
 import { useI18n } from 'vue-i18n';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
@@ -275,6 +299,12 @@ const emit = defineEmits<{
 
 const isOpen = toRef(props.modelValue);
 
+enum CsvImportWizardStep {
+  MAPPING = 'mapping',
+  IMPORTING = 'importing',
+  RESULT = 'result'
+}
+
 /** Dependencies */
 const { t, locale } = useI18n();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
@@ -287,7 +317,7 @@ const { mutateAsync: create } = useMutation(objectQueryDefinitions.mutations.cre
 const items = ref<Record<string, any>[]>();
 const globalObjectType = ref<string>(props.preselectedType);
 const globalSubType = ref<string>(props.preselectedSubType);
-const isImporting = ref<boolean>(false);
+const wizardStep = ref<CsvImportWizardStep>(CsvImportWizardStep.MAPPING);
 const progress = ref<number>(0);
 const isCancelled = ref<boolean>(false);
 const failedImports = ref<{ item: any; error: string }[]>([]);
@@ -302,6 +332,9 @@ const selectedStatus = ref<string>('');
 const validationErrors = ref<Record<number, Record<string, string>>>({});
 const confirmImport = ref<boolean>(false);
 const columnImportEnabled = ref<Record<string, boolean>>({});
+const importResultType = ref<VeoAlertType>(VeoAlertType.SUCCESS);
+const importResultTitle = ref('');
+const importResultMessage = ref('');
 
 // Track original state for dirty check
 const originalState = ref({
@@ -440,6 +473,18 @@ const hasAllRequiredFields = computed(() => {
   );
 });
 
+const resultIcon = computed(() => {
+  if (importResultType.value === VeoAlertType.SUCCESS) return mdiCheckCircleOutline;
+  if (importResultType.value === VeoAlertType.WARNING) return mdiAlertCircleOutline;
+  return mdiCloseCircleOutline;
+});
+
+const resultColor = computed(() => {
+  if (importResultType.value === VeoAlertType.SUCCESS) return 'success';
+  if (importResultType.value === VeoAlertType.WARNING) return 'warning';
+  return 'error';
+});
+
 props.headers.forEach((header) => {
   headerMappings.value[header] = '';
   headerSearchTerms.value[header] = '';
@@ -544,6 +589,7 @@ const getMappedHeader = (requiredField: string) => {
 };
 
 const startEditing = (item: any, key: string) => {
+  if (!columnImportEnabled.value[key]) return;
   editingItem.value = item;
   editingKey.value = key;
 };
@@ -559,7 +605,7 @@ function requiredRule(value: string) {
 
 /** Event Handlers */
 const onSubmit = async (data: any[], originalData: any[]) => {
-  isImporting.value = true;
+  wizardStep.value = CsvImportWizardStep.IMPORTING;
   isCancelled.value = false;
   failedImports.value = [];
   totalItems.value = data.length;
@@ -608,42 +654,42 @@ const onSubmit = async (data: any[], originalData: any[]) => {
     progress.value = Math.round(((importedItems.value + failedImports.value.length) / totalItems.value) * 100);
   }
 
-  isImporting.value = false;
-
-  const unmappedOrFailedItems = originalData.filter((_, index) => !successfullyImported.has(data[index]));
-
   items.value = items.value.filter((_, index) => validationErrors.value[index]);
 
-  if (failedImports.value.length > 0) {
-    displayErrorMessage(
-      t('importObjects.importErrorMessageTitle'),
-      t('importObjects.importErrorMessage', {
-        imported: importedItems.value,
-        total: totalItems.value,
-        failed: failedImports.value.length
-      })
-    );
+  if (failedImports.value.length > 0 && importedItems.value === 0) {
+    importResultType.value = VeoAlertType.ERROR;
+    importResultTitle.value = t('importObjects.importFailedTitle');
+    importResultMessage.value = t('importObjects.importFailedMessage');
+    displayErrorMessage(importResultTitle.value, importResultMessage.value);
+  } else if (failedImports.value.length > 0) {
+    importResultType.value = VeoAlertType.WARNING;
+    importResultTitle.value = t('importObjects.importErrorMessageTitle');
+    importResultMessage.value = t('importObjects.importErrorMessage', {
+      imported: importedItems.value,
+      total: totalItems.value,
+      failed: failedImports.value.length
+    });
+    displayErrorMessage(importResultTitle.value, importResultMessage.value);
   } else if (isCancelled.value) {
-    displaySuccessMessage(
-      t('importObjects.importCancelled'),
-      undefined,
-      t('importObjects.importCancelledMessage', {
-        imported: importedItems.value,
-        total: totalItems.value,
-        remaining: unmappedOrFailedItems.length
-      })
-    );
+    importResultType.value = VeoAlertType.SUCCESS;
+    importResultTitle.value = t('importObjects.importCancelled');
+    importResultMessage.value = t('importObjects.importCancelledMessage', {
+      imported: importedItems.value,
+      total: totalItems.value,
+      remaining: totalItems.value - importedItems.value - failedImports.value.length
+    });
+    displaySuccessMessage(importResultTitle.value, undefined, importResultMessage.value);
   } else {
-    emit('close-csv-importer');
-    displaySuccessMessage(
-      t('importObjects.importSuccessTitle'),
-      undefined,
-      t('importObjects.importSuccessMessage', {
-        imported: importedItems.value,
-        total: totalItems.value
-      })
-    );
+    importResultType.value = VeoAlertType.SUCCESS;
+    importResultTitle.value = t('importObjects.importSuccessTitle');
+    importResultMessage.value = t('importObjects.importSuccessMessage', {
+      imported: importedItems.value,
+      total: totalItems.value
+    });
+    displaySuccessMessage(importResultTitle.value, undefined, importResultMessage.value);
   }
+
+  wizardStep.value = CsvImportWizardStep.RESULT;
 };
 const invalidCount = computed(() => Object.keys(validationErrors.value || {}).length);
 
@@ -749,7 +795,14 @@ const startImport = async () => {
 
 const cancelImport = () => {
   isCancelled.value = true; // Set the cancellation flag
-  isImporting.value = false;
+};
+
+const finishImport = () => {
+  if (importedItems.value > 0) {
+    emit('navigate', globalObjectType.value, globalSubType.value);
+  }
+  emit('close-csv-importer');
+  emit('update:model-value', false);
 };
 
 const updateMapping = (key: string, value: string | undefined) => {
@@ -889,14 +942,6 @@ const handleImport = () => {
 </script>
 <i18n src="~/locales/base/components/object-csv-dialog.json"></i18n>
 <style scoped>
-:deep(.v-data-table__tr.highlight) {
-  animation: highlight 1s forwards;
-}
-
-:deep(.v-data-table__tr.remove-highlight) {
-  animation: removeHighlight 1s forwards;
-}
-
 @keyframes highlight {
   0% {
     background-color: transparent;
@@ -920,21 +965,6 @@ const handleImport = () => {
   min-width: 800px;
 }
 
-.editable-table {
-  --v-table-header-height: 48px;
-}
-
-.editable-table :deep(.v-data-table__td) {
-  cursor: pointer;
-  min-width: 200px;
-  position: relative;
-  padding: 0 8px;
-}
-
-.editable-table :deep(.v-data-table__td):hover {
-  background-color: rgba(0, 0, 0, 0.04);
-}
-
 .cell-content {
   padding: 0 8px;
   white-space: nowrap;
@@ -943,20 +973,6 @@ const handleImport = () => {
   display: block;
   min-height: 40px;
   line-height: 40px;
-}
-
-.v-text-field {
-  margin-top: -6px;
-}
-
-.v-card-actions {
-  border-top: 1px solid rgba(0, 0, 0, 0.12);
-  background-color: #f5f5f5;
-}
-
-.required-fields-list {
-  margin-bottom: 0px;
-  padding: 0px;
 }
 
 .error-cell {
@@ -971,16 +987,62 @@ const handleImport = () => {
   font-size: 12px;
 }
 
-.object-side-container-select {
-  flex-direction: column;
-  height: auto !important;
-  width: 60px;
-}
-
 :deep(.csv-column-header) {
   vertical-align: top;
   min-width: 220px;
   padding: 8px !important;
+}
+
+.csv-column-disabled {
+  opacity: 0.45;
+}
+
+.csv-cell.csv-column-disabled {
+  cursor: default;
+}
+
+.csv-import-state {
+  padding: 40px 0;
+  text-align: center;
+}
+
+.csv-import-state__panel {
+  width: min(100%, 576px);
+  min-height: 260px;
+  margin: 0 auto;
+  padding: 64px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.csv-import-state__title {
+  margin-bottom: 16px;
+  font-size: 1.25rem;
+  line-height: 2rem;
+  font-weight: 500;
+}
+
+.csv-import-state__subtitle,
+.csv-import-state__message {
+  font-size: 1rem;
+  line-height: 1.75rem;
+}
+
+.csv-import-state__progress {
+  margin: 16px 0;
+}
+
+.csv-import-state__icon {
+  margin-bottom: 24px;
+}
+
+.csv-import-state__result-title {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  font-weight: 400;
 }
 
 .column-name {
