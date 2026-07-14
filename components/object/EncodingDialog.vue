@@ -15,7 +15,16 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-dialog v-model="dialog" max-width="400">
+  <v-select
+    v-if="inline"
+    v-model="selected"
+    :items="encodings"
+    :label="t('import.selectedEncoding') + ' *'"
+    :error="!selected"
+    :error-messages="!selected ? [t('global.input.required')] : []"
+    data-veo-test="encoding-dialog"
+  />
+  <v-dialog v-else v-model="dialog" max-width="400">
     <v-card>
       <v-card-title>
         {{ t('import.selectedEncoding') }}
@@ -49,6 +58,15 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 
+withDefaults(
+  defineProps<{
+    inline?: boolean;
+  }>(),
+  {
+    inline: false
+  }
+);
+
 const encodings = ref([
   {
     title: 'UTF-8',
@@ -73,7 +91,9 @@ const emit = defineEmits<{
 }>();
 
 const dialog = defineModel<boolean>();
-const selected = ref<string>('UTF-8');
+const selected = defineModel<string>('encoding', {
+  default: 'UTF-8'
+});
 
 const cancel = () => {
   emit('update:modelValue', false);
