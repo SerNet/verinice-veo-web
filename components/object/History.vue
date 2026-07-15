@@ -57,7 +57,7 @@
           </template>
         </v-tooltip>
       </div>
-      <v-list-item v-if="!historyEntriesWithCompability.length" disabled>
+      <v-list-item v-if="!historyEntriesWithCompability.length" disabled role="option">
         <i class="text-body-2">{{ t('noPriorVersions') }}</i>
       </v-list-item>
     </v-list>
