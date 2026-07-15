@@ -389,8 +389,7 @@ export default defineComponent({
     function emitSchemas() {
       const mergedTranslations: IVeoTranslations = { lang: {} };
       const osTranslations = (JsonPointer.get(objectSchema, '#/properties/translations') || {}) as
-        | IVeoObjectSchemaTranslations
-        | Record<string, never>;
+        IVeoObjectSchemaTranslations | Record<string, never>;
 
       mergedTranslations.lang = merge(translations.value?.lang, osTranslations);
       if (osTranslations) {
