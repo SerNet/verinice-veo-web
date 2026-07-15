@@ -1,8 +1,8 @@
 {
   "en": {
     "import.title": "Import Items",
-    "export.sampleCsv": "Sample CSV",
-    "export.sampleCsvDescription": "You can download a sample CSV file to check that the structure is correct",
+    "export.sampleCsv": "CSV template",
+    "export.sampleCsvDescription": "You can download a CSV file as a template for importing all fields.",
     "import.uploadLimit.description": "Maximum file size: 10MB. Supported format: CSV",
     "import.dropzone.label": "Drag and drop a CSV file here",
     "import.button.browse": "Browse Files",
@@ -18,7 +18,7 @@
     "import.errors.maxFileSize": "Maximum file size is 10MB. Please select a smaller file.",
     "import.errors.processingFailed": "Error Processing File",
     "import.selectedEncoding": "Select Encoding",
-    "export.download.tooltip": "Download sample CSV",
+    "export.download.tooltip": "Download CSV Template",
     "examples": {
       "text": "Sample text",
       "boolean": "0 / 1",
@@ -28,8 +28,8 @@
   },
   "de": {
     "import.title": "Elemente importieren",
-    "export.sampleCsv": "Beispiel-CSV",
-    "export.sampleCsvDescription": "Sie können eine Beispiel-CSV herunterladen, um die korrekte Struktur zu überprüfen",
+    "export.sampleCsv": "CSV-Vorlage",
+    "export.sampleCsvDescription": "Sie können eine CSV-Datei als Vorlage für den Import aller Felder herunterladen.",
     "import.uploadLimit.description": "Maximale Dateigröße: 10MB. Unterstütztes Format: CSV",
     "import.dropzone.label": "CSV-Datei hierher ziehen und ablegen",
     "import.button.browse": "Dateien auswählen",
@@ -45,7 +45,7 @@
     "import.errors.maxFileSize": "Die maximale Dateigröße beträgt 10MB. Bitte wählen Sie eine kleinere Datei.",
     "import.errors.processingFailed": "Fehler bei der Verarbeitung der Datei",
     "import.selectedEncoding": "Kodierung auswählen",
-    "export.download.tooltip": "Beispiel-csv herunterladen",
+    "export.download.tooltip": "CSV-Vorlage herunterladen",
     "examples": {
       "text": "Beispieltext",
       "boolean": "0 / 1",
