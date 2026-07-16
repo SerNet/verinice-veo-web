@@ -336,6 +336,12 @@ const importResultType = ref<VeoAlertType>(VeoAlertType.SUCCESS);
 const importResultTitle = ref('');
 const importResultMessage = ref('');
 
+const setImportResult = (type: VeoAlertType, title: string, message: string) => {
+  importResultType.value = type;
+  importResultTitle.value = title;
+  importResultMessage.value = message;
+};
+
 // Track original state for dirty check
 const originalState = ref({
   headerMappings: {} as Record<string, string>,
@@ -657,35 +663,39 @@ const onSubmit = async (data: any[], originalData: any[]) => {
   items.value = items.value.filter((_, index) => validationErrors.value[index]);
 
   if (failedImports.value.length > 0 && importedItems.value === 0) {
-    importResultType.value = VeoAlertType.ERROR;
-    importResultTitle.value = t('importObjects.importFailedTitle');
-    importResultMessage.value = t('importObjects.importFailedMessage');
+    setImportResult(VeoAlertType.ERROR, t('importObjects.importFailedTitle'), t('importObjects.importFailedMessage'));
     displayErrorMessage(importResultTitle.value, importResultMessage.value);
   } else if (failedImports.value.length > 0) {
-    importResultType.value = VeoAlertType.WARNING;
-    importResultTitle.value = t('importObjects.importErrorMessageTitle');
-    importResultMessage.value = t('importObjects.importErrorMessage', {
-      imported: importedItems.value,
-      total: totalItems.value,
-      failed: failedImports.value.length
-    });
+    setImportResult(
+      VeoAlertType.WARNING,
+      t('importObjects.importErrorMessageTitle'),
+      t('importObjects.importErrorMessage', {
+        imported: importedItems.value,
+        total: totalItems.value,
+        failed: failedImports.value.length
+      })
+    );
     displayErrorMessage(importResultTitle.value, importResultMessage.value);
   } else if (isCancelled.value) {
-    importResultType.value = VeoAlertType.SUCCESS;
-    importResultTitle.value = t('importObjects.importCancelled');
-    importResultMessage.value = t('importObjects.importCancelledMessage', {
-      imported: importedItems.value,
-      total: totalItems.value,
-      remaining: totalItems.value - importedItems.value - failedImports.value.length
-    });
+    setImportResult(
+      VeoAlertType.SUCCESS,
+      t('importObjects.importCancelled'),
+      t('importObjects.importCancelledMessage', {
+        imported: importedItems.value,
+        total: totalItems.value,
+        remaining: totalItems.value - importedItems.value - failedImports.value.length
+      })
+    );
     displaySuccessMessage(importResultTitle.value, undefined, importResultMessage.value);
   } else {
-    importResultType.value = VeoAlertType.SUCCESS;
-    importResultTitle.value = t('importObjects.importSuccessTitle');
-    importResultMessage.value = t('importObjects.importSuccessMessage', {
-      imported: importedItems.value,
-      total: totalItems.value
-    });
+    setImportResult(
+      VeoAlertType.SUCCESS,
+      t('importObjects.importSuccessTitle'),
+      t('importObjects.importSuccessMessage', {
+        imported: importedItems.value,
+        total: totalItems.value
+      })
+    );
     displaySuccessMessage(importResultTitle.value, undefined, importResultMessage.value);
   }
 
