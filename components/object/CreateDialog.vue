@@ -29,6 +29,7 @@
   >
     <template #default>
       <ObjectForm
+        :key="modelValue ? 'create-object-form-open' : 'create-object-form-closed'"
         v-model="objectData"
         v-bind="omit($props, 'modelValue')"
         v-model:valid="isFormValid"
@@ -36,6 +37,7 @@
         disable-history
         scroll-wrapper-id="scroll-wrapper-create-dialog"
         object-creation-disabled
+        default-side-bar-action="messages"
       />
     </template>
     <template #dialog-options>
