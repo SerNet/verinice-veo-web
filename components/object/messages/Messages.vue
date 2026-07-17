@@ -43,8 +43,6 @@ export type Message = {
 </script>
 
 <script setup lang="ts">
-import { useVeoAlerts } from '~/composables/VeoAlert';
-
 const props = withDefaults(
   defineProps<{
     messages: Message[];
@@ -55,7 +53,6 @@ const props = withDefaults(
 );
 
 const { t } = useI18n();
-const { displayInfoMessage } = useVeoAlerts();
 
 const SEVERITIES = [
   { type: 'error', label: t('error') },
@@ -75,19 +72,6 @@ const categorizedMessages = computed(() => {
     };
   }).filter((group) => group.count > 0);
 });
-
-watch(
-  () => props.messages,
-  (newMessages, oldMessages) => {
-    for (const newMessage of newMessages) {
-      if (!oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)) {
-        displayInfoMessage(t('hint', 1), newMessage.text, {
-          timeout: 5000
-        });
-      }
-    }
-  }
-);
 </script>
 
 <i18n src="~/locales/base/components/object-messages-messages.json"></i18n>
