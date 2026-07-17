@@ -2,6 +2,7 @@
   "en": {
     "createDPIA": "Create DPIA",
     "display": "View as",
+    "hint": "Hint | Hints",
     "history": "History",
     "linkDPIA": "Link DPIA",
     "messages": "Messages",
@@ -12,6 +13,7 @@
   "de": {
     "createDPIA": "DSFA erstellen",
     "display": "Ansicht",
+    "hint": "Hinweis | Hinweise",
     "history": "Verlauf",
     "linkDPIA": "DSFA auswählen",
     "messages": "Meldungen",

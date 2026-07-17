@@ -118,6 +118,7 @@ import ObjectHistory from '~/components/object/History.vue';
 import Messages from '~/components/object/messages/Messages.vue';
 
 import { useQuery } from '~/composables/api/utils/query';
+import { useVeoAlerts } from '~/composables/VeoAlert';
 
 import type { PropType } from 'vue';
 import type { IVeoTranslations } from '~/composables/api/queryDefinitions/translations';
@@ -128,6 +129,8 @@ import type { IVeoObjectHistoryEntry } from '~/types/history';
 import type { Message } from '~/components/object/messages/Messages.vue';
 import type { INestedMenuEntries } from '../util/NestedMenu.vue';
 import type { SideBarAction } from './SideBarAction.vue';
+
+type SIDE_BAR_ACTIONS = 'display' | 'tableOfContents' | 'history' | 'messages';
 
 export default defineComponent({
   props: {
@@ -181,20 +184,17 @@ export default defineComponent({
     hasActionsMenu: {
       type: Boolean,
       default: false
+    },
+    defaultSideBarAction: {
+      type: String as PropType<SIDE_BAR_ACTIONS | undefined>,
+      default: undefined
     }
   },
-  emits: [
-    'update:model-value',
-    'update:valid',
-    'create-dpia',
-    'link-dpia',
-    'update:object-meta-data',
-    'show-revision',
-    'show-form-and-messages'
-  ],
+  emits: ['update:model-value', 'update:valid', 'create-dpia', 'link-dpia', 'update:object-meta-data', 'show-revision'],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { personReactiveFormActions, riskReactiveFormActions } = useVeoReactiveFormActions();
+    const { displayInfoMessage } = useVeoAlerts();
 
     // Object stuff
     const objectData = computed({
@@ -420,8 +420,7 @@ export default defineComponent({
       }
     );
 
-    type SIDE_BAR_ACTIONS = 'display' | 'tableOfContents' | 'history' | 'messages';
-    const selectedSideBarAction = ref<SIDE_BAR_ACTIONS | undefined>(undefined);
+    const selectedSideBarAction = ref<SIDE_BAR_ACTIONS | undefined>(props.defaultSideBarAction);
     const sideBarActions = computed<Record<SIDE_BAR_ACTIONS, SideBarAction>>(() => ({
       display: {
         icon: mdiEyeOutline,
@@ -520,14 +519,16 @@ export default defineComponent({
       emit('show-revision', revision, isRevision);
     };
 
-    // Check if there are any warnings or errors
+    // Show alerts for new messages only while the messages tab is closed
     watch(
       () => messages.value,
-      (newMessages) => {
-        const hasErrors = newMessages.some((m) => m.type === 'warning' || m.type === 'error');
-        if (hasErrors && !selectedSideBarAction.value) {
-          selectedSideBarAction.value = 'messages';
-          emit('show-form-and-messages');
+      (newMessages, oldMessages) => {
+        if (oldMessages && selectedSideBarAction.value !== 'messages') {
+          for (const newMessage of newMessages) {
+            if (!oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)) {
+              displayInfoMessage(t('hint', 1), newMessage.text);
+            }
+          }
         }
       },
       { immediate: true }
