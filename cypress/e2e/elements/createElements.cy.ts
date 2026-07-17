@@ -48,6 +48,27 @@ describe('Create elements', () => {
     });
   });
 
+  it('shows a message alert when name is empty and the messages tab is closed', () => {
+    const env = Cypress.env();
+    const { unit } = env.dynamicTestData;
+
+    cy.visit(`/${unit.unitId}/domains/${unit.domains[0].id}/persons/PER_Person`, { failOnStatusCode: false });
+    cy.getCustom('[data-veo-test="breadcrumbs"]');
+
+    cy.getCustom('[data-veo-test="create-object-button"]').click();
+    cy.getCustom('[data-veo-test="dialog-card"]').should('be.visible');
+
+    cy.getCustom('[data-component-name="object-form-view-tab"]').click();
+    cy.getCustom('[data-veo-test="dialog-card"] [data-attribute-name="name"] input').type('Temporary person name');
+    cy.get('[data-veo-test="alert-button-0"]').should('not.exist');
+    cy.getCustom('[data-veo-test="dialog-card"] [data-attribute-name="name"] input').clear();
+    cy.getCustom('[data-veo-test="dialog-card"] [data-attribute-name="abbreviation"] input').type(
+      'person-without-name'
+    );
+
+    cy.get('[data-veo-test="alert-button-0"]').should('be.visible');
+  });
+
   for (const elementType of elementTypeList) {
     it('creates elements in ' + elementType, () => {
       cy.goToUnitSelection();
