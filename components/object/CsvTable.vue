@@ -15,7 +15,7 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <v-data-table :headers="headers" :items="items" dense fixed-header height="600" class="elevation-1 editable-table">
+  <v-data-table :headers="headers" :items="items" dense fixed-header height="100%" class="elevation-1 editable-table">
     <template v-for="(_, name) in $slots" #[name]="slotProps">
       <slot :name="name" v-bind="slotProps || {}"></slot>
     </template>
@@ -30,3 +30,49 @@ interface Props {
 
 defineProps<Props>();
 </script>
+<style scoped>
+:deep(.v-data-table__tr.highlight) {
+  animation: highlight 1s forwards;
+}
+
+:deep(.v-data-table__tr.remove-highlight) {
+  animation: removeHighlight 1s forwards;
+}
+
+@keyframes highlight {
+  0% {
+    background-color: transparent;
+  }
+  100% {
+    background-color: #f5dfe3;
+  }
+}
+
+@keyframes removeHighlight {
+  0% {
+    background-color: #f5dfe3;
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.editable-table :deep(.v-data-table__td) {
+  cursor: pointer;
+  min-width: 200px;
+  position: relative;
+  padding: 0 8px;
+}
+
+.editable-table :deep(.v-data-table__td):hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.editable-table :deep(.v-data-table__td:has(.csv-column-disabled)) {
+  cursor: default;
+}
+
+.editable-table :deep(.v-data-table__td:has(.csv-column-disabled):hover) {
+  background-color: transparent;
+}
+</style>

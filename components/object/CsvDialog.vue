@@ -21,13 +21,14 @@
     max-width="1200"
     :title="t('importObjects.title')"
     :confirm-close="confirmCloseMessage || false"
+    content-class="csv-import-dialog overflow-hidden d-flex"
     fixed-footer
     x-large
-    scrollable
+    inner-class="csv-import-dialog-body"
     @update:model-value="updateView"
   >
     <template #default>
-      <div v-if="wizardStep === CsvImportWizardStep.MAPPING">
+      <div v-if="wizardStep === CsvImportWizardStep.MAPPING" class="csv-import-mapping-alerts">
         <BaseAlert
           v-if="items.length - invalidCount > 0"
           v-model="confirmImport"
@@ -53,7 +54,7 @@
           </span>
         </v-alert>
       </div>
-      <div v-if="wizardStep === CsvImportWizardStep.MAPPING">
+      <div v-if="wizardStep === CsvImportWizardStep.MAPPING" class="csv-import-mapping-content">
         <v-alert
           v-if="unmappedRequiredFields.length > 0 && globalSubType && selectedStatus"
           class="mb-4"
@@ -69,7 +70,7 @@
           </span>
         </v-alert>
         <div v-else class="mb-4"></div>
-        <div v-if="items.length" class="d-flex">
+        <div v-if="items.length" class="d-flex flex-wrap">
           <v-col cols="12" md="4">
             <v-select
               v-model="globalObjectType"
@@ -113,7 +114,7 @@
           </v-col>
         </div>
 
-        <v-card-text v-if="items.length" class="px-0 py-0 mt-2">
+        <v-card-text v-if="items.length" class="csv-import-table-card px-0 py-0 mt-2">
           <div class="table-wrapper">
             <ObjectCsvTable ref="csvTableRef" :headers="localHeaders" :items="items">
               <template #headers>
@@ -971,8 +972,75 @@ const handleImport = () => {
 }
 
 .table-wrapper {
-  overflow-x: auto;
-  min-width: 800px;
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+:global(.csv-import-dialog) {
+  height: calc(100vh - 48px);
+  max-height: calc(100vh - 48px);
+}
+
+:global(.csv-import-dialog > .v-card) {
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+:global(.csv-import-dialog-body) {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden !important;
+}
+
+.csv-import-mapping-alerts {
+  flex: 0 0 auto;
+}
+
+.csv-import-mapping-content {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.csv-import-mapping-content > :not(.csv-import-table-card) {
+  flex: 0 0 auto;
+}
+
+.csv-import-table-card {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.editable-table {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.editable-table :deep(.v-table__wrapper) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: scroll !important;
+  overflow-y: auto !important;
+  scrollbar-gutter: stable;
+}
+
+.editable-table :deep(.v-data-table-footer) {
+  flex: 0 0 auto;
+}
+
+.editable-table :deep(table) {
+  min-width: max-content;
 }
 
 .cell-content {
