@@ -190,7 +190,15 @@ export default defineComponent({
       default: undefined
     }
   },
-  emits: ['update:model-value', 'update:valid', 'create-dpia', 'link-dpia', 'update:object-meta-data', 'show-revision'],
+  emits: [
+    'update:model-value',
+    'update:valid',
+    'create-dpia',
+    'link-dpia',
+    'update:object-meta-data',
+    'show-revision',
+    'show-form-and-messages'
+  ],
   setup(props, { emit }) {
     const { t, locale } = useI18n();
     const { personReactiveFormActions, riskReactiveFormActions } = useVeoReactiveFormActions();
@@ -519,6 +527,28 @@ export default defineComponent({
       emit('show-revision', revision, isRevision);
     };
 
+    onMounted(() => {
+      if (props.defaultSideBarAction === 'messages') {
+        emit('show-form-and-messages');
+      }
+    });
+
+    const displayMessageAlert = (message: Message) => {
+      displayInfoMessage(t('hint', 1), message.text, {
+        timeout: 5000
+      });
+    };
+
+    // Show current messages when the messages tab gets closed
+    watch(
+      () => selectedSideBarAction.value,
+      (newAction, oldAction) => {
+        if (oldAction === 'messages' && newAction !== 'messages') {
+          messages.value.forEach(displayMessageAlert);
+        }
+      }
+    );
+
     // Show alerts for new messages only while the messages tab is closed
     watch(
       () => messages.value,
@@ -526,7 +556,7 @@ export default defineComponent({
         if (oldMessages && selectedSideBarAction.value !== 'messages') {
           for (const newMessage of newMessages) {
             if (!oldMessages.some((oldMessage) => oldMessage.key === newMessage.key)) {
-              displayInfoMessage(t('hint', 1), newMessage.text);
+              displayMessageAlert(newMessage);
             }
           }
         }
