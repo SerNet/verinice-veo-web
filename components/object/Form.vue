@@ -428,7 +428,10 @@ export default defineComponent({
       }
     );
 
-    const selectedSideBarAction = ref<SIDE_BAR_ACTIONS | undefined>(props.defaultSideBarAction);
+    const selectedSideBarAction = ref<SIDE_BAR_ACTIONS | undefined>(
+      props.defaultSideBarAction === 'messages' ? undefined : props.defaultSideBarAction
+    );
+    const defaultSideBarActionApplied = ref(props.defaultSideBarAction !== 'messages');
     const sideBarActions = computed<Record<SIDE_BAR_ACTIONS, SideBarAction>>(() => ({
       display: {
         icon: mdiEyeOutline,
@@ -527,11 +530,32 @@ export default defineComponent({
       emit('show-revision', revision, isRevision);
     };
 
-    onMounted(() => {
-      if (props.defaultSideBarAction === 'messages') {
-        emit('show-form-and-messages');
+    // Open the default messages tab only when there are messages to show.
+    watch(
+      () => messages.value,
+      (newMessages) => {
+        if (
+          !defaultSideBarActionApplied.value &&
+          props.defaultSideBarAction === 'messages' &&
+          newMessages.length > 0 &&
+          !selectedSideBarAction.value
+        ) {
+          selectedSideBarAction.value = 'messages';
+          defaultSideBarActionApplied.value = true;
+          emit('show-form-and-messages');
+        }
+      },
+      { immediate: true }
+    );
+
+    watch(
+      () => selectedSideBarAction.value,
+      (newAction, oldAction) => {
+        if (!defaultSideBarActionApplied.value && oldAction === undefined && newAction !== undefined) {
+          defaultSideBarActionApplied.value = true;
+        }
       }
-    });
+    );
 
     const displayMessageAlert = (message: Message) => {
       displayInfoMessage(t('hint', 1), message.text, {
