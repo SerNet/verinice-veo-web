@@ -98,9 +98,11 @@
             :domain-id="domainId"
             :additional-context="additionalContext"
             :has-actions-menu="true"
+            default-side-bar-action="messages"
             @show-revision="onShowRevision"
             @create-dpia="createDPIADialogVisible = true"
             @link-dpia="linkObjectDialogVisible = true"
+            @show-form-and-messages="handleShowFormAndMessages"
           >
             <template v-if="formDataIsRevision" #prepend-form>
               <BaseAlert
@@ -411,6 +413,10 @@ async function restoreObject() {
     upperFirst(t('objectNotRestored'))
   );
 }
+
+const handleShowFormAndMessages = () => {
+  onPageCollapsed([false, false]);
+};
 
 function updateObjectRelationships() {
   wipObjectData.value = omit(
