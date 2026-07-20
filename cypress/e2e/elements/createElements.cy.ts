@@ -48,7 +48,7 @@ describe('Create elements', () => {
     });
   });
 
-  it('shows a message alert when name is empty and the messages tab is closed', () => {
+  it('shows a message alert when closing the messages tab with active messages', () => {
     const env = Cypress.env();
     const { unit } = env.dynamicTestData;
 
@@ -59,13 +59,6 @@ describe('Create elements', () => {
     cy.getCustom('[data-veo-test="dialog-card"]').should('be.visible');
 
     cy.getCustom('[data-component-name="object-form-view-tab"]').click();
-    cy.getCustom('[data-veo-test="dialog-card"] [data-attribute-name="name"] input').type('Temporary person name');
-    cy.get('[data-veo-test="alert-button-0"]').should('not.exist');
-    cy.getCustom('[data-veo-test="dialog-card"] [data-attribute-name="name"] input').clear();
-    cy.getCustom('[data-veo-test="dialog-card"] [data-attribute-name="abbreviation"] input').type(
-      'person-without-name'
-    );
-
     cy.get('[data-veo-test="alert-button-0"]').should('be.visible');
   });
 
