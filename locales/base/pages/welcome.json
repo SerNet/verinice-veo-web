@@ -2,7 +2,7 @@
   "en": {
     "explanation": {
       "name": "Give your new unit a descriptive name and optionally a description.",
-      "profile": "Load demo data or an IT-Grundschutz profile, for example, or start with an empty unit.",
+      "profile": "Load demo data or a risk profile, for example, or start with an empty unit.",
       "domain": "Determine which domains (e.g. ISO, NIS-2 or GDPR) you want to work with in your unit.",
       "summary": "Check all the details and create your new unit - you will be redirected to the dashboard of your new unit."
     },
