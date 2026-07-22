@@ -22,7 +22,7 @@
     v-model:menu="menuOpen"
     data-component-name="veo-search"
     hide-details="auto"
-    :placeholder="t('search')"
+    :placeholder="hasSearchChips ? undefined : t('search')"
     :items="selectionItems"
     :item-title="(item) => translateItem(item)"
     :append-inner-icon="mdiMagnify"
@@ -32,27 +32,38 @@
     :density="density"
     auto-select-first="exact"
     :aria-label="t('search')"
-    class="veo-search"
+    :class="['veo-search', { 'veo-search--has-chips': hasSearchChips, 'veo-search--has-input': hasSearchInput }]"
     @click:clear="resetSearch"
     @click:append-inner="runSearch"
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
   >
     <template #prepend-inner>
-      <div v-for="chip in contextChips" :key="`context-${chip.searchFilter}`" class="d-flex">
-        <v-chip v-if="chip.searchFilter" size="small" color="red" class="mr-1">
-          <v-icon size="small" class="mr-1" :icon="mdiFilter" start />
-          {{ chip.searchFilter }}
-        </v-chip>
-        <v-chip v-if="chip.operator" size="large" class="mr-1" color="green">{{ chip.operator }}</v-chip>
-        <v-chip v-if="chip.term" size="large" class="mr-2" label variant="flat">{{ chip.term }}</v-chip>
-      </div>
-      <div v-for="s in search" :key="s.searchFilter" class="d-flex">
-        <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
-          <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start />
-          {{ translateItem(s.searchFilter) }}
-        </v-chip>
-        <v-chip v-if="s.operator" size="large" class="mr-1" color="green">{{ s.operator }}</v-chip>
-        <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ translateTerm(s) }}</v-chip>
+      <div
+        ref="searchChipScroll"
+        class="search-chip-scroll"
+        @wheel.prevent="onSearchChipWheel"
+        @pointerdown="onSearchChipPointerDown"
+        @pointermove="onSearchChipPointerMove"
+        @pointerup="onSearchChipPointerEnd"
+        @pointercancel="onSearchChipPointerEnd"
+        @pointerleave="onSearchChipPointerEnd"
+      >
+        <div v-for="chip in contextChips" :key="`context-${chip.searchFilter}`" class="d-flex flex-shrink-0">
+          <v-chip v-if="chip.searchFilter" size="small" color="red" class="mr-1">
+            <v-icon size="small" class="mr-1" :icon="mdiFilter" start />
+            {{ chip.searchFilter }}
+          </v-chip>
+          <v-chip v-if="chip.operator" size="large" class="mr-1" color="green">{{ chip.operator }}</v-chip>
+          <v-chip v-if="chip.term" size="large" class="mr-2" label variant="flat">{{ chip.term }}</v-chip>
+        </div>
+        <div v-for="s in search" :key="s.searchFilter" class="d-flex flex-shrink-0">
+          <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
+            <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start />
+            {{ translateItem(s.searchFilter) }}
+          </v-chip>
+          <v-chip v-if="s.operator" size="large" class="mr-1" color="green">{{ s.operator }}</v-chip>
+          <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ translateTerm(s) }}</v-chip>
+        </div>
       </div>
     </template>
     <template #append-inner>
@@ -226,6 +237,10 @@ function translateTerm(searchPart: VeoSearch) {
 const search = defineModel<VeoSearch[]>('search', {
   default: []
 });
+// Current value of v-combobox
+const select = ref();
+const hasSearchChips = computed(() => !!props.contextChips.length || !!search.value.length);
+const hasSearchInput = computed(() => !!select.value);
 
 // Initialize search from props
 if (props.initialSearch?.length) {
@@ -243,7 +258,41 @@ const selectionItems = computed(() => {
 });
 
 const searchInput = ref<HTMLInputElement>();
+const searchChipScroll = ref<HTMLElement>();
 const menuOpen = ref(false);
+const chipScrollDrag = reactive({
+  pointerId: undefined as number | undefined,
+  startScrollLeft: 0,
+  startX: 0
+});
+let searchChipResizeObserver: ResizeObserver | undefined;
+
+function updateSearchChipScrollWidth() {
+  const scrollElement = searchChipScroll.value;
+  const fieldElement = scrollElement?.closest('.v-field');
+  if (!(scrollElement instanceof HTMLElement) || !(fieldElement instanceof HTMLElement)) return;
+
+  const appendInnerWidth = fieldElement.querySelector<HTMLElement>('.v-field__append-inner')?.offsetWidth ?? 0;
+  const fieldInputMinWidth = hasSearchChips.value && !hasSearchInput.value ? 0 : 160;
+  const availableWidth = fieldElement.clientWidth - appendInnerWidth - fieldInputMinWidth;
+  scrollElement.style.setProperty('--search-chip-scroll-width', `${Math.max(0, availableWidth)}px`);
+}
+
+onMounted(() => {
+  nextTick(updateSearchChipScrollWidth);
+
+  const fieldElement = searchChipScroll.value?.closest('.v-field');
+  if (!(fieldElement instanceof HTMLElement)) return;
+
+  searchChipResizeObserver = new ResizeObserver(updateSearchChipScrollWidth);
+  searchChipResizeObserver.observe(fieldElement);
+});
+
+onBeforeUnmount(() => {
+  searchChipResizeObserver?.disconnect();
+});
+
+watch([search, () => props.contextChips, select], () => nextTick(updateSearchChipScrollWidth), { deep: true });
 
 function runSearch() {
   searchInput.value?.blur();
@@ -258,9 +307,6 @@ function resetSearch() {
 function openMenuOnNextTick() {
   nextTick(() => (menuOpen.value = true));
 }
-
-// Current value of v-combobox
-const select = ref();
 
 watch(select, () => {
   if (!select.value) return;
@@ -346,6 +392,40 @@ function handleDelete(event: KeyboardEvent) {
   search.value = normalizeSearch(oldSearch);
   openMenuOnNextTick();
 }
+
+function onSearchChipWheel(event: WheelEvent) {
+  const target = searchChipScroll.value;
+  if (!target) return;
+
+  target.scrollLeft += event.deltaX || event.deltaY;
+}
+
+function onSearchChipPointerDown(event: PointerEvent) {
+  const target = searchChipScroll.value;
+  if (!target || event.button !== 0) return;
+
+  chipScrollDrag.pointerId = event.pointerId;
+  chipScrollDrag.startScrollLeft = target.scrollLeft;
+  chipScrollDrag.startX = event.clientX;
+  target.setPointerCapture(event.pointerId);
+}
+
+function onSearchChipPointerMove(event: PointerEvent) {
+  const target = searchChipScroll.value;
+  if (!target || chipScrollDrag.pointerId !== event.pointerId) return;
+
+  target.scrollLeft = chipScrollDrag.startScrollLeft - (event.clientX - chipScrollDrag.startX);
+}
+
+function onSearchChipPointerEnd(event: PointerEvent) {
+  const target = searchChipScroll.value;
+  if (!target || chipScrollDrag.pointerId !== event.pointerId) return;
+
+  chipScrollDrag.pointerId = undefined;
+  if (target.hasPointerCapture(event.pointerId)) {
+    target.releasePointerCapture(event.pointerId);
+  }
+}
 </script>
 
 <i18n src="~/locales/base/components/search-bar.json"></i18n>
@@ -362,12 +442,59 @@ function handleDelete(event: KeyboardEvent) {
   }
 }
 .veo-search {
+  min-width: 0;
+
   :deep(.v-field) {
     background: #fff;
+    min-width: 0;
   }
 
   :deep(.v-theme--dark.v-field) {
     background: unset;
+  }
+
+  :deep(.v-field__prepend-inner) {
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: var(--search-chip-scroll-width, 100%);
+    overflow: hidden;
+  }
+
+  :deep(.v-field__field) {
+    flex: 1 1 160px;
+    min-width: 96px;
+  }
+
+  :deep(.v-field__append-inner) {
+    flex: 0 0 auto;
+  }
+
+  &.veo-search--has-chips:not(.veo-search--has-input) {
+    :deep(.v-field__field) {
+      flex: 0 0 0;
+      min-width: 0;
+    }
+  }
+}
+
+.search-chip-scroll {
+  display: flex;
+  align-items: center;
+  cursor: grab;
+  min-width: 0;
+  width: max-content;
+  max-width: var(--search-chip-scroll-width, 100%);
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  white-space: nowrap;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  &:active {
+    cursor: grabbing;
   }
 }
 </style>

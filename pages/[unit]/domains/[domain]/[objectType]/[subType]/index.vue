@@ -587,11 +587,27 @@ const hasCSVImport = ref(false);
 
 .toolbar-search {
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .toolbar-right {
   display: flex;
+  flex-shrink: 0;
   gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .toolbar-search {
+    order: 2;
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .toolbar-right {
+    order: 1;
+    width: 100%;
+  }
 }
 
 .actions-wrapper {
