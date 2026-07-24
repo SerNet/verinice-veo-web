@@ -272,7 +272,10 @@ function updateSearchChipScrollWidth() {
   const fieldElement = scrollElement?.closest('.v-field');
   if (!(scrollElement instanceof HTMLElement) || !(fieldElement instanceof HTMLElement)) return;
 
-  const appendInnerWidth = fieldElement.querySelector<HTMLElement>('.v-field__append-inner')?.offsetWidth ?? 0;
+  const appendInnerWidth = Math.max(
+    fieldElement.querySelector<HTMLElement>('.v-field__append-inner')?.offsetWidth ?? 0,
+    80
+  );
   const fieldInputMinWidth = hasSearchChips.value && !hasSearchInput.value ? 0 : 160;
   const availableWidth = fieldElement.clientWidth - appendInnerWidth - fieldInputMinWidth;
   scrollElement.style.setProperty('--search-chip-scroll-width', `${Math.max(0, availableWidth)}px`);
@@ -437,10 +440,12 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 
 :deep(.v-input__append) {
   cursor: pointer;
+
   :hover {
     color: rgb(var(--v-theme-primary));
   }
 }
+
 .veo-search {
   min-width: 0;
 
@@ -467,6 +472,7 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 
   :deep(.v-field__append-inner) {
     flex: 0 0 auto;
+    min-width: 72px;
   }
 
   &.veo-search--has-chips:not(.veo-search--has-input) {
