@@ -23,6 +23,7 @@
     :preselected-type="objectType"
     :preselected-sub-type="subType"
     :required-fields="requiredFields"
+    :selected-file="selectedFile"
     @back="backToEncoding"
     @navigate="handleNavigate"
     @close-csv-importer="emit('close')"
@@ -199,6 +200,7 @@ const isDragging = ref(false);
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const pendingFile = ref<File | null>(null);
 const selectedEncoding = ref('UTF-8');
+const selectedFile = ref<File | null>(null);
 
 let loadingId: symbol | undefined;
 
@@ -295,6 +297,9 @@ const handleEncodingConfirm = async () => {
 
   if (processedFile) {
     isCsvDialogOpen.value = true;
+    selectedFile.value = pendingFile.value;
+    pendingFile.value = null;
+    wizardStep.value = CsvUploadWizardStep.UPLOAD;
   }
 };
 

@@ -36,7 +36,8 @@
       "targetAttribute": "Target attribute",
       "enumListSelectFormat": "Please enter only valid, comma-separated values from the allowed options.",
       "requiredFields": "The required attribute \"{required}\" must be mapped."
-    }
+    },
+    "selectedFile": "Selected file:"
   },
   "de": {
     "importObjects": {
@@ -75,6 +76,7 @@
       "targetAttribute": "Zielattribut",
       "enumListSelectFormat": "Bitte geben Sie nur gültige, durch Komma getrennte Werte aus den erlaubten Optionen ein.",
       "requiredFields": "Das Pflichtattribut \"{required}\" muss zugeordnet sein."
-    }
+    },
+    "selectedFile": "Ausgewählte Datei:"
   }
 }

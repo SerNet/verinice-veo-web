@@ -70,6 +70,10 @@
           </span>
         </v-alert>
         <div v-else class="mb-4"></div>
+        <div>
+          {{ t('selectedFile') }}
+          <v-chip color="primary" variant="outlined">{{ selectedFile.name }}</v-chip>
+        </div>
         <div v-if="items.length" class="d-flex flex-wrap">
           <v-col cols="12" md="4">
             <v-select
@@ -282,13 +286,15 @@ interface Props {
   preselectedType?: string;
   preselectedSubType?: string;
   modelValue?: boolean;
+  selectedFile?: File;
 }
 
 const props = withDefaults(defineProps<Props>(), {
   requiredFields: () => ['name'],
   preselectedType: '',
   preselectedSubType: '',
-  modelValue: false
+  modelValue: false,
+  selectedFile: null
 });
 
 const emit = defineEmits<{
