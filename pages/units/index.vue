@@ -16,83 +16,94 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="unit-selection-page" sticky-footer>
-    <BaseContainer class="pt-1">
-      <h2 class="text-h5 d-flex flex-grow-1 justify-end" data-component-name="number-available-units">
-        <span><h1 style="font-size: initial">Units:&nbsp;</h1></span>
-        <span> {{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }} {{ t('active') }} </span>
-      </h2>
-    </BaseContainer>
-
+  <BasePage data-component-name="unit-selection-page" :title="globalT('breadcrumbs.units')" :has-title-bg="false">
     <BaseContainer>
-      <UnitUnits ref="unitsRef" />
-    </BaseContainer>
-    <!-- When no unit is available, hide the button here and show it in another place -->
-    <template #footer>
-      <div v-if="activeUnits !== 0" class="d-flex justify-end ga-3 flex-wrap my-6">
-        <v-tooltip location="start" :aria-label="t('importUnit')">
-          <template #activator="{ props }">
-            <span v-bind="props">
-              <v-btn
-                data-veo-test="import-unit-btn"
-                data-component-name="import-unit-btn"
-                to="/units/import"
-                :prepend-icon="mdiTrayArrowUp"
-                :disabled="maxUnitsExceeded || !canCreateUnit"
-                color="primary"
-                size="large"
-                :aria-label="t('importUnit')"
-              >
-                {{ t('importUnit') }}
-              </v-btn>
-            </span>
-          </template>
+      <div class="toolbar my-6">
+        <div class="toolbar-search">
+          <v-text-field
+            v-model="search"
+            data-component-name="unit-search"
+            :placeholder="t('search')"
+            :aria-label="t('search')"
+            :append-inner-icon="mdiMagnify"
+            variant="outlined"
+            density="compact"
+            hide-details
+            clearable
+          />
+        </div>
+        <div v-if="activeUnits !== 0" class="toolbar-right">
+          <v-tooltip location="start" :aria-label="t('importUnit')">
+            <template #activator="{ props }">
+              <span v-bind="props">
+                <v-btn
+                  data-veo-test="import-unit-btn"
+                  data-component-name="import-unit-btn"
+                  to="/units/import"
+                  :prepend-icon="mdiTrayArrowUp"
+                  :disabled="maxUnitsExceeded || !canCreateUnit"
+                  color="primary"
+                  flat
+                  :aria-label="t('importUnit')"
+                >
+                  {{ t('importUnit') }}
+                </v-btn>
+              </span>
+            </template>
 
-          <template #default>
-            <span v-if="maxUnitsExceeded">
-              {{ t('exceeded') }}
-            </span>
-            <span v-else-if="!canCreateUnit">
-              {{ t('permissions.missingPermissionTooltip') }}
-            </span>
-            <span v-else>
-              {{ t('importUnitHint') }}
-            </span>
-          </template>
-        </v-tooltip>
+            <template #default>
+              <span v-if="maxUnitsExceeded">
+                {{ t('exceeded') }}
+              </span>
+              <span v-else-if="!canCreateUnit">
+                {{ t('permissions.missingPermissionTooltip') }}
+              </span>
+              <span v-else>
+                {{ t('importUnitHint') }}
+              </span>
+            </template>
+          </v-tooltip>
 
-        <v-tooltip location="start" :aria-label="t('createUnit')">
-          <template #activator="{ props }">
-            <span v-bind="props">
-              <v-btn
-                data-veo-test="create-unit-btn"
-                data-component-name="create-unit-btn"
-                to="/units/create"
-                :prepend-icon="mdiPlus"
-                :disabled="maxUnitsExceeded || !canCreateUnit"
-                color="primary"
-                size="large"
-                :aria-label="t('createUnit')"
-              >
+          <v-tooltip location="start" :aria-label="t('createUnit')">
+            <template #activator="{ props }">
+              <span v-bind="props">
+                <v-btn
+                  data-veo-test="create-unit-btn"
+                  data-component-name="create-unit-btn"
+                  to="/units/create"
+                  :prepend-icon="mdiPlus"
+                  :disabled="maxUnitsExceeded || !canCreateUnit"
+                  color="primary"
+                  flat
+                  :aria-label="t('createUnit')"
+                >
+                  {{ t('createUnit') }}
+                </v-btn>
+              </span>
+            </template>
+
+            <template #default>
+              <span v-if="maxUnitsExceeded">
+                {{ t('exceeded') }}
+              </span>
+              <span v-else-if="!canCreateUnit">
+                {{ t('permissions.missingPermissionTooltip') }}
+              </span>
+              <span v-else>
                 {{ t('createUnit') }}
-              </v-btn>
-            </span>
-          </template>
-
-          <template #default>
-            <span v-if="maxUnitsExceeded">
-              {{ t('exceeded') }}
-            </span>
-            <span v-else-if="!canCreateUnit">
-              {{ t('permissions.missingPermissionTooltip') }}
-            </span>
-            <span v-else>
-              {{ t('createUnit') }}
-            </span>
-          </template>
-        </v-tooltip>
+              </span>
+            </template>
+          </v-tooltip>
+        </div>
       </div>
-    </template>
+
+      <div class="actions-wrapper mb-2" data-component-name="number-available-units">
+        <strong>Units:&nbsp;</strong>
+        <span>{{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }} {{ t('active') }}</span>
+      </div>
+
+      <UnitUnits ref="unitsRef" :search="search" />
+    </BaseContainer>
   </BasePage>
 </template>
 
@@ -101,7 +112,7 @@ export const ROUTE_NAME = 'units';
 </script>
 
 <script setup lang="ts">
-import { mdiPlus, mdiTrayArrowUp } from '@mdi/js';
+import { mdiMagnify, mdiPlus, mdiTrayArrowUp } from '@mdi/js';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
 
@@ -112,6 +123,7 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 
 const canCreateUnit = computed(() => ability.value.can('create', 'unit'));
 
+const search = ref('');
 const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | null>(null);
 const activeUnits = computed(() => unitsRef?.value?.activeUnits || 0);
 const maxUnitsExceeded = computed(() => (activeUnits?.value || 0) >= userSettings.value.maxUnits);
@@ -122,3 +134,42 @@ useHead({
 </script>
 
 <i18n src="~/locales/base/pages/units-index.json"></i18n>
+
+<style scoped lang="scss">
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.toolbar-search {
+  flex: 1;
+  min-width: 0;
+}
+
+.toolbar-right {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.actions-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 600px) {
+  .toolbar-search {
+    order: 2;
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .toolbar-right {
+    order: 1;
+    width: 100%;
+  }
+}
+</style>

@@ -23,8 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </v-col>
     </template>
 
-    <template v-if="units && !isLoadingUnits">
-      <BaseListItem v-for="unit in units" :key="unit.id" class="parent" :item="unit">
+    <template v-if="filteredUnits && !isLoadingUnits">
+      <BaseListItem v-for="unit in filteredUnits" :key="unit.id" class="parent" :item="unit">
         <template #details="{ item: u }">
           <Details
             :name="u.name"
@@ -156,6 +156,10 @@ import type { TInlineComponent } from '~/types/utils';
 
 const { t, locale } = useI18n();
 
+const unitProps = withDefaults(defineProps<{ search?: string }>(), {
+  search: ''
+});
+
 // Unit Data
 const { data: veoUnits, isLoading: isLoadingUnits, refetch: refetchUnits } = useUnits();
 const activeUnits = computed(() => veoUnits.value?.length || null);
@@ -176,6 +180,16 @@ const units = computed({
   set(newValue) {
     newUnits.value = newValue;
   }
+});
+const filteredUnits = computed(() => {
+  const searchTerm = unitProps.search.trim().toLocaleLowerCase(locale.value);
+  if (!searchTerm) return units.value;
+
+  return units.value.filter(
+    (unit) =>
+      unit.name.toLocaleLowerCase(locale.value).includes(searchTerm) ||
+      unit.description?.toLocaleLowerCase(locale.value).includes(searchTerm)
+  );
 });
 // Unit Actions
 const unitToEditId = ref<undefined | string>(undefined);

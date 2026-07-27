@@ -10,7 +10,8 @@
     "of": "of",
     "permissions": {
       "missingPermissionTooltip": "Missing permission for this action."
-    }
+    },
+    "search": "Search"
   },
   "de": {
     "active": "Aktiv",
@@ -23,6 +24,7 @@
     "of": "von",
     "permissions": {
       "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
-    }
+    },
+    "search": "Suche"
   }
 }
