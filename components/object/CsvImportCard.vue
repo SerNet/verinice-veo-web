@@ -23,6 +23,7 @@
     :preselected-type="objectType"
     :preselected-sub-type="subType"
     :required-fields="requiredFields"
+    @back="backToEncoding"
     @navigate="handleNavigate"
     @close-csv-importer="emit('close')"
   />
@@ -292,8 +293,6 @@ const handleEncodingConfirm = async () => {
 
   const processedFile = await processFile(pendingFile.value, selectedEncoding.value);
 
-  pendingFile.value = null;
-
   if (processedFile) {
     isCsvDialogOpen.value = true;
   }
@@ -394,6 +393,11 @@ function closeDialog() {
   return true;
 }
 
+function backToEncoding() {
+  isCsvDialogOpen.value = false;
+  wizardStep.value = CsvUploadWizardStep.ENCODING;
+}
+
 enum FILTER_SOURCE {
   QUERY,
   PARAMS
@@ -440,8 +444,8 @@ const filter = computed(() =>
   color: #555555 !important;
 }
 
-.custom-file-upload {
-  padding: 0;
+.custom-file-upload :deep(.v-file-upload-dropzone) {
+  border: none;
 }
 
 .csv-wizard-card {
@@ -455,6 +459,8 @@ const filter = computed(() =>
   align-items: center;
   justify-content: center;
   padding: 24px;
+  border: 2px dashed rgb(var(--v-theme-accent));
+  border-radius: 8px;
 }
 
 .encoding-step__title {
@@ -468,8 +474,8 @@ const filter = computed(() =>
   display: flex;
   flex-wrap: wrap;
   gap: 32px;
-  align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 .encoding-step__change-file {

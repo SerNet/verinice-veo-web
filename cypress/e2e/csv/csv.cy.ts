@@ -96,6 +96,10 @@ describe('CSV Import', () => {
     cy.contains('.v-data-table__tbody tr', importedObjectName).should('be.visible');
   }
 
+  function closeImportResult() {
+    cy.get('[data-veo-test="close-import-result-button"]').should('be.visible').click();
+  }
+
   it('should open csv import dialog and download csv-file', () => {
     openCsvImportDialog();
     downloadCsvTemplate().then((fileName) => {
@@ -103,13 +107,17 @@ describe('CSV Import', () => {
     });
   });
 
-  it('should import csv-file', () => {
+  it('should import csv-file  and allow reopening the importer', () => {
     openCsvImportDialog();
     uploadCsv(csvFileName);
     verifyObjectType();
     selectStatus();
     mapColumns();
     importCsv();
+    closeImportResult();
+
     verifyImportedObject(importedObjectName);
+
+    openCsvImportDialog();
   });
 });

@@ -624,7 +624,7 @@ const hasCSVImport = ref(false);
 
 /* Drop Zone Styles */
 .drop-zone {
-  border: 2px dashed #ccc;
+  border: 2px dashed rgb(var(--v-theme-accent));
   border-radius: 8px;
   transition: all 0.3s ease;
   padding: 20px;

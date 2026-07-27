@@ -16,7 +16,7 @@
 -->
 <template>
   <BaseDialog
-    v-if="items?.length"
+    v-if="items"
     v-model="isOpen"
     max-width="1200"
     :title="t('importObjects.title')"
@@ -208,11 +208,7 @@
       </div>
     </template>
     <template #dialog-options>
-      <v-btn
-        v-if="wizardStep === CsvImportWizardStep.MAPPING"
-        variant="text"
-        @click="emit('update:model-value', false)"
-      >
+      <v-btn v-if="wizardStep === CsvImportWizardStep.MAPPING" variant="text" @click="finishImport">
         {{ t('global.button.cancel') }}
       </v-btn>
       <v-btn
@@ -223,10 +219,13 @@
       >
         {{ t('global.button.cancel') }}
       </v-btn>
-      <v-btn v-else color="primary" variant="flat" @click="finishImport">
+      <v-btn v-else color="primary" variant="flat" data-veo-test="close-import-result-button" @click="finishImport">
         {{ t('global.button.close') }}
       </v-btn>
       <v-spacer />
+      <v-btn v-if="wizardStep === CsvImportWizardStep.MAPPING" variant="text" @click="emit('back')">
+        {{ t('global.button.back') }}
+      </v-btn>
       <v-btn
         v-if="wizardStep === CsvImportWizardStep.MAPPING && items.length"
         variant="text"
@@ -293,9 +292,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  (event: 'close-csv-importer'): void;
+  (event: 'close-csv-importer' | 'back'): void;
   (event: 'navigate', objectType: string, subType: string): void;
-  (event: 'update:model-value', value: boolean): void;
 }>();
 
 const isOpen = toRef(props.modelValue);
@@ -308,7 +306,6 @@ enum CsvImportWizardStep {
 
 /** Dependencies */
 const { t, locale } = useI18n();
-const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const route = useRoute();
 const { data: currentDomain } = useCurrentDomain();
 const { createLink } = useCreateLink();
@@ -665,7 +662,6 @@ const onSubmit = async (data: any[], originalData: any[]) => {
 
   if (failedImports.value.length > 0 && importedItems.value === 0) {
     setImportResult(VeoAlertType.ERROR, t('importObjects.importFailedTitle'), t('importObjects.importFailedMessage'));
-    displayErrorMessage(importResultTitle.value, importResultMessage.value);
   } else if (failedImports.value.length > 0) {
     setImportResult(
       VeoAlertType.WARNING,
@@ -676,7 +672,6 @@ const onSubmit = async (data: any[], originalData: any[]) => {
         failed: failedImports.value.length
       })
     );
-    displayErrorMessage(importResultTitle.value, importResultMessage.value);
   } else if (isCancelled.value) {
     setImportResult(
       VeoAlertType.SUCCESS,
@@ -687,7 +682,6 @@ const onSubmit = async (data: any[], originalData: any[]) => {
         remaining: totalItems.value - importedItems.value - failedImports.value.length
       })
     );
-    displaySuccessMessage(importResultTitle.value, undefined, importResultMessage.value);
   } else {
     setImportResult(
       VeoAlertType.SUCCESS,
@@ -697,7 +691,6 @@ const onSubmit = async (data: any[], originalData: any[]) => {
         total: totalItems.value
       })
     );
-    displaySuccessMessage(importResultTitle.value, undefined, importResultMessage.value);
   }
 
   wizardStep.value = CsvImportWizardStep.RESULT;
@@ -812,8 +805,8 @@ const finishImport = () => {
   if (importedItems.value > 0) {
     emit('navigate', globalObjectType.value, globalSubType.value);
   }
+
   emit('close-csv-importer');
-  emit('update:model-value', false);
 };
 
 const updateMapping = (key: string, value: string | undefined) => {
@@ -829,10 +822,9 @@ const onColumnImportToggle = (header: string, enabled: boolean) => {
 };
 
 const updateView = (value: boolean) => {
-  if (!value && importedItems.value > 0) {
-    emit('navigate', globalObjectType.value, globalSubType.value);
+  if (!value) {
+    finishImport();
   }
-  emit('update:model-value', value);
 };
 
 function importButtons(): IAlertButton[] {
