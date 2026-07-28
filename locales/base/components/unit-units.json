@@ -8,6 +8,7 @@
     "createdBy": "Created by",
     "createdAt": "Created at",
     "noDescription": "No description available",
+    "noSearchResults": "No units were found for \"{search}\".",
     "permissions": {
       "missingPermissionTooltip": "Missing permission for this action."
     },
@@ -30,6 +31,7 @@
     "createdBy": "Erstellt von",
     "createdAt": "Erstellt am",
     "noDescription": "Keine Beschreibung vorhanden",
+    "noSearchResults": "Für „{search}“ wurden keine Units gefunden.",
     "permissions": {
       "missingPermissionTooltip": "Fehlende Berechtigung für diese Aktion."
     },
