@@ -17,7 +17,7 @@
 -->
 <template>
   <BasePage data-component-name="unit-selection-page" :title="globalT('breadcrumbs.units')" :has-title-bg="false">
-    <div class="toolbar my-4">
+    <div v-if="activeUnits > 0" class="toolbar my-4">
       <div class="toolbar-search">
         <v-text-field
           v-model="search"
@@ -31,7 +31,7 @@
           clearable
         />
       </div>
-      <div v-if="activeUnits !== 0" class="toolbar-right">
+      <div class="toolbar-right">
         <v-tooltip location="start" :aria-label="t('importUnit')">
           <template #activator="{ props }">
             <span v-bind="props">
