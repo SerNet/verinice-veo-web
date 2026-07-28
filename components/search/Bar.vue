@@ -48,21 +48,55 @@
         @pointercancel="onSearchChipPointerEnd"
         @pointerleave="onSearchChipPointerEnd"
       >
-        <div v-for="chip in contextChips" :key="`context-${chip.searchFilter}`" class="d-flex flex-shrink-0">
-          <v-chip v-if="chip.searchFilter" size="small" color="red" class="mr-1">
-            <v-icon size="small" class="mr-1" :icon="mdiFilter" start />
-            {{ chip.searchFilter }}
+        <div
+          v-for="chip in contextChips"
+          :key="`context-${chip.searchFilter}`"
+          class="search-chip-group"
+          @pointerdown.stop
+        >
+          <v-chip
+            v-if="chip.term"
+            closable
+            color="accent"
+            variant="flat"
+            @click:close="emit('removeContextChip', chip)"
+          >
+            {{ chip.term }}
           </v-chip>
-          <v-chip v-if="chip.operator" size="large" class="mr-1" color="green">{{ chip.operator }}</v-chip>
-          <v-chip v-if="chip.term" size="large" class="mr-2" label variant="flat">{{ chip.term }}</v-chip>
         </div>
-        <div v-for="s in search" :key="s.searchFilter" class="d-flex flex-shrink-0">
-          <v-chip v-if="s.searchFilter" size="small" color="red" class="mr-1">
-            <v-icon v-if="s.searchFilter" size="small" class="mr-1" :icon="mdiFilter" start />
+        <div v-for="(s, index) in search" :key="s.searchFilter" class="search-chip-group" @pointerdown.stop>
+          <v-chip
+            v-if="s.searchFilter"
+            :closable="!s.operator && !s.term"
+            :class="s.operator || s.term ? 'search-chip-start' : undefined"
+            color="accent"
+            label
+            variant="flat"
+            @click:close="removeSearchGroup(index)"
+          >
             {{ translateItem(s.searchFilter) }}
           </v-chip>
-          <v-chip v-if="s.operator" size="large" class="mr-1" color="green">{{ s.operator }}</v-chip>
-          <v-chip v-if="s.term" size="large" class="mr-2" label variant="flat">{{ translateTerm(s) }}</v-chip>
+          <v-chip
+            v-if="s.operator"
+            :closable="!s.term"
+            :class="s.term ? 'search-chip-middle' : 'search-chip-end'"
+            color="accent"
+            label
+            variant="flat"
+            @click:close="removeSearchGroup(index)"
+          >
+            {{ s.operator }}
+          </v-chip>
+          <v-chip
+            v-if="s.term"
+            class="search-chip-end"
+            closable
+            color="accent"
+            variant="flat"
+            @click:close="removeSearchGroup(index)"
+          >
+            {{ translateTerm(s) }}
+          </v-chip>
         </div>
       </div>
     </template>
@@ -73,7 +107,7 @@
 </template>
 
 <script setup lang="ts">
-import { mdiCloseCircle, mdiFilter, mdiMagnify } from '@mdi/js';
+import { mdiCloseCircle, mdiMagnify } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 import type { VeoSearch, VeoSearchFilter, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
@@ -116,6 +150,9 @@ const props = withDefaults(
     contextChips: () => []
   }
 );
+const emit = defineEmits<{
+  removeContextChip: [chip: VeoSearch];
+}>();
 
 const { t, te } = useI18n();
 const { t: globalT, te: globalTe } = useI18n({ useScope: 'global' });
@@ -307,6 +344,10 @@ function resetSearch() {
   });
 }
 
+function removeSearchGroup(index: number) {
+  search.value = search.value.filter((_, searchIndex) => searchIndex !== index);
+}
+
 function openMenuOnNextTick() {
   nextTick(() => (menuOpen.value = true));
 }
@@ -486,6 +527,7 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 .search-chip-scroll {
   display: flex;
   align-items: center;
+  gap: 8px;
   cursor: grab;
   min-width: 0;
   width: max-content;
@@ -502,5 +544,23 @@ function onSearchChipPointerEnd(event: PointerEvent) {
   &:active {
     cursor: grabbing;
   }
+}
+
+.search-chip-start {
+  border-radius: 16px 0 0 16px;
+}
+
+.search-chip-group {
+  display: flex;
+  flex-shrink: 0;
+  gap: 4px;
+}
+
+.search-chip-middle {
+  border-radius: 0;
+}
+
+.search-chip-end {
+  border-radius: 0 16px 16px 0;
 }
 </style>
