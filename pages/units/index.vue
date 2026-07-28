@@ -17,93 +17,91 @@
 -->
 <template>
   <BasePage data-component-name="unit-selection-page" :title="globalT('breadcrumbs.units')" :has-title-bg="false">
-    <BaseContainer>
-      <div class="toolbar my-6">
-        <div class="toolbar-search">
-          <v-text-field
-            v-model="search"
-            data-component-name="unit-search"
-            :placeholder="t('search')"
-            :aria-label="t('search')"
-            :append-inner-icon="mdiMagnify"
-            variant="outlined"
-            density="compact"
-            hide-details
-            clearable
-          />
-        </div>
-        <div v-if="activeUnits !== 0" class="toolbar-right">
-          <v-tooltip location="start" :aria-label="t('importUnit')">
-            <template #activator="{ props }">
-              <span v-bind="props">
-                <v-btn
-                  data-veo-test="import-unit-btn"
-                  data-component-name="import-unit-btn"
-                  to="/units/import"
-                  :prepend-icon="mdiTrayArrowUp"
-                  :disabled="maxUnitsExceeded || !canCreateUnit"
-                  color="primary"
-                  flat
-                  :aria-label="t('importUnit')"
-                >
-                  {{ t('importUnit') }}
-                </v-btn>
-              </span>
-            </template>
+    <div class="toolbar my-4">
+      <div class="toolbar-search">
+        <v-text-field
+          v-model="search"
+          data-component-name="unit-search"
+          :placeholder="t('search')"
+          :aria-label="t('search')"
+          :append-inner-icon="mdiMagnify"
+          variant="outlined"
+          density="compact"
+          hide-details
+          clearable
+        />
+      </div>
+      <div v-if="activeUnits !== 0" class="toolbar-right">
+        <v-tooltip location="start" :aria-label="t('importUnit')">
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                data-veo-test="import-unit-btn"
+                data-component-name="import-unit-btn"
+                to="/units/import"
+                :prepend-icon="mdiTrayArrowUp"
+                :disabled="maxUnitsExceeded || !canCreateUnit"
+                color="primary"
+                flat
+                :aria-label="t('importUnit')"
+              >
+                {{ t('importUnit') }}
+              </v-btn>
+            </span>
+          </template>
 
-            <template #default>
-              <span v-if="maxUnitsExceeded">
-                {{ t('exceeded') }}
-              </span>
-              <span v-else-if="!canCreateUnit">
-                {{ t('permissions.missingPermissionTooltip') }}
-              </span>
-              <span v-else>
-                {{ t('importUnitHint') }}
-              </span>
-            </template>
-          </v-tooltip>
+          <template #default>
+            <span v-if="maxUnitsExceeded">
+              {{ t('exceeded') }}
+            </span>
+            <span v-else-if="!canCreateUnit">
+              {{ t('permissions.missingPermissionTooltip') }}
+            </span>
+            <span v-else>
+              {{ t('importUnitHint') }}
+            </span>
+          </template>
+        </v-tooltip>
 
-          <v-tooltip location="start" :aria-label="t('createUnit')">
-            <template #activator="{ props }">
-              <span v-bind="props">
-                <v-btn
-                  data-veo-test="create-unit-btn"
-                  data-component-name="create-unit-btn"
-                  to="/units/create"
-                  :prepend-icon="mdiPlus"
-                  :disabled="maxUnitsExceeded || !canCreateUnit"
-                  color="primary"
-                  flat
-                  :aria-label="t('createUnit')"
-                >
-                  {{ t('createUnit') }}
-                </v-btn>
-              </span>
-            </template>
-
-            <template #default>
-              <span v-if="maxUnitsExceeded">
-                {{ t('exceeded') }}
-              </span>
-              <span v-else-if="!canCreateUnit">
-                {{ t('permissions.missingPermissionTooltip') }}
-              </span>
-              <span v-else>
+        <v-tooltip location="start" :aria-label="t('createUnit')">
+          <template #activator="{ props }">
+            <span v-bind="props">
+              <v-btn
+                data-veo-test="create-unit-btn"
+                data-component-name="create-unit-btn"
+                to="/units/create"
+                :prepend-icon="mdiPlus"
+                :disabled="maxUnitsExceeded || !canCreateUnit"
+                color="primary"
+                flat
+                :aria-label="t('createUnit')"
+              >
                 {{ t('createUnit') }}
-              </span>
-            </template>
-          </v-tooltip>
-        </div>
-      </div>
+              </v-btn>
+            </span>
+          </template>
 
-      <div class="actions-wrapper mb-2" data-component-name="number-available-units">
-        <strong>Units:&nbsp;</strong>
-        <span>{{ activeUnits }} {{ t('of') }} {{ userSettings.maxUnits }} {{ t('active') }}</span>
+          <template #default>
+            <span v-if="maxUnitsExceeded">
+              {{ t('exceeded') }}
+            </span>
+            <span v-else-if="!canCreateUnit">
+              {{ t('permissions.missingPermissionTooltip') }}
+            </span>
+            <span v-else>
+              {{ t('createUnit') }}
+            </span>
+          </template>
+        </v-tooltip>
       </div>
+    </div>
 
-      <UnitUnits ref="unitsRef" :search="search" />
-    </BaseContainer>
+    <div class="actions-wrapper mb-2" data-component-name="number-available-units">
+      <strong>Units:&nbsp;</strong>
+      <span>{{ filteredUnitsCount }} {{ t('of') }} {{ userSettings.maxUnits }} {{ t('active') }}</span>
+    </div>
+
+    <UnitUnits ref="unitsRef" :search="search" />
   </BasePage>
 </template>
 
@@ -123,9 +121,14 @@ const { t: globalT } = useI18n({ useScope: 'global' });
 
 const canCreateUnit = computed(() => ability.value.can('create', 'unit'));
 
-const search = ref('');
-const unitsRef = ref<{ createUnit(): () => void; activeUnits: number | null } | null>(null);
+const search = ref<string | null>('');
+const unitsRef = ref<{
+  createUnit(): () => void;
+  activeUnits: number | null;
+  filteredUnitsCount: number;
+} | null>(null);
 const activeUnits = computed(() => unitsRef?.value?.activeUnits || 0);
+const filteredUnitsCount = computed(() => unitsRef.value?.filteredUnitsCount ?? 0);
 const maxUnitsExceeded = computed(() => (activeUnits?.value || 0) >= userSettings.value.maxUnits);
 
 useHead({
