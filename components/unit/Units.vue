@@ -53,6 +53,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       </BaseListItem>
     </template>
 
+    <v-col v-if="normalizedSearch && filteredUnits.length === 0 && units.length > 0">
+      <p class="py-16 text-center">
+        {{ t('noSearchResults', { search: unitProps.search }) }}
+      </p>
+    </v-col>
+
     <template v-if="!units || units.length === 0">
       <div class="py-16 text-center w-50">
         <h3 class="text-h3">
@@ -156,7 +162,7 @@ import type { TInlineComponent } from '~/types/utils';
 
 const { t, locale } = useI18n();
 
-const unitProps = withDefaults(defineProps<{ search?: string }>(), {
+const unitProps = withDefaults(defineProps<{ search?: string | null }>(), {
   search: ''
 });
 
@@ -181,8 +187,9 @@ const units = computed({
     newUnits.value = newValue;
   }
 });
+const normalizedSearch = computed(() => (unitProps.search ?? '').trim());
 const filteredUnits = computed(() => {
-  const searchTerm = unitProps.search.trim().toLocaleLowerCase(locale.value);
+  const searchTerm = normalizedSearch.value.toLocaleLowerCase(locale.value);
   if (!searchTerm) return units.value;
 
   return units.value.filter(
@@ -235,7 +242,8 @@ function compileMetaData({ metaData, unitId }) {
 
 defineExpose({
   createUnit,
-  activeUnits
+  activeUnits,
+  filteredUnitsCount: computed(() => filteredUnits.value.length)
 });
 
 /* ++++++++++++++++++++++++++++++++++++++++++++++++ */
