@@ -46,7 +46,7 @@ export function createObject({
   dynamicTestDataKey = 'testObject'
 } = {}) {
   const owner = {
-    targetUri: `https://api.develop.verinice.com/veo/units/${unitId}`
+    targetUri: `https://api.dev.eu.verinice.cloud/veo/units/${unitId}`
   };
 
   return cy

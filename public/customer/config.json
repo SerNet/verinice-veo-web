@@ -47,8 +47,8 @@
         "en": "Security policy"
       },
       "link": {
-        "de": "https://veo-web.staging.verinice.com/security",
-        "en": "https://veo-web.staging.verinice.com/security"
+        "de": "https://web.stage.eu.verinice.cloud/security",
+        "en": "https://web.stage.eu.verinice.cloud/security"
       }
     }
   ]

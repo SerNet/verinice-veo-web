@@ -67,8 +67,8 @@
               <v-card-text class="mt-6 text-justify">
                 <p>
                   Zur Verdeutlichung: Sie dürfen nur
-                  <strong>veo-web.verinice.com</strong>, <strong>api.verinice.com</strong>,
-                  <strong>auth.verinice.com</strong>,
+                  <strong>web.eu.verinice.cloud</strong>, <strong>api.eu.verinice.cloud</strong>,
+                  <strong>auth.eu.verinice.cloud</strong>,
                   <strong>account.verinice.com</strong>
                   testen und nichts anderes.
                 </p>
@@ -196,8 +196,8 @@
               <v-card-text class="mt-6 text-justify">
                 <p>
                   To be clear, you're only allowed to test
-                  <strong>veo-web.verinice.com</strong>, <strong>api.verinice.com</strong>,
-                  <strong>auth.verinice.com</strong>,
+                  <strong>web.eu.verinice.cloud</strong>, <strong>api.eu.verinice.cloud</strong>,
+                  <strong>auth.eu.verinice.cloud</strong>,
                   <strong>account.verinice.com</strong>
                   and nothing else.
                 </p>

@@ -94,7 +94,7 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 | `VEO_OIDC_CLIENT` | `veo-oidcclient-example` | Client name you use for this webapp in your OIDC provider. |
 | `VEO_ACCOUNT_PATH` | `https://account.veo.example` | URL under which the user can edit his/her subscription. |
 | `VEO_OIDC_ACCOUNT_APPLICATION` | `https://auth.veo.example/auth/realms/veo-oidcrealm-example/account` | URL under which the user can self manage his/her account. |
-| `VEO_DOCUMENTATION_URL` | `https://veo-docs.develop.verinice.com` | URL under which the user can access the official documentation for verinice.veo. |
+| `VEO_DOCUMENTATION_URL` | `https://docs.dev.eu.verinice.cloud` | URL under which the user can access the official documentation for verinice.veo. |
 | `VEO_DEBUG` | `false` | While not exposing any critical information, this variable should only be set to true when developing. |
 | `VEO_DEBUG_CACHE` | `false` | If set to true, additional logging output gets set regarding caching and retrieving of data. |
 | `VEO_HIDE_SERNET_REFERENCES` | `false` | If set to true, logos, URLs, and images related to SerNet will be disabled. |
@@ -102,17 +102,17 @@ For detailed explanation on how things work, checkout the [Nuxt.js docs](https:/
 Required env variables (prod preset):
 
 ```
-VEO_DEFAULT_API_URL=https://api.verinice.com/
-VEO_FORMS_API_URL=https://api.verinice.com/forms
-VEO_HISTORY_API_URL=https://api.verinice.com/history
-VEO_REPORTING_API_URL=https://api.verinice.com/reporting
-VEO_ACCOUNTS_API_URL=https://api.verinice.com/accounts
-VEO_OIDC_URL=https://auth.verinice.com/auth
+VEO_DEFAULT_API_URL=https://api.eu.verinice.cloud/veo
+VEO_FORMS_API_URL=https://api.eu.verinice.cloud/forms
+VEO_HISTORY_API_URL=https://api.eu.verinice.cloud/history
+VEO_REPORTING_API_URL=https://api.eu.verinice.cloud/reporting
+VEO_ACCOUNTS_API_URL=https://api.eu.verinice.cloud/accounts
+VEO_OIDC_URL=https://auth.eu.verinice.cloud/auth
 VEO_OIDC_REALM=verinice-veo
 VEO_OIDC_CLIENT=veo-prod
 VEO_ACCOUNT_PATH=https://account.verinice.com
-VEO_OIDC_ACCOUNT_APPLICATION=https://auth.verinice.com/auth/realms/verinice-veo/account
-VEO_DOCUMENTATION_URL=https://veo-docs.develop.verinice.com
+VEO_OIDC_ACCOUNT_APPLICATION=https://auth.eu.verinice.cloud/auth/realms/verinice-veo/account
+VEO_DOCUMENTATION_URL=https://docs.eu.verinice.cloud
 ```
 
 ## Technical Debt
