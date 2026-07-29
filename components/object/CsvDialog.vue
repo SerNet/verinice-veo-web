@@ -144,9 +144,9 @@
                       v-model:search="headerSearchTerms[header]"
                       :model-value="getSelectedOption(header)"
                       :items="getAvailableOptions(header)"
-                      density="compact"
+                      density="comfortable"
                       :label="t('importObjects.targetAttribute')"
-                      variant="outlined"
+                      variant="filled"
                       clearable
                       data-veo-test="column-mapping-select"
                       :placeholder="t('importObjects.selectMapping')"
