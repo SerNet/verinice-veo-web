@@ -73,7 +73,7 @@
     "@nuxt/content": "3.15.2",
     "@nuxt/eslint-config": "1.16.0",
     "@nuxt/fonts": "0.14.0",
-    "@nuxt/test-utils": "4.0.3",
+    "@nuxt/test-utils": "4.1.0",
     "@types/hash-sum": "1.0.2",
     "@types/intro.js": "5.1.5",
     "@types/js-cookie": "3.0.6",
