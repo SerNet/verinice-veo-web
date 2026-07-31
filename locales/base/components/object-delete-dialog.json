@@ -1,12 +1,16 @@
 {
   "en": {
-    "singleItem": "Do you really want to delete the object \"{displayName}\"?",
+    "singleItem": "Do you really want to delete the object \"{displayName}\"? The object will be permanently deleted in all of the following domains:",
     "multipleItems": "Do you really want to delete the selected objects?",
+    "loadingDomains": "Loading associated domains...",
+    "loadDomainsFailed": "The associated domains could not be loaded. The object cannot be deleted.",
     "headline": "Delete object"
   },
   "de": {
-    "singleItem": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen?",
+    "singleItem": "Möchten Sie das Objekt \"{displayName}\" wirklich löschen? Das Objekt wird permanent in allen folgenden Domänen gelöscht:",
     "multipleItems": "Möchten Sie die gewählten Objekte wirklich löschen?",
+    "loadingDomains": "Zugeordnete Domänen werden geladen...",
+    "loadDomainsFailed": "Die zugeordneten Domänen konnten nicht geladen werden. Das Objekt kann nicht gelöscht werden.",
     "headline": "Objekt löschen"
   }
 }

@@ -21,6 +21,21 @@
       <span class="text-body-1">
         {{ props.items.length === 1 ? t('singleItem', { displayName }) : t('multipleItems') }}
       </span>
+      <v-progress-linear
+        v-if="isLoadingDomainInformation"
+        class="mt-4"
+        indeterminate
+        color="primary"
+        :aria-label="t('loadingDomains')"
+      />
+      <v-alert v-else-if="isDomainInformationUnavailable" class="mt-4" type="error" variant="tonal">
+        {{ t('loadDomainsFailed') }}
+      </v-alert>
+      <ul v-else-if="isSingleItem" class="mt-4 mb-0 pl-8" data-veo-test="object-delete-associated-domains">
+        <li v-for="domain in associatedDomains" :key="domain.id">
+          {{ domain.name }}
+        </li>
+      </ul>
       <div v-if="deletingMultiple" class="progress-container">
         <v-progress-linear :model-value="progress" height="6" color="primary" :aria-label="`${progress}`" />
         <span class="progress-text">{{ progress }}%</span>
@@ -34,7 +49,7 @@
       <v-btn
         variant="text"
         color="primary"
-        :disabled="!deleteButtonEnabled || !canManageUnitContent || deleting"
+        :disabled="!deleteButtonEnabled || !canManageUnitContent || deleting || !isDomainInformationReady"
         @click="deleteObjects"
       >
         {{ globalT('global.button.delete') }}
@@ -45,6 +60,7 @@
 
 <script setup lang="ts">
 import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery } from '~/composables/api/utils/query';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { IVeoEntity } from '~/types/VeoTypes';
@@ -54,8 +70,7 @@ const props = withDefaults(
     items?: IVeoEntity[];
   }>(),
   {
-    item: undefined,
-    items: undefined
+    items: () => []
   }
 );
 
@@ -70,6 +85,7 @@ const { t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
 const route = useRoute();
 const { ability, subject } = useVeoPermissions();
+const { data: currentUnit, isLoading: isLoadingUnit, isError: isUnitError } = useUnit();
 const { mutateAsync: doDelete } = useMutation(objectQueryDefinitions.mutations.deleteObject);
 const { mutateAsync: deleteWithoutInvalidating } = useMutation(
   objectQueryDefinitions.mutations.deleteObject,
@@ -78,8 +94,42 @@ const { mutateAsync: deleteWithoutInvalidating } = useMutation(
 );
 
 const displayName = computed(() => props.items[0]?.displayName ?? '');
+const isSingleItem = computed(() => props.items.length === 1);
 const deleteButtonEnabled = computed(() => !!props.items?.length);
 const canManageUnitContent = computed(() => ability.value.can('manage', subject('units', { id: route.params.unit })));
+
+const legacyObjectQueryParameters = computed(() => ({
+  endpoint: props.items[0] ? VeoElementTypePlurals[props.items[0].type] : '',
+  id: props.items[0]?.id ?? ''
+}));
+const {
+  data: legacyObject,
+  isLoading: isLoadingLegacyObject,
+  isError: isLegacyObjectError
+} = useQuery(objectQueryDefinitions.queries.fetchLegacy, legacyObjectQueryParameters, {
+  enabled: computed(() => isSingleItem.value && !!legacyObjectQueryParameters.value.endpoint)
+});
+const associatedDomains = computed(() =>
+  Object.keys(legacyObject.value?.domains ?? {}).map((domainId) => {
+    const domain = currentUnit.value?.domains.find(({ id }) => id === domainId);
+    return { id: domainId, name: domain?.name || domain?.abbreviation || domainId };
+  })
+);
+const isLoadingDomainInformation = computed(
+  () => isSingleItem.value && (isLoadingLegacyObject.value || isLoadingUnit.value)
+);
+const isDomainInformationUnavailable = computed(
+  () =>
+    isSingleItem.value &&
+    (isLegacyObjectError.value ||
+      isUnitError.value ||
+      (!isLoadingDomainInformation.value && !!legacyObject.value && !associatedDomains.value.length))
+);
+const isDomainInformationReady = computed(
+  () =>
+    !isSingleItem.value ||
+    (!isLoadingDomainInformation.value && !isDomainInformationUnavailable.value && !!associatedDomains.value.length)
+);
 
 const deleting = ref(false);
 const deletingMultiple = ref(false);
