@@ -42,7 +42,9 @@
       {{ name }}
     </v-list-item-title>
     <template v-if="badge" #append>
-      <v-badge location="top" :color="badge.color" :content="badge.content" class="pb-1 px-4" />
+      <span class="bg-info text-white rounded-pill px-2 text-caption">
+        {{ badge.content }}
+      </span>
     </template>
   </v-list-item>
 </template>
