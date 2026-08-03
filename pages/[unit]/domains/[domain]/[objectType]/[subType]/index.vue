@@ -27,12 +27,7 @@
     <template #default>
       <div class="toolbar my-6">
         <div class="toolbar-search">
-          <SearchBar
-            v-model:search="search"
-            :context-chips="contextSearch"
-            :filters="searchFilters"
-            density="compact"
-          />
+          <SearchBar v-model:search="search" :filters="searchFilters" density="compact" />
         </div>
         <span class="toolbar-right">
           <v-btn
@@ -318,25 +313,7 @@ const resetQueryOptions = () => {
 
 watch(filter, resetQueryOptions, { deep: true });
 
-const objectType = computed(() => VeoElementTypesSingular[route.params.objectType as string]);
-
 const search = ref<VeoSearch[]>([]);
-
-const contextSearch = computed<VeoSearch[]>(() => {
-  const result: VeoSearch[] = [];
-
-  if (route.params.subType && route.params.subType !== '-') {
-    result.push({
-      searchFilter: t('subType'),
-      operator: '=',
-      term:
-        currentDomain.value?.raw?.elementTypeDefinitions?.[objectType.value]?.translations?.[locale.value]?.[
-          `${objectType.value}_${route.params.subType}_singular`
-        ] ?? String(route.params.subType)
-    });
-  }
-  return result;
-});
 
 const searchFilters = useObjectSearchFilters({
   domainId,
@@ -373,14 +350,19 @@ const { data: items, isFetching: isLoadingObjects } = useFetchObjects(combinedQu
 
 const isLoading = computed(() => isLoadingObjects.value || isLoadingTranslations.value);
 
-const getPluralLabel = (objectType?: string): string => {
+const getPluralLabel = (objectType?: string, subType?: string): string => {
   if (!objectType) return '';
 
   const langData = translations.value?.lang?.[locale.value];
+
+  if (subType) {
+    return langData?.[`${objectType}_${subType}_plural`] ?? subType;
+  }
+
   return langData?.[`${objectType}_plural`] ?? '';
 };
 
-const pageTitle = computed(() => getPluralLabel(filter.value.objectType));
+const pageTitle = computed(() => getPluralLabel(filter.value.objectType, filter.value.subType));
 
 const showError = (messageKey: 'clone' | 'delete', error: Error) => {
   displayErrorMessage(t(`errors.${messageKey}`).toString(), error?.toString());
