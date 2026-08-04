@@ -34,7 +34,7 @@
           <template #default>
             <v-list
               v-model:selected="selectedLocale"
-              :items="locales"
+              :items="localeItems"
               color="primary"
               mandatory
               item-title="name"
@@ -53,6 +53,7 @@ import { mdiTranslate } from '@mdi/js';
 import { useLocale } from 'vuetify';
 const { t, locale, locales, setLocale } = useI18n();
 const { current } = useLocale();
+const localeItems = computed(() => locales.value);
 
 defineProps<{
   disabled?: boolean;

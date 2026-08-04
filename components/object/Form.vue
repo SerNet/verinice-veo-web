@@ -343,10 +343,10 @@ export default defineComponent({
           return previousValue;
         }, []);
 
-    const transformInspectionFindings = (inspectionFindings: IVeoInspectionResult[]) =>
+    const transformInspectionFindings = (inspectionFindings: IVeoInspectionResult[]): Message[] =>
       inspectionFindings.map((finding) => ({
         key: JSON.stringify(finding.suggestions),
-        type: finding.severity.toLowerCase(),
+        type: finding.severity.toLowerCase() as Message['type'],
         text: finding.description[locale.value] || Object.values(finding.description)[0],
         actions: transformInspectionFindingSuggestions(finding.suggestions)
       }));
@@ -627,6 +627,6 @@ export default defineComponent({
   width: 60px;
 }
 .v-messages {
-  opacity: var(0.8) !important;
+  opacity: 0.8 !important;
 }
 </style>

@@ -26,7 +26,7 @@
       <div class="ma-6 ml-4" style="width: 120px">
         <v-select
           v-model="editorLanguage"
-          :items="locales"
+          :items="localeItems"
           item-value="code"
           item-title="code"
           :label="t('viewIn')"
@@ -321,6 +321,7 @@ import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions'
 
 const { locale, locales, t } = useI18n();
 const { t: globalT } = useI18n({ useScope: 'global' });
+const localeItems = computed(() => locales.value);
 const route = useRoute();
 const { displaySuccessMessage, displayErrorMessage } = useVeoAlerts();
 const { ability } = useVeoPermissions();
