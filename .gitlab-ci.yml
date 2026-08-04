@@ -90,6 +90,8 @@ type_check:
   rules:
     - !reference [.verification, rules]
   needs: []
+  variables:
+    NODE_OPTIONS: '--max-old-space-size=4096'
   script:
     - npm run typecheck
   interruptible: true
