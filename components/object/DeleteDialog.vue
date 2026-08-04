@@ -109,6 +109,7 @@ const {
 } = useQuery(objectQueryDefinitions.queries.fetchLegacy, legacyObjectQueryParameters, {
   enabled: computed(() => isSingleItem.value && !!legacyObjectQueryParameters.value.endpoint)
 });
+
 const associatedDomains = computed(() =>
   Object.keys(legacyObject.value?.domains ?? {}).map((domainId) => {
     const domain = currentUnit.value?.domains.find(({ id }) => id === domainId);

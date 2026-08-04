@@ -15,26 +15,28 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
 
 import DeleteDialog from '~/components/object/DeleteDialog.vue';
 import type { IVeoEntity } from '~/types/VeoTypes';
 
 const { useQueryMock } = vi.hoisted(() => ({
-  useQueryMock: vi.fn(() => ({
-    data: {
-      value: {
-        domains: {
-          'domain-1': {},
-          'domain-2': {},
-          'domain-3': {}
+  useQueryMock: vi.fn(
+    (_definition: unknown, _parameters: { value: unknown }, _options: { enabled: { value: boolean } }) => ({
+      data: {
+        value: {
+          domains: {
+            'domain-1': {},
+            'domain-2': {},
+            'domain-3': {}
+          }
         }
-      }
-    },
-    isLoading: { value: false },
-    isError: { value: false }
-  }))
+      },
+      isLoading: { value: false },
+      isError: { value: false }
+    })
+  )
 }));
 
 vi.mock('~/composables/api/utils/query', async (importOriginal) => {
@@ -93,6 +95,14 @@ beforeAll(() => {
   });
 });
 
+beforeEach(() => {
+  useQueryMock.mockClear();
+});
+
+afterEach(() => {
+  document.body.innerHTML = '';
+});
+
 describe('ObjectDeleteDialog', () => {
   it('lists every domain associated with the object', async () => {
     const item = {
@@ -113,9 +123,26 @@ describe('ObjectDeleteDialog', () => {
     expect(domains?.textContent).toContain('DSGVO (DE)');
     expect(domains?.textContent).toContain('IT-Grundschutz');
     expect(domains?.textContent).toContain('NIS2 (DE)');
-    expect(useQueryMock.mock.calls[0]?.[1].value).toEqual({
+    expect(useQueryMock.mock.calls[0]?.[1]?.value).toEqual({
       endpoint: 'assets',
       id: 'asset-1'
     });
+  });
+
+  it('does not fetch or list domains when multiple objects are selected', async () => {
+    const items = [
+      { id: 'asset-1', type: 'asset', displayName: 'Asset one' },
+      { id: 'asset-2', type: 'asset', displayName: 'Asset two' }
+    ] as IVeoEntity[];
+
+    await mountSuspended(DeleteDialog, {
+      props: {
+        modelValue: true,
+        items
+      }
+    });
+
+    expect(document.querySelector('[data-veo-test="object-delete-associated-domains"]')).toBeNull();
+    expect(useQueryMock.mock.calls[0]?.[2].enabled.value).toBe(false);
   });
 });
