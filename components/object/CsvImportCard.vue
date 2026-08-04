@@ -298,7 +298,6 @@ const handleEncodingConfirm = async () => {
   if (processedFile) {
     isCsvDialogOpen.value = true;
     selectedFile.value = pendingFile.value;
-    pendingFile.value = null;
     wizardStep.value = CsvUploadWizardStep.UPLOAD;
   }
 };
