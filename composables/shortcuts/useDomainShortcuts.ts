@@ -15,6 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { StorageSerializers, useStorage } from '@vueuse/core';
+import { upperFirst } from 'lodash';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { getElementTypeKeys, getNavigationKeys } from './shortcutConfig';
@@ -30,7 +31,7 @@ import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[d
 export function useDomainShortcuts() {
   const router = useRouter();
   const route = useRoute();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { data: domains } = useDomains();
   const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, {
     serializer: StorageSerializers.boolean
@@ -43,8 +44,9 @@ export function useDomainShortcuts() {
   const { data: riskDefinitions } = useRiskDefinitions();
   const hasRiskDefinitions = computed(() => !!riskDefinitions.value);
 
-  const domainId = computed(() => route?.params?.domain ?? (firstUnit.value?.domains?.[0].id as string));
+  const domainId = computed(() => (route?.params?.domain as string) ?? firstUnit.value?.domains?.[0].id);
   const unitId = computed(() => route?.params?.unit ?? (firstUnit.value?.id as string));
+  const { data: translations } = useTranslations({ domain: domainId, languages: computed(() => [locale.value]) });
 
   const currentDomain = computed(() => domains.value?.find((d) => d.id === domainId.value));
 
@@ -131,11 +133,14 @@ export function useDomainShortcuts() {
     return elementTypes.map((elementType) => {
       const subTypes = currentDomain.value?.raw?.elementTypeDefinitions?.[elementType]?.subTypes;
       const isDisabled = !subTypes || Object.keys(subTypes).length === 0;
+      const elementTypePlural = upperFirst(
+        translations.value?.lang[locale.value]?.[`${elementType}_plural`] || VeoElementTypePlurals[elementType]
+      );
 
       return {
         id: `nav-${elementType}`,
-        name: t('shortcuts.elements.name', { elementTypePlural: VeoElementTypePlurals[elementType] }),
-        description: t('shortcuts.elements.description', { elementTypePlural: VeoElementTypePlurals[elementType] }),
+        name: t('shortcuts.elements.name', { elementTypePlural }),
+        description: t('shortcuts.elements.description', { elementTypePlural }),
         keys: getElementTypeKeys(elementType),
         category: CATEGORY_DOMAIN_NAVIGATION,
         disabled: isDisabled,
