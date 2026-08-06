@@ -723,26 +723,39 @@ export default defineComponent({
     const { mutateAsync: deleteRisk } = useMutation(objectQueryDefinitions.mutations.deleteRisk);
     const { mutateAsync: updateObject } = useMutation(objectQueryDefinitions.mutations.updateObject);
 
-    async function onDeleteControl(item: any) {
+    async function onDeleteControlImplementation(item: any) {
       try {
-        const controlId = item.control?.id;
-        // since props mustn't be mutated, we need a shallow copy of the object which can be changed
-        const copy = cloneDeep(props.object);
+        const isTarget = props.type === 'targets';
+        const controlId = isTarget ? props.object?.id : item.control?.id;
+        const objectToUpdate =
+          isTarget ?
+            await useQuerySync(
+              objectQueryDefinitions.queries.fetch,
+              {
+                domain: props.domainId,
+                endpoint: VeoElementTypePlurals[item.type],
+                id: item.id
+              },
+              queryClient
+            )
+          : cloneDeep(props.object);
+
         // if the ID matches, get the appropriate CI index that will be deleted from the object
-        const controlIndex = (copy?.controlImplementations || []).findIndex((ci) =>
-          ci.control.targetUri.endsWith(controlId)
+        const controlIndex = (objectToUpdate?.controlImplementations || []).findIndex(
+          (ci) => ci.control.id === controlId || ci.control.targetUri.split('/').pop() === controlId
         );
         // finally mutate the object, if an ID matched
         if (controlIndex >= 0) {
           // delete the appropriate key at <controlIndex>
-          copy?.controlImplementations?.splice(controlIndex, 1);
+          objectToUpdate.controlImplementations?.splice(controlIndex, 1);
           // patch the object / PUT changed riskAffected
           await updateObject({
             domain: props.domainId,
-            endpoint: route.params?.objectType,
-            id: copy?.id,
-            object: copy
+            endpoint: VeoElementTypePlurals[objectToUpdate.type],
+            id: objectToUpdate.id,
+            object: objectToUpdate
           });
+          await queryClient.invalidateQueries({ queryKey: ['controlImplementations'] });
         }
         displaySuccessMessage(t('controlDeleted'));
       } catch (error) {
@@ -831,7 +844,7 @@ export default defineComponent({
 
               async action(item: any) {
                 controlNameToUnlink.value = item.name;
-                confirmationDialogCallBack.value = () => onDeleteControl(item);
+                confirmationDialogCallBack.value = () => onDeleteControlImplementation(item);
                 confirmationDialogVisible.value = true;
               }
             }
@@ -877,6 +890,13 @@ export default defineComponent({
               icon: mdiLinkOff,
               isDisabled: (_item: any) => !canManageUnitContent.value,
               action: async (item: IVeoEntity) => {
+                if (props.type === 'targets') {
+                  controlNameToUnlink.value = item.name;
+                  confirmationDialogCallBack.value = () => onDeleteControlImplementation(item);
+                  confirmationDialogVisible.value = true;
+                  return;
+                }
+
                 const parent = await useQuerySync(
                   objectQueryDefinitions.queries.fetch,
                   {
