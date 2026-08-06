@@ -130,11 +130,13 @@ import type {
   IVeoRiskCategory,
   IVeoRiskDefinition,
   IVeoRiskValue,
+  VeoLinkedElement,
   VeoLinkItem,
   VeoRiskTreatment,
   VeoSort
 } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { renderObjectLink } from '~/utils/objectPath';
 
 export default defineComponent({
   props: {
@@ -210,6 +212,12 @@ export default defineComponent({
     const createEntityFromLink = (link: IInOutLink): VeoLinkItem => {
       const { linkedElement, direction, linkType } = link;
       const { displayName: name, abbreviation, type, id, subType } = linkedElement;
+      const currentElement: VeoLinkedElement = {
+        id: props.object?.id,
+        type: props.object?.type,
+        subType: props.object?.subType
+      };
+      const linkedElementTarget: VeoLinkedElement = { id, type, subType };
       return {
         id,
         name,
@@ -219,6 +227,8 @@ export default defineComponent({
         direction,
         from: direction === 'INBOUND' ? name : props.object?.displayName,
         to: direction === 'INBOUND' ? props.object?.displayName : name,
+        fromElement: direction === 'INBOUND' ? linkedElementTarget : currentElement,
+        toElement: direction === 'INBOUND' ? currentElement : linkedElementTarget,
         linkType,
         subType
       };
@@ -450,6 +460,13 @@ export default defineComponent({
       }
     });
     const useHeaders = () => {
+      const createScenarioLink = (scenario: IVeoLink | undefined) =>
+        createElementLink(getScenarioName(scenario), {
+          id: scenario?.id,
+          type: scenario?.type || 'scenario',
+          subType: scenario?.subType
+        });
+
       const createScenarioAbbreviationHeader = () => ({
         value: 'scenario.abbreviation',
         key: 'scenario.abbreviation',
@@ -471,7 +488,7 @@ export default defineComponent({
         truncate: true,
         priority: 100,
         order: 40,
-        render: (data: any) => getScenarioName(data.internalItem.raw.scenario)
+        render: (data: any) => createScenarioLink(data.internalItem.raw.scenario)
       });
 
       const createRiskCategoryHeaders = () => {
@@ -570,9 +587,13 @@ export default defineComponent({
           size: 'small'
         });
 
-      // Helper function to create a styled span
-      const createStyledSpan = (content: string, isBold: boolean = false) =>
-        h('span', { style: isBold ? 'font-weight: bold;' : '' }, content);
+      const createElementLink = (content: string, target: VeoLinkedElement | undefined, isBold: boolean = false) =>
+        renderObjectLink(
+          content,
+          target,
+          { unit: route.params.unit as string, domain: route.params.domain as string },
+          { bold: isBold }
+        );
 
       const createLinkHeaders = () => [
         {
@@ -585,8 +606,9 @@ export default defineComponent({
           priority: 100,
           order: 20,
           render: (data: any) =>
-            createStyledSpan(
+            createElementLink(
               data.internalItem.raw?.from || '',
+              data.internalItem.raw?.fromElement,
               data.internalItem.raw?.from === props.object?.displayName
             )
         },
@@ -627,7 +649,11 @@ export default defineComponent({
           priority: 100,
           order: 30,
           render: (data: any) =>
-            createStyledSpan(data.internalItem.raw?.to || '', data.internalItem.raw?.to === props.object?.displayName)
+            createElementLink(
+              data.internalItem.raw?.to || '',
+              data.internalItem.raw?.toElement,
+              data.internalItem.raw?.to === props.object?.displayName
+            )
         }
       ];
 
@@ -1059,5 +1085,9 @@ export default defineComponent({
 <style>
 .custom-readonly-btn .v-icon {
   opacity: 0.5;
+}
+
+.veo-element-link:hover {
+  text-decoration: underline !important;
 }
 </style>

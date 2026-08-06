@@ -660,8 +660,16 @@ export type VeoLinkItem = {
   direction: 'INBOUND' | 'OUTBOUND';
   from: string;
   to: string;
+  fromElement?: VeoLinkedElement;
+  toElement?: VeoLinkedElement;
   linkType: string;
   subType: string;
+};
+
+export type VeoLinkedElement = {
+  id?: string;
+  type?: string;
+  subType?: string;
 };
 
 export const ELEMENT_DETAILS_CONTEXT = 'elementDetails';
