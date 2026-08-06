@@ -34,7 +34,8 @@ import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 
 import { useVeoUser } from '~/composables/VeoUser';
-import { VeoElementTypePlurals, type IVeoEntity, type IVeoPaginatedResponse } from '~/types/VeoTypes';
+import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
+import { renderObjectLink } from '~/utils/objectPath';
 
 export type TableFormatter = (value: any) => string;
 export type TableRenderer = (
@@ -419,27 +420,13 @@ const defaultRenderer: TableRenderer = (context: any, header) => {
     },
     header?.key ? context.internalItem.columns[header.key] : undefined
   );
-  // If enableLinks is true and this is the name column, add a hidden router-link for right-click functionality
+  // If enableLinks is true and this is the name column, render a router-link so the cell supports right-click / open in new tab
   if (props.enableLinks && column.key === 'name') {
-    const getItemHref = (item: IVeoEntity) => {
-      return `/${route.params.unit}/domains/${route.params.domain}/${VeoElementTypePlurals[item.type as keyof typeof VeoElementTypePlurals]}/${item.subType}/${item.id}/`;
-    };
-    const href = getItemHref(context.item);
-    return h(
-      resolveComponent('router-link'),
-      {
-        class: 'position-relative table-row-link',
-        style: {
-          color: 'inherit',
-          textDecoration: 'none',
-          fontWeight: 'bold'
-        },
-        to: href,
-        onClick: (e: MouseEvent) => {
-          e.stopPropagation();
-        }
-      },
-      () => [cellContent]
+    return renderObjectLink(
+      cellContent,
+      context.item,
+      { unit: route.params.unit as string, domain: route.params.domain as string },
+      { bold: true, class: 'position-relative table-row-link' }
     );
   }
 
