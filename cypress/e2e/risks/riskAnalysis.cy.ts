@@ -6,6 +6,9 @@ import { setupVeo } from '../../commands/setup';
 import { applyCatalogItem } from '../../requests/catalogs';
 import { addModule, executeThreatOverview } from '../../requests/control-implementations';
 
+const openRiskDialog = (riskName: string) =>
+  cy.containsCustom('[data-veo-test="loadedDataTable"]:visible tbody tr', riskName).find('td').first().click();
+
 describe('Threat Overview', () => {
   beforeEach(() => {
     // Setup a unit with a IT-GS domain and one module
@@ -28,6 +31,12 @@ describe('Threat Overview', () => {
       .find('tr')
       .its('length')
       .should('be.greaterThan', 0);
+
+    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr')
+      .first()
+      .find('a.veo-element-link')
+      .should('have.attr', 'href')
+      .and('match', /\/domains\/[^/]+\/scenarios\/[^/]+\/[^/]+\//);
   });
 });
 
@@ -48,7 +57,7 @@ describe('Net risk', () => {
     cy.getCustom('[data-component-name="object-details-risks-tab"]').click();
 
     // Select the first risk row → opens dialog
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').contains('Datenverlust').click();
+    openRiskDialog('Datenverlust');
 
     // Verify dialog is open
     cy.getCustom('[data-veo-test="base-dialog"]').should('be.visible');
@@ -68,7 +77,7 @@ describe('Net risk', () => {
     cy.getCustom('[data-veo-test="dialog-risk-close"]').should('be.visible').click();
 
     // Open the dialog again to check if change were saved
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible tbody tr').contains('Datenverlust').click();
+    openRiskDialog('Datenverlust');
 
     // Check if the changes were made
     cy.get('[data-veo-test="risk-treatments"] span').first().should('have.text', 'risk transfer');
@@ -94,7 +103,7 @@ describe('Mitigation Measures', () => {
     cy.getCustom('[data-component-name="object-details-risks-tab"]').click();
 
     // Open risk dialog
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').contains(riskName).click();
+    openRiskDialog(riskName);
 
     // Add mitigation
     cy.getCustom('[data-veo-test="add-mitigation"]').click();
@@ -115,7 +124,7 @@ describe('Mitigation Measures', () => {
     cy.getCustom('[data-veo-test="dialog-risk-close"]').should('be.visible').click();
 
     // Reopen dialog
-    cy.getCustom('[data-veo-test="loadedDataTable"]:visible ').contains(riskName).click();
+    openRiskDialog(riskName);
 
     // Confirm mitigation is added in the dialog table
     cy.getCustom('[data-veo-test="loadedDataTable"]:visible tr').should('be.visible');
