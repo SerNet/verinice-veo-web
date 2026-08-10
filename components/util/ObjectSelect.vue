@@ -45,7 +45,11 @@
     <template #item="{ props: _props, item }">
       <v-list-item v-bind="_props" data-veo-test="object-select-item">
         <template #prepend>
-          <ObjectIcon :object-type="item.raw.type" :is-composite="!!(item.raw.parts && item.raw.parts.length)" left />
+          <ObjectIcon
+            :object-type="item.raw.type"
+            :is-composite="!!(item.raw.parts?.length || item.raw.members?.length)"
+            left
+          />
         </template>
         <template #append>
           <!-- @vue-ignore TODO #3066 does not exist -->

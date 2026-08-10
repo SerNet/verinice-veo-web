@@ -133,7 +133,7 @@ const { data: translations } = useQuery(translationQueryDefinitions.queries.fetc
 const renderObjectIcon: TableRenderer = ({ item }) => {
   return h(ObjectIcon, {
     objectType: item.type,
-    isComposite: !!item.parts?.length
+    isComposite: !!(item.parts?.length || item.members?.length)
   });
 };
 
