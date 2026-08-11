@@ -81,6 +81,7 @@ determine-destinations:
 
 copy-image:
   extends: .registry-copy-image
+  before_script: []
   variables:
     IMAGE_REPO: 'veo-web'
     IMAGE_TAG: '$CI_COMMIT_TAG'
