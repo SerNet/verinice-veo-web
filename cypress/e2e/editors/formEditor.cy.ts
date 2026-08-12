@@ -37,9 +37,9 @@ describe('Form Editor', () => {
     cy.get('[data-veo-test="formschema-item"]').click();
     cy.get('[data-veo-test="dialog-card"]').within(() => {
       cy.get('[data-veo-test="import-form-schema"]').click();
-      cy.get('[data-veo-test="form-schema-select"').click();
+      cy.get('[data-veo-test="form-schema-select"]').click();
     });
-    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('Scope').click();
+    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('Scope').scrollIntoView().click();
     cy.get('[data-veo-test="form-schema-next-btn"]').click();
     cy.get('[data-component-name="breadcrumbs"]').contains('Formschema editor', { matchCase: false });
     assertEditorPage();
