@@ -234,7 +234,14 @@ const hasEmptyTranslations = computed(() =>
 
 const hasUnsetItems = computed(() => hasUnsetMatrixValues.value || hasEmptyTranslations.value);
 
-const canSave = computed(() => !hasUnsetItems.value && !isMissingTranslations.value && isDirty.value);
+const { ability, subject } = useVeoPermissions();
+const canManageUnitContent = computed(() =>
+  ability.value.can('manage', subject('units', { id: route.params.unit as string }))
+);
+
+const canSave = computed(
+  () => canManageUnitContent.value && !hasUnsetItems.value && !isMissingTranslations.value && isDirty.value
+);
 const canGoNext = computed(() => {
   if (isMissingTranslations.value) return false;
 

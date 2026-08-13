@@ -22,13 +22,28 @@
           <v-card-title class="pr-0">{{ riskCategory.translations?.[locale]?.name ?? '' }}</v-card-title>
 
           <v-card-actions>
-            <v-btn
-              :icon="mdiPencil"
-              variant="plain"
-              size="small"
-              :to="`${route.path}/edit?id=${riskCategory.id ?? ''}`"
-            />
-            <v-tooltip location="start" :disabled="canDelete" :aria-label="t('delete')">
+            <v-tooltip
+              location="start"
+              :disabled="canManageUnitContent"
+              :aria-label="t('permissions.missingPermissionTooltip')"
+            >
+              <template #activator="{ props: tooltipProps }">
+                <div v-bind="tooltipProps">
+                  <v-btn
+                    :icon="mdiPencil"
+                    variant="plain"
+                    size="small"
+                    data-veo-test="edit-category"
+                    :disabled="!canManageUnitContent"
+                    :to="canManageUnitContent ? `${route.path}/edit?id=${riskCategory.id ?? ''}` : undefined"
+                  />
+                </div>
+              </template>
+              <template #default>
+                {{ t('permissions.missingPermissionTooltip') }}
+              </template>
+            </v-tooltip>
+            <v-tooltip location="start" :disabled="canDelete && canManageUnitContent" :aria-label="t('delete')">
               <template #activator="{ props: tooltipProps }">
                 <div v-bind="tooltipProps">
                   <v-btn
@@ -36,13 +51,13 @@
                     variant="plain"
                     size="small"
                     data-veo-test="delete-category"
-                    :disabled="!canDelete"
+                    :disabled="!canDelete || !canManageUnitContent"
                     @click="deleteRiskCategory(riskCategory.id)"
                   />
                 </div>
               </template>
               <template #default>
-                {{ t('deleteHint') }}
+                {{ canManageUnitContent ? t('deleteHint') : t('permissions.missingPermissionTooltip') }}
               </template>
             </v-tooltip></v-card-actions
           >
@@ -91,5 +106,10 @@ defineProps<{
 const { locale } = useI18n();
 const { t } = useVeoI18n();
 const route = useRoute();
+
+const { ability, subject } = useVeoPermissions();
+const canManageUnitContent = computed(() =>
+  ability.value.can('manage', subject('units', { id: route.params.unit as string }))
+);
 </script>
 <i18n src="~/locales/base/components/risk-risk-elements-risk-criterion.json"></i18n>

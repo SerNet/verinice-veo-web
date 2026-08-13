@@ -31,13 +31,27 @@
               <div class="d-flex justify-space-between">
                 <v-card-title>{{ t('crossCategoryValues') }}</v-card-title>
                 <v-card-actions>
-                  <v-btn
-                    :icon="mdiPencil"
-                    variant="plain"
-                    size="small"
-                    :to="`${route.path}/edit`"
-                    data-veo-test="risk-cross-category-edit"
-                  />
+                  <v-tooltip
+                    location="start"
+                    :disabled="canManageUnitContent"
+                    :aria-label="t('permissions.missingPermissionTooltip')"
+                  >
+                    <template #activator="{ props: tooltipProps }">
+                      <div v-bind="tooltipProps">
+                        <v-btn
+                          :icon="mdiPencil"
+                          variant="plain"
+                          size="small"
+                          :disabled="!canManageUnitContent"
+                          :to="canManageUnitContent ? `${route.path}/edit` : undefined"
+                          data-veo-test="risk-cross-category-edit"
+                        />
+                      </div>
+                    </template>
+                    <template #default>
+                      {{ t('permissions.missingPermissionTooltip') }}
+                    </template>
+                  </v-tooltip>
                 </v-card-actions>
               </div>
               <div class="d-flex align-center">
@@ -53,16 +67,30 @@
           <v-col cols="12">
             <div class="d-flex justify-space-between align-center">
               <h2>{{ t('criterion') }}</h2>
-              <v-btn
-                color="primary"
-                variant="outlined"
-                size="small"
-                :prepend-icon="mdiPlus"
-                data-veo-test="add-risk-category-button"
-                @click="addRiskCategory"
+              <v-tooltip
+                location="start"
+                :disabled="canManageUnitContent"
+                :aria-label="t('permissions.missingPermissionTooltip')"
               >
-                {{ t('manageCriteria') }}
-              </v-btn>
+                <template #activator="{ props: tooltipProps }">
+                  <div v-bind="tooltipProps">
+                    <v-btn
+                      color="primary"
+                      variant="outlined"
+                      size="small"
+                      :prepend-icon="mdiPlus"
+                      :disabled="!canManageUnitContent"
+                      data-veo-test="add-risk-category-button"
+                      @click="addRiskCategory"
+                    >
+                      {{ t('manageCriteria') }}
+                    </v-btn>
+                  </div>
+                </template>
+                <template #default>
+                  {{ t('permissions.missingPermissionTooltip') }}
+                </template>
+              </v-tooltip>
             </div>
           </v-col>
           <RiskCategory
@@ -123,6 +151,12 @@ import {
 import { useRiskDefinitionUpdate } from '~/composables/useRiskDefinitions';
 const { t } = useVeoI18n();
 const route = useRoute();
+
+const { ability, subject } = useVeoPermissions();
+const canManageUnitContent = computed(() =>
+  ability.value.can('manage', subject('units', { id: route.params.unit as string }))
+);
+
 const closeConfirmationDialogVisible = ref(false);
 const categoryToDelete = ref<string | null>(null);
 
@@ -159,7 +193,7 @@ const requestDeleteRiskCategory = (categoryId: string) => {
 };
 
 const confirmDeleteRiskCategory = async () => {
-  if (!riskDefinition.value || !categoryToDelete.value) {
+  if (!canManageUnitContent.value || !riskDefinition.value || !categoryToDelete.value) {
     closeConfirmationDialogVisible.value = false;
     categoryToDelete.value = null;
     return;
