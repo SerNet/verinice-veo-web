@@ -1038,6 +1038,7 @@ const handleImport = () => {
 }
 
 .editable-table :deep(table) {
+  border-spacing: 16px 0;
   min-width: max-content;
 }
 
