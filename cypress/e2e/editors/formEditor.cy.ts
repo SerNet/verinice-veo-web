@@ -39,7 +39,14 @@ describe('Form Editor', () => {
       cy.get('[data-veo-test="import-form-schema"]').click();
       cy.get('[data-veo-test="form-schema-select"]').click();
     });
-    cy.getCustom('.v-overlay__content div[role="listbox"]').contains('Scope').scrollIntoView().click();
+    const listbox = '.v-overlay__content:visible [role="listbox"]';
+    cy.getCustom(listbox)
+      .contains('[role="option"]', /^Scope$/)
+      .scrollIntoView();
+    cy.getCustom(listbox)
+      .contains('[role="option"]', /^Scope$/)
+      .should('be.visible')
+      .click();
     cy.get('[data-veo-test="form-schema-next-btn"]').click();
     cy.get('[data-component-name="breadcrumbs"]').contains('Formschema editor', { matchCase: false });
     assertEditorPage();
