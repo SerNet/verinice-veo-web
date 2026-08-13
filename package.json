@@ -94,7 +94,7 @@
     "happy-dom": "20.11.2",
     "lint-staged": "17.3.0",
     "mocha-junit-reporter": "2.2.1",
-    "nuxt": "^4.5.2",
+    "nuxt": "4.5.2",
     "prettier": "3.9.6",
     "sass": "1.102.0",
     "typescript-eslint": "8.66.0",
