@@ -136,10 +136,8 @@
 
 <script setup lang="ts">
 import { useQueryClient } from '@tanstack/vue-query';
-import { upperFirst } from 'lodash-es';
-import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
 import { useVeoUser } from '~/composables/VeoUser';
-import { useNavigation } from '~/composables/navigation';
+import { useObjectTableNoDataText } from '~/composables/useObjectTableNoDataText';
 import { useLinkableObjects } from '~/composables/requests/useLinkableObjects';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
@@ -208,7 +206,6 @@ const { tablePageSize } = useVeoUser();
 const { ability, subject } = useVeoPermissions();
 const config = useRuntimeConfig();
 const { data: translations } = useTranslations({ domain: props.domainId });
-const { navigateToCatalog, navigateToObject } = useNavigation();
 
 const navigateToObjectDetail = (objectType: string, objectId: string, subType: string): string => {
   const routeData = router.resolve({
@@ -316,33 +313,13 @@ const getSubTypeTranslation = (subType: string) => {
 
 const TABLE_HEADERS = ['icon', 'designator', 'abbreviation', 'name', 'status', 'description', 'updatedBy', 'updatedAt'];
 
-const noDataTextWithLink = computed(() => {
-  if (hasItems.value) return () => h(HtmlRenderer, { content: t('noSearchResults') });
-
-  if (objectFilter.value.objectType === 'control') {
-    return () =>
-      h(HtmlRenderer, {
-        content: t('controlNoDataText', {
-          catalogLink: `<a href="#">${t('catalog')}</a>`
-        }),
-        clickHandler: navigateToCatalog,
-        clickHandlerParams: ['control', 'CTL_Module']
-      });
-  }
-
-  const objectType = objectFilter.value.objectType;
-  const pluralKey = objectType ? `${objectType}_plural` : '';
-  const translatedPlural = translations.value?.lang[locale.value]?.[pluralKey]?.toString();
-
-  return () =>
-    h(HtmlRenderer, {
-      content: t('nonControlNoDataText', {
-        subType: upperFirst(translatedPlural || t('objects')),
-        correspondingObject: `<a href="#">${t('correspondingObject')}</a>`
-      }),
-      clickHandler: navigateToObject,
-      clickHandlerParams: [VeoElementTypePlurals[objectType as keyof typeof VeoElementTypePlurals]]
-    });
+const { noDataText: noDataTextWithLink } = useObjectTableNoDataText({
+  domainId: toRef(props, 'domainId'),
+  filter: objectFilter,
+  translations,
+  locale,
+  t,
+  hasItems
 });
 
 const dialogTitle = computed(() =>

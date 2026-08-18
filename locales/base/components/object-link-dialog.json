@@ -1,9 +1,10 @@
 {
   "en": {
     "object": "Object",
-    "controlNoDataText": "No modules applied yet. Please apply modules from the {catalogLink}.",
-    "nonControlNoDataText": "There is currently no {subType}. Please {correspondingObject}",
-    "correspondingObject": "Create a corresponding object.",
+    "objects": "Objects",
+    "noSubTypeInUnit": "There are no {type} in the current unit. Please create a corresponding object.",
+    "noObjectTypeInUnit": "There are no {type} in the current unit. Please add a corresponding object.",
+    "noObjectsInUnitApplyFromCatalog": "There are no {type} in the current unit. Please apply a corresponding object from the {catalogLink} or create one.",
     "noSearchResults": "Your search did not match any results",
     "catalog": "Catalog",
     "addTarget": "Add {0}",
@@ -11,9 +12,10 @@
   },
   "de": {
     "object": "Objekt",
-    "controlNoDataText": "Bisher wurden noch keine Bausteine angewendet. Bitte zuerst Bausteine aus dem {catalogLink} anwenden.",
-    "nonControlNoDataText": "Es gibt aktuell keine {subType}. Bitte {correspondingObject}",
-    "correspondingObject": "legen Sie ein entsprechendes Objekt an.",
+    "objects": "Objekte",
+    "noSubTypeInUnit": "Es gibt in der aktuellen Unit keine {type}. Bitte erstellen Sie ein entsprechendes Objekt.",
+    "noObjectTypeInUnit": "Es gibt in der aktuellen Unit keine {type}. Bitte legen Sie ein entsprechendes Objekt an.",
+    "noObjectsInUnitApplyFromCatalog": "Es gibt in der aktuellen Unit keine {type}. Bitte wenden Sie ein entsprechendes Objekt aus dem {catalogLink} an oder erstellen Sie eines.",
     "noSearchResults": "Ihre Suche ergab keine Treffer",
     "catalog": "Katalog",
     "addTarget": "{0} hinzufügen",

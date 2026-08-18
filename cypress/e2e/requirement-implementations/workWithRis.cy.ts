@@ -75,7 +75,7 @@ describe('Object details, modules tab: Content', () => {
     openAddModulesDialog();
 
     // Check if user info exists
-    cy.containsCustom('No modules applied yet. Please apply modules from the Catalog.');
+    cy.containsCustom('Please apply a corresponding object from the Catalog or create one.');
 
     // Click link to `/catalogs`
     cy.intercept('GET', apiRoutes.catalogItems).as('getCatalogItems');

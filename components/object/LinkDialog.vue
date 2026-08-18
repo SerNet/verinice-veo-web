@@ -108,13 +108,12 @@
 import { useQueryClient } from '@tanstack/vue-query';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 import type { PropType } from 'vue';
-import HtmlRenderer from '~/components/base/HtmlRenderer.vue';
 import { useLinkObject, useUnlinkObject } from '~/composables/VeoObjectUtilities';
 import { useVeoUser } from '~/composables/VeoUser';
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { useNavigation } from '~/composables/navigation';
+import { useObjectTableNoDataText } from '~/composables/useObjectTableNoDataText';
 import type { VeoSearch } from '~/types/VeoSearch';
 import type { IVeoEntity, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
@@ -182,7 +181,6 @@ export default defineComponent({
   emits: ['update:preselected-items', 'update:model-value', 'success', 'error'],
   setup(props, { emit }) {
     const route = useRoute();
-    const { navigateToCatalog, navigateToObject } = useNavigation();
     const { t, locale } = useI18n();
     const { t: globalT } = useI18n({ useScope: 'global' });
     const { tablePageSize } = useVeoUser();
@@ -517,28 +515,13 @@ export default defineComponent({
       }
     );
 
-    const noDataTextWithLink = computed(() => {
-      if (hasItems.value) return () => h(HtmlRenderer, { content: t('noSearchResults') });
-      if (filter.value.objectType === 'control') {
-        return () =>
-          h(HtmlRenderer, {
-            content: t('controlNoDataText', {
-              catalogLink: `<a href="#">${t('catalog')}</a>`
-            }),
-            clickHandler: navigateToCatalog,
-            clickHandlerParams: ['control', 'CTL_Module']
-          });
-      } else {
-        return () =>
-          h(HtmlRenderer, {
-            content: t('nonControlNoDataText', {
-              subType: `${upperFirst(translations.value?.lang[locale.value]?.[filter.value.objectType + '_plural'].toString())}`,
-              correspondingObject: `<a href="#">${t('correspondingObject')}</a>`
-            }),
-            clickHandler: navigateToObject,
-            clickHandlerParams: [VeoElementTypePlurals[filter.value.objectType as keyof typeof VeoElementTypePlurals]]
-          });
-      }
+    const { noDataText: noDataTextWithLink } = useObjectTableNoDataText({
+      domainId: computed(() => route.params.domain as string),
+      filter,
+      translations,
+      locale,
+      t,
+      hasItems
     });
 
     const createCustomHeader = () => ({
@@ -568,7 +551,6 @@ export default defineComponent({
     });
 
     return {
-      navigateToCatalog,
       canManageUnitContent,
       availableObjectTypes,
       childrenLoading,
