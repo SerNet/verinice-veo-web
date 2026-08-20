@@ -167,7 +167,8 @@ async function confirmToggleUnitAccess() {
   } catch (e) {
     console.error('Error updating unit access restriction', e);
 
-    displayErrorMessage(t('failedToUpdateUnitAccess'), JSON.stringify(e));
+    const errorMessage = e instanceof Error ? e.message : String(e);
+    displayErrorMessage(t('failedToUpdateUnitAccess'), errorMessage);
   }
 }
 

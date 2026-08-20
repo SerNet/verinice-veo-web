@@ -15,7 +15,7 @@
    - If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage sticky-footer>
+  <BasePage :title="t('accountManagement')" sticky-footer :has-title-bg="false">
     <template v-if="showAccessGroupsFeature">
       <BaseAlert
         v-if="!hasRestrictedUnitAccess"
@@ -26,7 +26,6 @@
         no-close-button
         flat
       />
-
       <Tabs v-model="tabIndex" fullsize>
         <template #tabs>
           <v-tab

@@ -16,14 +16,31 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseCard class="mb-16">
-    <v-card-title class="bg-accent small-caps text-h4">
-      <span>{{ t('accounts') }}</span>
-      <span style="float: right">
-        <b>{{ activeAccounts }}</b> {{ t('of') }} <b>{{ userSettings.maxUsers - 1 }}</b> {{ t('activeAccounts') }}
-      </span>
-    </v-card-title>
+  <div class="d-flex justify-end mx-4">
+    <v-btn
+      color="primary"
+      :disabled="ability.cannot('manage', 'accounts') || activeAccounts >= userSettings.maxUsers - 1"
+      :prepend-icon="mdiPlus"
+      :aria-label="t('addAccount')"
+      @click="createAccountDialogVisible = true"
+    >
+      {{ t('addAccount') }}
+    </v-btn>
+  </div>
 
+  <div class="actions-wrapper mx-1 mb-2">
+    <span :style="{ opacity: 0.4 }">
+      <b>{{ activeAccounts }}</b>
+      {{ t('of') }}
+      <b>{{ userSettings.maxUsers - 1 }}</b>
+      {{ t('accounts') }} {{ t('activeAccounts') }}
+    </span>
+  </div>
+
+  <BaseCard>
+    <!-- Tabelle -->
+  </BaseCard>
+  <BaseCard class="mb-16">
     <BaseTable
       :default-headers="['actions']"
       :items="accounts"
@@ -39,6 +56,7 @@
                 :disabled="action.isDisabled && action.isDisabled(item)"
                 :icon="action.icon"
                 variant="text"
+                size="small"
                 :aria-label="action.label"
                 @click="action.action(item)"
               />
@@ -49,23 +67,6 @@
       </template>
     </BaseTable>
   </BaseCard>
-
-  <v-tooltip location="start">
-    <template #activator="{ props }">
-      <v-btn
-        v-bind="props"
-        color="primary"
-        :disabled="ability.cannot('manage', 'accounts') || activeAccounts >= userSettings.maxUsers - 1"
-        size="large"
-        class="veo-primary-action-fab"
-        :icon="mdiPlus"
-        :aria-label="t('createAccount')"
-        @click="createAccountDialogVisible = true"
-      />
-    </template>
-    <span>{{ t('createAccount') }}</span>
-  </v-tooltip>
-
   <AccountManageDialog
     v-if="manageAccountDialogVisible"
     :model-value="manageAccountDialogVisible"
@@ -203,13 +204,9 @@ const additionalTableHeaders = computed(() => [
 
 <i18n src="~/locales/base/pages/administration.json"></i18n>
 
-<style lang="scss" scoped>
-.veo-primary-action-fab {
-  position: fixed !important;
-  bottom: 24px;
-  right: 24px;
-  border-radius: 50%;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+<style scoped>
+.actions-wrapper {
+  display: flex;
+  align-items: center;
 }
 </style>
