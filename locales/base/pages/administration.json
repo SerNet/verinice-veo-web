@@ -37,7 +37,17 @@
     "failedToDeleteAccessGroup": "Failed to delete access group.",
     "permissions": {
       "editors": "Write access"
-    }
+    },
+    "restrictUnitAccess": "Restrict unit access",
+    "grantUnitAccess": "Grant unit access",
+    "restrictUnitAccessHint": "When you restrict unit access, users can only receive read or write access to units through corresponding access groups.",
+    "grantUnitAccessHint": "All users will receive read or write access to all units, regardless of their access groups.",
+    "successfullyGrantedUnitAccess": "Unit access was successfully granted.",
+    "successfullyRestrictedUnitAccess": "Unit access was successfully restricted.",
+    "failedToUpdateUnitAccess": "Unit access could not be changed.",
+    "addAccessGroup": "Create access group",
+    "accountManagement": "Account management",
+    "addAccount": "Create account"
   },
   "de": {
     "access": "Zugriff",
@@ -77,6 +87,16 @@
     "failedToDeleteAccessGroup": "Fehler beim Löschen der Zugriffsgruppe.",
     "permissions": {
       "editors": "Schreibzugriff"
-    }
+    },
+    "restrictUnitAccess": "Unitzugriff einschränken",
+    "grantUnitAccess": "Unitzugriff freigeben",
+    "restrictUnitAccessHint": "Wenn Sie den Unitzugriff einschränken, können Benutzer Lese- bzw. Schreibzugriff auf Units nur noch über entsprechende Zugriffsgruppen erhalten.",
+    "grantUnitAccessHint": "Alle Benutzer erhalten hiermit Lese- bzw. Schreibzugriff auf alle Units, unabhängig von ihren Zugriffsgruppen.",
+    "successfullyGrantedUnitAccess": "Der Unitzugriff wurde erfolgreich freigegeben.",
+    "successfullyRestrictedUnitAccess": "Der Unitzugriff wurde erfolgreich eingeschränkt.",
+    "failedToUpdateUnitAccess": "Der Unitzugriff konnte nicht geändert werden.",
+    "addAccessGroup": "Zugriffsgruppe erstellen",
+    "accountManagement": "Benutzerverwaltung",
+    "addAccount": "Benutzer erstellen"
   }
 }

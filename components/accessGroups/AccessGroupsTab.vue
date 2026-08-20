@@ -16,33 +16,22 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseCard class="mb-16">
-    <v-card-title class="bg-accent small-caps text-h4 d-flex justify-space-between align-center">
-      <span>{{ t('accessGroups') }}</span>
-    </v-card-title>
-    <v-tooltip location="start">
-      <template #activator="{ props }">
-        <v-btn
-          v-if="!allUnitsHaveAccess"
-          v-bind="props"
-          class="veo-primary-action-fab"
-          color="primary"
-          size="large"
-          :icon="mdiPlus"
-          :aria-label="t('createAccessGroup')"
-          @click="openCreateDialog"
-        />
-      </template>
-      <span>{{ t('createAccessGroup') }}</span>
-    </v-tooltip>
-    <v-checkbox
-      class="mb-2"
-      :disabled="isLoadingAccess"
-      :label="t('grantAllAccessToAllUnits')"
-      :model-value="allUnitsHaveAccess"
-      @change="toggleAllUnitsAccess"
-    />
+  <div class="d-flex justify-end mb-4 mx-4 align-center ga-2">
+    <v-btn color="primary" :disabled="isLoadingAccess" @click="unitAccessDialogVisible = true">
+      {{ allUnitsHaveAccess ? t('restrictUnitAccess') : t('grantUnitAccess') }}
+    </v-btn>
+    <v-btn
+      v-if="!allUnitsHaveAccess"
+      color="primary"
+      :prepend-icon="mdiPlus"
+      :aria-label="t('addAccessGroup')"
+      @click="openCreateDialog"
+    >
+      {{ t('addAccessGroup') }}
+    </v-btn>
+  </div>
 
+  <BaseCard class="mb-16">
     <BaseTable
       :default-headers="['actions']"
       :items="accessGroups"
@@ -58,6 +47,7 @@
                 :disabled="allUnitsHaveAccess"
                 :icon="mdiPencilOutline"
                 variant="text"
+                size="small"
                 :aria-label="t('edit')"
                 @click="openEditDialog(item)"
               />
@@ -72,6 +62,7 @@
                 :disabled="allUnitsHaveAccess"
                 :icon="mdiTrashCanOutline"
                 variant="text"
+                size="small"
                 :aria-label="$t('global.button.delete')"
                 @click="openDeleteDialog(item)"
               />
@@ -97,6 +88,27 @@
     :group="groupToDelete"
     @confirm="confirmDeleteAccessGroup"
   />
+
+  <BaseDialog
+    v-model="unitAccessDialogVisible"
+    :title="allUnitsHaveAccess ? t('restrictUnitAccess') : t('grantUnitAccess')"
+  >
+    <p>
+      {{ allUnitsHaveAccess ? t('restrictUnitAccessHint') : t('grantUnitAccessHint') }}
+    </p>
+
+    <template #dialog-options>
+      <v-btn variant="text" @click="unitAccessDialogVisible = false">
+        {{ $t('global.button.cancel') }}
+      </v-btn>
+
+      <v-spacer />
+
+      <v-btn color="primary" variant="flat" :loading="isLoadingAccess" @click="confirmToggleUnitAccess">
+        {{ $t('global.button.save') }}
+      </v-btn>
+    </template>
+  </BaseDialog>
 </template>
 
 <script setup lang="ts">
@@ -138,12 +150,24 @@ watchEffect(() => {
   allUnitsHaveAccess.value = val ? !val.restrictUnitAccess : false;
 });
 
-async function toggleAllUnitsAccess() {
-  const newValue = !allUnitsHaveAccess.value;
-  await updateRestrictUnitAccess({ restrictUnitAccess: !newValue });
-  allUnitsHaveAccess.value = newValue;
-  if (newValue) {
-    displaySuccessMessage(t('successfullyGrantedAllAccess'));
+async function confirmToggleUnitAccess() {
+  const newAllUnitsHaveAccess = !allUnitsHaveAccess.value;
+
+  try {
+    await updateRestrictUnitAccess({
+      restrictUnitAccess: !newAllUnitsHaveAccess
+    });
+
+    allUnitsHaveAccess.value = newAllUnitsHaveAccess;
+    unitAccessDialogVisible.value = false;
+
+    displaySuccessMessage(
+      newAllUnitsHaveAccess ? t('successfullyGrantedUnitAccess') : t('successfullyRestrictedUnitAccess')
+    );
+  } catch (e) {
+    console.error('Error updating unit access restriction', e);
+
+    displayErrorMessage(t('failedToUpdateUnitAccess'), JSON.stringify(e));
   }
 }
 
@@ -221,17 +245,8 @@ const accessGroupTableHeaders = computed(() => [
     key: 'name'
   }
 ]);
+
+const unitAccessDialogVisible = ref(false);
 </script>
 
 <i18n src="~/locales/base/pages/administration.json"></i18n>
-
-<style lang="scss" scoped>
-.veo-primary-action-fab {
-  position: fixed !important;
-  bottom: 24px;
-  right: 24px;
-  border-radius: 50%;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-}
-</style>
