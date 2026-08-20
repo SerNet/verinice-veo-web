@@ -140,7 +140,6 @@
                       @update:model-value="(val) => onColumnImportToggle(header, !!val)"
                     />
                     <v-autocomplete
-                      v-if="columnImportEnabled[header]"
                       v-model:search="headerSearchTerms[header]"
                       :model-value="getSelectedOption(header)"
                       :items="getAvailableOptions(header)"
@@ -154,8 +153,11 @@
                       item-title="title"
                       item-value="value"
                       return-object
-                      :error="!headerMappings[header]"
-                      :error-messages="!headerMappings[header] ? t('global.input.required') : ''"
+                      :disabled="!columnImportEnabled[header]"
+                      :error="columnImportEnabled[header] && !headerMappings[header]"
+                      :error-messages="
+                        columnImportEnabled[header] && !headerMappings[header] ? t('global.input.required') : ''
+                      "
                       @update:model-value="(val) => updateMapping(header, val?.value)"
                     />
                   </th>
