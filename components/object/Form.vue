@@ -193,8 +193,7 @@ export default defineComponent({
   emits: [
     'update:model-value',
     'update:valid',
-    'create-dpia',
-    'link-dpia',
+    'add-part',
     'update:object-meta-data',
     'show-revision',
     'show-form-and-messages'
@@ -314,6 +313,20 @@ export default defineComponent({
         text: text[0]
       }));
 
+    const getPartSubTypeTranslation = (partSubType: string) => {
+      const objectType = Object.entries(domain.value?.elementTypeDefinitions ?? {}).find(
+        ([, definition]) => definition.subTypes && partSubType in definition.subTypes
+      )?.[0];
+
+      if (!objectType) {
+        return partSubType;
+      }
+
+      const translationKey = `${objectType}_${partSubType}_singular`;
+
+      return translations.value?.lang[locale.value]?.[translationKey] || partSubType;
+    };
+
     const transformInspectionFindingSuggestions = (
       suggestions: IVeoInspectionResult['suggestions']
     ): INestedMenuEntries[] =>
@@ -323,14 +336,11 @@ export default defineComponent({
             case 'addPart':
               return [
                 {
-                  key: `${suggestion.partSubType}_create`,
-                  title: t('createDPIA'),
-                  callback: () => emit('create-dpia')
-                },
-                {
-                  key: `${suggestion.partSubType}_link`,
-                  title: t('linkDPIA'),
-                  callback: () => emit('link-dpia')
+                  key: `${suggestion.partSubType}_add`,
+                  title: t('addPart', {
+                    partSubType: getPartSubTypeTranslation(suggestion.partSubType)
+                  }),
+                  callback: () => emit('add-part', suggestion.partSubType)
                 }
               ];
             default:

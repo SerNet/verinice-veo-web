@@ -100,8 +100,7 @@
             :has-actions-menu="true"
             default-side-bar-action="messages"
             @show-revision="onShowRevision"
-            @create-dpia="createDPIADialogVisible = true"
-            @link-dpia="linkObjectDialogVisible = true"
+            @add-part="handleAddPart"
             @show-form-and-messages="handleShowFormAndMessages"
           >
             <template v-if="formDataIsRevision" #prepend-form>
@@ -162,19 +161,14 @@
             @exit="onContinueNavigation"
           />
           <UtilUnloadPrevention :model-value="isFormDirty" />
-          <ObjectCreateDialog
-            v-model="createDPIADialogVisible"
-            object-type="process"
-            sub-type="PRO_DPIA"
+          <ObjectAddObjectDialog
+            v-if="object && selectedPartSubType"
+            v-model="addPartDialogVisible"
             :domain-id="domainId"
-            @success="onDPIACreated"
-          />
-          <ObjectLinkDialog
-            v-if="object"
-            v-model="linkObjectDialogVisible"
-            :preselected-filters="{ subType: 'PRO_DPIA' }"
-            :object="object"
-            @success="onDPIALinked"
+            :parent-object="object"
+            :preselected-filters="{ subType: selectedPartSubType }"
+            :on-link="handleLinkPart"
+            @success="handlePartAdded"
           />
         </template>
       </BasePage>
@@ -533,20 +527,28 @@ const activeTab = computed<string>({
   }
 });
 
-// pia stuff
-const createDPIADialogVisible = ref(false);
-const linkObjectDialogVisible = ref(false);
+// add part handling
+const addPartDialogVisible = ref(false);
+const selectedPartSubType = ref<string>();
 
-const onDPIACreated = async (newObjectId: string) => {
-  if (object.value) {
-    await link(object.value, { type: 'process', id: newObjectId });
+const handleLinkPart = async (objects: IVeoEntity[]) => {
+  if (!object.value) return;
+
+  for (const part of objects) {
+    await link(object.value, {
+      type: part.type,
+      id: part.id
+    });
   }
-  createDPIADialogVisible.value = false;
-  updateObjectRelationships();
 };
 
-const onDPIALinked = () => {
-  linkObjectDialogVisible.value = false;
+const handleAddPart = (partSubType: string) => {
+  selectedPartSubType.value = partSubType;
+  addPartDialogVisible.value = true;
+};
+
+const handlePartAdded = () => {
+  addPartDialogVisible.value = false;
   updateObjectRelationships();
 };
 
