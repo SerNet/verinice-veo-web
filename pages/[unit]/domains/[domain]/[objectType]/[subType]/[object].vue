@@ -56,22 +56,11 @@
         <template #default>
           <ObjectDetails
             v-model:active-tab="activeTab"
-            class="mb-10"
             :loading="loading"
             :object="object"
+            :can-manage-unit-content="canManageUnitContent"
             :domain-id="domainId"
             :dense="!!pageWidths[1]"
-            @reload="updateObjectRelationships"
-          />
-        </template>
-        <template #footer>
-          <div style="height: 36px"></div>
-
-          <ObjectActionMenu
-            color="primary"
-            :disabled="!canManageUnitContent"
-            :object="object"
-            :type="activeTab"
             @reload="updateObjectRelationships"
           />
         </template>

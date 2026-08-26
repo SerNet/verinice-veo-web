@@ -38,6 +38,15 @@
         </div>
       </template>
       <template #items>
+        <ObjectActionMenu
+          class="action-wrapper"
+          :disabled="!canManageUnitContent"
+          :can-manage-unit-content="canManageUnitContent"
+          color="primary"
+          :object="object"
+          :type="activeTab"
+        />
+
         <v-window-item v-for="tab in tabs" :key="tab.key">
           <BaseCard v-if="tab.key == 'graph' && graphEnabled">
             <GraphView />
@@ -70,6 +79,7 @@ const props = withDefaults(
     loading?: boolean;
     activeTab?: string;
     dense?: boolean;
+    canManageUnitContent?: boolean;
   }>(),
   {
     object: undefined,
@@ -168,3 +178,11 @@ const getTabLabel = (tab: { key: string }) => {
 };
 </script>
 <i18n src="~/locales/base/components/object-details.json"></i18n>
+<style scoped>
+.action-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: stretch;
+  padding: 0;
+}
+</style>

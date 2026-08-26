@@ -26,33 +26,46 @@
       @child-create-success="onCreateObjectSuccess"
     >
       <template #default="{ actions }">
-        <v-btn
-          v-if="actions.length === 1"
-          :icon="mdiPlus"
-          :disabled="disabled || !ability.can('manage', subject('units', { id: route.params.unit }))"
-          class="veo-primary-action-fab mr-2"
-          color="primary"
-          data-component-name="object-details-actions-button"
-          data-veo-test="object-details-actions-button"
-          :aria-label="actions[0].title.value"
-          :title="actions[0].title.value"
-          @click="actions[0].action()"
-        />
+        <v-tooltip v-if="type !== 'links'" :disabled="canManageUnitContent" :text="t('missingPermissionsTooltip')">
+          <template #activator="{ props: activatorProps }">
+            <span v-bind="activatorProps">
+              <v-btn
+                v-if="actions.length === 1"
+                :disabled="disabled || !ability.can('manage', subject('units', { id: route.params.unit }))"
+                color="primary"
+                data-component-name="object-details-actions-button"
+                data-veo-test="object-details-actions-button"
+                :aria-label="buttonLabel"
+                :title="buttonLabel"
+                :text="buttonLabel"
+                :prepend-icon="mdiPlus"
+                @click="actions[0].action()"
+              />
+            </span>
+          </template>
+        </v-tooltip>
         <!-- Fallback for multiple actions (backward compatibility) -->
         <v-menu v-else-if="actions.length > 1" v-model="speedDialIsOpen" location="top left">
           <template #activator="{ props: menuProps }">
-            <v-btn
-              :icon="speedDialIsOpen && !disabled && actions.length ? mdiClose : mdiPlus"
-              :disabled="
-                !actions.length || disabled || !ability.can('manage', subject('units', { id: route.params.unit }))
-              "
-              class="veo-primary-action-fab mr-2"
-              color="primary"
-              data-component-name="object-details-actions-button"
-              data-veo-test="object-details-actions-button"
-              :aria-label="t('add')"
-              v-bind="menuProps"
-            />
+            <v-tooltip v-if="type !== 'links'" :disabled="canManageUnitContent" :text="t('missingPermissionsTooltip')">
+              <template #activator="{ props: activatorProps }">
+                <span v-bind="activatorProps">
+                  <v-btn
+                    :prepend-icon="speedDialIsOpen && !disabled && actions.length ? mdiClose : mdiPlus"
+                    :text="buttonLabel"
+                    :title="buttonLabel"
+                    :disabled="
+                      !actions.length || disabled || !ability.can('manage', subject('units', { id: route.params.unit }))
+                    "
+                    color="primary"
+                    data-component-name="object-details-actions-button"
+                    data-veo-test="object-details-actions-button"
+                    :aria-label="t('add')"
+                    v-bind="menuProps"
+                  />
+                </span>
+              </template>
+            </v-tooltip>
           </template>
           <template v-if="actions.length && !disabled" #default>
             <v-list data-veo-test="object-action-menu-list">
@@ -70,17 +83,6 @@
         </v-menu>
       </template>
     </component>
-
-    <v-btn
-      v-if="type === 'links'"
-      :icon="mdiPlus"
-      :disabled="true"
-      class="veo-primary-action-fab mr-2"
-      color="primary"
-      :aria-label="t('add')"
-      data-component-name="object-details-actions-button"
-      data-veo-test="object-details-actions-button"
-    />
   </div>
 </template>
 
@@ -108,6 +110,9 @@ export default defineComponent({
     disabled: {
       type: Boolean,
       default: false
+    },
+    canManageUnitContent: {
+      type: Boolean
     }
   },
   emits: ['reload'],
@@ -116,7 +121,6 @@ export default defineComponent({
     const route = useRoute();
     const speedDialIsOpen = ref(false);
     const { ability, subject } = useVeoPermissions();
-
     const handleReload = () => {
       emit('reload');
     };
@@ -131,12 +135,17 @@ export default defineComponent({
       return componentsMap[props.type];
     });
 
+    const buttonLabel = computed(() => {
+      return t(`connect` + props.type);
+    });
+
     const onCreateObjectSuccess = (_newObjectId: string) => {
       handleReload();
     };
 
     provide('t', t);
     return {
+      buttonLabel,
       currentTabComponent,
       handleReload,
       speedDialIsOpen,

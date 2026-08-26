@@ -15,7 +15,12 @@
     "headline_create": "Create new object",
     "headline_select": "Select object type",
     "select": "Select",
-    "create": "Create"
+    "create": "Create",
+    "connectchildObjects": "Add parts",
+    "connectparentObjects": "Add to group",
+    "connectrisks": "Create risks",
+    "connectcontrols": "Assign controls",
+    "missingPermissionsTooltip": "Missing required permissions"
   },
   "de": {
     "createObject": "{0} erstellen",
@@ -34,6 +39,11 @@
     "headline_create": "Objekt erstellen",
     "headline_select": "Objektstyp auswählen",
     "select": "Auswählen",
-    "create": "Erstellen"
+    "create": "Erstellen",
+    "connectchildObjects": "Teile hinzufügen",
+    "connectparentObjects": "Zu Gruppe hinzufügen",
+    "connectrisks": "Risiken erstellen",
+    "connectcontrols": "Controls zuordnen",
+    "missingPermissionsTooltip": "Fehlende Berechtigung"
   }
 }
