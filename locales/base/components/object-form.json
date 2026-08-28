@@ -7,7 +7,7 @@
     "objects": "Objects",
     "tableOfContents": "Contents",
     "unknown": "Unknown",
-    "addPart": "{partSubType} add"
+    "addPart": "Add {partSubType}"
   },
   "de": {
     "display": "Ansicht",
