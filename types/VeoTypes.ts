@@ -49,6 +49,16 @@ export interface IVeoLink {
   translations?: IVeoDomainTranslations;
 }
 
+/**
+ * Reference to an element as returned by domain specific endpoints. Beyond a plain link it carries
+ * the element details the API resolves for the requested domain.
+ */
+export interface IVeoElementInDomainIdRef extends IVeoLink {
+  targetInDomainUri?: string;
+  associatedWithDomain?: boolean;
+  customAspects?: IVeoCustomAspects;
+}
+
 export interface IVeoRiskDefinitionItemTranslations {
   [lang: string]: {
     name: string;
@@ -440,19 +450,26 @@ export interface IVeoControlImplementationDefinition {
 }
 
 export type RequirementImplementation = {
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
   origin: IVeoLink;
   control: IVeoLink;
   responsible?: ResponsiblePerson;
   status: string;
   origination: string;
+  cost?: number;
   implementationStatement?: string;
   implementationUntil?: string;
   implementationDate?: string;
+  implementedBy?: IVeoLink;
   document?: any;
   lastRevisionDate?: string;
   lastRevisionBy?: ResponsiblePerson;
   nextRevisionDate?: string;
   nextRevisionBy?: ResponsiblePerson;
+  _self?: string;
 };
 
 export type ResponsiblePerson = IVeoLink;
