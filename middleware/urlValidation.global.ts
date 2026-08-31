@@ -20,6 +20,8 @@
  * This middleware checks whether a url is valid. If the validation fails, the user gets redirected to the index page.
  */
 import { hasFeature } from '~/utils/featureFlags';
+const TASKS_PATH = /^\/[^/]+\/domains\/[^/]+\/tasks\/?$/;
+
 export default defineNuxtRouteMiddleware(async (to) => {
   // Fix for Link Hijack & Open Redirect
   // To fix the problem, the page will be redirected to the index page if a url parameter contains at least one "/"
@@ -31,6 +33,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
   if (to.path === '/user-settings') {
     if (!hasFeature('userSettings')) {
+      throw createError({ statusCode: 404 });
+    }
+  }
+  if (TASKS_PATH.test(to.path)) {
+    if (!hasFeature('tasks')) {
       throw createError({ statusCode: 404 });
     }
   }

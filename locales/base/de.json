@@ -128,7 +128,8 @@
     "user-settings": "Einstellungen",
     "edit": "Bearbeiten",
     "migration": "Domain Migration",
-    "update": "Domänen-Updates"
+    "update": "Domänen-Updates",
+    "tasks": "Aufgaben"
   },
   "compliance": {
     "status": {

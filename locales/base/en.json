@@ -125,7 +125,8 @@
     "welcome": "Welcome",
     "user-settings": "Settings",
     "edit": "Edit",
-    "update": "Domain Updates"
+    "update": "Domain Updates",
+    "tasks": "Tasks"
   },
   "compliance": {
     "status": {

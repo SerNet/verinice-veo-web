@@ -94,6 +94,7 @@ export interface INavItem {
   componentName?: string;
   classes?: string;
   openInNewtab?: boolean;
+  badge?: { content: number; color: string; classes?: string };
 }
 
 export const PROVIDE_KEYS = {
@@ -111,7 +112,8 @@ import {
   mdiTextBoxEditOutline,
   mdiUngroup,
   mdiViewDashboardOutline,
-  mdiPuzzleOutline
+  mdiPuzzleOutline,
+  mdiFlagOutline
 } from '@mdi/js';
 import { sortBy, upperFirst, isEmpty } from 'lodash';
 import { StorageSerializers, useStorage, useVModel } from '@vueuse/core';
@@ -124,6 +126,7 @@ import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domain
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
 import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
 import { ROUTE_NAME as REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/index.vue';
+import { ROUTE_NAME as TASKS_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/tasks/index.vue';
 import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[definition]/index.vue';
 import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
@@ -136,6 +139,8 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
+import { useTaskCount } from '~/composables/tasks';
+import { hasFeature } from '~/utils/featureFlags';
 
 const props = withDefaults(
   defineProps<{
@@ -377,6 +382,30 @@ const domainDashboardNavEntry = computed<INavItem>(() => ({
   exact: true
 }));
 
+const hasTasks = hasFeature('tasks');
+
+const taskCountQueryParameters = computed(() => ({
+  domainId: props.domainId,
+  unitId: props.unitId
+}));
+const taskCount = useTaskCount(taskCountQueryParameters);
+
+const tasksNavEntry = computed<INavItem>(() => ({
+  id: 'tasks',
+  name: $t('breadcrumbs.tasks').toString(),
+  icon: mdiFlagOutline,
+  to: {
+    name: TASKS_ROUTE_NAME,
+    params: {
+      unit: props.unitId,
+      domain: props.domainId
+    }
+  },
+  componentName: 'tasks-nav-item',
+  exact: true,
+  ...(taskCount.value ? { badge: { content: taskCount.value, color: 'error' } } : {})
+}));
+
 const objectsNavEntry = computed<INavItem>(() => ({
   id: 'objects',
   name: $t('breadcrumbs.objects').toString(),
@@ -451,6 +480,7 @@ const items = computed<INavItem[]>(() => [
   ...(props.unitId && props.domainId ?
     [
       domainDashboardNavEntry.value,
+      ...(hasTasks ? [tasksNavEntry.value] : []),
       ...(props.domainId && props.unitId && ability.value.can('view', 'editors') ? [editorsNavEntry.value] : []),
       objectsNavEntry.value,
       ...(!isEmpty(catalogsEntriesChildItems.value) ? [catalogsNavEntry.value] : []),
