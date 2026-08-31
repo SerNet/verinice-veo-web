@@ -3,7 +3,8 @@ const flagNames = {
   userSettings: 'VEO_FEATURE_FLAG_USER_SETTINGS',
   shortcuts: 'VEO_FEATURE_FLAG_SHORTCUTS',
   accessGroups: 'VEO_FEATURE_FLAG_ACCESS_GROUPS',
-  riDialogProps: 'VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES'
+  riDialogProps: 'VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES',
+  tasks: 'VEO_FEATURE_FLAG_TASKS'
 };
 
 type FlagNames = keyof typeof flagNames;
