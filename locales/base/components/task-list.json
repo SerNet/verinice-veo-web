@@ -1,0 +1,12 @@
+{
+  "en": {
+    "noTasks": "There are no open tasks in this unit.",
+    "pagination": "Pagination",
+    "paginationRange": "{from}-{to} of {total}"
+  },
+  "de": {
+    "noTasks": "In dieser Unit gibt es keine offenen Aufgaben.",
+    "pagination": "Seitennavigation",
+    "paginationRange": "{from}-{to} von {total}"
+  }
+}

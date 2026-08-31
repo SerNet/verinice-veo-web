@@ -1,0 +1,16 @@
+{
+  "en": {
+    "dueBy": "Due {date}",
+    "type": {
+      "requirement-implementation": "Implementation",
+      "requirement-implementation-revision": "Revision"
+    }
+  },
+  "de": {
+    "dueBy": "Bis {date}",
+    "type": {
+      "requirement-implementation": "Umsetzung",
+      "requirement-implementation-revision": "Revision"
+    }
+  }
+}
