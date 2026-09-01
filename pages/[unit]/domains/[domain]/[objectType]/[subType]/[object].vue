@@ -167,6 +167,7 @@
             :domain-id="domainId"
             :parent-object="object"
             :preselected-filters="{ subType: selectedPartSubType }"
+            :multi-select="true"
             :on-link="handleLinkPart"
             @success="handlePartAdded"
           />
