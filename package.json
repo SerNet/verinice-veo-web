@@ -47,7 +47,7 @@
     "dompurify": "^3.1.5",
     "dotenv": "^17.4.2",
     "glob": "^13.0.0",
-    "intro.js": "^8.3.2",
+    "intro.js": "^8.5.0",
     "js-cookie": "^3.0.1",
     "jsonpointer": "^5.0.1",
     "jszip": "^3.10.1",

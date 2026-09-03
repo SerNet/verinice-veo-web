@@ -206,7 +206,6 @@ export function createIntro() {
 
               setTimeout(() => {
                 tutorialReady = true;
-                tourInstance.goToStep(step.value + 1);
 
                 // check wether element is a link element
                 const isAnchorElement = (el: HTMLElement): el is HTMLAnchorElement => el && el.tagName === 'A';
