@@ -34,7 +34,9 @@ describe('Form Editor', () => {
 
   it('should import a form editor', () => {
     visitEditor();
+    cy.intercept('GET', `${Cypress.env('veoFormsApiUrl')}/?domainId=**`).as('getFormSchemas');
     cy.get('[data-veo-test="formschema-item"]').click();
+    cy.wait('@getFormSchemas').its('response.statusCode').should('eq', 200);
     cy.get('[data-veo-test="dialog-card"]').within(() => {
       cy.get('[data-veo-test="import-form-schema"]').click();
       cy.get('[data-veo-test="form-schema-select"]').click();
