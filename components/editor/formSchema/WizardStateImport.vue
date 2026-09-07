@@ -28,6 +28,8 @@
         <v-select
           :model-value="formSchemaId"
           :label="t('formSchema')"
+          :disabled="loadingFormSchemas"
+          :loading="loadingFormSchemas"
           :rules="[requiredRule]"
           :items="formSchemaOptions"
           required
@@ -145,9 +147,11 @@ export default defineComponent({
     // formschema stuff
     const queryParameters = computed(() => ({ domainId: props.domainId }));
     const queryEnabled = computed(() => !!props.domainId);
-    const { data: formSchemas } = useQuery(formsQueryDefinitions.queries.fetchForms, queryParameters, {
-      enabled: queryEnabled
-    });
+    const { data: formSchemas, isFetching: loadingFormSchemas } = useQuery(
+      formsQueryDefinitions.queries.fetchForms,
+      queryParameters,
+      { enabled: queryEnabled }
+    );
 
     const formSchemaOptions = computed<{ title: string; value: string }[]>(() => [
       {
@@ -174,6 +178,7 @@ export default defineComponent({
 
     return {
       formSchemaOptions,
+      loadingFormSchemas,
       objectTypeMissing,
       requiredRule,
 
