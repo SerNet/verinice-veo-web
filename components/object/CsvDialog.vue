@@ -923,7 +923,7 @@ const validateAll = () => {
 
         return;
       }
-      if (!isEmptyCsvImportValue(value) && typeof value !== 'string') {
+      if (!isEmptyCsvImportValue(value) && typeof value !== 'string' && typeof value !== 'number') {
         errors[field] = t('global.input.mustBeString');
       }
     });
