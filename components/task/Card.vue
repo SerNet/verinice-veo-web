@@ -16,7 +16,13 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BaseCard border margin-bottom data-veo-test="task-card" :data-component-name="`task-card-${task.type}`">
+  <BaseCard
+    border
+    margin-bottom
+    data-veo-test="task-card"
+    :data-component-name="`task-card-${task.type}`"
+    @click="emit('click')"
+  >
     <div class="d-flex align-center ga-4 pa-3 px-4">
       <v-icon :icon="icon" size="large" class="flex-0-0" data-veo-test="task-card-icon" />
 
@@ -49,6 +55,10 @@ import { getDeadlineColor, getTaskIcon, parseDeadline } from '~/utils/tasks';
 
 const props = defineProps<{
   task: IVeoTask;
+}>();
+
+const emit = defineEmits<{
+  (event: 'click'): void;
 }>();
 
 const { t, locale } = useI18n();

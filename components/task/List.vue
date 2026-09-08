@@ -32,7 +32,7 @@
     />
 
     <template v-else>
-      <TaskCard v-for="(task, index) of tasks" :key="index" :task="task" />
+      <TaskCard v-for="(task, index) of tasks" :key="index" :task="task" @click="emit('click', task)" />
 
       <div v-if="totalItemCount" class="d-flex align-center justify-end ga-2 mt-2" data-veo-test="task-list-pagination">
         <span class="text-body-2">
@@ -71,6 +71,10 @@ const props = withDefaults(
     loading: false
   }
 );
+
+const emit = defineEmits<{
+  (event: 'click', task: IVeoTask): void;
+}>();
 
 /** Zero based page, as used by the API. */
 const page = defineModel<number>('page', { default: 0 });

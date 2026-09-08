@@ -25,6 +25,15 @@
         :total-item-count="totalItemCount"
         :page-size="TASKS_PAGE_SIZE"
         :loading="isFetching && !tasks.length"
+        @click="openTask"
+      />
+
+      <ComplianceEditor
+        v-if="showDialog"
+        :item="requirementImplementation"
+        :show-dialog="showDialog"
+        :locale="locale"
+        @update:show-dialog="showDialog = $event"
       />
     </BaseContainer>
   </BasePage>
@@ -36,8 +45,11 @@ export const ROUTE_NAME = 'unit-domains-domain-tasks';
 
 <script setup lang="ts">
 import { TASKS_PAGE_SIZE, useFetchTasks } from '~/composables/tasks';
+import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
+import type { IVeoTask } from '~/types/VeoTask';
+import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const route = useRoute();
 
 const page = ref(0);
@@ -53,6 +65,23 @@ const { data, isFetching } = useFetchTasks(queryParameters);
 const tasks = computed(() => data.value?.items ?? []);
 const pageCount = computed(() => data.value?.pageCount ?? 1);
 const totalItemCount = computed(() => data.value?.totalItemCount ?? 0);
+
+const { showDialog, requirementImplementation, openItem } = useRequirementImplementationQuery();
+
+function openTask(task: IVeoTask) {
+  const implementation = task.requirementImplementation;
+  const originType = implementation.origin.type as keyof typeof VeoElementTypePlurals;
+  const endpoint = VeoElementTypePlurals[originType];
+  const targetObject = implementation.origin.id;
+
+  if (!endpoint || !targetObject) return;
+
+  void openItem({
+    type: endpoint,
+    targetObject,
+    item: implementation
+  });
+}
 
 // Reset to the first page if the current one no longer exists, eg. after switching units
 watch(pageCount, (newPageCount) => {
