@@ -38,7 +38,7 @@
         <v-label class="mt-4">{{ t('riEditor.targetObject') }}</v-label>
         <BaseCard border padding>
           <ComplianceEditorRiMetaData
-            v-for="property in config.riEditor.renderedProperties.targetObject"
+            v-for="property in config?.riEditor?.renderedProperties.targetObject ?? []"
             :key="property.key"
             :property="property"
             :data="form.origin"
@@ -59,7 +59,7 @@
             :translations="mergedTranslations"
           />
           <ComplianceEditorRiMetaData
-            v-for="property in config.riEditor.renderedProperties.control"
+            v-for="property in config?.riEditor?.renderedProperties.control ?? []"
             v-else
             :key="property.key"
             :property="property"
@@ -372,10 +372,11 @@
         @click="
           () =>
             void (
-              route.query.targetObject &&
+              targetObjectId &&
+              targetObjectType &&
               submitForm({
-                type: VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals],
-                riskAffected: route.query.targetObject as string,
+                type: targetObjectType,
+                riskAffected: targetObjectId,
                 form,
                 item: item,
                 request
@@ -516,13 +517,20 @@ const view = reactive({
 // ===== Route and context parameters =====
 const unitId = computed(() => route.params.unit);
 const currentDomainId = computed(() => route.params.domain);
+const targetObjectId = computed(() => props.item?.origin.id ?? (route.query.targetObject as string));
+const targetObjectType = computed(() => {
+  const originType = props.item?.origin.type as keyof typeof VeoElementTypePlurals;
+  return (
+    VeoElementTypePlurals[originType] ?? VeoElementTypePlurals[route.query.type as keyof typeof VeoElementTypePlurals]
+  );
+});
 
 // ===== API query parameters =====
 // Object queries
 const targetObjectParameters = computed<IVeoFetchObjectParameters>(() => ({
-  id: props.item?.origin.id as string,
+  id: targetObjectId.value,
   domain: currentDomainId.value as string,
-  endpoint: VeoElementTypePlurals[props.item?.origin.type]
+  endpoint: targetObjectType.value
 }));
 
 const controlParameters = computed<IVeoFetchObjectParameters>(() => ({
@@ -772,13 +780,17 @@ async function submitForm({
 // ===== Watchers and lifecycle hooks =====
 // Update form when item changes
 const _item = computed(() => props.item);
-watch([_item, control], () => {
-  if (!_item.value) return;
-  form.value = {
-    ..._item.value,
-    control: control.value
-  };
-});
+watch(
+  [_item, control],
+  () => {
+    if (!_item.value) return;
+    form.value = {
+      ..._item.value,
+      control: control.value ?? _item.value.control
+    };
+  },
+  { immediate: true }
+);
 
 // Update additional info when relevant data changes
 watch(
