@@ -624,6 +624,7 @@ export default {
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries({ queryKey: ['requirementImplementations'] });
+          queryClient.invalidateQueries({ queryKey: ['tasks'] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateRequirementImplementationsParameters, void>
