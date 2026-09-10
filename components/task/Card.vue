@@ -30,9 +30,18 @@
         <div class="text-body-2 text-truncate" data-veo-test="task-card-origin">
           {{ t(`type.${task.type}`) }}: {{ originName }}
         </div>
-        <div class="text-body-1 font-weight-medium text-truncate" data-veo-test="task-card-control">
-          {{ controlName }}
-        </div>
+        <v-tooltip location="bottom" :aria-label="controlName">
+          <template #activator="{ props: tooltipProps }">
+            <div
+              v-bind="tooltipProps"
+              class="text-body-1 font-weight-medium text-truncate"
+              data-veo-test="task-card-control"
+            >
+              {{ controlName }}
+            </div>
+          </template>
+          <span>{{ controlName }}</span>
+        </v-tooltip>
       </div>
 
       <v-chip
