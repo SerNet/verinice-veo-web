@@ -412,6 +412,7 @@ export default {
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
           queryClient.invalidateQueries(['objects']);
+          queryClient.invalidateQueries({ queryKey: ['tasks'] });
         }
       }
     } as IVeoMutationDefinition<IVeoCreateObjectParameters, IVeoAPIMessage>,
@@ -505,6 +506,7 @@ export default {
           ]);
           // Invalid all object lists, as the parent endpoint uses the same key (and we want an updated edit date in the list for this object)
           queryClient.invalidateQueries(['objects']);
+          queryClient.invalidateQueries({ queryKey: ['tasks'] });
           // Only invalidate after 5 seconds, as the history sevice isn't updated as sonn as the object is updated
           setTimeout(() => {
             queryClient.invalidateQueries(['versions']);
@@ -525,6 +527,7 @@ export default {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries(['objects']);
           queryClient.invalidateQueries(['object', variables.params]);
+          queryClient.invalidateQueries({ queryKey: ['tasks'] });
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteObjectParameters, void>,
