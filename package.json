@@ -89,7 +89,7 @@
     "cypress-parallel-extended": "2.2.0",
     "eslint": "10.10.0",
     "eslint-config-prettier": "10.1.8",
-    "eslint-plugin-vue": "10.10.0",
+    "eslint-plugin-vue": "10.11.0",
     "force-graph": "1.51.4",
     "happy-dom": "20.14.5",
     "lint-staged": "17.5.1",
