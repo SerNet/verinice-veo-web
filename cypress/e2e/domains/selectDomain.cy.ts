@@ -30,28 +30,20 @@ describe('Domain Selection Functionality', () => {
   it('should switch to IT-Grundschutz domain and verify domain selection', () => {
     cy.selectDomain('IT-Grundschutz');
 
-    cy.getCustom('[data-veo-test="domain-select"]')
-      .invoke('attr', 'data-selected-domain')
-      .then(($selectedDomain) => {
-        expect($selectedDomain).to.equal('IT-Grundschutz');
-        cy.getCustom('[data-component-name="breadcrumbs"]').should(
-          'have.attr',
-          'data-current-domain',
-          'IT-Grundschutz'
-        );
-        cy.testEmptyDashboard(itgs_widgets);
-      });
+    cy.getCustom('[data-veo-test="domain-select"]').should('have.attr', 'data-selected-domain', 'IT-Grundschutz');
+
+    cy.getCustom('[data-component-name="breadcrumbs"]').should('have.attr', 'data-current-domain', 'IT-Grundschutz');
+
+    cy.testEmptyDashboard(itgs_widgets);
   });
 
   it('should switch to DS-GVO domain and verify domain selection', () => {
     cy.selectDomain('DS-GVO');
 
-    cy.getCustom('[data-veo-test="domain-select"]')
-      .invoke('attr', 'data-selected-domain')
-      .then(($selectedDomain) => {
-        expect($selectedDomain).to.equal('DS-GVO');
-        cy.getCustom('[data-component-name="breadcrumbs"]').should('have.attr', 'data-current-domain', 'DS-GVO');
-        cy.testEmptyDashboard();
-      });
+    cy.getCustom('[data-veo-test="domain-select"]').should('have.attr', 'data-selected-domain', 'DS-GVO');
+
+    cy.getCustom('[data-component-name="breadcrumbs"]').should('have.attr', 'data-current-domain', 'DS-GVO');
+
+    cy.testEmptyDashboard();
   });
 });
