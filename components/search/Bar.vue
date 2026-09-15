@@ -272,7 +272,7 @@ function translateTerm(searchPart: VeoSearch) {
 // STATE
 // Make search accessible in parent components using a v-model
 const search = defineModel<VeoSearch[]>('search', {
-  default: []
+  default: () => []
 });
 // Current value of v-combobox
 const select = ref();

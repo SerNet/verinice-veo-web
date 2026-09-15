@@ -133,7 +133,7 @@ const props = withDefaults(
   }
 );
 
-const valueMatrix = defineModel<IVeoRiskValueLevel[][]>('value-matrix', { default: [] });
+const valueMatrix = defineModel<IVeoRiskValueLevel[][]>('value-matrix', { default: () => [] });
 
 // Getters for static matrix values
 const getImpact = (rowIndex: number) => props.potentialImpacts?.at(-1 - rowIndex);

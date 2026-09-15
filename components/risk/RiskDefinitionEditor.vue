@@ -160,7 +160,7 @@ const { t } = useI18n();
 const { requiredRule } = useRules();
 
 // State
-const data = defineModel<IVeoRiskPotentialImpact[]>('data', { default: [] });
+const data = defineModel<IVeoRiskPotentialImpact[]>('data', { default: () => [] });
 const formIsDirty = defineModel<boolean>('isDirty', { default: false });
 
 const tab = ref(0);
