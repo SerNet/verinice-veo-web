@@ -1,4 +1,5 @@
 import { resolve } from 'path';
+import yaml from '@rollup/plugin-yaml';
 import vuetify from 'vite-plugin-vuetify';
 
 // Types
@@ -86,7 +87,7 @@ export default defineNuxtConfig({
       featureFlags: createFeatureFlags(process.env)
     }
   },
-  modules: ['@nuxt/content', '@nuxtjs/i18n', '@nuxt/test-utils/module', '@nuxt/fonts'],
+  modules: ['@nuxtjs/i18n', '@nuxt/test-utils/module', '@nuxt/fonts'],
 
   build: {
     transpile: ['vuetify', 'hast-util-to-string', 'micromark']
@@ -110,40 +111,16 @@ export default defineNuxtConfig({
         styles: {
           configFile: 'assets/styles/settings.scss'
         }
-      })
+      }),
+      // Parses content/tutorials/*.yaml at build time (see composables/intro.ts).
+      // Runs only during the build - adds no runtime weight to the client bundle.
+      yaml()
     ]
   },
 
   //==============================================================
   // Plugin configuration
   //==============================================================
-  // Nuxt content configuration
-  content: {
-    experimental: { nativeSqlite: true },
-    build: {
-      markdown: {
-        toc: {
-          depth: 5 // include h3 headings
-        },
-        // Object syntax can be used to override default options
-        remarkPlugins: {
-          // Override remark-emoji options
-          'remark-emoji': {
-            options: {
-              emoticon: true
-            }
-          },
-          // Disable remark-gfm
-          'remark-gfm': false,
-          // Add remark-oembed
-          'remark-oembed': {
-            // Options
-          }
-        }
-      }
-    }
-  },
-
   // i18n configuration
   i18n: {
     strategy: 'no_prefix',

@@ -69,11 +69,11 @@
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@nuxt/content": "3.16.0",
     "@nuxt/eslint-config": "1.17.0",
     "@nuxt/fonts": "0.14.0",
     "@nuxt/kit": "4.5.2",
     "@nuxt/test-utils": "4.3.2",
+    "@rollup/plugin-yaml": "5.0.0",
     "@types/hash-sum": "1.0.2",
     "@types/intro.js": "5.1.5",
     "@types/js-cookie": "3.0.6",

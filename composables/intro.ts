@@ -16,8 +16,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import type { Ref, WatchStopHandle } from 'vue';
-// @ts-ignore TODO #3066 has no exported member
-import type { TutorialsCollectionItem } from '@nuxt/content';
 import { useIsFetching } from '@tanstack/vue-query';
 import introJs from 'intro.js';
 import type { Hint } from 'intro.js/src/packages/hint';
@@ -444,17 +442,62 @@ export function useIntro() {
   };
 }
 
+interface IVeoTutorialStep {
+  title: string;
+  element: string;
+  intro: string;
+  position?: string;
+}
+
+interface IVeoTutorial {
+  id: string;
+  path: string;
+  locale: string;
+  title: string;
+  description?: string;
+  route: string;
+  exact?: boolean;
+  steps: IVeoTutorialStep[];
+}
+
+/**
+ * Each file is expected to be named `<order>.<slug>.<locale>.yaml`, e.g. `2.app-bar.de.yaml`.
+ */
+const tutorialModules = import.meta.glob<{ default: Omit<IVeoTutorial, 'id' | 'path' | 'locale'> }>(
+  ['../content/tutorials/*.yaml', '!../content/tutorials/10.riskdefinition.*.yaml'],
+  { eager: true }
+);
+
+const ALL_TUTORIALS: IVeoTutorial[] = Object.entries(tutorialModules)
+  .map(([filePath, mod]) => {
+    const fileName = filePath.split('/').pop() as string;
+    const [order, ...rest] = fileName.replace(/\.yaml$/, '').split('.');
+    const locale = rest.pop() as string;
+    const slug = rest.join('.');
+    return {
+      order: parseInt(order, 10),
+      tutorial: {
+        ...mod.default,
+        id: fileName,
+        path: `/tutorials/${slug}`,
+        locale
+      } as IVeoTutorial
+    };
+  })
+  .sort((a, b) => a.order - b.order)
+  .map(({ tutorial }) => tutorial);
+
 export function useTutorials() {
   const intro = useIntro();
   const route = useRoute();
   const i18n = useI18n();
 
-  const docs = ref<TutorialsCollectionItem[]>();
+  const docs = ref<IVeoTutorial[]>();
 
   const fetchDocs = async () => {
     try {
       const locale = i18n.locale.value || 'en';
-      docs.value = await queryCollection('tutorials').where('id', 'LIKE', `%.${locale}.yaml`).all();
+      docs.value = ALL_TUTORIALS.filter((tutorial) => tutorial.locale === locale);
     } catch (e: any) {
       if (e instanceof Error) {
         console.error('Message:', e.message);
