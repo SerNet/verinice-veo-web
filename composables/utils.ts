@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { trim } from 'lodash';
-import validator from 'validator';
+import isEmail from 'validator/es/lib/isEmail';
 
 export const useFormatters = () => {
   const { locale } = useI18n();
@@ -108,7 +108,7 @@ export const useRules = () => {
   const mailValidator = (v: string) => {
     if (typeof v !== 'string' || v.length > 254) return false;
 
-    const isValid = validator.isEmail(v, {
+    const isValid = isEmail(v, {
       allow_utf8_local_part: false,
       require_tld: true
     });
