@@ -36,9 +36,9 @@
       </v-btn>
     </div>
 
-    <ToastUIViewer v-if="!isCreateMode && !editing" :model-value="modelValue" />
+    <LazyToastUIViewer v-if="!isCreateMode && !editing" :model-value="modelValue" />
 
-    <ToastUIEditor
+    <LazyToastUIEditor
       v-else
       :model-value="modelValue"
       @update:model-value="(markdown) => emit('update:model-value', markdown)"

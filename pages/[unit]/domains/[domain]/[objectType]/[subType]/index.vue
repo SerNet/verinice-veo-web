@@ -169,7 +169,7 @@
         :objects="selectedOperationItems"
         @update:model-value="resetOperationItems"
       />
-      <ObjectCsvImportCard
+      <LazyObjectCsvImportCard
         v-if="hasCSVImport"
         :model-value="hasCSVImport"
         :object-type="filter.objectType"

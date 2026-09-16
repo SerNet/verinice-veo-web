@@ -49,7 +49,7 @@
 
         <v-window-item v-for="tab in tabs" :key="tab.key">
           <BaseCard v-if="tab.key == 'graph' && graphEnabled">
-            <GraphView />
+            <LazyGraphView />
           </BaseCard>
           <BaseCard v-else>
             <ObjectDetailsTab
