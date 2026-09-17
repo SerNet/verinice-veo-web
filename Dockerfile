@@ -37,6 +37,9 @@ RUN echo ${CI_COMMIT_REF_NAME} > VERSION && echo ${CI_COMMIT_REF_NAME} > public/
 
 RUN npm run generate && node externalize-scripts.mjs
 
+RUN find .output/public -type f \( -name "*.js" -o -name "*.css" -o -name "*.json" -o -name "*.svg" -o -name "*.html" \) -size +10240c \
+    -exec gzip -9 -k {} \;
+
 FROM nginx:1.31@sha256:abe47724e466aeab9a345d8e46a221c2fa8953c7848bb4a3bd9976a7199f8cf2 AS release
 
 COPY --from=builder /usr/src/app/.output/public /usr/src/app
