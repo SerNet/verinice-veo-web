@@ -165,6 +165,7 @@
       />
 
       <ObjectAssignDialog
+        v-if="objectAssignDialogVisible"
         :model-value="objectAssignDialogVisible"
         :objects="selectedOperationItems"
         @update:model-value="resetOperationItems"
