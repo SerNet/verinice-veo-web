@@ -23,16 +23,8 @@ import { aliases, mdi } from 'vuetify/iconsets/mdi-svg';
 import { de, en } from 'vuetify/locale';
 import 'vuetify/styles';
 
-// Vuetify Lab components
-import { VDateInput } from 'vuetify/labs/VDateInput';
-import { VFileUpload } from 'vuetify/labs/VFileUpload';
-
 const vuetify = createVuetify({
-  components: {
-    ...components,
-    VDateInput,
-    VFileUpload
-  },
+  components,
   directives,
   ssr: true,
   icons: {

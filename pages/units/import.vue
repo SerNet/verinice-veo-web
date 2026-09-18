@@ -230,7 +230,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 <script setup lang="ts">
 import JSZip from 'jszip';
 import { mdiTrayArrowUp } from '@mdi/js';
-import { VFileUploadItem } from 'vuetify/labs/VFileUpload';
 import { VeoAlertType } from '~/types/VeoTypes';
 
 import type { UnitDetails as TUnitDetails } from '~/components/unit/Details.vue';

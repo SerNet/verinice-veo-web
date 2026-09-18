@@ -150,7 +150,6 @@ import { useI18n } from 'vue-i18n';
 import ObjectCsvDialog from '~/components/object/CsvDialog.vue';
 import { useCsvImporter } from '~/composables/csv/useCsvImporter';
 import { useVeoAlerts } from '~/composables/VeoAlert';
-import { VFileUploadItem } from 'vuetify/labs/VFileUpload';
 import { mdiHelpCircleOutline } from '@mdi/js';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
 import ObjectEncodingDialog from '~/components/object/EncodingDialog.vue';

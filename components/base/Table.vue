@@ -29,9 +29,6 @@
 import { cloneDeep, omit } from 'lodash';
 import type { Slot, VNode, VNodeArrayChildren } from 'vue';
 import { VCheckbox, VIcon, VProgressLinear, VTooltip } from 'vuetify/components';
-import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
-
-import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
@@ -571,6 +568,7 @@ const sharedProps = computed(() => {
       emit('click', context);
     }
   }
+
   // Extract complex event handlers into separate variables
   const onClickRowHandler =
     props.enableClick || props.showSelect ?
@@ -714,6 +712,7 @@ const render = () => {
     display: flex !important;
     align-items: center !important;
   }
+
   .v-data-table__tr {
     height: 24px !important;
     min-height: 24px !important;
@@ -727,6 +726,7 @@ const render = () => {
     font-size: 12px !important;
     line-height: 1 !important;
   }
+
   .v-data-table-header__content {
     height: 24px !important;
     font-size: 11px !important;
@@ -781,6 +781,7 @@ const render = () => {
     padding: 0 !important;
   }
 }
+
 :deep(*) {
   .cursor-default {
     cursor: default;
@@ -790,6 +791,7 @@ const render = () => {
     cursor: pointer;
   }
 }
+
 :deep(.table-row-link) {
   &:hover {
     text-decoration: underline !important;
