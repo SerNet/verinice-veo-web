@@ -37,6 +37,7 @@ import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import Control from './controls/Control';
+import { injectUserAssignmentGroup, USERNAME_SCOPE } from './userAssignment';
 import Label from './labels/Label.vue';
 import Layout from './layouts/Layout';
 import type {
@@ -144,7 +145,7 @@ export default defineComponent({
   },
   emits: ['update:model-value', 'update:messages', 'update:valid'],
   setup(props, { emit }) {
-    const { locale } = useI18n();
+    const { locale, t } = useI18n();
 
     const { defaultReactiveFormActions } = useVeoReactiveFormActions();
     const { formatErrors } = useVeoErrorFormatter();
@@ -152,6 +153,14 @@ export default defineComponent({
     const localTranslations = computed(() => props.translations?.[props.locale || locale.value] || {});
     const localAdditionalContext = computed(() => props.additionalContext || {});
     const localObjectSchema = computed(() => props.objectSchema);
+
+    const userAssignmentLabels = computed(() => {
+      const translateOptions = { locale: (props.locale || locale.value) as typeof locale.value };
+      return {
+        group: t('userAssignment', {}, translateOptions),
+        control: t('linkedAccount', {}, translateOptions)
+      };
+    });
 
     const localFormSchema = computed(() => {
       try {
@@ -176,7 +185,8 @@ export default defineComponent({
                 '/designator$',
                 '/decisionResults',
                 '(\\w+)/properties/domains$',
-                '_self'
+                '_self',
+                `^${USERNAME_SCOPE}$`
               ],
               groupedNamespaces: Object.keys(props.objectSchema.properties?.customAspects?.properties || {}).map(
                 (key) => ({
@@ -193,7 +203,18 @@ export default defineComponent({
         if (!formSchema) {
           return null;
         }
-        const clonedSchema = cloneDeep(formSchema);
+        const firstLayoutIndex =
+          formSchema.elements?.findIndex((element: IVeoFormSchemaItem) => element.type === 'Layout') ?? -1;
+        const userAssignmentGroupIndex =
+          props.formSchema ? 1
+          : firstLayoutIndex === -1 ? (formSchema.elements?.length ?? 0)
+          : firstLayoutIndex;
+        const clonedSchema = injectUserAssignmentGroup(
+          cloneDeep(formSchema),
+          localObjectSchema.value,
+          userAssignmentLabels.value,
+          userAssignmentGroupIndex
+        );
         if (props.reactiveFormActions) {
           return updateRiskDefinitionsFormSchema(props.domain, clonedSchema, locale.value);
         }
@@ -509,3 +530,5 @@ export default defineComponent({
   }
 });
 </script>
+
+<i18n src="~/locales/base/components/dynamic-form-user-assignment.json"></i18n>

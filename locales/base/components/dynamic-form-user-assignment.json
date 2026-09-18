@@ -1,0 +1,14 @@
+{
+  "en": {
+    "userAssignment": "Account assignment",
+    "linkedAccount": "Linked account",
+    "autoAddedHint": "Added automatically to every person form. Cannot be edited.",
+    "noAccountsFound": "No accounts found"
+  },
+  "de": {
+    "userAssignment": "Benutzerzuordnung",
+    "linkedAccount": "Verknüpfter Account",
+    "autoAddedHint": "Wird automatisch zu jedem Personen-Formular hinzugefügt. Kann nicht bearbeitet werden.",
+    "noAccountsFound": "Keine Accounts gefunden"
+  }
+}

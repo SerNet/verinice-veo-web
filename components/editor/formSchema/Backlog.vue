@@ -196,6 +196,7 @@ import Draggable from 'vuedraggable';
 
 import type { IVeoFormsElementDefinition } from '~/components/dynamic-form/types';
 import { generateFormSchema, Mode } from '~/components/dynamic-form/util';
+import { USERNAME_SCOPE } from '~/components/dynamic-form/userAssignment';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import type { IVeoFormSchema } from '~/composables/api/queryDefinitions/forms';
 import { INPUT_TYPES } from '~/types/VeoEditor';
@@ -378,7 +379,8 @@ function initializeControls() {
         '/designator$',
         '_self',
         '/risks$',
-        '/decisionResults$'
+        '/decisionResults$',
+        `^${USERNAME_SCOPE}$`
       ]
     },
     Mode.VEO

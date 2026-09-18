@@ -20,6 +20,7 @@ import { maxBy } from 'lodash';
 import { JsonPointer } from '~/lib/jsonPointer';
 
 import { VeoFormsControlProps } from '../util';
+import * as AccountSelect from './AccountSelect.vue';
 import * as Autocomplete from './Autocomplete.vue';
 import * as Checkbox from './Checkbox.vue';
 import * as InputDate from './InputDate.vue';
@@ -36,6 +37,7 @@ import * as Radio from './Radio.vue';
 import * as Select from './Select.vue';
 
 const AVAILABLE_CONTROLS = [
+  AccountSelect,
   Autocomplete,
   Checkbox,
   InputDate,

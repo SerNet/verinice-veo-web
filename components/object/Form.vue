@@ -103,6 +103,7 @@ import {
   getStatusAdditionalContext,
   getSubTypeTranslation
 } from '~/components/dynamic-form/additionalContext';
+import { injectUserAssignmentGroup } from '~/components/dynamic-form/userAssignment';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
@@ -386,6 +387,14 @@ export default defineComponent({
     const currentFormSchema = computed(() =>
       displayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value
     );
+    const tableOfContentsFormSchema = computed(() =>
+      currentFormSchema.value ?
+        injectUserAssignmentGroup(currentFormSchema.value.content, objectSchema.value, {
+          group: t('userAssignment'),
+          control: t('linkedAccount')
+        })
+      : undefined
+    );
 
     const getFormschemaIdBySubType = (subType: string) => {
       const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find(
@@ -464,7 +473,7 @@ export default defineComponent({
         disabled: !currentFormSchema.value,
         component: LayoutFormNavigation,
         props: {
-          formSchema: currentFormSchema.value?.content,
+          formSchema: tableOfContentsFormSchema.value,
           customTranslation: currentFormSchema.value?.translation?.[locale.value],
           scrollWrapperId: props.scrollWrapperId
         }
@@ -629,6 +638,7 @@ export default defineComponent({
 </script>
 
 <i18n src="~/locales/base/components/object-form.json"></i18n>
+<i18n src="~/locales/base/components/dynamic-form-user-assignment.json"></i18n>
 
 <style lang="scss">
 .object-side-container-select {
