@@ -17,9 +17,7 @@
  */
 
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { waitForData } from '~/composables/helpers';
-import type { TVeoDomain } from '~/composables/domains/useDomains';
-import type { TVeoUnit } from '~/composables/requests/useUnits';
+import { read } from '~/requests/crud';
 
 /**
  * After a successful login users are redirected to the `/` route.
@@ -30,15 +28,10 @@ import type { TVeoUnit } from '~/composables/requests/useUnits';
 export default defineNuxtRouteMiddleware(async (to) => {
   if (to.path !== '/') return;
 
-  const { data: domains } = useDomains();
-  const { data: units } = useUnits();
-
   const isRecurringUser = localStorage.getItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN) === 'false';
 
   if (isRecurringUser) {
-    await waitForData(domains);
-    await waitForData(units);
-    return showDashBoard(domains.value, units.value);
+    return showDashBoard();
   } else {
     // Set 'IS_FRESH_LOGIN' to false to not show the welcome page a second time
     localStorage.setItem(LOCAL_STORAGE_KEYS.IS_FRESH_LOGIN, 'false');
@@ -46,24 +39,34 @@ export default defineNuxtRouteMiddleware(async (to) => {
   }
 });
 
-function hasDomain(domains: TVeoDomain[], id: string) {
-  return !!domains.find((domain) => domain.id === id);
+async function domainExists(id: string): Promise<boolean> {
+  try {
+    await read({ path: `/domains/${id}` });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-function hasUnit(units: TVeoUnit[], id: string) {
-  return !!units.find((unit) => unit.id === id);
+async function unitExists(id: string): Promise<boolean> {
+  try {
+    await read({ path: `/units/${id}` });
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 const removeStorageKeys = (keys: string[]) => keys.forEach((k) => localStorage.removeItem(k));
 
-function showDashBoard(domains: TVeoDomain[], units: TVeoUnit[]) {
+async function showDashBoard() {
   const storageUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_UNIT);
   const storageDomainId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.LAST_DOMAIN);
   const favoriteUnitId = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT);
   const favoriteUnitDomain = window.localStorage.getItem(LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN);
 
   if (favoriteUnitId && favoriteUnitDomain) {
-    if (hasUnit(units, favoriteUnitId) && hasDomain(domains, favoriteUnitDomain)) {
+    if ((await unitExists(favoriteUnitId)) && (await domainExists(favoriteUnitDomain))) {
       return navigateTo(`/${favoriteUnitId}/domains/${favoriteUnitDomain}`);
     }
     removeStorageKeys([LOCAL_STORAGE_KEYS.FAVORITE_UNIT, LOCAL_STORAGE_KEYS.FAVORITE_UNIT_DOMAIN]);
@@ -72,7 +75,7 @@ function showDashBoard(domains: TVeoDomain[], units: TVeoUnit[]) {
 
   // if the keys are present, link to the appropriate dashboard
   if (storageUnitId && storageDomainId) {
-    if (hasUnit(units, storageUnitId) && hasDomain(domains, storageDomainId)) {
+    if ((await unitExists(storageUnitId)) && (await domainExists(storageDomainId))) {
       return navigateTo(`/${storageUnitId}/domains/${storageDomainId}`);
     }
     removeStorageKeys([LOCAL_STORAGE_KEYS.LAST_UNIT, LOCAL_STORAGE_KEYS.LAST_DOMAIN]);
