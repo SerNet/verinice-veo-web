@@ -59,21 +59,21 @@
               :items="availableScopes"
               :prepend-inner-icon="mdiFormTextbox"
             >
-              <template #item="{ item, props: itemProps }">
+              <template #item="{ internalItem, props: itemProps }">
                 <v-list-item
                   v-bind="itemProps"
-                  :active="scopeUUID === item.value"
+                  :active="scopeUUID === internalItem.value"
                   :title="undefined"
                   two-line
                   style="max-width: 500px"
                 >
                   <v-list-item-title>
                     <EditorTranslationsTranslatedElementTitle
-                      :form-schema-element="formSchemaElementMap.get(item.value) as any"
+                      :form-schema-element="formSchemaElementMap.get(internalItem.value) as any"
                     />
                   </v-list-item-title>
                   <v-list-item-subtitle>
-                    {{ formSchemaElementMap.get(item.value)?.scope }}
+                    {{ formSchemaElementMap.get(internalItem.value)?.scope }}
                   </v-list-item-subtitle>
                 </v-list-item>
               </template>

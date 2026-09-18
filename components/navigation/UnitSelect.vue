@@ -44,16 +44,16 @@
     :aria-label="t('unit')"
     :label="items.length ? t('unit') : t('select')"
   >
-    <template #item="{ props, item }">
+    <template #item="{ props, internalItem }">
       <v-list-item
         v-bind="props"
-        :active="unitId === item.value"
+        :active="unitId === internalItem.value"
         color="primary"
         data-veo-test="unit-selection-nav-item"
         width="500"
-        :title="item.title"
-        :value="item.value"
-        @click="unitId = item.value"
+        :title="internalItem.title"
+        :value="internalItem.value"
+        @click="unitId = internalItem.value"
       />
     </template>
 

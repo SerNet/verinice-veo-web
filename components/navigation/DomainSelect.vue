@@ -52,7 +52,7 @@
         v-bind="props"
         :active="domainId === item.value"
         color="primary"
-        :data-veo-test="`domain-selection-nav-item-${item.raw.name}`"
+        :data-veo-test="`domain-selection-nav-item-${item.name}`"
         width="500"
         :title="item.title"
         :value="item.value"

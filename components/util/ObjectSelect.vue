@@ -45,11 +45,7 @@
     <template #item="{ props: _props, item }">
       <v-list-item v-bind="_props" data-veo-test="object-select-item">
         <template #prepend>
-          <ObjectIcon
-            :object-type="item.raw.type"
-            :is-composite="!!(item.raw.parts?.length || item.raw.members?.length)"
-            left
-          />
+          <ObjectIcon :object-type="item.type" :is-composite="!!(item.parts?.length || item.members?.length)" left />
         </template>
         <template #append>
           <!-- @vue-ignore TODO #3066 does not exist -->
@@ -59,7 +55,7 @@
               style="z-index: 5000"
               :color="hover ? 'primary' : ''"
               :icon="mdiOpenInNew"
-              @click="openItem(item.raw)"
+              @click="openItem(item)"
             />
           </v-hover>
         </template>

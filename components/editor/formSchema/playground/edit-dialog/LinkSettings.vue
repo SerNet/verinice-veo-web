@@ -28,23 +28,25 @@
         :prepend-inner-icon="mdiListBoxOutline"
         variant="underlined"
       >
-        <template #item="{ item, props: itemProps }">
+        <template #item="{ internalItem, props: itemProps }">
           <v-list-item
             v-bind="itemProps"
-            :active="usedLinkAttributes.includes(item.value)"
+            :active="usedLinkAttributes.includes(internalItem.value)"
             :title="undefined"
             style="max-width: 500px"
           >
             <template #prepend>
-              <v-icon :icon="usedLinkAttributes.includes(item.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline" />
+              <v-icon
+                :icon="usedLinkAttributes.includes(internalItem.value) ? mdiCheckboxMarked : mdiCheckboxBlankOutline"
+              />
             </template>
             <v-list-item-title>
-              {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
+              {{ last(availableLinkAttributes[internalItem.value].scope?.split('/')) }}
             </v-list-item-title>
           </v-list-item>
         </template>
-        <template #selection="{ item }">
-          {{ last(availableLinkAttributes[item.value].scope?.split('/')) }}
+        <template #selection="{ internalItem }">
+          {{ last(availableLinkAttributes[internalItem.value].scope?.split('/')) }}
         </template>
       </v-select>
       <v-tooltip location="top">

@@ -121,7 +121,7 @@
                     >
                       <template #selection="{ item, index }">
                         <v-chip v-if="index === 0">
-                          <span>{{ item.raw.name }}</span>
+                          <span>{{ item.name }}</span>
                         </v-chip>
                         <span v-if="index === 1" class="text-grey text-caption align-self-center ml-2">
                           (+{{ formData.accessGroups.length - 1 }} others)
