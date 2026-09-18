@@ -31,6 +31,8 @@
 
 <script lang="ts">
 export const FORMSCHEMA_PLAYGROUND_NAMESPACE = 'bdc08095-d80f-4974-aa69-a41d01a66748';
+export const USER_ASSIGNMENT_ELEMENT_ID = 'veo-user-assignment-group';
+export const USER_ASSIGNMENT_ELEMENT_INDEX = 1;
 
 export type FormSchemaElementMap = Map<string, IVeoFormSchemaItem>;
 
@@ -50,6 +52,7 @@ import type { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
+import { createUserAssignmentGroup, hasUserAssignment } from '~/components/dynamic-form/userAssignment';
 
 const props = withDefaults(
   defineProps<{
@@ -73,6 +76,8 @@ const emit = defineEmits<{
   (event: 'update:model-value', formSchema: IVeoFormSchemaItem): void;
   (event: 'set-translations', translations: PENDING_TRANSLATIONS): void;
 }>();
+
+const { t } = useI18n();
 
 const formSchemaValidator = new FormSchemaValidator();
 const validationResult = ref<VeoSchemaValidatorValidationResult>();
@@ -151,6 +156,41 @@ const addElementToMap = (
   }
 };
 
+const userAssignmentElementId = UUIDv5(USER_ASSIGNMENT_ELEMENT_ID, FORMSCHEMA_PLAYGROUND_NAMESPACE);
+
+const isVirtualElement = (element: IPlaygroundElement) => !!element.virtual;
+
+// Keeps the virtual user assignment group at its fixed position
+const normalizeVirtualElements = () => {
+  const root = playgroundElements.value;
+  if (!root) {
+    return;
+  }
+  const virtualElements = root.children.filter(isVirtualElement);
+  if (!virtualElements.length) {
+    return;
+  }
+  root.children = root.children.filter((child) => !isVirtualElement(child));
+  root.children.splice(Math.min(USER_ASSIGNMENT_ELEMENT_INDEX, root.children.length), 0, ...virtualElements);
+};
+
+const addUserAssignmentElement = () => {
+  if (!playgroundElements.value || !hasUserAssignment(props.objectSchema)) {
+    return;
+  }
+  formSchemaElementMap.set(
+    userAssignmentElementId,
+    createUserAssignmentGroup({ group: t('userAssignment'), control: t('linkedAccount') })
+  );
+  playgroundElements.value.children.push({
+    id: userAssignmentElementId,
+    children: [],
+    readonly: true,
+    virtual: true
+  });
+  normalizeVirtualElements();
+};
+
 const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
   formSchemaElementMap.clear();
 
@@ -162,6 +202,7 @@ const initPlayground = (formSchemaRoot: IVeoFormSchemaItem) => {
   };
 
   processNestedElements(formSchemaRoot, '#', undefined);
+  addUserAssignmentElement();
 };
 initPlayground(cloneDeep(props.modelValue)); // Call once as soon as the component gets initialized to create the map
 
@@ -178,6 +219,9 @@ const buildFormSchemaItem = (element: IPlaygroundElement, parentElement: IPlaygr
   formSchemaElement.elements = 'elements' in formSchemaElement ? [] : undefined;
 
   for (const child of element.children) {
+    if (isVirtualElement(child)) {
+      continue;
+    }
     formSchemaElement.elements?.push(buildFormSchemaItem(child, element));
   }
 
@@ -258,6 +302,7 @@ const onAddElement = (elementPointer: string, element: IPlaygroundElement | IVeo
     const parent = JsonPointer.get(playgroundElements.value, getParentPointer(elementPointer)) as IPlaygroundElement;
     // Insert the element into the parent at the specified position
     parent.children.splice(newIndex, 0, element);
+    normalizeVirtualElements();
   }
 };
 
@@ -270,6 +315,7 @@ const onRemoveElement = (elementPointer: string, removeFromSchemaElementMap = fa
 
   // Remove from playground elements
   parent.children.splice(elementIndexToRemove, 1);
+  normalizeVirtualElements();
   // Remove from form schema element map
   if (removeFromSchemaElementMap) {
     // Recursive function, as if we delete an element from the playground that contains children, all child elements should also get removed
@@ -296,3 +342,5 @@ watch(isErrorDialogVisible, (value) => {
   }
 });
 </script>
+
+<i18n src="~/locales/base/components/dynamic-form-user-assignment.json"></i18n>

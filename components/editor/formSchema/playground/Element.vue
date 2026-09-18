@@ -1,17 +1,17 @@
 <!--
    - verinice.veo web
    - Copyright (C) 2023  Jonas Heitmann
-   - 
+   -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
    - the Free Software Foundation, either version 3 of the License, or
    - (at your option) any later version.
-   - 
+   -
    - This program is distributed in the hope that it will be useful,
    - but WITHOUT ANY WARRANTY; without even the implied warranty of
    - MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
    - GNU Affero General Public License for more details.
-   - 
+   -
    - You should have received a copy of the GNU Affero General Public License
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
@@ -23,10 +23,10 @@
       :form-schema-element="formSchemaElement"
       style="min-width: 300px"
       @delete="deleteElementDialogVisible = true"
-      @edit="!isImpactGroupElement && (editElementDialogVisible = true)"
+      @edit="!isImpactGroupElement && !isVirtualElement && (editElementDialogVisible = true)"
     >
       <Draggable
-        v-if="!isImpactGroupElement"
+        v-if="!isImpactGroupElement && !isVirtualElement"
         :model-value="props.playgroundElement.children"
         handle=".handle"
         item-key="id"
@@ -50,7 +50,7 @@
       </Draggable>
     </component>
     <EditorFormSchemaPlaygroundEditElementDialog
-      v-if="formSchemaElement"
+      v-if="formSchemaElement && !isVirtualElement"
       v-model="editElementDialogVisible"
       :form-schema-element="formSchemaElement"
       :playground-element="playgroundElement"
@@ -85,7 +85,7 @@
       </Draggable>
     </EditorFormSchemaPlaygroundEditElementDialog>
     <EditorFormSchemaPlaygroundDeleteElementDialog
-      v-if="formSchemaElement"
+      v-if="formSchemaElement && !isVirtualElement"
       v-model="deleteElementDialogVisible"
       :form-schema-element="formSchemaElement"
       @delete="emit('remove', pointer, true)"
@@ -98,6 +98,10 @@ export interface IPlaygroundElement {
   id: string;
   children: IPlaygroundElement[];
   readonly?: boolean;
+  /**
+   * Virtual elements get added by the frontend at runtime (e.g. the user assignment group of persons).
+   */
+  virtual?: boolean;
 }
 </script>
 
@@ -111,6 +115,7 @@ import type { PENDING_TRANSLATIONS } from './EditElementDialog.vue';
 import ImpactGroupElement from './ImpactGroupElement.vue';
 import LabelElement from './LabelElement.vue';
 import LayoutElement from './LayoutElement.vue';
+import UserAssignmentGroupElement from './UserAssignmentGroupElement.vue';
 import type { FormSchemaElementMap } from './Playground.vue';
 import { PROVIDE_KEYS as PLAYGROUND_PROVIDE_KEYS } from './Playground.vue';
 
@@ -137,6 +142,9 @@ const formSchemaElementMap = inject<FormSchemaElementMap>(PLAYGROUND_PROVIDE_KEY
 const formSchemaElement = computed(() => formSchemaElementMap?.get(props.playgroundElement.id));
 
 const fittingComponent = computed(() => {
+  if (isVirtualElement.value) {
+    return UserAssignmentGroupElement;
+  }
   if (isImpactGroupElement.value) {
     return ImpactGroupElement;
   }
@@ -153,6 +161,8 @@ const fittingComponent = computed(() => {
       return h('div', t('componentNotFound', [props.playgroundElement.id, formSchemaElement.value?.type]));
   }
 });
+
+const isVirtualElement = computed(() => !!props.playgroundElement.virtual);
 
 const isImpactGroupElement = computed(() => {
   return formSchemaElement.value?.type === 'Layout' && formSchemaElement.value?.options?.format === 'impactGroup';
