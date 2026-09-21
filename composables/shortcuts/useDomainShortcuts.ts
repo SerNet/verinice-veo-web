@@ -21,6 +21,8 @@ import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { getElementTypeKeys, getNavigationKeys } from './shortcutConfig';
 import { CATEGORY_DOMAIN_NAVIGATION, type Shortcut } from './types';
 import { sortUnits } from '~/composables/requests/useUnits';
+import { read } from '~/requests/crud';
+import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 // Route name imports
 import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
@@ -32,7 +34,6 @@ export function useDomainShortcuts() {
   const router = useRouter();
   const route = useRoute();
   const { t, locale } = useI18n();
-  const { data: domains } = useDomains();
   const miniVariant = useStorage(LOCAL_STORAGE_KEYS.PRIMARY_NAV_MINI_VARIANT, false, localStorage, {
     serializer: StorageSerializers.boolean
   });
@@ -48,7 +49,14 @@ export function useDomainShortcuts() {
   const unitId = computed(() => route?.params?.unit ?? (firstUnit.value?.id as string));
   const { data: translations } = useTranslations({ domain: domainId, languages: computed(() => [locale.value]) });
 
-  const currentDomain = computed(() => domains.value?.find((d) => d.id === domainId.value));
+  const currentDomain = ref<IVeoDomain>();
+  watch(
+    domainId,
+    async (id) => {
+      currentDomain.value = id ? await read({ path: `/domains/${id}` }) : undefined;
+    },
+    { immediate: true }
+  );
 
   const baseShortcuts = computed<Shortcut[]>(() => [
     {
@@ -131,7 +139,7 @@ export function useDomainShortcuts() {
     const elementTypes = Object.keys(VeoElementTypePlurals) as Array<keyof typeof VeoElementTypePlurals>;
 
     return elementTypes.map((elementType) => {
-      const subTypes = currentDomain.value?.raw?.elementTypeDefinitions?.[elementType]?.subTypes;
+      const subTypes = currentDomain.value?.elementTypeDefinitions?.[elementType]?.subTypes;
       const isDisabled = !subTypes || Object.keys(subTypes).length === 0;
       const elementTypePlural = upperFirst(
         translations.value?.lang[locale.value]?.[`${elementType}_plural`] || VeoElementTypePlurals[elementType]
