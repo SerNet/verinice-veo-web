@@ -13,7 +13,7 @@ let impactCount = 0;
 // Helpers
 function saveAndMaybeConfirm(hasConfirmationDialog = true) {
   cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
-  cy.getCustom('button:not([disabled])').contains('Save risk definition').click();
+  cy.getCustom('[data-veo-test="save-risk-definition-with-evaluation-button"]').should('be.enabled').click();
   if (hasConfirmationDialog) {
     cy.getCustom('[data-veo-test="base-dialog"]').within(() => {
       cy.get('[data-veo-test="save-risk-definition-confirm-button"]').should('be.visible').click();
@@ -48,21 +48,16 @@ function fillCategoryBasics(name: string, description: string) {
 // Fill the new matrix column - find all cells containing N.N.
 function fillInRiskMatrix() {
   const fillInCell = ($td: JQuery<HTMLElement>) => {
-    cy.wrap($td).within(() => {
-      cy.get('.v-autocomplete').as('riskValueSelect');
-      cy.get('@riskValueSelect').click();
-      cy.get('@riskValueSelect').type('{downArrow}{enter}');
-    });
+    cy.wrap($td).find('.v-autocomplete').click();
+    cy.get('.v-overlay--active .v-list-item').first().click();
   };
 
-  cy.getCustom('[data-veo-test="risk-matrix"]').within(() => {
-    cy.get('td').each(($td) => {
-      if ($td.text().includes('N.N.')) {
-        waitForBrowserToIdle().then(() => {
-          fillInCell($td);
-        });
-      }
-    });
+  cy.getCustom('[data-veo-test="risk-matrix"] td').each(($td) => {
+    if ($td.text().includes('N.N.')) {
+      waitForBrowserToIdle().then(() => {
+        fillInCell($td);
+      });
+    }
   });
 }
 
@@ -414,22 +409,19 @@ describe('Risk Definitions with one category', () => {
     });
 
     // Fill matrix cells with risk values
-    cy.getCustom('[data-veo-test="risk-matrix"]').within(() => {
-      // For each cell in the matrix, select a risk value
-      cy.get('.v-autocomplete').each(($select, index) => {
-        waitForBrowserToIdle().then(() => {
-          // Pick different risk values in a cycle (0,1,2,3,0,1,2,3,...)
-          const valueIndex = index % 4;
-          cy.wrap($select)
-            .click()
-            .type(`{downArrow}`.repeat(valueIndex + 1) + `{enter}`);
-        });
+    // For each cell in the matrix, select a risk value
+    cy.getCustom('[data-veo-test="risk-matrix"] .v-autocomplete').each(($select, index) => {
+      waitForBrowserToIdle().then(() => {
+        // Pick different risk values in a cycle (0,1,2,3,0,1,2,3,...)
+        const valueIndex = index % 4;
+        cy.wrap($select).click();
+        cy.get('.v-overlay--active .v-list-item').eq(valueIndex).click();
       });
     });
 
     // Save and confirm
     cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
-    cy.getCustom('button:not([disabled])').contains('Save risk definition').click();
+    cy.getCustom('[data-veo-test="save-risk-definition-with-evaluation-button"]').should('be.enabled').click();
     cy.get('[data-veo-test="save-risk-definition-confirm-button"]').should('be.visible').click();
 
     // Wait for redirect

@@ -20,7 +20,10 @@ describe('Create Link in Object and Save', () => {
     cy.getCustom('.v-data-table__tr').first().click();
 
     // Open person input select
-    cy.getCustom('div[data-attribute-name="scope_management"] input').scrollIntoView().click({ force: true });
+    cy.getCustom('div[data-attribute-name="scope_management"] .v-field')
+      .first()
+      .scrollIntoView()
+      .click({ force: true });
 
     // Open create person dialog
     cy.getCustom('.v-overlay__content [data-veo-test="create-object-button"]').click();

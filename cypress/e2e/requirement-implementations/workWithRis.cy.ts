@@ -292,8 +292,7 @@ describe('Requirement Implementations: Editor', () => {
         .then((riAbbreviation: string) => expect(riAbbreviation?.toLowerCase()).to.contain('base'));
 
       // name
-      cy.getCustom('[data-veo-test="compliance-editor-text-field"] input')
-        .eq(4)
+      cy.getCustom('[data-veo-test="compliance-editor-text-field"] [data-attribute-name="name"] input')
         .invoke('val')
         .then((riName: string) => expect(riName).to.contain(requirementImplementation.control.name));
     });
