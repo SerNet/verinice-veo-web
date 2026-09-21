@@ -38,6 +38,7 @@ import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValid
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import Control from './controls/Control';
 import { injectUserAssignmentGroup, USERNAME_SCOPE } from './userAssignment';
+import { hasFeature } from '~/utils/featureFlags';
 import Label from './labels/Label.vue';
 import Layout from './layouts/Layout';
 import type {
@@ -154,6 +155,7 @@ export default defineComponent({
     const localAdditionalContext = computed(() => props.additionalContext || {});
     const localObjectSchema = computed(() => props.objectSchema);
 
+    const userAssignmentEnabled = hasFeature('userAssignment');
     const userAssignmentLabels = computed(() => {
       const translateOptions = { locale: (props.locale || locale.value) as typeof locale.value };
       return {
@@ -186,7 +188,7 @@ export default defineComponent({
                 '/decisionResults',
                 '(\\w+)/properties/domains$',
                 '_self',
-                `^${USERNAME_SCOPE}$`
+                ...(userAssignmentEnabled ? [`^${USERNAME_SCOPE}$`] : [])
               ],
               groupedNamespaces: Object.keys(props.objectSchema.properties?.customAspects?.properties || {}).map(
                 (key) => ({
@@ -209,12 +211,15 @@ export default defineComponent({
           props.formSchema ? 1
           : firstLayoutIndex === -1 ? (formSchema.elements?.length ?? 0)
           : firstLayoutIndex;
-        const clonedSchema = injectUserAssignmentGroup(
-          cloneDeep(formSchema),
-          localObjectSchema.value,
-          userAssignmentLabels.value,
-          userAssignmentGroupIndex
-        );
+        const clonedSchema =
+          userAssignmentEnabled ?
+            injectUserAssignmentGroup(
+              cloneDeep(formSchema),
+              localObjectSchema.value,
+              userAssignmentLabels.value,
+              userAssignmentGroupIndex
+            )
+          : cloneDeep(formSchema);
         if (props.reactiveFormActions) {
           return updateRiskDefinitionsFormSchema(props.domain, clonedSchema, locale.value);
         }

@@ -53,6 +53,7 @@ import FormSchemaValidator from '~/lib/FormSchemaValidator';
 import type { VeoSchemaValidatorValidationResult } from '~/lib/ObjectSchemaValidator';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
 import { createUserAssignmentGroup, hasUserAssignment } from '~/components/dynamic-form/userAssignment';
+import { hasFeature } from '~/utils/featureFlags';
 
 const props = withDefaults(
   defineProps<{
@@ -175,7 +176,7 @@ const normalizeVirtualElements = () => {
 };
 
 const addUserAssignmentElement = () => {
-  if (!playgroundElements.value || !hasUserAssignment(props.objectSchema)) {
+  if (!playgroundElements.value || !hasFeature('userAssignment') || !hasUserAssignment(props.objectSchema)) {
     return;
   }
   formSchemaElementMap.set(

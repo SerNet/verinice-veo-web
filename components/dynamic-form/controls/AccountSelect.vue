@@ -41,15 +41,15 @@
     <template #item="{ props: itemProps, item }">
       <v-list-item
         v-bind="itemProps"
-        :title="item.raw.username"
-        :subtitle="item.raw.fullName"
+        :title="item.username"
+        :subtitle="item.fullName"
         data-veo-test="account-select-item"
       />
     </template>
     <template #selection="{ item }">
       <div class="d-flex flex-column">
-        <span>{{ item.raw.username }}</span>
-        <span v-if="item.raw.fullName" class="text-caption text-medium-emphasis">{{ item.raw.fullName }}</span>
+        <span>{{ item.username }}</span>
+        <span v-if="item.fullName" class="text-caption text-medium-emphasis">{{ item.fullName }}</span>
       </div>
     </template>
   </v-autocomplete>
@@ -78,6 +78,7 @@ import { USERNAME_SCOPE } from '../userAssignment';
 import accountQueryDefinitions from '~/composables/api/queryDefinitions/accounts';
 import { useQuery } from '~/composables/api/utils/query';
 import { useVeoPermissions } from '~/composables/VeoPermissions';
+import { hasFeature } from '~/utils/featureFlags';
 
 export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
   code: 'veo-account-select',
@@ -89,7 +90,11 @@ export const CONTROL_DEFINITION: IVeoFormsElementDefinition = {
     en: 'Lets the user link an account of the current client to a person.',
     de: 'Lässt den Nutzer einen Account des aktuellen Clients mit einer Person verknüpfen.'
   },
-  conditions: (props) => [props.objectSchema.type === 'string', props.objectSchemaPointer === USERNAME_SCOPE]
+  conditions: (props) => [
+    hasFeature('userAssignment'),
+    props.objectSchema.type === 'string',
+    props.objectSchemaPointer === USERNAME_SCOPE
+  ]
 };
 
 export default defineComponent({

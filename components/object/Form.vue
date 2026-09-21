@@ -104,6 +104,7 @@ import {
   getSubTypeTranslation
 } from '~/components/dynamic-form/additionalContext';
 import { injectUserAssignmentGroup } from '~/components/dynamic-form/userAssignment';
+import { hasFeature } from '~/utils/featureFlags';
 import { useVeoReactiveFormActions } from '~/composables/VeoReactiveFormActions';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
@@ -387,14 +388,19 @@ export default defineComponent({
     const currentFormSchema = computed(() =>
       displayOption.value === 'objectschema' || formSchemaIsFetching.value ? undefined : formSchema.value
     );
-    const tableOfContentsFormSchema = computed(() =>
-      currentFormSchema.value ?
-        injectUserAssignmentGroup(currentFormSchema.value.content, objectSchema.value, {
-          group: t('userAssignment'),
-          control: t('linkedAccount')
-        })
-      : undefined
-    );
+    const userAssignmentEnabled = hasFeature('userAssignment');
+    const tableOfContentsFormSchema = computed(() => {
+      if (!currentFormSchema.value) {
+        return undefined;
+      }
+      if (!userAssignmentEnabled) {
+        return currentFormSchema.value.content;
+      }
+      return injectUserAssignmentGroup(currentFormSchema.value.content, objectSchema.value, {
+        group: t('userAssignment'),
+        control: t('linkedAccount')
+      });
+    });
 
     const getFormschemaIdBySubType = (subType: string) => {
       const formSchemaId = (formSchemas.value as IVeoFormSchemaMeta[]).find(
