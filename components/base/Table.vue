@@ -29,6 +29,8 @@
 import { cloneDeep, omit } from 'lodash';
 import type { Slot, VNode, VNodeArrayChildren } from 'vue';
 import { VCheckbox, VIcon, VProgressLinear, VTooltip } from 'vuetify/components';
+import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
+import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 
 import { useVeoUser } from '~/composables/VeoUser';
 import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
