@@ -32,7 +32,7 @@
             </template>
             <span>{{ tab.tooltip ?? t('defaultDisabledTooltip') }}</span>
           </v-tooltip>
-          <v-tab v-else :data-component-name="`object-details-${tab.key}-tab`" tabindex="0">
+          <v-tab v-else :data-component-name="`object-details-${tab.key}-tab`" tabindex="0" class="text-uppercase">
             {{ getTabLabel(tab) }}
           </v-tab>
         </div>
@@ -70,6 +70,7 @@
 <script setup lang="ts">
 import type { IVeoEntity } from '~/types/VeoTypes';
 import { hasFeature } from '~/utils/featureFlags';
+
 const graphEnabled = hasFeature('graph');
 
 const props = withDefaults(
