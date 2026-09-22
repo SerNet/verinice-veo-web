@@ -45,7 +45,7 @@
           <v-btn
             v-if="loginInstruction"
             color="primary"
-            class="mt-2"
+            class="mt-2 text-title-medium"
             data-veo-test="login-btn-login"
             size="x-large"
             @click="login"
@@ -62,7 +62,7 @@
             v-if="registrationAction && registrationLink"
             variant="tonal"
             size="x-large"
-            class="mt-2"
+            class="mt-2 text-title-medium"
             :href="registrationLink"
           >
             {{ registrationAction }}
@@ -105,9 +105,11 @@ if (!keycloakInitialized.value) {
 // Needed as a separate function, as _login would be undefined if directly called from within the template.
 const login = () => _login((route.query.redirect_uri as string | undefined) || '/');
 const { data: customerConfig } = await useFetch<any>('/customer/config.json');
+
 function useLocalizedField(key: string) {
   return computed(() => customerConfig.value?.[key]?.[locale.value]);
 }
+
 const onprem = customerConfig.value?.['onprem'];
 const logoLink = useLocalizedField('logoLink');
 const loginInstruction = useLocalizedField('loginInstruction');
