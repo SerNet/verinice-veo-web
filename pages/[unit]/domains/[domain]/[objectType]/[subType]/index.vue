@@ -137,9 +137,9 @@
                         :disabled="!canManageUnitContent || btn.disabled"
                         :icon="btn.icon"
                         variant="text"
-                        density="compact"
                         size="x-small"
-                        class="mr-3"
+                        class="mr-1"
+                        rounded="0"
                         :aria-label="
                           !canManageUnitContent || btn.disabled ? t('permissions.missingPermissionTooltip') : btn.label
                         "
