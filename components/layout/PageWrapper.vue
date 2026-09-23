@@ -1,6 +1,6 @@
 <!--
    - verinice.veo web
-   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize
+   - Copyright (C) 2021  Jonas Heitmann, Davit Svandize, Djordje Mirosavljevic
    -
    - This program is free software: you can redistribute it and/or modify
    - it under the terms of the GNU Affero General Public License as published by
@@ -194,7 +194,7 @@ const localPageWidth = (index: number): { classes: string[]; styles: Record<stri
   let styles = {};
 
   if (props.pageWidths[index]) {
-    classes.push(`v-col-${props.pageWidths[index]}`);
+    classes.push(`v-col--cols-${props.pageWidths[index]}`);
 
     if (props.unresponsivePageWidths) {
       if (isObject(props.pageWidths[index])) {
@@ -209,7 +209,7 @@ const localPageWidth = (index: number): { classes: string[]; styles: Record<stri
   }
 
   if (props.pageWidthsLg[index]) {
-    classes.push(`v-col-lg-${props.pageWidthsLg[index]}`);
+    classes.push(`v-col--cols-lg-${props.pageWidthsLg[index]}`);
     if (props.unresponsivePageWidths && lgAndUp.value) {
       if (isObject(props.pageWidthsLg[index])) {
         styles = props.pageWidthsLg[index];
@@ -223,7 +223,7 @@ const localPageWidth = (index: number): { classes: string[]; styles: Record<stri
   }
 
   if (props.pageWidthsXl[index]) {
-    classes.push(`v-col-xl-${props.pageWidthsXl[index]}`);
+    classes.push(`v-col--cols-xl-${props.pageWidthsXl[index]}`);
     if (props.unresponsivePageWidths && xl.value) {
       if (isObject(props.pageWidthsXl[index])) {
         styles = props.pageWidthsXl[index];
@@ -238,12 +238,12 @@ const localPageWidth = (index: number): { classes: string[]; styles: Record<stri
 
   if (classes.length === 0) {
     classes.push(
-      `v-col-${Math.floor(12 / (currentPageCount.value - pagesCollapsedStates.value.filter((page) => page).length))}`
+      `v-col--cols-${Math.floor(12 / (currentPageCount.value - pagesCollapsedStates.value.filter((page) => page).length))}`
     );
   }
 
   return {
-    classes: props.unresponsivePageWidths ? [] : classes,
+    classes: props.unresponsivePageWidths ? [] : ['v-col', ...classes],
     styles: props.unresponsivePageWidths ? styles : {}
   };
 };
@@ -286,7 +286,7 @@ const render = () =>
       h(
         'div',
         {
-          class: 'd-flex flex-nowrap overflow-hidden flex-grow-1',
+          class: 'v-row v-row--no-gutters flex-nowrap overflow-hidden flex-grow-1',
           ref: wrapper
         },
         (slots.default ? slots.default() : [])
