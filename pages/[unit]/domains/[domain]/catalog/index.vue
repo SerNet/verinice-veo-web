@@ -56,7 +56,7 @@
           </BaseCard>
           <v-row class="my-2">
             <v-col cols="auto">
-              <v-btn variant="text" @click="showDialog = false">{{ t('global.button.cancel') }}</v-btn>
+              <v-btn variant="text" @click="showDialog = false">{{ t('global.button.close') }}</v-btn>
             </v-col>
           </v-row>
         </template>
