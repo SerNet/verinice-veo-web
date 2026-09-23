@@ -49,7 +49,7 @@ import { useLinkObject } from '~/composables/VeoObjectUtilities';
 import ObjectCreateDialog from '~/components/object/CreateDialog.vue';
 import ObjectLinkDialog from '~/components/object/LinkDialog.vue';
 import ObjectDeleteDialog from '~/components/object/DeleteDialog.vue';
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { ROUTE_OBJECT_OVERVIEW } from '~/types/routeNames';
 
 import type { IVeoEntity } from '~/types/VeoTypes';
 import type { INestedMenuEntries } from '~/components/util/NestedMenu.vue';
@@ -77,7 +77,7 @@ const { link } = useLinkObject();
 // Callbacks
 const navigateToObjectOverview = () => {
   navigateTo({
-    name: OBJECT_OVERVIEW_ROUTE_NAME,
+    name: ROUTE_OBJECT_OVERVIEW,
     params: {
       domain: route.params.domain,
       unit: route.params.unit

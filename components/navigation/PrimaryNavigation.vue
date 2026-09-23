@@ -122,13 +122,15 @@ import { useDisplay, useTheme } from 'vuetify';
 import { extractSubTypesFromObjectSchema, OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import type { IVeoDomainSpecificObjectSchema } from '~/types/VeoTypes';
-import { ROUTE_NAME as DOMAIN_DASHBOARD_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/index.vue';
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
-import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
-import { ROUTE_NAME as REPORT_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/reports/index.vue';
-import { ROUTE_NAME as TASKS_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/tasks/index.vue';
-import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[definition]/index.vue';
-import { ROUTE_NAME as EDITOR_INDEX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
+import {
+  ROUTE_DOMAIN_DASHBOARD,
+  ROUTE_OBJECT_OVERVIEW,
+  ROUTE_DOMAIN_CATALOG,
+  ROUTE_DOMAIN_REPORTS,
+  ROUTE_DOMAIN_TASKS,
+  ROUTE_RISKS_MATRIX,
+  ROUTE_DOMAIN_EDITOR
+} from '~/types/routeNames';
 import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import { CATALOG_TYPE_ICONS } from '~/components/catalog/Icon.vue';
 import { useVeoUser } from '~/composables/VeoUser';
@@ -225,7 +227,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
             id: `${modelType}_all`,
             name: upperFirst(t('all').toString()),
             to: {
-              name: OBJECT_OVERVIEW_ROUTE_NAME,
+              name: ROUTE_OBJECT_OVERVIEW,
               params: {
                 unit: props.unitId,
                 domain: props.domainId,
@@ -253,7 +255,7 @@ const objectTypesChildItems = computed<INavItem[]>(() =>
                 id: displayName,
                 name: displayName,
                 to: {
-                  name: OBJECT_OVERVIEW_ROUTE_NAME,
+                  name: ROUTE_OBJECT_OVERVIEW,
                   params: {
                     unit: props.unitId,
                     domain: props.domainId,
@@ -321,7 +323,7 @@ const catalogsEntriesChildItems = computed<INavItem[]>(() => {
         componentName: `catalog-child-${modelType}`,
         icon: _icon?.library === 'mdi' ? (_icon?.icon as string) : undefined,
         to: {
-          name: CATALOGS_CATALOG_ROUTE_NAME,
+          name: ROUTE_DOMAIN_CATALOG,
           params: {
             unit: props.unitId,
             domain: props.domainId
@@ -357,7 +359,7 @@ const riskChildItems = computed<INavItem[]>(() =>
     name: id,
     componentName: `risk-definition-${id}`,
     to: {
-      name: RISKS_MATRIX_ROUTE_NAME,
+      name: ROUTE_RISKS_MATRIX,
       params: {
         unit: props.unitId,
         domain: props.domainId,
@@ -372,7 +374,7 @@ const domainDashboardNavEntry = computed<INavItem>(() => ({
   name: $t('domain.index.title').toString(),
   icon: mdiViewDashboardOutline,
   to: {
-    name: DOMAIN_DASHBOARD_ROUTE_NAME,
+    name: ROUTE_DOMAIN_DASHBOARD,
     params: {
       unit: props.unitId,
       domain: props.domainId
@@ -395,7 +397,7 @@ const tasksNavEntry = computed<INavItem>(() => ({
   name: $t('breadcrumbs.tasks').toString(),
   icon: mdiFlagOutline,
   to: {
-    name: TASKS_ROUTE_NAME,
+    name: ROUTE_DOMAIN_TASKS,
     params: {
       unit: props.unitId,
       domain: props.domainId
@@ -429,7 +431,7 @@ const reportsNavEntry = computed<INavItem>(() => ({
   name: $t('breadcrumbs.reports').toString(),
   icon: mdiFileChartOutline,
   to: {
-    name: REPORT_ROUTE_NAME,
+    name: ROUTE_DOMAIN_REPORTS,
     params: {
       unit: props.unitId,
       domain: props.domainId
@@ -453,7 +455,7 @@ const editorsNavEntry = computed<INavItem>(() => ({
   name: $t('breadcrumbs.editor').toString(),
   icon: mdiTextBoxEditOutline,
   to: {
-    name: EDITOR_INDEX_ROUTE_NAME,
+    name: ROUTE_DOMAIN_EDITOR,
     params: {
       unit: props.unitId,
       domain: props.domainId

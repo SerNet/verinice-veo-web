@@ -15,8 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { useRouter, useRoute } from 'vue-router';
-import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { ROUTE_DOMAIN_CATALOG, ROUTE_OBJECT_OVERVIEW } from '~/types/routeNames';
 
 export function useNavigation() {
   const router = useRouter();
@@ -28,7 +27,7 @@ export function useNavigation() {
   const navigateToCatalog = (type: string, subType: string) => {
     if (hasDomainId.value && hasUnitId.value) {
       router.push({
-        name: CATALOGS_CATALOG_ROUTE_NAME,
+        name: ROUTE_DOMAIN_CATALOG,
         params: {
           domain: route.params.domain,
           unit: route.params.unit
@@ -44,7 +43,7 @@ export function useNavigation() {
   const navigateToObject = (objectType: string) => {
     if (hasDomainId.value && hasUnitId.value) {
       router.push({
-        name: OBJECT_OVERVIEW_ROUTE_NAME,
+        name: ROUTE_OBJECT_OVERVIEW,
         params: {
           domain: route.params.domain,
           unit: route.params.unit,

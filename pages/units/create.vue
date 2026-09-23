@@ -141,7 +141,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-create';
+import { ROUTE_UNIT_CREATE } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_UNIT_CREATE;
 </script>
 
 <script setup lang="ts">

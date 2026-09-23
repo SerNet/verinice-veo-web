@@ -106,7 +106,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'units';
+import { ROUTE_UNITS } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_UNITS;
 </script>
 
 <script setup lang="ts">

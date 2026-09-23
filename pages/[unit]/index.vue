@@ -19,14 +19,14 @@
 </template>
 
 <script setup lang="ts">
-import { ROUTE_NAME as ROUTE_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
+import { ROUTE_DOMAIN_DASHBOARD } from '~/types/routeNames';
 import { LOCAL_STORAGE_KEYS as STORAGE_KEYS } from '~/types/localStorage';
 
 const route = useRoute();
 const domain = window.localStorage.getItem(STORAGE_KEYS.LAST_DOMAIN);
 
 await navigateTo({
-  name: ROUTE_DASHBOARD,
+  name: ROUTE_DOMAIN_DASHBOARD,
   params: {
     unit: route.params.unit,
     domain

@@ -77,7 +77,7 @@
 </template>
 
 <script setup lang="ts">
-import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
+import { ROUTE_DOMAIN_DASHBOARD } from '~/types/routeNames';
 import { mdiPuzzle } from '@mdi/js';
 
 withDefaults(

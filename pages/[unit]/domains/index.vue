@@ -61,7 +61,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'index';
+import { ROUTE_UNIT_DOMAINS_INDEX } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_UNIT_DOMAINS_INDEX;
 </script>
 
 <script lang="ts" setup>

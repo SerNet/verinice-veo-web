@@ -20,13 +20,13 @@
 </template>
 
 <script setup lang="ts">
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { ROUTE_OBJECT_OVERVIEW } from '~/types/routeNames';
 
 const route = useRoute();
 
 // Navigate the user to the object overview page with a placeholder for the subtype
 navigateTo({
-  name: OBJECT_OVERVIEW_ROUTE,
+  name: ROUTE_OBJECT_OVERVIEW,
   params: {
     unit: route.params.unit,
     domain: route.params.domain,

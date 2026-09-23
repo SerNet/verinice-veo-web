@@ -167,7 +167,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-objectType-subType-object';
+import { ROUTE_OBJECT_DETAIL } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_OBJECT_DETAIL;
 </script>
 
 <script setup lang="ts">

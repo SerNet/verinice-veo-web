@@ -23,7 +23,8 @@
   </div>
 </template>
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-profiles';
+import { ROUTE_DOMAIN_PROFILES } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_PROFILES;
 
 export default {};
 </script>

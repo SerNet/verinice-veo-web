@@ -48,7 +48,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'units-unit-details';
+import { ROUTE_UNIT_DETAILS } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_UNIT_DETAILS;
 </script>
 
 <script setup lang="ts">

@@ -118,7 +118,7 @@ import type {
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery, useQuerySync } from '~/composables/api/utils/query';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_OBJECT_DETAIL } from '~/types/routeNames';
 import { getScenarioName } from '~/composables/risk/riskScenario';
 import type {
   IInOutLink,
@@ -995,7 +995,7 @@ export default defineComponent({
     function openObject(object: IVeoEntity) {
       router.push({
         ...route.params,
-        name: OBJECT_DETAIL_ROUTE,
+        name: ROUTE_OBJECT_DETAIL,
         params: {
           object: object.id,
           objectType: VeoElementTypePlurals[object.type as keyof typeof VeoElementTypePlurals],

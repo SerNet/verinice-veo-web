@@ -71,11 +71,12 @@
 
 <script lang="ts">
 import { OBJECT_TYPE_SORT_ORDER } from '~/lib/utils';
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
+import { ROUTE_OBJECT_OVERVIEW } from '~/types/routeNames';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
 
-export const ROUTE_NAME = 'unit-domains-domain';
+import { ROUTE_DOMAIN_DASHBOARD } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_DASHBOARD;
 
 export default defineComponent({
   name: 'VeoDomainDashboardPage',
@@ -135,7 +136,7 @@ export default defineComponent({
 
     const onBarClicked = (objectType: string, subType: string, status: string) => {
       router.push({
-        name: OBJECT_OVERVIEW_ROUTE,
+        name: ROUTE_OBJECT_OVERVIEW,
         params: {
           domain: route.params.domain,
           objectType,

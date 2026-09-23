@@ -74,8 +74,7 @@
 </template>
 
 <script setup lang="ts">
-import { ROUTE_NAME as ROUTE_DOMAIN_DASHBOARD } from '~/pages/[unit]/domains/[domain]/index.vue';
-import { ROUTE_NAME as ROUTE_UNITS } from '~/pages/units/index.vue';
+import { ROUTE_DOMAIN_DASHBOARD, ROUTE_UNITS } from '~/types/routeNames';
 
 import { mdiPackageVariantClosed } from '@mdi/js';
 

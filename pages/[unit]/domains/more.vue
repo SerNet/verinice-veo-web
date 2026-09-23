@@ -34,7 +34,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-more';
+import { ROUTE_UNIT_DOMAINS_MORE } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_UNIT_DOMAINS_MORE;
 </script>
 
 <script setup lang="ts">

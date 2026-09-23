@@ -169,7 +169,7 @@ import { useQueryClient } from '@tanstack/vue-query';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuerySync } from '~/composables/api/utils/query';
 import { useCurrentDomain } from '~/composables/index';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_OBJECT_DETAIL } from '~/types/routeNames';
 import type { IVeoEntity, IVeoRisk } from '~/types/VeoTypes';
 
 export default defineComponent({
@@ -270,7 +270,7 @@ export default defineComponent({
     const generateHref = (objectId) => {
       const params = getRouteParams(objectId);
       const { href } = router.resolve({
-        name: OBJECT_DETAIL_ROUTE,
+        name: ROUTE_OBJECT_DETAIL,
         params
       });
       return href;
@@ -279,7 +279,7 @@ export default defineComponent({
     // Navigation functions
     const navigateToContainer = () => {
       router.push({
-        name: OBJECT_DETAIL_ROUTE,
+        name: ROUTE_OBJECT_DETAIL,
         params: getRouteParams(props.data?.mitigation?.id)
       });
     };
@@ -288,7 +288,7 @@ export default defineComponent({
 
     const navigateToPart = (item) => {
       router.push({
-        name: OBJECT_DETAIL_ROUTE,
+        name: ROUTE_OBJECT_DETAIL,
         params: getRouteParams(item?.id)
       });
     };

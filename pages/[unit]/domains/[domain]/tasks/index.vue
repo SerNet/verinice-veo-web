@@ -40,7 +40,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-tasks';
+import { ROUTE_DOMAIN_TASKS } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_TASKS;
 </script>
 
 <script setup lang="ts">

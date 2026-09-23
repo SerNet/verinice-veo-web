@@ -25,10 +25,12 @@ import { read } from '~/requests/crud';
 import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 
 // Route name imports
-import { ROUTE_NAME as OBJECT_OVERVIEW_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/index.vue';
-import { ROUTE_NAME as CATALOGS_CATALOG_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/catalog/index.vue';
-import { ROUTE_NAME as EDITOR_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/editor/index.vue';
-import { ROUTE_NAME as RISKS_MATRIX_ROUTE_NAME } from '~/pages/[unit]/domains/[domain]/risks/[definition]/index.vue';
+import {
+  ROUTE_OBJECT_OVERVIEW,
+  ROUTE_DOMAIN_CATALOG,
+  ROUTE_DOMAIN_EDITOR,
+  ROUTE_RISKS_MATRIX
+} from '~/types/routeNames';
 
 export function useDomainShortcuts() {
   const router = useRouter();
@@ -76,7 +78,7 @@ export function useDomainShortcuts() {
       category: CATEGORY_DOMAIN_NAVIGATION,
       action: () =>
         router.push({
-          name: EDITOR_ROUTE_NAME,
+          name: ROUTE_DOMAIN_EDITOR,
           params: { unit: unitId.value, domain: domainId.value }
         })
     },
@@ -88,7 +90,7 @@ export function useDomainShortcuts() {
       category: CATEGORY_DOMAIN_NAVIGATION,
       action: () =>
         router.push({
-          name: CATALOGS_CATALOG_ROUTE_NAME,
+          name: ROUTE_DOMAIN_CATALOG,
           params: { unit: unitId.value, domain: domainId.value }
         })
     },
@@ -113,7 +115,7 @@ export function useDomainShortcuts() {
 
         if (firstRiskDefinitionId) {
           router.push({
-            name: RISKS_MATRIX_ROUTE_NAME,
+            name: ROUTE_RISKS_MATRIX,
             params: {
               unit: unitId.value,
               domain: domainId.value,
@@ -154,7 +156,7 @@ export function useDomainShortcuts() {
         disabled: isDisabled,
         action: () =>
           router.push({
-            name: OBJECT_OVERVIEW_ROUTE_NAME,
+            name: ROUTE_OBJECT_OVERVIEW,
             params: {
               unit: unitId.value,
               domain: domainId.value,

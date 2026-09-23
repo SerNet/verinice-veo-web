@@ -73,7 +73,7 @@ import { useFetchObjects } from '~/composables/api/objects';
 import formQueryDefinitions from '~/composables/api/queryDefinitions/forms';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery } from '~/composables/api/utils/query';
-import { ROUTE_NAME as OBJECT_DETAILS_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_OBJECT_DETAIL } from '~/types/routeNames';
 import type { IVeoEntity, IVeoLink, IVeoPaginatedResponse } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
@@ -234,7 +234,7 @@ const openItem = (item: IVeoEntity) => {
   const typeLink = item.type === 'process' ? `${item.type}es` : `${item.type}s`;
 
   const routeData = router.resolve({
-    name: OBJECT_DETAILS_ROUTE,
+    name: ROUTE_OBJECT_DETAIL,
     params: {
       ...route.params,
       subType: item.subType,

@@ -104,9 +104,10 @@ import { useVeoUser } from '~/composables/VeoUser';
 import type { IVeoEntity } from '~/types/VeoTypes';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_OBJECT_DETAIL } from '~/types/routeNames';
 
-export const ROUTE_NAME = 'unit-domains-domain-reports-report';
+import { ROUTE_DOMAIN_REPORT_DETAIL } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_REPORT_DETAIL;
 export default defineComponent({
   name: 'VeoReportPage',
   setup() {
@@ -273,7 +274,7 @@ export default defineComponent({
 
     const openItem = ({ item }: { item: IVeoEntity }) => {
       return navigateTo({
-        name: OBJECT_DETAIL_ROUTE,
+        name: ROUTE_OBJECT_DETAIL,
         params: {
           unit: route.params.unit,
           domain: route.params.domain,

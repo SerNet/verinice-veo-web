@@ -69,7 +69,8 @@
 export default {
   name: 'VeoCatalogPage'
 };
-export const ROUTE_NAME = 'unit-domains-domain-catalog';
+import { ROUTE_DOMAIN_CATALOG } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_CATALOG;
 </script>
 
 <script setup lang="ts">

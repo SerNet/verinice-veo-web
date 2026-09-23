@@ -34,7 +34,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-reports';
+import { ROUTE_DOMAIN_REPORTS } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_REPORTS;
 export default defineComponent({
   setup() {
     const { t } = useI18n();

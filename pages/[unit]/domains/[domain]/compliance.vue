@@ -37,7 +37,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-compliance';
+import { ROUTE_DOMAIN_COMPLIANCE } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_COMPLIANCE;
 </script>
 
 <script setup lang="ts">
@@ -46,7 +47,7 @@ import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, useRoute } from 'vue-router';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/objects';
 import { useQuery } from '~/composables/api/utils/query';
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_OBJECT_DETAIL } from '~/types/routeNames';
 import { VeoElementTypePlurals } from '~/types/VeoTypes';
 
 // Types
@@ -121,7 +122,7 @@ const currentModule = computed<CurrentModule | undefined>(() => {
     name: module.name,
     subType: subTypeTranslation.value,
     urlParams: {
-      name: OBJECT_DETAIL_ROUTE,
+      name: ROUTE_OBJECT_DETAIL,
       params: {
         ...route.params,
         objectType: 'controls',

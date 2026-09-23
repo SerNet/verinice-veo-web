@@ -56,7 +56,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-editor';
+import { ROUTE_DOMAIN_EDITOR } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_DOMAIN_EDITOR;
 </script>
 
 <script setup lang="ts">

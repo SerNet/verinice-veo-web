@@ -137,7 +137,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-risks-definition';
+import { ROUTE_RISKS_MATRIX } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_RISKS_MATRIX;
 </script>
 
 <script setup lang="ts">

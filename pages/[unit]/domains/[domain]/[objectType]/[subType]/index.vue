@@ -184,7 +184,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'unit-domains-domain-objectType-subType';
+import { ROUTE_OBJECT_OVERVIEW } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_OBJECT_OVERVIEW;
 </script>
 
 <script setup lang="ts">
@@ -197,7 +198,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import { useVeoUser } from '~/composables/VeoUser';
 import { type IVeoEntity, VeoElementTypePlurals, VeoElementTypesSingular } from '~/types/VeoTypes';
 
-import { ROUTE_NAME as OBJECT_DETAIL_ROUTE } from '~/pages/[unit]/domains/[domain]/[objectType]/[subType]/[object].vue';
+import { ROUTE_OBJECT_DETAIL } from '~/types/routeNames';
 
 import type { VeoSearch } from '~/types/VeoSearch';
 import { useObjectSearchFilters } from '~/composables/search/objectFilters';
@@ -371,7 +372,7 @@ const showError = (messageKey: 'clone' | 'delete', error: Error) => {
 
 const openItem = ({ item }: { item: any }) => {
   return navigateTo({
-    name: OBJECT_DETAIL_ROUTE,
+    name: ROUTE_OBJECT_DETAIL,
     params: {
       ...route.params,
       object: item.id,
@@ -427,7 +428,7 @@ const actions = computed(() => {
                 text: t('open'),
                 onClick: () => {
                   return navigateTo({
-                    name: OBJECT_DETAIL_ROUTE,
+                    name: ROUTE_OBJECT_DETAIL,
                     params: {
                       ...route.params,
                       object: clonedObjectId

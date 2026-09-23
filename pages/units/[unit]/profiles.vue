@@ -80,7 +80,8 @@
 </template>
 
 <script lang="ts">
-export const ROUTE_NAME = 'profiles';
+import { ROUTE_UNIT_PROFILES } from '~/types/routeNames';
+export const ROUTE_NAME = ROUTE_UNIT_PROFILES;
 </script>
 
 <script setup lang="ts">
