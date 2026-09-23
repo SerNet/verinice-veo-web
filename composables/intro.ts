@@ -185,7 +185,7 @@ export function createIntro() {
 
               if (options.value) {
                 tourInstance.setOptions({
-                  tooltipClass: `vue-introjs-tooltip ${theme.global.name.value === 'dark' ? 'introjs-dark' : ''}`,
+                  tooltipClass: 'vue-introjs-tooltip',
                   showBullets: false,
                   showStepNumbers: true,
                   ...options.value,
