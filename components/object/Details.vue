@@ -26,6 +26,7 @@
                 v-bind="tooltipProps"
                 :disabled="tab.disabled"
                 :data-component-name="`object-details-${tab.key}-tab`"
+                class="text-uppercase"
               >
                 {{ t(tab.key) }}
               </v-tab>
