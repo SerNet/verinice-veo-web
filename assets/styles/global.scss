@@ -93,6 +93,10 @@ a:not([class^='v-']) {
   font-size: 0.75rem;
 }
 
+.v-select__content .v-list {
+  overflow-y: scroll;
+}
+
 pre,
 code {
   background: variables.$light-grey;
