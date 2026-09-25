@@ -5,10 +5,10 @@ const importedObjectName = 'Sample text';
 describe('CSV Import', () => {
   beforeEach(() => {
     cy.setupVeo('CSV Import', ['DS-GVO']).then(() => {
-      const unitId = Cypress.env('dynamicTestData').testUnits[0].unitId;
-      const domainId = Cypress.env('dynamicTestData').testUnits[0].domains.find((d) => d.name === 'DS-GVO').id;
-      const objectType = Cypress.env('dynamicTestData').testObject.objectTypePlural;
-      const subType = Cypress.env('dynamicTestData').testObject.subType;
+      const unitId = Cypress.expose('dynamicTestData').testUnits[0].unitId;
+      const domainId = Cypress.expose('dynamicTestData').testUnits[0].domains.find((d) => d.name === 'DS-GVO').id;
+      const objectType = Cypress.expose('dynamicTestData').testObject.objectTypePlural;
+      const subType = Cypress.expose('dynamicTestData').testObject.subType;
 
       cy.visit(`${unitId}/domains/${domainId}/${objectType}/${subType}`, { failOnStatusCode: false });
     });
@@ -21,7 +21,7 @@ describe('CSV Import', () => {
   }
 
   function downloadCsvTemplate() {
-    const subType = Cypress.env('dynamicTestData').testObject.subType;
+    const subType = Cypress.expose('dynamicTestData').testObject.subType;
     const subtypeLabel = subType.split('_')[1];
 
     cy.get('[data-veo-test="csv-download-button"]').should('be.visible').click();
@@ -52,8 +52,8 @@ describe('CSV Import', () => {
   }
 
   function verifyObjectType() {
-    const expectedObjectType = Cypress.env('dynamicTestData').testObject.objectType;
-    const subType = Cypress.env('dynamicTestData').testObject.subType;
+    const expectedObjectType = Cypress.expose('dynamicTestData').testObject.objectType;
+    const subType = Cypress.expose('dynamicTestData').testObject.subType;
     const expectedObjectSubType = subType.split('_')[1];
 
     cy.get('[data-veo-test="object-type-select"]')

@@ -13,7 +13,7 @@ describe('Create Link in Object and Save', () => {
   it('Should create a link in an object and save', () => {
     // Go to object overview
     cy.goToUnitSelection();
-    cy.selectUnit(Cypress.env('dynamicTestData').testUnits[0].name);
+    cy.selectUnit(Cypress.expose('dynamicTestData').testUnits[0].name);
     cy.navigateTo({ group: 'objects', category: 'Scopes', entry: 'Controllers, Art. 4 Nr.7 GDPR' });
 
     // Open the first object
@@ -32,8 +32,8 @@ describe('Create Link in Object and Save', () => {
     const randomName = getRandomString();
     cy.getCustom('.v-overlay__content input[id="#/properties/name"]').type(randomName);
 
-    cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/persons?**`).as('savePerson');
-    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**/persons/**`).as('getPerson');
+    cy.intercept('POST', `${Cypress.expose('veoApiUrl')}/domains/**/persons?**`).as('savePerson');
+    cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains/**/persons/**`).as('getPerson');
 
     cy.getCustom('.v-overlay__content').contains('Save').click();
     cy.wait('@savePerson').its('response.statusCode').should('eq', 201);
@@ -43,7 +43,7 @@ describe('Create Link in Object and Save', () => {
     cy.getCustom('div[data-attribute-name="scope_management"]').should('contain.text', randomName);
 
     // Save the object
-    cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/**`).as('saveRequest');
+    cy.intercept('PUT', `${Cypress.expose('veoApiUrl')}/**`).as('saveRequest');
     cy.containsCustom('Save').click();
     cy.wait('@saveRequest').its('response.statusCode').should('eq', 200);
 

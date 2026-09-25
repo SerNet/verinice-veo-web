@@ -83,7 +83,7 @@
     "@typescript-eslint/eslint-plugin": "8.70.0",
     "@vitejs/plugin-vue": "6.0.9",
     "@vue/test-utils": "2.5.1",
-    "cypress": "15.21.1",
+    "cypress": "16.1.0",
     "cypress-axe": "1.7.0",
     "cypress-multi-reporters": "2.0.5",
     "cypress-parallel-extended": "2.2.0",
@@ -103,6 +103,9 @@
     "vue-tsc": "3.3.11"
   },
   "overrides": {
+    "cypress-axe": {
+      "cypress": "$cypress"
+    },
     "dompurify": "$dompurify",
     "fast-uri": "4.2.1",
     "glob": "$glob",

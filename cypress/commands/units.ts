@@ -25,7 +25,7 @@ declare global {
 const UNIT_ID_REGEX = /^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}$/;
 
 export function goToUnitSelection(): void {
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
+  cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/units`).as('getUnits');
   cy.visit('/units');
   cy.wait(['@getUnits']).its('response.statusCode').should('eq', 200);
   cy.getCustom('[data-component-name="breadcrumbs"]');
@@ -50,17 +50,17 @@ export function selectUnit(unitName: string): void {
         expect(unitId).to.match(UNIT_ID_REGEX);
 
         const unitDetails = {
-          ...Cypress.env(unitName),
+          ...Cypress.expose(unitName),
           unitId: unitId
         };
-        Cypress.env(unitName, unitDetails);
+        Cypress.expose(unitName, unitDetails);
       });
     });
 }
 
 export function editUnit({
-  unitName = Cypress.env('unitDetails').name,
-  unitDesc = Cypress.env('unitDetails').desc,
+  unitName = Cypress.expose('unitDetails').name,
+  unitDesc = Cypress.expose('unitDetails').desc,
   domainNames = []
 }: {
   unitName?: string;
@@ -80,17 +80,17 @@ export function editUnit({
   if (domainNames.length) chooseDomains(['DS-GVO']);
 
   // Submit
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('updatedUnit');
+  cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/units/**`).as('updatedUnit');
   cy.getCustom('.v-card-actions button').last().click();
   cy.wait(['@updatedUnit'], { responseTimeout: 15000 }).its('response.statusCode').should('eq', 200);
 }
 
 export function createUnit({
   name,
-  desc = Cypress.env('unitDetails').desc,
-  domains: domainNames = Cypress.env('unitDetails').domains
+  desc = Cypress.expose('unitDetails').desc,
+  domains: domainNames = Cypress.expose('unitDetails').domains
 }: UnitDetails) {
-  if (Cypress.env('debug')) {
+  if (Cypress.expose('debug')) {
     cy.log(name);
     cy.log(desc);
   }
@@ -115,7 +115,7 @@ export function createUnit({
       // Store unit id and domainNames
       // to make them accessible in tests and other commands
       const unitDetails = {
-        ...Cypress.env(name),
+        ...Cypress.expose(name),
         name: name,
         unitId: response.body.resourceId,
         desc: desc,
@@ -124,20 +124,20 @@ export function createUnit({
           .map((filteredDomain) => ({ name: filteredDomain.name, id: filteredDomain.id }))
       };
 
-      if (Cypress.env('debug')) cy.log(unitDetails.name);
+      if (Cypress.expose('debug')) cy.log(unitDetails.name);
 
-      // @deprecated - use `Cypress.env('dynamicTestData').units` instead
-      Cypress.env(unitDetails.name, unitDetails);
+      // @deprecated - use `Cypress.expose('dynamicTestData').units` instead
+      Cypress.expose(unitDetails.name, unitDetails);
 
-      Cypress.env('dynamicTestData').testUnits.push(unitDetails);
-      if (!Cypress.env('dynamicTestData').unit) {
-        Cypress.env('dynamicTestData').unit = unitDetails;
+      Cypress.expose('dynamicTestData').testUnits.push(unitDetails);
+      if (!Cypress.expose('dynamicTestData').unit) {
+        Cypress.expose('dynamicTestData').unit = unitDetails;
       }
     });
   });
 }
 
-export function deleteTestUnits(testUnits = Cypress.env('dynamicTestData')?.testUnits ?? []) {
+export function deleteTestUnits(testUnits = Cypress.expose('dynamicTestData')?.testUnits ?? []) {
   return testUnits.forEach((unit: UnitDetails & { unitId: string }) => {
     if (!unit || !unit.unitId) return;
     return cy
@@ -153,8 +153,8 @@ export function deleteTestUnits(testUnits = Cypress.env('dynamicTestData')?.test
           // Clean up old test unit data
           cy.deleteDomain()
             .then(() => {
-              Cypress.env('dynamicTestData').testUnits = [];
-              Cypress.env('dynamicTestData').unit = null;
+              Cypress.expose('dynamicTestData').testUnits = [];
+              Cypress.expose('dynamicTestData').unit = null;
             })
             .then((res) => {
               return res;
@@ -165,13 +165,13 @@ export function deleteTestUnits(testUnits = Cypress.env('dynamicTestData')?.test
 }
 
 export function deleteUnit(unitName?: string): void {
-  const dynamicUnitId = Cypress.env('dynamicTestData')?.unit?.unitId;
-  const namedUnitId = unitName ? Cypress.env(unitName)?.unitId : undefined;
+  const dynamicUnitId = Cypress.expose('dynamicTestData')?.unit?.unitId;
+  const namedUnitId = unitName ? Cypress.expose(unitName)?.unitId : undefined;
 
   const unitId = namedUnitId || dynamicUnitId;
 
   if (!unitId) {
-    if (Cypress.env('debug')) {
+    if (Cypress.expose('debug')) {
       cy.log(`Could not find unit ID for deletion. UnitName: ${unitName ?? 'undefined'}`);
     }
     return;
@@ -188,7 +188,7 @@ export function deleteUnit(unitName?: string): void {
   });
 }
 
-export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { unitName?: string } = {}): void {
+export function deleteUnitGUI({ unitName = Cypress.expose('unitDetails').name }: { unitName?: string } = {}): void {
   cy.goToUnitSelection();
   cy.getCustom('.v-card-title')
     .contains(unitName)
@@ -201,7 +201,7 @@ export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { 
   cy.getCustom('[data-veo-test="units-delete-dialog"]').as('deleteDialog');
 
   // Set up a listener for API responses
-  cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/units/**`).as('deleteUnit');
+  cy.intercept('DELETE', `${Cypress.expose('veoApiUrl')}/units/**`).as('deleteUnit');
 
   // Request delete unit
   cy.getCustom('@deleteDialog')
@@ -218,12 +218,12 @@ export function deleteUnitGUI({ unitName = Cypress.env('unitDetails').name }: { 
 
 export function goToUnitDashboard({
   isStoringUnitID = true,
-  unitName = Cypress.env('unitDetails')?.name,
-  domainName = Cypress.env('dynamicTestData')?.testUnits[0]?.domains[0].name,
+  unitName = Cypress.expose('unitDetails')?.name,
+  domainName = Cypress.expose('dynamicTestData')?.testUnits[0]?.domains[0].name,
   useGUI = false
 } = {}) {
-  const unitId = Cypress.env('dynamicTestData')?.testUnits[0]?.unitId;
-  const domainId = Cypress.env('dynamicTestData')?.testUnits[0]?.domains.find((domain) => {
+  const unitId = Cypress.expose('dynamicTestData')?.testUnits[0]?.unitId;
+  const domainId = Cypress.expose('dynamicTestData')?.testUnits[0]?.domains.find((domain) => {
     return domain.name === domainName;
   })?.id;
 
@@ -235,7 +235,7 @@ export function goToUnitDashboard({
 
   cy.goToUnitSelection();
 
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units/**`).as('getUnitForDashboard');
+  cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/units/**`).as('getUnitForDashboard');
   cy.getCustom('.v-list-item--link').contains(unitName).parent().parent().click();
   cy.wait(['@getUnitForDashboard']).its('response.statusCode').should('eq', 200);
 
@@ -244,8 +244,8 @@ export function goToUnitDashboard({
   // Store unit id to make it accessible in tests and other commands
   cy.url().then((url) => {
     const unitId = url.split('/')[3];
-    const unitDetails = { ...Cypress.env('unitDetails'), unitId };
-    Cypress.env('unitDetails', unitDetails);
+    const unitDetails = { ...Cypress.expose('unitDetails'), unitId };
+    Cypress.expose('unitDetails', unitDetails);
   });
 }
 
@@ -270,7 +270,7 @@ function chooseDomains(domainNames: string[]) {
 }
 
 export function getVeoTestUnitCard(unitName: string) {
-  const url = `/${Cypress.env(unitName).unitId}/domains/`;
+  const url = `/${Cypress.expose(unitName).unitId}/domains/`;
   const veoCardSelector = `a[data-veo-test="item-card-slot-center-link"][href^="${url}"]`;
   return cy.getCustom(veoCardSelector).parent().parent().parent();
 }

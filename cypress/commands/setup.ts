@@ -30,7 +30,7 @@ export function setupVeo(
   return cy.deleteTestUnits().then(() => {
     const unitDetails = generateUnitDetails(unitName || 'Veo');
     cy.createUnit({ name: unitDetails.name, desc: unitDetails.desc, domains: domains }).then(() => {
-      const _domains = Cypress.env('dynamicTestData').testUnits[0]?.domains;
+      const _domains = Cypress.expose('dynamicTestData').testUnits[0]?.domains;
       if (!_domains) return;
       _domains.forEach((domain) => {
         if (!objectData) {

@@ -24,11 +24,11 @@ import { createObject, getModules } from '../../requests/objects';
 
 // Used for intercepting requests
 const apiRoutes = {
-  scopes: `${Cypress.env('veoApiUrl')}/domains/**/scopes/**`,
-  incarnationDescriptions: `${Cypress.env('veoApiUrl')}/units/**/domains/**/incarnation-descriptions?**`,
-  incarnations: `${Cypress.env('veoApiUrl')}/units/**/incarnations`,
-  catalogItems: `${Cypress.env('veoApiUrl')}/domains/**/catalog-items?subType=CTL_Module**`,
-  requirementImplementations: `${Cypress.env('veoApiUrl')}/**/control-implementations/**/requirement-implementations?**`
+  scopes: `${Cypress.expose('veoApiUrl')}/domains/**/scopes/**`,
+  incarnationDescriptions: `${Cypress.expose('veoApiUrl')}/units/**/domains/**/incarnation-descriptions?**`,
+  incarnations: `${Cypress.expose('veoApiUrl')}/units/**/incarnations`,
+  catalogItems: `${Cypress.expose('veoApiUrl')}/domains/**/catalog-items?subType=CTL_Module**`,
+  requirementImplementations: `${Cypress.expose('veoApiUrl')}/**/control-implementations/**/requirement-implementations?**`
 };
 
 // Static test data
@@ -47,7 +47,7 @@ const testPerson = {
   status: 'NEW'
 };
 
-const featureEnabled = Cypress.env('VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES') === 'true';
+const featureEnabled = Cypress.expose('VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES') === 'true';
 // Navigation helpers
 function openModulesTab() {
   cy.visitObject();
@@ -105,7 +105,7 @@ describe('Object details, compliance tab: Actions', () => {
   });
 
   it('adds a module to the test object', () => {
-    const module = Cypress.env('dynamicTestData').modules[0];
+    const module = Cypress.expose('dynamicTestData').modules[0];
 
     // Navigate
     openAddModulesDialog();
@@ -132,7 +132,7 @@ describe('Object details, compliance tab: Actions', () => {
   });
 
   it('navigates to the list of requirement implementations', () => {
-    const dynamicTestData = Cypress.env('dynamicTestData');
+    const dynamicTestData = Cypress.expose('dynamicTestData');
     const complianceListUrl = `${dynamicTestData.unit.unitId}/domains/${dynamicTestData.unit.domains[0].id}/compliance?type=${dynamicTestData.testObject.objectType}&targetObject=${dynamicTestData.testObject.id}`;
 
     // API setup
@@ -188,13 +188,13 @@ describe('Requirement Implementations:  List', () => {
   });
 
   it('checks if breadcrumbs are correct', () => {
-    const dynamicTestData = Cypress.env('dynamicTestData');
+    const dynamicTestData = Cypress.expose('dynamicTestData');
 
     const unitName = dynamicTestData.unit.name;
     const domainName = 'IT-Grundschutz';
     const objectTypePlural = dynamicTestData.testObject.objectTypePlural;
     const subType = dynamicTestData.testObject.subTypePlural;
-    const displayName = Cypress.env('dynamicTestData').ris[0].origin.displayName;
+    const displayName = Cypress.expose('dynamicTestData').ris[0].origin.displayName;
     const moduleName = `${dynamicTestData.modules[0].name}`;
 
     // Navigate
@@ -246,8 +246,8 @@ describe('Requirement Implementations: Editor', () => {
 
       // Create a person
       createObject({
-        domainId: Cypress.env('dynamicTestData').unit.domains[0].id,
-        unitId: Cypress.env('dynamicTestData').unit.unitId,
+        domainId: Cypress.expose('dynamicTestData').unit.domains[0].id,
+        unitId: Cypress.expose('dynamicTestData').unit.unitId,
         objectData: testPerson,
         dynamicTestDataKey: 'testPerson'
       });
@@ -260,7 +260,7 @@ describe('Requirement Implementations: Editor', () => {
     cy.wait(2000); // Inputs are dynamically generated, be patient!
     cy.getCustom('[data-veo-test="compliance-editor"]').as('editor');
     cy.get('@editor').within(() => {
-      const requirementImplementation = Cypress.env('dynamicTestData').ris[0];
+      const requirementImplementation = Cypress.expose('dynamicTestData').ris[0];
 
       // Assertions
       // Dialog title

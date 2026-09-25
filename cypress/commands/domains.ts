@@ -21,7 +21,7 @@ export interface ICYVeoDomain {
 }
 
 export function addDomain(unitName: string, _domainName: string): void {
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains`).as('getDomains');
+  cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains`).as('getDomains');
 
   cy.getCustom('[data-veo-test="item-card-slot-center"]')
     .filter((index, element) => {
@@ -49,7 +49,7 @@ export function selectRandomDomain(unitName: string): void {
   cy.getCustom('[data-veo-test="domain-selection-nav-item"]').should('be.visible');
   cy.wait(500);
   cy.getCustom('[data-veo-test="domain-selection-nav-item"]').then(($options) => {
-    const randomIndex = Math.floor(Math.random() * Cypress.env(unitName).domains.length);
+    const randomIndex = Math.floor(Math.random() * Cypress.expose(unitName).domains.length);
     cy.wrap($options[randomIndex]).click();
   });
 }
@@ -64,7 +64,7 @@ export function getSelectedDomain(): Cypress.Chainable<string> {
  * write them into an env var.
  */
 export function getVeoDomains(): Cypress.Chainable<ICYVeoDomain[]> {
-  if (Cypress.env('debug')) cy.log('Fetching domains...');
+  if (Cypress.expose('debug')) cy.log('Fetching domains...');
 
   return cy.veoRequest({ endpoint: 'domains' }).then((res) => {
     const domains: IVeoDomain[] = res.body;
@@ -75,7 +75,7 @@ export function getVeoDomains(): Cypress.Chainable<ICYVeoDomain[]> {
     );
 
     // Store domains in cypress environment
-    Cypress.env('veoDomains', reducedDomains);
+    Cypress.expose('veoDomains', reducedDomains);
 
     return reducedDomains;
   });

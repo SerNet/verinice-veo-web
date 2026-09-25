@@ -19,9 +19,9 @@ describe('Catalogs', { testIsolation: false }, () => {
     // Open the catalog dialog
     cy.navigateTo({ group: 'catalog', entry: 'all' });
     const api = {
-      scenarios: `${Cypress.env('veoApiUrl')}/domains/**/scenarios**`,
-      incarnationDescriptions: `${Cypress.env('veoApiUrl')}/units/**/domains/**/incarnation-descriptions?**`,
-      incarnations: `${Cypress.env('veoApiUrl')}/units/**/incarnations`
+      scenarios: `${Cypress.expose('veoApiUrl')}/domains/**/scenarios**`,
+      incarnationDescriptions: `${Cypress.expose('veoApiUrl')}/units/**/domains/**/incarnation-descriptions?**`,
+      incarnations: `${Cypress.expose('veoApiUrl')}/units/**/incarnations`
     };
 
     // create objects from catalog items (incarnation)

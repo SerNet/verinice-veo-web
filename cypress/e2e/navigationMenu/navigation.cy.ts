@@ -53,7 +53,7 @@ describe('Navigation Menu', () => {
         entry: ['dsra']
       }
     ];
-    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/**`).as('gettingData');
+    cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/**`).as('gettingData');
 
     groupsWithCategories.forEach((group) => {
       group.elementTypes.forEach((elementType) => {
@@ -113,7 +113,7 @@ describe('Navigation Menu', () => {
         entry: ['gsra']
       }
     ];
-    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/**`).as('gettingData');
+    cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/**`).as('gettingData');
 
     groupsWithCategories.forEach((group) => {
       group.elementTypes.forEach((elementType) => {

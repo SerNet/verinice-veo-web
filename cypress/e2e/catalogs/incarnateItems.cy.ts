@@ -19,7 +19,7 @@ describe('Catalogs', { testIsolation: false }, () => {
 
     // Check if the correct number of items is displayed
     cy.veoRequest({
-      endpoint: `domains/${Cypress.env(unitDetails.name).domains[0].id}/catalog-items?size=20&sortBy=abbreviation&sortOrder=asc`,
+      endpoint: `domains/${Cypress.expose(unitDetails.name).domains[0].id}/catalog-items?size=20&sortBy=abbreviation&sortOrder=asc`,
       method: 'GET'
     }).then((response: any) => {
       // Get number of table rows, which should be rendered
@@ -47,9 +47,9 @@ describe('Catalogs', { testIsolation: false }, () => {
     cy.visit('/units');
     cy.selectUnit(unitDetails.name);
     const api = {
-      scenarios: `${Cypress.env('veoApiUrl')}/domains/**/scenarios**`,
-      incarnationDescriptions: `${Cypress.env('veoApiUrl')}/units/**/domains/**/incarnation-descriptions?**`,
-      incarnations: `${Cypress.env('veoApiUrl')}/units/**/incarnations`
+      scenarios: `${Cypress.expose('veoApiUrl')}/domains/**/scenarios**`,
+      incarnationDescriptions: `${Cypress.expose('veoApiUrl')}/units/**/domains/**/incarnation-descriptions?**`,
+      incarnations: `${Cypress.expose('veoApiUrl')}/units/**/incarnations`
     };
 
     let numOfItemsToIncarnate: number;

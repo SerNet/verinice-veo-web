@@ -25,10 +25,10 @@ describe('Copy elements', () => {
           .as('originalRow');
 
         cy.getCustom('@originalRow').then(($row) => {
-          cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}`).as(
+          cy.intercept('POST', `${Cypress.expose('veoApiUrl')}/domains/**/${elementType.toLowerCase()}`).as(
             'cloneElement'
           );
-          cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}**`).as(
+          cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains/**/${elementType.toLowerCase()}**`).as(
             'getClonedElement'
           );
           cy.wrap($row).find('[data-component-name="object-overview-clone-button"]').as('cloneButton');

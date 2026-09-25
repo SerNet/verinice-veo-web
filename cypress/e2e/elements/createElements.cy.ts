@@ -21,7 +21,7 @@ describe('Create elements', () => {
 
   it('tests availability of `all scopes` actions', () => {
     cy.visit(
-      `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${Cypress.env('dynamicTestData').unit.domains[0].id}/scopes/-`,
+      `/${Cypress.expose('dynamicTestData').unit.unitId}/domains/${Cypress.expose('dynamicTestData').unit.domains[0].id}/scopes/-`,
       { failOnStatusCode: false }
     );
 
@@ -49,7 +49,7 @@ describe('Create elements', () => {
   });
 
   it('shows a message alert when closing the messages tab with active messages', () => {
-    const env = Cypress.env();
+    const env = Cypress.expose();
     const { unit } = env.dynamicTestData;
 
     cy.visit(`/${unit.unitId}/domains/${unit.domains[0].id}/persons/PER_Person`, { failOnStatusCode: false });
@@ -85,7 +85,7 @@ describe('Create elements', () => {
             status: selectRandom(['Archived', 'New', 'In progress', 'Released', 'For review'])
           };
 
-          cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/${elementType.toLowerCase()}?scopes=**`).as(
+          cy.intercept('POST', `${Cypress.expose('veoApiUrl')}/domains/**/${elementType.toLowerCase()}?scopes=**`).as(
             'createElement'
           );
 

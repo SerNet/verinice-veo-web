@@ -71,12 +71,12 @@ before(() => {
   deleteUnitsOlderThan().then(() => deleteDomainsOlderThan());
 
   // Initialize env var to share test data between tests
-  Cypress.env('dynamicTestData', { testUnits: [], testDomain: null });
+  Cypress.expose('dynamicTestData', { testUnits: [], testDomain: null });
 });
 
 after(() => {
   cy.log('--- GLOBAL AFTER ---');
-  const domainId = Cypress.env('dynamicTestData')?.testDomain?.id;
+  const domainId = Cypress.expose('dynamicTestData')?.testDomain?.id;
   cy.deleteTestUnits().then(() => cy.deleteDomain(domainId));
 });
 

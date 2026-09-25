@@ -7,7 +7,7 @@ describe('Catalogs', () => {
 
   it('checks Accessibility in catalog ', () => {
     // go to catalog page
-    const dynamicTestData = Cypress.env('dynamicTestData');
+    const dynamicTestData = Cypress.expose('dynamicTestData');
     cy.visit(`/${dynamicTestData.unit?.unitId}/domains/${dynamicTestData.unit?.domains?.[0]?.id}/catalog`, {
       failOnStatusCode: false
     });
@@ -19,7 +19,7 @@ describe('Catalogs', () => {
 
   // Wait for the dialog to open
   it('checks Accessibility in catalog dialog ', () => {
-    const dynamicTestData = Cypress.env('dynamicTestData');
+    const dynamicTestData = Cypress.expose('dynamicTestData');
 
     cy.visit(`/${dynamicTestData.unit?.unitId}/domains/${dynamicTestData.unit?.domains?.[0]?.id}/catalog`, {
       failOnStatusCode: false

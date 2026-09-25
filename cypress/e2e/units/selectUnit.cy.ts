@@ -21,7 +21,7 @@ describe('Unit Selection Functionality', () => {
   afterEach(() => cy.deleteTestUnits());
 
   it('should switch unit and verify unit selection', () => {
-    const { testUnits } = Cypress.env('dynamicTestData');
+    const { testUnits } = Cypress.expose('dynamicTestData');
 
     cy.getCustom('[data-component-name="unit-select"] span')
       .invoke('text')

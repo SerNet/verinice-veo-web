@@ -1,8 +1,8 @@
 describe('Add Elements to other Domain', () => {
   beforeEach(() => {
     cy.setupVeo('addElementToOtherDomain', ['DS-GVO', 'IT-Grundschutz']).then(() => {
-      const unitId = Cypress.env('dynamicTestData').testUnits[0].unitId;
-      const domainId = Cypress.env('dynamicTestData').testUnits[0].domains.find((d) => d.name === 'DS-GVO').id;
+      const unitId = Cypress.expose('dynamicTestData').testUnits[0].unitId;
+      const domainId = Cypress.expose('dynamicTestData').testUnits[0].domains.find((d) => d.name === 'DS-GVO').id;
       cy.visit(`${unitId}/domains/${domainId}/scopes/SCP_Scope`, { failOnStatusCode: false });
     });
   });
@@ -52,8 +52,8 @@ describe('Add Elements to other Domain', () => {
     cy.getCustom('button').contains('Save').click();
 
     // Verify that the element now appears in the target domain
-    const unitId = Cypress.env('dynamicTestData').testUnits[0].unitId;
-    const domainId = Cypress.env('dynamicTestData').testUnits[0].domains.find((d) => d.name === targetDomain).id;
+    const unitId = Cypress.expose('dynamicTestData').testUnits[0].unitId;
+    const domainId = Cypress.expose('dynamicTestData').testUnits[0].domains.find((d) => d.name === targetDomain).id;
     cy.visit(`${unitId}/domains/${domainId}/scopes/SCP_Scope`, { failOnStatusCode: false });
 
     return cy

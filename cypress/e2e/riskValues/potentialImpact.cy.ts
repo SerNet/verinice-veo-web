@@ -7,7 +7,7 @@ const CRITERIA = ['Confidentiality', 'Integrity', 'Availability', 'Resilience'] 
 describe('Process Risk Impact', () => {
   beforeEach(() => {
     setupVeo('Process-Risk-Impact', ['DS-GVO']).then(() => {
-      const { unitId, domains } = Cypress.env('dynamicTestData').unit;
+      const { unitId, domains } = Cypress.expose('dynamicTestData').unit;
       const domainId = domains[0].id;
 
       cy.visit(`/${unitId}/domains/${domainId}/processes/PRO_DataProcessing`, { failOnStatusCode: false });

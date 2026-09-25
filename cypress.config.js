@@ -11,11 +11,10 @@ module.exports = defineConfig({
   video: true, // Let's enable video recording by default
   defaultCommandTimeout: 30000,
   requestTimeout: 15000,
-  experimentalMemoryManagement: true,
   numTestsKeptInMemory: 0,
 
   // read environment variables
-  env: {
+  expose: {
     VEO_FEATURE_FLAG_USER_SETTINGS: process.env.VEO_FEATURE_FLAG_USER_SETTINGS,
     VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES: process.env.VEO_FEATURE_FLAG_RI_DIALOG_ADDITIONAL_PROPERTIES
   },
@@ -41,10 +40,12 @@ module.exports = defineConfig({
       });
       const environment = config.env.environment || 'local';
       // load env from json
-
-      config.env = require(`cypress/config/cypress.env.${environment}.json`);
+      const loadedEnv = require(`cypress/config/cypress.env.${environment}.json`);
+      const { testUser, keycloak, ...publicConfig } = loadedEnv;
+      config.env = { testUser, keycloak };
+      config.expose = { ...config.expose, ...publicConfig };
       // change baseUrl
-      config.baseUrl = config.env.baseUrl;
+      config.baseUrl = publicConfig.baseUrl;
 
       // delete the video if the spec passed and no tests retried
       on('after:spec', (spec, results) => {

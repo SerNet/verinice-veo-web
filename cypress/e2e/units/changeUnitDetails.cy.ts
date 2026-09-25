@@ -14,7 +14,7 @@ describe('Unit details', () => {
   });
 
   it('checks if unit details are displayed correctly', () => {
-    const testUnit = Cypress.env('dynamicTestData').unit;
+    const testUnit = Cypress.expose('dynamicTestData').unit;
 
     cy.goToUnitSelection();
     cy.getVeoTestUnitCard(testUnit).as('testUnitCard');
@@ -49,7 +49,7 @@ describe('Unit details', () => {
   });
 
   it('updates unit details', () => {
-    const testUnit = Cypress.env('dynamicTestData').unit;
+    const testUnit = Cypress.expose('dynamicTestData').unit;
     const testData = {
       unitName: `TEST-NAME-${Math.random()}`,
       unitDesc: 'TEST DESCRIPTION'
@@ -72,9 +72,9 @@ describe('Unit details', () => {
     });
 
     // Intercept posting new unit details
-    cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/units/${testUnit.unitId}`).as('updateUnitDetails');
+    cy.intercept('PUT', `${Cypress.expose('veoApiUrl')}/units/${testUnit.unitId}`).as('updateUnitDetails');
     // Intercept unit reloading
-    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`).as('getUnits');
+    cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/units`).as('getUnits');
 
     // Post new details
     cy.getCustom('[data-veo-test="associate-domains"]').click();

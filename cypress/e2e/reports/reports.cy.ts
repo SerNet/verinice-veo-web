@@ -14,8 +14,8 @@ describe('Reports', () => {
       cy.login();
       cy.acceptAllCookies();
       cy.visit(
-        `/${Cypress.env('dynamicTestData').unit.unitId}/domains/${
-          Cypress.env('dynamicTestData').unit.domains[0].id
+        `/${Cypress.expose('dynamicTestData').unit.unitId}/domains/${
+          Cypress.expose('dynamicTestData').unit.domains[0].id
         }/reports`,
         { failOnStatusCode: false }
       );

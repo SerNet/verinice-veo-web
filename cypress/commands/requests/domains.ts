@@ -59,7 +59,7 @@ export function createDomain(domainData: TestDomain = { ...defaultTestDomain, na
 
   // Make domain data available inside of tests
   return cy.veoRequest(requestOptions).then((response) => {
-    Cypress.env('dynamicTestData').testDomain = {
+    Cypress.expose('dynamicTestData').testDomain = {
       ...domainData,
       id: response.body.resourceId
     };
@@ -67,7 +67,7 @@ export function createDomain(domainData: TestDomain = { ...defaultTestDomain, na
   });
 }
 
-export function deleteDomain(domainId: string = Cypress.env('dynamicTestData')?.testDomain?.id) {
+export function deleteDomain(domainId: string = Cypress.expose('dynamicTestData')?.testDomain?.id) {
   if (!domainId) return;
   return cy.veoRequest({
     endpoint: `content-creation/domains/${domainId}`,

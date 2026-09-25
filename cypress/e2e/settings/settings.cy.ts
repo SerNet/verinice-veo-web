@@ -1,7 +1,7 @@
 import type { UnitDetails } from '../../support/setupHelpers';
 import { generateUnitDetails } from '../../support/setupHelpers';
 
-const featureEnabled = Cypress.env('VEO_FEATURE_FLAG_USER_SETTINGS') === 'true';
+const featureEnabled = Cypress.expose('VEO_FEATURE_FLAG_USER_SETTINGS') === 'true';
 
 const maybeDescribe = featureEnabled ? describe : describe.skip;
 let unitDetails: UnitDetails;

@@ -3,7 +3,7 @@ function saveUnitId() {
     .invoke('attr', 'href')
     .then((href) => {
       const id = href.split('/')[1];
-      Cypress.env('dynamicTestData').testUnits = [{ unitId: id }];
+      Cypress.expose('dynamicTestData').testUnits = [{ unitId: id }];
     });
 }
 describe('create units', () => {
@@ -92,10 +92,12 @@ describe('create units', () => {
   function createUnit({ hasProfile = false }: { hasProfile?: boolean } = {}) {
     cy.log(JSON.stringify({ hasProfile }));
     if (hasProfile) {
-      cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/profiles/**/incarnation?unit=**`).as('applyProfile');
+      cy.intercept('POST', `${Cypress.expose('veoApiUrl')}/domains/**/profiles/**/incarnation?unit=**`).as(
+        'applyProfile'
+      );
     }
 
-    cy.intercept('POST', `${Cypress.env('veoApiUrl')}/units`).as('createUnit');
+    cy.intercept('POST', `${Cypress.expose('veoApiUrl')}/units`).as('createUnit');
     cy.getCustom('[data-veo-test="create-unit-create-btn"]').click();
     cy.wait('@createUnit').its('response.statusCode').should('eq', 201);
 

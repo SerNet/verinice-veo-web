@@ -21,8 +21,8 @@ import { getObject, getModules } from './objects';
 
 // @description Adds a module (aka a container control which contains a list of requirement implementations)
 export function addModule({
-  domainId = Cypress.env('dynamicTestData').unit.domains[0].id,
-  unitId = Cypress.env('dynamicTestData').unit.unitId
+  domainId = Cypress.expose('dynamicTestData').unit.domains[0].id,
+  unitId = Cypress.expose('dynamicTestData').unit.unitId
 } = {}) {
   return getObject().then((testObject) => {
     getModules({
@@ -50,9 +50,9 @@ export function addModule({
 }
 
 export function fetchRequirementImplementations({
-  objectType = Cypress.env('dynamicTestData').testObject.objectTypePlural,
-  objectId = Cypress.env('dynamicTestData').testObject.id,
-  moduleId = Cypress.env('dynamicTestData').modules[0].id
+  objectType = Cypress.expose('dynamicTestData').testObject.objectTypePlural,
+  objectId = Cypress.expose('dynamicTestData').testObject.id,
+  moduleId = Cypress.expose('dynamicTestData').modules[0].id
 } = {}) {
   return cy
     .veoRequest({
@@ -60,12 +60,12 @@ export function fetchRequirementImplementations({
     })
     .then((res) => {
       const ris = res.body.items;
-      Cypress.env('dynamicTestData').ris = ris;
+      Cypress.expose('dynamicTestData').ris = ris;
       return ris;
     });
 }
 
-export function executeThreatOverview({ domainId = Cypress.env('dynamicTestData').unit.domains[0].id } = {}) {
+export function executeThreatOverview({ domainId = Cypress.expose('dynamicTestData').unit.domains[0].id } = {}) {
   return getObject().then((testObject) => {
     const testObjectId = testObject.id;
 

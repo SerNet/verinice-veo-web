@@ -12,7 +12,7 @@ let impactCount = 0;
 
 // Helpers
 function saveAndMaybeConfirm(hasConfirmationDialog = true) {
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
+  cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
   cy.getCustom('[data-veo-test="save-risk-definition-with-evaluation-button"]').should('be.enabled').click();
   if (hasConfirmationDialog) {
     cy.getCustom('[data-veo-test="base-dialog"]').within(() => {
@@ -117,11 +117,11 @@ describe('Risk Definitions with one category', () => {
           cy
             .createRiskDefinition()
             .then(() => {
-              testDomain = Cypress.env('dynamicTestData').testDomain;
+              testDomain = Cypress.expose('dynamicTestData').testDomain;
               cy.setupVeo('risk-definitions', [testDomain.name], false);
             })
             .then(() => {
-              testUnit = Cypress.env('dynamicTestData').testUnits[0];
+              testUnit = Cypress.expose('dynamicTestData').testUnits[0];
               cy.visit(`${testUnit.unitId}/domains/${testDomain.id}/risks/DSA`, { failOnStatusCode: false });
             })
         )
@@ -420,7 +420,7 @@ describe('Risk Definitions with one category', () => {
     });
 
     // Save and confirm
-    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
+    cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
     cy.getCustom('[data-veo-test="save-risk-definition-with-evaluation-button"]').should('be.enabled').click();
     cy.get('[data-veo-test="save-risk-definition-confirm-button"]').should('be.visible').click();
 
@@ -476,11 +476,11 @@ describe('Risk definitions with two categories', () => {
           cy
             .createRiskDefinition('risk-definition-2-categories.json')
             .then(() => {
-              testDomain = Cypress.env('dynamicTestData').testDomain;
+              testDomain = Cypress.expose('dynamicTestData').testDomain;
               cy.setupVeo('risk-definitions', [testDomain.name], false);
             })
             .then(() => {
-              testUnit = Cypress.env('dynamicTestData').testUnits[0];
+              testUnit = Cypress.expose('dynamicTestData').testUnits[0];
               cy.visit(`${testUnit.unitId}/domains/${testDomain.id}/risks/DSA`, { failOnStatusCode: false });
             })
         )
@@ -502,7 +502,7 @@ describe('Risk definitions with two categories', () => {
     cy.contains('button', 'Yes').click();
 
     // Wait for domain refresh after delete
-    cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
+    cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains/${testDomain.id}`).as('isGettingDomain');
     cy.wait('@isGettingDomain');
 
     // Verify category no longer exists

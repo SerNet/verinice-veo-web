@@ -27,8 +27,8 @@ export function importUnit({ fixturePath }: { fixturePath: string }): Cypress.Ch
           unitId: res.body.resourceId,
           domains: body.domains
         };
-        Cypress.env('dynamicTestData').unit = unitDetails;
-        Cypress.env('dynamicTestData').testUnits.push(unitDetails);
+        Cypress.expose('dynamicTestData').unit = unitDetails;
+        Cypress.expose('dynamicTestData').testUnits.push(unitDetails);
         return res;
       });
     });
@@ -39,7 +39,7 @@ function prepareUnitData(json: any, unitName: string) {
   const replacementData = [
     {
       key: '{%%DOMAIN_ID%%}',
-      val: Cypress.env('dsgvoUnitId')
+      val: Cypress.expose('dsgvoUnitId')
     },
     {
       key: '{%%UNIT_NAME%%}',

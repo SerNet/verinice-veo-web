@@ -7,7 +7,7 @@ describe('Report', () => {
 
   it.skip('checks Accessibility in Report page', () => {
     // go to report page
-    const dynamicTestData = Cypress.env('dynamicTestData');
+    const dynamicTestData = Cypress.expose('dynamicTestData');
     cy.visit(
       `/${dynamicTestData.unit?.unitId}/domains/${dynamicTestData.unit?.domains?.[0]?.id}/reports/dp-privacy-incident`,
       { failOnStatusCode: false }

@@ -33,7 +33,7 @@ describe('Add domains', () => {
     selectors.forEach((selector) => cy.getCustom(selector).first().click());
 
     // Associate domains
-    cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/units/**`).as('associateDomains');
+    cy.intercept('PUT', `${Cypress.expose('veoApiUrl')}/units/**`).as('associateDomains');
     cy.getCustom('[data-veo-test="associate-domains"]').click();
     cy.wait(['@associateDomains']).its('response.statusCode').should('eq', 200);
 

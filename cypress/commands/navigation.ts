@@ -68,11 +68,11 @@ export function selectFirstSubType(elementType: string, callback: (args: any) =>
 
 export function visitObject(
   { unitId, domainId, objectType, subType, objectId } = {
-    unitId: Cypress.env('dynamicTestData').unit.unitId,
-    domainId: Cypress.env('dynamicTestData').unit?.domains?.[0]?.id || Cypress.env('dsgvoUnitId'),
-    objectType: Cypress.env('dynamicTestData').testObject.objectTypePlural,
-    subType: Cypress.env('dynamicTestData').testObject.subType,
-    objectId: Cypress.env('dynamicTestData').testObject.id
+    unitId: Cypress.expose('dynamicTestData').unit.unitId,
+    domainId: Cypress.expose('dynamicTestData').unit?.domains?.[0]?.id || Cypress.expose('dsgvoUnitId'),
+    objectType: Cypress.expose('dynamicTestData').testObject.objectTypePlural,
+    subType: Cypress.expose('dynamicTestData').testObject.subType,
+    objectId: Cypress.expose('dynamicTestData').testObject.id
   }
 ) {
   // `failOnStatusCode: false` -> otherwise this code fails in gitlab pipelines
@@ -83,11 +83,11 @@ export function visitObject(
 
 export function visitRIList(
   { unitId, domainId, targetObjectSubType, targetObjectId, controlImplementationId } = {
-    unitId: Cypress.env('dynamicTestData').unit.unitId,
-    domainId: Cypress.env('dynamicTestData').unit.domains[0].id,
-    targetObjectSubType: Cypress.env('dynamicTestData').testObject.objectType,
-    targetObjectId: Cypress.env('dynamicTestData').testObject.id,
-    controlImplementationId: Cypress.env('dynamicTestData').modules[0].id
+    unitId: Cypress.expose('dynamicTestData').unit.unitId,
+    domainId: Cypress.expose('dynamicTestData').unit.domains[0].id,
+    targetObjectSubType: Cypress.expose('dynamicTestData').testObject.objectType,
+    targetObjectId: Cypress.expose('dynamicTestData').testObject.id,
+    controlImplementationId: Cypress.expose('dynamicTestData').modules[0].id
   }
 ) {
   cy.visit(
@@ -99,8 +99,8 @@ export function visitRIList(
 
 export function visitEditor(
   { unitId, domainId } = {
-    unitId: Cypress.env('dynamicTestData').unit.unitId,
-    domainId: Cypress.env('dynamicTestData').unit.domains[0].id
+    unitId: Cypress.expose('dynamicTestData').unit.unitId,
+    domainId: Cypress.expose('dynamicTestData').unit.domains[0].id
   }
 ) {
   cy.visit(`/${unitId}/domains/${domainId}/editor`, { failOnStatusCode: false });
@@ -109,10 +109,10 @@ export function visitEditor(
 }
 
 export function visitDashboard({
-  unitName = Cypress.env('dynamicTestData').testUnits[0].name,
-  domainName = Cypress.env('dynamicTestData').testUnits[0].domains[0].name
+  unitName = Cypress.expose('dynamicTestData').testUnits[0].name,
+  domainName = Cypress.expose('dynamicTestData').testUnits[0].domains[0].name
 } = {}) {
-  const unit = Cypress.env('dynamicTestData').testUnits.find((u: UnitDetails) => u.name == unitName);
+  const unit = Cypress.expose('dynamicTestData').testUnits.find((u: UnitDetails) => u.name == unitName);
   const unitId = unit.unitId;
   const domainId = unit.domains.find((d: ICYVeoDomain) => (d.name = domainName)).id;
 

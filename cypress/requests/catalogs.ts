@@ -18,8 +18,8 @@
 import { logStatus } from './utils';
 
 export function applyCatalogItem({
-  domainId = Cypress.env('dynamicTestData').unit.domains[0].id,
-  unitId = Cypress.env('dynamicTestData').unit.unitId
+  domainId = Cypress.expose('dynamicTestData').unit.domains[0].id,
+  unitId = Cypress.expose('dynamicTestData').unit.unitId
 } = {}) {
   // Get first catalog item
   return cy
@@ -51,7 +51,7 @@ export function applyCatalogItem({
             .then((response) => {
               logStatus('Applying catalog items', response);
               expect(response.status).to.equal(201);
-              Cypress.env('dynamicTestData').modules = response.body;
+              Cypress.expose('dynamicTestData').modules = response.body;
               return response.body;
             });
         });

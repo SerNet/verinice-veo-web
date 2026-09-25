@@ -19,9 +19,9 @@ describe('Unit-Card', () => {
 
   it('displays the right unit data', () => {
     cy.getVeoTestUnitCard(unitDetails.name).as('veo-card');
-    cy.getCustom('@veo-card').should('contain', Cypress.env(unitDetails.name).name);
-    cy.getCustom('@veo-card').should('contain', Cypress.env(unitDetails.name).desc);
-    Cypress.env(unitDetails.name).domains.forEach((domain: { name: string; id: string }) => {
+    cy.getCustom('@veo-card').should('contain', Cypress.expose(unitDetails.name).name);
+    cy.getCustom('@veo-card').should('contain', Cypress.expose(unitDetails.name).desc);
+    Cypress.expose(unitDetails.name).domains.forEach((domain: { name: string; id: string }) => {
       cy.getCustom('@veo-card').should('contain', domain.name);
     });
   });
@@ -36,7 +36,7 @@ describe('Unit-Card', () => {
 
     // Get id of favorite unit from LS
     cy.getAllLocalStorage().then((result) => {
-      cy.wrap(result[Cypress.env('baseUrl')][LOCAL_STORAGE_KEYS.FAVORITE_UNIT]).as('favorite-unit-id');
+      cy.wrap(result[Cypress.expose('baseUrl')][LOCAL_STORAGE_KEYS.FAVORITE_UNIT]).as('favorite-unit-id');
     });
 
     // Get bookmark button
@@ -45,7 +45,7 @@ describe('Unit-Card', () => {
     });
 
     // Compare id of favorite unit to the id of the test unit
-    cy.getCustom('@favorite-unit-id').should('equal', Cypress.env(unitDetails.name).unitId);
+    cy.getCustom('@favorite-unit-id').should('equal', Cypress.expose(unitDetails.name).unitId);
 
     // Check draw-path to figure out if the correct svg is rendered
     cy.getCustom('@favorite-unit-btn').should(

@@ -39,8 +39,8 @@ function editElement({ typePlural, subTypePlural }: { typePlural: string; subTyp
   cy.getCustom('textarea[id="#/properties/description"]').clear().type(testData.description);
 
   // Save
-  cy.intercept('PUT', `${Cypress.env('veoApiUrl')}/domains/**`).as('editElement');
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
+  cy.intercept('PUT', `${Cypress.expose('veoApiUrl')}/domains/**`).as('editElement');
+  cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains/**`).as('getElements');
   cy.containsCustom('Save').click();
   cy.wait(['@editElement', '@getElements']).then((intercepts) => {
     expect(intercepts[0].response.statusCode).to.equal(200);

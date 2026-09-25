@@ -45,20 +45,20 @@ export function waitForLoadersToDisappear(options: any = {}) {
 }
 
 export function getTestUnits() {
-  const { dynamicTestData } = Cypress.env('dynamicTestData');
+  const { dynamicTestData } = Cypress.expose('dynamicTestData');
   return dynamicTestData.units;
 }
 
 export function getTestUnit() {
-  return Cypress.env('dynamicTestData').testUnits[0];
+  return Cypress.expose('dynamicTestData').testUnits[0];
 }
 
 export function getTestUnitId() {
-  return Cypress.env('dynamicTestData').testUnits[0].unitId;
+  return Cypress.expose('dynamicTestData').testUnits[0].unitId;
 }
 
 export function getTestDomain(domainName = 'DS-GVO') {
-  return Cypress.env('dynamicTestData').testUnits[0].domains.find(
+  return Cypress.expose('dynamicTestData').testUnits[0].domains.find(
     (d: { name: string; id: string }) => d.name == domainName
   );
 }

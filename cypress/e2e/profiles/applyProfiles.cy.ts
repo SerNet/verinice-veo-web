@@ -5,7 +5,7 @@ describe('Apply Profiles', () => {
 
   it('applies the DS-GVO demo profile to the test unit', () => {
     const profileName = 'Beispieldaten';
-    const testUnit = Cypress.env('dynamicTestData').testUnits[0];
+    const testUnit = Cypress.expose('dynamicTestData').testUnits[0];
 
     // Per default test units are associated with the DS-GVO Domain
     cy.acceptAllCookies();
@@ -24,7 +24,9 @@ describe('Apply Profiles', () => {
     cy.getCustom('@profileCard').find('[data-veo-test="profile-radio-btn-Beispieldaten"] input').click();
 
     // Apply profile
-    cy.intercept('POST', `${Cypress.env('veoApiUrl')}/domains/**/profiles/**/incarnation?unit=**`).as('applyProfile');
+    cy.intercept('POST', `${Cypress.expose('veoApiUrl')}/domains/**/profiles/**/incarnation?unit=**`).as(
+      'applyProfile'
+    );
     cy.getCustom('[data-veo-test="apply-profile"]').click();
     cy.wait(['@applyProfile']).its('response.statusCode').should('eq', 204);
 

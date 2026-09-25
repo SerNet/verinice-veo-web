@@ -36,7 +36,7 @@ type RequestHeaders = { Authorization?: string; 'Content-type'?: string; Accept?
 type RequestOptions = { endpoint: string; method?: string; headers?: RequestHeaders; body?: any };
 
 export function veoRequest(options: RequestOptions & { failOnStatusCode?: boolean }): Cypress.Chainable<any> {
-  const url = `${Cypress.env('veoApiUrl')}/${options.endpoint}`;
+  const url = `${Cypress.expose('veoApiUrl')}/${options.endpoint}`;
   return getToken().then((token) => {
     const opts = { method: 'GET', headers: generateHeaders(token, options.headers), ...omit(options, 'headers'), url };
     return cy.request(opts).then((response) => {
@@ -47,26 +47,26 @@ export function veoRequest(options: RequestOptions & { failOnStatusCode?: boolea
 
 // veoRequest helpers
 function getToken(): Cypress.Chainable<any> {
-  const user = Cypress.env('testUser');
-  const keycloak = Cypress.env('keycloak');
-  const url = `${keycloak.baseUrl}/auth/realms/${keycloak.realm}/protocol/openid-connect/token`;
+  return cy.env(['testUser', 'keycloak']).then(({ testUser, keycloak }) => {
+    const url = `${keycloak.baseUrl}/auth/realms/${keycloak.realm}/protocol/openid-connect/token`;
 
-  const body = {
-    username: user.name,
-    password: user.pw,
-    grant_type: 'password',
-    client_id: keycloak.clientId
-  };
+    const body = {
+      username: testUser.name,
+      password: testUser.pw,
+      grant_type: 'password',
+      client_id: keycloak.clientId
+    };
 
-  const requestOptions = {
-    url,
-    body,
-    method: 'POST',
-    headers: { 'content-type': 'application/x-www-form-urlencoded' }
-  };
+    const requestOptions = {
+      url,
+      body,
+      method: 'POST',
+      headers: { 'content-type': 'application/x-www-form-urlencoded' }
+    };
 
-  return cy.request(requestOptions).then((res) => {
-    return `Bearer ${res.body.access_token}`;
+    return cy.request(requestOptions).then((res) => {
+      return `Bearer ${res.body.access_token}`;
+    });
   });
 }
 

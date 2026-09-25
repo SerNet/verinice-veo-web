@@ -33,8 +33,8 @@ describe('Delete elements', () => {
         });
 
         cy.getCustom('@originalRow').then(($row) => {
-          cy.intercept('DELETE', `${Cypress.env('veoApiUrl')}/${elementType.toLowerCase()}/**`).as('deleteElement');
-          cy.intercept('GET', `${Cypress.env('veoApiUrl')}/domains/**`).as('getElements');
+          cy.intercept('DELETE', `${Cypress.expose('veoApiUrl')}/${elementType.toLowerCase()}/**`).as('deleteElement');
+          cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/domains/**`).as('getElements');
 
           deleteElement($row);
 

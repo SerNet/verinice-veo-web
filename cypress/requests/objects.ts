@@ -40,8 +40,8 @@ type TestObjectData = {
 };
 
 export function createObject({
-  domainId = Cypress.env('dynamicTestData').unit?.domains?.[0]?.id || Cypress.env('dsgvoUnitId'),
-  unitId = Cypress.env('dynamicTestData').unit.unitId,
+  domainId = Cypress.expose('dynamicTestData').unit?.domains?.[0]?.id || Cypress.expose('dsgvoUnitId'),
+  unitId = Cypress.expose('dynamicTestData').unit.unitId,
   objectData = defaultTestObjectData,
   dynamicTestDataKey = 'testObject'
 } = {}) {
@@ -62,14 +62,14 @@ export function createObject({
       const object = { ...objectData, id: res.body.resourceId };
 
       // Store information for later use in the current test suite
-      Cypress.env('dynamicTestData')[dynamicTestDataKey] = object;
+      Cypress.expose('dynamicTestData')[dynamicTestDataKey] = object;
       return object;
     });
 }
 
 export function deleteObject({
-  objectType = Cypress.env('dynamicTestData').testObject.objectTypePlural,
-  objectId = Cypress.env('dynamicTestData').testObject.id
+  objectType = Cypress.expose('dynamicTestData').testObject.objectTypePlural,
+  objectId = Cypress.expose('dynamicTestData').testObject.id
 } = {}) {
   cy.veoRequest({
     endpoint: `${objectType}/${objectId}`,
@@ -81,9 +81,9 @@ export function deleteObject({
 }
 
 export function getObject({
-  domainId = Cypress.env('dynamicTestData').unit.domains[0].id,
-  objectTypePlural = Cypress.env('dynamicTestData').testObject.objectTypePlural,
-  objectId = Cypress.env('dynamicTestData').testObject.id
+  domainId = Cypress.expose('dynamicTestData').unit.domains[0].id,
+  objectTypePlural = Cypress.expose('dynamicTestData').testObject.objectTypePlural,
+  objectId = Cypress.expose('dynamicTestData').testObject.id
 }: { domainId?: string; objectTypePlural?: string; objectId?: string } = {}) {
   return cy
     .veoRequest({
@@ -93,14 +93,14 @@ export function getObject({
     .then((res) => {
       logStatus('Getting test object', res);
       expect(res.status).to.equal(200);
-      Cypress.env('dynamicTestData').testObject.raw = res.body;
+      Cypress.expose('dynamicTestData').testObject.raw = res.body;
       return { ...res.body, headers: { ...res.headers } };
     });
 }
 
 export function getModules({
-  domainId = Cypress.env('dynamicTestData').unit.domains[0].id,
-  unitId = Cypress.env('dynamicTestData').unit.unitId
+  domainId = Cypress.expose('dynamicTestData').unit.domains[0].id,
+  unitId = Cypress.expose('dynamicTestData').unit.unitId
 } = {}) {
   return cy
     .veoRequest({
@@ -109,7 +109,7 @@ export function getModules({
     .then((res) => {
       const modules = res.body.items;
       logStatus('Get modules (controls -> CTL_Module)', res);
-      Cypress.env('dynamicTestData').modules = modules;
+      Cypress.expose('dynamicTestData').modules = modules;
       return modules;
     });
 }

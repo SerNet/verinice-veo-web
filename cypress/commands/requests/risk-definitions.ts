@@ -31,7 +31,7 @@ const defaultFixturePath = 'risk-definition.json';
 export function createRiskDefinition(fixturePath = defaultFixturePath) {
   return cy.fixture(fixturePath).then((json) => {
     const requestOptions = {
-      endpoint: `content-customizing/domains/${Cypress.env('dynamicTestData').testDomain.id}/risk-definitions/DSA`,
+      endpoint: `content-customizing/domains/${Cypress.expose('dynamicTestData').testDomain.id}/risk-definitions/DSA`,
       method: 'PUT',
       headers: {
         'If-Match': ''

@@ -59,14 +59,14 @@ function checkImportedUnitDetails(testData: TestData) {
 }
 
 function importUnit(testData: TestData) {
-  cy.intercept('POST', `${Cypress.env('veoApiUrl')}/units/import`, {
+  cy.intercept('POST', `${Cypress.expose('veoApiUrl')}/units/import`, {
     statusCode: 201,
     body: {
       resourceId: testData.unitId
     }
   }).as('importUnit');
 
-  cy.intercept('GET', `${Cypress.env('veoApiUrl')}/units`, [createImportedUnitResponse(testData)]).as(
+  cy.intercept('GET', `${Cypress.expose('veoApiUrl')}/units`, [createImportedUnitResponse(testData)]).as(
     'getImportedUnits'
   );
 
@@ -78,11 +78,11 @@ function importUnit(testData: TestData) {
     expect(body.unit.name).to.equal(testData.unitName);
     expect(body.risks).to.have.length.greaterThan(0);
 
-    Cypress.env('dynamicTestData').unit = {
+    Cypress.expose('dynamicTestData').unit = {
       name: testData.unitName,
       unitId: interception.response?.body?.resourceId
     };
-    Cypress.env('dynamicTestData').testUnits.push(Cypress.env('dynamicTestData').unit);
+    Cypress.expose('dynamicTestData').testUnits.push(Cypress.expose('dynamicTestData').unit);
   });
   cy.wait('@getImportedUnits');
 }
