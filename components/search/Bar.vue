@@ -25,7 +25,6 @@
     :placeholder="hasSearchChips ? undefined : t('search')"
     :items="selectionItems"
     :item-title="(item) => translateItem(item)"
-    :append-inner-icon="mdiMagnify"
     chips
     hide-selected
     variant="outlined"
@@ -34,8 +33,8 @@
     :aria-label="t('search')"
     :class="['veo-search', { 'veo-search--has-chips': hasSearchChips, 'veo-search--has-input': hasSearchInput }]"
     @click:clear="resetSearch"
-    @click:append-inner="runSearch"
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
+    @keydown.enter="handleEnter"
   >
     <template #prepend-inner>
       <div
@@ -56,20 +55,27 @@
         >
           <v-chip
             v-if="chip.term"
+            class="search-chip search-chip--context"
             closable
-            color="accent"
+            label
             variant="flat"
             @click:close="emit('removeContextChip', chip)"
           >
             {{ chip.term }}
           </v-chip>
         </div>
-        <div v-for="(s, index) in search" :key="s.searchFilter" class="search-chip-group" @pointerdown.stop>
+        <div
+          v-for="(s, index) in search"
+          :key="s.searchFilter"
+          class="search-chip-group"
+          data-veo-test="search-active"
+          @pointerdown.stop
+        >
           <v-chip
             v-if="s.searchFilter"
             :closable="!s.operator && !s.term"
-            :class="s.operator || s.term ? 'search-chip-start' : undefined"
-            color="accent"
+            :class="['search-chip', 'search-chip--filter', { 'search-chip-start': s.operator || s.term }]"
+            data-veo-test="search-filter"
             label
             variant="flat"
             @click:close="removeSearchGroup(index)"
@@ -79,8 +85,8 @@
           <v-chip
             v-if="s.operator"
             :closable="!s.term"
-            :class="s.term ? 'search-chip-middle' : 'search-chip-end'"
-            color="accent"
+            :class="['search-chip', 'search-chip--operator', s.term ? 'search-chip-middle' : 'search-chip-end']"
+            data-veo-test="search-operator"
             label
             variant="flat"
             @click:close="removeSearchGroup(index)"
@@ -89,9 +95,10 @@
           </v-chip>
           <v-chip
             v-if="s.term"
-            class="search-chip-end"
+            class="search-chip search-chip--term search-chip-end"
             closable
-            color="accent"
+            data-veo-test="search-term"
+            label
             variant="flat"
             @click:close="removeSearchGroup(index)"
           >
@@ -100,14 +107,49 @@
         </div>
       </div>
     </template>
+    <template #item="{ props: itemProps }">
+      <v-list-item
+        v-bind="itemProps"
+        class="search-menu-item"
+        data-veo-test="searchbar-item"
+        :prepend-icon="selectionItemIcon"
+      />
+    </template>
     <template #append-inner>
-      <v-icon class="mr-4" :icon="mdiCloseCircle" :aria-label="t('reset')" @click="resetSearch" />
+      <div class="search-actions">
+        <v-btn
+          v-if="hasSearchChips"
+          class="search-action"
+          data-veo-test="search-reset"
+          :aria-label="t('reset')"
+          :title="t('reset')"
+          :icon="mdiClose"
+          variant="text"
+          density="compact"
+          size="small"
+          @mousedown.prevent
+          @click.stop="resetSearch"
+        />
+        <v-divider v-if="hasSearchChips" vertical class="search-actions__divider" />
+        <v-btn
+          class="search-action"
+          data-veo-test="search-submit"
+          :aria-label="t('submit')"
+          :title="t('submit')"
+          :icon="mdiMagnify"
+          variant="text"
+          density="compact"
+          size="small"
+          @mousedown.prevent
+          @click.stop="runSearch"
+        />
+      </div>
     </template>
   </v-combobox>
 </template>
 
 <script setup lang="ts">
-import { mdiCloseCircle, mdiMagnify } from '@mdi/js';
+import { mdiClose, mdiCodeTags, mdiFilterOutline, mdiMagnify, mdiTextShort } from '@mdi/js';
 import { cloneDeep } from 'lodash';
 import type { VeoSearch, VeoSearchFilter, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
@@ -294,7 +336,22 @@ const selectionItems = computed(() => {
   return availableFilters;
 });
 
-const searchInput = ref<HTMLInputElement>();
+const selectionItemIcon = computed(() => {
+  const lastSearchPart = search.value.at(-1);
+  if (!lastSearchPart || lastSearchPart.term) return mdiFilterOutline;
+  if (!lastSearchPart.searchFilter || !lastSearchPart.operator) return mdiCodeTags;
+  return mdiTextShort;
+});
+const isSearchComplete = computed(
+  () => search.value.length > 0 && search.value.every((item) => !!item.searchFilter && !!item.operator && !!item.term)
+);
+
+type SearchInputRef = {
+  $el?: HTMLElement;
+  blur?: () => void;
+};
+
+const searchInput = ref<SearchInputRef>();
 const searchChipScroll = ref<HTMLElement>();
 const menuOpen = ref(false);
 const chipScrollDrag = reactive({
@@ -334,14 +391,41 @@ onBeforeUnmount(() => {
 
 watch([search, () => props.contextChips, select], () => nextTick(updateSearchChipScrollWidth), { deep: true });
 
+function getSearchInputElement() {
+  return searchInput.value?.$el?.querySelector<HTMLInputElement>('input');
+}
+
+function hasPendingInput(input = getSearchInputElement()) {
+  return !!input?.value.trim();
+}
+
 function runSearch() {
-  searchInput.value?.blur();
+  const input = getSearchInputElement();
+  if (!isSearchComplete.value || hasPendingInput(input)) {
+    input?.focus();
+    return;
+  }
+
+  menuOpen.value = false;
+  input?.blur();
+  searchInput.value?.blur?.();
+}
+
+function handleEnter(event: KeyboardEvent) {
+  if (!isSearchComplete.value || hasPendingInput(event.target as HTMLInputElement)) return;
+
+  event.preventDefault();
+  event.stopPropagation();
+  runSearch();
 }
 
 function resetSearch() {
+  select.value = undefined;
+  menuOpen.value = false;
   search.value = updateSearch({
     type: 'reset'
   });
+  props.contextChips.forEach((chip) => emit('removeContextChip', chip));
 }
 
 function removeSearchGroup(index: number) {
@@ -492,6 +576,7 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 
   :deep(.v-field) {
     background: #fff;
+    border-radius: 4px;
     min-width: 0;
   }
 
@@ -513,7 +598,8 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 
   :deep(.v-field__append-inner) {
     flex: 0 0 auto;
-    min-width: 72px;
+    align-items: center;
+    min-width: 40px;
   }
 
   &.veo-search--has-chips:not(.veo-search--has-input) {
@@ -547,13 +633,15 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 }
 
 .search-chip-start {
-  border-radius: 16px 0 0 16px;
+  border-radius: 6px 0 0 6px;
 }
 
 .search-chip-group {
   display: flex;
   flex-shrink: 0;
-  gap: 4px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px rgba(var(--v-theme-on-surface), 0.12);
+  overflow: hidden;
 }
 
 .search-chip-middle {
@@ -561,6 +649,57 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 }
 
 .search-chip-end {
-  border-radius: 0 16px 16px 0;
+  border-radius: 6px;
+}
+
+.search-chip {
+  color: rgba(var(--v-theme-on-surface), 0.88);
+  min-height: 28px;
+
+  :deep(.v-chip__close) {
+    margin-inline-start: 3px;
+  }
+}
+
+.search-chip--context,
+.search-chip--filter {
+  background: rgba(var(--v-theme-on-surface), 0.14);
+  font-weight: 600;
+}
+
+.search-chip--operator {
+  background: rgba(var(--v-theme-on-surface), 0.09);
+  color: rgba(var(--v-theme-on-surface), 0.72);
+}
+
+.search-chip--term {
+  background: rgba(var(--v-theme-on-surface), 0.04);
+}
+
+.search-menu-item {
+  min-height: 40px;
+
+  :deep(.v-list-item__prepend > .v-icon) {
+    margin-inline-end: 12px;
+    opacity: 0.72;
+  }
+}
+
+.search-actions {
+  display: flex;
+  align-items: center;
+}
+
+.search-action {
+  color: rgba(var(--v-theme-on-surface), 0.72);
+
+  &:hover {
+    color: rgb(var(--v-theme-primary));
+  }
+}
+
+.search-actions__divider {
+  height: 20px;
+  margin-inline: 2px;
 }
 </style>

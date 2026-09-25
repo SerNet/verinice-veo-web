@@ -1,12 +1,16 @@
 {
   "en": {
     "search": "Search",
+    "reset": "Clear search",
+    "submit": "Search",
     "searchFilter_name": "Name",
     "searchFilter_abbreviation": "Abbreviation",
     "searchFilter_displayName": "Name & abbreviation"
   },
   "de": {
     "search": "Suche",
+    "reset": "Suche zurücksetzen",
+    "submit": "Suchen",
     "searchFilter_name": "Name",
     "searchFilter_abbreviation": "Abkürzung",
     "searchFilter_displayName": "Name & Abkürzung"
