@@ -18,7 +18,8 @@
   <BaseDialog
     :model-value="showDialog"
     :title="t('riEditor.editRequirementImplementation')"
-    :close-disabled="view.isLoading || view.formIsDirty"
+    :close-disabled="view.isLoading"
+    :confirm-close="formIsDirty"
     large
     fixed-footer
     data-veo-test="compliance-editor"
@@ -358,8 +359,8 @@
     </BaseCard>
 
     <!-- Dialog footer buttons -->
-    <template #dialog-options>
-      <v-btn flat variant="plain" :disabled="view.isLoading" @click="emit('update:show-dialog', false)">
+    <template #dialog-options="{ close }">
+      <v-btn flat variant="plain" :disabled="view.isLoading" @click="close()">
         {{ t('global.button.cancel') }}
       </v-btn>
       <v-spacer />
@@ -392,7 +393,7 @@
 
 <script setup lang="ts">
 // ===== External dependencies =====
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, isEqual, merge } from 'lodash';
 
 // ===== Internal components =====
 import DynamicFormEntrypoint from '~/components/dynamic-form/Entrypoint.vue';
@@ -510,9 +511,25 @@ const additionalInfo = ref<TAdditionalInfo>({});
 
 // View state
 const view = reactive({
-  isLoading: false,
-  formIsDirty: false
+  isLoading: false
 });
+
+// Dirty check
+const DATE_FIELDS = ['implementationUntil', 'implementationDate', 'lastRevisionDate', 'nextRevisionDate'] as const;
+const pristineForm = ref<RequirementImplementationForForm | null>(null);
+
+// Date pickers emit Date objects while the API delivers strings, and clearing yields null or undefined
+function normalizeForm(value: RequirementImplementationForForm) {
+  const normalized: Record<string, any> = { ...value, control: undefined };
+  for (const field of DATE_FIELDS) {
+    normalized[field] = value[field] ? format(value[field], 'yyyy-MM-dd') : undefined;
+  }
+  return Object.fromEntries(Object.entries(normalized).filter(([, v]) => v != null && v !== ''));
+}
+
+const formIsDirty = computed(
+  () => !!pristineForm.value && !isEqual(normalizeForm(form.value), normalizeForm(pristineForm.value))
+);
 
 // ===== Route and context parameters =====
 const unitId = computed(() => route.params.unit);
@@ -795,6 +812,7 @@ watch(
       ..._item.value,
       control: control.value ?? _item.value.control
     };
+    pristineForm.value = cloneDeep(form.value);
   },
   { immediate: true }
 );

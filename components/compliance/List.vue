@@ -40,11 +40,11 @@
 
     <!-- @vue-ignore TODO #3066 domainId is missing??? -->
     <ComplianceEditor
-      :v-if="showDialog"
+      v-if="showDialog"
       :item="requirementImplementation"
       :show-dialog="showDialog"
       :locale="locale"
-      @update:show-dialog="showDialog = !showDialog"
+      @update:show-dialog="showDialog = $event"
     />
   </BaseCard>
 </template>
