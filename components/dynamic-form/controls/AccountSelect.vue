@@ -31,6 +31,7 @@
     :items="accountItems"
     item-title="username"
     item-value="username"
+    :filter-keys="['title', 'raw.fullName']"
     :no-data-text="t('noAccountsFound')"
     autocomplete="off"
     variant="underlined"
@@ -47,9 +48,9 @@
       />
     </template>
     <template #selection="{ item }">
-      <div class="d-flex flex-column">
+      <div class="text-truncate">
         <span>{{ item.username }}</span>
-        <span v-if="item.fullName" class="text-caption text-medium-emphasis">{{ item.fullName }}</span>
+        <span v-if="item.fullName" class="text-medium-emphasis"> ({{ item.fullName }})</span>
       </div>
     </template>
   </v-autocomplete>
