@@ -107,12 +107,12 @@
         </div>
       </div>
     </template>
-    <template #item="{ props: itemProps }">
+    <template #item="{ props: itemProps, item }">
       <v-list-item
         v-bind="itemProps"
         class="search-menu-item"
         data-veo-test="searchbar-item"
-        :prepend-icon="selectionItemIcon"
+        :prepend-icon="getSelectionItemIcon(item)"
       />
     </template>
     <template #append-inner>
@@ -149,8 +149,21 @@
 </template>
 
 <script setup lang="ts">
-import { mdiClose, mdiCodeTags, mdiFilterOutline, mdiMagnify, mdiTextShort } from '@mdi/js';
+import {
+  mdiAccountEdit,
+  mdiAlphabeticalVariant,
+  mdiClose,
+  mdiCodeTags,
+  mdiFileTree,
+  mdiFilterOutline,
+  mdiFormatText,
+  mdiMagnify,
+  mdiShapeOutline,
+  mdiTextBoxCheckOutline,
+  mdiTextShort
+} from '@mdi/js';
 import { cloneDeep } from 'lodash';
+import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import type { VeoSearch, VeoSearchFilter, VeoSearchFilters, VeoSearchOperators } from '~/types/VeoSearch';
 
 type VeoSearchFilterOption = {
@@ -165,6 +178,20 @@ type UpdateSearchMsg = {
   oldSearch?: VeoSearch[];
   newValue?: string;
 };
+
+const SEARCH_FILTER_ICONS = new Map<string, string>([
+  ['abbreviation', mdiAlphabeticalVariant],
+  ['description', mdiFormatText],
+  ['designator', mdiAlphabeticalVariant],
+  ['displayName', mdiAlphabeticalVariant],
+  ['hasChildElements', mdiFileTree],
+  ['hasNoParentElements', mdiFileTree],
+  ['name', mdiAlphabeticalVariant],
+  ['objectType', mdiShapeOutline],
+  ['status', mdiTextBoxCheckOutline],
+  ['subType', mdiShapeOutline],
+  ['updatedBy', mdiAccountEdit]
+]);
 
 const props = withDefaults(
   defineProps<{
@@ -336,12 +363,24 @@ const selectionItems = computed(() => {
   return availableFilters;
 });
 
-const selectionItemIcon = computed(() => {
+function getSelectionItemIcon(item: VeoSearchSelectionItem) {
   const lastSearchPart = search.value.at(-1);
-  if (!lastSearchPart || lastSearchPart.term) return mdiFilterOutline;
-  if (!lastSearchPart.searchFilter || !lastSearchPart.operator) return mdiCodeTags;
-  return mdiTextShort;
-});
+
+  if (!lastSearchPart || lastSearchPart.term) {
+    return typeof item === 'object' && 'key' in item ?
+        (SEARCH_FILTER_ICONS.get(item.key) ?? mdiFilterOutline)
+      : mdiFilterOutline;
+  }
+
+  if (!lastSearchPart.operator) return mdiCodeTags;
+
+  if (lastSearchPart.searchFilter === 'objectType' && isSearchFilterOption(item)) {
+    return OBJECT_TYPE_ICONS.get(item.optionValue)?.icon ?? mdiShapeOutline;
+  }
+
+  return SEARCH_FILTER_ICONS.get(lastSearchPart.searchFilter ?? '') ?? mdiTextShort;
+}
+
 const isSearchComplete = computed(
   () => search.value.length > 0 && search.value.every((item) => !!item.searchFilter && !!item.operator && !!item.term)
 );

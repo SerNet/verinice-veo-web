@@ -17,9 +17,11 @@
  */
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
 import { DOMWrapper, type VueWrapper } from '@vue/test-utils';
+import { mdiAlphabeticalVariant, mdiTextBoxCheckOutline } from '@mdi/js';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { defineComponent, nextTick, ref } from 'vue';
 
+import { OBJECT_TYPE_ICONS } from '~/components/object/Icon.vue';
 import SearchBar from '~/components/search/Bar.vue';
 import type { VeoSearch, VeoSearchFilters } from '~/types/VeoSearch';
 
@@ -54,14 +56,18 @@ beforeAll(() => {
   });
 });
 
-async function mountSearchBar(initialSearch: VeoSearch[], initialContextChips: VeoSearch[] = []) {
+async function mountSearchBar(
+  initialSearch: VeoSearch[],
+  initialContextChips: VeoSearch[] = [],
+  searchFilters: VeoSearchFilters = filters
+) {
   const search = ref(initialSearch);
   const contextChips = ref(initialContextChips);
   const Host = defineComponent({
     components: { SearchBar },
     setup: () => ({
       contextChips,
-      filters,
+      filters: searchFilters,
       removeContextChip: (chip: VeoSearch) => {
         contextChips.value = contextChips.value.filter((contextChip) => contextChip !== chip);
       },
@@ -144,5 +150,43 @@ describe('SearchBar', () => {
     await new DOMWrapper(firstItem!).trigger('click');
 
     expect(search.value[0]).toMatchObject({ searchFilter: 'name', operator: '=' });
+  });
+
+  it('shows semantic icons for the available search filters', async () => {
+    const { wrapper } = await mountSearchBar([]);
+
+    await wrapper.get('.v-field').trigger('mousedown');
+    await wrapper.get('.v-field').trigger('click');
+    await nextTick();
+    const items = [...document.body.querySelectorAll<HTMLElement>('[data-veo-test="searchbar-item"]')];
+
+    expect(items.map((item) => item.querySelector('path')?.getAttribute('d'))).toEqual([
+      mdiAlphabeticalVariant,
+      mdiTextBoxCheckOutline
+    ]);
+  });
+
+  it('reuses the existing object type icons for object type values', async () => {
+    const objectTypeFilters: VeoSearchFilters = {
+      all: [
+        {
+          key: 'objectType',
+          value: 'Object type',
+          options: { process: 'Process', person: 'Person' }
+        }
+      ],
+      default: { key: 'objectType', value: 'Object type' }
+    };
+    const { wrapper } = await mountSearchBar([{ searchFilter: 'objectType', operator: '=' }], [], objectTypeFilters);
+
+    await wrapper.get('.v-field').trigger('mousedown');
+    await wrapper.get('.v-field').trigger('click');
+    await nextTick();
+    const items = [...document.body.querySelectorAll<HTMLElement>('[data-veo-test="searchbar-item"]')];
+
+    expect(items.map((item) => item.querySelector('path')?.getAttribute('d'))).toEqual([
+      OBJECT_TYPE_ICONS.get('process')?.icon,
+      OBJECT_TYPE_ICONS.get('person')?.icon
+    ]);
   });
 });
