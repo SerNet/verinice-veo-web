@@ -35,6 +35,7 @@
     @click:clear="resetSearch"
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
     @keydown.enter="handleEnter"
+    @update:search="searchText = $event"
   >
     <template #prepend-inner>
       <div
@@ -113,12 +114,13 @@
         class="search-menu-item"
         data-veo-test="searchbar-item"
         :prepend-icon="getSelectionItemIcon(item)"
+        role="option"
       />
     </template>
     <template #append-inner>
       <div class="search-actions">
         <v-btn
-          v-if="hasSearchChips"
+          v-if="hasSearchContent"
           class="search-action"
           data-veo-test="search-reset"
           :aria-label="t('reset')"
@@ -130,7 +132,7 @@
           @mousedown.prevent
           @click.stop="resetSearch"
         />
-        <v-divider v-if="hasSearchChips" vertical class="search-actions__divider" />
+        <v-divider v-if="hasSearchContent" vertical class="search-actions__divider" />
         <v-btn
           class="search-action"
           data-veo-test="search-submit"
@@ -345,8 +347,10 @@ const search = defineModel<VeoSearch[]>('search', {
 });
 // Current value of v-combobox
 const select = ref();
+const searchText = ref('');
 const hasSearchChips = computed(() => !!props.contextChips.length || !!search.value.length);
-const hasSearchInput = computed(() => !!select.value);
+const hasSearchInput = computed(() => !!select.value || !!searchText.value.trim());
+const hasSearchContent = computed(() => hasSearchChips.value || hasSearchInput.value);
 
 // Initialize search from props
 if (props.initialSearch?.length) {
@@ -381,13 +385,20 @@ function getSelectionItemIcon(item: VeoSearchSelectionItem) {
   return SEARCH_FILTER_ICONS.get(lastSearchPart.searchFilter ?? '') ?? mdiTextShort;
 }
 
-const isSearchComplete = computed(
-  () => search.value.length > 0 && search.value.every((item) => !!item.searchFilter && !!item.operator && !!item.term)
-);
+function hasCompleteSearch(searchEntries: VeoSearch[]) {
+  return (
+    searchEntries.length > 0 && searchEntries.every((item) => !!item.searchFilter && !!item.operator && !!item.term)
+  );
+}
+
+const isSearchComplete = computed(() => hasCompleteSearch(search.value));
 
 type SearchInputRef = {
   $el?: HTMLElement;
   blur?: () => void;
+  isFocused?: boolean;
+  menu?: boolean;
+  search?: string;
 };
 
 const searchInput = ref<SearchInputRef>();
@@ -428,38 +439,98 @@ onBeforeUnmount(() => {
   searchChipResizeObserver?.disconnect();
 });
 
-watch([search, () => props.contextChips, select], () => nextTick(updateSearchChipScrollWidth), { deep: true });
+watch([search, () => props.contextChips, select, searchText], () => nextTick(updateSearchChipScrollWidth), {
+  deep: true
+});
 
 function getSearchInputElement() {
   return searchInput.value?.$el?.querySelector<HTMLInputElement>('input');
 }
 
-function hasPendingInput(input = getSearchInputElement()) {
-  return !!input?.value.trim();
+function clearSearchInput() {
+  searchText.value = '';
+  if (searchInput.value) searchInput.value.search = '';
+
+  const input = getSearchInputElement();
+  if (input) input.value = '';
+}
+
+function closeSearch() {
+  menuOpen.value = false;
+  if (searchInput.value) {
+    searchInput.value.isFocused = false;
+    searchInput.value.menu = false;
+  }
+  getSearchInputElement()?.blur();
+  searchInput.value?.blur?.();
+  nextTick(() => {
+    menuOpen.value = false;
+    if (searchInput.value) {
+      searchInput.value.isFocused = false;
+      searchInput.value.menu = false;
+    }
+  });
 }
 
 function runSearch() {
-  const input = getSearchInputElement();
-  if (!isSearchComplete.value || hasPendingInput(input)) {
-    input?.focus();
+  if (isSearchComplete.value) {
+    clearSearchInput();
+    closeSearch();
     return;
   }
 
-  menuOpen.value = false;
-  input?.blur();
-  searchInput.value?.blur?.();
+  const pendingTerm = searchText.value.trim();
+  if (pendingTerm) {
+    const oldSearch = cloneDeep(search.value);
+    const currentSearchEntry = oldSearch.at(-1);
+    const options = getSearchFilterOptions(currentSearchEntry?.searchFilter);
+    const normalizedPendingTerm = pendingTerm.toLocaleLowerCase();
+    const matchingOption = options.find(
+      (option) =>
+        option.optionValue.toLocaleLowerCase() === normalizedPendingTerm ||
+        option.optionLabel.toLocaleLowerCase() === normalizedPendingTerm
+    );
+
+    if (options.length && !matchingOption) {
+      menuOpen.value = true;
+      getSearchInputElement()?.focus();
+      return;
+    }
+
+    const updatedSearch = updateSearch({
+      type: 'updateTerm',
+      oldSearch,
+      newValue: matchingOption?.optionValue ?? pendingTerm
+    });
+    search.value = updatedSearch;
+    clearSearchInput();
+
+    if (hasCompleteSearch(updatedSearch)) {
+      closeSearch();
+      return;
+    }
+  }
+
+  if (isSearchComplete.value) {
+    closeSearch();
+  } else {
+    menuOpen.value = true;
+    getSearchInputElement()?.focus();
+  }
 }
 
 function handleEnter(event: KeyboardEvent) {
-  if (!isSearchComplete.value || hasPendingInput(event.target as HTMLInputElement)) return;
+  if (!isSearchComplete.value) return;
 
   event.preventDefault();
   event.stopPropagation();
+  clearSearchInput();
   runSearch();
 }
 
 function resetSearch() {
   select.value = undefined;
+  clearSearchInput();
   menuOpen.value = false;
   search.value = updateSearch({
     type: 'reset'

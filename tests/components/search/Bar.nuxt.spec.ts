@@ -126,6 +126,56 @@ describe('SearchBar', () => {
     expect(contextChips.value).toEqual([]);
   });
 
+  it('shows the reset action while typing and clears the pending input', async () => {
+    const { search, wrapper } = await mountSearchBar([]);
+    const input = wrapper.get('input');
+
+    await input.setValue('policy');
+    expect(wrapper.find('[data-veo-test="search-reset"]').exists()).toBe(true);
+
+    await wrapper.get('[data-veo-test="search-reset"]').trigger('click');
+
+    expect(search.value).toEqual([]);
+    expect((input.element as HTMLInputElement).value).toBe('');
+    expect(wrapper.find('[data-veo-test="search-reset"]').exists()).toBe(false);
+  });
+
+  it('commits the pending input and closes the search when the search action is clicked', async () => {
+    const { search, wrapper } = await mountSearchBar([]);
+    const input = wrapper.get('input');
+    await input.setValue('policy');
+
+    await wrapper.get('[data-veo-test="search-submit"]').trigger('click');
+    await nextTick();
+
+    expect(search.value).toEqual([{ searchFilter: 'name', operator: '=', term: 'policy' }]);
+    expect(input.attributes('aria-expanded')).toBe('false');
+  });
+
+  it('resolves a typed option label when the search action is clicked', async () => {
+    const { search, wrapper } = await mountSearchBar([{ searchFilter: 'status', operator: '=' }]);
+    const input = wrapper.get('input');
+    await input.setValue('New');
+
+    await wrapper.get('[data-veo-test="search-submit"]').trigger('click');
+    await nextTick();
+
+    expect(search.value).toEqual([{ searchFilter: 'status', operator: '=', term: 'NEW' }]);
+    expect(input.attributes('aria-expanded')).toBe('false');
+  });
+
+  it('keeps an incomplete option search open without changing the criterion', async () => {
+    const { search, wrapper } = await mountSearchBar([{ searchFilter: 'status', operator: '=' }]);
+    const input = wrapper.get('input');
+    await input.setValue('Unknown');
+
+    await wrapper.get('[data-veo-test="search-submit"]').trigger('click');
+
+    expect(search.value).toEqual([{ searchFilter: 'status', operator: '=' }]);
+    expect((input.element as HTMLInputElement).value).toBe('Unknown');
+    expect(input.attributes('aria-expanded')).toBe('true');
+  });
+
   it('removes only the selected criterion from a multi-filter search', async () => {
     const { search, wrapper } = await mountSearchBar([
       { searchFilter: 'name', operator: '=', term: 'policy' },
@@ -146,6 +196,7 @@ describe('SearchBar', () => {
     await nextTick();
     const firstItem = document.body.querySelector<HTMLElement>('[data-veo-test="searchbar-item"]');
     expect(firstItem).not.toBeNull();
+    expect(firstItem?.getAttribute('role')).toBe('option');
 
     await new DOMWrapper(firstItem!).trigger('click');
 
