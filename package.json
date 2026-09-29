@@ -92,7 +92,7 @@
     "eslint-plugin-vue": "10.11.1",
     "force-graph": "1.51.4",
     "happy-dom": "20.14.5",
-    "lint-staged": "17.5.1",
+    "lint-staged": "17.6.0",
     "mocha-junit-reporter": "2.2.1",
     "nuxt": "4.5.2",
     "prettier": "3.9.9",
