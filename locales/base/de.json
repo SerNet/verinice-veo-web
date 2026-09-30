@@ -66,6 +66,7 @@
   "global.input.usernameTooShort": "Benutzername muss mindestens 3 Zeichen lang sein.",
   "global.input.invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein.",
   "global.input.invalidNumber": "Bitte geben Sie eine gültige Zahl ein.",
+  "global.input.onlyWholeNumbers": "Es dürfen nur ganze Zahlen eingegeben werden.",
   "global.input.mustBeString": "Feld muss Text sein",
   "global.logout": "Logout",
   "global.menu.collapse": "Menü verstecken",
