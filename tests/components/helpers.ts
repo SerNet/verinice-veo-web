@@ -17,6 +17,13 @@
 import { expect, vi } from 'vitest';
 import type { VueWrapper } from '@vue/test-utils';
 
+export type DeepPartial<T> =
+  T extends object ?
+    {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
+
 function expectElements(component: VueWrapper<any>, selectors: string[], shouldExist: boolean = true) {
   selectors.forEach((selector) => {
     const element = component.find(selector);
