@@ -95,6 +95,17 @@ export const useRules = () => {
   const numberValidator = (v: any) =>
     (v && !isNaN(Number(v)) && isFinite(Number(v))) || t('global.input.invalidNumber');
 
+  const wholeNumberValidator = (value: unknown) => {
+    if (value === undefined || value === null || value === '') return true;
+
+    return (
+      ((value === 0 || numberValidator(value) === true) &&
+        !String(value).includes('.') &&
+        Number.isInteger(Number(value))) ||
+      t('global.input.onlyWholeNumbers')
+    );
+  };
+
   const banSpecialChars = (v: string) => (hasNoSpecialChar(v) ? true : t('global.input.hasSpecialChar'));
 
   const usernameTooShort = (v: string) => (v.length < 3 ? t('global.input.usernameTooShort') : true);
@@ -121,6 +132,7 @@ export const useRules = () => {
     banSpecialChars,
     mailValidator,
     numberValidator,
+    wholeNumberValidator,
     usernameTooShort
   };
 };
