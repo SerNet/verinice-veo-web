@@ -311,7 +311,16 @@ describe('Requirement Implementations: Editor', () => {
 
       if (featureEnabled) {
         // (riDialogProps = true)
-        cy.getCustom('[data-veo-test="riEditor-cost"]').should('exist').find('input').type('1500');
+        cy.getCustom('[data-veo-test="riEditor-cost"]').as('cost').should('exist').find('input').type('1.1');
+        cy.get('@cost').should('contain.text', 'Only whole numbers may be entered.');
+        cy.contains('button', 'Save').should('be.disabled');
+
+        cy.get('@cost').find('input').clear().type('123.');
+        cy.get('@cost').should('contain.text', 'Only whole numbers may be entered.');
+        cy.contains('button', 'Save').should('be.disabled');
+
+        cy.get('@cost').find('input').clear().type('1500');
+        cy.contains('button', 'Save').should('not.be.disabled');
 
         cy.getCustom('[data-veo-test="riEditor-description"]')
           .should('exist')
