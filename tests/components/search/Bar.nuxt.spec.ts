@@ -176,7 +176,7 @@ describe('SearchBar', () => {
     expect(input.attributes('aria-expanded')).toBe('true');
   });
 
-  it('removes only the selected criterion from a multi-filter search', async () => {
+  it('removes only the selected term from a multi-filter search', async () => {
     const { search, wrapper } = await mountSearchBar([
       { searchFilter: 'name', operator: '=', term: 'policy' },
       { searchFilter: 'status', operator: '=', term: 'NEW' }
@@ -185,7 +185,41 @@ describe('SearchBar', () => {
 
     await groups[1].get('.v-chip__close').trigger('click');
 
-    expect(search.value).toEqual([{ searchFilter: 'name', operator: '=', term: 'policy' }]);
+    expect(search.value).toEqual([
+      { searchFilter: 'name', operator: '=', term: 'policy' },
+      { searchFilter: 'status', operator: '=' }
+    ]);
+  });
+
+  it('does not append unscoped text to a completed criterion', async () => {
+    const { search, wrapper } = await mountSearchBar([{ searchFilter: 'name', operator: '=', term: 'LAN' }]);
+    const input = wrapper.get('input');
+
+    await input.setValue('voip');
+    await input.trigger('blur');
+    await nextTick();
+
+    expect(search.value).toEqual([{ searchFilter: 'name', operator: '=', term: 'LAN' }]);
+  });
+
+  it('makes the operator editable without deleting the filter', async () => {
+    const { search, wrapper } = await mountSearchBar([{ searchFilter: 'name', operator: '=', term: 'policy' }]);
+
+    await wrapper.get('[data-veo-test="search-operator"]').trigger('click');
+    await nextTick();
+
+    expect(search.value).toEqual([{ searchFilter: 'name' }]);
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('true');
+  });
+
+  it('makes the filter editable by returning to filter selection', async () => {
+    const { search, wrapper } = await mountSearchBar([{ searchFilter: 'name', operator: '=', term: 'policy' }]);
+
+    await wrapper.get('[data-veo-test="search-filter"]').trigger('click');
+    await nextTick();
+
+    expect(search.value).toEqual([]);
+    expect(wrapper.get('input').attributes('aria-expanded')).toBe('true');
   });
 
   it('selects a filter by clicking a dropdown row', async () => {

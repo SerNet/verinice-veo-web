@@ -67,7 +67,7 @@
         </div>
         <div
           v-for="(s, index) in search"
-          :key="s.searchFilter"
+          :key="`${s.searchFilter}-${index}`"
           class="search-chip-group"
           data-veo-test="search-active"
           @pointerdown.stop
@@ -85,6 +85,7 @@
             data-veo-test="search-filter"
             label
             variant="flat"
+            @click="editSearchPart(index, 'filter')"
             @click:close="removeSearchGroup(index)"
           >
             {{ translateItem(s.searchFilter) }}
@@ -96,7 +97,8 @@
             data-veo-test="search-operator"
             label
             variant="flat"
-            @click:close="removeSearchGroup(index)"
+            @click="editSearchPart(index, 'operator')"
+            @click:close="editSearchPart(index, 'operator')"
           >
             {{ s.operator }}
           </v-chip>
@@ -107,7 +109,8 @@
             data-veo-test="search-term"
             label
             variant="flat"
-            @click:close="removeSearchGroup(index)"
+            @click="editSearchPart(index, 'term')"
+            @click:close="editSearchPart(index, 'term')"
           >
             {{ translateTerm(s) }}
           </v-chip>
@@ -310,11 +313,6 @@ function updateSearch(msg: UpdateSearchMsg): VeoSearch[] {
           operator: currentSearchEntry.operator ?? props.operators.default,
           term: msg.newValue
         }
-      ]);
-    case 'addToTerm':
-      return normalizeSearch([
-        ...existingSearchEntries,
-        { ...currentSearchEntry, term: (currentSearchEntry.term ?? '') + msg.newValue }
       ]);
     case 'reset':
       return [];
@@ -552,6 +550,29 @@ function removeSearchGroup(index: number) {
   search.value = search.value.filter((_, searchIndex) => searchIndex !== index);
 }
 
+function editSearchPart(index: number, part: 'filter' | 'operator' | 'term') {
+  const selectedSearch = search.value[index];
+  if (!selectedSearch) return;
+
+  const remainingSearch = search.value.filter((_, searchIndex) => searchIndex !== index);
+  if (part === 'filter') {
+    search.value = remainingSearch;
+  } else {
+    search.value = normalizeSearch([
+      ...remainingSearch,
+      {
+        searchFilter: selectedSearch.searchFilter,
+        operator: part === 'term' ? selectedSearch.operator : undefined
+      }
+    ]);
+  }
+
+  nextTick(() => {
+    menuOpen.value = true;
+    getSearchInputElement()?.focus();
+  });
+}
+
 function openMenuOnNextTick() {
   nextTick(() => (menuOpen.value = true));
 }
@@ -608,9 +629,12 @@ watch(select, () => {
   const lastSearchPart = oldSearch.at(-1);
   const optionValues = getSearchFilterOptions(lastSearchPart?.searchFilter).map((option) => option.optionValue);
   if (lastSearchPart?.operator && optionValues.length && !optionValues.includes(newValue)) return;
+  if (lastSearchPart?.term) {
+    clearSearchInput();
+    return;
+  }
 
-  const type = oldSearch.at(-1)?.term ? 'addToTerm' : 'updateTerm';
-  search.value = updateSearch({ type, oldSearch, newValue });
+  search.value = updateSearch({ type: 'updateTerm', oldSearch, newValue });
   openMenuOnNextTick();
 });
 
@@ -760,13 +784,13 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 }
 
 .search-chip-start {
-  border-radius: 6px 0 0 6px;
+  border-radius: 100px 0 0 100px;
 }
 
 .search-chip-group {
   display: flex;
   flex-shrink: 0;
-  border-radius: 6px;
+  border-radius: 100px;
   box-shadow: inset 0 0 0 1px rgba(var(--v-theme-on-surface), 0.12);
   overflow: hidden;
 }
@@ -776,7 +800,7 @@ function onSearchChipPointerEnd(event: PointerEvent) {
 }
 
 .search-chip-end {
-  border-radius: 6px;
+  border-radius: 0 100px 100px 0;
 }
 
 .search-chip {
@@ -786,6 +810,10 @@ function onSearchChipPointerEnd(event: PointerEvent) {
   :deep(.v-chip__close) {
     margin-inline-start: 3px;
   }
+}
+
+.search-chip:not(.search-chip--context) {
+  cursor: pointer;
 }
 
 .search-chip--context,
