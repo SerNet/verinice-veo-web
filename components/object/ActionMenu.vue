@@ -26,11 +26,14 @@
       @child-create-success="onCreateObjectSuccess"
     >
       <template #default="{ actions }">
-        <v-tooltip v-if="type !== 'links'" :disabled="canManageUnitContent" :text="t('missingPermissionsTooltip')">
+        <v-tooltip
+          v-if="type !== 'links' && actions.length === 1"
+          :disabled="canManageUnitContent"
+          :text="t('missingPermissionsTooltip')"
+        >
           <template #activator="{ props: activatorProps }">
             <span v-bind="activatorProps">
               <v-btn
-                v-if="actions.length === 1"
                 :disabled="disabled || !ability.can('manage', subject('units', { id: route.params.unit }))"
                 color="primary"
                 data-component-name="object-details-actions-button"
