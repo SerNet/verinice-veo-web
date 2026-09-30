@@ -194,7 +194,7 @@
                     :aria-label="t('riEditor.cost')"
                     :disabled="!canManageUnitContent"
                     variant="underlined"
-                    :rules="[numberValidator]"
+                    :rules="[wholeNumberValidator]"
                     data-veo-test="riEditor-cost"
                   />
                 </v-col>
@@ -368,7 +368,7 @@
         variant="plain"
         color="primary"
         :loading="view.isLoading"
-        :disabled="view.isLoading || !canManageUnitContent"
+        :disabled="view.isLoading || !canManageUnitContent || !costIsValid"
         @click="
           () =>
             void (
@@ -441,7 +441,7 @@ type RequirementImplementationForForm = {
   origination: string;
   implementationUntil?: string;
   implementedBy?: ResponsiblePerson;
-  cost?: number;
+  cost?: number | string | null;
   implementationStatement?: string;
   implementationDate?: string;
   document?: any;
@@ -727,7 +727,13 @@ function updateAdditionalInfo(control: IVeoEntity, targetObject: IVeoEntity, pro
 }
 
 // ===== Rules =====
-const { numberValidator } = useRules();
+const { wholeNumberValidator } = useRules();
+const costIsValid = computed(() => wholeNumberValidator(form.value.cost) === true);
+
+function normalizeCost(value: RequirementImplementationForForm['cost']): number | undefined {
+  if (value === undefined || value === null || (typeof value === 'string' && value.trim() === '')) return undefined;
+  return Number(value);
+}
 
 // ===== Event handlers =====
 async function submitForm({
@@ -742,7 +748,7 @@ async function submitForm({
   item: any;
   request: any;
 }) {
-  if (!form) return;
+  if (!form || wholeNumberValidator(form.cost) !== true) return;
 
   view.isLoading = true;
 
@@ -752,6 +758,7 @@ async function submitForm({
     ...clone,
     control: { targetUri: clone.control._self },
     origin: validateType(clone.origin, isVeoLink),
+    cost: normalizeCost(clone.cost),
     implementationUntil: form.implementationUntil ? format(form.implementationUntil, 'yyyy-MM-dd') : undefined,
     implementationDate: form.implementationDate ? format(form.implementationDate, 'yyyy-MM-dd') : undefined,
     lastRevisionDate: form.lastRevisionDate ? format(form.lastRevisionDate, 'yyyy-MM-dd') : undefined,
