@@ -53,7 +53,6 @@ export function useObjectSearchFilters({
   availableSubTypes = []
 }: UseObjectSearchFiltersParams) {
   const { locale } = useI18n();
-  const { t: globalT } = useI18n({ useScope: 'global' });
   const { ability } = useVeoPermissions();
   const { data: translations } = useTranslations({ domain: computed(() => unref(domainId)) });
   const { data: accounts } = useQuery(accountQueryDefinitions.queries.fetchAccounts, undefined, {
@@ -145,10 +144,6 @@ export function useObjectSearchFilters({
     );
   });
 
-  const booleanOptions = computed(() => ({
-    true: globalT('global.button.yes').toString()
-  }));
-
   const editorOptions = computed(() =>
     toOptions(
       ((accounts.value ?? []) as IVeoAccount[]).flatMap((account) => {
@@ -177,7 +172,7 @@ export function useObjectSearchFilters({
             return { ...searchFilter, options: editorOptions.value };
           case 'hasNoParentElements':
           case 'hasChildElements':
-            return { ...searchFilter, options: booleanOptions.value };
+            return { ...searchFilter, isFlag: true };
           default:
             return searchFilter;
         }

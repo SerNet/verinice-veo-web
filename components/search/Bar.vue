@@ -74,8 +74,14 @@
         >
           <v-chip
             v-if="s.searchFilter"
-            :closable="!s.operator && !s.term"
-            :class="['search-chip', 'search-chip--filter', { 'search-chip-start': s.operator || s.term }]"
+            :closable="isFlagSearch(s) || (!s.operator && !s.term)"
+            :class="[
+              'search-chip',
+              'search-chip--filter',
+              {
+                'search-chip-start': !isFlagSearch(s) && (s.operator || s.term)
+              }
+            ]"
             data-veo-test="search-filter"
             label
             variant="flat"
@@ -84,7 +90,7 @@
             {{ translateItem(s.searchFilter) }}
           </v-chip>
           <v-chip
-            v-if="s.operator"
+            v-if="s.operator && !isFlagSearch(s)"
             :closable="!s.term"
             :class="['search-chip', 'search-chip--operator', s.term ? 'search-chip-middle' : 'search-chip-end']"
             data-veo-test="search-operator"
@@ -95,7 +101,7 @@
             {{ s.operator }}
           </v-chip>
           <v-chip
-            v-if="s.term"
+            v-if="s.term && !isFlagSearch(s)"
             class="search-chip search-chip--term search-chip-end"
             closable
             data-veo-test="search-term"
@@ -248,6 +254,10 @@ function normalizeSearch(search: VeoSearch[]) {
 
     return true;
   });
+}
+
+function isFlagSearch(item: VeoSearch) {
+  return !!getSearchFilter(item.searchFilter)?.isFlag;
 }
 
 function getSearchFilterOptions(filterKey?: string): VeoSearchFilterOption[] {
@@ -567,11 +577,18 @@ watch(select, () => {
     const newSearchFilter = (newValue as VeoSearchFilter).key;
     if (getSelectedFilterKeys(oldSearch).has(newSearchFilter)) return;
 
-    search.value = updateSearch({
+    const updatedSearch = updateSearch({
       type: 'updateFilter',
       oldSearch,
       newValue: newSearchFilter
     });
+
+    if (getSearchFilter(newSearchFilter)?.isFlag) {
+      search.value = updateSearch({ type: 'updateTerm', oldSearch: updatedSearch, newValue: 'true' });
+      openMenuOnNextTick();
+      return;
+    }
+    search.value = updatedSearch;
 
     if (getSearchFilterOptions(newSearchFilter).length) {
       openMenuOnNextTick();

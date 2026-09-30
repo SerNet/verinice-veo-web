@@ -26,6 +26,7 @@ export type VeoSearchFilter = {
   key: string;
   value: string;
   options?: Record<string, string>;
+  isFlag?: boolean;
 };
 
 export type VeoSearchFilters = {
