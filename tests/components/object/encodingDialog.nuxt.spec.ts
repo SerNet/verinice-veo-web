@@ -14,28 +14,15 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { describe, it, expect, beforeAll, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, afterEach } from 'vitest';
 import { mountSuspended } from '@nuxt/test-utils/runtime';
 import { nextTick } from 'vue';
 
 import EncodingDialog from '~/components/object/EncodingDialog.vue';
+import { defineViewport } from '~/tests/components/helpers.ts';
 
 beforeAll(() => {
-  Object.defineProperty(window, 'visualViewport', {
-    writable: true,
-    configurable: true,
-    value: {
-      width: 400,
-      height: 200,
-      offsetTop: 0,
-      offsetLeft: 0,
-      pageTop: 0,
-      pageLeft: 0,
-      scale: 1,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn()
-    }
-  });
+  defineViewport();
 });
 
 afterEach(() => {
