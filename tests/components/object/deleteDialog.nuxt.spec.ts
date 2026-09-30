@@ -20,6 +20,7 @@ import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
 
 import DeleteDialog from '~/components/object/DeleteDialog.vue';
 import type { IVeoEntity } from '~/types/VeoTypes';
+import { defineViewport } from '~/tests/components/helpers.ts';
 
 const { useQueryMock } = vi.hoisted(() => ({
   useQueryMock: vi.fn(
@@ -78,21 +79,7 @@ mockNuxtImport('useVeoPermissions', () => {
 });
 
 beforeAll(() => {
-  Object.defineProperty(window, 'visualViewport', {
-    writable: true,
-    configurable: true,
-    value: {
-      width: 800,
-      height: 600,
-      offsetTop: 0,
-      offsetLeft: 0,
-      pageTop: 0,
-      pageLeft: 0,
-      scale: 1,
-      addEventListener: vi.fn(),
-      removeEventListener: vi.fn()
-    }
-  });
+  defineViewport();
 });
 
 beforeEach(() => {

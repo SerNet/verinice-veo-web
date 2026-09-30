@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { expect } from 'vitest';
+import { expect, vi } from 'vitest';
 import type { VueWrapper } from '@vue/test-utils';
 
 function expectElements(component: VueWrapper<any>, selectors: string[], shouldExist: boolean = true) {
@@ -30,4 +30,22 @@ export function expectElementsToExist(component: VueWrapper<any>, selectors: str
 
 export function expectElementsNotToExist(component: VueWrapper<any>, selectors: string[]) {
   expectElements(component, selectors, false);
+}
+
+export function defineViewport() {
+  Object.defineProperty(window, 'visualViewport', {
+    writable: true,
+    configurable: true,
+    value: {
+      width: 400,
+      height: 200,
+      offsetTop: 0,
+      offsetLeft: 0,
+      pageTop: 0,
+      pageLeft: 0,
+      scale: 1,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn()
+    }
+  });
 }
