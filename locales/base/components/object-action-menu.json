@@ -19,7 +19,8 @@
     "connectchildObjects": "Add parts",
     "connectparentObjects": "Add to group",
     "connectrisks": "Create risks",
-    "connectcontrols": "Assign controls",
+    "connectcontrols": "Apply controls",
+    "connecttargets": "Apply to target objects",
     "missingPermissionsTooltip": "Missing required permissions"
   },
   "de": {
@@ -43,7 +44,8 @@
     "connectchildObjects": "Teile hinzufügen",
     "connectparentObjects": "Zu Gruppe hinzufügen",
     "connectrisks": "Risiken erstellen",
-    "connectcontrols": "Controls zuordnen",
+    "connectcontrols": "Controls anwenden",
+    "connecttargets": "Auf Zielobjekte anwenden",
     "missingPermissionsTooltip": "Fehlende Berechtigung"
   }
 }
