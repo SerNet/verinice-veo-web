@@ -111,7 +111,6 @@
     "glob": "$glob",
     "lodash-es": "4.18.1",
     "preact": "10.29.8",
-    "shell-quote": "1.10.0",
     "vitest": "$vitest"
   }
 }
