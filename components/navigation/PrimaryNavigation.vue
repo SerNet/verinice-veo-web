@@ -141,7 +141,7 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { useTaskCount } from '~/composables/tasks';
+import { useDefaultTaskCount } from '~/composables/tasks';
 import { hasFeature } from '~/utils/featureFlags';
 
 const props = withDefaults(
@@ -390,7 +390,7 @@ const taskCountQueryParameters = computed(() => ({
   domainId: props.domainId,
   unitId: props.unitId
 }));
-const taskCount = useTaskCount(taskCountQueryParameters);
+const taskCount = useDefaultTaskCount(taskCountQueryParameters);
 
 const tasksNavEntry = computed<INavItem>(() => ({
   id: 'tasks',
