@@ -34,6 +34,7 @@ import type { TVeoProfile } from '~/composables/profiles/useProfiles';
 export interface IVeoFetchPersonsInDomainParameters {
   domainId: string;
   unitId?: string;
+  username?: string;
   sortBy?: string;
   sortOrder?: string;
   size?: string;
@@ -41,6 +42,7 @@ export interface IVeoFetchPersonsInDomainParameters {
 
 export interface IVeoPersonInDomain {
   id: string;
+  abbreviation?: string;
   designator: string;
   name: string;
   description: string;
@@ -52,7 +54,7 @@ export interface IVeoPersonInDomain {
 
 export interface IVeoPersonsInDomain {
   items: IVeoPersonInDomain[];
-  totalItemCount: string;
+  totalItemCount: number;
 }
 
 export interface IProfile {
@@ -192,6 +194,7 @@ export default {
         params: { domainId: queryParameters.domainId },
         query: {
           unit: queryParameters.unitId,
+          username: queryParameters.username,
           sortBy: queryParameters.sortBy || 'name',
           sortOrder: queryParameters.sortOrder || 'asc',
           // No pagination if no size is specified.

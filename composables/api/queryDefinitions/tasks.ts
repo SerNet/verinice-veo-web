@@ -22,6 +22,8 @@ import { STALE_TIME } from '../utils/query';
 export interface IVeoFetchTasksParameters {
   domainId: string;
   unit: string;
+  assigneeIds?: string[];
+  includeUnassigned?: boolean;
   page?: number;
   size?: number;
 }
@@ -37,6 +39,8 @@ export default {
         },
         query: {
           unit: queryParameters.unit,
+          assignees: queryParameters.assigneeIds?.length ? queryParameters.assigneeIds.join(',') : undefined,
+          unassigned: queryParameters.includeUnassigned || undefined,
           page: queryParameters.page ?? 0,
           size: queryParameters.size ?? 10
         }
