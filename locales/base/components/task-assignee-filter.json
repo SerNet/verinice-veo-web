@@ -1,0 +1,14 @@
+{
+  "en": {
+    "label": "Filter by assignee",
+    "nobody": "Nobody",
+    "noResults": "No matching people found",
+    "selection": "Assignee = {assignees}"
+  },
+  "de": {
+    "label": "Nach zuständigen Personen filtern",
+    "nobody": "Niemand",
+    "noResults": "Keine passenden Personen gefunden",
+    "selection": "Zuständig = {assignees}"
+  }
+}
