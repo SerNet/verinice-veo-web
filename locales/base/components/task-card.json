@@ -1,13 +1,17 @@
 {
   "en": {
+    "assignee": "Responsible: {person}",
     "dueBy": "Due {date}",
+    "nobody": "Nobody",
     "type": {
       "requirement-implementation": "Implementation",
       "requirement-implementation-revision": "Revision"
     }
   },
   "de": {
+    "assignee": "Zuständig: {person}",
     "dueBy": "Bis {date}",
+    "nobody": "Niemand",
     "type": {
       "requirement-implementation": "Umsetzung",
       "requirement-implementation-revision": "Revision"

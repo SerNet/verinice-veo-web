@@ -44,21 +44,34 @@
         </v-tooltip>
       </div>
 
-      <v-chip
-        v-if="formattedDeadline"
-        :color="deadlineColor"
-        variant="flat"
-        size="small"
-        class="flex-0-0"
-        data-veo-test="task-card-deadline"
-      >
-        {{ t('dueBy', { date: formattedDeadline }) }}
-      </v-chip>
+      <div class="d-flex flex-wrap justify-end ga-2 flex-0-0">
+        <v-chip
+          :prepend-icon="mdiAccountOutline"
+          :aria-label="t('assignee', { person: assigneeLabel })"
+          variant="outlined"
+          size="small"
+          data-veo-test="task-card-assignee"
+        >
+          {{ assigneeLabel }}
+        </v-chip>
+
+        <v-chip
+          v-if="formattedDeadline"
+          :color="deadlineColor"
+          variant="flat"
+          size="small"
+          data-veo-test="task-card-deadline"
+        >
+          {{ t('dueBy', { date: formattedDeadline }) }}
+        </v-chip>
+      </div>
     </div>
   </BaseCard>
 </template>
 
 <script setup lang="ts">
+import { mdiAccountOutline } from '@mdi/js';
+
 import type { IVeoTask } from '~/types/VeoTask';
 import { getDeadlineColor, getTaskIcon, parseDeadline } from '~/utils/tasks';
 
@@ -74,6 +87,12 @@ const { t, locale } = useI18n();
 
 const originName = computed(() => props.task.requirementImplementation?.origin?.displayName ?? '');
 const controlName = computed(() => props.task.requirementImplementation?.control?.displayName ?? '');
+const assigneeLabel = computed(() => {
+  const assignee = props.task.assignee;
+  if (!assignee) return t('nobody');
+
+  return [assignee.abbreviation, assignee.name].filter(Boolean).join(' ') || assignee.displayName || t('nobody');
+});
 
 const icon = computed(() => getTaskIcon(props.task.type));
 const deadlineColor = computed(() => getDeadlineColor(props.task.deadline));

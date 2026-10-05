@@ -18,13 +18,50 @@
 <template>
   <BasePage :title="t('title')" data-component-name="tasks-page">
     <BaseContainer>
+      <TaskAssigneeFilter
+        v-model="selectedAssignees"
+        class="mb-4"
+        :persons="persons"
+        :loading="personsAreLoading && !personsError"
+        :disabled="!defaultAssigneesReady || allPersonsError"
+      />
+
+      <BaseAlert
+        v-if="defaultAssigneesError"
+        :model-value="true"
+        :type="VeoAlertType.ERROR"
+        :title="t('assigneeFilterError')"
+        flat
+        no-close-button
+      />
+
+      <BaseAlert
+        v-else-if="allPersonsError"
+        :model-value="true"
+        :type="VeoAlertType.ERROR"
+        :title="t('assigneeOptionsError')"
+        flat
+        no-close-button
+        class="mb-4"
+      />
+
+      <BaseAlert
+        v-if="taskListError"
+        :model-value="true"
+        :type="VeoAlertType.ERROR"
+        :title="t('taskListError')"
+        flat
+        no-close-button
+      />
+
       <TaskList
+        v-if="!defaultAssigneesError && !taskListError"
         v-model:page="page"
         :tasks="tasks"
         :page-count="pageCount"
         :total-item-count="totalItemCount"
         :page-size="TASKS_PAGE_SIZE"
-        :loading="isFetching && !tasks.length"
+        :loading="!defaultAssigneesReady || !tasksAreCurrent || (isFetching && !tasks.length)"
         @click="openTask"
       />
 
@@ -45,25 +82,92 @@ export const ROUTE_NAME = ROUTE_DOMAIN_TASKS;
 </script>
 
 <script setup lang="ts">
-import { TASKS_PAGE_SIZE, useFetchTasks } from '~/composables/tasks';
+import { UNASSIGNED_ASSIGNEE } from '~/components/task/AssigneeFilter.vue';
+import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
+import type { IVeoPersonInDomain } from '~/composables/api/queryDefinitions/domains';
+import { useQuery } from '~/composables/api/utils/query';
+import { TASKS_PAGE_SIZE, useDefaultTaskAssignees, useFetchTasks } from '~/composables/tasks';
 import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
 import type { IVeoTask } from '~/types/VeoTask';
-import { VeoElementTypePlurals } from '~/types/VeoTypes';
+import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const { t, locale } = useI18n();
 const route = useRoute();
 
 const page = ref(0);
+const manuallySelectedAssignees = ref<{ scope: string; value: string[] }>();
+
+const taskScope = computed(() => ({
+  domainId: route.params.domain as string,
+  unitId: route.params.unit as string
+}));
+const taskScopeKey = computed(() => `${taskScope.value.domainId}:${taskScope.value.unitId}`);
+
+const {
+  assigneeIds: defaultAssigneeIds,
+  data: ownPersonsData,
+  isError: defaultAssigneesError,
+  ready: defaultAssigneesReady
+} = useDefaultTaskAssignees(taskScope);
+
+const allPersonsQueryParameters = computed(() => ({
+  domainId: taskScope.value.domainId,
+  unitId: taskScope.value.unitId
+}));
+const allPersonsQueryEnabled = computed(() => !!taskScope.value.domainId && !!taskScope.value.unitId);
+const {
+  data: allPersonsData,
+  isError: allPersonsError,
+  isFetching: personsAreFetching
+} = useQuery(domainQueryDefinitions.queries.fetchPersonsInDomain, allPersonsQueryParameters, {
+  enabled: allPersonsQueryEnabled
+});
+
+const persons = computed<IVeoPersonInDomain[]>(() => {
+  const personsById = new Map<string, IVeoPersonInDomain>();
+  for (const person of [...(ownPersonsData.value?.items ?? []), ...(allPersonsData.value?.items ?? [])]) {
+    personsById.set(person.id, person);
+  }
+  return [...personsById.values()];
+});
+
+const selectedAssignees = computed<string[]>({
+  get: () =>
+    manuallySelectedAssignees.value?.scope === taskScopeKey.value ?
+      manuallySelectedAssignees.value.value
+    : (defaultAssigneeIds.value ?? []),
+  set: (value) => {
+    page.value = 0;
+    manuallySelectedAssignees.value = { scope: taskScopeKey.value, value };
+  }
+});
+
+const personsAreLoading = computed(() => !defaultAssigneesReady.value || personsAreFetching.value);
+const personsError = computed(() => defaultAssigneesError.value || allPersonsError.value);
+const taskFilterKey = computed(() => `${taskScopeKey.value}:${JSON.stringify([...selectedAssignees.value].sort())}`);
 
 const queryParameters = computed(() => ({
-  domainId: route.params.domain as string,
-  unitId: route.params.unit as string,
+  ...taskScope.value,
+  assigneeIds: selectedAssignees.value.filter((id) => id !== UNASSIGNED_ASSIGNEE),
+  includeUnassigned: selectedAssignees.value.includes(UNASSIGNED_ASSIGNEE),
+  enabled: defaultAssigneesReady.value,
   page: page.value
 }));
 
-const { data, isFetching } = useFetchTasks(queryParameters);
+const { data, isError: tasksError, isFetching, isPreviousData } = useFetchTasks(queryParameters);
 
-const tasks = computed(() => data.value?.items ?? []);
+const loadedTaskFilterKey = ref<string>();
+watch(
+  [data, isPreviousData],
+  ([newData, showingPreviousData]) => {
+    if (newData !== undefined && !showingPreviousData) loadedTaskFilterKey.value = taskFilterKey.value;
+  },
+  { immediate: true }
+);
+
+const tasksAreCurrent = computed(() => loadedTaskFilterKey.value === taskFilterKey.value);
+const taskListError = computed(() => defaultAssigneesReady.value && tasksError.value);
+const tasks = computed(() => (defaultAssigneesReady.value && tasksAreCurrent.value ? (data.value?.items ?? []) : []));
 const pageCount = computed(() => data.value?.pageCount ?? 1);
 const totalItemCount = computed(() => data.value?.totalItemCount ?? 0);
 
@@ -83,6 +187,15 @@ function openTask(task: IVeoTask) {
     item: implementation
   });
 }
+
+watch(
+  taskScopeKey,
+  () => {
+    manuallySelectedAssignees.value = undefined;
+    page.value = 0;
+  },
+  { flush: 'sync' }
+);
 
 // Reset to the first page if the current one no longer exists, eg. after switching units
 watch(pageCount, (newPageCount) => {

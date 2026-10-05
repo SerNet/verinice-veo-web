@@ -14,12 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { mountSuspended } from '@nuxt/test-utils/runtime';
+import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
 import { describe, expect, it, vi } from 'vitest';
 
 import TaskCard from '~/components/task/Card.vue';
 import TaskList from '~/components/task/List.vue';
 import type { IVeoTask } from '~/types/VeoTask';
+
+mockNuxtImport('useI18n', () => {
+  return () => ({
+    locale: { value: 'de' },
+    t: (key: string) => (key === 'nobody' ? 'Niemand' : key)
+  });
+});
 
 const task: IVeoTask = {
   type: 'requirement-implementation',
@@ -57,5 +64,27 @@ describe('TaskCard', () => {
     await card.trigger('click');
 
     expect(onClick).toHaveBeenCalledWith(task);
+  });
+
+  it('shows the responsible person on every assigned task', async () => {
+    const assignedTask: IVeoTask = {
+      ...task,
+      assignee: {
+        id: 'person-id',
+        abbreviation: 'PM',
+        name: 'Petra Müllerin',
+        targetUri: '/persons/person-id'
+      }
+    };
+
+    const wrapper = await mountSuspended(TaskCard, { props: { task: assignedTask } });
+
+    expect(wrapper.get('[data-veo-test="task-card-assignee"]').text()).toBe('PM Petra Müllerin');
+  });
+
+  it('marks an unassigned task as having nobody responsible', async () => {
+    const wrapper = await mountSuspended(TaskCard, { props: { task } });
+
+    expect(wrapper.get('[data-veo-test="task-card-assignee"]').text()).toBe('Niemand');
   });
 });
