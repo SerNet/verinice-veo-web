@@ -39,7 +39,7 @@ export function useDomainShortcuts() {
   });
 
   const { data: units } = useUnits();
-  const firstUnit = computed(() => units.value.sort(sortUnits)?.[0]);
+  const firstUnit = computed(() => units.value?.sort(sortUnits)?.[0]);
   const { ability } = useVeoPermissions();
 
   const { data: riskDefinitions } = useRiskDefinitions();
