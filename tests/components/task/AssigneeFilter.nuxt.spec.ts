@@ -21,6 +21,7 @@ import { defineComponent, nextTick, ref } from 'vue';
 
 mockNuxtImport('useI18n', () => {
   const messages: Record<string, string> = {
+    clearSearch: 'Suchtext löschen',
     label: 'Nach zuständigen Personen filtern',
     nobody: 'Niemand',
     noResults: 'Keine passenden Personen gefunden',
@@ -136,6 +137,23 @@ describe('AssigneeFilter', () => {
 
     const visibleItems = [...document.body.querySelectorAll<HTMLElement>('[data-veo-test="assignee-filter-item"]')];
     expect(visibleItems.map((item) => item.textContent?.trim())).toEqual(['PM Petra Müllerin']);
+  });
+
+  it('clears only the search text with the input clear action', async () => {
+    const { selection, wrapper } = await mountFilter(['person-pm']);
+    const input = wrapper.get('input[type="text"]');
+    expect(wrapper.find('[data-veo-test="assignee-filter-clear-search"]').exists()).toBe(false);
+
+    await input.setValue('Petra');
+    await nextTick();
+    const clearSearch = wrapper.get('[data-veo-test="assignee-filter-clear-search"]');
+    expect(clearSearch.attributes('aria-label')).toBe('Suchtext löschen');
+
+    await clearSearch.trigger('click');
+    await nextTick();
+
+    expect((input.element as HTMLInputElement).value).toBe('');
+    expect(selection.value).toEqual(['person-pm']);
   });
 
   it('clears the filter to the empty all-tasks selection', async () => {

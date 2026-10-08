@@ -25,7 +25,6 @@
     :label="t('label')"
     :aria-label="t('label')"
     :no-data-text="t('noResults')"
-    :clearable="!!search"
     item-title="title"
     item-value="value"
     autocomplete="off"
@@ -35,7 +34,6 @@
     menu-icon=""
     variant="outlined"
     data-veo-test="assignee-filter"
-    @click:clear="clear"
     @update:model-value="updateModelValue"
   >
     <template #chip="{ index }">
@@ -45,7 +43,7 @@
         :closable="!disabled"
         label
         data-veo-test="assignee-filter-selection"
-        @click:close="clear"
+        @click:close="clearSelection"
       >
         <span class="assignee-filter__selection-label">{{ selectionLabel }}</span>
       </v-chip>
@@ -71,7 +69,19 @@
     </template>
 
     <template #append-inner>
-      <v-icon :icon="mdiMagnify" aria-hidden="true" />
+      <v-btn
+        v-if="search"
+        :icon="mdiClose"
+        :aria-label="t('clearSearch')"
+        :title="t('clearSearch')"
+        variant="text"
+        density="compact"
+        size="small"
+        data-veo-test="assignee-filter-clear-search"
+        @mousedown.prevent
+        @click.stop="clearSearch"
+      />
+      <v-icon :icon="mdiMagnify" class="ml-1" aria-hidden="true" />
     </template>
   </v-autocomplete>
 </template>
@@ -97,7 +107,7 @@ export function getAssigneeLabel(person: AssigneeFilterPerson): string {
 </script>
 
 <script setup lang="ts">
-import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiMagnify } from '@mdi/js';
+import { mdiCheckboxBlankOutline, mdiCheckboxMarked, mdiClose, mdiMagnify } from '@mdi/js';
 
 const props = withDefaults(
   defineProps<{
@@ -135,7 +145,11 @@ function updateModelValue(value: unknown) {
   modelValue.value = Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
 }
 
-function clear() {
+function clearSearch() {
+  search.value = '';
+}
+
+function clearSelection() {
   modelValue.value = [];
   search.value = '';
 }
