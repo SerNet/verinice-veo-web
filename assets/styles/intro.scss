@@ -20,6 +20,12 @@
 }
 
 .vue-introjs-tooltip {
+  --introjs-bg: rgb(var(--v-theme-surface));
+  --introjs-color: rgb(var(--v-theme-on-surface));
+  --introjs-arrow-color: rgb(var(--v-theme-surface));
+  --introjs-btn-color: rgb(var(--v-theme-on-surface));
+  --introjs-btn-focus-color: rgb(var(--v-theme-on-surface));
+
   background-color: rgb(var(--v-theme-surface)) !important;
   color: rgb(var(--v-theme-on-surface));
 
