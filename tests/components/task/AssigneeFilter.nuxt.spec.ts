@@ -15,7 +15,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
-import { DOMWrapper, type VueWrapper } from '@vue/test-utils';
+import type { VueWrapper } from '@vue/test-utils';
 import { afterEach, beforeAll, describe, expect, it } from 'vitest';
 import { defineComponent, nextTick, ref } from 'vue';
 
@@ -85,6 +85,13 @@ async function openMenu(currentWrapper: VueWrapper) {
   return [...document.body.querySelectorAll<HTMLElement>('[data-veo-test="assignee-filter-item"]')];
 }
 
+async function selectOption(currentWrapper: VueWrapper, label: string) {
+  const option = (await openMenu(currentWrapper)).find((item) => item.textContent?.includes(label));
+  expect(option).toBeDefined();
+  option?.click();
+  await nextTick();
+}
+
 afterEach(() => {
   wrapper?.unmount();
   wrapper = undefined;
@@ -105,15 +112,13 @@ describe('AssigneeFilter', () => {
     expect(selections[0].text()).toBe('Zuständig = PM Petra Müllerin, AL Abteilungsleiterin');
   });
 
-  it('offers the unassigned sentinel and updates the model when it is selected', async () => {
-    const { selection, wrapper } = await mountFilter();
-    const items = await openMenu(wrapper);
-    const nobody = items.find((item) => item.textContent?.includes('Niemand'));
-
-    expect(nobody).toBeDefined();
-    await new DOMWrapper(nobody!.querySelector('[data-veo-test="assignee-filter-checkbox"]')!).trigger('click');
-
+  it('treats the unassigned filter as exclusive', async () => {
+    const { selection, wrapper } = await mountFilter(['person-pm']);
+    await selectOption(wrapper, 'Niemand');
     expect(selection.value).toEqual([UNASSIGNED_ASSIGNEE]);
+
+    await selectOption(wrapper, 'Abteilungsleiterin');
+    expect(selection.value).toEqual(['person-al']);
   });
 
   it('exposes checked state and labels for its selectable options', async () => {

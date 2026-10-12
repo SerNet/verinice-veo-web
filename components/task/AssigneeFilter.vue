@@ -142,7 +142,11 @@ function isSelected(value: unknown) {
 }
 
 function updateModelValue(value: unknown) {
-  modelValue.value = Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+  const selection = Array.isArray(value) ? value.filter((item): item is string => typeof item === 'string') : [];
+  modelValue.value =
+    selection.includes(UNASSIGNED_ASSIGNEE) && !modelValue.value.includes(UNASSIGNED_ASSIGNEE) ?
+      [UNASSIGNED_ASSIGNEE]
+    : selection.filter((item) => item !== UNASSIGNED_ASSIGNEE);
 }
 
 function clearSearch() {
