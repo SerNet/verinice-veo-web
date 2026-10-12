@@ -144,6 +144,20 @@ describe('AssigneeFilter', () => {
     expect(visibleItems.map((item) => item.textContent?.trim())).toEqual(['PM Petra Müllerin']);
   });
 
+  it('applies a keyboard selection and closes the menu on Enter', async () => {
+    const { selection, wrapper } = await mountFilter();
+    await openMenu(wrapper);
+    const input = wrapper.get('input');
+
+    await input.setValue('Petra');
+    await nextTick();
+    await input.trigger('keydown', { key: 'Enter' });
+    await nextTick();
+
+    expect(selection.value).toEqual(['person-pm']);
+    expect(input.attributes('aria-expanded')).toBe('false');
+  });
+
   it('clears only the search text with the input clear action', async () => {
     const { selection, wrapper } = await mountFilter(['person-pm']);
     const input = wrapper.get('input[type="text"]');

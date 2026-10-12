@@ -17,7 +17,9 @@
 -->
 <template>
   <v-autocomplete
+    ref="filterInput"
     v-model:search="search"
+    v-model:menu="menuOpen"
     :model-value="modelValue"
     :items="items"
     :loading="loading"
@@ -28,12 +30,14 @@
     item-title="title"
     item-value="value"
     autocomplete="off"
+    auto-select-first
     chips
     hide-details="auto"
     multiple
     menu-icon=""
     variant="outlined"
     data-veo-test="assignee-filter"
+    @keydown.enter="submitFilter"
     @update:model-value="updateModelValue"
   >
     <template #chip="{ index }">
@@ -123,6 +127,8 @@ const props = withDefaults(
 
 const modelValue = defineModel<string[]>({ default: () => [] });
 const search = ref('');
+const menuOpen = ref(false);
+const filterInput = ref<{ blur?: () => void }>();
 const { t } = useI18n();
 
 const items = computed(() => [
@@ -151,6 +157,14 @@ function updateModelValue(value: unknown) {
 
 function clearSearch() {
   search.value = '';
+}
+
+function submitFilter() {
+  nextTick(() => {
+    if (!modelValue.value.length) return;
+    menuOpen.value = false;
+    filterInput.value?.blur?.();
+  });
 }
 
 function clearSelection() {
