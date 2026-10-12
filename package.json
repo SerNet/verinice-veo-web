@@ -34,7 +34,7 @@
     "@mdi/font": "^7.0.0",
     "@mdi/js": "^7.0.96",
     "@nuxtjs/i18n": "^10.0.0",
-    "@tanstack/vue-query": "^4.37.1",
+    "@tanstack/vue-query": "^5.104.2",
     "@toast-ui/editor": "^3.1.0",
     "@toast-ui/editor-plugin-code-syntax-highlight": "^3.0.0",
     "@vueuse/core": "^15.0.0",
@@ -61,7 +61,6 @@
     "vite-plugin-vuetify": "^2.0.1",
     "vue-chartjs": "^5.0.1",
     "vue-codemirror": "^6.1.1",
-    "vue-query-v5": "npm:@tanstack/vue-query@^5.81.5",
     "vue-router": "^5.0.0",
     "vuedraggable": "^4.1.0",
     "vuetify": "^4.2.1",
@@ -111,6 +110,7 @@
     "glob": "$glob",
     "lodash-es": "4.18.1",
     "preact": "10.29.8",
-    "vitest": "$vitest"
+    "vitest": "$vitest",
+    "@vue/composition-api": "3.5.35"
   }
 }
