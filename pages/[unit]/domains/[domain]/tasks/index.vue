@@ -16,7 +16,7 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage :title="t('title')" data-component-name="tasks-page">
+  <BasePage :title="pageTitle" data-component-name="tasks-page">
     <BaseContainer>
       <TaskAssigneeFilter
         v-model="selectedAssignees"
@@ -141,6 +141,10 @@ const selectedAssignees = computed<string[]>({
     manuallySelectedAssignees.value = { scope: taskScopeKey.value, value };
   }
 });
+
+const pageTitle = computed(() =>
+  t(!defaultAssigneesReady.value || selectedAssignees.value.length ? 'title' : 'allTasksTitle')
+);
 
 const personsAreLoading = computed(() => !defaultAssigneesReady.value || personsAreFetching.value);
 const personsError = computed(() => defaultAssigneesError.value || allPersonsError.value);
