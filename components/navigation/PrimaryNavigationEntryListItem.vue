@@ -41,7 +41,10 @@
     <v-list-item-title class="veo-primary-navigation-title" data-veo-test="nav-entry-title">
       {{ name }}
     </v-list-item-title>
-    <template v-if="badge" #append>
+    <template v-if="badgeLoading" #append>
+      <v-skeleton-loader data-veo-test="nav-entry-badge-loader" type="text" width="42px" />
+    </template>
+    <template v-else-if="badge" #append>
       <span class="bg-info text-white rounded-pill px-2 text-caption">
         {{ badge.content }}
       </span>
@@ -56,6 +59,7 @@ type Props = INavItem & {
   level: number;
   miniVariant?: boolean;
   badge?: { content: number; color: string; classes?: string };
+  badgeLoading?: boolean;
   disabled?: boolean;
 };
 
