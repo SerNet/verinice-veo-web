@@ -47,7 +47,7 @@ function mockQueries(personIds: string[] = ['person-2', 'person-1'], taskCount =
     : {
         data: { value: { items: [], totalItemCount: taskCount } },
         isError: { value: false },
-        isPreviousData: { value: false }
+        isPlaceholderData: { value: false }
       }
   );
 }
@@ -103,7 +103,7 @@ describe('task composables', () => {
     useQueryMock.mockReturnValue({
       data: { value: undefined },
       isError: { value: false },
-      isPreviousData: { value: false }
+      isPlaceholderData: { value: false }
     });
 
     const count = useDefaultTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
@@ -117,12 +117,12 @@ describe('task composables', () => {
       .mockReturnValueOnce({
         data: { value: undefined },
         isError: { value: false },
-        isPreviousData: { value: false }
+        isPlaceholderData: { value: false }
       })
       .mockReturnValueOnce({
         data: { value: { items: [], totalItemCount: 23 } },
         isError: { value: false },
-        isPreviousData: { value: true }
+        isPlaceholderData: { value: true }
       });
 
     const count = useDefaultTaskCount(ref({ domainId: 'new-domain', unitId: 'new-unit' }));
@@ -136,7 +136,7 @@ describe('task composables', () => {
     useQueryMock.mockReturnValueOnce({
       data: { value: undefined },
       isError: { value: false },
-      isPreviousData: { value: false }
+      isPlaceholderData: { value: false }
     });
 
     const { assigneeIds, ready } = useDefaultTaskAssignees(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
