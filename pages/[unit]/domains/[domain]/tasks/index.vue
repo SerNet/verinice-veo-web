@@ -154,11 +154,11 @@ const queryParameters = computed(() => ({
   page: page.value
 }));
 
-const { data, isError: tasksError, isFetching, isPreviousData } = useFetchTasks(queryParameters);
+const { data, isError: tasksError, isFetching, isPlaceholderData } = useFetchTasks(queryParameters);
 
 const loadedTaskFilterKey = ref<string>();
 watch(
-  [data, isPreviousData],
+  [data, isPlaceholderData],
   ([newData, showingPreviousData]) => {
     if (newData !== undefined && !showingPreviousData) loadedTaskFilterKey.value = taskFilterKey.value;
   },

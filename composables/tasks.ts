@@ -101,10 +101,10 @@ export function useTaskCount(
   >
 ) {
   const countParameters = computed(() => ({ ...unref(parameters), page: 0, size: 1 }));
-  const { data, isPreviousData } = useFetchTasks(countParameters);
+  const { data, isPlaceholderData } = useFetchTasks(countParameters);
 
   return computed(() =>
-    unref(parameters).enabled === false || isPreviousData.value ? 0 : (data.value?.totalItemCount ?? 0)
+    unref(parameters).enabled === false || isPlaceholderData.value ? 0 : (data.value?.totalItemCount ?? 0)
   );
 }
 
