@@ -17,14 +17,14 @@
  */
 import type { Ref } from 'vue';
 import { useQuery as vueQueryUseQuery, useQueries as VueQueryUseQueries, useQueryClient } from '@tanstack/vue-query';
-import type { UseQueryOptions, QueryClient } from '@tanstack/vue-query';
-import type { QueryObserverResult } from '@tanstack/query-core';
+import type { UseQueryOptions, QueryClient, QueryObserverResult } from '@tanstack/vue-query';
 import { omit } from 'lodash';
 
 import type { VeoApiResponseType } from './request';
 import { useRequest } from './request';
 
-export type QueryOptions = Omit<UseQueryOptions, 'queryKey' | 'queryFn'>;
+// UseQueryOptions is `MaybeRef<{...}>` in v5, so the ref variants have to be excluded before omitting keys
+export type QueryOptions = Omit<Exclude<UseQueryOptions<any, any>, Ref>, 'queryKey' | 'queryFn'>;
 
 export interface IVeoQueryDefinition<TVariables, TResult = any> {
   primaryQueryKey: string;
@@ -95,20 +95,22 @@ export const useQuery = <TVariables = undefined, TResult = any>(
 
   // Actual query getting executed
   const result = vueQueryUseQuery<TResult, any>(
-    queryKey,
-    async () => {
-      const transformedQueryParameters =
-        queryParameters ? queryDefinition.queryParameterTransformationFn(unref(queryParameters)) : {};
-      let result = await request(queryDefinition.url, {
-        ...transformedQueryParameters,
-        ...omit(queryDefinition, 'url', 'onDataFetched')
-      });
-      if (queryDefinition.onDataFetched) {
-        result = queryDefinition.onDataFetched(result, transformedQueryParameters);
+    computed(() => ({
+      ...combinedOptions.value,
+      queryKey,
+      queryFn: async () => {
+        const transformedQueryParameters =
+          queryParameters ? queryDefinition.queryParameterTransformationFn(unref(queryParameters)) : {};
+        let result = await request(queryDefinition.url, {
+          ...transformedQueryParameters,
+          ...omit(queryDefinition, 'url', 'onDataFetched')
+        });
+        if (queryDefinition.onDataFetched) {
+          result = queryDefinition.onDataFetched(result, transformedQueryParameters);
+        }
+        return result;
       }
-      return result;
-    },
-    combinedOptions as any
+    })) as any
   );
 
   // Debugging stuff
@@ -198,7 +200,7 @@ export const useQuerySync = async <TVariables = undefined, TResult = any>(
  * @param queryDefinition Defines url, return type, static query options and more.
  * @param queryParameters Parameters to pass to the request function. Each array entries results in a new query.
  * @param queryOptions Options modifiying query behaviour.
- * @returns Array containing query objects containing the data and information about the query. NOT reactive, so you have to watch the results in your components.
+ * @returns Readonly ref of an array containing query objects containing the data and information about the query.
  */
 export const useQueries = <TVariables = Record<string, any>, TResult = any>(
   queryDefinition: IVeoQueryDefinition<TVariables, TResult>,
@@ -230,5 +232,5 @@ export const useQueries = <TVariables = Record<string, any>, TResult = any>(
   // Actual query getting executed
   const result = VueQueryUseQueries({ queries });
 
-  return result as QueryObserverResult<TResult, unknown>[];
+  return result as unknown as Readonly<Ref<QueryObserverResult<TResult, unknown>[]>>;
 };
