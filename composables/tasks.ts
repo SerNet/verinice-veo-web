@@ -37,6 +37,15 @@ export interface FetchTasksParameters extends TaskScopeParameters {
   size?: number;
 }
 
+export interface ManualTaskFilter extends TaskScopeParameters {
+  assigneeIds: string[];
+  includeUnassigned?: boolean;
+}
+
+export function useManualTaskFilter() {
+  return useState<ManualTaskFilter | undefined>('manual-task-filter', () => undefined);
+}
+
 export function useFetchTasks(parameters: MaybeRef<FetchTasksParameters>) {
   const tasksEnabled = hasFeature('tasks');
 
@@ -103,18 +112,43 @@ export function useTaskCount(
   const countParameters = computed(() => ({ ...unref(parameters), page: 0, size: 1 }));
   const { data, isPlaceholderData } = useFetchTasks(countParameters);
 
-  return computed(() =>
-    unref(parameters).enabled === false || isPlaceholderData.value ? 0 : (data.value?.totalItemCount ?? 0)
-  );
+  return {
+    count: computed(() =>
+      unref(parameters).enabled === false || isPlaceholderData.value ? 0 : (data.value?.totalItemCount ?? 0)
+    ),
+    isLoading: computed(() => isFetching.value || isPreviousData.value)
+  };
 }
 
-export function useDefaultTaskCount(parameters: MaybeRef<TaskScopeParameters>) {
+export function useNavigationTaskCount(parameters: MaybeRef<TaskScopeParameters>) {
+  const manualFilter = useManualTaskFilter();
   const { assigneeIds, ready } = useDefaultTaskAssignees(parameters);
-  const countParameters = computed(() => ({
-    ...unref(parameters),
-    assigneeIds: assigneeIds.value?.length ? assigneeIds.value : undefined,
-    enabled: ready.value
-  }));
+  const activeManualFilter = computed(() => {
+    const scope = unref(parameters);
+    return manualFilter.value?.domainId === scope.domainId && manualFilter.value.unitId === scope.unitId ?
+        manualFilter.value
+      : undefined;
+  });
+  const countParameters = computed(() => {
+    const scope = unref(parameters);
+    const filter = activeManualFilter.value;
 
-  return useTaskCount(countParameters);
+    return {
+      ...scope,
+      assigneeIds: filter?.assigneeIds ?? (assigneeIds.value?.length ? assigneeIds.value : undefined),
+      includeUnassigned: filter?.includeUnassigned,
+      enabled: filter ? true : ready.value
+    };
+  });
+
+  const taskCount = useTaskCount(countParameters);
+  const waitingForDefaultFilter = computed(() => {
+    const scope = unref(parameters);
+    return !!scope.domainId && !!scope.unitId && !activeManualFilter.value && !ready.value;
+  });
+
+  return {
+    count: taskCount.count,
+    isLoading: computed(() => waitingForDefaultFilter.value || taskCount.isLoading.value)
+  };
 }

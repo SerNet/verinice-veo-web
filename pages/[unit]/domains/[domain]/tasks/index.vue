@@ -86,7 +86,7 @@ import { UNASSIGNED_ASSIGNEE } from '~/components/task/AssigneeFilter.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import type { IVeoPersonInDomain } from '~/composables/api/queryDefinitions/domains';
 import { useQuery } from '~/composables/api/utils/query';
-import { TASKS_PAGE_SIZE, useDefaultTaskAssignees, useFetchTasks } from '~/composables/tasks';
+import { TASKS_PAGE_SIZE, useDefaultTaskAssignees, useFetchTasks, useManualTaskFilter } from '~/composables/tasks';
 import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
 import type { IVeoTask } from '~/types/VeoTask';
 import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
@@ -95,7 +95,7 @@ const { t, locale } = useI18n();
 const route = useRoute();
 
 const page = ref(0);
-const manuallySelectedAssignees = ref<{ scope: string; value: string[] }>();
+const manualTaskFilter = useManualTaskFilter();
 
 const taskScope = computed(() => ({
   domainId: route.params.domain as string,
@@ -132,13 +132,26 @@ const persons = computed<IVeoPersonInDomain[]>(() => {
 });
 
 const selectedAssignees = computed<string[]>({
-  get: () =>
-    manuallySelectedAssignees.value?.scope === taskScopeKey.value ?
-      manuallySelectedAssignees.value.value
-    : (defaultAssigneeIds.value ?? []),
+  get: () => {
+    const filter =
+      (
+        manualTaskFilter.value?.domainId === taskScope.value.domainId &&
+        manualTaskFilter.value.unitId === taskScope.value.unitId
+      ) ?
+        manualTaskFilter.value
+      : undefined;
+
+    return filter ?
+        [...filter.assigneeIds, ...(filter.includeUnassigned ? [UNASSIGNED_ASSIGNEE] : [])]
+      : (defaultAssigneeIds.value ?? []);
+  },
   set: (value) => {
     page.value = 0;
-    manuallySelectedAssignees.value = { scope: taskScopeKey.value, value };
+    manualTaskFilter.value = {
+      ...taskScope.value,
+      assigneeIds: value.filter((id) => id !== UNASSIGNED_ASSIGNEE),
+      includeUnassigned: value.includes(UNASSIGNED_ASSIGNEE) || undefined
+    };
   }
 });
 
@@ -195,7 +208,7 @@ function openTask(task: IVeoTask) {
 watch(
   taskScopeKey,
   () => {
-    manuallySelectedAssignees.value = undefined;
+    manualTaskFilter.value = undefined;
     page.value = 0;
   },
   { flush: 'sync' }

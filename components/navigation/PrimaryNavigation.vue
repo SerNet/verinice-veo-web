@@ -95,6 +95,7 @@ export interface INavItem {
   classes?: string;
   openInNewtab?: boolean;
   badge?: { content: number; color: string; classes?: string };
+  badgeLoading?: boolean;
 }
 
 export const PROVIDE_KEYS = {
@@ -141,7 +142,7 @@ import catalogQueryDefinitions from '~/composables/api/queryDefinitions/catalogs
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import translationQueryDefinitions from '~/composables/api/queryDefinitions/translations';
 import { useQuery } from '~/composables/api/utils/query';
-import { useDefaultTaskCount } from '~/composables/tasks';
+import { useNavigationTaskCount } from '~/composables/tasks';
 import { hasFeature } from '~/utils/featureFlags';
 
 const props = withDefaults(
@@ -390,7 +391,7 @@ const taskCountQueryParameters = computed(() => ({
   domainId: props.domainId,
   unitId: props.unitId
 }));
-const taskCount = useDefaultTaskCount(taskCountQueryParameters);
+const { count: taskCount, isLoading: taskCountIsLoading } = useNavigationTaskCount(taskCountQueryParameters);
 
 const tasksNavEntry = computed<INavItem>(() => ({
   id: 'tasks',
@@ -405,6 +406,7 @@ const tasksNavEntry = computed<INavItem>(() => ({
   },
   componentName: 'tasks-nav-item',
   exact: true,
+  badgeLoading: taskCountIsLoading.value,
   ...(taskCount.value ? { badge: { content: taskCount.value, color: 'error' } } : {})
 }));
 

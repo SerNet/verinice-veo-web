@@ -35,7 +35,8 @@ vi.mock('~/utils/featureFlags', () => ({
   hasFeature: () => true
 }));
 
-const { useDefaultTaskAssignees, useDefaultTaskCount, useFetchTasks } = await import('~/composables/tasks');
+const { useDefaultTaskAssignees, useFetchTasks, useManualTaskFilter, useNavigationTaskCount } =
+  await import('~/composables/tasks');
 
 function mockQueries(personIds: string[] = ['person-2', 'person-1'], taskCount = 4) {
   useQueryMock.mockImplementation((definition) =>
@@ -47,6 +48,7 @@ function mockQueries(personIds: string[] = ['person-2', 'person-1'], taskCount =
     : {
         data: { value: { items: [], totalItemCount: taskCount } },
         isError: { value: false },
+        isFetching: { value: false },
         isPlaceholderData: { value: false }
       }
   );
@@ -55,6 +57,7 @@ function mockQueries(personIds: string[] = ['person-2', 'person-1'], taskCount =
 beforeEach(() => {
   useQueryMock.mockReset();
   profile.value = { username: 'petra' };
+  useManualTaskFilter().value = undefined;
   mockQueries();
 });
 
@@ -75,7 +78,7 @@ describe('task composables', () => {
   });
 
   it('counts tasks with the readonly default assignee filter', () => {
-    const count = useDefaultTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
+    const { count } = useNavigationTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
     const taskQueryParameters = useQueryMock.mock.calls[1]?.[1];
 
     expect(taskQueryParameters.value).toEqual({
@@ -93,7 +96,7 @@ describe('task composables', () => {
   it('counts all tasks when no person belongs to the current username', () => {
     mockQueries([]);
 
-    useDefaultTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
+    useNavigationTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
 
     expect(useQueryMock.mock.calls[1]?.[1].value.assigneeIds).toBeUndefined();
     expect(useQueryMock.mock.calls[1]?.[2].enabled.value).toBe(true);
@@ -103,13 +106,15 @@ describe('task composables', () => {
     useQueryMock.mockReturnValue({
       data: { value: undefined },
       isError: { value: false },
+      isFetching: { value: false },
       isPlaceholderData: { value: false }
     });
 
-    const count = useDefaultTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
+    const { count, isLoading } = useNavigationTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
 
     expect(useQueryMock.mock.calls[1]?.[2].enabled.value).toBe(false);
     expect(count.value).toBe(0);
+    expect(isLoading.value).toBe(true);
   });
 
   it('hides a previous count while the next default filter is loading', () => {
@@ -122,13 +127,15 @@ describe('task composables', () => {
       .mockReturnValueOnce({
         data: { value: { items: [], totalItemCount: 23 } },
         isError: { value: false },
+        isFetching: { value: true },
         isPlaceholderData: { value: true }
       });
 
-    const count = useDefaultTaskCount(ref({ domainId: 'new-domain', unitId: 'new-unit' }));
+    const { count, isLoading } = useNavigationTaskCount(ref({ domainId: 'new-domain', unitId: 'new-unit' }));
 
     expect(useQueryMock.mock.calls[1]?.[2].enabled.value).toBe(false);
     expect(count.value).toBe(0);
+    expect(isLoading.value).toBe(true);
   });
 
   it('treats a loaded profile without a username as an empty default filter', () => {
@@ -146,19 +153,17 @@ describe('task composables', () => {
     expect(assigneeIds.value).toEqual([]);
   });
 
-  it('keeps a manual page filter separate from the default count filter', () => {
-    const pageFilter = ref({
+  it('counts tasks with the manual page filter when it is active', () => {
+    const manualFilter = useManualTaskFilter();
+    useNavigationTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
+
+    manualFilter.value = {
       domainId: 'domain-id',
       unitId: 'unit-id',
-      assigneeIds: ['other-person'],
-      includeUnassigned: true
-    });
+      assigneeIds: ['other-person']
+    };
 
-    useFetchTasks(pageFilter);
-    useDefaultTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
-
-    expect(useQueryMock.mock.calls[0]?.[1].value.assigneeIds).toEqual(['other-person']);
-    expect(useQueryMock.mock.calls[2]?.[1].value.assigneeIds).toEqual(['person-1', 'person-2']);
+    expect(useQueryMock.mock.calls[1]?.[1].value.assigneeIds).toEqual(['other-person']);
   });
 
   it('preserves an empty assignee list when only unassigned tasks are selected', () => {
