@@ -394,7 +394,7 @@
 <script setup lang="ts">
 // ===== External dependencies =====
 import { keepPreviousData } from '@tanstack/vue-query';
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, isEqual, merge } from 'lodash';
 
 // ===== Internal components =====
 import DynamicFormEntrypoint from '~/components/dynamic-form/Entrypoint.vue';
