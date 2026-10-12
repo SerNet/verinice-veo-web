@@ -84,7 +84,7 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
-          queryClient.invalidateQueries(['accounts']);
+          queryClient.invalidateQueries({ queryKey: ['accounts'] });
         }
       }
     } as IVeoMutationDefinition<IVeoCreateAccountParameters, void>,
@@ -99,8 +99,8 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
-          queryClient.invalidateQueries(['accounts']);
-          queryClient.invalidateQueries(['account', { id: variables.params?.id || '' }]);
+          queryClient.invalidateQueries({ queryKey: ['accounts'] });
+          queryClient.invalidateQueries({ queryKey: ['account', { id: variables.params?.id || '' }] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateAccountParameters, void>,
@@ -114,8 +114,8 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
-          queryClient.invalidateQueries(['accounts']);
-          queryClient.invalidateQueries(['account', { id: variables.params?.id || '' }]);
+          queryClient.invalidateQueries({ queryKey: ['accounts'] });
+          queryClient.invalidateQueries({ queryKey: ['account', { id: variables.params?.id || '' }] });
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteAccountParameters, void>

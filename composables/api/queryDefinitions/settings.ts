@@ -78,7 +78,7 @@ export default {
 
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
-          queryClient.invalidateQueries(['userSettings', { userId: variables.params?.appId }]);
+          queryClient.invalidateQueries({ queryKey: ['userSettings', { userId: variables.params?.appId }] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateSettingParameters, void>

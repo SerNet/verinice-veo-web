@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+import { keepPreviousData } from '@tanstack/vue-query';
 import type { IVeoPaginatedResponse } from '~/types/VeoTypes';
 import type { IVeoTask } from '~/types/VeoTask';
 import type { IVeoQueryDefinition } from '../utils/query';
@@ -48,7 +49,7 @@ export default {
       staticQueryOptions: {
         staleTime: STALE_TIME.MEDIUM,
         // Keep the current page visible while the next one is loading
-        keepPreviousData: true
+        placeholderData: keepPreviousData
       }
     } as IVeoQueryDefinition<IVeoFetchTasksParameters, IVeoPaginatedResponse<IVeoTask[]>>
   },

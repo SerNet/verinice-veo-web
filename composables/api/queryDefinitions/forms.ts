@@ -125,7 +125,7 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
-          queryClient.invalidateQueries(['forms']);
+          queryClient.invalidateQueries({ queryKey: ['forms'] });
         }
       }
     } as IVeoMutationDefinition<IVeoCreateFormParameters, string>,
@@ -144,14 +144,16 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
-          queryClient.invalidateQueries([
-            'form',
-            {
-              domainId: variables.params?.domainId || '',
-              id: variables.params?.id || ''
-            }
-          ]);
-          queryClient.invalidateQueries(['forms', { domainId: variables.query?.domainId || '' }]);
+          queryClient.invalidateQueries({
+            queryKey: [
+              'form',
+              {
+                domainId: variables.params?.domainId || '',
+                id: variables.params?.id || ''
+              }
+            ]
+          });
+          queryClient.invalidateQueries({ queryKey: ['forms', { domainId: variables.query?.domainId || '' }] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateFormParameters, void>

@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useQuery, type UseQueryReturnType } from 'vue-query-v5';
+import { useQuery, type UseQueryReturnType } from '@tanstack/vue-query';
 import { read } from '~/requests/crud';
 
 import type { VeoElementTypesSingular } from '~/types/VeoTypes';

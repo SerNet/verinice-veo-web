@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { useQuery } from 'vue-query-v5';
+import { useQuery } from '@tanstack/vue-query';
 import { read } from '~/requests/crud';
 import { config as baseConfig } from '~/configuration/base/config';
 import { customKebabCase } from '~/composables/useConfiguration';

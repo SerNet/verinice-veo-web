@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient, useMutation } from 'vue-query-v5';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/vue-query';
 import { read, mutate } from '~/requests/crud';
 
 export function useFetchDomainUpdate() {

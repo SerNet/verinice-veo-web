@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from 'vue-query-v5';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { mutate, type RequestOptions } from '~/requests/crud';
 
 export function useDataMutation(

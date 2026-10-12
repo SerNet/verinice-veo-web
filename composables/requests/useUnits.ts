@@ -15,12 +15,11 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { useQuery, useQueryClient, useMutation } from 'vue-query-v5';
+import { useQuery, useQueryClient, useMutation } from '@tanstack/vue-query';
 import { read, mutate, type RequestOptions } from '~/requests/crud';
 
 import { format } from 'date-fns';
 import { LOCAL_STORAGE_KEYS } from '~/types/localStorage';
-import { getIsPending } from '~/composables/helpers';
 
 import type { IVeoBaseObject, IVeoLink } from '~/types/VeoTypes';
 import type { IVeoDomainTranslations } from '../api/queryDefinitions/domains';
@@ -110,10 +109,7 @@ export function useUnitMutation(unit: Ref<IVeoUnit>, method: Method = 'PUT') {
 
   const query = useDataMutation(path, options, ['units']);
 
-  return {
-    ...query,
-    isPending: computed(() => getIsPending(query.status.value))
-  };
+  return query;
 }
 
 export function useApplyProfile(unitId: Ref<string>, profile: Ref<{ id: string; domainId: string }>) {
@@ -135,10 +131,7 @@ export function useApplyProfile(unitId: Ref<string>, profile: Ref<{ id: string; 
     }
   });
 
-  return {
-    ...query,
-    isPending: computed(() => getIsPending(query.status.value))
-  };
+  return query;
 }
 
 export function useCreateUnitAndMaybeApplyProfile(
@@ -182,10 +175,7 @@ export function useCreateUnitAndMaybeApplyProfile(
     }
   });
 
-  return {
-    ...query,
-    isPending: computed(() => getIsPending(query.status.value))
-  };
+  return query;
 }
 
 export function useImportUnit(unitImport: Ref<TVeoUnitImportPayload | undefined>) {
@@ -210,10 +200,7 @@ export function useImportUnit(unitImport: Ref<TVeoUnitImportPayload | undefined>
     }
   });
 
-  return {
-    ...query,
-    isPending: computed(() => getIsPending(query.status.value))
-  };
+  return query;
 }
 
 export function mapUnitValues(unit: IVeoUnit): TVeoUnit {

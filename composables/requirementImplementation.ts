@@ -81,8 +81,7 @@ export function useRequirementImplementationQuery() {
     elementQueryDefinitions.queries.fetchObjectRequirementImplementation,
     queryParams,
     {
-      enabled: false,
-      keepPreviousData: false
+      enabled: false
     }
   );
   const { mutateAsync } = useMutation(elementQueryDefinitions.mutations.updateRequirementImplementation);

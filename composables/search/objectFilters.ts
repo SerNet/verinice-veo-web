@@ -70,7 +70,9 @@ export function useObjectSearchFilters({
   const schemasQueries = useFetchSchemasDetailed(computed(() => ({ domainId: unref(domainId) })));
 
   const schemas = computed<IVeoDomainSpecificObjectSchema[]>(() =>
-    schemasQueries.map((query) => query.data).filter((schema): schema is IVeoDomainSpecificObjectSchema => !!schema)
+    schemasQueries.value
+      .map((query) => query.data)
+      .filter((schema): schema is IVeoDomainSpecificObjectSchema => !!schema)
   );
 
   const filterValue = computed(() => unref(filter));

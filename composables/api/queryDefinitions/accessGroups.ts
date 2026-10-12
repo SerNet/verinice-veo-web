@@ -81,7 +81,7 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient) => {
-          queryClient.invalidateQueries(['accessGroups']);
+          queryClient.invalidateQueries({ queryKey: ['accessGroups'] });
         }
       }
     } as IVeoMutationDefinition<IVeoCreateAccessGroupParameters, IVeoAccessGroup>,
@@ -100,8 +100,8 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables) => {
-          queryClient.invalidateQueries(['accessGroups']);
-          queryClient.invalidateQueries(['accessGroup', { id: variables.params?.id || '' }]);
+          queryClient.invalidateQueries({ queryKey: ['accessGroups'] });
+          queryClient.invalidateQueries({ queryKey: ['accessGroup', { id: variables.params?.id || '' }] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateAccessGroupParameters, void>,
@@ -116,8 +116,8 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables) => {
-          queryClient.invalidateQueries(['accessGroups']);
-          queryClient.invalidateQueries(['accessGroup', { id: variables.params?.id || '' }]);
+          queryClient.invalidateQueries({ queryKey: ['accessGroups'] });
+          queryClient.invalidateQueries({ queryKey: ['accessGroup', { id: variables.params?.id || '' }] });
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteAccessGroupParameters, void>,
@@ -134,7 +134,7 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient) => {
-          queryClient.invalidateQueries(['restrictUnitAccess']);
+          queryClient.invalidateQueries({ queryKey: ['restrictUnitAccess'] });
         }
       },
       headers: {

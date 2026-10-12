@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+import { keepPreviousData } from '@tanstack/vue-query';
 import { omit } from 'lodash';
 
 import { useFetchObjects, useFetchParentObjects } from '~/composables/api/objects';
@@ -82,7 +83,7 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
 
   const { data: rawObjects, isFetching: objectsLoading } = useFetchObjects(objectsQueryParams, {
     enabled: objectsQueryEnabled,
-    keepPreviousData: true
+    placeholderData: keepPreviousData
   });
 
   const { data: searchResults, isLoading: searchLoading } = useSearch({

@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+import { keepPreviousData } from '@tanstack/vue-query';
 import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useRoute } from 'vue-router';
@@ -104,7 +105,7 @@ export function useRequirementImplementationList() {
     elementQueryDefinitions.queries.fetchObjectRequirementImplementations,
     requirementImplementationsQueryParameters,
     {
-      keepPreviousData: true,
+      placeholderData: keepPreviousData,
       enabled: isQueryEnabled.value
     }
   );

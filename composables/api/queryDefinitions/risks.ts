@@ -54,7 +54,7 @@ export default {
 
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
-          queryClient.invalidateQueries(['domain']);
+          queryClient.invalidateQueries({ queryKey: ['domain'] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateRiskMatrixValuesParameters, IVeoAPIMessage>

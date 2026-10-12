@@ -39,7 +39,15 @@ export const useFetchObjects = (queryParameters: Ref<IVeoFetchObjectsParameters>
   }));
   return useQuery(objectQueryDefinitions.queries.fetchAll, transformedQueryParameters, {
     ...queryOptions,
-    placeholderData: { items: [], pageCount: 0, page: 0, totalItemCount: 0 }
+    // Use the caller's placeholder (e.g. `keepPreviousData`) if it yields data, otherwise fall back to an empty page
+    placeholderData: (previousData: any, previousQuery: any) =>
+      (typeof queryOptions?.placeholderData === 'function' &&
+        queryOptions.placeholderData(previousData, previousQuery)) || {
+        items: [],
+        pageCount: 0,
+        page: 0,
+        totalItemCount: 0
+      }
   });
 };
 

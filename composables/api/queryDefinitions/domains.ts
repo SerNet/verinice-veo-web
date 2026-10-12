@@ -262,8 +262,8 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
-          queryClient.invalidateQueries(['object']);
-          queryClient.invalidateQueries(['translations']);
+          queryClient.invalidateQueries({ queryKey: ['object'] });
+          queryClient.invalidateQueries({ queryKey: ['translations'] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateTypeDefinitionParameters, void>,
@@ -303,7 +303,7 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
-          queryClient.invalidateQueries(['domain']);
+          queryClient.invalidateQueries({ queryKey: ['domain'] });
         }
       }
     } as IVeoMutationDefinition<IVeoUpdateControlImplementationConfigurationParameters, void>

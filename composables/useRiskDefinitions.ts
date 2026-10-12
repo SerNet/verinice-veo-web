@@ -70,7 +70,7 @@ export function useRiskDefinitionUpdate() {
 
         displaySuccessMessage(messages?.[locale.value]?.success ?? '');
 
-        queryClient.invalidateQueries(['domains']);
+        queryClient.invalidateQueries({ queryKey: ['domains'] });
       } catch (err) {
         handleError(err);
       } finally {

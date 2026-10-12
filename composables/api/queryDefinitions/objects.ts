@@ -395,7 +395,7 @@ export default {
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
-          queryClient.invalidateQueries(['objects']);
+          queryClient.invalidateQueries({ queryKey: ['objects'] });
         }
       }
     } as IVeoMutationDefinition<IVeoCreateObjectParameters, IVeoAPIMessage>,
@@ -418,7 +418,7 @@ export default {
       },
       staticMutationOptions: {
         onSuccess: (queryClient, _data, _variables, _context) => {
-          queryClient.invalidateQueries(['objects']);
+          queryClient.invalidateQueries({ queryKey: ['objects'] });
         }
       }
     } as IVeoMutationDefinition<IVeoAssigObjectParameters, IVeoAPIMessage>,
@@ -466,32 +466,38 @@ export default {
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
           queryClient.invalidateQueries({ queryKey: ['evaluation'] });
-          queryClient.invalidateQueries(['objects']);
-          queryClient.invalidateQueries([
-            'object',
-            {
-              endpoint: variables.params?.endpoint,
-              id: variables.params?.id
-            }
-          ]);
-          queryClient.invalidateQueries([
-            'childObjects',
-            {
-              endpoint: variables.params?.endpoint,
-              id: variables.params?.id
-            }
-          ]);
-          queryClient.invalidateQueries([
-            'childScopes',
-            {
-              id: variables.params?.id
-            }
-          ]);
+          queryClient.invalidateQueries({ queryKey: ['objects'] });
+          queryClient.invalidateQueries({
+            queryKey: [
+              'object',
+              {
+                endpoint: variables.params?.endpoint,
+                id: variables.params?.id
+              }
+            ]
+          });
+          queryClient.invalidateQueries({
+            queryKey: [
+              'childObjects',
+              {
+                endpoint: variables.params?.endpoint,
+                id: variables.params?.id
+              }
+            ]
+          });
+          queryClient.invalidateQueries({
+            queryKey: [
+              'childScopes',
+              {
+                id: variables.params?.id
+              }
+            ]
+          });
           // Invalid all object lists, as the parent endpoint uses the same key (and we want an updated edit date in the list for this object)
-          queryClient.invalidateQueries(['objects']);
+          queryClient.invalidateQueries({ queryKey: ['objects'] });
           // Only invalidate after 5 seconds, as the history sevice isn't updated as sonn as the object is updated
           setTimeout(() => {
-            queryClient.invalidateQueries(['versions']);
+            queryClient.invalidateQueries({ queryKey: ['versions'] });
           }, 5000);
         }
       }
@@ -507,8 +513,8 @@ export default {
       }),
       staticMutationOptions: {
         onSuccess: (queryClient, _data, variables, _context) => {
-          queryClient.invalidateQueries(['objects']);
-          queryClient.invalidateQueries(['object', variables.params]);
+          queryClient.invalidateQueries({ queryKey: ['objects'] });
+          queryClient.invalidateQueries({ queryKey: ['object', variables.params] });
         }
       }
     } as IVeoMutationDefinition<IVeoDeleteObjectParameters, void>,
