@@ -1,5 +1,3 @@
-import type { MutationStatus } from 'vue-query-v5';
-
 export function waitForData<T>(data: Ref<T>, timeout = 20000): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     let isSettled = false;
@@ -66,15 +64,4 @@ export function waitForBooleanToUpdate(bool: Ref<boolean>, expectedValue?: boole
       resolve();
     }, 20000);
   });
-}
-
-/**
- * @todo remove when vue-query types and `isPending` helper are fixed
- * @description currently (@tanstack/vue-query@5.92.0) there is a mismatch between MutationStatus and the actual values of `status`
- * This also affects vue-query's `isPending` helper, which is derived from `status` and renders it unusable
- * `getIsPending` replaces the broken `isPending` helper until the types are fixed in vue-query
- */
-type RuntimeMutationStatus = MutationStatus | 'loading';
-export function getIsPending(status: RuntimeMutationStatus): boolean {
-  return ['loading', 'pending'].includes(status);
 }
