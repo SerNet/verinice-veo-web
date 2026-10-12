@@ -101,6 +101,14 @@ describe('task composables', () => {
     expect(useQueryMock.mock.calls[1]?.[2].enabled.value).toBe(true);
   });
 
+  it('does not fetch tasks without a unit and domain scope', () => {
+    const { count, isLoading } = useNavigationTaskCount(ref({}));
+
+    expect(useQueryMock.mock.calls[1]?.[2].enabled.value).toBe(false);
+    expect(count.value).toBe(0);
+    expect(isLoading.value).toBe(false);
+  });
+
   it('does not fetch an unfiltered count while the default assignees are unresolved', () => {
     useQueryMock.mockReturnValue({
       data: { value: undefined },

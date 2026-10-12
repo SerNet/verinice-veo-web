@@ -120,9 +120,8 @@ export function useNavigationTaskCount(parameters: MaybeRef<TaskScopeParameters>
   const { assigneeIds, ready } = useDefaultTaskAssignees(parameters);
   const activeManualFilter = computed(() => {
     const scope = unref(parameters);
-    return manualFilter.value?.domainId === scope.domainId && manualFilter.value.unitId === scope.unitId ?
-        manualFilter.value
-      : undefined;
+    const filter = manualFilter.value;
+    return filter && filter.domainId === scope.domainId && filter.unitId === scope.unitId ? filter : undefined;
   });
   const countParameters = computed(() => {
     const scope = unref(parameters);
