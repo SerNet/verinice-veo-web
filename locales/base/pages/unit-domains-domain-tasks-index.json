@@ -1,13 +1,11 @@
 {
   "en": {
-    "allTasksTitle": "All tasks",
     "assigneeFilterError": "The responsible people could not be loaded.",
     "assigneeOptionsError": "The people available for filtering could not be loaded. Your default filter remains active.",
     "taskListError": "The tasks could not be loaded.",
     "title": "Tasks"
   },
   "de": {
-    "allTasksTitle": "Alle Aufgaben",
     "assigneeFilterError": "Die zuständigen Personen konnten nicht geladen werden.",
     "assigneeOptionsError": "Die zur Filterung verfügbaren Personen konnten nicht geladen werden. Ihr Standardfilter bleibt aktiv.",
     "taskListError": "Die Aufgaben konnten nicht geladen werden.",
