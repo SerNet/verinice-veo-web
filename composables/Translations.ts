@@ -18,7 +18,7 @@ import type { IVeoDomain } from '~/composables/api/queryDefinitions/domains';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
 import { useQuery } from './api/utils/query';
-import { useQuery as useQuery5 } from 'vue-query-v5';
+import { useQuery as useQuery5 } from '@tanstack/vue-query';
 import { read } from '~/requests/crud';
 
 type TranslateSubTypeParams = {

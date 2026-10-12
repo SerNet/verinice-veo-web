@@ -304,14 +304,14 @@ export default defineComponent({
 
     // CRUD stuff
     const createMutationParameters = computed(() => formData.value);
-    const { mutateAsync: create, isLoading: isLoadingCreate } = useMutation(
+    const { mutateAsync: create, isPending: isLoadingCreate } = useMutation(
       accountQueryDefinitions.mutations.createAccount
     );
     const updateMutationParameters = computed(() => ({
       ...formData.value,
       id: props.id
     }));
-    const { mutateAsync: update, isLoading: isLoadingUpdate } = useMutation(
+    const { mutateAsync: update, isPending: isLoadingUpdate } = useMutation(
       accountQueryDefinitions.mutations.updateAccount
     );
     const isLoading = computed(() => isLoadingCreate.value || isLoadingUpdate.value);

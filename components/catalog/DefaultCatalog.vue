@@ -107,7 +107,7 @@ const { data: translations } = useTranslations({ domain: route.params.domain as 
 
 const elementType = computed(() => {
   // Since all catalog items are of the same type, we can just use the first one
-  const firstItem = props.catalogItems.items?.[0];
+  const firstItem = props.catalogItems?.items?.[0];
   return firstItem?.elementType ?? null;
 });
 

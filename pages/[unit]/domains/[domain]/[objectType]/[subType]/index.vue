@@ -189,6 +189,7 @@ export const ROUTE_NAME = ROUTE_OBJECT_OVERVIEW;
 </script>
 
 <script setup lang="ts">
+import { keepPreviousData } from '@tanstack/vue-query';
 import { mdiContentCopy, mdiPuzzleOutline, mdiTrashCanOutline, mdiUpload } from '@mdi/js';
 import { omit, upperFirst } from 'lodash';
 import { useFetchObjects } from '~/composables/api/objects';
@@ -347,7 +348,7 @@ const combinedQueryParameters = computed<any>(() => ({
 const queryEnabled = computed(() => !!VeoElementTypePlurals[filter.value.objectType as string]);
 const { data: items, isFetching: isLoadingObjects } = useFetchObjects(combinedQueryParameters, {
   enabled: queryEnabled,
-  keepPreviousData: true
+  placeholderData: keepPreviousData
 });
 
 const isLoading = computed(() => isLoadingObjects.value || isLoadingTranslations.value);

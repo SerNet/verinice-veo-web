@@ -139,7 +139,7 @@ const {
 const { data: unitsData, isFetching: isFetchingUnits } = useUnits();
 const { data: isRestrictedAccess } = useQuery(accessGroupsDefinition.queries.isRestrictUnitAccess);
 
-const { mutateAsync: updateRestrictUnitAccess, isLoading: isLoadingAccess } = useMutation(
+const { mutateAsync: updateRestrictUnitAccess, isPending: isLoadingAccess } = useMutation(
   accessGroupsDefinition.mutations.updateRestrictUnitAccess
 );
 

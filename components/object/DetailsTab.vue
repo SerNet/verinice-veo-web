@@ -98,6 +98,7 @@ import {
   mdiUpload,
   mdiTextBoxCheckOutline
 } from '@mdi/js';
+import { keepPreviousData } from '@tanstack/vue-query';
 import { cloneDeep, upperFirst } from 'lodash';
 import type { ComputedRef, PropType, Ref } from 'vue';
 import { VIcon, VTooltip } from 'vuetify/components';
@@ -357,7 +358,7 @@ export default defineComponent({
       fetchControlImplementationsQueryParameters,
       {
         enabled: cisQueryEnabled,
-        keepPreviousData: true
+        placeholderData: keepPreviousData
       }
     );
 

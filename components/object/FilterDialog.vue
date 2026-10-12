@@ -135,9 +135,9 @@ export default defineComponent({
     const _schemas = useFetchSchemasDetailed(queryParameters);
     const schemas = ref<IVeoDomainSpecificObjectSchema[]>([]);
 
-    // _schemas is a non-reactive array, so we have to explicitly watch it to assign it to a ref so that the rest of vues reactivity picks up changes
+    // _schemas is a readonly ref of query results, so we watch it to assign the data to a ref
     watch(
-      () => _schemas,
+      () => _schemas.value,
       (newValue) => {
         schemas.value = newValue.map((query) => query.data).filter((schema) => schema);
       },

@@ -79,6 +79,7 @@
 </template>
 
 <script lang="ts">
+import { keepPreviousData } from '@tanstack/vue-query';
 import { cloneDeep, omit, upperFirst } from 'lodash';
 
 import { useVeoAlerts } from '~/composables/VeoAlert';
@@ -187,7 +188,7 @@ export default defineComponent({
       data: objects,
       isFetching: objectsQueryIsLoading,
       refetch
-    } = useFetchObjects(combinedQueryParameters, { keepPreviousData: true });
+    } = useFetchObjects(combinedQueryParameters, { placeholderData: keepPreviousData });
     const risksQueryParameters = computed<IVeoFetchRisksParameters>(() => ({
       endpoint: route.params.objectType as string,
       id: props.objectId

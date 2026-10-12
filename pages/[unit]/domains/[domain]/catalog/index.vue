@@ -74,6 +74,7 @@ export const ROUTE_NAME = ROUTE_DOMAIN_CATALOG;
 </script>
 
 <script setup lang="ts">
+import { keepPreviousData } from '@tanstack/vue-query';
 import { onBeforeRouteLeave } from 'vue-router';
 import catalogQueryDefinitions, { CustomAspect } from '~/composables/api/queryDefinitions/catalogs';
 import { useQuery } from '~/composables/api/utils/query';
@@ -120,7 +121,11 @@ const fetchCatalogItemsQueryParameters = computed(() => ({
 const { data: _catalogItems, isFetching: catalogItemsAreFetching } = useQuery(
   catalogQueryDefinitions.queries.fetchCatalogItems,
   fetchCatalogItemsQueryParameters,
-  { keepPreviousData: true }
+  {
+    // `keepPreviousData` yields `undefined` on the very first fetch (e.g. after a reload), so fall back to an empty page
+    placeholderData: (previousData: any) =>
+      keepPreviousData(previousData) ?? { items: [], pageCount: 0, page: 0, totalItemCount: 0 }
+  }
 );
 
 const { subTypeTranslation: currentSubTypeTranslated } = useSubTypeTranslation();

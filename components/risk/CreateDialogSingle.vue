@@ -220,12 +220,15 @@ export default defineComponent({
     }));
     const fetchRiskQueryEnabled = computed(() => !!props.scenarioId);
 
-    const { data: _risk } = useQuery(elementQueryDefinitions.queries.fetchRisk, fetchRiskQueryParameters, {
-      enabled: fetchRiskQueryEnabled,
-      onSuccess: () => {
-        init();
+    const { data: _risk, dataUpdatedAt: riskUpdatedAt } = useQuery(
+      elementQueryDefinitions.queries.fetchRisk,
+      fetchRiskQueryParameters,
+      {
+        enabled: fetchRiskQueryEnabled
       }
-    });
+    );
+    // `dataUpdatedAt` changes after every successful fetch (replaces vue-query v4's `onSuccess`)
+    watch(riskUpdatedAt, () => init());
 
     const risk = computed(() => (props.scenarioId ? _risk.value : undefined));
 

@@ -181,7 +181,7 @@ import { useVeoPermissions } from '~/composables/VeoPermissions';
 import objectQueryDefinitions from '~/composables/api/queryDefinitions/elements';
 import { useMutation } from '~/composables/api/utils/mutation';
 import { useQuery } from '~/composables/api/utils/query';
-import { useQueryClient } from 'vue-query-v5';
+import { useQueryClient } from '@tanstack/vue-query';
 import { VeoElementTypesSingular } from '~/types/VeoTypes';
 
 import type { IVeoEntity, IVeoLink } from '~/types/VeoTypes';
@@ -242,13 +242,10 @@ const {
   data: object,
   isFetching: loading,
   isError: notFoundError,
-  refetch
+  refetch,
+  dataUpdatedAt: objectUpdatedAt
 } = useQuery(objectQueryDefinitions.queries.fetch, fetchObjectQueryParameters, {
-  enabled: fetchObjectQueryEnabled,
-  // @ts-ignore TODO #3066 not assignable
-  onSuccess: async (data: IVeoEntity) => {
-    finalizeModifiedObject(data);
-  }
+  enabled: fetchObjectQueryEnabled
 });
 
 const ownerUnitId = computed<string | undefined>(() => {
@@ -287,6 +284,11 @@ function finalizeModifiedObject(data?: IVeoEntity) {
     wipObjectData.value = undefined;
   }
 }
+
+// `dataUpdatedAt` changes after every successful fetch (replaces vue-query v4's `onSuccess`)
+watch(objectUpdatedAt, () => {
+  if (object.value) finalizeModifiedObject(object.value);
+});
 
 onUnmounted(() => {
   expireOptimisticLockingAlert();

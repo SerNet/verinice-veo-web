@@ -198,7 +198,7 @@ const _schemas = useFetchSchemasDetailed(fetchSchemasDetailedQueryParameters, {
   enabled: fetchSchemasDetailedQueryEnabled
 });
 watch(
-  () => _schemas,
+  () => _schemas.value,
   (newValue) => {
     objectSchemas.value = (newValue || []).map((schema) => schema.data).filter((schema) => schema);
     schemasLoading.value = (newValue || []).some((schema) => schema.isFetching);

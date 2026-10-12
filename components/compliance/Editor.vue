@@ -393,7 +393,8 @@
 
 <script setup lang="ts">
 // ===== External dependencies =====
-import { cloneDeep, isEqual, merge } from 'lodash';
+import { keepPreviousData } from '@tanstack/vue-query';
+import { cloneDeep, merge } from 'lodash';
 
 // ===== Internal components =====
 import DynamicFormEntrypoint from '~/components/dynamic-form/Entrypoint.vue';
@@ -657,7 +658,7 @@ const personsQueryParams = computed<IVeoFetchObjectsParameters>(() => ({
 
 const { data: _persons } = useFetchObjects(personsQueryParams, {
   enabled: canFetchObjectData,
-  keepPreviousData: true
+  placeholderData: keepPreviousData
 });
 
 // Fetch documents
@@ -670,7 +671,7 @@ const documentQueryParams = computed<IVeoFetchObjectsParameters>(() => ({
 
 const { data: _documents } = useFetchObjects(documentQueryParams, {
   enabled: canFetchObjectData,
-  keepPreviousData: true
+  placeholderData: keepPreviousData
 });
 
 // ===== Computed properties =====

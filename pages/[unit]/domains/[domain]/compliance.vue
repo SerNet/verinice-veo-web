@@ -97,8 +97,7 @@ const containerObjectQueryParameters = computed(() => ({
 // Queries
 const { data: targetObject } = useQuery(objectQueryDefinitions.queries.fetch, targetObjectQueryParameters);
 const { data: containerControl } = useQuery(objectQueryDefinitions.queries.fetch, containerObjectQueryParameters, {
-  enabled: !!route.query.control,
-  keepPreviousData: false
+  enabled: !!route.query.control
 });
 
 // Computed Properties

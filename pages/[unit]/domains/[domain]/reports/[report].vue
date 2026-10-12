@@ -94,6 +94,7 @@
 import { omit, upperCase, upperFirst } from 'lodash';
 
 import type { QueryClient } from '@tanstack/vue-query';
+import { keepPreviousData } from '@tanstack/vue-query';
 import type { RouteRecordName } from 'vue-router';
 import { useFetchObjects } from '~/composables/api/objects';
 import reportQueryDefinitions from '~/composables/api/queryDefinitions/reports';
@@ -214,8 +215,7 @@ export default defineComponent({
       refetch: refetchObjects
     } = useFetchObjects(combinedObjectsQueryParameters as any, {
       enabled: objectsQueryEnabled,
-      keepPreviousData: true,
-      placeholderData: []
+      placeholderData: keepPreviousData
     });
 
     const updateRouteQuery = async (v: Record<string, string | undefined | null | true>, reset = true) => {
@@ -246,7 +246,7 @@ export default defineComponent({
       downloadButton.value.click();
     };
 
-    const { mutateAsync: create, isLoading: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, {
+    const { mutateAsync: create, isPending: generatingReport } = useMutation(reportQueryDefinitions.mutations.create, {
       onSuccess: openReport
     });
 

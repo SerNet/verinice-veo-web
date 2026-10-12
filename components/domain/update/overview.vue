@@ -170,7 +170,7 @@ const { data: domainUpdates, isLoading: isLoadingDomainUpdates } = useFetchDomai
 const items = computed(() => buildListOfConflicts(conflictedElementsByUnit.value, domainId.value));
 
 useUserFeedback({
-  isLoading: computed(() => getIsPending(status.value)),
+  isLoading: computed(() => status.value === 'pending'),
   isSuccess: isDomainUpdateSuccess,
   isError: isDomainUpdateError,
   hasErrorMessage: computed(() => (updateError as Ref<UpdateError>).value?.status != 409)

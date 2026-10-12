@@ -74,7 +74,7 @@ const { profile } = useVeoUser();
 const { displayErrorMessage, displaySuccessMessage } = useVeoAlerts();
 
 const deleteMutationParameters = computed(() => ({ id: props.id }));
-const { mutateAsync: doDelete, isLoading } = useMutation(accountQueryDefinitions.mutations.deleteAccount);
+const { mutateAsync: doDelete, isPending: isLoading } = useMutation(accountQueryDefinitions.mutations.deleteAccount);
 
 const deleteAccount = async () => {
   if (!props.id || ability.value.cannot('manage', 'accounts')) {

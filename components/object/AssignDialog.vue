@@ -181,15 +181,13 @@ const fetchLegacyObjectQueryParameters = computed(
 
 const formIsValid = ref(undefined);
 
-const { data: legacyObject } = useQuery(objectQueryDefinitions.queries.fetchLegacy, fetchLegacyObjectQueryParameters, {
-  onSuccess: (data: any) => {
-    if (!isBulkMode.value) {
-      selectedDomains.value = Object.keys(data.domains || {});
-      prePolluteList(data);
-    }
-  },
-  enabled: schemaParametersEnabled.value && !isBulkMode.value
-});
+const { data: legacyObject, dataUpdatedAt: legacyObjectUpdatedAt } = useQuery(
+  objectQueryDefinitions.queries.fetchLegacy,
+  fetchLegacyObjectQueryParameters,
+  {
+    enabled: schemaParametersEnabled.value && !isBulkMode.value
+  }
+);
 
 const isDirty = computed(() => {
   if (isBulkMode.value) {
@@ -201,6 +199,18 @@ const prePolluteList = (data: IVeoEntityLegacy) => {
   selectedSubType.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.subType]));
   selectedStatus.value = Object.fromEntries(Object.entries(data.domains).map(([id, domain]) => [id, domain.status]));
 };
+
+// `dataUpdatedAt` changes after every successful fetch (replaces vue-query v4's `onSuccess`)
+watch(
+  legacyObjectUpdatedAt,
+  () => {
+    if (legacyObject.value && !isBulkMode.value) {
+      selectedDomains.value = Object.keys(legacyObject.value.domains || {});
+      prePolluteList(legacyObject.value);
+    }
+  },
+  { immediate: true }
+);
 
 const subTypes = computed(() =>
   (domains.value || []).reduce(

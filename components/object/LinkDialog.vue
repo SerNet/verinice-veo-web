@@ -105,7 +105,7 @@
 </template>
 
 <script lang="ts">
-import { useQueryClient } from '@tanstack/vue-query';
+import { keepPreviousData, useQueryClient } from '@tanstack/vue-query';
 import { differenceBy, isEqual, omit, uniqBy, upperFirst } from 'lodash';
 import type { PropType } from 'vue';
 import { useLinkObject, useUnlinkObject } from '~/composables/VeoObjectUtilities';
@@ -229,7 +229,7 @@ export default defineComponent({
     const objectsQueryEnabled = computed(() => !!objectListEndpoint.value);
     const { data: _objects, isFetching: objectsLoading } = useFetchObjects(combinedObjectsQueryParameters, {
       enabled: objectsQueryEnabled,
-      keepPreviousData: true
+      placeholderData: keepPreviousData
     });
 
     // SEARCH
@@ -321,8 +321,7 @@ export default defineComponent({
     }));
     const parentsQueryEnabled = computed(() => !!objectEndpoint.value && !!props.object?.id && props.editParents);
     const { data: parents, isFetching: parentsLoading } = useFetchParentObjects(parentsQueryParameters, {
-      enabled: parentsQueryEnabled,
-      keepPreviousData: false
+      enabled: parentsQueryEnabled
     });
 
     const childObjectsQueryParameters = computed(() => ({

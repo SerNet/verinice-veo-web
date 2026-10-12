@@ -96,6 +96,7 @@
 
 <script lang="ts">
 import { mdiEyeOutline, mdiHistory, mdiInformationOutline, mdiTableOfContents } from '@mdi/js';
+import { keepPreviousData } from '@tanstack/vue-query';
 import { debounce, isEmpty, merge, upperFirst } from 'lodash';
 
 import {
@@ -526,7 +527,7 @@ export default defineComponent({
       fetchInspectionFindingsQueryParameters,
       {
         enabled: fetchInspectionFindingsQueryEnabled,
-        keepPreviousData: true
+        placeholderData: keepPreviousData
       }
     );
 

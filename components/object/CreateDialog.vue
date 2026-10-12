@@ -131,18 +131,19 @@ export default defineComponent({
       id: props.domainId as string
     }));
     const fetchDomainQueryEnabled = computed(() => !!props.domainId);
-    const { data: domain, isFetching: domainIsFetching } = useQuery(
-      domainQueryDefinitions.queries.fetchDomain,
-      fetchDomainQueryParameters,
-      {
-        onSuccess: () => {
-          if (props.objectType === 'scope') {
-            seedInitialData();
-          }
-        },
-        enabled: fetchDomainQueryEnabled
+    const {
+      data: domain,
+      isFetching: domainIsFetching,
+      dataUpdatedAt: domainUpdatedAt
+    } = useQuery(domainQueryDefinitions.queries.fetchDomain, fetchDomainQueryParameters, {
+      enabled: fetchDomainQueryEnabled
+    });
+    // `dataUpdatedAt` changes after every successful fetch (replaces vue-query v4's `onSuccess`)
+    watch(domainUpdatedAt, () => {
+      if (props.objectType === 'scope') {
+        seedInitialData();
       }
-    );
+    });
 
     const objectData = ref<Record<string, any>>({});
     const pristineObjectData = ref<Record<string, any>>({});
@@ -201,20 +202,24 @@ export default defineComponent({
         // Invalidate parent scopes (should always be only one), if set directly as a parent via parentScopeIds.
         if (props.parentScopeIds) {
           for (const scope of props.parentScopeIds) {
-            queryClient.invalidateQueries([
-              'object',
-              {
-                endpoint: 'scopes',
-                id: scope
-              }
-            ]);
-            queryClient.invalidateQueries([
-              'childObjects',
-              {
-                endpoint: 'scopes',
-                id: scope
-              }
-            ]);
+            queryClient.invalidateQueries({
+              queryKey: [
+                'object',
+                {
+                  endpoint: 'scopes',
+                  id: scope
+                }
+              ]
+            });
+            queryClient.invalidateQueries({
+              queryKey: [
+                'childObjects',
+                {
+                  endpoint: 'scopes',
+                  id: scope
+                }
+              ]
+            });
           }
         }
         emit('update:model-value', false);
