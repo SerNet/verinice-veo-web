@@ -20,12 +20,11 @@ import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import taskQueryDefinitions from '~/composables/api/queryDefinitions/tasks';
 
 describe('task query definitions', () => {
-  it('serializes multiple assignees and unassigned tasks', () => {
+  it('serializes multiple assignees', () => {
     const result = taskQueryDefinitions.queries.fetchAll.queryParameterTransformationFn({
       domainId: 'domain-id',
       unit: 'unit-id',
       assigneeIds: ['person-1', 'person-2'],
-      includeUnassigned: true,
       page: 2,
       size: 10
     });
@@ -35,7 +34,6 @@ describe('task query definitions', () => {
       query: {
         unit: 'unit-id',
         assignees: 'person-1,person-2',
-        unassigned: true,
         page: 2,
         size: 10
       }
@@ -46,24 +44,23 @@ describe('task query definitions', () => {
     const result = taskQueryDefinitions.queries.fetchAll.queryParameterTransformationFn({
       domainId: 'domain-id',
       unit: 'unit-id',
-      assigneeIds: [],
-      includeUnassigned: false
+      assigneeIds: undefined
     });
 
     expect(result.query).toMatchObject({ unit: 'unit-id', page: 0, size: 10 });
     expect(result.query?.assignees).toBeUndefined();
-    expect(result.query?.unassigned).toBeUndefined();
+    expect(result.query).not.toHaveProperty('unassigned');
   });
 
   it('sends an empty assignee filter when only unassigned tasks are selected', () => {
     const result = taskQueryDefinitions.queries.fetchAll.queryParameterTransformationFn({
       domainId: 'domain-id',
       unit: 'unit-id',
-      assigneeIds: [],
-      includeUnassigned: true
+      assigneeIds: []
     });
 
-    expect(result.query).toMatchObject({ assignees: '', unassigned: true });
+    expect(result.query?.assignees).toBe('');
+    expect(result.query).not.toHaveProperty('unassigned');
   });
 });
 

@@ -31,15 +31,13 @@ export interface TaskScopeParameters {
 
 export interface FetchTasksParameters extends TaskScopeParameters {
   assigneeIds?: string[];
-  includeUnassigned?: boolean;
   enabled?: boolean;
   page?: number;
   size?: number;
 }
 
 export interface ManualTaskFilter extends TaskScopeParameters {
-  assigneeIds: string[];
-  includeUnassigned?: boolean;
+  assigneeIds?: string[];
 }
 
 export function useManualTaskFilter() {
@@ -50,13 +48,12 @@ export function useFetchTasks(parameters: MaybeRef<FetchTasksParameters>) {
   const tasksEnabled = hasFeature('tasks');
 
   const queryParameters = computed(() => {
-    const { assigneeIds, domainId, includeUnassigned, unitId, page, size } = unref(parameters);
+    const { assigneeIds, domainId, unitId, page, size } = unref(parameters);
 
     return {
       domainId: domainId as string,
       unit: unitId as string,
-      assigneeIds: assigneeIds?.length || includeUnassigned ? [...(assigneeIds ?? [])].sort() : undefined,
-      includeUnassigned: includeUnassigned || undefined,
+      assigneeIds: assigneeIds === undefined ? undefined : [...assigneeIds].sort(),
       page: page ?? 0,
       size: size ?? TASKS_PAGE_SIZE
     };
@@ -105,9 +102,7 @@ export function useDefaultTaskAssignees(parameters: MaybeRef<TaskScopeParameters
 }
 
 export function useTaskCount(
-  parameters: MaybeRef<
-    Pick<FetchTasksParameters, 'assigneeIds' | 'domainId' | 'enabled' | 'includeUnassigned' | 'unitId'>
-  >
+  parameters: MaybeRef<Pick<FetchTasksParameters, 'assigneeIds' | 'domainId' | 'enabled' | 'unitId'>>
 ) {
   const countParameters = computed(() => ({ ...unref(parameters), page: 0, size: 1 }));
   const { data, isPlaceholderData } = useFetchTasks(countParameters);
@@ -135,8 +130,10 @@ export function useNavigationTaskCount(parameters: MaybeRef<TaskScopeParameters>
 
     return {
       ...scope,
-      assigneeIds: filter?.assigneeIds ?? (assigneeIds.value?.length ? assigneeIds.value : undefined),
-      includeUnassigned: filter?.includeUnassigned,
+      assigneeIds:
+        filter ? filter.assigneeIds
+        : assigneeIds.value?.length ? assigneeIds.value
+        : undefined,
       enabled: filter ? true : ready.value
     };
   });

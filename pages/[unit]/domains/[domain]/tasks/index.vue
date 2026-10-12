@@ -141,16 +141,22 @@ const selectedAssignees = computed<string[]>({
         manualTaskFilter.value
       : undefined;
 
-    return filter ?
-        [...filter.assigneeIds, ...(filter.includeUnassigned ? [UNASSIGNED_ASSIGNEE] : [])]
-      : (defaultAssigneeIds.value ?? []);
+    return (
+      filter ?
+        filter.assigneeIds?.length ? filter.assigneeIds
+        : filter.assigneeIds ? [UNASSIGNED_ASSIGNEE]
+        : []
+      : (defaultAssigneeIds.value ?? [])
+    );
   },
   set: (value) => {
     page.value = 0;
     manualTaskFilter.value = {
       ...taskScope.value,
-      assigneeIds: value.filter((id) => id !== UNASSIGNED_ASSIGNEE),
-      includeUnassigned: value.includes(UNASSIGNED_ASSIGNEE) || undefined
+      assigneeIds:
+        value.includes(UNASSIGNED_ASSIGNEE) ? []
+        : value.length ? value
+        : undefined
     };
   }
 });
@@ -165,8 +171,10 @@ const taskFilterKey = computed(() => `${taskScopeKey.value}:${JSON.stringify([..
 
 const queryParameters = computed(() => ({
   ...taskScope.value,
-  assigneeIds: selectedAssignees.value.filter((id) => id !== UNASSIGNED_ASSIGNEE),
-  includeUnassigned: selectedAssignees.value.includes(UNASSIGNED_ASSIGNEE),
+  assigneeIds:
+    selectedAssignees.value.includes(UNASSIGNED_ASSIGNEE) ? []
+    : selectedAssignees.value.length ? selectedAssignees.value
+    : undefined,
   enabled: defaultAssigneesReady.value,
   page: page.value
 }));

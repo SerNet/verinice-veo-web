@@ -85,7 +85,6 @@ describe('task composables', () => {
       domainId: 'domain-id',
       unit: 'unit-id',
       assigneeIds: ['person-1', 'person-2'],
-      includeUnassigned: undefined,
       page: 0,
       size: 1
     });
@@ -171,14 +170,10 @@ describe('task composables', () => {
       ref({
         domainId: 'domain-id',
         unitId: 'unit-id',
-        assigneeIds: [],
-        includeUnassigned: true
+        assigneeIds: []
       })
     );
 
-    expect(useQueryMock.mock.calls[0]?.[1].value).toMatchObject({
-      assigneeIds: [],
-      includeUnassigned: true
-    });
+    expect(useQueryMock.mock.calls[0]?.[1].value.assigneeIds).toEqual([]);
   });
 });

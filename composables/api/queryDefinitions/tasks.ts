@@ -24,7 +24,6 @@ export interface IVeoFetchTasksParameters {
   domainId: string;
   unit: string;
   assigneeIds?: string[];
-  includeUnassigned?: boolean;
   page?: number;
   size?: number;
 }
@@ -40,11 +39,7 @@ export default {
         },
         query: {
           unit: queryParameters.unit,
-          assignees:
-            queryParameters.assigneeIds?.length || queryParameters.includeUnassigned ?
-              (queryParameters.assigneeIds ?? []).join(',')
-            : undefined,
-          unassigned: queryParameters.includeUnassigned || undefined,
+          assignees: queryParameters.assigneeIds?.join(','),
           page: queryParameters.page ?? 0,
           size: queryParameters.size ?? 10
         }
