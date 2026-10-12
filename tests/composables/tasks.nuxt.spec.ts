@@ -160,4 +160,20 @@ describe('task composables', () => {
     expect(useQueryMock.mock.calls[0]?.[1].value.assigneeIds).toEqual(['other-person']);
     expect(useQueryMock.mock.calls[2]?.[1].value.assigneeIds).toEqual(['person-1', 'person-2']);
   });
+
+  it('preserves an empty assignee list when only unassigned tasks are selected', () => {
+    useFetchTasks(
+      ref({
+        domainId: 'domain-id',
+        unitId: 'unit-id',
+        assigneeIds: [],
+        includeUnassigned: true
+      })
+    );
+
+    expect(useQueryMock.mock.calls[0]?.[1].value).toMatchObject({
+      assigneeIds: [],
+      includeUnassigned: true
+    });
+  });
 });

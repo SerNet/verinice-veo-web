@@ -40,7 +40,10 @@ export default {
         },
         query: {
           unit: queryParameters.unit,
-          assignees: queryParameters.assigneeIds?.length ? queryParameters.assigneeIds.join(',') : undefined,
+          assignees:
+            queryParameters.assigneeIds?.length || queryParameters.includeUnassigned ?
+              (queryParameters.assigneeIds ?? []).join(',')
+            : undefined,
           unassigned: queryParameters.includeUnassigned || undefined,
           page: queryParameters.page ?? 0,
           size: queryParameters.size ?? 10

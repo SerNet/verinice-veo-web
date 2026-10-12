@@ -46,7 +46,7 @@ export function useFetchTasks(parameters: MaybeRef<FetchTasksParameters>) {
     return {
       domainId: domainId as string,
       unit: unitId as string,
-      assigneeIds: assigneeIds?.length ? [...assigneeIds].sort() : undefined,
+      assigneeIds: assigneeIds?.length || includeUnassigned ? [...(assigneeIds ?? [])].sort() : undefined,
       includeUnassigned: includeUnassigned || undefined,
       page: page ?? 0,
       size: size ?? TASKS_PAGE_SIZE

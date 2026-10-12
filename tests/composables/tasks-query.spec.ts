@@ -54,6 +54,17 @@ describe('task query definitions', () => {
     expect(result.query?.assignees).toBeUndefined();
     expect(result.query?.unassigned).toBeUndefined();
   });
+
+  it('sends an empty assignee filter when only unassigned tasks are selected', () => {
+    const result = taskQueryDefinitions.queries.fetchAll.queryParameterTransformationFn({
+      domainId: 'domain-id',
+      unit: 'unit-id',
+      assigneeIds: [],
+      includeUnassigned: true
+    });
+
+    expect(result.query).toMatchObject({ assignees: '', unassigned: true });
+  });
 });
 
 describe('person query definitions', () => {
