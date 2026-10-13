@@ -105,13 +105,13 @@ export function useTaskCount(
   parameters: MaybeRef<Pick<FetchTasksParameters, 'assigneeIds' | 'domainId' | 'enabled' | 'unitId'>>
 ) {
   const countParameters = computed(() => ({ ...unref(parameters), page: 0, size: 1 }));
-  const { data, isPlaceholderData } = useFetchTasks(countParameters);
+  const { data, isFetching, isPlaceholderData } = useFetchTasks(countParameters);
 
   return {
     count: computed(() =>
       unref(parameters).enabled === false || isPlaceholderData.value ? 0 : (data.value?.totalItemCount ?? 0)
     ),
-    isLoading: computed(() => isFetching.value || isPreviousData.value)
+    isLoading: computed(() => isFetching.value || isPlaceholderData.value)
   };
 }
 

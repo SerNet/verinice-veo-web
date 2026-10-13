@@ -1,11 +1,11 @@
 {
   "en": {
-    "noTasks": "There are no open tasks in this unit.",
+    "noTasks": "There are no open tasks that match the filter criteria.",
     "pagination": "Pagination",
     "paginationRange": "{from}-{to} of {total}"
   },
   "de": {
-    "noTasks": "In dieser Unit gibt es keine offenen Aufgaben.",
+    "noTasks": "Es gibt keine offenen Aufgaben, die den Filterkriterien entsprechen.",
     "pagination": "Seitennavigation",
     "paginationRange": "{from}-{to} von {total}"
   }
