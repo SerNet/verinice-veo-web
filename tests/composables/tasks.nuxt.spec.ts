@@ -124,6 +124,26 @@ describe('task composables', () => {
     expect(isLoading.value).toBe(true);
   });
 
+  it('stops loading when the default assignee request fails', () => {
+    useQueryMock
+      .mockReturnValueOnce({
+        data: { value: undefined },
+        isError: { value: true }
+      })
+      .mockReturnValueOnce({
+        data: { value: undefined },
+        isError: { value: false },
+        isFetching: { value: false },
+        isPlaceholderData: { value: false }
+      });
+
+    const { count, isLoading } = useNavigationTaskCount(ref({ domainId: 'domain-id', unitId: 'unit-id' }));
+
+    expect(useQueryMock.mock.calls[1]?.[2].enabled.value).toBe(false);
+    expect(count.value).toBe(0);
+    expect(isLoading.value).toBe(false);
+  });
+
   it('hides a previous count while the next default filter is loading', () => {
     useQueryMock
       .mockReturnValueOnce({
