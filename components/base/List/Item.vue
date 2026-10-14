@@ -111,7 +111,7 @@ const ItemDetails: TInlineComponent = {
     }
   },
   template: `
-    <v-card-title v-text="itemName"></v-card-title>
+    <v-card-title v-text="itemName" class="veo-text-wrap"></v-card-title>
     <v-card-subtitle v-if="item?.metaData" v-text="item.metaData"></v-card-subtitle>
     <v-card-text data-veo-test="item-card-text"  v-text="itemDescription"></v-card-text>
 `
