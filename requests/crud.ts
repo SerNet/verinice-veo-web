@@ -87,13 +87,15 @@ export async function read({ path, options = {}, callback }: CrudParams) {
 }
 
 export async function mutate({ path, options = {}, callback }: CrudParams) {
+  const etag = etags.get(path);
+
   options = {
     method: 'PUT',
     ...options,
     headers: {
       ...options.headers,
-      ['Content-Type']: 'application/json',
-      ['If-Match']: etags.get(path) || ''
+      ...(etag ? { ['If-Match']: etag } : {}),
+      ['Content-Type']: 'application/json'
     },
     body: options.body ? JSON.stringify(options.body) : undefined
   };
