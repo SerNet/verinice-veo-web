@@ -20,15 +20,9 @@
     <BaseContainer>
       <BaseCard class="bg-basepage">
         <v-card class="my-2 bg-surface">
-          <div class="bg-accent" style="height: 75px">
-            <v-card-title class="ml-8 small-caps">
-              <h1 style="font-size: large">{{ t('greeting') }}</h1>
-            </v-card-title>
-
-            <v-card-subtitle class="ml-8">
-              {{ t('subTitle') }}
-            </v-card-subtitle>
-          </div>
+          <v-card-title class="small-caps bg-accent">
+            <h1 class="text-h1">{{ t('greeting') }}</h1>
+          </v-card-title>
 
           <v-row class="mx-6 mt-3 small-caps">
             <v-col>
