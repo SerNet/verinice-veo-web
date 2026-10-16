@@ -35,35 +35,37 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
       {{ t('hasNoProfilesBody') }}
     </BaseAlert>
     <v-radio-group v-if="profiles.length" v-model="selectedProfile">
-      <v-col v-if="hasNoneOption" cols="12" class="flex-1-1-100">
-        <RadioButton
-          data-veo-test="profile-radio-btn-none"
-          :profile="null"
-          :label="t('noProfile')"
-          :aria-label="t('noProfile')"
-        />
-      </v-col>
+      <v-row align="center" class="flex overflow-auto" justify="center">
+        <v-col v-if="hasNoneOption" cols="12" class="flex-1-1-100">
+          <RadioButton
+            data-veo-test="profile-radio-btn-none"
+            :profile="null"
+            :label="t('noProfile')"
+            :aria-label="t('noProfile')"
+          />
+        </v-col>
 
-      <template v-for="profile in profiles" :key="profile.id">
-        <BaseListItem :item="profile" :data-veo-test="`profile-${profile.productId}`">
-          <template #center-aside="{ item: p }">
-            <LanguageChip :lang="p.language" />
-          </template>
+        <template v-for="profile in profiles" :key="profile.id">
+          <BaseListItem :item="profile" :data-veo-test="`profile-${profile.productId}`">
+            <template #center-aside="{ item: p }">
+              <LanguageChip :lang="p.language" />
+            </template>
 
-          <template #bottom-left="{ item: p }">
-            <DomainChip :domain-id="p.domainId" />
-          </template>
+            <template #bottom-left="{ item: p }">
+              <DomainChip :domain-id="p.domainId" />
+            </template>
 
-          <template #prepend="{ item: p }">
-            <RadioButton
-              :data-veo-test="`profile-radio-btn-${p.productId}`"
-              :profile="p"
-              :is-disabled="isDisabled"
-              :aria-label="`${p.domainName}`"
-            />
-          </template>
-        </BaseListItem>
-      </template>
+            <template #prepend="{ item: p }">
+              <RadioButton
+                :data-veo-test="`profile-radio-btn-${p.productId}`"
+                :profile="p"
+                :is-disabled="isDisabled"
+                :aria-label="`${p.domainName}`"
+              />
+            </template>
+          </BaseListItem>
+        </template>
+      </v-row>
     </v-radio-group>
   </v-row>
 </template>
@@ -132,7 +134,7 @@ const DomainChip: TInlineComponent = {
       size="small"
        :color="useDomainColor(renderedDomain?.name)"
     >
-      {{ renderedDomain?.translations?.[locale]?.name ||  renderedDomain?.name}} 
+      {{ renderedDomain?.translations?.[locale]?.name ||  renderedDomain?.name}}
     </v-chip>
   `
 };
