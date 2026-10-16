@@ -27,6 +27,17 @@
       />
 
       <BaseAlert
+        v-if="showPersonAssignmentHint"
+        :model-value="true"
+        :type="VeoAlertType.INFO"
+        :title="t('personAssignmentHint')"
+        :buttons="personAssignmentButtons"
+        flat
+        no-close-button
+        class="mb-4"
+      />
+
+      <BaseAlert
         v-if="defaultAssigneesError"
         :model-value="true"
         :type="VeoAlertType.ERROR"
@@ -72,6 +83,20 @@
         :locale="locale"
         @update:show-dialog="showDialog = $event"
       />
+
+      <ObjectAddObjectDialog
+        v-if="personAssignmentDialogOpen"
+        v-model="personAssignmentDialogOpen"
+        :domain-id="taskScope.domainId"
+        object-type="person"
+        :disabled-fields="['objectType']"
+        :selectable-item-filter="isUnassignedPerson"
+        :allow-create-and-open="false"
+        :create-object-defaults="{ username }"
+        :require-unit-content-management="false"
+        :on-link="linkPersonToCurrentUser"
+        @success="handlePersonLinked"
+      />
     </BaseContainer>
   </BasePage>
 </template>
@@ -82,20 +107,29 @@ export const ROUTE_NAME = ROUTE_DOMAIN_TASKS;
 </script>
 
 <script setup lang="ts">
+import { useQueryClient } from '@tanstack/vue-query';
 import { UNASSIGNED_ASSIGNEE } from '~/components/task/AssigneeFilter.vue';
 import domainQueryDefinitions from '~/composables/api/queryDefinitions/domains';
 import type { IVeoPersonInDomain } from '~/composables/api/queryDefinitions/domains';
-import { useQuery } from '~/composables/api/utils/query';
+import elementQueryDefinitions from '~/composables/api/queryDefinitions/elements';
+import { useMutation } from '~/composables/api/utils/mutation';
+import { useQuery, useQuerySync } from '~/composables/api/utils/query';
 import { TASKS_PAGE_SIZE, useDefaultTaskAssignees, useFetchTasks, useManualTaskFilter } from '~/composables/tasks';
 import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
+import { useVeoUser } from '~/composables/VeoUser';
 import type { IVeoTask } from '~/types/VeoTask';
-import { VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { type IVeoEntity, VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
 
 const { t, locale } = useI18n();
 const route = useRoute();
+const queryClient = useQueryClient();
+const { profile } = useVeoUser();
 
 const page = ref(0);
 const manualTaskFilter = useManualTaskFilter();
+const personAssignmentDialogOpen = ref(false);
+const linkedPersonId = ref<string>();
+const username = computed(() => profile.value?.username as string | undefined);
 
 const taskScope = computed(() => ({
   domainId: route.params.domain as string,
@@ -107,12 +141,14 @@ const {
   assigneeIds: defaultAssigneeIds,
   data: ownPersonsData,
   isError: defaultAssigneesError,
-  ready: defaultAssigneesReady
+  ready: defaultAssigneesReady,
+  refetch: refetchDefaultAssignees
 } = useDefaultTaskAssignees(taskScope);
 
 const allPersonsQueryParameters = computed(() => ({
   domainId: taskScope.value.domainId,
-  unitId: taskScope.value.unitId
+  unitId: taskScope.value.unitId,
+  size: '9999'
 }));
 const allPersonsQueryEnabled = computed(() => !!taskScope.value.domainId && !!taskScope.value.unitId);
 const {
@@ -122,6 +158,76 @@ const {
 } = useQuery(domainQueryDefinitions.queries.fetchPersonsInDomain, allPersonsQueryParameters, {
   enabled: allPersonsQueryEnabled
 });
+
+const unassignedPersonIds = computed(
+  () => new Set((allPersonsData.value?.items ?? []).filter((person) => !person.username?.trim()).map(({ id }) => id))
+);
+const isUnassignedPerson = (person: IVeoEntity) => unassignedPersonIds.value.has(person.id);
+
+const showPersonAssignmentHint = computed(
+  () =>
+    !!username.value &&
+    defaultAssigneesReady.value &&
+    !defaultAssigneesError.value &&
+    !allPersonsError.value &&
+    allPersonsData.value !== undefined &&
+    !linkedPersonId.value &&
+    defaultAssigneeIds.value?.length === 0
+);
+const personAssignmentButtons = computed(() => [
+  {
+    text: t('linkMyPerson'),
+    dataVeoTest: 'link-my-person',
+    onClick: () => (personAssignmentDialogOpen.value = true)
+  }
+]);
+
+const { mutateAsync: updatePerson } = useMutation(elementQueryDefinitions.mutations.updateObject);
+
+async function linkPersonToCurrentUser([person]: IVeoEntity[]) {
+  if (!person || !username.value) return;
+
+  const fullPerson = await useQuerySync(
+    elementQueryDefinitions.queries.fetch,
+    {
+      domain: taskScope.value.domainId,
+      endpoint: VeoElementTypePlurals.person,
+      id: person.id
+    },
+    queryClient
+  );
+
+  if (fullPerson.username?.trim()) throw new Error(t('personAlreadyAssigned'));
+
+  await updatePerson({
+    domain: taskScope.value.domainId,
+    endpoint: VeoElementTypePlurals.person,
+    id: person.id,
+    object: { ...fullPerson, username: username.value }
+  });
+}
+
+async function handlePersonLinked([personId]: string[]) {
+  if (!personId) return;
+
+  const linkedScope = { ...taskScope.value };
+  page.value = 0;
+  linkedPersonId.value = personId;
+  manualTaskFilter.value = { ...linkedScope, assigneeIds: [personId] };
+
+  const result = await refetchDefaultAssignees();
+  const linkedPersonWasLoaded = result.data?.items.some(({ id }) => id === personId);
+  const activeFilter = manualTaskFilter.value;
+  if (
+    linkedPersonWasLoaded &&
+    activeFilter?.domainId === linkedScope.domainId &&
+    activeFilter.unitId === linkedScope.unitId &&
+    activeFilter.assigneeIds?.length === 1 &&
+    activeFilter.assigneeIds[0] === personId
+  ) {
+    manualTaskFilter.value = undefined;
+  }
+}
 
 const persons = computed<IVeoPersonInDomain[]>(() => {
   const personsById = new Map<string, IVeoPersonInDomain>();
@@ -213,6 +319,7 @@ watch(
   taskScopeKey,
   () => {
     manualTaskFilter.value = undefined;
+    linkedPersonId.value = undefined;
     page.value = 0;
   },
   { flush: 'sync' }

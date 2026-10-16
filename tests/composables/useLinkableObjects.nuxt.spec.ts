@@ -1,6 +1,6 @@
 /*
  * verinice.veo web
- * Copyright (C) 2026 SerNet GmbH
+ * Copyright (C) 2026 Djordje Mirosavljevic
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License

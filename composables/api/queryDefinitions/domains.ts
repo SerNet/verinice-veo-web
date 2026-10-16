@@ -49,6 +49,7 @@ export interface IVeoPersonInDomain {
   status: string;
   type: string;
   subType: string;
+  username?: string;
   _self: string;
 }
 
