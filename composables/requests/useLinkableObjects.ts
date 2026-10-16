@@ -42,6 +42,7 @@ interface UseLinkableObjectsOptions {
 
   showCreateView: Ref<boolean>;
   fetchControlImplementationTargets?: Ref<boolean>;
+  itemFilter?: MaybeRef<((item: IVeoEntity) => boolean) | undefined>;
 }
 
 export function useLinkableObjects(options: UseLinkableObjectsOptions) {
@@ -57,7 +58,8 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
     editParents,
     preselectedItems,
     showCreateView,
-    fetchControlImplementationTargets
+    fetchControlImplementationTargets,
+    itemFilter
   } = options;
 
   const route = useRoute();
@@ -67,10 +69,11 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
   const resolveEndpoint = (type?: string) => VeoElementTypePlurals[type ?? ''] ?? '';
   // Object list
   const objectListEndpoint = computed(() => resolveEndpoint(filter.value.objectType));
+  const hasItemFilter = computed(() => !!unref(itemFilter));
 
   const objectsQueryParams = computed<any>(() => ({
-    size: pageSize.value,
-    page: page.value,
+    size: hasItemFilter.value ? DEFAULT_PAGE_SIZE : pageSize.value,
+    page: hasItemFilter.value ? DEFAULT_PAGE : page.value,
     sortBy: sortBy.value[0]?.key,
     sortOrder: sortBy.value[0]?.order,
     unit: unitId.value,
@@ -92,9 +95,12 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
     filters: options.searchFilters
   });
 
-  const objects = computed<IVeoPaginatedResponse<IVeoEntity[]>>(() =>
-    search.value?.length ? searchResults.value : rawObjects.value
-  );
+  const objects = computed<IVeoPaginatedResponse<IVeoEntity[]> | IVeoEntity[] | undefined>(() => {
+    const result = search.value?.length ? searchResults.value : rawObjects.value;
+    const filterItems = unref(itemFilter);
+    if (!result?.items || !filterItems) return result;
+    return result.items.filter(filterItems);
+  });
 
   // Children
   const parentEndpoint = computed(() => resolveEndpoint(parentObject?.value?.type));
@@ -205,19 +211,17 @@ export function useLinkableObjects(options: UseLinkableObjectsOptions) {
   const originalIds = computed(() => new Set(originalSelectedItems.value.map((i) => i.id)));
 
   const selectableObjects = computed(() => {
-    if (!objects.value?.items) {
-      return objects.value;
-    }
+    if (!objects.value) return objects.value;
+
+    const items = Array.isArray(objects.value) ? objects.value : objects.value.items;
 
     const disabledIds = new Set([...originalIds.value, ...(parentObject?.value?.id ? [parentObject.value.id] : [])]);
+    const selectableItems = items.map((obj) => ({
+      ...obj,
+      disabled: disabledIds.has(obj.id)
+    }));
 
-    return {
-      ...objects.value,
-      items: objects.value.items.map((obj) => ({
-        ...obj,
-        disabled: disabledIds.has(obj.id)
-      }))
-    };
+    return Array.isArray(objects.value) ? selectableItems : { ...objects.value, items: selectableItems };
   });
 
   // Loading
