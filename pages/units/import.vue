@@ -94,7 +94,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <v-window-item :value="2">
           <v-card class="my-3">
-            <v-alert type="info" variant="tonal" :title="t('hint.edit')" :text="t('explanation.edit')" />
+            <v-alert
+              class="veo-alert"
+              type="info"
+              variant="tonal"
+              :title="t('hint.edit')"
+              :text="t('explanation.edit')"
+            />
           </v-card>
 
           <UnitDetails v-model="unitDetails" />
@@ -102,7 +108,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
         <v-window-item :value="3">
           <v-card class="my-3">
-            <v-alert type="info" variant="tonal" :title="t('explanation.summary')" :text="t('hint.summary')" />
+            <v-alert
+              class="veo-alert"
+              type="info"
+              variant="tonal"
+              :title="t('explanation.summary')"
+              :text="t('hint.summary')"
+            />
           </v-card>
 
           <BaseCard border>

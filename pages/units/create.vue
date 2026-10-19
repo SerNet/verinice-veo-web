@@ -229,6 +229,7 @@ const Description: TInlineComponent = {
   template: `
     <v-card class="my-3">
       <v-alert
+        class="veo-alert"
         type="info"
         variant="tonal"
         :title="t(\`explanation.\${this.step}\`)"

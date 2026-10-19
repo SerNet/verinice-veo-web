@@ -91,7 +91,7 @@
           <p v-if="form.data.attributes.length === 0" class="text-body-1 font-italic">
             {{ t(`noProperties.${type}`) }}
           </p>
-          <v-alert v-if="duplicates.length > 0" type="error" class="mb-4 mt-6" start colored-border>
+          <v-alert v-if="duplicates.length > 0" type="error" class="veo-alert mb-4 mt-6" start colored-border>
             <span>{{ t('duplicateAttributes') }}:</span>
             <ul>
               <li v-for="duplicate of duplicates" :key="duplicate">

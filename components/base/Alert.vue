@@ -20,7 +20,7 @@
     :model-value="modelValue"
     v-bind="$attrs"
     :color="alertColor"
-    class="overflow-hidden bg-basepage"
+    class="veo-alert overflow-hidden bg-basepage"
     :class="{
       'veo-pseudo-hover': dismissOnClick,
       'cursor-pointer': dismissOnClick

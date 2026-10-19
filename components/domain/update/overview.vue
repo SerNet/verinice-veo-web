@@ -21,6 +21,7 @@
       <v-col>
         <v-alert
           v-if="!isLoadingDomainUpdates && domainUpdates?.length"
+          class="veo-alert"
           :icon="mdiArrowTopRightThin"
           :title="t('updateRecommendedTitle')"
           :text="t('updateRecommendedText')"
@@ -41,6 +42,7 @@
       <template v-if="!isLoadingDomainUpdates && !domainUpdates?.length">
         <v-col>
           <v-alert
+            class="veo-alert"
             :icon="mdiAlertCircleOutline"
             :title="t('noDomainUpdatesTitle')"
             :text="t('noDomainUpdatesText')"
@@ -60,6 +62,7 @@
           </v-col>
           <v-col cols="12">
             <v-alert
+              class="veo-alert"
               :icon="mdiAlertCircleOutline"
               :title="currentlyUpdatingDomainName"
               :text="t('conflictsText')"

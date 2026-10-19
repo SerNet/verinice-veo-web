@@ -28,7 +28,7 @@
         color="primary"
         :aria-label="t('loadingDomains')"
       />
-      <v-alert v-else-if="isDomainInformationUnavailable" class="mt-4" type="error" variant="tonal">
+      <v-alert v-else-if="isDomainInformationUnavailable" class="veo-alert mt-4" type="error" variant="tonal">
         {{ t('loadDomainsFailed') }}
       </v-alert>
       <ul v-else-if="isSingleItem" class="mt-4 mb-0 pl-8" data-veo-test="object-delete-associated-domains">

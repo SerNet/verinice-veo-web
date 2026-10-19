@@ -45,7 +45,7 @@
           no-close-button
           :buttons="importButtons()"
         />
-        <v-alert v-if="invalidCount > 0 && !confirmImport" class="mb-4" :type="'error'" variant="tonal">
+        <v-alert v-if="invalidCount > 0 && !confirmImport" class="veo-alert mb-4" :type="'error'" variant="tonal">
           <strong v-if="invalidCount > 0">
             {{ t('importObjects.invalidBeforeImport', { invalid: invalidCount, total: items.length }) }}
           </strong>
@@ -57,7 +57,7 @@
       <div v-if="wizardStep === CsvImportWizardStep.MAPPING" class="csv-import-mapping-content">
         <v-alert
           v-if="unmappedRequiredFields.length > 0 && globalSubType && selectedStatus"
-          class="mb-4"
+          class="veo-alert mb-4"
           type="error"
           variant="tonal"
         >
