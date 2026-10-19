@@ -527,12 +527,22 @@ function runSearch() {
   }
 }
 
+function hasPendingFreeText() {
+  const lastSearchPart = search.value.at(-1);
+  return (
+    !!searchText.value.trim() &&
+    !!lastSearchPart?.operator &&
+    !lastSearchPart.term &&
+    !getSearchFilterOptions(lastSearchPart.searchFilter).length
+  );
+}
+
 function handleEnter(event: KeyboardEvent) {
-  if (!isSearchComplete.value) return;
+  if (!isSearchComplete.value && !hasPendingFreeText()) return;
 
   event.preventDefault();
   event.stopPropagation();
-  clearSearchInput();
+  if (isSearchComplete.value) clearSearchInput();
   runSearch();
 }
 
@@ -573,6 +583,11 @@ function editSearchPart(index: number, part: 'filter' | 'operator' | 'term') {
   });
 }
 
+function focusInputAndCloseMenu() {
+  menuOpen.value = false;
+  getSearchInputElement()?.focus();
+}
+
 function openMenuOnNextTick() {
   nextTick(() => (menuOpen.value = true));
 }
@@ -590,7 +605,7 @@ watch(select, () => {
       oldSearch,
       newValue: newValue.optionValue
     });
-    openMenuOnNextTick();
+    nextTick(focusInputAndCloseMenu);
     return;
   }
 
@@ -640,7 +655,7 @@ watch(select, () => {
 
 watch(selectionItems, (items) => {
   const lastSearchPart = search.value.at(-1);
-  if (((lastSearchPart?.operator && !lastSearchPart.term) || lastSearchPart?.term) && items.length) {
+  if (lastSearchPart?.operator && !lastSearchPart.term && items.length) {
     menuOpen.value = true;
   }
 });
