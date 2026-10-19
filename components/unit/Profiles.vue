@@ -46,7 +46,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
         </v-col>
 
         <template v-for="profile in profiles" :key="profile.id">
-          <BaseListItem :item="profile" :data-veo-test="`profile-${profile.productId}`">
+          <BaseListItem :item="profile" :data-veo-test="`profile-${profile.productId}`" hasLabel>
             <template #center-aside="{ item: p }">
               <LanguageChip :lang="p.language" />
             </template>
