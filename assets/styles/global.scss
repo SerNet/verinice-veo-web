@@ -54,6 +54,13 @@ a:not([class^='v-']) {
   border: 1px solid rgb(var(--v-theme-surface-light)) !important;
 }
 
+.veo-alert:is(.v-alert--variant-tonal, .v-alert--variant-outlined) {
+  .v-alert__content,
+  .v-alert__prepend {
+    color: rgb(var(--v-theme-on-basepage));
+  }
+}
+
 .veo-generated-fs-group-border {
   border: 1px dashed color.adjust(variables.$background-primary, $lightness: 7%) !important;
   border-radius: 12px;
