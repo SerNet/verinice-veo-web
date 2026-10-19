@@ -50,6 +50,8 @@
 </template>
 
 <script setup lang="ts">
+import { VBtn } from 'vuetify/components/VBtn';
+
 import { useRequirementImplementationQuery } from '~/composables/requirementImplementation';
 import { useRequirementImplementationList } from '~/composables/requirementImplementations';
 import type { IVeoEntity } from '~/types/VeoTypes';
@@ -126,13 +128,15 @@ const headers: ComputedRef<TableHeader[]> = computed(() => [
     order: 30,
     render: ({ item }: any) => {
       return h(
-        'button',
+        VBtn,
         {
-          class: 'font-weight-bold',
+          variant: 'text',
+          density: 'compact',
+          class: 'font-weight-bold text-none px-0',
           style: { textAlign: 'start' },
           'aria-label': t('edit', [item.control?.name])
         },
-        item.control?.name
+        () => item.control?.name
       );
     }
   },
