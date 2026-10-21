@@ -82,12 +82,7 @@
             <v-col class="text-center my-4">
               <em>{{ t('footer') }}</em>
               &nbsp;&nbsp;
-              <nuxt-link
-                class="text-decoration-none text-primary"
-                rel="noopener noreferrer"
-                target="_blank"
-                :to="links.portal[locale] ?? links.portal.en"
-              >
+              <nuxt-link rel="noopener noreferrer" target="_blank" :to="links.portal[locale] ?? links.portal.en">
                 <strong>{{ t('portal') }}!</strong>
               </nuxt-link>
             </v-col>
@@ -120,7 +115,6 @@
                   <v-col cols="12">
                     <i18n-t keypath="firstSteps.documentation" tag="span" scope="global">
                       <nuxt-link
-                        class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
                         :to="context.$config.public.documentationUrl"
@@ -145,12 +139,7 @@
                 <v-card-text>
                   <v-col cols="12">
                     <i18n-t keypath="firstSteps.forum" tag="span" scope="global">
-                      <nuxt-link
-                        class="text-decoration-none text-primary"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        :to="links.forum"
-                      >
+                      <nuxt-link rel="noopener noreferrer" target="_blank" :to="links.forum">
                         <strong>{{ t('injector.forum') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -162,12 +151,7 @@
                 <v-card-text>
                   <v-col cols="12">
                     <i18n-t keypath="firstSteps.channel" tag="span" scope="global">
-                      <nuxt-link
-                        class="text-decoration-none text-primary"
-                        rel="noopener noreferrer"
-                        target="_blank"
-                        :to="links.channel"
-                      >
+                      <nuxt-link rel="noopener noreferrer" target="_blank" :to="links.channel">
                         <strong>{{ t('injector.channel') }}</strong>
                       </nuxt-link>
                     </i18n-t>
@@ -180,7 +164,6 @@
                   <v-col cols="12">
                     <i18n-t keypath="firstSteps.webinar" tag="span" scope="global">
                       <nuxt-link
-                        class="text-decoration-none text-primary"
                         rel="noopener noreferrer"
                         target="_blank"
                         :to="locale === 'de' ? links.webinar.de : links.webinar.en"

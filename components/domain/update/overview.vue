@@ -203,7 +203,7 @@ function buildListOfConflicts(data: ConflictedElementsByUnit[], domainId: string
         value: counter++,
         props: {
           to: `/${group.unit.id}/domains/${domainId}/${VeoElementTypePlurals[element.type]}/${element.subType}/${element.id}`,
-          class: 'text-primary text-decoration-underline pointer-cursor',
+          class: 'text-decoration-underline pointer-cursor',
           target: '_blank',
           rel: 'noopener noreferrer'
         }

@@ -21,7 +21,7 @@
       <tbody>
         <tr v-for="(revision, key) in revisions || []" :key="key" class="text-no-wrap overflow-x-hidden fill-width">
           <td>
-            <nuxt-link :to="createUrl(revision)" class="text-body-2 text-color">
+            <nuxt-link :to="createUrl(revision)" class="text-body-2 text-primary">
               {{ revision.content.designator }}
               <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>

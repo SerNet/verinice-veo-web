@@ -46,7 +46,7 @@
                 v-for="(subtypeGroup, index) in createdObjectsBySubtype"
                 :key="index"
                 role="menuitem"
-                class="catalog-items-applied text-primary text-decoration-underline"
+                class="catalog-items-applied text-decoration-underline"
                 tabindex="0"
                 :to="generateRoute({ item: subtypeGroup })"
               >

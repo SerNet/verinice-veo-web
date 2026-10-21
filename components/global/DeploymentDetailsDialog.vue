@@ -100,9 +100,8 @@
             <span>{{ t('contributors') }}:</span>&nbsp;
 
             <span v-for="(link, key, index) in links" :key="index">
-              <a class="text-decoration-none text-primary" :href="link" rel="noopener noreferrer" target="_blank">
-                veo-{{ key }}&nbsp;&nbsp;
-              </a>
+              <a :href="link" rel="noopener noreferrer" target="_blank">veo-{{ key }}</a
+              >&nbsp;&nbsp;
             </span>
           </div>
         </BaseCard>

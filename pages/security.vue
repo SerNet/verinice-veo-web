@@ -79,9 +79,7 @@
 
                 <ul class="mx-4">
                   <li v-for="(link, key, index) in links" :key="index">
-                    <a class="text-decoration-none text-primary" :href="link" rel="noopener noreferrer" target="_blank"
-                      >SerNet/verinice-veo-{{ key }}
-                    </a>
+                    <a :href="link" rel="noopener noreferrer" target="_blank">SerNet/verinice-veo-{{ key }}</a>
                   </li>
                 </ul>
               </v-card-text>
@@ -141,8 +139,7 @@
                 <v-list-item>
                   <template #prepend>
                     <v-icon :icon="mdiEmail" />
-                    <a class="text-decoration-none text-red" :href="mail">Kontakt</a>&nbsp; ( Bevorzugte Sprachen: DE,
-                    EN )
+                    <a :href="mail">Kontakt</a>&nbsp; ( Bevorzugte Sprachen: DE, EN )
                   </template>
                 </v-list-item>
               </v-list>
@@ -208,9 +205,7 @@
 
                 <ul class="mx-4">
                   <li v-for="(link, key, index) in links" :key="index">
-                    <a class="text-decoration-none text-primary" :href="link" rel="noopener noreferrer" target="_blank"
-                      >SerNet/verinice-veo-{{ key }}
-                    </a>
+                    <a :href="link" rel="noopener noreferrer" target="_blank">SerNet/verinice-veo-{{ key }}</a>
                   </li>
                 </ul>
               </v-card-text>
@@ -267,8 +262,7 @@
                 <v-list-item>
                   <template #prepend>
                     <v-icon :icon="mdiEmail" />
-                    <a class="text-decoration-none text-red" :href="mail">Contact</a>&nbsp; ( Preferred languages: DE,
-                    EN )
+                    <a :href="mail">Contact</a>&nbsp; ( Preferred languages: DE, EN )
                   </template>
                 </v-list-item>
               </v-list>

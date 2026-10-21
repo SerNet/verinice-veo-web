@@ -20,7 +20,7 @@
     <template #default>
       <v-row v-for="(chart, index) of chartData" :key="index" class="align-center" dense>
         <v-col cols="12" sm="12" md="5" lg="7" xl="4" class="body-1 text-no-wrap">
-          <nuxt-link :to="objectOveriewLink(index)" class="text-decoration-none text-color">
+          <nuxt-link :to="objectOveriewLink(index)">
             {{ chart.labels[0] }}
           </nuxt-link>
         </v-col>

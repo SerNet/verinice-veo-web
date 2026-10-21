@@ -17,7 +17,7 @@
 -->
 <template>
   <div class="wrapper">
-    <nuxt-link :to="logoLink" target="_blank">
+    <nuxt-link :to="logoLink" class="text-decoration-none" target="_blank">
       <div v-if="onprem">
         <LayoutAppLogoOnPrem />
       </div>

@@ -79,7 +79,7 @@
               keypath="formSchemaTranslations.formSchemaTranslationNotFoundSearchAll"
               scope="global"
             >
-              <a class="cursor-pointer" @click.prevent="formSchemaTranslationsOnly = false">
+              <a href="#" @click.prevent="formSchemaTranslationsOnly = false">
                 {{ t('click') }}
               </a>
             </i18n-t>

@@ -18,14 +18,12 @@
 <template>
   <div>
     <h2 class="text-h2 mt-2 mb-1 d-flex align-center">
-      <nuxt-link
-        v-if="data?.mitigation"
-        :to="containerHref"
-        class="headline-link"
-        @click.capture.prevent="showNavigationDialog"
-      >
-        {{ upperFirst(t('Container').toString()) }}&nbsp;&gt;&nbsp;
-      </nuxt-link>
+      <template v-if="data?.mitigation">
+        <nuxt-link :to="containerHref" @click.capture.prevent="showNavigationDialog">
+          {{ upperFirst(t('Container').toString()) }}
+        </nuxt-link>
+        <span>&nbsp;&gt;&nbsp;</span>
+      </template>
 
       {{ upperFirst(t('mitigationSection').toString()) }}
 
@@ -355,13 +353,3 @@ export default defineComponent({
 </script>
 
 <i18n src="~/locales/base/components/risk-risk-mitigation-section.json"></i18n>
-<style scoped>
-.headline-link {
-  text-decoration: none;
-  cursor: pointer; /* Ensures the cursor changes to a pointer on hover */
-}
-
-.headline-link:hover {
-  text-decoration: underline;
-}
-</style>
