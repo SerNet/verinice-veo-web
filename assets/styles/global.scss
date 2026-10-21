@@ -37,9 +37,28 @@ main {
   max-height: 100%;
 }
 
-// Only color non-vuetify links,as we would overwrite the color of buttons, etc otherwise
-a:not([class^='v-']) {
-  color: variables.$primary;
+// Style regular text links accessibility friendly
+@layer vuetify-core {
+  // Same order as declared by Vuetify, in case this file is loaded first
+  @layer reset, base;
+
+  @layer base {
+    :where(a:not([class^='v-'], [class*=' v-'])) {
+      color: inherit;
+      text-decoration: underline;
+      text-underline-offset: 0.15em;
+    }
+
+    :where(a:not([class^='v-'], [class*=' v-']):hover) {
+      text-decoration-thickness: 2px;
+    }
+
+    :where(a:not([class^='v-'], [class*=' v-']):focus-visible) {
+      outline: 2px solid currentColor;
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+  }
 }
 
 .fill-width {
