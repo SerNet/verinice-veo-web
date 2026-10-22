@@ -16,11 +16,11 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <div>
-    <p class="text-body-1">
+  <div class="d-flex flex-column catalog-container">
+    <p v-if="$slots.header" class="text-body-1">
       <slot name="header"></slot>
     </p>
-    <BaseCard>
+    <BaseCard class="flex-grow-1 catalog-card">
       <BaseTable
         v-model="selectedItems"
         v-model:page="page"
@@ -29,9 +29,10 @@
         :additional-headers="headers"
         :loading="props.isLoading"
         show-select
+        class="veo-body-scroll-table"
       />
     </BaseCard>
-    <v-row dense class="my-4">
+    <v-row dense class="flex-grow-0 my-2">
       <v-spacer />
       <v-col cols="auto">
         <v-btn
@@ -205,3 +206,10 @@ const canManageUnitContent = computed(() =>
 </script>
 
 <i18n src="~/locales/base/components/catalog-default-catalog.json"></i18n>
+
+<style lang="scss" scoped>
+.catalog-container,
+.catalog-card {
+  min-height: 0;
+}
+</style>

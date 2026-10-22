@@ -16,15 +16,21 @@
    - along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <template>
-  <BasePage data-component-name="catalog-page" :title="t('breadcrumbs.catalog')">
+  <BasePage
+    data-component-name="catalog-page"
+    :title="t('breadcrumbs.catalog')"
+    height="100%"
+    content-class="d-flex flex-column overflow-hidden"
+  >
     <template #default>
-      <v-spacer class="mt-8" />
-      <SearchBar v-model:search="search" :filters="searchFilters" />
+      <div class="mt-8">
+        <SearchBar v-model:search="search" :filters="searchFilters" />
+      </div>
       <CatalogDefaultCatalog
         v-model="selectedItems"
         v-model:page="page"
         v-model:sort-by="sortBy"
-        class="mt-2 mb-4"
+        class="flex-grow-1 mt-2"
         :catalog-items="catalogItems"
         :is-loading="catalogItemsAreFetching || isLoadingSearchResults"
         :is-applying-items="isPending"
