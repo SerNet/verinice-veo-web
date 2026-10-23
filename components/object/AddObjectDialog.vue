@@ -173,7 +173,6 @@ const props = withDefaults(
     selectableItemFilter?: (object: IVeoEntity) => boolean;
     allowCreateAndOpen?: boolean;
     createObjectDefaults?: Partial<IVeoEntity>;
-    requireUnitContentManagement?: boolean;
   }>(),
   {
     objectType: undefined,
@@ -191,8 +190,7 @@ const props = withDefaults(
     fetchControlImplementationTargets: false,
     selectableItemFilter: undefined,
     allowCreateAndOpen: true,
-    createObjectDefaults: () => ({}),
-    requireUnitContentManagement: true
+    createObjectDefaults: () => ({})
   }
 );
 
@@ -376,9 +374,7 @@ const hasUnsavedChanges = computed(() =>
   : itemsToBeLinked.value.length > 0
 );
 
-const canModifyObjects = computed(
-  () => !props.requireUnitContentManagement || ability.value.can('manage', subject('units', { id: route.params.unit }))
-);
+const canManageUnitContent = computed(() => ability.value.can('manage', subject('units', { id: route.params.unit })));
 
 const requiredRule = (v: string) => !!v || t('fieldRequired');
 
@@ -407,7 +403,7 @@ const resetDialogState = () => {
 };
 
 const handleSelectObjects = async () => {
-  if (!canModifyObjects.value || !hasValidSelection.value) return;
+  if (!canManageUnitContent.value || !hasValidSelection.value) return;
 
   isSaving.value = true;
   try {
@@ -441,7 +437,7 @@ const handleCreateAndEdit = () => performCreateObject(true);
 const createObjectAndClose = () => performCreateObject(false);
 
 const performCreateObject = async (openEditor: boolean) => {
-  if (!canModifyObjects.value || !isCreateFormValid.value) return;
+  if (!canManageUnitContent.value || !isCreateFormValid.value) return;
 
   isSaving.value = true;
   const endpoint = VeoElementTypePlurals[createFormObjectType.value];
@@ -541,7 +537,7 @@ const footerActions = computed(() => {
                 {
                   label: t('createAndOpen'),
                   variant: 'outlined',
-                  disabled: !canModifyObjects.value || !isCreateFormValid.value,
+                  disabled: !canManageUnitContent.value || !isCreateFormValid.value,
                   action: handleCreateAndEdit
                 }
               ]
@@ -549,7 +545,7 @@ const footerActions = computed(() => {
             {
               label: t('createObjectButton', { type: translatedType.value.singular }),
               variant: 'flat',
-              disabled: !canModifyObjects.value || !isCreateFormValid.value,
+              disabled: !canManageUnitContent.value || !isCreateFormValid.value,
               action: handleCreateButtonClick
             }
           ]
@@ -566,13 +562,13 @@ const footerActions = computed(() => {
       props.allowCreate && {
         label: t('createObjectButton', { type: translatedType.value.singular }),
         variant: 'text',
-        disabled: !canModifyObjects.value || itemsToBeLinked.value.length > 0 || isSaving.value,
+        disabled: !canManageUnitContent.value || itemsToBeLinked.value.length > 0 || isSaving.value,
         action: handleCreateButtonClick
       },
       props.allowSelect && {
         label: selectButtonLabel.value,
         variant: 'flat',
-        disabled: !canModifyObjects.value || !hasUnsavedChanges.value,
+        disabled: !canManageUnitContent.value || !hasUnsavedChanges.value,
         action: handleSelectObjects
       }
     ].filter(Boolean)

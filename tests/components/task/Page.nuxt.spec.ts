@@ -127,7 +127,6 @@ const ObjectDialogStub = defineComponent({
     modelValue: Boolean,
     objectType: String,
     onLink: Function,
-    requireUnitContentManagement: Boolean,
     selectableItemFilter: Function
   },
   emits: ['success', 'update:modelValue'],
@@ -252,8 +251,7 @@ describe('tasks page person assignment', () => {
       allowCreateAndOpen: false,
       createObjectDefaults: { username: 'petra' },
       domainId: 'domain-id',
-      objectType: 'person',
-      requireUnitContentManagement: false
+      objectType: 'person'
     });
     expect(isSelectable({ id: 'person-unassigned' } as IVeoEntity)).toBe(true);
     expect(isSelectable({ id: 'person-assigned' } as IVeoEntity)).toBe(false);

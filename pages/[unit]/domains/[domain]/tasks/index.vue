@@ -93,7 +93,6 @@
         :selectable-item-filter="isUnassignedPerson"
         :allow-create-and-open="false"
         :create-object-defaults="{ username }"
-        :require-unit-content-management="false"
         :on-link="linkPersonToCurrentUser"
         @success="handlePersonLinked"
       />

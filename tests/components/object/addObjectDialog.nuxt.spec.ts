@@ -21,8 +21,7 @@ import { nextTick } from 'vue';
 import AddObjectDialog from '~/components/object/AddObjectDialog.vue';
 import { defineViewport } from '~/tests/components/helpers';
 
-const { canManageMock, createObjectMock, queryClient, useQuerySyncMock } = vi.hoisted(() => ({
-  canManageMock: vi.fn(),
+const { createObjectMock, queryClient, useQuerySyncMock } = vi.hoisted(() => ({
   createObjectMock: vi.fn(),
   queryClient: { invalidateQueries: vi.fn() },
   useQuerySyncMock: vi.fn()
@@ -99,7 +98,7 @@ vi.mock('~/composables/VeoPermissions', async () => {
   const { ref } = await import('vue');
   return {
     useVeoPermissions: () => ({
-      ability: ref({ can: canManageMock }),
+      ability: ref({ can: () => true }),
       subject: (_type: string, value: unknown) => value
     })
   };
@@ -119,7 +118,6 @@ beforeAll(() => {
 });
 
 beforeEach(() => {
-  canManageMock.mockReset().mockReturnValue(true);
   createObjectMock.mockReset().mockResolvedValue({ resourceId: 'person-1' });
   useQuerySyncMock.mockReset().mockResolvedValue({ id: 'person-1', type: 'person' });
   queryClient.invalidateQueries.mockReset();
@@ -130,8 +128,7 @@ afterEach(() => {
 });
 
 describe('AddObjectDialog assignment options', () => {
-  it('adds create object defaults and allows the self-assignment workflow without unit management rights', async () => {
-    canManageMock.mockReturnValue(false);
+  it('adds create object defaults to the create payload', async () => {
     const wrapper = await mountSuspended(AddObjectDialog, {
       attachTo: document.body,
       props: {
@@ -140,8 +137,7 @@ describe('AddObjectDialog assignment options', () => {
         objectType: 'person',
         initialTab: 'create',
         allowCreateAndOpen: false,
-        createObjectDefaults: { username: 'petra' },
-        requireUnitContentManagement: false
+        createObjectDefaults: { username: 'petra' }
       }
     });
 
