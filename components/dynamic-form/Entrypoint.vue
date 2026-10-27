@@ -192,8 +192,7 @@ export default defineComponent({
               ],
               groupedNamespaces: Object.keys(props.objectSchema.properties?.customAspects?.properties || {}).map(
                 (key) => ({
-                  namespace: `#/properties/customAspects/properties/${key}`,
-                  label: key
+                  namespace: `#/properties/customAspects/properties/${key}`
                 })
               ),
               generateControlFunction: generateFormSchemaControl,
