@@ -21,7 +21,7 @@
       <tbody>
         <tr v-for="(revision, key) in revisions || []" :key="key" class="text-no-wrap overflow-x-hidden fill-width">
           <td>
-            <nuxt-link :to="createUrl(revision)" class="text-body-2 text-primary">
+            <nuxt-link :to="createUrl(revision)">
               {{ revision.content.designator }}
               <b>{{ revision.content.abbreviation }} {{ revision.content.name }}</b>
             </nuxt-link>
@@ -58,23 +58,12 @@ const createUrl = (revision: IVeoLegacyObjectHistoryEntry) => {
 <i18n src="~/locales/base/components/widget-my-latest-revisions.json"></i18n>
 
 <style lang="scss" scoped>
-a {
-  text-decoration: none;
-}
 tbody {
-  tr:hover {
-    background-color: transparent !important;
-  }
-
   td {
     max-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-}
-
-.v-data-table {
-  background: transparent;
 }
 </style>
