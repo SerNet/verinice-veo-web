@@ -369,7 +369,7 @@
         variant="plain"
         color="primary"
         :loading="view.isLoading"
-        :disabled="view.isLoading || !canManageUnitContent || !costIsValid"
+        :disabled="view.isLoading || !canManageUnitContent || !costIsValid || !formIsDirty"
         @click="
           () =>
             void (

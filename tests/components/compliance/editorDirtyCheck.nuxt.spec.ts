@@ -105,6 +105,15 @@ async function editDescription(value: string) {
 }
 
 describe('ComplianceEditor dirty check', () => {
+  it('enables save only when the form was changed', async () => {
+    await mountEditor();
+    expect(buttonByText('global.button.save').disabled).toBe(true);
+
+    await editDescription('changed');
+
+    expect(buttonByText('global.button.save').disabled).toBe(false);
+  });
+
   it('closes directly via cancel when nothing was changed', async () => {
     const onUpdate = await mountEditor();
     await click(buttonByText('global.button.cancel'));
