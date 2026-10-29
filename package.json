@@ -79,7 +79,7 @@
     "@types/lodash": "4.17.27",
     "@types/node": "26.6.5",
     "@types/prismjs": "1.26.6",
-    "@typescript-eslint/eslint-plugin": "8.71.2",
+    "@typescript-eslint/eslint-plugin": "8.72.1",
     "@vitejs/plugin-vue": "6.0.10",
     "@vue/test-utils": "2.5.1",
     "cypress": "16.2.0",
@@ -96,7 +96,7 @@
     "nuxt": "4.6.2",
     "prettier": "3.9.10",
     "sass": "1.106.1",
-    "typescript-eslint": "8.71.2",
+    "typescript-eslint": "8.72.1",
     "vite-tsconfig-paths": "6.1.1",
     "vitest": "5.0.5",
     "vue-tsc": "3.3.11"
