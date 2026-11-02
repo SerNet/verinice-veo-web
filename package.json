@@ -70,7 +70,7 @@
     "@eslint/js": "10.0.1",
     "@nuxt/eslint-config": "1.17.0",
     "@nuxt/fonts": "1.0.1",
-    "@nuxt/kit": "4.6.2",
+    "@nuxt/kit": "4.6.3",
     "@nuxt/test-utils": "4.3.4",
     "@rollup/plugin-yaml": "5.0.1",
     "@types/hash-sum": "1.0.2",
