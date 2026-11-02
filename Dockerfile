@@ -40,7 +40,7 @@ RUN npm run generate && node externalize-scripts.mjs
 RUN find .output/public -type f \( -name "*.js" -o -name "*.css" -o -name "*.json" -o -name "*.svg" -o -name "*.html" \) -size +10240c \
     -exec gzip -9 -k {} \;
 
-FROM nginx:1.31@sha256:600f7cd45e27aa13e9304c834ab7c1b0ff39df85ee1dcc5087955455d77bc83b AS release
+FROM nginx:1.31@sha256:5ab5b0b01097420873a3f3330f44248e34a3c2a3e8d5ee30658aeae8cb7435da AS release
 
 COPY --from=builder /usr/src/app/.output/public /usr/src/app
 RUN chown -R 0 /usr/src/app && chmod -R g+rwX /usr/src/app
