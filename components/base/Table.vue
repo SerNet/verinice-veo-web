@@ -28,7 +28,7 @@
 
 import { cloneDeep, omit } from 'lodash';
 import type { Slot, VNode, VNodeArrayChildren } from 'vue';
-import { VCheckbox, VIcon, VProgressLinear, VTooltip } from 'vuetify/components';
+import { VCheckbox, VIcon, VProgressLinear, VRadio, VTooltip } from 'vuetify/components';
 import { VDataTable, VDataTableServer } from 'vuetify/components/VDataTable';
 import type { VDataTableHeaders } from 'vuetify/components/VDataTable';
 
@@ -123,6 +123,12 @@ const props = withDefaults(
      * @default false
      */
     showSelect?: boolean;
+    /**
+     * Uses radio controls and allows exactly one selected row.
+     * Only applies when showSelect is enabled.
+     * @default false
+     */
+    singleSelect?: boolean;
   }>(),
   {
     items: () => [],
@@ -135,7 +141,8 @@ const props = withDefaults(
     enableClick: false,
     enableLinks: false,
     noDataText: undefined,
-    showSelect: false
+    showSelect: false,
+    singleSelect: false
   }
 );
 
@@ -228,6 +235,10 @@ const toggleSelection = (context: any) => {
   }
   const newModelValue: any[] = cloneDeep(internalModelValue.value);
   const existingIndex = newModelValue.findIndex((existingId) => existingId === context.internalItem.value);
+  if (props.singleSelect) {
+    if (existingIndex === -1) internalModelValue.value = [context.internalItem.value];
+    return;
+  }
   if (existingIndex !== -1) {
     newModelValue.splice(existingIndex, 1);
   } else {
@@ -251,21 +262,25 @@ const presetHeaders: { [key: string]: TableHeader } = {
     render: (context) => {
       const isSelected = internalModelValue.value.includes(context.internalItem.value);
       const itemValue = context.internalItem.value;
+      const selectionControlId = `${props.singleSelect ? 'radio' : 'checkbox'}-${itemValue}`;
+      const selectionControlLabel = props.singleSelect || !isSelected ? t('selectRow') : t('deselectRow');
 
-      const checkbox = document.querySelector(`#checkbox-${itemValue}`);
-      if (checkbox) {
+      const selectionControl = document.querySelector(`#${selectionControlId}`);
+      if (selectionControl) {
         const mainCheckBox = document.querySelector('table thead input[type="checkbox"][id^="input-"]');
-        checkbox.setAttribute('aria-label', isSelected ? t('deselectRow') : t('selectRow'));
+        selectionControl.setAttribute('aria-label', selectionControlLabel);
         mainCheckBox?.setAttribute('aria-label', isSelected ? t('deselect') : t('selectAll'));
       }
 
-      return h(VCheckbox, {
-        id: `checkbox-${itemValue}`,
+      return h(props.singleSelect ? VRadio : VCheckbox, {
+        id: selectionControlId,
+        name: props.singleSelect ? `table-selection-${vm?.uid}` : undefined,
         modelValue: isSelected,
         color: isSelected ? 'primary' : undefined,
         density: hasCompactTable.value ? 'compact' : 'default',
         disabled: context.internalItem.raw.disabled,
         hideDetails: true,
+        'aria-label': selectionControlLabel,
         'aria-checked': isSelected ? 'true' : 'false',
         'onUpdate:model-value': () => toggleSelection(context),
         style:
@@ -562,7 +577,7 @@ const sharedProps = computed(() => {
     }
 
     function isCheckboxClick(event: PointerEvent) {
-      return (event.target as Element)?.closest('.v-checkbox');
+      return (event.target as Element)?.closest('.v-selection-control');
     }
 
     function handleRowEvent(event: PointerEvent, context: any) {
@@ -642,6 +657,8 @@ const render = () => {
 
   if (props.showSelect) {
     dataTableSlots['header.data-table-select'] = () => {
+      if (props.singleSelect) return null;
+
       // Get selectable items (non-disabled) from current page
       const data = isPaginatedResponse(props.items) ? props.items.items : props.items;
       const selectableIds = (data || []).filter((item) => !item.disabled).map((item) => item.id);

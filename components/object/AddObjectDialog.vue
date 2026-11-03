@@ -47,12 +47,13 @@
             v-model="selectedObjects"
             v-model:page="currentPage"
             v-model:sort-by="tableSorting"
-            :show-select="multiSelect"
+            :show-select="allowSelect"
+            :single-select="!multiSelect"
+            :enable-links="false"
             :default-headers="TABLE_HEADERS"
             :items="selectableObjects"
             :loading="isLoadingObjects"
             :no-data-text="noDataTextWithLink"
-            @click:row="handleRowClick"
           />
         </BaseCard>
       </template>
@@ -380,12 +381,6 @@ const requiredRule = (v: string) => !!v || t('fieldRequired');
 
 const updateObjectFilter = (updatedFilter: Record<string, any>) => {
   objectFilter.value = { ...updatedFilter };
-};
-
-const handleRowClick = (_event: Event, row: { item: IVeoEntity & { disabled?: boolean } }) => {
-  if (!props.multiSelect && !row.item.disabled) {
-    selectedObjects.value = [row.item];
-  }
 };
 
 const handleDialogClose = (value: boolean) => {
