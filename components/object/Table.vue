@@ -22,6 +22,7 @@
     :additional-headers="mergedAdditionalHeaders"
     :default-headers="unmatchedDefaultHeaders"
     :show-select="showSelect"
+    :single-select="singleSelect"
     :enable-links="enableLinks"
     @update:model-value="emit('update:model-value', $event)"
     @update:items-per-page="emit('update:items-per-page', $event)"
@@ -92,6 +93,7 @@ const props = withDefaults(
      */
     noDataText?: () => any;
     showSelect?: boolean;
+    singleSelect?: boolean;
   }>(),
   {
     items: () => [],
@@ -104,7 +106,8 @@ const props = withDefaults(
     enableClick: false,
     enableLinks: true,
     noDataText: () => '',
-    showSelect: false
+    showSelect: false,
+    singleSelect: false
   }
 );
 

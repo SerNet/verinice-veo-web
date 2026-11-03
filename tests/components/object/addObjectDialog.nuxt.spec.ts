@@ -16,10 +16,20 @@
  */
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { nextTick } from 'vue';
+import { defineComponent, nextTick } from 'vue';
 
 import AddObjectDialog from '~/components/object/AddObjectDialog.vue';
 import { defineViewport } from '~/tests/components/helpers';
+
+const ObjectTableStub = defineComponent({
+  name: 'ObjectTable',
+  props: {
+    enableLinks: Boolean,
+    showSelect: Boolean,
+    singleSelect: Boolean
+  },
+  template: '<div />'
+});
 
 const { createObjectMock, queryClient, useQuerySyncMock } = vi.hoisted(() => ({
   createObjectMock: vi.fn(),
@@ -128,6 +138,53 @@ afterEach(() => {
 });
 
 describe('AddObjectDialog assignment options', () => {
+  it('uses radio selection without object links when only one object can be selected', async () => {
+    const wrapper = await mountSuspended(AddObjectDialog, {
+      props: {
+        modelValue: true,
+        domainId: 'domain-1',
+        objectType: 'person'
+      },
+      global: {
+        stubs: {
+          ObjectFilterBar: true,
+          ObjectTable: ObjectTableStub,
+          SearchBar: true
+        }
+      }
+    });
+
+    expect(wrapper.getComponent({ name: 'ObjectTable' }).props()).toMatchObject({
+      enableLinks: false,
+      showSelect: true,
+      singleSelect: true
+    });
+  });
+
+  it('keeps checkbox selection when multiple objects can be selected', async () => {
+    const wrapper = await mountSuspended(AddObjectDialog, {
+      props: {
+        modelValue: true,
+        domainId: 'domain-1',
+        objectType: 'person',
+        multiSelect: true
+      },
+      global: {
+        stubs: {
+          ObjectFilterBar: true,
+          ObjectTable: ObjectTableStub,
+          SearchBar: true
+        }
+      }
+    });
+
+    expect(wrapper.getComponent({ name: 'ObjectTable' }).props()).toMatchObject({
+      enableLinks: false,
+      showSelect: true,
+      singleSelect: false
+    });
+  });
+
   it('adds create object defaults to the create payload', async () => {
     const wrapper = await mountSuspended(AddObjectDialog, {
       attachTo: document.body,
