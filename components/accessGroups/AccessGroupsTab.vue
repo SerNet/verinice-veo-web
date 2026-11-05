@@ -40,7 +40,7 @@
     >
       <template #actions="{ item }">
         <div class="d-flex justify-end">
-          <v-tooltip location="bottom">
+          <v-tooltip location="bottom" :aria-label="t('edit')">
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
@@ -55,7 +55,7 @@
             {{ t('edit') }}
           </v-tooltip>
 
-          <v-tooltip location="bottom">
+          <v-tooltip location="bottom" :aria-label="$t('global.button.delete')">
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"

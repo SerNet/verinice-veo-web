@@ -49,7 +49,12 @@
     >
       <template #actions="{ item }">
         <div class="d-flex justify-end">
-          <v-tooltip v-for="action in accountTableActions" :key="action.id" location="bottom">
+          <v-tooltip
+            v-for="action in accountTableActions"
+            :key="action.id"
+            location="bottom"
+            :aria-label="action.label"
+          >
             <template #activator="{ props }">
               <v-btn
                 v-bind="props"
