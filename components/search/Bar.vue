@@ -225,7 +225,7 @@ const props = withDefaults(
       all: ['='],
       default: '='
     }),
-    density: 'default',
+    density: 'compact',
     initialSearch: () => [],
     contextChips: () => []
   }

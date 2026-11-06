@@ -27,7 +27,7 @@
     <template #default>
       <div class="toolbar my-6">
         <div class="toolbar-search">
-          <SearchBar v-model:search="search" :filters="searchFilters" density="compact" />
+          <SearchBar v-model:search="search" :filters="searchFilters" />
         </div>
         <span class="toolbar-right">
           <v-btn
