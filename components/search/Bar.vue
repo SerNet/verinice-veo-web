@@ -34,7 +34,7 @@
     :class="['veo-search', { 'veo-search--has-chips': hasSearchChips, 'veo-search--has-input': hasSearchInput }]"
     @click:clear="resetSearch"
     @keydown.delete="(e: KeyboardEvent) => handleDelete(e)"
-    @keydown.enter="handleEnter"
+    @keydown.enter.capture="handleEnter"
     @update:search="searchText = $event"
   >
     <template #prepend-inner>
@@ -537,6 +537,8 @@ function hasPendingFreeText() {
   );
 }
 
+// This needs to fire during the keydown's `capture` phase, cp `template`
+// Otherwise vuetify's enter handler will have precedence which renders `stopPropagation` useless
 function handleEnter(event: KeyboardEvent) {
   if (!isSearchComplete.value && !hasPendingFreeText()) return;
 

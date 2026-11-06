@@ -237,6 +237,29 @@ describe('SearchBar', () => {
     expect(search.value[0]).toMatchObject({ searchFilter: 'name', operator: '=' });
   });
 
+  it('offers the remaining filters after a free-text term was committed with Enter', async () => {
+    const { search, wrapper } = await mountSearchBar([{ searchFilter: 'name', operator: '=' }]);
+    const input = wrapper.get('input');
+    await input.setValue('policy');
+    await input.trigger('keydown', { key: 'Enter' });
+
+    expect(search.value).toEqual([{ searchFilter: 'name', operator: '=', term: 'policy' }]);
+    expect(input.attributes('aria-expanded')).toBe('false');
+
+    await wrapper.get('.v-field').trigger('mousedown');
+    await wrapper.get('.v-field').trigger('click');
+    await nextTick();
+    const items = [...document.body.querySelectorAll<HTMLElement>('[data-veo-test="searchbar-item"]')];
+    expect(items.map((item) => item.textContent?.trim())).toEqual(['Status']);
+
+    await new DOMWrapper(items[0]).trigger('click');
+
+    expect(search.value).toEqual([
+      { searchFilter: 'name', operator: '=', term: 'policy' },
+      { searchFilter: 'status', operator: '=' }
+    ]);
+  });
+
   it('shows semantic icons for the available search filters', async () => {
     const { wrapper } = await mountSearchBar([]);
 
