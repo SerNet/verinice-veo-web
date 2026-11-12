@@ -22,6 +22,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const {
   refetchDefaultAssigneesMock,
+  navigateToMock,
   updatePersonMock,
   useDefaultTaskAssigneesMock,
   useFetchTasksMock,
@@ -33,6 +34,7 @@ const {
   useVeoUserMock
 } = vi.hoisted(() => ({
   refetchDefaultAssigneesMock: vi.fn(),
+  navigateToMock: vi.fn(),
   updatePersonMock: vi.fn(),
   useDefaultTaskAssigneesMock: vi.fn(),
   useFetchTasksMock: vi.fn(),
@@ -47,6 +49,8 @@ const {
 mockNuxtImport('useRoute', () => () => ({
   params: { domain: 'domain-id', unit: 'unit-id' }
 }));
+
+mockNuxtImport('navigateTo', () => navigateToMock);
 
 mockNuxtImport('useI18n', () => () => {
   const messages: Record<string, string> = {
@@ -89,6 +93,7 @@ vi.mock('~/composables/api/utils/query', async (importOriginal) => ({
 
 import TasksPage from '~/pages/[unit]/domains/[domain]/tasks/index.vue';
 import type { ManualTaskFilter } from '~/composables/tasks';
+import type { IVeoTask } from '~/types/VeoTask';
 import type { IVeoEntity } from '~/types/VeoTypes';
 
 const AlertStub = defineComponent({
@@ -221,6 +226,29 @@ async function openPersonDialog() {
 
   return { dialog: wrapper.getComponent(ObjectDialogStub), wrapper };
 }
+
+const inspectionFindingTask: IVeoTask = {
+  type: 'inspection-finding',
+  description: { de: 'Strukturanalyse durchführen' },
+  object: {
+    id: 'asset-id',
+    subType: 'server',
+    targetUri: '/assets/asset-id',
+    type: 'asset'
+  },
+  severity: 'WARNING'
+};
+
+describe('tasks page navigation', () => {
+  it('opens the affected object for an inspection finding task', async () => {
+    const wrapper = await mountPage();
+
+    wrapper.getComponent({ name: 'TaskList' }).vm.$emit('click', inspectionFindingTask);
+    await nextTick();
+
+    expect(navigateToMock).toHaveBeenCalledWith('/unit-id/domains/domain-id/assets/server/asset-id/');
+  });
+});
 
 describe('tasks page person assignment', () => {
   it('shows the hint and CTA when the user assignment is ready and no person belongs to the username', async () => {

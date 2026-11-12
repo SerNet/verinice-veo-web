@@ -45,6 +45,23 @@ const task: IVeoTask = {
   }
 };
 
+const inspectionFindingTask: IVeoTask = {
+  type: 'inspection-finding',
+  description: {
+    de: 'Strukturanalyse durchführen',
+    en: 'Perform structural analysis'
+  },
+  object: {
+    abbreviation: 'SUS',
+    name: 'Super Server',
+    targetUri: '/assets/target-id',
+    id: 'target-id',
+    type: 'asset',
+    subType: 'server'
+  },
+  severity: 'WARNING'
+};
+
 describe('TaskCard', () => {
   it('emits a click event', async () => {
     const onClick = vi.fn();
@@ -86,5 +103,12 @@ describe('TaskCard', () => {
     const wrapper = await mountSuspended(TaskCard, { props: { task } });
 
     expect(wrapper.get('[data-veo-test="task-card-assignee"]').text()).toBe('Niemand');
+  });
+
+  it('shows an inspection task description and affected object', async () => {
+    const wrapper = await mountSuspended(TaskCard, { props: { task: inspectionFindingTask } });
+
+    expect(wrapper.get('[data-veo-test="task-card-origin"]').text()).toBe('Strukturanalyse durchführen');
+    expect(wrapper.get('[data-veo-test="task-card-control"]').text()).toBe('SUS Super Server');
   });
 });

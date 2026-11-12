@@ -15,7 +15,13 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 import { describe, expect, it } from 'vitest';
-import { mdiAutorenew, mdiClipboardCheckOutline } from '@mdi/js';
+import {
+  mdiAlertCircleOutline,
+  mdiAlertOutline,
+  mdiAutorenew,
+  mdiClipboardCheckOutline,
+  mdiInformationOutline
+} from '@mdi/js';
 
 import { getDeadlineColor, getTaskIcon, isTaskOverdue, parseDeadline } from '~/utils/tasks';
 
@@ -71,6 +77,12 @@ describe('getTaskIcon()', () => {
   it('maps implementations and revisions to distinct icons', () => {
     expect(getTaskIcon('requirement-implementation')).toBe(mdiClipboardCheckOutline);
     expect(getTaskIcon('requirement-implementation-revision')).toBe(mdiAutorenew);
+  });
+
+  it('maps inspection finding severities to distinct icons', () => {
+    expect(getTaskIcon('inspection-finding', 'HINT')).toBe(mdiInformationOutline);
+    expect(getTaskIcon('inspection-finding', 'WARNING')).toBe(mdiAlertOutline);
+    expect(getTaskIcon('inspection-finding', 'ERROR')).toBe(mdiAlertCircleOutline);
   });
 
   it('falls back to the implementation icon for unknown types', () => {
