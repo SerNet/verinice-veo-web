@@ -14,13 +14,25 @@
  * You should have received a copy of the GNU Affero General Public License along with this program.
  * If not, see <http://www.gnu.org/licenses/>.
  */
-import { mdiAutorenew, mdiClipboardCheckOutline } from '@mdi/js';
+import {
+  mdiAlertCircleOutline,
+  mdiAlertOutline,
+  mdiAutorenew,
+  mdiClipboardCheckOutline,
+  mdiInformationOutline
+} from '@mdi/js';
 
-import type { VeoTaskType } from '~/types/VeoTask';
+import type { VeoTaskSeverity, VeoTaskType } from '~/types/VeoTask';
 
 export const TASK_TYPE_ICONS = new Map<VeoTaskType, string>([
   ['requirement-implementation', mdiClipboardCheckOutline],
   ['requirement-implementation-revision', mdiAutorenew]
+]);
+
+export const INSPECTION_SEVERITY_ICONS = new Map<VeoTaskSeverity, string>([
+  ['HINT', mdiInformationOutline],
+  ['WARNING', mdiAlertOutline],
+  ['ERROR', mdiAlertCircleOutline]
 ]);
 
 const ISO_DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -47,6 +59,10 @@ export function getDeadlineColor(deadline?: string, now: Date = new Date()): 'er
   return isTaskOverdue(deadline, now) ? 'error' : 'warning';
 }
 
-export function getTaskIcon(type: VeoTaskType): string {
+export function getTaskIcon(type: VeoTaskType, severity?: VeoTaskSeverity): string {
+  if (type === 'inspection-finding' && severity) {
+    return INSPECTION_SEVERITY_ICONS.get(severity) ?? mdiInformationOutline;
+  }
+
   return TASK_TYPE_ICONS.get(type) ?? mdiClipboardCheckOutline;
 }

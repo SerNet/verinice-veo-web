@@ -28,19 +28,19 @@
 
       <div class="flex-1-1 overflow-hidden">
         <div class="text-body-2 text-truncate" data-veo-test="task-card-origin">
-          {{ t(`type.${task.type}`) }}: {{ originName }}
+          {{ title }}
         </div>
-        <v-tooltip location="bottom" :aria-label="controlName">
+        <v-tooltip location="bottom" :aria-label="subtitle">
           <template #activator="{ props: tooltipProps }">
             <div
               v-bind="tooltipProps"
               class="text-body-1 font-weight-medium text-truncate"
               data-veo-test="task-card-control"
             >
-              {{ controlName }}
+              {{ subtitle }}
             </div>
           </template>
-          <span>{{ controlName }}</span>
+          <span>{{ subtitle }}</span>
         </v-tooltip>
       </div>
 
@@ -85,8 +85,21 @@ const emit = defineEmits<{
 
 const { t, locale } = useI18n();
 
-const originName = computed(() => props.task.requirementImplementation?.origin?.displayName ?? '');
-const controlName = computed(() => props.task.requirementImplementation?.control?.displayName ?? '');
+const title = computed(() => {
+  if (props.task.type === 'inspection-finding') {
+    return props.task.description[locale.value] || Object.values(props.task.description).find(Boolean) || '';
+  }
+
+  return `${t(`type.${props.task.type}`)}: ${props.task.requirementImplementation.origin.displayName ?? ''}`;
+});
+const subtitle = computed(() => {
+  if (props.task.type !== 'inspection-finding') {
+    return props.task.requirementImplementation.control.displayName ?? '';
+  }
+
+  const object = props.task.object;
+  return [object.abbreviation, object.name].filter(Boolean).join(' ') || object.displayName || '';
+});
 const assigneeLabel = computed(() => {
   const assignee = props.task.assignee;
   if (!assignee) return t('nobody');
@@ -94,7 +107,9 @@ const assigneeLabel = computed(() => {
   return [assignee.abbreviation, assignee.name].filter(Boolean).join(' ') || assignee.displayName || t('nobody');
 });
 
-const icon = computed(() => getTaskIcon(props.task.type));
+const icon = computed(() =>
+  getTaskIcon(props.task.type, props.task.type === 'inspection-finding' ? props.task.severity : undefined)
+);
 const deadlineColor = computed(() => getDeadlineColor(props.task.deadline));
 const formattedDeadline = computed(() => parseDeadline(props.task.deadline)?.toLocaleDateString(locale.value));
 </script>

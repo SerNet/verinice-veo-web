@@ -4,6 +4,7 @@
     "dueBy": "Due {date}",
     "nobody": "Nobody",
     "type": {
+      "inspection-finding": "Inspection finding",
       "requirement-implementation": "Implementation",
       "requirement-implementation-revision": "Revision"
     }
@@ -13,6 +14,7 @@
     "dueBy": "Bis {date}",
     "nobody": "Niemand",
     "type": {
+      "inspection-finding": "Inspection-Finding",
       "requirement-implementation": "Umsetzung",
       "requirement-implementation-revision": "Revision"
     }

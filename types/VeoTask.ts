@@ -17,12 +17,26 @@
 import type { IVeoElementInDomainIdRef, RequirementImplementation } from '~/types/VeoTypes';
 
 /** Task types returned by `GET /domains/{domainId}/tasks`. More types will follow. */
-export type VeoTaskType = 'requirement-implementation' | 'requirement-implementation-revision';
+export type VeoTaskType = 'inspection-finding' | 'requirement-implementation' | 'requirement-implementation-revision';
+export type VeoTaskSeverity = 'ERROR' | 'HINT' | 'WARNING';
 
-export interface IVeoTask {
+interface IVeoBaseTask {
   type: VeoTaskType;
   /** ISO date (`YYYY-MM-DD`) */
   deadline?: string;
-  requirementImplementation: RequirementImplementation;
   assignee?: IVeoElementInDomainIdRef;
 }
+
+export interface IVeoRequirementImplementationTask extends IVeoBaseTask {
+  type: 'requirement-implementation' | 'requirement-implementation-revision';
+  requirementImplementation: RequirementImplementation;
+}
+
+export interface IVeoInspectionFindingTask extends IVeoBaseTask {
+  type: 'inspection-finding';
+  description: Record<string, string>;
+  object: IVeoElementInDomainIdRef;
+  severity: VeoTaskSeverity;
+}
+
+export type IVeoTask = IVeoInspectionFindingTask | IVeoRequirementImplementationTask;

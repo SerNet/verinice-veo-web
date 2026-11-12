@@ -118,6 +118,7 @@ import { useRequirementImplementationQuery } from '~/composables/requirementImpl
 import { useVeoUser } from '~/composables/VeoUser';
 import type { IVeoTask } from '~/types/VeoTask';
 import { type IVeoEntity, VeoAlertType, VeoElementTypePlurals } from '~/types/VeoTypes';
+import { getObjectDetailPath } from '~/utils/objectPath';
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -300,6 +301,15 @@ const totalItemCount = computed(() => data.value?.totalItemCount ?? 0);
 const { showDialog, requirementImplementation, openItem } = useRequirementImplementationQuery();
 
 function openTask(task: IVeoTask) {
+  if (task.type === 'inspection-finding') {
+    const path = getObjectDetailPath(task.object, {
+      domain: taskScope.value.domainId,
+      unit: taskScope.value.unitId
+    });
+    if (path) void navigateTo(path);
+    return;
+  }
+
   const implementation = task.requirementImplementation;
   const originType = implementation.origin.type as keyof typeof VeoElementTypePlurals;
   const endpoint = VeoElementTypePlurals[originType];
