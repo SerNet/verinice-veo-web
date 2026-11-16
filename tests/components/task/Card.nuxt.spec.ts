@@ -111,4 +111,12 @@ describe('TaskCard', () => {
     expect(wrapper.get('[data-veo-test="task-card-origin"]').text()).toBe('Strukturanalyse durchführen');
     expect(wrapper.get('[data-veo-test="task-card-control"]').text()).toBe('SUS Super Server');
   });
+
+  it('does not treat an unsupported task type as a requirement implementation', async () => {
+    const unsupportedTask = { type: 'unsupported' } as unknown as IVeoTask;
+    const wrapper = await mountSuspended(TaskCard, { props: { task: unsupportedTask } });
+
+    expect(wrapper.get('[data-veo-test="task-card-origin"]').text()).toBe('');
+    expect(wrapper.get('[data-veo-test="task-card-control"]').text()).toBe('');
+  });
 });

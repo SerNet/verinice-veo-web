@@ -72,7 +72,7 @@
 <script setup lang="ts">
 import { mdiAccountOutline } from '@mdi/js';
 
-import type { IVeoTask } from '~/types/VeoTask';
+import { isRequirementImplementationTask, type IVeoTask } from '~/types/VeoTask';
 import { getDeadlineColor, getTaskIcon, parseDeadline } from '~/utils/tasks';
 
 const props = defineProps<{
@@ -86,19 +86,27 @@ const emit = defineEmits<{
 const { t, locale } = useI18n();
 
 const title = computed(() => {
+  if (isRequirementImplementationTask(props.task)) {
+    return `${t(`type.${props.task.type}`)}: ${props.task.requirementImplementation.origin.displayName ?? ''}`;
+  }
+
   if (props.task.type === 'inspection-finding') {
     return props.task.description[locale.value] || Object.values(props.task.description).find(Boolean) || '';
   }
 
-  return `${t(`type.${props.task.type}`)}: ${props.task.requirementImplementation.origin.displayName ?? ''}`;
+  return '';
 });
 const subtitle = computed(() => {
-  if (props.task.type !== 'inspection-finding') {
+  if (isRequirementImplementationTask(props.task)) {
     return props.task.requirementImplementation.control.displayName ?? '';
   }
 
-  const object = props.task.object;
-  return [object.abbreviation, object.name].filter(Boolean).join(' ') || object.displayName || '';
+  if (props.task.type === 'inspection-finding') {
+    const object = props.task.object;
+    return [object.abbreviation, object.name].filter(Boolean).join(' ') || object.displayName || '';
+  }
+
+  return '';
 });
 const assigneeLabel = computed(() => {
   const assignee = props.task.assignee;

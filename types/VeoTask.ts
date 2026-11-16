@@ -40,3 +40,7 @@ export interface IVeoInspectionFindingTask extends IVeoBaseTask {
 }
 
 export type IVeoTask = IVeoInspectionFindingTask | IVeoRequirementImplementationTask;
+
+export function isRequirementImplementationTask(task: IVeoTask): task is IVeoRequirementImplementationTask {
+  return task.type === 'requirement-implementation' || task.type === 'requirement-implementation-revision';
+}

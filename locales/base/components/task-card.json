@@ -14,7 +14,7 @@
     "dueBy": "Bis {date}",
     "nobody": "Niemand",
     "type": {
-      "inspection-finding": "Inspection-Finding",
+      "inspection-finding": "Inspektionsbefund",
       "requirement-implementation": "Umsetzung",
       "requirement-implementation-revision": "Revision"
     }
