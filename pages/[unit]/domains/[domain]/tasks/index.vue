@@ -318,7 +318,7 @@ function openTask(task: IVeoTask) {
   }
 
   if (task.type === 'inspection-finding') {
-    const path = getObjectDetailPath(task.object, {
+    const path = getObjectDetailPath(task.element, {
       domain: taskScope.value.domainId,
       unit: taskScope.value.unitId
     });
