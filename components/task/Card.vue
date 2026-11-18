@@ -91,7 +91,7 @@ const title = computed(() => {
   }
 
   if (props.task.type === 'inspection-finding') {
-    return props.task.description[locale.value] || Object.values(props.task.description).find(Boolean) || '';
+    return props.task.summary?.[locale.value] || Object.values(props.task.summary ?? {}).find(Boolean) || '';
   }
 
   return '';
@@ -102,8 +102,8 @@ const subtitle = computed(() => {
   }
 
   if (props.task.type === 'inspection-finding') {
-    const object = props.task.object;
-    return [object.abbreviation, object.name].filter(Boolean).join(' ') || object.displayName || '';
+    const element = props.task.element;
+    return [element.abbreviation, element.name].filter(Boolean).join(' ') || element.displayName || '';
   }
 
   return '';

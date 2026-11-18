@@ -34,8 +34,8 @@ export interface IVeoRequirementImplementationTask extends IVeoBaseTask {
 
 export interface IVeoInspectionFindingTask extends IVeoBaseTask {
   type: 'inspection-finding';
-  description: Record<string, string>;
-  object: IVeoElementInDomainIdRef;
+  summary: Record<string, string>;
+  element: IVeoElementInDomainIdRef;
   severity: VeoTaskSeverity;
 }
 

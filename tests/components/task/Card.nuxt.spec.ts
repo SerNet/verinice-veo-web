@@ -47,11 +47,11 @@ const task: IVeoTask = {
 
 const inspectionFindingTask: IVeoTask = {
   type: 'inspection-finding',
-  description: {
+  summary: {
     de: 'Strukturanalyse durchführen',
     en: 'Perform structural analysis'
   },
-  object: {
+  element: {
     abbreviation: 'SUS',
     name: 'Super Server',
     targetUri: '/assets/target-id',

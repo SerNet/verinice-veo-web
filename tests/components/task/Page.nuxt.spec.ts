@@ -229,8 +229,8 @@ async function openPersonDialog() {
 
 const inspectionFindingTask: IVeoTask = {
   type: 'inspection-finding',
-  description: { de: 'Strukturanalyse durchführen' },
-  object: {
+  summary: { de: 'Strukturanalyse durchführen' },
+  element: {
     id: 'asset-id',
     subType: 'server',
     targetUri: '/assets/asset-id',
