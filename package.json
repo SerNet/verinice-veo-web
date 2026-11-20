@@ -74,7 +74,6 @@
     "@nuxt/test-utils": "4.4.0",
     "@rollup/plugin-yaml": "5.0.1",
     "@types/hash-sum": "1.0.2",
-    "@types/intro.js": "7.1.0",
     "@types/js-cookie": "3.0.6",
     "@types/lodash": "4.17.27",
     "@types/node": "26.6.6",

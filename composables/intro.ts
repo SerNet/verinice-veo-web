@@ -20,11 +20,17 @@ import { useIsFetching } from '@tanstack/vue-query';
 import introJs from 'intro.js';
 import type { Hint } from 'intro.js/src/packages/hint';
 import type { Tour } from 'intro.js/src/packages/tour';
+import type { HintItem } from 'intro.js/src/packages/hint/hintItem';
+import type { HintOptions } from 'intro.js/src/packages/hint/option';
+import type { TooltipPosition } from 'intro.js/src/packages/tooltip';
+import type { TourOptions } from 'intro.js/src/packages/tour/option';
 import { last } from 'lodash';
 import { useTheme } from 'vuetify';
 
-// @ts-ignore TODO #3066 cannot find namespace
-interface ITutorialDocument extends introJs.Options {
+type IntroOptions = Partial<TourOptions> & Partial<HintOptions>;
+type IntroHint = Partial<HintItem>;
+
+interface ITutorialDocument extends IntroOptions {
   title?: string;
 }
 
@@ -143,12 +149,10 @@ export function createIntro() {
       _watchStep = watch(
         () => step.value,
         (newValue, oldValue) => {
-          // @ts-ignore TODO #3066 does not exist
           if (!options.value.steps) {
             return;
           }
 
-          // @ts-ignore TODO #3066 does not exist
           const currentStep = options.value.steps[newValue];
 
           // Early exit if no element is specified.
@@ -178,7 +182,6 @@ export function createIntro() {
         (v) => {
           if (v) {
             nextTick(() => {
-              // @ts-ignore TODO #3066 does not exist
               if (!options.value.steps?.length) return;
 
               const tourInstance = createTourInstance();
@@ -254,7 +257,6 @@ export function createIntro() {
                     step.value = 0;
                     tourState.isActive = false;
                     // Hide hints when no hints are available (-> set visible to false)
-                    // @ts-ignore TODO #3066 does not exist
                     if (!options.value?.hints?.length) {
                       hintsVisible.value = false;
                     } else if (hintsVisible.value && tourState.hintInstance) {
@@ -339,8 +341,7 @@ export function useIntro() {
    * Configure intro.js
    * @param opts Options
    */
-  // @ts-ignore TODO #3066 cannot find namespace
-  const configure = (opts: introJs.Options | Ref<introJs.Options | undefined>) => {
+  const configure = (opts: IntroOptions | Ref<IntroOptions | undefined>) => {
     _watchHandle?.();
     // support reactive tutorials
     if (isRef(opts)) {
@@ -348,7 +349,6 @@ export function useIntro() {
         opts,
         (opts) => {
           if (opts) {
-            // @ts-ignore TODO #3066 does not exist
             opts.tooltipClass = 'bg-surface';
             options.value = opts;
           } else {
@@ -385,23 +385,18 @@ export function useIntro() {
     /**
      * Provides information about whether hints are currently present
      */
-    // @ts-ignore TODO #3066 does not exist
     hasHints: computed(() => !!options.value.hints?.length),
     /**
      * Provides information about whether steps are currently present
      */
-    // @ts-ignore TODO #3066 does not exist
     hasSteps: computed(() => !!options.value.steps?.length),
-    // @ts-ignore TODO #3066 does not exist
     steps: computed(() => options.value.steps || []),
-    // @ts-ignore TODO #3066 does not exist
     hints: computed(() => options.value.hints || []),
     /**
      * Add a hint to current page
      * @returns list of current hints
      */
-    addHint(hint: Hint) {
-      // @ts-ignore TODO #3066 does not exist
+    addHint(hint: IntroHint) {
       const hints = [...(options.value?.hints || []), hint];
       configure({ ...options.value, hints });
       return hints;
@@ -411,22 +406,21 @@ export function useIntro() {
      * @param predicate Number to remove a specific index, String to remove by hint text or a filter function
      * @returns false if no hint was removed otherwise the list of current hints
      */
-    removeHint(predicate: number | string | ((hint: Hint) => boolean)) {
-      // @ts-ignore TODO #3066 does not exist
+    removeHint(predicate: number | string | ((hint: IntroHint) => boolean)) {
       const hints = options.value.hints || [];
       const filter = (() => {
         switch (typeof predicate) {
           case 'number':
-            return (_: Hint, index: number) => index === predicate;
+            return (_: IntroHint, index: number) => index !== predicate;
           case 'string':
-            return (hint: Hint) => hint.getHints()?.some((h) => h.hint === predicate);
+            return (hint: IntroHint) => hint.hint !== predicate;
           default:
             return predicate;
         }
       })();
       const newHints = hints.filter(filter);
       if (newHints.length < hints.length) {
-        configure({ ...options.value, hints });
+        configure({ ...options.value, hints: newHints });
         return newHints;
       } else {
         return false;
@@ -436,7 +430,6 @@ export function useIntro() {
      * Remove all hints from current page
      */
     removeAllHints() {
-      // @ts-ignore TODO #3066 does not exist
       options.value = { ...options.value, hints: [] };
     }
   };
@@ -446,7 +439,7 @@ interface IVeoTutorialStep {
   title: string;
   element: string;
   intro: string;
-  position?: string;
+  position?: TooltipPosition;
 }
 
 interface IVeoTutorial {
